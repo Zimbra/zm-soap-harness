@@ -53,7 +53,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -65,7 +65,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -91,8 +91,8 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
     <t:test required="true">
@@ -107,21 +107,21 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="account0.folder.briefcase.id"/> 
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="account0.folder.briefcase.id"/>
         </t:response>
     </t:test>
-    
-</t:test_case>  
 
- 
+</t:test_case>
 
-<t:test_case testcaseid="BriefcaseSharing_GranteeGuest_01" type="bhr">
+
+
+<t:test_case testcaseid="BriefcaseSharing_GranteeGuest_01" type="sanity">
     <t:objective>Share a briefcase folder to guest.  Verify that the guest has access.</t:objective>
     <t:steps>
             1. Login to account0
@@ -147,7 +147,7 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -167,7 +167,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -176,11 +176,11 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account0.document1.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account0.document1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -218,8 +218,8 @@
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
 
 	<t:property name="authToken" value=""/>
 
@@ -254,10 +254,10 @@
 		</t:restServletResponse>
 	</t:resttest>
 
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="BriefcaseSharing_GranteeGuest_02" type="bhr">
+<t:test_case testcaseid="BriefcaseSharing_GranteeGuest_02" type="sanity">
     <t:objective>Unshare a folder to guest.  Verify that the guest no longer has access.</t:objective>
     <t:steps>
             1. Login to account0
@@ -284,7 +284,7 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -304,7 +304,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -313,11 +313,11 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account0.document2.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account0.document2.id"/>
         </t:response>
     </t:test>
-    
+
 
     <t:test >
         <t:request>
@@ -368,8 +368,8 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-   
-    
+
+
 
 	<t:property name="authToken" value=""/>
 
@@ -404,7 +404,7 @@
 		</t:restServletResponse>
 	</t:resttest>
 
-    
+
 </t:test_case>
 
 

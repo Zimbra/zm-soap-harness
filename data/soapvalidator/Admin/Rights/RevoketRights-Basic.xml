@@ -57,8 +57,8 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="account1.fullName"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
-  
+    </t:test>
+
       <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,7 +71,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="account2.fullName"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -86,7 +86,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -101,11 +101,11 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="RevokeRightRequest01" type="bhr">
+<t:test_case testcaseid="RevokeRightRequest01" type="sanity">
 <t:objective> Basic test case to verify RevokeRightRequest </t:objective>
 	<t:steps>
 	1. Create a regular admin account (created in above request)
@@ -119,20 +119,20 @@
 				<target type="domain" by="name">${domain.name}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right>setAccountPassword</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
- 
+
  	<t:test>
 		<t:request>
 			<RevokeRightRequest xmlns="urn:zimbraAdmin">
 				<target type="domain" by="name">${domain.name}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right>setAccountPassword</right>
-			</RevokeRightRequest>    
+			</RevokeRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:RevokeRightResponse"/>
@@ -166,7 +166,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RevokeRightRequest02" type="sanity" >
+<t:test_case testcaseid="RevokeRightRequest02" type="functional" >
 <t:objective> Revoking rights by using attr "id" instead of "name" </t:objective>
 
 	<t:test required="true" >
@@ -187,7 +187,7 @@
 				<target type="domain" by="id">${domain.id}</target>
 				<grantee type="usr" by="id">${admin1.id}</grantee>
 				<right>getAccount</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -200,7 +200,7 @@
 				<target type="domain" by="id">${domain.id}</target>
 				<grantee type="usr" by="id">${admin1.id}</grantee>
 				<right>getAccount</right>
-			</RevokeRightRequest>    
+			</RevokeRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:RevokeRightResponse"/>
@@ -233,7 +233,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RevokeRightRequest03" type="bhr">
+<t:test_case testcaseid="RevokeRightRequest03" type="sanity">
 <t:objective> Verify 'canDelegate' for revoke works  </t:objective>
 
   <t:steps>
@@ -263,7 +263,7 @@
 				<target type="domain" by="name">${domain.name}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right canDelegate="1">getDomain</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -288,7 +288,7 @@
 				<target type="domain" by="name">${domain.name}</target>
 				<grantee type="usr" by="name">${admin2.fullName}</grantee>
 				<right>getDomain</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -313,7 +313,7 @@
 				<target type="domain" by="id">${domain.id}</target>
 				<grantee type="usr" by="id">${admin1.id}</grantee>
 				<right canDelegate="1">getDomain</right>
-			</RevokeRightRequest>    
+			</RevokeRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:RevokeRightResponse"/>
@@ -338,7 +338,7 @@
 				<target type="domain" by="id">${domain.id}</target>
 				<grantee type="usr" by="name">${admin2.fullName}</grantee>
 				<right canDelegate="1">getDomain</right>
-			</RevokeRightRequest>    
+			</RevokeRightRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.PERM_DENIED" />
@@ -348,13 +348,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RevokeRightRequest04" type="bhr">
+<t:test_case testcaseid="RevokeRightRequest04" type="sanity">
 <t:objective> Verify 'deny' works </t:objective>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RevokeRightRequest05" type="bhr" bugids="36021">
+<t:test_case testcaseid="RevokeRightRequest05" type="sanity" bugids="36021">
 <t:objective> revoke right throw no_such_account error on a grant whose grantee account was deleted </t:objective>
 	<t:steps>
 	1. Grant right admin2
@@ -380,7 +380,7 @@
 				<target type="domain" by="name">${defaultdomain.name}</target>
 				<grantee type="usr" by="name">${admin2.fullName}</grantee>
 				<right>countAccount</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -406,7 +406,7 @@
 				<target type="domain" by="name">${defaultdomain.name}</target>
 				<grantee type="usr" by="name">${admin2.fullName}</grantee>
 				<right>checkHealth</right>
-			</RevokeRightRequest>    
+			</RevokeRightRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />

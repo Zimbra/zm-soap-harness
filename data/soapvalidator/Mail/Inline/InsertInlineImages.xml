@@ -5,9 +5,9 @@
 <t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 
-<t:property name="uploadFile1" value="${testMailRaw.root}/photos/picture1.jpg"/> 
-<t:property name="uploadFile2" value="${testMailRaw.root}/photos/picture2.png"/> 
-<t:property name="uploadFile3" value="${testMailRaw.root}/photos/picture3.jpg"/> 
+<t:property name="uploadFile1" value="${testMailRaw.root}/photos/picture1.jpg"/>
+<t:property name="uploadFile2" value="${testMailRaw.root}/photos/picture2.png"/>
+<t:property name="uploadFile3" value="${testMailRaw.root}/photos/picture3.jpg"/>
 
 <t:property name="filename1" value="picture1.jpg"/>
 <t:property name="filename2" value="picture2.png"/>
@@ -41,7 +41,7 @@
     <t:steps> 1. Login to Admin.
               2. Create test accounts.
     </t:steps>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -86,11 +86,11 @@
 
 <t:test_case testcaseid="InsertInlineImages01" type="smoke" areas="comcast" bugs="16633">
    <t:objective> Verify that inline message can be sent.</t:objective>
-    <steps> 
+    <steps>
         1. Login to the account1 and send a msg with inline image to account2.
-        2. Login to the account2 and check the msg with inline image.     
-    </steps>	
-			
+        2. Login to the account2 and check the msg with inline image.
+    </steps>
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test required="true">
         <t:request>
@@ -136,18 +136,18 @@
 											&lt;/style&gt;
 										&lt;/head&gt;
 										&lt;body&gt;
-										&lt;P&gt;Text before image.&lt;/P&gt; 
+										&lt;P&gt;Text before image.&lt;/P&gt;
 										&lt;P&gt;&lt;IMG src="cid:${uploadFile1.cid}"&gt;&lt;/IMG&gt;
 										Text after image.&lt;/P&gt;
 										&lt;/body&gt;
 									&lt;/html&gt;
 							</content>
  							</mp>
- 							<mp ci="${uploadFile1.cid}"> 
+ 							<mp ci="${uploadFile1.cid}">
 								<attach aid="${message1.aid}"/>
 							</mp>
 						</mp>
-					</mp>	
+					</mp>
 				</m>
 			</SendMsgRequest>
         </t:request>
@@ -155,7 +155,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m"/>
 		</t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test required="true">
@@ -182,7 +182,7 @@
 		</t:response>
     </t:test>
 
-	<t:test>		
+	<t:test>
 		<t:request>
 			<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${mail1.id}" read="1" html="1"/>
@@ -203,13 +203,13 @@
 
 
 
-<t:test_case testcaseid="InsertInlineImages02" type="bhr" areas="comcast" bugs="16633">
+<t:test_case testcaseid="InsertInlineImages02" type="sanity" areas="comcast" bugs="16633">
     <t:objective> Verify that a message with multiple inline images can be sent.</t:objective>
-    <steps> 
+    <steps>
         1. Login to the account1 and send a msg with inline images to account2.
-        2. Login to the account2 and check the msg with inline images.     
-    </steps>	
-			
+        2. Login to the account2 and check the msg with inline images.
+    </steps>
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test required="true">
         <t:request>
@@ -266,7 +266,7 @@
 											&lt;/style&gt;
 										&lt;/head&gt;
 										&lt;body&gt;
-										&lt;P&gt;Text before image.&lt;/P&gt; 
+										&lt;P&gt;Text before image.&lt;/P&gt;
 										&lt;P&gt;&lt;IMG src="cid:${uploadFile2.cid}"&gt;&lt;/IMG&gt;
 										&lt;IMG src="cid:${uploadFile3.cid}"&gt;&lt;/IMG&gt;
 										Text after image.&lt;/P&gt;
@@ -274,14 +274,14 @@
 									&lt;/html&gt;
 							</content>
 							</mp>
-							<mp ci="${uploadFile2.cid}"> 
+							<mp ci="${uploadFile2.cid}">
 								<attach aid="${message2.aid}"/>
 							</mp>
-							<mp ci="${uploadFile3.cid}"> 
+							<mp ci="${uploadFile3.cid}">
 								<attach aid="${message3.aid}"/>
 							</mp>
 						</mp>
-					</mp>	
+					</mp>
 				</m>
 			</SendMsgRequest>
         </t:request>
@@ -289,7 +289,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m"/>
 		</t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test required="true">
@@ -317,7 +317,7 @@
 		</t:response>
     </t:test>
 
- 	<t:test>		
+ 	<t:test>
 		<t:request>
 			<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${mail2.id}" read="1" html="1"/>

@@ -17,7 +17,7 @@
 <t:property name="sender6.name" value="sender${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="notification6.address" value="notify${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="base7.name" value="base${TIME}${COUNTER}@${defaultdomain.name}"/>
-<t:property name="sender7.name" value="sender${TIME}.${COUNTER}@${defaultdomain.name}"/>    
+<t:property name="sender7.name" value="sender${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="base8.name" value="base${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="sender8.name" value="sender${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="base9.name" value="base${TIME}${COUNTER}@${defaultdomain.name}"/>
@@ -49,7 +49,7 @@
 <t:property name="message7.subject" value="subject1.${TIME}.${COUNTER}"/>
 <t:property name="message7.content" value="content1.${TIME}.${COUNTER}"/>
 <t:property name="message8.subject" value="subject1.${TIME}.${COUNTER}"/>
-<t:property name="message8.content" value="content1.${TIME}.${COUNTER}"/>    
+<t:property name="message8.content" value="content1.${TIME}.${COUNTER}"/>
 <t:property name="message9.subject" value="subject1.${TIME}.${COUNTER}"/>
 <t:property name="message9.content" value="content1.${TIME}.${COUNTER}"/>
 <t:property name="message10.subject" value="subject1.${TIME}.${COUNTER}"/>
@@ -57,14 +57,14 @@
 <t:property name="message11.subject" value="subject1.${TIME}.${COUNTER}"/>
 <t:property name="message11.content" value="content1.${TIME}.${COUNTER}"/>
 <t:property name="message12.subject" value="subject1.${TIME}.${COUNTER}"/>
-<t:property name="message12.content" value="content1.${TIME}.${COUNTER}"/>    
+<t:property name="message12.content" value="content1.${TIME}.${COUNTER}"/>
 
 <t:property name="appointment1.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
 <t:property name="Time1" value="${ICALTIME(+30m)}"/>
 <t:property name="Time2" value="${ICALTIME(+1h)}"/>
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:property name="test_acct-b1.server" value="NOT_DEFINED"/>
 <t:property name="test_acct-b2.server" value="NOT_DEFINED"/>
@@ -139,7 +139,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test  required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -261,7 +261,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct-n3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test  required="true">
         <t:request>
@@ -289,7 +289,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct-n4.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test  required="true">
         <t:request>
@@ -303,7 +303,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct-b5.server"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test  required="true">
         <t:request>
@@ -518,11 +518,11 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct-n11b.server"/>
         </t:response>
     </t:test>
-    
-</t:test_case>    
-    
+
+</t:test_case>
+
 <t:property name="server.zimbraAccount" value="${test_acct-b1.server}"/>
-    
+
 <t:test_case testcaseid="NewMailNotificationBasic01" type="smoke">
     <t:objective>Verify that new mail notification setting send automatic notification mail </t:objective>
     <t:steps>
@@ -673,14 +673,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base1.name}.*"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base1.name}.*"/>
         </t:response>
     </t:test>
 
-</t:test_case>    
-    
-    
-<t:test_case testcaseid="NewMailNotificationBasic02" type="sanity">
+</t:test_case>
+
+
+<t:test_case testcaseid="NewMailNotificationBasic02" type="functional">
     <t:objective>Verify automatic notification mail is sent for a replied mail </t:objective>
     <t:steps>
         1. Login to account1.
@@ -768,7 +768,7 @@
     </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct-s2.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -861,14 +861,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base2.name}.*"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base2.name}.*"/>
         </t:response>
     </t:test>
 
-</t:test_case>    
-    
+</t:test_case>
 
-<t:test_case testcaseid="NewMailNotificationBasic03" type="sanity">
+
+<t:test_case testcaseid="NewMailNotificationBasic03" type="functional">
     <t:objective>Verify automatic notification mail is sent for a forwarded mail </t:objective>
     <t:steps>
         1. Login to account1.
@@ -956,7 +956,7 @@
     </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct-s3.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1049,14 +1049,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base3.name}.*"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base3.name}.*"/>
         </t:response>
     </t:test>
 
-</t:test_case>  
-    
-    
-<t:test_case testcaseid="NewMailNotificationBasic04" type="sanity">
+</t:test_case>
+
+
+<t:test_case testcaseid="NewMailNotificationBasic04" type="functional">
     <t:objective>Verify automatic notification mail is obtained for a mail which is sent to self </t:objective>
     <t:steps>
         1. Login to account1.
@@ -1149,7 +1149,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message4.subject}"/>
         </t:response>
-    </t:test>        
+    </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct-n4.server}"/>
 
@@ -1174,14 +1174,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base4.name}.*"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base4.name}.*"/>
         </t:response>
     </t:test>
 
-</t:test_case>      
- 
- 
-<t:test_case testcaseid="NewMailNotificationBasic05" type="sanity">
+</t:test_case>
+
+
+<t:test_case testcaseid="NewMailNotificationBasic05" type="functional">
     <t:objective>Verify that it does not loop if account1's mail notification address is account3 and vice versa </t:objective>
     <t:steps>
         1. Login to account1.
@@ -1220,7 +1220,7 @@
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">${globals.true}</pref>
-                <pref name="zimbraPrefNewMailNotificationAddress">${notification5.address}</pref>                
+                <pref name="zimbraPrefNewMailNotificationAddress">${notification5.address}</pref>
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
@@ -1252,7 +1252,7 @@
                 <t:select path="acct:pref[@name='zimbraPrefNewMailNotificationEnabled']" match="${globals.true}"/>
             </t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct-n5.server}"/>
 
@@ -1269,12 +1269,12 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="newMailNotificationBasic05f" depends="newMailNotificationBasic05e">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">${globals.true}</pref>
-                <pref name="zimbraPrefNewMailNotificationAddress">${base5.name}</pref>                
+                <pref name="zimbraPrefNewMailNotificationAddress">${base5.name}</pref>
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
@@ -1307,7 +1307,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="newMailNotificationBasic05i">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1326,7 +1326,7 @@
     </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct-b5.server}"/>
-    
+
     <t:test id="newMailNotificationBasic05j">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1340,7 +1340,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="newMailNotificationBasic05k" depends="newMailNotificationBasic05i,newMailNotificationBasic05j">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1350,7 +1350,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message5.subject}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -1359,7 +1359,7 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at*" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at*" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -1390,10 +1390,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>   
-    
-    
-<t:test_case testcaseid="NewMailNotificationBasic06" type="bhr">
+</t:test_case>
+
+
+<t:test_case testcaseid="NewMailNotificationBasic06" type="sanity">
     <t:objective>Verify that new mail notification setting can be reset to false </t:objective>
     <t:steps>
         1. Login to account1.
@@ -1585,14 +1585,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base6.name}.*" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base6.name}.*" emptyset="1"/>
         </t:response>
     </t:test>
 
-</t:test_case>   
-    
-   
-<t:test_case testcaseid="NewMailNotificationBasic07" type="sanity">
+</t:test_case>
+
+
+<t:test_case testcaseid="NewMailNotificationBasic07" type="functional">
     <t:objective>Verify setting the automatic notification mail address to self </t:objective>
     <t:steps>
         1. Login to account1.
@@ -1719,7 +1719,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message7.subject}"/>
         </t:response>
-    </t:test>        
+    </t:test>
 
     <t:test depends="newMailNotificationBasic07c,newMailNotificationBasic07f" delay="${postfixdelay.msec}">
         <t:request>
@@ -1728,14 +1728,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base7.name}.*"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base7.name}.*"/>
         </t:response>
     </t:test>
 
-</t:test_case>    
- 
-  
-<t:test_case testcaseid="NewMailNotificationBasic08" type="sanity">
+</t:test_case>
+
+
+<t:test_case testcaseid="NewMailNotificationBasic08" type="functional">
     <t:objective> Verify setting the automatic notification mail address to self is obtained for mails from account2 when zimbraPrefDedupeMessagesSentToSelf = dedupeAll (do not receive)</t:objective>
     <t:steps>
         1. Login to account1.
@@ -1770,7 +1770,7 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefDedupeMessagesSentToSelf">dedupeAll</pref>
                 <pref name="zimbraPrefNewMailNotificationEnabled">${globals.true}</pref>
-                <pref name="zimbraPrefNewMailNotificationAddress">${base8.name}</pref>                
+                <pref name="zimbraPrefNewMailNotificationAddress">${base8.name}</pref>
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
@@ -1862,7 +1862,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message8.subject}"/>
         </t:response>
-    </t:test>        
+    </t:test>
 
     <t:test depends="newMailNotificationBasic08c,newMailNotificationBasic08f">
         <t:request>
@@ -1871,14 +1871,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base8.name}.*"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base8.name}.*"/>
         </t:response>
     </t:test>
 
-</t:test_case>  
-    
-  
-<t:test_case testcaseid="newMailNotificationBasic09" type="sanity">
+</t:test_case>
+
+
+<t:test_case testcaseid="newMailNotificationBasic09" type="functional">
     <t:objective> Verify setting the automatic notification mail address to self is obtained for mails from account1 to itself when zimbraPrefDedupeMessagesSentToSelf = dedupeAll (do not receive)</t:objective>
     <t:steps>
         1. Login to account1.
@@ -1913,7 +1913,7 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefDedupeMessagesSentToSelf">dedupeAll</pref>
                 <pref name="zimbraPrefNewMailNotificationEnabled">${globals.true}</pref>
-                <pref name="zimbraPrefNewMailNotificationAddress">${base9.name}</pref>                
+                <pref name="zimbraPrefNewMailNotificationAddress">${base9.name}</pref>
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
@@ -1963,7 +1963,7 @@
             <t:select path="//mail:SendMsgResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="newMailNotificationBasic09f" depends="newMailNotificationBasic09e">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1973,7 +1973,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message9.subject}" emptyset="1"/>
         </t:response>
-    </t:test>        
+    </t:test>
 
     <t:test depends="newMailNotificationBasic09e">
         <t:request>
@@ -1982,14 +1982,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base9.name}.*" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base9.name}.*" emptyset="1"/>
         </t:response>
     </t:test>
 
-</t:test_case>      
-    
+</t:test_case>
 
-<t:test_case testcaseid="NewMailNotificationBasic10" type="sanity">
+
+<t:test_case testcaseid="NewMailNotificationBasic10" type="functional">
     <t:objective> Verify the automatic notification mail when account1 gets an appointment invitation </t:objective>
     <t:steps>
         1. Login to account1.
@@ -2022,9 +2022,9 @@
 
     <t:test id="newMailNotificationBasic10b" depends="newMailNotificationBasic10a">
         <t:request>
-            <ModifyPrefsRequest xmlns="urn:zimbraAccount">                
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">${globals.true}</pref>
-                <pref name="zimbraPrefNewMailNotificationAddress">${notification10.address}</pref>                
+                <pref name="zimbraPrefNewMailNotificationAddress">${notification10.address}</pref>
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
@@ -2147,14 +2147,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base10.name}.*"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base10.name}.*"/>
         </t:response>
     </t:test>
 
-</t:test_case> 
-    
+</t:test_case>
 
-<t:test_case testcaseid="NewMailNotificationBasic11" type="sanity">
+
+<t:test_case testcaseid="NewMailNotificationBasic11" type="functional">
     <t:objective> Verify the automatic notification is given to proper account if notification address is changed </t:objective>
     <t:steps>
         1. Login to account1.
@@ -2188,9 +2188,9 @@
 
     <t:test id="newMailNotificationBasic11b" depends="newMailNotificationBasic11a">
         <t:request>
-            <ModifyPrefsRequest xmlns="urn:zimbraAccount">                
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">${globals.true}</pref>
-                <pref name="zimbraPrefNewMailNotificationAddress">${notification11.address}</pref>                
+                <pref name="zimbraPrefNewMailNotificationAddress">${notification11.address}</pref>
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
@@ -2320,7 +2320,7 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base11.name}.*" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match=".*New message received at ${base11.name}.*" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2351,6 +2351,6 @@
         </t:response>
     </t:test>
 
-</t:test_case>     
-    
+</t:test_case>
+
 </t:tests>

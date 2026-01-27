@@ -6,12 +6,12 @@
 <t:property name="conv1.subject" value="First conversation"/>
 
 <t:property name="message.content1" value="content${TIME}.${COUNTER}"/>
-    
+
 <t:property name="op.move" value="move"/>
 <t:property name="op.delete" value="delete"/>
 <t:property name="test_acct1.server" value="NOT_DEFINED"/>
 <t:property name="test_acct2.server" value="NOT_DEFINED"/>
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>Basic system check</t:objective>
@@ -30,7 +30,7 @@
 <t:test_case testcaseid="acctSetup_conversation2_loop" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps> 1. Login to admin.
-              2. Create test account. 
+              2. Create test account.
     </t:steps>
 
 	<t:test required="true" depends="ping">
@@ -49,7 +49,7 @@
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${test_account1.name}</name>
-				<password>${defaultpassword.value}</password>               
+				<password>${defaultpassword.value}</password>
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
@@ -74,7 +74,7 @@
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-<t:test_case testcaseid="conversation2_loop1" type="sanity" duration="long" bugids="1923">
+<t:test_case testcaseid="conversation2_loop1" type="functional" duration="long" bugids="1923">
     <t:objective>Login to account1</t:objective>
     <t:steps> 1.Login to account1
               2. GetFolderRequest to get the folder id
@@ -103,7 +103,7 @@
 		<t:request>
 			<GetFolderRequest xmlns = "urn:zimbraMail"/>
 		</t:request>
-		<t:response>              
+		<t:response>
 			<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
 			<t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
 		</t:response>
@@ -126,7 +126,7 @@
 		</t:response>
 	</t:test>
 
-	<t:test_loop count="200">      
+	<t:test_loop count="200">
 
 	<t:test>
 		<t:request>
@@ -143,7 +143,7 @@
 		<t:response>
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="lastmessage.id"/>
 		</t:response>
-	</t:test> 
+	</t:test>
 
 	</t:test_loop>
 
@@ -168,7 +168,7 @@
 				<query> subject:${conv1.subject}</query>
 			</SearchRequest>
 		</t:request>
-		<t:response>            
+		<t:response>
 			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv1.id"/>
 		</t:response>
 	</t:test>
@@ -211,7 +211,7 @@
 			<t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg.id50}"/>
 		</t:response>
 	</t:test>
-      
+
 	<t:test>
 		<t:request>
 			<GetMsgRequest xmlns="urn:zimbraMail">
@@ -237,7 +237,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="conversation2_loop2" type="sanity" duration="long">
+<t:test_case testcaseid="conversation2_loop2" type="functional" duration="long">
     <t:objective> Verify conversation containing large number of messages on deleting behaves properly </t:objective>
     <t:steps> 1. Login to account2
               2. Sent messages to account1
@@ -279,7 +279,7 @@
 		</t:response>
 	</t:test>
 
-	<t:test_loop count="200">      
+	<t:test_loop count="200">
 
 	<t:test>
 		<t:request>
@@ -296,7 +296,7 @@
 		<t:response>
 			<t:select path="//mail:SendMsgResponse/mail:m"/>
 		</t:response>
-	</t:test> 
+	</t:test>
 
 	</t:test_loop>
 
@@ -319,7 +319,7 @@
 		<t:request>
 			<GetFolderRequest xmlns = "urn:zimbraMail"/>
 		</t:request>
-		<t:response>              
+		<t:response>
 			<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
 			<t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
 		</t:response>
@@ -331,11 +331,11 @@
 				<query> subject:${conv1.subject}</query>
 			</SearchRequest>
 		</t:request>
-		<t:response>            
+		<t:response>
 			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv1.id"/>
 		</t:response>
 	</t:test>
-   
+
 	<t:test>
 		<t:request>
 			<ConvActionRequest xmlns="urn:zimbraMail">
@@ -361,6 +361,6 @@
 	</t:test>
 
 </t:test_case>
-    
+
 
 </t:tests>

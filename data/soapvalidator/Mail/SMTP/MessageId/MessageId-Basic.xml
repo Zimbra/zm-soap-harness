@@ -16,7 +16,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -25,13 +25,13 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acct1_setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -43,7 +43,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -56,7 +56,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -69,7 +69,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -82,7 +82,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
 			<t:request>
 				<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -93,14 +93,14 @@
 		            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
 			</t:response>
    	</t:test>
-		
-    
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SMTP_MessageID_01" type="bhr">
+<t:test_case testcaseid="SMTP_MessageID_01" type="sanity">
     <t:objective>Verify a message ID is added to a message received by SMTP</t:objective>
-    
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${mta.server}</address>
@@ -108,7 +108,7 @@
             <recipient>${account1.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -148,9 +148,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SMTP_MessageID_02" type="bhr">
+<t:test_case testcaseid="SMTP_MessageID_02" type="sanity">
     <t:objective>Verify the same message ID is not added twice</t:objective>
-    
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${mta.server}</address>
@@ -158,7 +158,7 @@
             <recipient>${account1.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -202,7 +202,7 @@
             <recipient>${account1.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-    
+
 	<t:test required="true" >
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">

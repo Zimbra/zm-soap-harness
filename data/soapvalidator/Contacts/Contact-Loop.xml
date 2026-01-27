@@ -23,7 +23,7 @@
 <t:test_case testcaseid="acctSetup1_contact_loop" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-             2. Create test account. 
+             2. Create test account.
     </t:steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -42,7 +42,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -74,14 +74,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Contact_loop1" type="sanity" duration="long">
+<t:test_case testcaseid="Contact_loop1" type="functional" duration="long">
     <t:objective>Create 1000 Contacts</t:objective>
     <t:steps> 1. Create contacts
-              2. Send GetInfoRequest        
+              2. Send GetInfoRequest
     </t:steps>
 
-    <t:test_loop count="1000">      
-        
+    <t:test_loop count="1000">
+
         <t:test>
             <t:request>
                 <CreateContactRequest xmlns="urn:zimbraMail">
@@ -118,10 +118,10 @@
                 </CreateContactRequest>
             </t:request>
             <t:response>
-                <t:select path="//mail:CreateContactResponse/mail:cn"/>                    
+                <t:select path="//mail:CreateContactResponse/mail:cn"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
     </t:test_loop>
 
     <t:test timeframeMax="2000">
@@ -131,16 +131,16 @@
         <t:response>
             <t:select path="//acct:GetInfoResponse/acct:name"/>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
 </t:test_case>
 
 
-<!--- Performing various operation in an account with huge contact list-->    
+<!--- Performing various operation in an account with huge contact list-->
 
 <t:test_case testcaseid="acctSetup3_contact_loop" type="always">
     <t:objective>Create contact to perform various operation</t:objective>
-      
+
     <t:test required="true">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -178,17 +178,17 @@
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact.id"/> 	  
-            </t:select>	
+            <t:select attr="id" set="contact.id"/>
+            </t:select>
         </t:response>
     </t:test>
-       
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Contact_loop2" type="sanity"  duration="long">
+<t:test_case testcaseid="Contact_loop2" type="functional"  duration="long">
     <t:objective>Get a contact </t:objective>
-   
+
     <t:test timeframeMax="2000">
         <t:request>
             <GetContactsRequest xmlns="urn:zimbraMail">
@@ -201,11 +201,11 @@
     </t:test>
 
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Contact_loop3" type="sanity" duration="long">
+
+
+<t:test_case testcaseid="Contact_loop3" type="functional" duration="long">
     <t:objective>Search a contact</t:objective>
-    
+
     <t:test timeframeMax="2000">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -213,7 +213,7 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id}']"/>            
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id}']"/>
         </t:response>
     </t:test>
 
@@ -230,10 +230,10 @@
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="Contact_loop4" type="sanity" duration="long" >
+
+<t:test_case testcaseid="Contact_loop4" type="functional" duration="long" >
     <t:objective>Search non existing contact </t:objective>
-    
+
     <t:test timeframeMax="2000">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -241,16 +241,16 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
         </t:response>
     </t:test>
 
 </t:test_case>
-    
- 
-<t:test_case testcaseid="Contact_loop5" type="sanity" duration="long" >
+
+
+<t:test_case testcaseid="Contact_loop5" type="functional" duration="long" >
     <t:objective> Tag a contact </t:objective>
-    <t:steps> 1. Create a Tag                  
+    <t:steps> 1. Create a Tag
               2. Tag a Contact
     </t:steps>
 
@@ -261,7 +261,7 @@
             </CreateTagRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id"/>                       
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id"/>
         </t:response>
     </t:test>
 
@@ -277,11 +277,11 @@
     </t:test>
 
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Contact_loop6" type="sanity" duration="long" >
+
+
+<t:test_case testcaseid="Contact_loop6" type="functional" duration="long" >
     <t:objective> Untag a contact </t:objective>
-    
+
     <t:test depends="contact_loop5a" timeframeMax="2000">
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -296,7 +296,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Contact_loop7" type="sanity" duration="long" >
+<t:test_case testcaseid="Contact_loop7" type="functional" duration="long" >
     <t:objective> Move a contact</t:objective>
     <t:steps>1. Get root folder
              2. Create a folder in root
@@ -331,16 +331,16 @@
             </ContactActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="move"/>  
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="move"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="Contact_loop8" type="sanity" duration="long" >
+
+<t:test_case testcaseid="Contact_loop8" type="functional" duration="long" >
     <t:objective> Flag a contact </t:objective>
-    
+
     <t:test timeframeMax="2000">
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -352,12 +352,12 @@
         </t:response>
     </t:test>
 
-</t:test_case>   
-        
-    
-<t:test_case testcaseid="Contact_loop9" type="sanity" duration="long" >
+</t:test_case>
+
+
+<t:test_case testcaseid="Contact_loop9" type="functional" duration="long" >
     <t:objective> Unflag a contact </t:objective>
-    
+
     <t:test timeframeMax="2000">
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -369,12 +369,12 @@
         </t:response>
     </t:test>
 
-</t:test_case>   
-    
-    
-<t:test_case testcaseid="Contact_loop10" type="sanity" duration="long" >
+</t:test_case>
+
+
+<t:test_case testcaseid="Contact_loop10" type="functional" duration="long" >
     <t:objective> Update a contact </t:objective>
-    
+
     <t:test depends="contact_loop5a,contact_loop7a" timeframeMax="2000">
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -386,12 +386,12 @@
         </t:response>
     </t:test>
 
-</t:test_case>       
-    
-    
-<t:test_case testcaseid="Contact_loop11" type="sanity" duration="long" >
+</t:test_case>
+
+
+<t:test_case testcaseid="Contact_loop11" type="functional" duration="long" >
     <t:objective> Delete a contact </t:objective>
-    
+
     <t:test timeframeMax="2000">
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -403,7 +403,7 @@
         </t:response>
     </t:test>
 
-</t:test_case>  
-    
-    
+</t:test_case>
+
+
 </t:tests>

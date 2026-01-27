@@ -88,7 +88,7 @@
 			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy1.interval" />
         </t:response>
     </t:test>
-		
+
 	<t:test>
         <t:request>
             <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
@@ -102,7 +102,7 @@
 			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy2.interval" />
         </t:response>
     </t:test>
-		
+
 
 </t:test_case>
 
@@ -114,7 +114,7 @@
     <t:steps>1. Create a folder.
              2. Set retention keep policy.
     </t:steps>
-	
+
     <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -155,7 +155,7 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
             <t:select attr="id" match="${folder.id}"/>
-            <t:select attr="op" match="retentionpolicy"/>        
+            <t:select attr="op" match="retentionpolicy"/>
             </t:select>
         </t:response>
     </t:test>
@@ -174,7 +174,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Folder_Retention_Policy_03" type="bhr">
+<t:test_case testcaseid="Folder_Retention_Policy_03" type="sanity">
 	<t:objective>Set folder retention purge policy on a folder and check if message is purged </t:objective>
 
     <t:steps>1. Create a folder.
@@ -182,7 +182,7 @@
 			 3. Verify that message is purged
     </t:steps>
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-	
+
     <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -223,7 +223,7 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
             <t:select attr="id" match="${folder1.id}"/>
-            <t:select attr="op" match="retentionpolicy"/>        
+            <t:select attr="op" match="retentionpolicy"/>
             </t:select>
         </t:response>
    </t:test>
@@ -233,11 +233,11 @@
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${folder1.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
@@ -248,7 +248,7 @@ simple text string in the body
         <t:response>
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
-    </t:test>	 
+    </t:test>
 
 	<t:delay msec="5000"/>
 
@@ -275,7 +275,7 @@ simple text string in the body
         <t:response>
             <t:select path="//admin:PurgeMessagesResponse/admin:mbox"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
@@ -292,7 +292,7 @@ simple text string in the body
         </t:response>
     </t:test>
 
-	
+
 	<t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -302,11 +302,11 @@ simple text string in the body
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         <t:response/>
 	</t:test>
-		
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Folder_Retention_Policy_04" type="bhr">
+<t:test_case testcaseid="Folder_Retention_Policy_04" type="sanity">
 	<t:objective>Set folder retention keep policy on a folder and check if message is kept </t:objective>
 
     <t:steps>1. Create a folder.
@@ -314,7 +314,7 @@ simple text string in the body
 			 3. Verify that message is purged
     </t:steps>
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-	
+
     <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -355,7 +355,7 @@ simple text string in the body
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
             <t:select attr="id" match="${folder2.id}"/>
-            <t:select attr="op" match="retentionpolicy"/>        
+            <t:select attr="op" match="retentionpolicy"/>
             </t:select>
         </t:response>
     </t:test>
@@ -364,11 +364,11 @@ simple text string in the body
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${folder2.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
@@ -379,7 +379,7 @@ simple text string in the body
         <t:response>
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
         </t:response>
-    </t:test>	 
+    </t:test>
 
 	<t:delay msec="5000"/>
 
@@ -406,7 +406,7 @@ simple text string in the body
         <t:response>
             <t:select path="//admin:PurgeMessagesResponse/admin:mbox"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
@@ -423,7 +423,7 @@ simple text string in the body
         </t:response>
     </t:test>
 
-	
+
 	<t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -433,7 +433,7 @@ simple text string in the body
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         <t:response/>
 	</t:test>
-		
+
 
 </t:test_case>
 

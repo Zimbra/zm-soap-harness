@@ -67,11 +67,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveRulesRequest_Body01" type="bhr" bugids="18104">
+<t:test_case testcaseid="SaveRulesRequest_Body01" type="sanity" bugids="18104">
     <t:objective> Create a rule as "if body contains particular keyword, mark it as junk and verify that attachment are not searched" (binary attachment) </t:objective>
 	<t:steps> 1. Login to account1
 			  2. Create a rule as "if keyword "ERROR" is found mark the message as Junk"
-			  3. Inject two mails one having that keyword in body and another with having keyword in attachment			 
+			  3. Inject two mails one having that keyword in body and another with having keyword in attachment
 			  4. Verify attachment search is excluded and meesage with that keyword in attachment is not marked as junk
 	</t:steps>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -95,11 +95,11 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	 <bodyTest value="ERROR"/>                  	     
+                         	 <bodyTest value="ERROR"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFileInto folderPath="/Junk" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFileInto folderPath="/Junk" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -109,9 +109,9 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-  
-	
+
+
+
      <t:mailinjecttest >
         <t:lmtpInjectRequest>
 		<foldername>${bug18104.dir}</foldername>
@@ -148,7 +148,7 @@
 				DLL attached contains ERROR in the binary attachment (should not be filtered)
 				Message4 does not contain ERROR (should not be filtered)
 				Message5 contains ERROR in an RFC822 attachment (should be filtered)
-			-->       
+			-->
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="Message1"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="Message2" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="DLL attached" emptyset="1"/>
@@ -158,11 +158,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveRulesRequest_Body02" type="bhr" bugids="18104">
+<t:test_case testcaseid="SaveRulesRequest_Body02" type="sanity" bugids="18104">
     <t:objective> Create a rule as "if body contains particular keyword, mark it as junk and verify that attachment are not searched" (RFC822 attachment)</t:objective>
 	<t:steps> 1. Login to account1
 			  2. Create a rule as "if keyword "ERROR" is found mark the message as Junk"
-			  3. Inject two mails one having that keyword in body and another with having keyword in attachment			 
+			  3. Inject two mails one having that keyword in body and another with having keyword in attachment
 			  4. Verify attachment search is excluded and meesage with that keyword in attachment is not marked as junk
 	</t:steps>
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -186,11 +186,11 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	 <bodyTest value="ERROR"/>                  	     
+                         	 <bodyTest value="ERROR"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFileInto folderPath="/Junk" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFileInto folderPath="/Junk" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -201,7 +201,7 @@
         </t:response>
     </t:test>
 
-	
+
      <t:mailinjecttest >
         <t:lmtpInjectRequest>
 		<foldername>${bug18104.dir}</foldername>
@@ -238,7 +238,7 @@
 				DLL attached contains ERROR in the binary attachment (should not be filtered)
 				Message4 does not contain ERROR (should not be filtered)
 				Message5 contains ERROR in an RFC822 attachment (should be filtered)
-			-->       
+			-->
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="Message4" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="Message5"/>
         </t:response>

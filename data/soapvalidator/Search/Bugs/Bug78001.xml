@@ -21,7 +21,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -35,9 +35,9 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create a test account</t:objective>
-    <steps> 
+    <steps>
         1. Login to admin account
-        2. Create a test_account 
+        2. Create a test_account
       </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -51,7 +51,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <ModifyConfigRequest xmlns="urn:zimbraAdmin">
@@ -93,9 +93,9 @@
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>
-            
-            
-            
+
+
+
     <t:test id="create_test_account" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -109,20 +109,20 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="acct_setup2" type="bhr" bugids="78001" >
+<t:test_case testcaseid="acct_setup2" type="sanity" bugids="78001" >
     <t:objective>login as the test account</t:objective>
-    <t:steps> 
-        1. Login to test_account 
-        2. Send a 5 mails to test_account  
-        3. Fire a search conversation request with  'in:sent -to:"account name"' 
-        4. No mails should be seen 
+    <t:steps>
+        1. Login to test_account
+        2. Send a 5 mails to test_account
+        3. Fire a search conversation request with  'in:sent -to:"account name"'
+        4. No mails should be seen
     </t:steps>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -153,10 +153,10 @@
         </t:response>
     </t:test>
 
- 	
 
 
-    
+
+
     <t:test id="sendmail3" required="true">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -174,7 +174,7 @@
         </t:response>
     </t:test>
 
-   
+
 
 
 	<t:test >
@@ -186,8 +186,8 @@
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${regex.id}"/>
 		</t:response>
-	</t:test>    
+	</t:test>
 </t:test_case>
-	
-  
+
+
 </t:tests>

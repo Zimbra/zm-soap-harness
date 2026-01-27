@@ -57,7 +57,7 @@
 
 
 
-<t:test_case testcaseid="ZCS-367_FilterByName" type="functional" bugids="ZCS-367">
+<t:test_case testcaseid="ZCS-367_FilterByName" type="regression" bugids="ZCS-367">
     <t:objective>Execute Modify and Get Filter Request by Username</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -91,7 +91,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -104,7 +104,7 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account1.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionFlag" attr="flagName" match="flagged"/>
@@ -119,7 +119,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -133,7 +133,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -157,7 +157,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-        
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -171,7 +171,7 @@
 							<actionFlag flagName="priority" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -184,12 +184,12 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account1.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionFlag" attr="flagName" match="priority"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -199,7 +199,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -213,7 +213,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -224,10 +224,10 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg02.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*au.*"/>
         </t:response>
-    </t:test>       	
+    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-367_FilterByID" type="functional" bugids="ZCS-367">
+<t:test_case testcaseid="ZCS-367_FilterByID" type="regression" bugids="ZCS-367">
     <t:objective>Execute Modify and Get Filter Request by UserID</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -261,7 +261,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -274,12 +274,12 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="id">${account1.id}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse"/>
         </t:response>
-    </t:test>	
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -294,7 +294,7 @@
 							<actionFlag flagName="priority" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -307,15 +307,15 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account1.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionFlag" attr="flagName" match="priority"/>
         </t:response>
-    </t:test>    
+    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-367_FilterJsonByName" type="functional" bugids="ZCS-367">
+<t:test_case testcaseid="ZCS-367_FilterJsonByName" type="regression" bugids="ZCS-367">
     <t:objective>Execute Modify and Get Filter Request by Username and verify JSON request format</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -353,7 +353,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -370,16 +370,16 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account1.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/admin:filterActions/admin:actionFlag" attr="flagName" match="flagged"/>
         </t:response>
     </t:test>
-    	
+
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-367_FilterJsonByID" type="functional" bugids="ZCS-367">
+<t:test_case testcaseid="ZCS-367_FilterJsonByID" type="regression" bugids="ZCS-367">
     <t:objective>Execute Modify and Get Filter Request by Username and verify JSON request format</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -417,7 +417,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -434,16 +434,16 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="id">${account1.id}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/admin:filterActions/admin:actionFlag" attr="flagName" match="flagged"/>
         </t:response>
     </t:test>
-    	
+
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-367_PermDeniedFilterByID" type="functional" bugids="ZCS-367">
+<t:test_case testcaseid="ZCS-367_PermDeniedFilterByID" type="regression" bugids="ZCS-367">
     <t:objective>Execute Modify and Get Filter Request through non-admin user through userid. Verify Permission denied error is seen</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -477,7 +477,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -491,17 +491,17 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="id">${account1.id}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
 	 		<t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
             <t:select path="//soap:Text" match="permission denied: need adequate admin token"/>
         </t:response>
-    </t:test>	
-    
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-367_PermDeniedFilterByName" type="functional" bugids="ZCS-367">
+<t:test_case testcaseid="ZCS-367_PermDeniedFilterByName" type="regression" bugids="ZCS-367">
     <t:objective>Execute Modify and Get Filter Request through non-admin user for username. Verify Permission denied error is seen</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -535,7 +535,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -549,13 +549,13 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account1.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
 	 		<t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
             <t:select path="//soap:Text" match="permission denied: need adequate admin token"/>
         </t:response>
-    </t:test>	
-    
+    </t:test>
+
 </t:test_case>
 </t:tests>

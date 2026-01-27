@@ -3,9 +3,9 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="GetVersionInfo_01" type="bhr">
+<t:test_case testcaseid="GetVersionInfo_01" type="sanity">
     <t:objective>TagRequest GetVersionInfoRequest</t:objective>
-        
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -24,12 +24,12 @@
             <GetVersionInfoRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
         <t:response>
-            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="version"/>            
+            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="version"/>
             <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="release" match="^\d+$"/>
             <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="buildDate" match="[0-9\-]*"/>
             <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="host"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

@@ -69,14 +69,14 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server"/>
 		 </t:response>
-    </t:test>  
+    </t:test>
 
-   
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="bug95102" type="bhr" bugids="95102">
+<t:test_case testcaseid="bug95102" type="sanity" bugids="95102">
 	<t:objective>preAuthServlet has no checking against the account's status </t:objective>
     <t:steps>
      1) put user in maintenance that you plan to preauth
@@ -88,10 +88,10 @@
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:property name="account.timestamp" value="${TIME}"/>
 	<t:property name="account.expires" value="0"/>
-	
+
 	<t:preauth
 		account="${account.name}"
 		by="name"
@@ -99,7 +99,7 @@
 		expires="${account.expires}"
 		key="${domain.preauthkey}"
 		set="account.preauthkey"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">

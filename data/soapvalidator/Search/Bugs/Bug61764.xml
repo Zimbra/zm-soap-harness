@@ -18,7 +18,7 @@
 	<t:test_case testcaseid="acctSetup" type="always">
 		<t:objective>Create test accounts</t:objective>
 		<t:steps>	1. Login to admin account
-					2. Create accounts        
+					2. Create accounts
 	    </t:steps>
 
 		<t:test required="true">
@@ -45,7 +45,7 @@
 				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'	set="account1.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="bug61764" type="bhr" bugids="61764">
+	<t:test_case testcaseid="bug61764" type="sanity" bugids="61764">
 		<t:objective>Search in shared folder  </t:objective>
 
 
@@ -69,8 +69,8 @@
 		<t:property name="msg02.file" value="${testMailRaw.root}/bugs/61764/should-not-match.txt" />
 		<t:property name="subject.match" value="Re: SF: Case 00071623: NTTC BizMail - [Biz-INC300] SSL.test.ccnnection by Vulnerable Common key Cryptography" />
 		<t:property name="subject.not.match" value="Re: SF: Case 00070427: Bassette Printers" />
-		
-		
+
+
     	<t:mailinjecttest >
         	<t:lmtpInjectRequest>
             	<filename>${msg01.file}</filename>
@@ -78,8 +78,8 @@
 				<from>${account2.name}</from>
 				<server>${account1.server}</server>
         	</t:lmtpInjectRequest>
-    	</t:mailinjecttest> 
-    	
+    	</t:mailinjecttest>
+
     	<t:mailinjecttest >
         	<t:lmtpInjectRequest>
             	<filename>${msg02.file}</filename>
@@ -87,8 +87,8 @@
 				<from>${account2.name}</from>
 				<server>${account1.server}</server>
         	</t:lmtpInjectRequest>
-    	</t:mailinjecttest> 
-		 
+    	</t:mailinjecttest>
+
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
@@ -110,7 +110,7 @@
             	<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
          	</t:response>
     	</t:test>
-    	
+
     	<t:test>
         	<t:request>
             	<FolderActionRequest xmlns="urn:zimbraMail">
@@ -123,7 +123,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 		<t:test>
 			<t:request>
@@ -136,7 +136,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 			</t:response>
 		</t:test>
-    
+
     	<t:property name="account2.mountpoint.name" value="mountpoint.${TIME}.${COUNTER}"/>
 
     <t:test>
@@ -163,7 +163,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${subject.not.match}" emptyset="1" />
 			</t:response>
-		</t:test> 
+		</t:test>
 
 
  	</t:test_case>

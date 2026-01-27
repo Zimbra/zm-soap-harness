@@ -3,7 +3,7 @@
 <t:property name="Resource.equipment" value="Equipment"/>
 <t:property name="Resource.location" value="Location"/>
 
-<t:property name="calendar.verb2" value="DECLINE"/>	
+<t:property name="calendar.verb2" value="DECLINE"/>
 
 <t:property name="timezone5" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
 
@@ -53,7 +53,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -68,7 +68,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -81,7 +81,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -107,7 +107,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test id="create_test_account3" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -137,10 +137,10 @@
             <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource1.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug38478_1" type="bhr" bugids="38478">
+<t:test_case testcaseid="bug38478_1" type="sanity" bugids="38478">
     <t:objective>When a resource is managed by a human, he gets to see details of even private-meetings</t:objective>
     <t:steps>
     1. Create resource res1 and user u1.
@@ -151,7 +151,7 @@
 	6. Verify user u1 get meeting request forwarded by res1. Subject of the meeting is (Subject withheld) .
 	7. verify mail in user u1 account invitees not displayed in invitation mail.
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${resource1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -165,7 +165,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -187,7 +187,7 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -222,7 +222,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="account1.delegated.name"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -236,10 +236,10 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="appointment1.subject" value="Subj${TIME}.${COUNTER}"/>
     <t:property name="appointment1.content" value="content${TIME}.${COUNTER}"/>
-    
+
 	<t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -247,8 +247,8 @@
                     <inv  class="PRI" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${resource1.name}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account3.name}"/>
                         <at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${account2.name}"/>
                     </inv>
                     <e a="${account3.name}" t="t"/>
@@ -264,7 +264,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -278,22 +278,22 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
       	<t:test depends="sendInviteReplyRequesta">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
                 <query>(Subject withheld)</query>
             </SearchRequest>
         </t:request>
-        <t:response>   
-            <t:select path="//mail:SearchResponse/mail:m/mail:inv/mail:comp/mail:at" attr="a" match="${account3.name}" emptyset="1"/>    
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:inv/mail:comp/mail:at" attr="a" match="${account3.name}" emptyset="1"/>
         </t:response>
     </t:test>
-	
-	
+
+
 </t:test_case>
 
-<t:test_case testcaseid="bug38478_2" type="bhr" bugids="38478">
+<t:test_case testcaseid="bug38478_2" type="sanity" bugids="38478">
     <t:objective>When a resource is managed by a human, he gets to see details of even private-meetings</t:objective>
     <t:steps>
    	1. Create resource res1 and user u1.
@@ -303,7 +303,7 @@
 	5. Login as user2 > create private meeting select resource res1 with some subject and invitee.
 	6. Verify user u1 get meeting request forwarded by res1.
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${resource1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -317,7 +317,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -339,7 +339,7 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -374,7 +374,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="account1.delegated.name"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -388,10 +388,10 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="appointment1.subject" value="Subj${TIME}.${COUNTER}"/>
     <t:property name="appointment1.content" value="content${TIME}.${COUNTER}"/>
-    
+
 	<t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -399,8 +399,8 @@
                     <inv  class="PRI" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${resource1.name}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account3.name}"/>
                         <at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${account2.name}"/>
                     </inv>
                     <e a="${account3.name}" t="t"/>
@@ -416,7 +416,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -430,7 +430,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
       	<t:test depends="sendInviteReplyRequesta">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -438,11 +438,11 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m/mail:inv/mail:comp/mail:at" attr="a" match="${account3.name}"/>    
+            <t:select path="//mail:SearchResponse/mail:m/mail:inv/mail:comp/mail:at" attr="a" match="${account3.name}"/>
         </t:response>
     </t:test>
-	
-	
+
+
 </t:test_case>
 
 </t:tests>

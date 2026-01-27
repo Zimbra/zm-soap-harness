@@ -92,13 +92,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AuthRequest01" type="bhr">
+<t:test_case testcaseid="AuthRequest01" type="sanity">
     <t:objective>Virtual Host Test: AuthRequest - login as from virtual host, no virtual hosts defined
                              Should use test_account1@defaultdomain/password to authenticate
     </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
-    
+
    <t:test required="true">
      <t:request>
       <AuthRequest xmlns="urn:zimbraAccount">
@@ -115,7 +115,7 @@
     </t:test>
  </t:test_case>
 
-<t:test_case testcaseid="AuthRequest02" type="bhr">
+<t:test_case testcaseid="AuthRequest02" type="sanity">
     <t:objective>Virtual Host Test: AuthRequest - login with virtual host password</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
@@ -134,7 +134,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AuthRequest03" type="bhr">
+<t:test_case testcaseid="AuthRequest03" type="sanity">
     <t:objective>Virtual Host Test: AuthRequest - login with full account name</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${testdomain_account1.server}"/>
@@ -156,7 +156,7 @@
 
 
 
-<t:test_case testcaseid="AuthRequest04" type="bhr">
+<t:test_case testcaseid="AuthRequest04" type="sanity">
     <t:objective>Virtual Host Test: AuthRequest - login using default/good password</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -203,7 +203,7 @@
 
 	<t:property name="authToken" value=""/>
 	<t:property name="server.zimbraAccount" value="${domain1_account.server}"/>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -231,9 +231,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AuthRequest05" type="bhr" areas="noncluster">
+<t:test_case testcaseid="AuthRequest05" type="sanity" areas="noncluster">
 	<t:objective>Basic Test: AuthRequest - login using default/good password - Adding and removing virtual host</t:objective>
-	<t:steps> 
+	<t:steps>
 	1. Create a domain2.
 	2. Create an account1 for the domain2
 	3. Modify domain2 add virtual host02.
@@ -509,9 +509,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AuthRequest06" type="bhr">
+<t:test_case testcaseid="AuthRequest06" type="sanity">
 	<t:objective>Basic Test: AuthRequest - login using default/good password - multiple virtual hosts</t:objective>
-	<t:steps> 
+	<t:steps>
 	1. Create a domain3.
 	2. Create an account1
 	3. Modify domain3 multiple virtual hosts.
@@ -524,7 +524,7 @@
 	<t:property name="virtualHost01" value="v1${TIME}${COUNTER}.virtual.com"/>
 	<t:property name="virtualHost02" value="v2${TIME}${COUNTER}.virtual.com"/>
 	<t:property name="virtualHost03" value="v3${TIME}${COUNTER}.virtual.com"/>
-	
+
 
 	<t:test required="true">
 		<t:request>
@@ -640,7 +640,7 @@
 <t:finally>
 
     <!-- Remove virtual host from all domains because if it could not resolved then nginx proxy failed to restart -->
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -652,7 +652,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
    	<t:test >
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -663,7 +663,7 @@
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
    	<t:test >
         <t:request>
@@ -675,7 +675,7 @@
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
         </t:response>
-    </t:test>    
+    </t:test>
    	<t:test >
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -686,9 +686,9 @@
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
-	
+
 </t:finally>
 
 </t:tests>

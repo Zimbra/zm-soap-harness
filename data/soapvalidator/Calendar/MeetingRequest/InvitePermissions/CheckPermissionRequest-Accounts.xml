@@ -21,7 +21,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -38,7 +38,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -51,7 +51,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -188,7 +188,7 @@
     1. Account2 allows all to invite
     2. Account1 checks permission status = verify allow=1
     </t:steps>
-   
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -202,7 +202,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GrantPermissionRequest xmlns="urn:zimbraMail" >
@@ -227,7 +227,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<CheckPermissionRequest xmlns="urn:zimbraMail">
@@ -242,13 +242,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_Accounts_02" type="bhr">
+<t:test_case testcaseid="CheckPermissionRequest_Accounts_02" type="sanity">
     <t:objective>Verify CheckPermissionRequest returns allow="0" if no account is not allowed to invite</t:objective>
     <t:steps>
     1. Account2 allows nobody to invite
     2. Account1 checks permission status = verify allow=0
     </t:steps>
-   
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test required="true">
@@ -262,7 +262,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GrantPermissionRequest xmlns="urn:zimbraMail" >
@@ -287,7 +287,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<CheckPermissionRequest xmlns="urn:zimbraMail">
@@ -302,13 +302,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_Accounts_03" type="bhr">
+<t:test_case testcaseid="CheckPermissionRequest_Accounts_03" type="sanity">
     <t:objective>Verify CheckPermissionRequest returns allow="1" if only internal accounts are allowed to invite</t:objective>
     <t:steps>
     1. Account2 allows internal to invite
     2. Account1 checks permission status = verify allow=1
     </t:steps>
-   
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test required="true">
@@ -322,7 +322,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GrantPermissionRequest xmlns="urn:zimbraMail" >
@@ -347,7 +347,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<CheckPermissionRequest xmlns="urn:zimbraMail">
@@ -362,13 +362,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_Accounts_04" type="bhr">
+<t:test_case testcaseid="CheckPermissionRequest_Accounts_04" type="sanity">
     <t:objective>Verify CheckPermissionRequest returns allow="1" if specific account is allowed to invite</t:objective>
     <t:steps>
     1. Account2 allows account1 to invite
     2. Account1 checks permission status = verify allow=1
     </t:steps>
-   
+
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
 
     <t:test required="true">
@@ -382,7 +382,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GrantPermissionRequest xmlns="urn:zimbraMail" >
@@ -407,7 +407,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<CheckPermissionRequest xmlns="urn:zimbraMail">
@@ -422,13 +422,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_Accounts_05" type="bhr">
+<t:test_case testcaseid="CheckPermissionRequest_Accounts_05" type="sanity">
     <t:objective>Verify CheckPermissionRequest returns allow="0" if account allows only another account to invite</t:objective>
     <t:steps>
     1. Account2 allows account3 to invite
     2. Account1 checks permission status = verify allow=0
     </t:steps>
-   
+
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 
     <t:test required="true">
@@ -442,7 +442,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GrantPermissionRequest xmlns="urn:zimbraMail" >
@@ -467,7 +467,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<CheckPermissionRequest xmlns="urn:zimbraMail">
@@ -482,13 +482,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_Accounts_06" type="bhr" bugids="42132">
+<t:test_case testcaseid="CheckPermissionRequest_Accounts_06" type="sanity" bugids="42132">
     <t:objective>Verify CheckPermissionRequest if accounts indirectly belong to a circular group(containing itself as a member)</t:objective>
     <t:steps>
     1. Account2 allows account3 to invite
     2. Account1 checks permission status = verify allow=0
     </t:steps>
-   
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -500,7 +500,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
    <t:test>
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -550,7 +550,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test timeframeMax="10000">
 		<t:request>
 			<CheckPermissionRequest xmlns="urn:zimbraMail">

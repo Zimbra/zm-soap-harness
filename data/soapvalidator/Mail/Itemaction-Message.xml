@@ -27,7 +27,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -43,7 +43,7 @@
 <t:test_case testcaseid="acct_setup1" type="always" >
     <t:objective>Create two test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a test_account1 
+            2. Create a test_account1
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -62,7 +62,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -76,11 +76,11 @@
 
 <t:test_case testcaseid="acct_setup2" type="always" >
     <t:objective>Send a mail and get message id</t:objective>
-    <t:steps>1. Login to test_account1 
+    <t:steps>1. Login to test_account1
         2. Send a mail to test_account1
-        3. Get the message id        
+        3. Get the message id
     </t:steps>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -117,7 +117,7 @@
 
 <t:test_case testcaseid="ItemActionRequest1" type="smoke">
     <t:objective>Mark an item (message) as read </t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -147,9 +147,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest2" type="bhr">
+<t:test_case testcaseid="ItemActionRequest2" type="sanity">
     <t:objective>Mark an item (message) as unread </t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -165,9 +165,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest3" type="bhr">
+<t:test_case testcaseid="ItemActionRequest3" type="sanity">
     <t:objective>Mark an item (message) as flagged</t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -183,9 +183,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest4" type="bhr">
+<t:test_case testcaseid="ItemActionRequest4" type="sanity">
     <t:objective>Mark an item (message) as unflagged</t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -201,10 +201,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest5" type="bhr">
+<t:test_case testcaseid="ItemActionRequest5" type="sanity">
     <t:objective>Tag an item (message) </t:objective>
     <t:steps>1. Create a Tag
-             2. Tag the item 
+             2. Tag the item
     </t:steps>
 
     <t:test id="itemActionRequest5a">
@@ -222,7 +222,7 @@
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id1}" op="${op.tag}" tag="${tag.id1}"/>
-            </ItemActionRequest>        
+            </ItemActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ItemActionResponse/mail:action" attr="op" match="${op.tag}"/>
@@ -233,7 +233,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest6" type="bhr">
+<t:test_case testcaseid="ItemActionRequest6" type="sanity">
     <t:objective>Untag an item (message)</t:objective>
 
     <t:test id="itemActionRequest6" depends="itemActionRequest5a">
@@ -251,7 +251,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest7" type="functional" >
+<t:test_case testcaseid="ItemActionRequest7" type="regression" >
     <t:objective>Tag an item(message) with deleted tag-id. </t:objective>
     <t:steps>1. Delete the previously created tag
              2. Tag the item.
@@ -261,7 +261,7 @@
         <t:request>
             <TagActionRequest xmlns="urn:zimbraMail">
                 <action op="delete" id="${tag.id1}"/>
-            </TagActionRequest>   
+            </TagActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:TagActionResponse/mail:action" attr="id" match="${tag.id1}"/>
@@ -282,7 +282,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest8" type="functional" >
+<t:test_case testcaseid="ItemActionRequest8" type="regression" >
     <t:objective>Untag an item(message) with deleted tag-id</t:objective>
 
     <t:test id="itemActionRequest8" depends="itemActionRequest7a">
@@ -299,12 +299,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest9" type="bhr">
+<t:test_case testcaseid="ItemActionRequest9" type="sanity">
     <t:objective>Move an item(message) to a valid folder.</t:objective>
     <t:steps>1. Create a folder
         2. Move the item in the created folder
     </t:steps>
-    
+
     <t:test id="itemActionRequest9a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -332,7 +332,7 @@
 
 
 
-<t:test_case testcaseid="ItemActionRequest10" type="functional"  >
+<t:test_case testcaseid="ItemActionRequest10" type="regression"  >
     <t:objective>Move an item(message) to a nonexisting folder.</t:objective>
     <t:steps>1. Move item to inbox
         2. Delete the folder.
@@ -350,18 +350,18 @@
             <t:select path="//mail:ItemActionResponse/mail:action" attr="id" match="${message.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="itemActionRequest10b" depends="itemActionRequest10a">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="delete" id="${folder.id1}"/>
-            </FolderActionRequest>   
+            </FolderActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action" attr="id" match="${folder.id1}"/>
          </t:response>
     </t:test>
-    
+
     <t:test id="itemActionRequest10c" depends="itemActionRequest10b">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -376,9 +376,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest11" type="functional" >
+<t:test_case testcaseid="ItemActionRequest11" type="regression" >
     <t:objective>ItemActionRequest without Action tag </t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -392,9 +392,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest12" type="functional" >
+<t:test_case testcaseid="ItemActionRequest12" type="regression" >
     <t:objective>ItemActionRequest without message-id in Action tag </t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -409,9 +409,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest13" type="functional" >
+<t:test_case testcaseid="ItemActionRequest13" type="regression" >
     <t:objective>ItemActionRequest with valid message-id without op attribute in action tag</t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -426,7 +426,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest14" type="functional" >
+<t:test_case testcaseid="ItemActionRequest14" type="regression" >
     <t:objective>ItemActionRequest with valid message-id with leading/trailing/only spaces </t:objective>
 
     <t:test>
@@ -465,9 +465,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest15" type="functional" >
+<t:test_case testcaseid="ItemActionRequest15" type="regression" >
     <t:objective>ItemActionRequest with invalid message-id i.e. id=blank/sometext</t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -493,9 +493,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest16" type="functional" >
+<t:test_case testcaseid="ItemActionRequest16" type="regression" >
     <t:objective>ItemActionRequest with valid message-id and invalid op attribute i.e. op = blank/space/sometext/special character</t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -543,9 +543,9 @@
 
 
 
-<t:test_case testcaseid="ItemActionRequest17" type="functional" >
+<t:test_case testcaseid="ItemActionRequest17" type="regression" >
     <t:objective>ItemActionRequest with valid message-id and valid op with leading/trailing/all spaces.</t:objective>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -567,7 +567,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -582,7 +582,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest18" type="bhr">
+<t:test_case testcaseid="ItemActionRequest18" type="sanity">
     <t:objective>Update an item(message)</t:objective>
 
     <t:test id="itemActionRequest18a">
@@ -594,9 +594,9 @@
         <t:response>
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id2"/>
         </t:response>
-        
+
     </t:test>
-    
+
     <t:test id="itemActionRequest18b">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -607,7 +607,7 @@
            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id2"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="itemActionRequest18c" depends="itemActionRequest18a,itemActionRequest18b">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -623,7 +623,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest19" type="bhr">
+<t:test_case testcaseid="ItemActionRequest19" type="sanity">
     <t:objective>Delete an item(message)</t:objective>
 
     <t:test id="itemActionRequest19a">
@@ -641,7 +641,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest20" type="functional" bugids="11018">
+<t:test_case testcaseid="ItemActionRequest20" type="regression" bugids="11018">
     <t:objective>Delete a non existing message</t:objective>
 
     <t:test depends="itemActionRequest19a">

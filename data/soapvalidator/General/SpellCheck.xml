@@ -15,7 +15,7 @@
 <t:property name="check.word7b" value="hello                   "/>
 <t:property name="check.word7c" value="         hello          "/>
 <t:property name="check.word9" value="Hello! Good Morning!!"/>
-<t:property name="check.word12" value="Hello! 
+<t:property name="check.word12" value="Hello!
                                        Good Morning!!
                                        Have a nice day!!!
                                        "/>
@@ -31,15 +31,15 @@
 <!-- <t:property name="check.zimbra1" value="zimbra"/> -->
 <t:property name="check.zimbra2" value="ZIMBRA"/>
 <t:property name="check.zimbra3" value="Zimbra"/>
-    
+
 <!-- <t:property name="check.comcast1" value="comcast"/> -->
 <t:property name="check.comcast2" value="COMCAST"/>
 <t:property name="check.comcast3" value="Comcast"/>
-    
+
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -54,7 +54,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Login to admin </t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -65,13 +65,13 @@
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -95,12 +95,12 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
 
 <t:test_case testcaseid="CheckSpellingRequest1" type="smoke">
     <t:objective>CheckSpelling of any word</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word1}</CheckSpellingRequest>
@@ -115,9 +115,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest2" type="bhr">
+<t:test_case testcaseid="CheckSpellingRequest2" type="sanity">
     <t:objective>CheckSpelling of a non existing word</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word2}</CheckSpellingRequest>
@@ -132,9 +132,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest3" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest3" type="functional" >
     <t:objective>CheckSpelling of word but in capital letters.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word3}</CheckSpellingRequest>
@@ -149,9 +149,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest4" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest4" type="functional" >
     <t:objective>CheckSpelling of a word, whose alphabets are in capital and small letters, both.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word4}</CheckSpellingRequest>
@@ -165,9 +165,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CheckSpellingRequest5" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest5" type="functional" >
     <t:objective>CheckSpelling of a word with special character(!).</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word5}</CheckSpellingRequest>
@@ -182,9 +182,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest6" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest6" type="functional" >
     <t:objective>CheckSpelling of two words.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word6}</CheckSpellingRequest>
@@ -199,9 +199,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest7" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest7" type="functional" >
     <t:objective>CheckSpelling of a word with spaces.</t:objective>
-    
+
     <!--CheckSpelling of a word with leading spaces.-->
     <t:test>
         <t:request>
@@ -213,7 +213,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!--CheckSpelling of a word with trailing spaces.-->
     <t:test>
         <t:request>
@@ -225,7 +225,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!--CheckSpelling of a word with leading and trailing spaces.-->
     <t:test>
         <t:request>
@@ -236,14 +236,14 @@
             	<t:select path="//mail:misspelled" emptyset="1"/>
             </t:select>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest8" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest8" type="functional" >
     <t:objective>CheckSpellingRequest for blank,spaces,spchar,digit,decimal,negative.</t:objective>
-    
+
     <!--CheckSpellingRequest for blank.-->
     <t:test>
         <t:request>
@@ -255,7 +255,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!--CheckSpellingRequest for spaces.-->
     <t:test>
         <t:request>
@@ -267,7 +267,7 @@
             </t:select>
         </t:response>
     </t:test>
-  
+
     <!--CheckSpellingRequest for spchar.-->
     <t:test>
         <t:request>
@@ -278,7 +278,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!--CheckSpellingRequest for digit.-->
     <t:test>
         <t:request>
@@ -289,8 +289,8 @@
             	<t:select path="//mail:misspelled" emptyset="1"/>
             </t:select>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <!--CheckSpellingRequest for decimal.-->
     <t:test>
         <t:request>
@@ -302,7 +302,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!--CheckSpellingRequest for negative.-->
     <t:test>
         <t:request>
@@ -314,13 +314,13 @@
             </t:select>
         </t:response>
     </t:test>
-      
-</t:test_case>    
+
+</t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest9" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest9" type="functional" >
     <t:objective>CheckSpelling of a correct sentence.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word9}</CheckSpellingRequest>
@@ -335,9 +335,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest10" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest10" type="functional" >
     <t:objective>CheckSpelling of a sentence in which one word is wrong.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">Hello! Gud Morning!!</CheckSpellingRequest>
@@ -347,12 +347,12 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest11" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest11" type="functional" >
     <t:objective>CheckSpelling of a sentence in which all words are wrong.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">Helloo! Gud Mornin!!</CheckSpellingRequest>
@@ -367,9 +367,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckSpellingRequest12" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest12" type="functional" >
     <t:objective>CheckSpelling of a multi line statement.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word12}</CheckSpellingRequest>
@@ -380,11 +380,11 @@
             </t:select>
         </t:response>
     </t:test>
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CheckSpellingRequest13" type="sanity" >
+<t:test_case testcaseid="CheckSpellingRequest13" type="functional" >
     <t:objective>CheckSpelling of a multi line statement that contains special characters, symbols, digits and spaces.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word13}</CheckSpellingRequest>
@@ -396,9 +396,9 @@
         </t:response>
     </t:test>
 </t:test_case>
-<t:test_case testcaseid="CheckSpellingRequest14" type="sanity" bugids="4493">
+<t:test_case testcaseid="CheckSpellingRequest14" type="functional" bugids="4493">
     <t:objective>Verify the word zimbra is correct</t:objective>
-<!--        
+<!--
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.zimbra1}</CheckSpellingRequest>
@@ -430,10 +430,10 @@
             </t:select>
         </t:response>
     </t:test>
-</t:test_case>     
-<t:test_case testcaseid="CheckSpellingRequest15" type="sanity" areas="comcast" bugids="18186">
+</t:test_case>
+<t:test_case testcaseid="CheckSpellingRequest15" type="functional" areas="comcast" bugids="18186">
     <t:objective>Verify the word comcast is correct</t:objective>
-<!--        
+<!--
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.comcast1}</CheckSpellingRequest>
@@ -465,8 +465,8 @@
             </t:select>
         </t:response>
     </t:test>
-</t:test_case>     
-<t:test_case testcaseid="CheckSpellingRequest16" type="bhr" bugids="41760,ZBUG-1109">
+</t:test_case>
+<t:test_case testcaseid="CheckSpellingRequest16" type="sanity" bugids="41760,ZBUG-1109">
     <t:objective>Verify various characters does not throw exception</t:objective>
     <t:test>
         <t:request>

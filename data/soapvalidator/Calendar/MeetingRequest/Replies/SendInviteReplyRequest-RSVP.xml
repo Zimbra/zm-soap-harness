@@ -26,7 +26,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -43,7 +43,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -56,7 +56,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -212,7 +212,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -255,7 +255,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${organizer1.appt1.invId}"/>
         </t:request>
         <t:response>
@@ -298,7 +298,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${organizer1.appt2.invId}"/>
         </t:request>
         <t:response>
@@ -310,7 +310,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest_RSVP_02" type="bhr" areas="Calendar">
+<t:test_case testcaseid="SendInviteReplyRequest_RSVP_02" type="sanity" areas="Calendar">
     <t:objective>Create a new meeting request - set RSVP to 1 or 0.  Verify that the attendee receives the invitation with the correct value for response requested/RSVP.
 </t:objective>
     <t:steps>
@@ -335,7 +335,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -346,7 +346,7 @@
 			</t:select>
 		</t:response>
 	</t:test>
-  
+
 	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
 	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
 
@@ -380,7 +380,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${invitee3.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -411,15 +411,15 @@
 				<query>inid:${invitee3.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subject}']">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${invitee1.appt1.invId}"/>
         </t:request>
         <t:response>
@@ -429,7 +429,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${invitee4.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -460,15 +460,15 @@
 				<query>inid:${invitee4.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subject}']">
             	<t:select attr="invId" set="invitee4.appt1.invId"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
    <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${invitee1.appt1.invId}"/>
         </t:request>
         <t:response>
@@ -480,9 +480,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest_RSVP_03" type="bhr" areas="Calendar">
+<t:test_case testcaseid="SendInviteReplyRequest_RSVP_03" type="sanity" areas="Calendar">
     <t:objective>Create a new meeting request - set RSVP to 1.  Attendee responds.Verify the organizer sees the correct status</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${organizer3.server}"/>
 
     <t:test id="auth1" required="true">
@@ -497,7 +497,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -553,7 +553,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -571,13 +571,13 @@
 				<query>inid:${invitee5.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subject}']">
             	<t:select attr="invId" set="invitee5.appt1.invId"/>
             	<t:select attr="compNum" set="invitee5.appt1.compNum"/>
             	<t:select attr="name" set="invitee5.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee5.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -612,9 +612,9 @@
 
         </t:response>
     </t:test>
-   
+
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${organizer3.appt1.invId}"/>
         </t:request>
         <t:response>
@@ -625,9 +625,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SendInviteReplyRequest_RSVP_04" type="bhr" areas="Calendar">
+<t:test_case testcaseid="SendInviteReplyRequest_RSVP_04" type="sanity" areas="Calendar">
     <t:objective>Create a new meeting request - set RSVP to 0.  Attendee responds.Verify the organizer sees the correct status</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${organizer4.server}"/>
 
     <t:test id="auth1" required="true">
@@ -642,7 +642,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -698,7 +698,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -716,13 +716,13 @@
 				<query>inid:${invitee6.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subject}']">
             	<t:select attr="invId" set="invitee6.appt1.invId"/>
             	<t:select attr="compNum" set="invitee6.appt1.compNum"/>
             	<t:select attr="name" set="invitee6.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee6.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -757,9 +757,9 @@
 
         </t:response>
     </t:test>
-   
+
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${organizer4.appt1.invId}"/>
         </t:request>
         <t:response>
@@ -768,7 +768,7 @@
         </t:response>
     </t:test>
 
-	<!--  Added additional search to be checked in the mailbox as part of Bug 101999. 
+	<!--  Added additional search to be checked in the mailbox as part of Bug 101999.
 		  Organizer should not receive email when rsvp=0 -->
     <t:test required="true" >
         <t:request>
@@ -780,7 +780,7 @@
             <t:select path="//mail:SearchResponse/mail:c" attr="id" emptyset="1"/>
         </t:response>
    </t:test>
-        
+
 </t:test_case>
 
 </t:tests>

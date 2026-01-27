@@ -120,7 +120,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="filters_action_stop_01" type="bhr" bugids="33793">
+<t:test_case testcaseid="filters_action_stop_01" type="sanity" bugids="33793">
     <t:objective>When "Do not process additional filter rules" is unchecked, all the rules should be applied</t:objective>
     <t:steps>
     1. Login as account1
@@ -160,22 +160,22 @@
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest header="subject" stringComparison="contains"  value="${message1.subject}" />          
+                        	<headerTest header="subject" stringComparison="contains"  value="${message1.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionTag tagName="${account1.filter2.tag.name}" />
                         </filterActions>
                     </filterRule>
-                    
+
                     <filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<bodyTest value="${message1.body}" />          
+                        	<bodyTest value="${message1.body}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="/${globals.inbox}/${account1.filter1.folder.name}" />
                         </filterActions>
                     </filterRule>
-                    
+
                  </filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -204,7 +204,7 @@
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
 
-   
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -219,10 +219,10 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="l" match="${account1.folder.inbox.id}" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="filters_action_stop_02" type="bhr">
+<t:test_case testcaseid="filters_action_stop_02" type="sanity">
     <t:objective>When "Do not process additional filter rules" is checked, only the first rule should be applied</t:objective>
     <t:steps>
     1. Login as account1
@@ -262,23 +262,23 @@
                 <filterRules>
 					<filterRule name="filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="contains"  value="${message3.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="contains"  value="${message3.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionTag tagName="${account1.filter2.tag.name}" />
                         	<actionStop />
                         </filterActions>
                     </filterRule>
-                    
+
                     <filterRule name="filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<bodyTest value="${message3.body}" />          
+                        	<bodyTest value="${message3.body}" />
                         </filterTests>
-                        <filterActions> 
-                        	<actionFileInto folderPath="/${globals.inbox}/${account1.filter1.folder.name}" />  	
+                        <filterActions>
+                        	<actionFileInto folderPath="/${globals.inbox}/${account1.filter1.folder.name}" />
                         </filterActions>
                     </filterRule>
-                    
+
                  </filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -286,8 +286,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-	
-    
+
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -307,7 +307,7 @@
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
 
-   
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -322,7 +322,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="l" match="${account1.filter1.folder.id}" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

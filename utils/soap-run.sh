@@ -1,11 +1,11 @@
 #!/bin/bash -e
 # This bash utility executes soap automation tests for Zimbra.
-# It accepts command line arguments like HOSTNAME, TESTS_PATH, TEST_SUITE(SMOKE/SANITY/FUNCTIONAL), BRANCH(DEVELOP/FEATURE), SOAP_HARNESS_BRANCH, SOAP_REPORT_PATH
+# It accepts command line arguments like HOSTNAME, TESTS_PATH, TEST_SUITE(SMOKE/SANITY/FUNCTIONAL/REGRESSION), BRANCH(DEVELOP/FEATURE), SOAP_HARNESS_BRANCH, SOAP_REPORT_PATH
 # For sending an email, script needs MAIL_FROM_ACCOUNT & EXTERNAL_PASSWORD environment variables and sendemail package installed.
 
 #HOSTNAME - zimbra server hostname
 #TESTS_PATH - /opt/qa/soapvalidator/data/soapvalidator
-#TEST_SUITE - Smoke / BHR / Sanity / Functional
+#TEST_SUITE - Smoke / Sanity / Functional / Regression
 #BRANCH - develop / feature / bug
 #SOAP_HARNESS_BRANCH - master / develop / feature / bug
 #SOAP_REPORT_PATH - /var/www/html/soap-reports/datatimefield

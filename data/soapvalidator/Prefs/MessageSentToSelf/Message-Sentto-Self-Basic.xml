@@ -1,8 +1,8 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>    
-    
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
 <t:property name="message.subject1" value="Subject${TIME}.${COUNTER}"/>
 <t:property name="message.content1" value="content of the message${TIME}.${COUNTER}"/>
 <t:property name="message.subject2" value="Subject${TIME}.${COUNTER}"/>
@@ -90,7 +90,7 @@
     </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-       
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -110,21 +110,21 @@
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>            
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf1" type="bhr">
+<t:test_case testcaseid="MessagesSentToSelf1" type="sanity">
     <t:objective>Verify sending a mail to self when preference is set to receive messages sent to self as normal</t:objective>
-    <t:steps> 
-        1. Set preference for receiving messages sent to self as normal       
+    <t:steps>
+        1. Set preference for receiving messages sent to self as normal
         2. Send a message with own address in To field
         3. Verify that the message is received normally
     </t:steps>
-    
+
     <t:test id="MessagesSentToSelf1a">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -164,12 +164,12 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
-    
-<t:test_case testcaseid="MessagesSentToSelf2" type="sanity">
+
+<t:test_case testcaseid="MessagesSentToSelf2" type="functional">
     <t:objective>Own address in CC field with preference set to receive messages sent to self as normal</t:objective>
-    <t:steps>        
+    <t:steps>
         1. Send a message with own address in CC field
         2. Verify that the message is received normally
     </t:steps>
@@ -203,12 +203,12 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf3" type="sanity">
+<t:test_case testcaseid="MessagesSentToSelf3" type="functional">
     <t:objective>Own address in BCC field with preference set to receive messages sent to self as normal</t:objective>
-    <t:steps>        
+    <t:steps>
         1. Send a message with own address in BCC field
         2. Verify that the message is received normally
     </t:steps>
@@ -242,17 +242,17 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf4" type="bhr">
+<t:test_case testcaseid="MessagesSentToSelf4" type="sanity">
     <t:objective>Own address in To field with preference set to receive messages sent to self only when address is in To/CC field</t:objective>
-    <t:steps> 
-        1. Set preference for receiving messages sent to self only when address is in To/CC field      
+    <t:steps>
+        1. Set preference for receiving messages sent to self only when address is in To/CC field
         2. Send a message with own address in To field
         3. Verify that the message is received normally
     </t:steps>
-    
+
     <t:test id="MessagesSentToSelf4a">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -292,16 +292,16 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf5" type="sanity">
+<t:test_case testcaseid="MessagesSentToSelf5" type="functional">
     <t:objective>Own address in CC field with preference set to receive messages sent to self only when address is in To/CC field</t:objective>
-    <t:steps> 
+    <t:steps>
         1. Send a message with own address in CC field
         2. Verify that the message is received normally
     </t:steps>
-    
+
     <t:test id="MessagesSentToSelf5a">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -334,7 +334,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf6" type="sanity">
+<t:test_case testcaseid="MessagesSentToSelf6" type="functional">
     <t:objective>Own address in BCC field with preference set to receive messages sent to self only when address is in To/CC field</t:objective>
     <t:steps>
         1. Send a message with own address in BCC field
@@ -370,17 +370,17 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf7" type="bhr">
+<t:test_case testcaseid="MessagesSentToSelf7" type="sanity">
     <t:objective>Own address in To field with preference set to not receive messages sent to self</t:objective>
-    <t:steps> 
-        1. Set preference for not receiving messages sent to self        
+    <t:steps>
+        1. Set preference for not receiving messages sent to self
         2. Send a message with own address in To field
         3. Verify that the message is not received
     </t:steps>
-    
+
     <t:test id="MessagesSentToSelf7a" required="true">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -420,16 +420,16 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf8" type="sanity">
+<t:test_case testcaseid="MessagesSentToSelf8" type="functional">
     <t:objective>Own address in CC field with preference set to not receive messages sent to self</t:objective>
-    <t:steps> 
+    <t:steps>
         1. Send a message with own address in CC field
-        2. Verify that the message is not received 
+        2. Verify that the message is not received
     </t:steps>
-    
+
     <t:test id="MessagesSentToSelf8a">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -459,16 +459,16 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf9" type="sanity">
+<t:test_case testcaseid="MessagesSentToSelf9" type="functional">
     <t:objective>Own address in BCC field with preference set to not receive messages sent to self</t:objective>
-    <t:steps> 
+    <t:steps>
         1. Send a message with own address in BCC field
         2. Verify that the message is not received
     </t:steps>
-    
+
     <t:test id="MessagesSentToSelf9a">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -498,16 +498,16 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf10" type="functional">
+<t:test_case testcaseid="MessagesSentToSelf10" type="regression">
     <t:objective>Verify that when preference is set to blank, it attains its default value of receiving messages normally</t:objective>
-    <t:steps> 
+    <t:steps>
         1. Set preference messages sent to self to blank
         2. Verify that preference is set to receive messages normally
     </t:steps>
-    
+
     <t:test id="MessagesSentToSelf10a">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -528,16 +528,16 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="MessagesSentToSelf11" type="functional">
+<t:test_case testcaseid="MessagesSentToSelf11" type="regression">
     <t:objective>Verify that when preference is set to spaces, it attains its default value of receiving messages normally</t:objective>
-    <t:steps> 
+    <t:steps>
         1. Set preference messages sent to self to space
         2. Verify that preference is set to receive messages normally
     </t:steps>
-    
+
     <t:test id="MessagesSentToSelf11a">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -558,6 +558,6 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 </t:tests>

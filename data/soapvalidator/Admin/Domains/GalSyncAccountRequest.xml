@@ -13,9 +13,9 @@
 <t:property name="account1.server" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="CreateGalSyncAccountRequest_01" type="bhr">
+<t:test_case testcaseid="CreateGalSyncAccountRequest_01" type="sanity">
     <t:objective>Sanity test for CreateGalSyncAccountRequest</t:objective>
-	
+
 	<t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -64,14 +64,14 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" />
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncGalAccountRequest_01" type="bhr">
+<t:test_case testcaseid="SyncGalAccountRequest_01" type="sanity">
     <t:objective>Sanity test for SyncGalAccountRequest</t:objective>
-	
+
 	<t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -107,11 +107,11 @@
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain2.galaccount.id"/>
 		</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
-				<account id="${domain2.galaccount.id}">			    
+				<account id="${domain2.galaccount.id}">
 				</account>
 			</SyncGalAccountRequest>
         </t:request>
@@ -123,9 +123,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteGalSyncAccountRequest_01" type="bhr">
+<t:test_case testcaseid="DeleteGalSyncAccountRequest_01" type="sanity">
     <t:objective>Sanity test for DeleteGalSyncAccountRequest</t:objective>
-	
+
 	<t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -161,7 +161,7 @@
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain3.galaccount.id"/>
 		</t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <DeleteGalSyncAccountRequest xmlns="urn:zimbraAdmin">

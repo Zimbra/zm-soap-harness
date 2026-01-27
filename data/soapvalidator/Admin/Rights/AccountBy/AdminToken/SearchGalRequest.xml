@@ -39,7 +39,7 @@
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
 
-	
+
 
     <t:test required="true">
         <t:request>
@@ -52,7 +52,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -65,7 +65,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- account1 creates an appointment -->
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -86,7 +86,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_Admin_SearchGalRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountBy_Admin_SearchGalRequest_Basic01" type="sanity">
     <t:objective>Use an admin token with accountby to SearchGalRequest </t:objective>
     <t:steps>
     1. Use admin authtoken with accountby=account1 to SearchGalRequest - Success
@@ -100,7 +100,7 @@
 
 			<account by="id">${account1.id}</account>
 		</t:requestContext>
-        <t:request> 
+        <t:request>
             <SearchGalRequest xmlns="urn:zimbraAccount">
 				<name>${account1.name}</name>
 			</SearchGalRequest>

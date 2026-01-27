@@ -33,7 +33,7 @@
 <t:test_case testcaseid="account_setup_search_read" type="always" >
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a mail account 
+            2. Create a mail account
     </steps>
 
     <t:test id="admin_login" required="true" >
@@ -47,7 +47,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1"  required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -89,7 +89,7 @@
 
 
 
-<t:test_case testcaseid="Types_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="Types_SearchRequest1" type="functional" >
  <t:objective>
  Verify that a search by types="message" returns the correct results
  </t:objective>
@@ -110,7 +110,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Types_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="Types_SearchRequest2" type="functional" >
  <t:objective>
  Verify that a search by types="conversation" returns the correct results
  </t:objective>
@@ -122,16 +122,16 @@
 	   </SearchRequest>
 	 </t:request>
 	  <t:response>
-		<!-- t:select path="//mail:SearchResponse/mail:c[2]" attr="su" match="^invite03$"/-->		
+		<!-- t:select path="//mail:SearchResponse/mail:c[2]" attr="su" match="^invite03$"/-->
 		<t:select path="//mail:SearchResponse">
-			<t:select path="//mail:c" attr="su" match=".*invite03"/>		
+			<t:select path="//mail:c" attr="su" match=".*invite03"/>
 		</t:select>
 	 </t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="Types_SearchRequest3" type="sanity" >
+<t:test_case testcaseid="Types_SearchRequest3" type="functional" >
  <t:objective>
  Verify that a search by types="contacts" returns the correct results
  </t:objective>
@@ -141,13 +141,13 @@
 	   <CreateContactRequest xmlns="urn:zimbraMail">
 	     <cn>
 	     	<a n="firstName">${contact1.firstName}</a>
-	     </cn>     
+	     </cn>
 	   </CreateContactRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateContactResponse/mail:cn">
-		  <t:select attr="id" set="contact1.id"/>	 	  
-		</t:select>	
+		  <t:select attr="id" set="contact1.id"/>
+		</t:select>
 	 </t:response>
 	</t:test>
 
@@ -188,7 +188,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Types_SearchRequest5" type="sanity" >
+<t:test_case testcaseid="Types_SearchRequest5" type="functional" >
  <t:objective>
  Verify that a search by types="conversation,contact,appointment" returns the correct results
  </t:objective>
@@ -198,13 +198,13 @@
 	   <CreateContactRequest xmlns="urn:zimbraMail">
 	     <cn>
 	     	<a n="firstName">${contact2.firstName}</a>
-	     </cn>     
+	     </cn>
 	   </CreateContactRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateContactResponse/mail:cn">
-		  <t:select attr="id" set="contact2.id"/>	 	  
-		</t:select>	
+		  <t:select attr="id" set="contact2.id"/>
+		</t:select>
 	 </t:response>
 	</t:test>
 
@@ -256,7 +256,7 @@
 	  <t:response>
 		<t:select path="//mail:SearchResponse">
 			<!-- Drop the "RE: " part in the regex using .*, since it is not important to this test case -->
-			<t:select path="//mail:c" attr="su" match=".*invite03"/>		
+			<t:select path="//mail:c" attr="su" match=".*invite03"/>
 		</t:select>
 	 </t:response>
 	</t:test>
@@ -279,7 +279,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Types_SearchRequest5" type="sanity" >
+<t:test_case testcaseid="Types_SearchRequest5" type="functional" >
  <t:objective>
  Verify that a search by the wrong type (contact should be message) returns the correct results
  </t:objective>
@@ -297,7 +297,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Types_SearchRequest5" type="sanity" >
+<t:test_case testcaseid="Types_SearchRequest5" type="functional" >
  <t:objective>
  Verify that a search by the wrong type (message should be contact) returns the correct results
  </t:objective>
@@ -307,13 +307,13 @@
 	   <CreateContactRequest xmlns="urn:zimbraMail">
 	     <cn>
 	     	<a n="firstName">${contact3.firstName}</a>
-	     </cn>     
+	     </cn>
 	   </CreateContactRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateContactResponse/mail:cn">
-		  <t:select attr="id" set="contact3.id"/>	 	  
-		</t:select>	
+		  <t:select attr="id" set="contact3.id"/>
+		</t:select>
 	 </t:response>
 	</t:test>
 

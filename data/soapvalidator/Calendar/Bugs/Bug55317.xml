@@ -11,7 +11,7 @@
 <t:property name="calendar.verb3" value="TENTATIVE"/>
 
 <t:property name="calendar.comp1" value="0"/>
-<t:property name="calendar.comp2" value="1"/>    
+<t:property name="calendar.comp2" value="1"/>
 
 <t:property name="appointment.subject1" value="subject1 ${TIME}.${COUNTER}"/>
 <t:property name="appointment.subject2" value="subject2 ${TIME}.${COUNTER}"/>
@@ -41,7 +41,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -56,7 +56,7 @@
 
 <t:test_case testcaseid="acct_setup1_sendInviteReply" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -69,7 +69,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -100,7 +100,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="bug55317" type="bhr" bugids="55317">
+<t:test_case testcaseid="bug55317" type="sanity" bugids="55317">
     <t:objective>Searching for appointments fails after recipient changes status</t:objective>
     <t:steps>
     1. User1 creates meeting request
@@ -109,7 +109,7 @@
 	4. Search for "body" ... meeting displays
 	5. Change the response to "Tentative" ... Search request doesn't return with appt
     </t:steps>
- 
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -122,15 +122,15 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject1}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}" tz="${tz.default}"/>  
-                        <e d="${Time2}" tz="${tz.default}"/>  
+                        <s d="${Time1}" tz="${tz.default}"/>
+                        <e d="${Time2}" tz="${tz.default}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -179,7 +179,7 @@
 			 <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment.subject1}']" attr="id" set="account2_appt1.id"/>
        </t:response>
     </t:test>
-        
+
     <t:test >
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account2.appointment1.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
@@ -195,10 +195,10 @@
         <t:response>
            <t:select path = "//mail:SendInviteReplyResponse" attr="apptId" match="${account2_appt1.id}"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-	
+
 	<t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -211,7 +211,7 @@
 
         </t:response>
     </t:test>
-    
+
         <t:test depends="sendInviteReplyRequest4a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -222,7 +222,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${calendar.verb1}${appointment.subject1}"/>
         </t:response>
     </t:test>
-    
+
        <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
@@ -233,7 +233,7 @@
             <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment.subject1}"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
     <t:test required="true" >
         <t:request>
@@ -247,7 +247,7 @@
 
         </t:response>
     </t:test>
-    
+
       <t:test id="sendInviteReplyRequest3b" >
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account2.appointment1.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${globals.true}">
@@ -264,9 +264,9 @@
            <t:select path = "//mail:SendInviteReplyResponse" attr="apptId" match="${account2_appt1.id}"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-	
+
 	<t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -279,8 +279,8 @@
 
         </t:response>
     </t:test>
-    
-    
+
+
  	 <t:test depends="sendInviteReplyRequest4a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -291,7 +291,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${calendar.verb3}${appointment.subject1}"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
@@ -302,7 +302,7 @@
             <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment.subject1}"/>
         </t:response>
     </t:test>
-    
+
        <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">

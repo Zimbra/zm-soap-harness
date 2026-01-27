@@ -166,7 +166,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -181,7 +181,7 @@
 
 <t:test_case testcaseid="AcctSetup_ApptTZ01" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -193,7 +193,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -206,7 +206,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:test id="create_invitee_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -227,7 +227,7 @@
     <t:objective>login as the test account</t:objective>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -240,7 +240,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test required="true">
         <t:requestContext>
             <authToken>${authToken}</authToken>
@@ -254,7 +254,7 @@
         </t:response>
     </t:test>
 
-    <t:property name="test1.authToken" value="${authToken}"/>  
+    <t:property name="test1.authToken" value="${authToken}"/>
 
 
 	<t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
@@ -272,7 +272,7 @@
         </t:response>
     </t:test>
 
-    <t:property name="invitee1.authToken" value="${authToken}"/>  
+    <t:property name="invitee1.authToken" value="${authToken}"/>
 
 	<t:test required="true">
         <t:requestContext>
@@ -290,12 +290,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateAppt_TZ1" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ1" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ1 included and accept that appointment (as invitee).</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -304,7 +304,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ1}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ1}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ1}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ1}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -324,7 +324,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.id}"/>
         </t:request>
         <t:response>
@@ -336,7 +336,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -349,7 +349,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt1.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -370,12 +370,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ2" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ2" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ2 included and (as invitee) decline that appointment.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -384,7 +384,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ2}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ2}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ2}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ2}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -404,7 +404,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment2.id}"/>
         </t:request>
         <t:response>
@@ -416,7 +416,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -429,7 +429,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt2.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -450,12 +450,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ3" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ3" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ3 included (as invitee) mark that appointment tentative.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -464,7 +464,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ3}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ3}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ3}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ3}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -484,7 +484,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment3.id}"/>
         </t:request>
         <t:response>
@@ -495,7 +495,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -508,7 +508,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -529,12 +529,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ4" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ4" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ4 included (as invitee) accept that appointment.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -543,7 +543,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ4}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ4}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ4}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ4}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -563,7 +563,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment4.id}"/>
         </t:request>
         <t:response>
@@ -575,7 +575,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -588,7 +588,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt4.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -609,12 +609,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ5" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ5" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ5 included and (as invitee) decline that appointment..</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -623,7 +623,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ5}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ5}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ5}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ5}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -643,7 +643,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment5.id}"/>
         </t:request>
         <t:response>
@@ -655,7 +655,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -668,7 +668,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt5.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt5.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -689,12 +689,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ6" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ6" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ6 included and (as invitee) mark that appointment tentative.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -703,7 +703,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ6}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ6}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ6}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -723,7 +723,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment6.id}"/>
         </t:request>
         <t:response>
@@ -735,7 +735,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -748,7 +748,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt6.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt6.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -769,12 +769,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ7" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ7" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ7 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -783,7 +783,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ7}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ7}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ7}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ7}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -803,7 +803,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment7.id}"/>
         </t:request>
         <t:response>
@@ -815,7 +815,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -828,7 +828,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt7.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt7.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -849,12 +849,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ8" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ8" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ8 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -863,7 +863,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ8}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ8}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ8}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ8}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -883,7 +883,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment8.id}"/>
         </t:request>
         <t:response>
@@ -894,7 +894,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -907,7 +907,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt8.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt8.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -928,12 +928,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ9" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ9" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ9 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -942,7 +942,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ9}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ9}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ9}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ9}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -962,7 +962,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment9.id}"/>
         </t:request>
         <t:response>
@@ -973,7 +973,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -986,7 +986,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt9.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt9.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -1007,12 +1007,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ10" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ10" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ10 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1021,7 +1021,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ10}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+30m)}" tz="${TZ10}"/>  
+                        <s d="${ICALTIME(+30m)}" tz="${TZ10}"/>
                         <e d="${ICALTIME(+1h)}" tz="${TZ10}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1041,7 +1041,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment10.id}"/>
         </t:request>
         <t:response>
@@ -1052,7 +1052,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1065,7 +1065,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt10.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt10.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -1086,12 +1086,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ11" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ11" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ11 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1100,7 +1100,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ11}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ11}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ11}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ11}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1120,7 +1120,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment11.id}"/>
         </t:request>
         <t:response>
@@ -1132,7 +1132,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1145,7 +1145,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt11.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt11.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -1166,12 +1166,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ12" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ12" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ12 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1180,7 +1180,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ12}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ12}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ12}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ12}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1200,7 +1200,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment12.id}"/>
         </t:request>
         <t:response>
@@ -1211,7 +1211,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1224,7 +1224,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt12.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt12.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -1245,12 +1245,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ13" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ13" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ13 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1259,7 +1259,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ13}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ13}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ13}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ13}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1279,7 +1279,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment13.id}"/>
         </t:request>
         <t:response>
@@ -1290,7 +1290,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1303,7 +1303,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt13.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt13.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -1324,12 +1324,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ14" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ14" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ14 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1338,7 +1338,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ14}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ14}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ14}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ14}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1358,7 +1358,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment14.id}"/>
         </t:request>
         <t:response>
@@ -1369,7 +1369,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1382,7 +1382,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt14.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt14.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -1403,12 +1403,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ15" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ15" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ15 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1417,7 +1417,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ15}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ15}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ15}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ15}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1437,7 +1437,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment15.id}"/>
         </t:request>
         <t:response>
@@ -1448,7 +1448,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1461,7 +1461,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt15.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -1482,12 +1482,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ16" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ16" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ16 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1496,7 +1496,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ16}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ16}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ16}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ16}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1516,7 +1516,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment16.id}"/>
         </t:request>
         <t:response>
@@ -1527,7 +1527,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1540,7 +1540,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt16.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt16.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -1561,12 +1561,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ17" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ17" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ17 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1575,7 +1575,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ17}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ17}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ17}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ17}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1595,7 +1595,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment17.id}"/>
         </t:request>
         <t:response>
@@ -1606,7 +1606,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1619,7 +1619,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt17.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt17.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -1640,12 +1640,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ18" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ18" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ18 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1654,7 +1654,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ18}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ18}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ18}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ18}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1674,7 +1674,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment18.id}"/>
         </t:request>
         <t:response>
@@ -1685,7 +1685,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1698,7 +1698,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt18.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt18.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -1719,12 +1719,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ19" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ19" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ19 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1733,7 +1733,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ19}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ19}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ19}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ19}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1753,7 +1753,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment19.id}"/>
         </t:request>
         <t:response>
@@ -1764,7 +1764,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1777,7 +1777,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt19.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt19.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -1798,12 +1798,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ20" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ20" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ20 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1812,7 +1812,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ20}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ20}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ20}"/>
                         <e d="${ICALTIME(+2h)}" tz="${TZ20}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1832,7 +1832,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment20.id}"/>
         </t:request>
         <t:response>
@@ -1843,7 +1843,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1856,7 +1856,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt20.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt20.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -1877,12 +1877,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ21" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ21" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ21 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1891,7 +1891,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ21}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ21}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ21}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ21}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1911,7 +1911,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment21.id}"/>
         </t:request>
         <t:response>
@@ -1922,7 +1922,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -1935,7 +1935,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt21.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt21.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -1956,12 +1956,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ22" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ22" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ22 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -1970,7 +1970,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ22}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ22}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ22}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ22}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -1990,7 +1990,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment22.id}"/>
         </t:request>
         <t:response>
@@ -2001,7 +2001,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2014,7 +2014,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt22.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt22.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -2035,12 +2035,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ23" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ23" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ23 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2049,7 +2049,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ23}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ23}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ23}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ23}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2069,7 +2069,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment23.id}"/>
         </t:request>
         <t:response>
@@ -2080,7 +2080,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2093,7 +2093,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt23.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt23.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -2114,12 +2114,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ24" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ24" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ24 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2128,7 +2128,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ24}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ24}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ24}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ24}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2148,7 +2148,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment24.id}"/>
         </t:request>
         <t:response>
@@ -2159,7 +2159,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2172,7 +2172,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt24.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt24.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -2193,12 +2193,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ25" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ25" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ25 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2207,7 +2207,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ25}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ25}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ25}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ25}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2227,7 +2227,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment25.id}"/>
         </t:request>
         <t:response>
@@ -2238,7 +2238,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2251,7 +2251,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt25.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt25.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -2272,12 +2272,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ26" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ26" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ26 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2286,7 +2286,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ26}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ26}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ26}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ26}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2306,7 +2306,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment26.id}"/>
         </t:request>
         <t:response>
@@ -2317,7 +2317,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2330,7 +2330,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt26.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt26.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -2351,12 +2351,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ27" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ27" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ27 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2365,7 +2365,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ27}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ27}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ27}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ27}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2385,7 +2385,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment27.id}"/>
         </t:request>
         <t:response>
@@ -2396,7 +2396,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2409,7 +2409,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt27.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt27.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -2430,12 +2430,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ28" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ28" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ28 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2444,7 +2444,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ28}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ28}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ28}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ28}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2464,7 +2464,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment28.id}"/>
         </t:request>
         <t:response>
@@ -2475,7 +2475,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2488,7 +2488,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt28.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt28.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -2509,12 +2509,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ29" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ29" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ29 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2523,7 +2523,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ29}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ29}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ29}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ29}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2543,7 +2543,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment29.id}"/>
         </t:request>
         <t:response>
@@ -2554,7 +2554,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2567,7 +2567,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt29.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt29.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -2588,12 +2588,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ30" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ30" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ30 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2602,7 +2602,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ30}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ30}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ30}"/>
                         <e d="${ICALTIME(+3h)}" tz="${TZ30}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2622,7 +2622,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment30.id}"/>
         </t:request>
         <t:response>
@@ -2633,7 +2633,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2646,7 +2646,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt30.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt30.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -2667,12 +2667,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ31" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ31" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ31 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2681,7 +2681,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ31}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ31}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ31}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ31}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2701,7 +2701,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment31.id}"/>
         </t:request>
         <t:response>
@@ -2712,7 +2712,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2725,7 +2725,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt31.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt31.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -2746,12 +2746,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ32" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ32" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ32 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2760,7 +2760,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ32}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ32}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ32}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ32}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2780,7 +2780,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment32.id}"/>
         </t:request>
         <t:response>
@@ -2791,7 +2791,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2804,7 +2804,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt32.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt32.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -2825,12 +2825,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ33" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ33" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ33 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2839,7 +2839,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ33}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ33}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ33}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ33}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2859,7 +2859,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment33.id}"/>
         </t:request>
         <t:response>
@@ -2870,7 +2870,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2883,7 +2883,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt33.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt33.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -2904,12 +2904,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ34" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ34" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ34 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2918,7 +2918,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ34}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ34}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ34}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ34}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2938,7 +2938,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment34.id}"/>
         </t:request>
         <t:response>
@@ -2949,7 +2949,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -2962,7 +2962,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt34.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt34.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -2983,12 +2983,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ35" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ35" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ35 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -2997,7 +2997,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ35}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ35}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ35}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ35}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3017,7 +3017,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment35.id}"/>
         </t:request>
         <t:response>
@@ -3028,7 +3028,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3041,7 +3041,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt35.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt35.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -3062,12 +3062,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ36" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ36" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ36 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3076,7 +3076,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ36}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ36}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ36}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ36}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3096,7 +3096,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment36.id}"/>
         </t:request>
         <t:response>
@@ -3107,7 +3107,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3120,7 +3120,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt36.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt36.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -3141,12 +3141,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ37" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ37" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ37 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3155,7 +3155,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ37}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ37}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ37}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ37}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3175,7 +3175,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment37.id}"/>
         </t:request>
         <t:response>
@@ -3186,7 +3186,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3199,7 +3199,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt37.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt37.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -3220,12 +3220,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ38" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ38" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ38 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3234,7 +3234,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ38}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ38}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ38}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ38}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3254,7 +3254,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment38.id}"/>
         </t:request>
         <t:response>
@@ -3265,7 +3265,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3278,7 +3278,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt38.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt38.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -3299,12 +3299,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ39" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ39" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ39 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3313,7 +3313,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ39}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ39}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ39}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ39}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3333,7 +3333,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment39.id}"/>
         </t:request>
         <t:response>
@@ -3344,7 +3344,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3357,7 +3357,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt39.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt39.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -3378,12 +3378,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ40" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ40" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ40 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3392,7 +3392,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ40}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ40}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ40}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ40}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3412,7 +3412,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment40.id}"/>
         </t:request>
         <t:response>
@@ -3423,7 +3423,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3436,7 +3436,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt40.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt40.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -3457,12 +3457,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ41" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ41" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ41 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3471,7 +3471,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ41}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ41}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ41}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ41}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3491,7 +3491,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment41.id}"/>
         </t:request>
         <t:response>
@@ -3502,7 +3502,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3515,7 +3515,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt41.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt41.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -3536,12 +3536,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ42" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ42" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ42 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3550,7 +3550,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ42}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ42}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ42}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ42}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3570,7 +3570,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment42.id}"/>
         </t:request>
         <t:response>
@@ -3581,7 +3581,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3594,7 +3594,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt42.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt42.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -3615,12 +3615,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ43" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ43" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ43 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3629,7 +3629,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ43}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ43}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ43}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ43}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3649,7 +3649,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment43.id}"/>
         </t:request>
         <t:response>
@@ -3660,7 +3660,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3673,7 +3673,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt43.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt43.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -3694,12 +3694,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ44" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ44" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ44 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3708,7 +3708,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ44}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ44}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ44}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ44}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3728,7 +3728,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment44.id}"/>
         </t:request>
         <t:response>
@@ -3739,7 +3739,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3752,7 +3752,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt44.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt44.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -3773,12 +3773,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ45" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ45" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ45 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3787,7 +3787,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ45}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ45}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ45}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ45}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3807,7 +3807,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment45.id}"/>
         </t:request>
         <t:response>
@@ -3818,7 +3818,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3831,7 +3831,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt45.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt45.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -3852,12 +3852,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ46" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ46" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ46 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3866,7 +3866,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ46}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ46}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ46}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ46}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3886,7 +3886,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment46.id}"/>
         </t:request>
         <t:response>
@@ -3897,7 +3897,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3910,7 +3910,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt46.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt46.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -3931,12 +3931,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ47" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ47" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ47 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -3945,7 +3945,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ47}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ47}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ47}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ47}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -3965,7 +3965,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment47.id}"/>
         </t:request>
         <t:response>
@@ -3976,7 +3976,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -3989,7 +3989,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt47.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt47.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -4010,12 +4010,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ48Tashkent" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ48Tashkent" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ48Tashkent included.</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4024,7 +4024,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ48Tashkent}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ48Tashkent}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ48Tashkent}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ48Tashkent}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4044,7 +4044,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment48.id}"/>
         </t:request>
         <t:response>
@@ -4055,7 +4055,7 @@
 
 	<t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4068,7 +4068,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt48.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt48.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -4088,12 +4088,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateAppt_TZ48Karachi" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ48Karachi" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ48Karachi included.</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4102,7 +4102,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ48Karachi}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ48Karachi}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ48Karachi}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ48Karachi}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4122,7 +4122,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment48.id}"/>
         </t:request>
         <t:response>
@@ -4133,7 +4133,7 @@
 
 	<t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4146,7 +4146,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt48.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt48.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -4167,12 +4167,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ49" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ49" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ49 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4181,7 +4181,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ49}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ49}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ49}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ49}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4201,7 +4201,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment49.id}"/>
         </t:request>
         <t:response>
@@ -4212,7 +4212,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4225,7 +4225,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt49.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt49.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -4246,12 +4246,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ50" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ50" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ50 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4260,7 +4260,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ50}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+2h)}" tz="${TZ50}"/>  
+                        <s d="${ICALTIME(+2h)}" tz="${TZ50}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ50}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4280,7 +4280,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment50.id}"/>
         </t:request>
         <t:response>
@@ -4291,7 +4291,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4304,7 +4304,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt50.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt50.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -4325,12 +4325,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ51" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ51" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ51 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4339,7 +4339,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ51}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ51}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ51}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ51}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4359,7 +4359,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment51.id}"/>
         </t:request>
         <t:response>
@@ -4370,7 +4370,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4383,7 +4383,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt51.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt51.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -4404,12 +4404,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ52" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ52" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ52 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4418,7 +4418,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ52}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ52}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ52}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ52}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4438,7 +4438,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment52.id}"/>
         </t:request>
         <t:response>
@@ -4449,7 +4449,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4462,7 +4462,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt52.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt52.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -4483,12 +4483,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ53" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ53" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ53 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4497,7 +4497,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ53}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ53}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ53}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ53}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4517,7 +4517,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment53.id}"/>
         </t:request>
         <t:response>
@@ -4528,7 +4528,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4541,7 +4541,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt53.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt53.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -4562,12 +4562,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ54" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ54" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ54 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4576,7 +4576,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ54}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ54}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ54}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ54}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4596,7 +4596,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment54.id}"/>
         </t:request>
         <t:response>
@@ -4607,7 +4607,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4620,7 +4620,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt54.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt54.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -4641,12 +4641,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ55" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ55" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ55 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4655,7 +4655,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ55}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ55}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ55}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ55}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4675,7 +4675,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment55.id}"/>
         </t:request>
         <t:response>
@@ -4686,7 +4686,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4699,7 +4699,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt55.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt55.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -4720,12 +4720,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ56" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ56" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ56 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4734,7 +4734,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ56}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ56}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ56}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ56}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4754,7 +4754,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment56.id}"/>
         </t:request>
         <t:response>
@@ -4765,7 +4765,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4778,7 +4778,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt56.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt56.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -4799,12 +4799,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ57" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ57" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ57 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4813,7 +4813,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ57}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ57}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ57}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ57}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4833,7 +4833,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment57.id}"/>
         </t:request>
         <t:response>
@@ -4844,7 +4844,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4857,7 +4857,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt57.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt57.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -4878,12 +4878,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ58" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ58" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ58 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4892,7 +4892,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ58}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ58}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ58}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ58}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4912,7 +4912,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment58.id}"/>
         </t:request>
         <t:response>
@@ -4923,7 +4923,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -4936,7 +4936,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt58.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt58.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -4957,12 +4957,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ59" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ59" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ59 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -4971,7 +4971,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ59}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ59}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ59}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ59}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -4991,7 +4991,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment59.id}"/>
         </t:request>
         <t:response>
@@ -5002,7 +5002,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5015,7 +5015,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt59.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt59.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -5036,12 +5036,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ60" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ60" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ60 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5050,7 +5050,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ60}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ60}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ60}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ60}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5070,7 +5070,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment60.id}"/>
         </t:request>
         <t:response>
@@ -5081,7 +5081,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5094,7 +5094,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt60.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt60.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -5115,12 +5115,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ61" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ61" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ61 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5129,7 +5129,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ61}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ61}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ61}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ61}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5149,7 +5149,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment61.id}"/>
         </t:request>
         <t:response>
@@ -5160,7 +5160,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5173,7 +5173,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt61.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt61.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -5194,12 +5194,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ62" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ62" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ62 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5208,7 +5208,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ62}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ62}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ62}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ62}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5228,7 +5228,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment62.id}"/>
         </t:request>
         <t:response>
@@ -5239,7 +5239,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5252,7 +5252,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt62.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt62.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -5273,12 +5273,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ63" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ63" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ63 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5287,7 +5287,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ63}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ63}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ63}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ63}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5307,7 +5307,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment63.id}"/>
         </t:request>
         <t:response>
@@ -5318,7 +5318,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5331,7 +5331,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt63.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt63.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -5352,12 +5352,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ64" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ64" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ64 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5366,7 +5366,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ64}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ64}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ64}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ64}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5386,7 +5386,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment64.id}"/>
         </t:request>
         <t:response>
@@ -5397,7 +5397,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5410,7 +5410,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt64.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt64.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -5431,12 +5431,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ65" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ65" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ65 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5445,7 +5445,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ65}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ65}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ65}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ65}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5465,7 +5465,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment65.id}"/>
         </t:request>
         <t:response>
@@ -5476,7 +5476,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5489,7 +5489,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt65.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt65.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -5510,12 +5510,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ66" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ66" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ66 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5524,7 +5524,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ66}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ66}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ66}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ66}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5544,7 +5544,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment66.id}"/>
         </t:request>
         <t:response>
@@ -5555,7 +5555,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5568,7 +5568,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt66.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt66.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -5589,12 +5589,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ67" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ67" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ67 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5603,7 +5603,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ67}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ67}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ67}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ67}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5623,7 +5623,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment67.id}"/>
         </t:request>
         <t:response>
@@ -5634,7 +5634,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5647,7 +5647,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt67.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt67.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -5668,12 +5668,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ68" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ68" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ68 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5682,7 +5682,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ68}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ68}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ68}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ68}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5702,7 +5702,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment68.id}"/>
         </t:request>
         <t:response>
@@ -5713,7 +5713,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5726,7 +5726,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt68.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt68.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -5747,12 +5747,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ69" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ69" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ69 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5761,7 +5761,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ69}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ69}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ69}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ69}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5781,7 +5781,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment69.id}"/>
         </t:request>
         <t:response>
@@ -5792,7 +5792,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5805,7 +5805,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt69.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt69.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -5826,12 +5826,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ70" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ70" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ70 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5840,7 +5840,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ70}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+3h)}" tz="${TZ70}"/>  
+                        <s d="${ICALTIME(+3h)}" tz="${TZ70}"/>
                         <e d="${ICALTIME(+8h)}" tz="${TZ70}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5860,7 +5860,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment70.id}"/>
         </t:request>
         <t:response>
@@ -5871,7 +5871,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5884,7 +5884,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt70.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt70.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -5905,12 +5905,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ71" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ71" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ71 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5919,7 +5919,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ71}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ71}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ71}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ71}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -5939,7 +5939,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment71.id}"/>
         </t:request>
         <t:response>
@@ -5950,7 +5950,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -5963,7 +5963,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt71.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt71.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -5984,12 +5984,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ72" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ72" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ72 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -5998,7 +5998,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ72}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ72}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ72}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ72}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -6018,7 +6018,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment72.id}"/>
         </t:request>
         <t:response>
@@ -6029,7 +6029,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -6042,7 +6042,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt72.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt72.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">
@@ -6063,12 +6063,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ73" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ73" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ73 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -6077,7 +6077,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ73}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ73}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ73}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ73}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -6097,7 +6097,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment73.id}"/>
         </t:request>
         <t:response>
@@ -6108,7 +6108,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -6121,7 +6121,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt73.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt73.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="TRUE">
@@ -6142,12 +6142,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ74" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ74" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ74 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -6156,7 +6156,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ74}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ74}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ74}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ74}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -6176,7 +6176,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment74.id}"/>
         </t:request>
         <t:response>
@@ -6187,7 +6187,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -6200,7 +6200,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt74.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt74.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="TRUE">
@@ -6221,12 +6221,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppt_TZ75" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateAppt_TZ75" type="functional" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone TZ75 included.</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-    <t:property name="authToken" value="${test1.authToken}"/>  
+    <t:property name="authToken" value="${test1.authToken}"/>
 
 
     <t:test>
@@ -6235,7 +6235,7 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}.${TZ75}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${invitee_account1.name}"/>
-                        <s d="${ICALTIME(+1h)}" tz="${TZ75}"/>  
+                        <s d="${ICALTIME(+1h)}" tz="${TZ75}"/>
                         <e d="${ICALTIME(+4h)}" tz="${TZ75}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -6255,7 +6255,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment75.id}"/>
         </t:request>
         <t:response>
@@ -6266,7 +6266,7 @@
 
 <t:property name="server.zimbraAccount" value="${invitee_acct.server}"/>
 
-    <t:property name="authToken" value="${invitee1.authToken}"/>  
+    <t:property name="authToken" value="${invitee1.authToken}"/>
 
 
     <t:test>
@@ -6279,7 +6279,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="appt75.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt75.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="TRUE">

@@ -3,7 +3,7 @@
 <t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 
-<t:property name="folder.pname" value="1"/> 
+<t:property name="folder.pname" value="1"/>
 <t:property name="folder.name" value="FilterFolder"/>
 <t:property name="filter.subject" value="split value"/>
 <t:property name="filter1.name" value="filter1.${TIME}.${COUNTER}"/>
@@ -75,12 +75,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug_14942_01" type="sanity" >
+<t:test_case testcaseid="Bug_14942_01" type="functional" >
 	<t:objective>Verify bug 14942: Mail Filter rule should still apply when the matching token in the Subject line is interrupted by a linefeed in the RFC822 message format</t:objective>
 	<t:steps>
 		1. Login to test account1.
 		2. Create a new folder.
-		3. Create a filter rule with action as "fileinto" folder created in step 2. 
+		3. Create a filter rule with action as "fileinto" folder created in step 2.
 		4. Account2 sends a message that matches the filter (should be split)
 		5. Inject LMTP messages that matches the filter
 			A. one message has the subject split

@@ -30,7 +30,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -47,7 +47,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -60,7 +60,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -221,7 +221,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -233,8 +233,8 @@
 		</t:response>
 	</t:test>
 
-    
-   
+
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -290,7 +290,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${invitee1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -319,10 +319,10 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+1d)(+3h)[${time.20180101120000.gmt}]}" uid="${organizer1.id}" />
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${organizer1.id}']">
 				<t:select path="//mail:b[@s='${time.20180101120000.gmt}']" attr="e" match="${TIME(+3h)[${time.20180101120000.gmt}]}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -332,10 +332,10 @@
 				<query>inid:${invitee1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -358,7 +358,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateMeetingRequest_Duration_02" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CreateMeetingRequest_Duration_02" type="functional" areas="Calendar">
     <t:objective>Create a meeting request with a specified duration (days, hours, min, sec)</t:objective>
     <t:steps>
     1. Login as organizer
@@ -385,7 +385,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -397,8 +397,8 @@
 		</t:response>
 	</t:test>
 
-    
-   
+
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -457,7 +457,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${invitee2.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -486,10 +486,10 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+1d)(+3h)[${time.20180101120000.gmt}]}" uid="${organizer2.id}" />
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${organizer2.id}']">
 				<t:select path="//mail:b[@s='${time.20180101120000.gmt}']" attr="e" match="${TIME(+1d)(+2h)(+3m)(+4s)[${time.20180101120000.gmt}]}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -499,10 +499,10 @@
 				<query>inid:${invitee2.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee2.appt1.invId"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -528,7 +528,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateMeetingRequest_Duration_03" type="sanity" areas="Calendar" bugids="22511">
+<t:test_case testcaseid="CreateMeetingRequest_Duration_03" type="functional" areas="Calendar" bugids="22511">
     <t:objective>Create a meeting request with a specified duration (2 weeks)</t:objective>
     <t:steps>
     1. Login as organizer
@@ -555,7 +555,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -567,8 +567,8 @@
 		</t:response>
 	</t:test>
 
-    
-   
+
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -624,7 +624,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${invitee3.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -653,10 +653,10 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+1d)(+3h)[${time.20180101120000.gmt}]}" uid="${organizer3.id}" />
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${organizer3.id}']">
 				<t:select path="//mail:b[@s='${time.20180101120000.gmt}']" attr="e" match="${TIME(+1d)(+3h)[${time.20180101120000.gmt}]}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -666,10 +666,10 @@
 				<query>inid:${invitee3.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee3.appt1.invId"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -693,7 +693,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateMeetingRequest_Duration_04" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CreateMeetingRequest_Duration_04" type="sanity" areas="Calendar">
     <t:objective>Create a meeting request (recurring) with a specified duration</t:objective>
     <t:steps>
     1. Login as organizer
@@ -720,7 +720,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -732,8 +732,8 @@
 		</t:response>
 	</t:test>
 
-    
-   
+
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -794,7 +794,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${invitee4.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -824,10 +824,10 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+1d)(+3h)[${time.20180101120000.gmt}]}" uid="${organizer4.id}" />
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${organizer4.id}']">
 				<t:select path="//mail:b[@s='${time.20180101120000.gmt}']" attr="e" match="${TIME(+3h)[${time.20180101120000.gmt}]}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -838,10 +838,10 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(+7d)(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+7d)(+1d)(+3h)[${time.20180101120000.gmt}]}" uid="${organizer4.id}" />
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${organizer4.id}']">
 				<t:select path="//mail:b[@s='${instance.s}']" attr="e" match="${instance.e}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -851,10 +851,10 @@
 				<query>inid:${invitee4.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee4.appt1.invId"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 

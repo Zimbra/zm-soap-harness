@@ -7,8 +7,8 @@
 
 <t:property name="mail1.subject" value="From outlook"/>
 <t:property name="mail1.fragment" value="^Persistent System has invited you.*"/>
-<t:property name="mail1.content" value="Persistent System has invited you to the iCal event: New Event mac,  
-scheduled for 16 October 2005. To accept or decline this invitation,  
+<t:property name="mail1.content" value="Persistent System has invited you to the iCal event: New Event mac,
+scheduled for 16 October 2005. To accept or decline this invitation,
 click the link below."/>
 
 <t:property name="appt1.file" value="${soapxml.root}/iCal/MS-Outlook-2000/outlook-ical-raw.txt"/>
@@ -27,7 +27,7 @@ click the link below."/>
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -42,7 +42,7 @@ click the link below."/>
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test >
         <t:request>
@@ -55,7 +55,7 @@ click the link below."/>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 
 	<!-- Make sure the domain is there -->
     <t:test >
@@ -98,7 +98,7 @@ click the link below."/>
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -133,14 +133,14 @@ click the link below."/>
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="MS_Outlook_rawInject01" type="sanity" bugids="4263,5929">
+<t:test_case testcaseid="MS_Outlook_rawInject01" type="functional" bugids="4263,5929">
     <t:objective>Verify the basic iCal format when lmtp inject is used to inject the iCal</t:objective>
     <t:steps>
 	1. Use lmtp inject to inject the message
 	2. Login as the invitee
 	3. GetApptSummaries, verify the meeting was created
     </t:steps>
-    
+
 
 	<t:mailinjecttest>
 		<t:lmtpInjectRequest>
@@ -165,8 +165,8 @@ click the link below."/>
 
         </t:response>
     </t:test>
-    
-    
+
+
 	<!-- do a simple verification of the mail -->
 	<t:test>
 	 <t:request>

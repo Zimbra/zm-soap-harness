@@ -6,8 +6,8 @@
 <t:property name="conv1.subject" value="First conversation"/>
 <t:property name="conv2.subject" value="Second message to be searched"/>
 <t:property name="tag1.name" value="Tag${TIME}${COUNTER}"/>
-<t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>    
-    
+<t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
+
 <t:property name="op.read" value="read"/>
 <t:property name="op.unread" value="!read"/>
 <t:property name="op.flag" value="flag"/>
@@ -16,10 +16,10 @@
 <t:property name="op.untag" value="!tag"/>
 <t:property name="op.move" value="move"/>
 <t:property name="op.delete" value="delete"/>
-<t:property name="op.spam" value="spam"/>    
+<t:property name="op.spam" value="spam"/>
 <t:property name="test_acct1.server" value="NOT_DEFINED"/>
 <t:property name="test_acct2.server" value="NOT_DEFINED"/>
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always" >
@@ -40,7 +40,7 @@
 <t:test_case testcaseid="acctSetup1_conversation_loop" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps> 1. Login to admin.
-              2. Create test account. 
+              2. Create test account.
     </t:steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -59,7 +59,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${defaultpassword.value}</password>               
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -104,11 +104,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Conversation_loop1" type="sanity" duration="long" bugids="4082">
+<t:test_case testcaseid="Conversation_loop1" type="functional" duration="long" bugids="4082">
     <t:objective>Create a conversation with many messages </t:objective>
-    <t:steps> 1. Send a message with particular subject 
+    <t:steps> 1. Send a message with particular subject
               2. Send many messages with same subject to create a conversation
-              3. Test GetInfoRequest              
+              3. Test GetInfoRequest
     </t:steps>
 
     <t:test>
@@ -128,8 +128,8 @@
         </t:response>
     </t:test>
 
-    <t:test_loop count="1000">      
-        
+    <t:test_loop count="1000">
+
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -145,8 +145,8 @@
             <t:response>
                 <t:select path="//mail:SendMsgResponse/mail:m"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
     </t:test_loop>
 
     <t:test timeframeMax="3000">
@@ -156,16 +156,16 @@
         <t:response>
             <t:select path="//acct:GetInfoResponse/acct:name"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-<!-- Login to account2 and perform various operation on conversation -->  
+<!-- Login to account2 and perform various operation on conversation -->
 <t:test_case testcaseid="acctSetup3_conversation_loop" type="always">
     <t:objective>Login to account2</t:objective>
     <t:steps>1. Login to account2
-             2. Get the ids of different folders.        
+             2. Get the ids of different folders.
     </t:steps>
 
     <t:test required="true">
@@ -191,11 +191,11 @@
             <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Conversation_loop2" type="sanity" duration="long" bugids="4482">
+
+
+<t:test_case testcaseid="Conversation_loop2" type="functional" duration="long" bugids="4482">
     <t:objective>Search a conversation </t:objective>
 
     <t:test id="conversation_loop2a" timeframeMax="3000">
@@ -204,15 +204,15 @@
                 <query> subject:(${conv1.subject})</query>
             </SearchRequest>
         </t:request>
-        <t:response>            
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv1.id"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
-  
-    
-<t:test_case testcaseid="Conversation_loop3" type="sanity" duration="long" bugids="1923">
+
+
+<t:test_case testcaseid="Conversation_loop3" type="functional" duration="long" bugids="1923">
     <t:objective>Mark conversation as read </t:objective>
     <t:steps>1. Mark the conversation as read
              2. Search for read conversation
@@ -256,7 +256,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Conversation_loop4" type="sanity" duration="long">
+<t:test_case testcaseid="Conversation_loop4" type="functional" duration="long">
     <t:objective>Mark conversation as unread </t:objective>
     <t:steps> 1. Mark the conversation as read
               2. Verify searching the read conversation
@@ -297,14 +297,14 @@
         </t:response>
     </t:test>
 
-</t:test_case>    
-    
- 
-<t:test_case testcaseid="Conversation_loop5" type="sanity" duration="long" bugids="1923">
+</t:test_case>
+
+
+<t:test_case testcaseid="Conversation_loop5" type="functional" duration="long" bugids="1923">
     <t:objective>Flag a conversation </t:objective>
-    <t:steps>1. Flag a conversation 
+    <t:steps>1. Flag a conversation
              2. Search for the flagged conversation
-             3. Verify that the search for unflagged messages does not return any message   
+             3. Verify that the search for unflagged messages does not return any message
     </t:steps>
 
     <t:test depends="conversation_loop2a" timeframeMax="3000">
@@ -344,7 +344,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Conversation_loop6" type="sanity" duration="long">
+<t:test_case testcaseid="Conversation_loop6" type="functional" duration="long">
     <t:objective>Unflag a conversation</t:objective>
     <t:steps> 1. Unflag a conversation
               2. Search for unflaaged conversation
@@ -385,13 +385,13 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
-    
+</t:test_case>
 
-<t:test_case testcaseid="Conversation_loop7" type="sanity" duration="long">
+
+<t:test_case testcaseid="Conversation_loop7" type="functional" duration="long">
     <t:objective>Tag a conversation</t:objective>
     <t:steps>1. Create a Tag
-             2. Tag a conversation            
+             2. Tag a conversation
              3. Search for the tagged conversation
     </t:steps>
 
@@ -432,7 +432,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Conversation_loop8" type="sanity" duration="long">
+<t:test_case testcaseid="Conversation_loop8" type="functional" duration="long">
     <t:objective>UnTag a conversation</t:objective>
     <t:steps> 1. Untag a conversation
               2. Verify that the search for tagged message does not return any message
@@ -461,10 +461,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>    
-    
-    
-<t:test_case testcaseid="Conversation_loop9" type="sanity" duration="long" bugids="1923">
+</t:test_case>
+
+
+<t:test_case testcaseid="Conversation_loop9" type="functional" duration="long" bugids="1923">
     <t:objective>Move a conversation in a particular folder</t:objective>
     <t:steps>1. Create a folder
              2. Move the conversation in that folder
@@ -482,7 +482,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="conversation_loop2a,conversation_loop9a" timeframeMax="3000">
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -517,10 +517,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>     
-    
-   
-<t:test_case testcaseid="Conversation_loop10" type="sanity" duration="long">
+</t:test_case>
+
+
+<t:test_case testcaseid="Conversation_loop10" type="functional" duration="long">
     <t:objective>Mark conversation as spam </t:objective>
     <t:steps>1. Mark conversation as spam
              2. Search the conversation in spam folder
@@ -561,12 +561,12 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
-    
-    
-<t:test_case testcaseid="Conversation_loop11" type="sanity" duration="long">
+</t:test_case>
+
+
+<t:test_case testcaseid="Conversation_loop11" type="functional" duration="long">
     <t:objective>Delete a conversation </t:objective>
-   
+
     <t:test id="conversation_loop11a" depends="conversation_loop2a" timeframeMax="3000">
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -577,12 +577,12 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.delete}"/>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
          </t:response>
-    </t:test>    
+    </t:test>
 
-</t:test_case>     
-    
-    
-<t:test_case testcaseid="Conversation_loop12" type="sanity" duration="long">
+</t:test_case>
+
+
+<t:test_case testcaseid="Conversation_loop12" type="functional" duration="long">
     <t:objective>Search for the nonexisting conversation </t:objective>
 
     <t:test depends="conversation_loop11a" timeframeMax="3000">
@@ -591,12 +591,12 @@
                 <query> subject:(${conv1.subject})</query>
             </SearchRequest>
         </t:request>
-        <t:response>           
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c" emptyset="1"/>
         </t:response>
     </t:test>
-   
-</t:test_case>    
-    
-    
+
+</t:test_case>
+
+
 </t:tests>

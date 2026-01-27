@@ -10,11 +10,11 @@
 <t:property name="attachment1.name" value="sample.bmp"/>
 <t:property name="sender.name" value="user1@test.com"/>
 
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -23,16 +23,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup_lmtp_Verity_WindowsBitmap" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-                  2. Create a test account.       
+                  2. Create a test account.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -44,7 +44,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -59,10 +59,10 @@
     </t:test>
 
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="lmtp_Verity_WindowsBitmap" type="sanity" bits="network">
+<t:test_case testcaseid="lmtp_Verity_WindowsBitmap" type="functional" bits="network">
     <t:objective>Login to the test account </t:objective>
 
     <t:mailinjecttest>
@@ -72,7 +72,7 @@
             <from>${sender.name}</from>
             <server>${test_acct1.server}</server>
          </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test required="true">
         <t:request>

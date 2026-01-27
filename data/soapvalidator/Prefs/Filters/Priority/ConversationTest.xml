@@ -47,18 +47,18 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-            
+
 </t:test_case>
 
-<t:test_case testcaseid="covStartedbyMe_01" type="bhr" bugids="42185" >
+<t:test_case testcaseid="covStartedbyMe_01" type="sanity" bugids="42185" >
     <t:objective>Verify that conversation started by me is filtered for conversationTest filter with started attribute </t:objective>
-    
+
     <t:steps> 1. Create filter for conversationTest where="started" for account1 to flag
 			  2. account1 sends a message to account2
 			  3. accoun2 replies back to account1
 			  4. Verify that conversation got flagged in account1 inbox
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -75,20 +75,20 @@
 	<t:property name="filter_covStarted.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_convStarted.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="message.content1" value="content of the message01"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_covStarted.name}" active="1">
 						<filterTests condition="allof">
-						<conversationTest where="started"/>						
+						<conversationTest where="started"/>
 						</filterTests>
 						<filterActions>
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -96,7 +96,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:test id="sendmail1" required="true">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -113,16 +113,16 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse"/> 
+			<t:select path="//acct:GetInfoResponse"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 	<t:test required="true">
         <t:request>
@@ -152,7 +152,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -177,18 +177,18 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']" />
         </t:response>
     </t:test>
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CovParticipatedByMe_01" type="bhr" bugids="42185" >
+<t:test_case testcaseid="CovParticipatedByMe_01" type="sanity" bugids="42185" >
     <t:objective>Verify that conversation participated by me is filtered for conversationTest filter with participated attribute </t:objective>
-    
+
     <t:steps> 1. Create filter for conversationTest where="participated" for account2 to flag
 			  2. account1 sends a message to account2
 			  3. accoun2 replies back to account1
 			  4. account1 forwarded that message that to the account2
 			  5. Verify that conversation gets flagged in account2 inbox
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -205,20 +205,20 @@
 	<t:property name="filter_covParticipated.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_convParticipated.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="message.content1" value="content of the message01"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_covParticipated.name}" active="1">
 						<filterTests condition="allof">
-						<conversationTest where="participated"/>						
+						<conversationTest where="participated"/>
 						</filterTests>
 						<filterActions>
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -226,8 +226,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -240,7 +240,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test id="sendmail1" required="true">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -257,7 +257,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 	<t:test required="true">
         <t:request>
@@ -270,7 +270,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 
     <t:test>
         <t:request>
@@ -288,7 +288,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m"  attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:test required="true">
         <t:request>
@@ -301,7 +301,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 
     <t:test id="sendmail2" required="true">
         <t:request>
@@ -319,7 +319,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
 	<t:test required="true">
         <t:request>
@@ -344,7 +344,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']" />
         </t:response>
     </t:test>
-    
-</t:test_case> 
-	
+
+</t:test_case>
+
 </t:tests>

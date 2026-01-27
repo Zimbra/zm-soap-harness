@@ -10,7 +10,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -60,7 +60,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_FormatTGZ_ExportImport_Appointment_01" type="bhr">
+<t:test_case testcaseid="RestServlet_FormatTGZ_ExportImport_Appointment_01" type="sanity">
 	<t:objective>Verify export/import appointments using tgz format</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -88,15 +88,15 @@
 	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.content" value="content${TIME}${COUNTER}"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -158,7 +158,7 @@
 				<query>${appointment.subject}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subject}']" attr="invId" set="appointment.invId"/>
         </t:response>
     </t:test>

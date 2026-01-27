@@ -53,15 +53,15 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
    </t:test>
-    
-</t:test_case> 
+
+</t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 <t:property name="server.zimbraAdmin" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="PurgeAccountCalendarCache01" type="sanity" >
+<t:test_case testcaseid="PurgeAccountCalendarCache01" type="functional" >
  <t:objective>Purge a Account Calendar and verify that cache file got deleted</t:objective>
- 
+
  <t:steps>
     1. Make calendar appointment and search calendar appointments to generate calendar cache file
     2. Verify the calendar summary cache file exists and gets it's checksum(/opt/zimbra/data/tmp/calcache/0/Mailbox id/0/calendarfolderID.dat).
@@ -69,8 +69,8 @@
     4. Verify the cache file is gone
     5. Place a SearchRequest to generate the cache file again
     6. Verify the cache file has the same checksum
- </t:steps> 
-	
+ </t:steps>
+
 	 <!-- Login to admin -->
 	<t:test required="true" >
 	     <t:request>
@@ -83,7 +83,7 @@
 	     	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 	     </t:response>
     </t:test>
-    
+
     <t:test id="purgeaccountcalendarrequest1a">
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -95,7 +95,7 @@
 	            <t:select path="//admin:mbox" attr="mbxid" set="test_account1.mailbox.id"/>
             </t:select>
         </t:response>
-    </t:test>   
+    </t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -108,19 +108,19 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-    
+
     <t:property name="appt1.uid" value="${TIME}${COUNTER}"/>
-    <t:property name="appt1.start.gmt" value="${TIME(+1h)}"/> 
+    <t:property name="appt1.start.gmt" value="${TIME(+1h)}"/>
     <t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>
-    
+
     <t:test id="purgeaccountcalendarrequest2b">
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail">
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt1.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" loc="${appt1.location}">
-                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${tz}"/>
                             <or a="${test_account1.name}"/>
                         </inv>
                         <mp content-type="text/plain">
@@ -134,43 +134,43 @@
         <t:response>
             <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt1.apptId"/>
             <t:select path="//mail:SetAppointmentResponse/mail:default" attr="id" set="appt1.id"/>
-        </t:response>    
-    </t:test> 
-       
+        </t:response>
+    </t:test>
+
     <t:test >
         <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME-1d}" calExpandInstEnd="${TIME(+1d)}" sortBy="none" limit="500" offset="0">       
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME-1d}" calExpandInstEnd="${TIME(+1d)}" sortBy="none" limit="500" offset="0">
 			<query>inid:"10"</query>
 			<locale>en_US</locale>
 			</SearchRequest>
-        </t:request>        
+        </t:request>
         <t:response>
 			 <t:select path = "//mail:SearchResponse"/>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
     <t:staftask>
     	<t:request>
          	<server>${zimbraServer.name}</server>
          	<service>FS</service>
          	<params>LIST DIRECTORY  /opt/zimbra/data/tmp/calcache/0/${test_account1.mailbox.id}/0/ TYPE F</params>
-        </t:request>        
+        </t:request>
         <t:response>
         	<t:select regex= "(?s).*10.dat.*" />
-        </t:response>        
+        </t:response>
     </t:staftask>
-   
+
     <t:staftask>
     	<t:request>
          	<server>${zimbraServer.name}</server>
          	<service>PROCESS</service>
          	<params>START SHELL COMMAND "/usr/bin/md5sum /opt/zimbra/data/tmp/calcache/0/${test_account1.mailbox.id}/0/10.dat" RETURNSTDOUT WAIT </params>
-        </t:request>       
+        </t:request>
         <t:response>
         	<t:select regex="(?s)(RC.*)(Data.*:\s)([0-9a-fA-F].*[0-9a-fA-F])(.*opt.*$)" group="3" set="checksum"/>
-        </t:response> 
-    </t:staftask>   
-  
+        </t:response>
+    </t:staftask>
+
     <t:staftask >
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -178,7 +178,7 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov pacc ${test_account1.name}'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
     </t:staftask>
-	
+
     <t:staftask>
     	<t:request>
          	<server>${zimbraServer.name}</server>
@@ -187,9 +187,9 @@
         </t:request>
         <t:response>
         	<t:select regex='(?s)RC: 48.*' emptyset="0"/>
-        </t:response>   
-    </t:staftask>     
-   
+        </t:response>
+    </t:staftask>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME-1d}" calExpandInstEnd="${TIME(+1d)}" sortBy="none" limit="500" offset="0">
@@ -201,7 +201,7 @@
 			 <t:select path = "//mail:SearchResponse"/>
         </t:response>
     </t:test>
-    
+
    <t:staftask>
     	<t:request>
          	<server>${zimbraServer.name}</server>
@@ -210,20 +210,20 @@
         </t:request>
         <t:response>
         	<t:select regex= "(?s).*10.dat.*" />
-        </t:response>        
+        </t:response>
    </t:staftask>
-   
+
    <t:staftask>
     	<t:request>
          	<server>${zimbraServer.name}</server>
       	<service>PROCESS</service>
          	<params>START SHELL COMMAND "/usr/bin/md5sum /opt/zimbra/data/tmp/calcache/0/${test_account1.mailbox.id}/0/10.dat" RETURNSTDOUT WAIT </params>
-        </t:request>  
+        </t:request>
         <t:response>
         	<t:select regex="(?s)(RC.*)(${checksum}.*$)" group="2" />
-        </t:response> 
-   </t:staftask> 
-   
+        </t:response>
+   </t:staftask>
+
 </t:test_case>
 
 </t:tests>

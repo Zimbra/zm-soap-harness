@@ -84,7 +84,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -99,7 +99,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -114,7 +114,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -129,7 +129,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -144,25 +144,25 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account6.name}</name>
                 <password>${defaultpassword.value}</password>
-                
+
                 <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.false}</a>
-                
+
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account6.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
 		</t:response>
-    </t:test>  
-    
-    
+    </t:test>
+
+
     	<t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -174,9 +174,9 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account7.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
 		</t:response>
-    </t:test>  
-    
-    
+    </t:test>
+
+
     	<t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -189,10 +189,10 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account8.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account8.server"/>
 		</t:response>
-    </t:test>  
-   
+    </t:test>
+
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="AutoCompleteRequest_GALandShared_01" type="smoke">
     <t:objective>AutoCompleteRequest with zimbraPrefGalAutoCompleteEnabled=false and zimbraPrefSharedAddrBookAutoCompleteEnabled=false</t:objective>
@@ -263,11 +263,11 @@
                     <a n="firstName">${account1.firstname}</a>
                     <a n="lastName">${account6.contact1.lastname}</a>
                     <a n="email">${account6.contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>
         </t:response>
     </t:test>
 
@@ -295,17 +295,17 @@
                     <a n="firstName">${account1.firstname}</a>
                     <a n="lastName">${contact1.lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${account1.firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -316,11 +316,11 @@
  				<t:select path="//mail:match" attr="email" match=".*${account1.name}.*" emptyset="1"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="AutoCompleteRequest_GALandShared_02" type="bhr">
+<t:test_case testcaseid="AutoCompleteRequest_GALandShared_02" type="sanity">
     <t:objective>AutoCompleteRequest with zimbraPrefGalAutoCompleteEnabled=true and zimbraPrefSharedAddrBookAutoCompleteEnabled=false</t:objective>
 	<t:steps>
 	1. Login as account6
@@ -389,11 +389,11 @@
                     <a n="firstName">${account1.firstname}</a>
                     <a n="lastName">${account6.contact1.lastname}</a>
                     <a n="email">${account6.contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>
         </t:response>
     </t:test>
 
@@ -421,17 +421,17 @@
                     <a n="firstName">${account1.firstname}</a>
                     <a n="lastName">${contact1.lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${account1.firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -442,11 +442,11 @@
  				<t:select path="//mail:match" attr="email" match=".*${account1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="AutoCompleteRequest_GALandShared_03" type="bhr">
+<t:test_case testcaseid="AutoCompleteRequest_GALandShared_03" type="sanity">
     <t:objective>AutoCompleteRequest with zimbraPrefGalAutoCompleteEnabled=false and zimbraPrefSharedAddrBookAutoCompleteEnabled=true</t:objective>
 	<t:steps>
 	1. Login as account6
@@ -515,11 +515,11 @@
                     <a n="firstName">${account1.firstname}</a>
                     <a n="lastName">${account6.contact1.lastname}</a>
                     <a n="email">${account6.contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>
         </t:response>
     </t:test>
 
@@ -544,7 +544,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse">
 				<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account4.folder.contacts.id"/>
-			</t:select>			
+			</t:select>
 		</t:response>
 	</t:test>
 
@@ -570,17 +570,17 @@
                     <a n="firstName">${account1.firstname}</a>
                     <a n="lastName">${contact1.lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${account1.firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -591,11 +591,11 @@
  				<t:select path="//mail:match" attr="email" match=".*${account1.name}.*" emptyset="1"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="AutoCompleteRequest_GALandShared_04" type="bhr">
+<t:test_case testcaseid="AutoCompleteRequest_GALandShared_04" type="sanity">
     <t:objective>AutoCompleteRequest with zimbraPrefGalAutoCompleteEnabled=true and zimbraPrefSharedAddrBookAutoCompleteEnabled=true</t:objective>
 	<t:steps>
 	1. Login as account6
@@ -664,11 +664,11 @@
                     <a n="firstName">${account1.firstname}</a>
                     <a n="lastName">${account6.contact1.lastname}</a>
                     <a n="email">${account6.contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>
         </t:response>
     </t:test>
 
@@ -693,7 +693,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse">
 				<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account5.folder.contacts.id"/>
-			</t:select>			
+			</t:select>
 		</t:response>
 	</t:test>
 
@@ -719,17 +719,17 @@
                     <a n="firstName">${account1.firstname}</a>
                     <a n="lastName">${contact1.lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${account1.firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -740,12 +740,12 @@
  				<t:select path="//mail:match" attr="email" match=".*${account1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AutoCompleteRequest_GALandShared_05" type="bhr" bugids="65416" >
+<t:test_case testcaseid="AutoCompleteRequest_GALandShared_05" type="sanity" bugids="65416" >
     <t:objective>AutoCompleteRequest with firstname, lastname, firstname lastname, lastname firstname, email and partial of all these on shared contact</t:objective>
 	<t:steps>
 	1. Login as account7
@@ -814,11 +814,11 @@
                     <a n="firstName">${account7.contact1.firstname}</a>
                     <a n="lastName">${account7.contact1.lastname}</a>
                     <a n="email">${account7.contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account7.contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account7.contact1.id"/>
         </t:response>
     </t:test>
 
@@ -843,7 +843,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse">
 				<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account8.folder.contacts.id"/>
-			</t:select>			
+			</t:select>
 		</t:response>
 	</t:test>
 
@@ -859,11 +859,11 @@
         </t:response>
     </t:test>
 
-	
-	
+
+
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${account7.contact1.firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -872,12 +872,12 @@
  				<t:select path="//mail:match" attr="email" match=".*${account7.contact1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${account7.contact1.lastname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -886,12 +886,12 @@
  				<t:select path="//mail:match" attr="email" match=".*${account7.contact1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${account7.contact1.firstname} ${account7.contact1.lastname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -900,11 +900,11 @@
  				<t:select path="//mail:match" attr="email" match=".*${account7.contact1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${account7.contact1.name}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -913,7 +913,7 @@
  				<t:select path="//mail:match" attr="email" match=".*${account7.contact1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>

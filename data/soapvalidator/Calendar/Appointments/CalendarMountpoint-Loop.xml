@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
-    
+
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>
+
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
 
@@ -40,7 +40,7 @@
 
 
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -56,7 +56,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Basic_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -117,7 +117,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Loop_01" type="sanity" bugids="39949" duration="long">
+<t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Loop_01" type="functional" bugids="39949" duration="long">
     <t:objective>Verify a shared calendar can be mounted</t:objective>
     <t:steps>
         1. In a loop
@@ -127,9 +127,9 @@
     </t:steps>
 
 
-    <t:test_loop count="210">      
-        
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+    <t:test_loop count="210">
+
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	    <t:test  id="admin_login" required="true" depends="ping">
 	        <t:request>
@@ -142,7 +142,7 @@
 	            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 	        </t:response>
 	    </t:test>
-	
+
 		<t:property name="account.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
 	    <t:test required="true">
 	        <t:request>
@@ -156,9 +156,9 @@
 	            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server"/>
 	        </t:response>
 	    </t:test>
-	
+
 		<t:property name="server.zimbraAccount" value="${account.server}"/>
-	
+
 	    <t:test required="true">
 	        <t:request>
 	            <AuthRequest xmlns="urn:zimbraAccount">
@@ -168,10 +168,10 @@
 	        </t:request>
 	        <t:response>
 	            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
-	
+
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test required="true">
 	        <t:request>
 	            <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -181,7 +181,7 @@
 	            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test required="true">
 	        <t:request>
 	            <FolderActionRequest xmlns="urn:zimbraMail">
@@ -194,9 +194,9 @@
 	            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
 	        </t:response>
 	    </t:test>
-	
+
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	    <t:test required="true">
 	        <t:request>
 	            <AuthRequest xmlns="urn:zimbraAccount">
@@ -206,10 +206,10 @@
 	        </t:request>
 	        <t:response>
 	            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
-	
+
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test required="true">
 	        <t:request>
 	            <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -220,12 +220,12 @@
 	            <t:select path="//mail:CreateMountpointResponse"/>
 	        </t:response>
 	    </t:test>
-	
+
     </t:test_loop>
 
 
 </t:test_case>
-    
+
 
 
 </t:tests>

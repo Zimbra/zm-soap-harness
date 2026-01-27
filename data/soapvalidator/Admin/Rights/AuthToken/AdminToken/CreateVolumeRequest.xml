@@ -67,7 +67,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -80,7 +80,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -93,7 +93,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -106,14 +106,14 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="destination.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="destination.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AuthToken_Admin_CreateVolumeRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AuthToken_Admin_CreateVolumeRequest_Basic01" type="sanity">
     <t:objective>Use an admin token to CreateVolumeRequest</t:objective>
     <t:steps>
     1. Login as admin
@@ -165,7 +165,7 @@
 			<params>START SHELL COMMAND "chmod 777 ${basedir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
 	</t:staftask>
-	
+
 	<t:property name="volume1.name" value="volume${TIME}${COUNTER}"/>
 	<t:property name="volume1.path" value="${basedir}/rootpath${COUNTER}${TIME}"/>
 	<t:staftask >
@@ -187,8 +187,8 @@
     <t:test>
         <t:request>
             <CreateVolumeRequest  xmlns="urn:zimbraAdmin">
-				<volume type="1" name="${volume1.name}" 
-					rootpath="${volume1.path}" 
+				<volume type="1" name="${volume1.name}"
+					rootpath="${volume1.path}"
 					compressBlobs="0" compressionThreshold="4096"/>
 			</CreateVolumeRequest>
         </t:request>

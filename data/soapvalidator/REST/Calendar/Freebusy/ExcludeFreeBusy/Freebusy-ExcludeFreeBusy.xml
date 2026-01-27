@@ -26,7 +26,7 @@
 <t:test_case testcaseid="RestServlet_calendar_ics_account_setup" type="always" >
     <t:objective>create test account</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test id="admin_login" required="true" >
         <t:request>
@@ -82,14 +82,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_Calendar_Freebusy_excludeFreeBusy_01" type="bhr">
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_excludeFreeBusy_01" type="sanity">
     <t:objective>Create an appointment in a folder that is included in F/B, verify F/B shows the block</t:objective>
 	<t:steps>
 	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
 	</t:steps>
 
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -116,7 +116,7 @@
 	</t:test>
 
 	<t:property name="folder.name" value="calendar${TIME}${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -130,15 +130,15 @@
 
 	<t:property name="freebusy.start" value="1263902400000"/>	<!-- Jan 10, 2010 12:00:00 -->
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m l="${folder.id}">
-                    <inv > 
+                    <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
-	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>
 	                        <or a="${account2.name}"/>
                         </comp>
                     </inv>
@@ -183,14 +183,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_Calendar_Freebusy_excludeFreeBusy_02" type="bhr">
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_excludeFreeBusy_02" type="sanity">
     <t:objective>Create an appointment in a folder that is excluded in F/B, verify F/B shows the block</t:objective>
 	<t:steps>
 	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
 	</t:steps>
 
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -217,7 +217,7 @@
 	</t:test>
 
 	<t:property name="folder.name" value="calendar${TIME}${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -231,15 +231,15 @@
 
 	<t:property name="freebusy.start" value="1295438400000"/>	<!-- Jan 10, 2011 12:00:00 -->
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m l="${folder.id}">
-                    <inv > 
+                    <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
-	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>
 	                        <or a="${account2.name}"/>
                         </comp>
                     </inv>
@@ -284,14 +284,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_Calendar_Freebusy_excludeFreeBusy_03" type="bhr">
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_excludeFreeBusy_03" type="sanity">
     <t:objective>Exclude a folder from F/B, verify F/B shows the block</t:objective>
 	<t:steps>
 	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
 	</t:steps>
 
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -318,7 +318,7 @@
 	</t:test>
 
 	<t:property name="folder.name" value="calendar${TIME}${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -332,15 +332,15 @@
 
 	<t:property name="freebusy.start" value="1266580800000"/>	<!-- Feb 19, 2010 12:00:00 -->
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m l="${folder.id}">
-                    <inv > 
+                    <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
-	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>
 	                        <or a="${account2.name}"/>
                         </comp>
                     </inv>
@@ -398,14 +398,14 @@
 
 
 
-<t:test_case testcaseid="RestServlet_Calendar_Freebusy_excludeFreeBusy_04" type="bhr">
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_excludeFreeBusy_04" type="sanity">
     <t:objective>Exclude a folder from F/B, verify F/B shows the block</t:objective>
 	<t:steps>
 	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
 	</t:steps>
 
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -432,7 +432,7 @@
 	</t:test>
 
 	<t:property name="folder.name" value="calendar${TIME}${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -446,15 +446,15 @@
 
 	<t:property name="freebusy.start" value="1298116800000"/>	<!-- Feb 19, 2011 12:00:00 -->
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m l="${folder.id}">
-                    <inv > 
+                    <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
-	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>
 	                        <or a="${account2.name}"/>
                         </comp>
                     </inv>

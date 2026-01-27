@@ -52,8 +52,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct01.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -65,26 +65,26 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct02.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test>  
-	
+    </t:test>
+
 </t:test_case>
 
 
 
 
-<t:test_case testcaseid="bug64903" type="bhr" bugids="64903">
+<t:test_case testcaseid="bug64903" type="sanity" bugids="64903">
 	<t:objective>
-		Verify pnsrc attribute return in GetMsgResponse. 
+		Verify pnsrc attribute return in GetMsgResponse.
 	</t:objective>
 	<t:steps>
-	 	   1. Login to ZCS as user1 
+	 	   1. Login to ZCS as user1
            2. Disable option 'Display pictures automatically in HTML Email'.
            3. Login as user2 and send an HTML email with an image(which is neither internal nor external) to user1.
-           4. Check the mail as user1.	> To check if pnsrc attribute return in GetMsgResponse. 
+           4. Check the mail as user1.	> To check if pnsrc attribute return in GetMsgResponse.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-	
+
 	<t:test required="true">
 	 <t:request>
 	  <AuthRequest xmlns="urn:zimbraAccount">
@@ -97,18 +97,18 @@
 		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test id="modifyprefsrequest1">
         <t:request>
 			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
-				<pref name="zimbraPrefDisplayExternalImages">FALSE</pref>				
+				<pref name="zimbraPrefDisplayExternalImages">FALSE</pref>
 			</ModifyPrefsRequest>
         </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
 		<foldername>${acct01.dir}</foldername>
@@ -116,7 +116,7 @@
 		<from>${nonZimbraUser.name}</from>
 		<server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test required="true">
 	 <t:request>
@@ -130,7 +130,7 @@
 		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 	    	<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -152,7 +152,7 @@
 		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp/mail:mp/mail:content" contains="pnsrc"/>
 		</t:response>
     </t:test>
-	
+
 </t:test_case>
 
 </t:tests>

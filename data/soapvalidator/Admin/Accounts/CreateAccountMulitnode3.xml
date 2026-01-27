@@ -26,7 +26,7 @@
     <t:objective>Account setup </t:objective>
 	<t:steps> 1. Login to admin.
 			  2. Get the Servers.
-			  3. Create COS using the servers.			
+			  3. Create COS using the servers.
 	</t:steps>
 
     <t:test id="admin_login" required="true" >
@@ -54,7 +54,7 @@
 	<t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name}</name>        
+                <name xmlns="">${COS.name}</name>
                 <a n="zimbraMailHostPool">${serverA.id}</a>
 				<a n="zimbraMailHostPool">${serverB.id}</a>
             </CreateCosRequest>
@@ -68,7 +68,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAccMultinode3_01" hostCount="2" type="bhr">
+<t:test_case testcaseid="CreateAccMultinode3_01" hostCount="2" type="sanity">
     <t:objective>Verify that the accounts with COS having 2 servers(A and B) in the server Pool are getting created on server A or B but not on C.</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -84,7 +84,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  match="${multihostC.FQDN}" emptyset ="1"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -97,8 +97,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  match="${multihostC.FQDN}" emptyset ="1"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -110,7 +110,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  match="${multihostC.FQDN}" emptyset ="1"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

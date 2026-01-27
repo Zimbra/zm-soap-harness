@@ -1,6 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-  
+
+
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="invitee.name" value="invitee.${TIME}.${COUNTER}@${defaultdomain.name}"/>
@@ -15,7 +15,7 @@
 <t:property name="time.20190101120000.pst" value="${TIME(-8h)[${time.20190101120000.gmt}]}"/>
 <t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -31,7 +31,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="CalendarSharing_Bug31058" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -94,15 +94,15 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CalendarSharing_Bug31058" type="sanity" bugids="31058">
+<t:test_case testcaseid="CalendarSharing_Bug31058" type="functional" bugids="31058">
     <t:objective>Verify tracking data is updated for invitee when appointment is viewed from organizer </t:objective>
     <t:steps>
         1. Login as account1.  Share calendar with account2 giving manager rights.
         2. Login as account2.
-        3. Accept the share 
+        3. Accept the share
 		4. Create appointment on behalf of account1 and invitee "invitee.name"
 		5. Login as invitee and accept the appointment
-		6. Login as account2 to check the tracking data of invitee 
+		6. Login as account2 to check the tracking data of invitee
 		7. Now login as account1 and check for the same tracking data
     </t:steps>
 
@@ -241,13 +241,13 @@
 				<query>inid:${account3.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
             	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
             	<t:select attr="name" match="${appointment.subject}"/>
             	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -305,10 +305,10 @@
 				<query>inid:${account2.delegated.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -348,10 +348,10 @@
 				<query>inid:${account1.folder.calendar.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -373,6 +373,6 @@
 
 
 </t:test_case>
-    
+
 
 </t:tests>

@@ -46,7 +46,7 @@
 
 <t:property name="now" value="${TIME}"/>
 	<t:property name="end" value="${TIME(+10h)}"/>
-	
+
 <t:property name="notification.content" value="Your device verification code for receiving reminders is"/>
 
 <t:property name="uploadFile.name" value="${soapxml.root}/REST/Calendar/Post/basic.ics"/>
@@ -54,7 +54,7 @@
 
 <t:test_case testcaseid="CalendarRequest_AccountSetup" type="always" >
     <t:objective>Account setup for all calendar requests smoke test</t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -66,7 +66,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -80,7 +80,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -93,11 +93,11 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="GetWorkingHoursRequest_01" type="smoke">
-    <t:objective>Verify user can retrieve the user's working hours within the given time range. </t:objective>	
+    <t:objective>Verify user can retrieve the user's working hours within the given time range. </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -112,15 +112,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -135,20 +135,20 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="${test_account1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetWorkingHoursResponse/mail:usr"/>           
+        <t:response>
+            <t:select path="//mail:GetWorkingHoursResponse/mail:usr"/>
         </t:response>
-    </t:test>     
-         
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="GetWorkingHoursRequest_02" type="bhr">
-    <t:objective>Send GetWorkingHoursRequest with blank s="RANGE_START" time - service.INVALID_REQUEST </t:objective>	
+<t:test_case testcaseid="GetWorkingHoursRequest_02" type="sanity">
+    <t:objective>Send GetWorkingHoursRequest with blank s="RANGE_START" time - service.INVALID_REQUEST </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -163,15 +163,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -186,20 +186,20 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="" e="${end}" id="${test_account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>     
-         
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="GetWorkingHoursRequest_03" type="bhr">
-    <t:objective>Send GetWorkingHoursRequest with blank e="RANGE_END" time - service.INVALID_REQUEST</t:objective>	
+<t:test_case testcaseid="GetWorkingHoursRequest_03" type="sanity">
+    <t:objective>Send GetWorkingHoursRequest with blank e="RANGE_END" time - service.INVALID_REQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -214,15 +214,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -237,21 +237,21 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="" id="${test_account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>     
-         
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetWorkingHoursRequest_04" type="bhr">
-    <t:objective>Send GetWorkingHoursRequest with negative value for s="RANGE_START" time - service.INVALID_REQUEST</t:objective>	
+<t:test_case testcaseid="GetWorkingHoursRequest_04" type="sanity">
+    <t:objective>Send GetWorkingHoursRequest with negative value for s="RANGE_START" time - service.INVALID_REQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -266,15 +266,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -289,20 +289,20 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="-111111" e="${end}" id="${test_account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
              <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>     
-         
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="GetWorkingHoursRequest_05" type="bhr">
-    <t:objective>Send GetWorkingHoursRequest with negative value for e="RANGE_END" time - service.INVALID_REQUEST</t:objective>	
+<t:test_case testcaseid="GetWorkingHoursRequest_05" type="sanity">
+    <t:objective>Send GetWorkingHoursRequest with negative value for e="RANGE_END" time - service.INVALID_REQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -317,15 +317,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -340,20 +340,20 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="-11111" id="${test_account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
              <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>     
-         
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="GetWorkingHoursRequest_06" type="bhr">
-    <t:objective>Send GetWorkingHoursRequest with s="RANGE_START" and e="RANGE_END" time as alphabets. - service.INVALID_REQUEST </t:objective>	
+<t:test_case testcaseid="GetWorkingHoursRequest_06" type="sanity">
+    <t:objective>Send GetWorkingHoursRequest with s="RANGE_START" and e="RANGE_END" time as alphabets. - service.INVALID_REQUEST </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -368,15 +368,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -391,16 +391,16 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="aaaa" e="bbbb" id="${test_account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
              <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>     
-         
+    </t:test>
+
 </t:test_case>
 
 <t:test_case testcaseid="GetWorkingHoursRequest_07" type="deprecated" >
@@ -420,15 +420,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -443,82 +443,82 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
     <!-- Blank ID  -->
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id=""/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <!-- Alphabets -->
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="aaaa"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <!-- Leading spaces -->
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="    ${test_account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>     
-    
+    </t:test>
+
     <!-- trailing spaces -->
      <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="${test_account1.id}      "/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>     
-    
-    <!-- Leading and trailing Spaces --> 
+    </t:test>
+
+    <!-- Leading and trailing Spaces -->
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="    ${test_account1.id}   "/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>   
-    
-    <!-- Leading & trailing Spaces --> 
+    </t:test>
+
+    <!-- Leading & trailing Spaces -->
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="#@!*"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="8ef2300f-a7ab-4bd1-a47c-70fdf942d1d9"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>  
-    
-    
-        
+    </t:test>
+
+
+
 </t:test_case>
 
-<t:test_case testcaseid="GetWorkingHoursRequest_08" type="bhr" bugids="50209">
-    <t:objective> Verify GetWorkingHoursRequest soap api for retrieving working hours of multiple users </t:objective>	
+<t:test_case testcaseid="GetWorkingHoursRequest_08" type="sanity" bugids="50209">
+    <t:objective> Verify GetWorkingHoursRequest soap api for retrieving working hours of multiple users </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -533,15 +533,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -556,14 +556,14 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
   	<t:property name="time1" value="${TIME(-1d)}"/>
 	<t:property name="time2" value="${TIME(+1d)}"/>
-	
+
 	<t:delay sec="30"/>
 
-    
-    <!-- Send GetWorkingHoursRequest with multiple name : check for free/no data available. --> 
+
+    <!-- Send GetWorkingHoursRequest with multiple name : check for free/no data available. -->
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${time1}" e="${time2}" name="${test_account2.name},${test_account3.name}"/>
@@ -572,22 +572,22 @@
         <t:select path="//mail:GetWorkingHoursResponse/mail:usr[@id='${test_account2.name}']"/>
         <t:select path="//mail:GetWorkingHoursResponse/mail:usr[@id='${test_account3.name}']"/>
     </t:response>
-    </t:test>     
-    
-   
+    </t:test>
+
+
     <t:property name="time1" value="${TIME(-1d)}"/>
 	<t:property name="time2" value="${TIME(+1d)}"/>
 	<t:property name="Time4" value="${CURRDATE(+1d)}"/>
-	
-    
+
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="O" transp="O" status="CONF"  allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account1.name}"/>
-                        <s d="${Time4}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time4}"/>
+                        <e d="${Time4}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -601,7 +601,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
     <t:test id="auth1" required="true">
         <t:request>
@@ -621,23 +621,23 @@
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${time1}" e="${time2}" name="${test_account1.name}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetWorkingHoursResponse/mail:usr[@id='${test_account1.name}']" attr="u"/>
         </t:response>
     </t:test>
-    
-       
+
+
        <!-- Send GetWorkingHoursRequest with uid : No data should returned.  -->
       <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${time1}" e="${time2}" uid="${test_account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
         	<t:select path="//mail:GetWorkingHoursResponse"/>
-   
+
         </t:response>
     </t:test>
-         
+
 </t:test_case>
 
 

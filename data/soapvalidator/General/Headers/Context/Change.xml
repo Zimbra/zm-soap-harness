@@ -101,7 +101,7 @@
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="acct1_login" type="bhr">
+<t:test_case testcaseid="acct1_login" type="sanity">
     <t:objective>Login as the test account and get the folder list</t:objective>
     <t:steps>
         1. Login to test account
@@ -132,14 +132,14 @@
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
             <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/>
             <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.draft"/>
-            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>	
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Context_Change_01" type="sanity">
+<t:test_case testcaseid="Context_Change_01" type="functional">
     <t:objective>Verify MODIFY_CONFLICT response if change token and message id are the same for two different requests (SaveDraftRequest)</t:objective>
     <t:steps>
         1. Save a draft, record the new change token and message id
@@ -165,7 +165,7 @@
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:requestContext>
             <authToken>${authToken}</authToken>
@@ -226,7 +226,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Context_Change_02" type="sanity">
+<t:test_case testcaseid="Context_Change_02" type="functional">
     <t:objective>Verify MODIFY_CONFLICT response if change token and message id are the same for two different requests (ModifyContactRequest)</t:objective>
     <t:steps>
         1. Save a contact, record the new change token and message id
@@ -248,7 +248,7 @@
             <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:requestContext>
             <authToken>${authToken}</authToken>
@@ -266,7 +266,7 @@
             <t:select path="//mail:ModifyContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:requestContext>
             <authToken>${authToken}</authToken>
@@ -284,7 +284,7 @@
             <t:select path="//zimbra:Code" match="^mail.MODIFY_CONFLICT$"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetContactsRequest xmlns="urn:zimbraMail">
@@ -295,10 +295,10 @@
             <t:select path='//mail:GetContactsResponse/mail:cn/mail:a[@n="email"]' match="${contact1.email2}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Context_Change_03" type="sanity">
+<t:test_case testcaseid="Context_Change_03" type="functional">
     <t:objective>Verify INVITE_OUT_OF_DATE response if change token and message id are the same for two different requests (ModifyApptRequest)</t:objective>
     <t:steps>
         1. Save a appointment, record the new change token and message id
@@ -312,8 +312,8 @@
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject1}" loc="${appointment1.location1}">
-                        <s d="${appointment1.start}"/>  
-                        <e d="${appointment1.finish}"/>  
+                        <s d="${appointment1.start}"/>
+                        <e d="${appointment1.finish}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -327,7 +327,7 @@
             <t:select path="//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
@@ -339,7 +339,7 @@
         </t:response>
     </t:test>
 
-	<t:delay msec="1000"/>	
+	<t:delay msec="1000"/>
 
     <t:test>
         <t:request>
@@ -363,8 +363,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject2}" loc="${appointment1.location2}">
-                        <s d="${appointment1.start}"/>  
-                        <e d="${appointment1.finish}"/>  
+                        <s d="${appointment1.start}"/>
+                        <e d="${appointment1.finish}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -390,8 +390,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject3}" loc="${appointment1.location3}">
-                        <s d="${appointment1.start}"/>  
-                        <e d="${appointment1.finish}"/>  
+                        <s d="${appointment1.start}"/>
+                        <e d="${appointment1.finish}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">

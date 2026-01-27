@@ -11,8 +11,8 @@
 <t:property name="folder5.name" value="folder.${TIME}.${COUNTER}"/>
 <t:property name="folder6.name" value="folder.${TIME}.${COUNTER}"/>
 <t:property name="folder6.newname" value="folder.${TIME}.${COUNTER}"/>
-    
-<t:property name="folder.nonlatinname" value="&#12465;&#12525;&#12525;&#36557;&#26361;"/>    
+
+<t:property name="folder.nonlatinname" value="&#12465;&#12525;&#12525;&#36557;&#26361;"/>
 
 <t:property name="folder.spaceinname" value="fold      er.${TIME}.${COUNTER}"/>
 <t:property name="folder.blankname" value=""/>
@@ -42,9 +42,9 @@
 
 <t:test_case testcaseid="acct1_setup" type="always" >
     <t:objective>create test account</t:objective>
-    <t:steps> 
+    <t:steps>
         1. Login to admin.
-        2. Create admin account. 
+        2. Create admin account.
     </t:steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -64,10 +64,10 @@
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
                 <password>${test_account1.password}</password>
-                <!-- 
+                <!--
                 <a n="zimbraMailHost">${LOCALHOST}</a>
                 <a n="zimbraMailStatus">enabled</a>
-                <a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+                <a n="zimbraMailDeliveryAddress">${test_account1.name}</a>
                 <a n="zimbraPasswordMinAge">7</a>
                 Commenting out the optional attributes and sending the request with minimal requirement
                  -->
@@ -134,7 +134,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest2" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest2" type="functional" >
     <t:objective>Create a folder with blank folder name </t:objective>
 
     <t:test>
@@ -144,7 +144,7 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^mail.INVALID_NAME"/>            
+            <t:select path="//zimbra:Code" match="^mail.INVALID_NAME"/>
         </t:response>
     </t:test>
 
@@ -153,7 +153,7 @@
 
 
 
-<t:test_case testcaseid="CreateFolderRequest3" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest3" type="functional" >
  <t:objective>Create a folder with all spaces in folder name </t:objective>
 
     <t:test>
@@ -170,7 +170,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest4" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest4" type="functional" >
     <t:objective>Create a folder with special characters in folder name </t:objective>
 
     <t:test>
@@ -187,7 +187,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest5" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest5" type="functional" >
     <t:objective>Create a folder with duplicate folder name </t:objective>
 
     <t:test depends="CreateFolderRequest1a">
@@ -197,14 +197,14 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>        
+            <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest6" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest6" type="functional" >
     <t:objective>Create a folder with nonexisting parent folder name </t:objective>
 
     <t:test>
@@ -214,14 +214,14 @@
             </CreateFolderRequest>
          </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER|^mail.NO_SUCH_ITEM"/>        
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER|^mail.NO_SUCH_ITEM"/>
         </t:response>
 </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest7" type="functional" bugids="1744" >
+<t:test_case testcaseid="CreateFolderRequest7" type="regression" bugids="1744" >
     <t:objective>Create a folder with blank parent folder name </t:objective>
 
     <t:test>
@@ -231,14 +231,14 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>    
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
 </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest8" type="functional" >
+<t:test_case testcaseid="CreateFolderRequest8" type="regression" >
     <t:objective>Create a folder with No parent folder name </t:objective>
 
     <t:test >
@@ -255,7 +255,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest9" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest9" type="functional" >
     <t:objective>Create a folder with duplicate name but with leading spaces </t:objective>
 
     <t:test>
@@ -272,7 +272,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest10" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest10" type="functional" >
     <t:objective>Create a folder with duplicate name but with trailing spaces </t:objective>
 
     <t:test>
@@ -282,14 +282,14 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-        <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>   
+        <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
         </t:response>
 </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest11" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest11" type="functional" >
     <t:objective>Create a folder having spaces within the folder name</t:objective>
 
     <t:test>
@@ -298,15 +298,15 @@
                 <folder name="${folder.spaceinname}" l="${folder.pname}"/>
             </CreateFolderRequest>
         </t:request>
-        <t:response>     
+        <t:response>
          <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="CreateFolderRequest12" type="sanity" bugids="2813">
+
+<t:test_case testcaseid="CreateFolderRequest12" type="functional" bugids="2813">
     <t:objective>Create a folder with non-latin-1 name </t:objective>
 
     <t:test id="CreateFolderRequest1a" >
@@ -320,10 +320,10 @@
         </t:response>
 </t:test>
 
-</t:test_case>    
+</t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest13" type="sanity" bugids="8170">
+<t:test_case testcaseid="CreateFolderRequest13" type="functional" bugids="8170">
     <t:objective> Verify color and flag (as checked) can be set while creating folders </t:objective>
 
 	<t:test>
@@ -335,7 +335,7 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder_inbox.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder_trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder_sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder_spam.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder_spam.id"/>
 
 		</t:response>
 	</t:test>
@@ -344,8 +344,8 @@
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name}" l="${folder_inbox.id}" color="3" f="checked"/>
-				<acl> 
-					<grant perm="rwidax" gt="usr" zid="${test_account1.id}" d="${other.user}"/> 
+				<acl>
+					<grant perm="rwidax" gt="usr" zid="${test_account1.id}" d="${other.user}"/>
 				</acl>
             </CreateFolderRequest>
         </t:request>
@@ -355,11 +355,11 @@
         </t:response>
 	</t:test>
 
-</t:test_case>    
+</t:test_case>
 
 
 
-<t:test_case testcaseid="436615" type="sanity" >
+<t:test_case testcaseid="436615" type="functional" >
     <t:objective> Verify  CreateFolderRequest for flag value "#" </t:objective>
 
     <t:test>
@@ -375,10 +375,10 @@
         </t:response>
 	</t:test>
 
-</t:test_case>    
+</t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest15" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest15" type="functional" >
     <t:objective> Verify if f="b" is specified, it do not include any appointments from this folder in the users F/B</t:objective>
 
     <t:test>
@@ -408,8 +408,8 @@
                 <m l="${myfolder.id}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment1.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${other.user}"/>
-                        <s d="${ICALTIME[${appt1.start}]}"/>  
-                        <e d="${ICALTIME(+1h)[${appt1.start}]}"/>  
+                        <s d="${ICALTIME[${appt1.start}]}"/>
+                        <e d="${ICALTIME(+1h)[${appt1.start}]}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account1.name}" t="t"/>
@@ -445,15 +445,15 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-2d)[${appt1.start}]}" e="${TIME(+2d)[${appt1.start}]}" uid="${test_account1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse//mail:usr" attr="b" emptyset="1"/>            
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse//mail:usr" attr="b" emptyset="1"/>
         </t:response>
     </t:test>
 
-</t:test_case>  
+</t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest16" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest16" type="functional" >
     <t:objective> Verify CreateFolderRequest with flag value "*" </t:objective>
 
     <t:test>
@@ -468,9 +468,9 @@
         </t:response>
 	</t:test>
 
-</t:test_case>    
+</t:test_case>
 
-<t:test_case testcaseid="CreateFolderRequest17" type="sanity" bugids="32397">
+<t:test_case testcaseid="CreateFolderRequest17" type="functional" bugids="32397">
     <t:objective> CreateFolderRequest works when full path is specified instead of parent folder id </t:objective>
 
     <t:test>
@@ -484,9 +484,9 @@
         </t:response>
 	</t:test>
 
-</t:test_case>    
+</t:test_case>
 
-<t:test_case testcaseid="CreateFolderRequest18" type="sanity" bugids="35890">
+<t:test_case testcaseid="CreateFolderRequest18" type="functional" bugids="35890">
     <t:objective> CreateFolderRequest sets the view correctly for nested folders </t:objective>
 
 	<t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
@@ -602,6 +602,6 @@
     </t:test>
 
 
-</t:test_case>    
+</t:test_case>
 
 </t:tests>

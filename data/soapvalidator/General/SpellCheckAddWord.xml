@@ -14,7 +14,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Login to admin </t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -40,13 +40,13 @@
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -54,12 +54,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account3.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -67,12 +67,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -80,18 +80,18 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-	
-</t:test_case> 
+
+</t:test_case>
 
 
-<t:test_case testcaseid="SpellCheck_AddWord_01" type="bhr" bugids="4495">
+<t:test_case testcaseid="SpellCheck_AddWord_01" type="sanity" bugids="4495">
     <t:objective>Add word to personal dictionary.</t:objective>
     <t:steps>
 	1. Do a spell check on unknown word
 	2. Add the word to personal dictionary
 	3. Do a spell check again and check that the word is not misspelled
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test >
         <t:request>
@@ -105,7 +105,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word1}</CheckSpellingRequest>
@@ -141,14 +141,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SpellCheck_AddWord_02" type="bhr" bugids="4495">
+<t:test_case testcaseid="SpellCheck_AddWord_02" type="sanity" bugids="4495">
     <t:objective>Add word to personal dictionary. Verify that spell check is case sensitive.</t:objective>
     <t:steps>
 	1. Do a spell check on unknown word
 	2. Add the word to personal dictionary
 	3. Do a spellcheck again checking the word in capital and check that the word is misspelled
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test >
         <t:request>
@@ -162,7 +162,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 	<t:request>
 		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -173,7 +173,7 @@
 		<t:select path="//acct:ModifyPrefsResponse"/>
 	</t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word3}</CheckSpellingRequest>
@@ -209,14 +209,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SpellCheck_AddWord_03" type="bhr" bugids="4495">
+<t:test_case testcaseid="SpellCheck_AddWord_03" type="sanity" bugids="4495">
     <t:objective>Add multiple word to personal dictionary.</t:objective>
     <t:steps>
 	1. Do a spell check on 2 unknown words
 	2. Add the words to personal dictionary
 	3. Do a spell check again and check that the words are not misspelled.
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${account3.server}"/>
     <t:test >
         <t:request>
@@ -230,7 +230,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word2}</CheckSpellingRequest>
@@ -251,7 +251,7 @@
 		<t:select path="//acct:ModifyPrefsResponse"/>
 	</t:response>
     </t:test>
-	
+
     <t:test>
 	<t:request>
 		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -275,7 +275,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SpellCheck_AddWord_04" type="bhr" bugids="76367">
+<t:test_case testcaseid="SpellCheck_AddWord_04" type="sanity" bugids="76367">
     <t:objective>Verify zimbraPrefSpellIgnoreAllCaps ignores string in ALL CAPS in CheckSpellingRequest.</t:objective>
 
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -291,7 +291,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 	<t:request>
 		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -302,7 +302,7 @@
 		<t:select path="//acct:ModifyPrefsResponse"/>
 	</t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word3.cap}</CheckSpellingRequest>

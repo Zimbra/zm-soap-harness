@@ -14,7 +14,7 @@
 <t:test_case testcaseid="Briefcase_MoveFiles_Setup" type="always" >
     <t:objective>basic system check</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -47,14 +47,14 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>      
-    
-</t:test_case>  
- 
-  
-<t:test_case testcaseid="Briefcase_Movefiles_01" type="bhr">
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_Movefiles_01" type="sanity">
     <t:objective>Create briefcase folders and move files among those folders</t:objective>
-    
+
     <t:steps>
 	    1. Login to account1
 	    2. Create a Briefcase folders
@@ -76,29 +76,29 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder1.name}"/>  	 
+                <folder l="1" name="${folder1.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.briefcase1.id"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder2.name}"/>  	 
+                <folder l="1" name="${folder2.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.briefcase2.id"/>
         </t:response>
-    </t:test>    
-         
+    </t:test>
+
     <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.htmlfile}</filename>
@@ -107,7 +107,7 @@
 			<t:select attr="id" set="document.htmlfile.id"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -115,8 +115,8 @@
 		<t:uploadServletResponse>
 			<t:select attr="id" set="document.textfile.id"/>
 		</t:uploadServletResponse>
-	</t:uploadservlettest>	
-	
+	</t:uploadservlettest>
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -128,19 +128,19 @@
         <t:response>
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="briefcase1.document1.id"/>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
     <t:test >
         <t:request>
-			<ItemActionRequest xmlns="urn:zimbraMail">			  
-			    <action id="${briefcase1.document1.id}" l="${folder.briefcase2.id}" op="move"/>			
+			<ItemActionRequest xmlns="urn:zimbraMail">
+			    <action id="${briefcase1.document1.id}" l="${folder.briefcase2.id}" op="move"/>
 			</ItemActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ItemActionResponse" />
         </t:response>
     </t:test>
-    
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -153,39 +153,39 @@
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="briefcase2.document1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
-			<ItemActionRequest xmlns="urn:zimbraMail">			  
-			    <action id="${briefcase2.document1.id}" l="${folder.briefcase1.id}" op="move"/>			
+			<ItemActionRequest xmlns="urn:zimbraMail">
+			    <action id="${briefcase2.document1.id}" l="${folder.briefcase1.id}" op="move"/>
 			</ItemActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ItemActionResponse" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="document">
                 <query> in:"${folder1.name}" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
-            <t:select path="//mail:SearchResponse/mail:doc" attr="id" match="${briefcase2.document1.id}" />           
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:doc" attr="id" match="${briefcase2.document1.id}" />
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="document">
                 <query> in:"${folder2.name}" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
-            <t:select path="//mail:SearchResponse/mail:doc" attr="id" match="${briefcase1.document1.id}" />           
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:doc" attr="id" match="${briefcase1.document1.id}" />
         </t:response>
-    </t:test> 
-       
-   </t:test_case>  
+    </t:test>
+
+   </t:test_case>
 </t:tests>

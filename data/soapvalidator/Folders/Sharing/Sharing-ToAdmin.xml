@@ -46,7 +46,7 @@
     <t:objective>basic system check</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test  id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -115,7 +115,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersToAdmin_01" type="bhr" bugids="7425">
+<t:test_case testcaseid="SharingFoldersToAdmin_01" type="sanity" bugids="7425">
     <t:objective>Verify an admin user only has user rights, if logged into the user interface</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -131,7 +131,7 @@
 	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
 	12. Create a subfolder in the folder.  PERM_DENIED.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="account1.folder1.name" value="folder${TIME}${COUNTER}"/>
@@ -168,7 +168,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -201,7 +201,7 @@ Message Content
             <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -272,7 +272,7 @@ Message Content
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="admin1.message1.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -318,7 +318,7 @@ Message Content
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -329,7 +329,7 @@ Message Content
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -341,7 +341,7 @@ Message Content
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -353,10 +353,10 @@ Message Content
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test >
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="SharingFoldersToAdmin_02" type="bhr" bugids="7425">
+<t:test_case testcaseid="SharingFoldersToAdmin_02" type="sanity" bugids="7425">
     <t:objective>Verify an admin user has admin rights, if logged into the admin interface</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -372,7 +372,7 @@ Message Content
 	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
 	12. Create a subfolder in the folder.  PERM_DENIED.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="account1.folder1.name" value="folder${TIME}${COUNTER}"/>
@@ -409,7 +409,7 @@ Message Content
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -442,7 +442,7 @@ Message Content
             <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -513,7 +513,7 @@ Message Content
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="admin1.message1.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -559,7 +559,7 @@ Message Content
             <t:select path="//mail:MsgActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -570,7 +570,7 @@ Message Content
             <t:select path="//mail:MsgActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -582,7 +582,7 @@ Message Content
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -594,7 +594,7 @@ Message Content
             <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
     </t:test >
-    
+
 </t:test_case>
 
 

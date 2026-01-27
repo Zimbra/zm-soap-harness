@@ -24,9 +24,9 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="CreateAccountRequest_01" type="bhr">
+<t:test_case testcaseid="CreateAccountRequest_01" type="sanity">
     <t:objective>Sanity test for CreateAccountRequest</t:objective>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -38,7 +38,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -47,16 +47,16 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" />			                 
+			<t:select path="//admin:CreateAccountResponse/admin:account" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAccountRequest_01" type="sanity" >
 	<t:objective>Sanity test for GetAccountRequest</t:objective>
-	
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -68,7 +68,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -77,7 +77,7 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>			                 
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 		</t:response>
 	</t:test>
 
@@ -91,12 +91,12 @@
 			<t:select path="//admin:GetAccountResponse/admin:account" />
 		</t:response>
 	</t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="ModifyAccountRequest_01" type="bhr" >
+<t:test_case testcaseid="ModifyAccountRequest_01" type="sanity" >
 	<t:objective>Sanity test for ModifyAccountRequest</t:objective>
-	
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -108,7 +108,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -117,10 +117,10 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>			                 
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 		</t:response>
 	</t:test>
-		
+
 	<t:test>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -132,12 +132,12 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="RenameAccountRequest_01" type="bhr" >
+<t:test_case testcaseid="RenameAccountRequest_01" type="sanity" >
 	<t:objective>Sanity test for RenameAccountRequest</t:objective>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -149,7 +149,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -158,10 +158,10 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>			                 
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
 		</t:response>
 	</t:test>
-		
+
 	<t:test>
         <t:request>
             <RenameAccountRequest xmlns="urn:zimbraAdmin">
@@ -173,13 +173,13 @@
             <t:select path="//admin:RenameAccountResponse"/>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteAccountRequest_01" type="bhr" >
+<t:test_case testcaseid="DeleteAccountRequest_01" type="sanity" >
 	<t:objective>Sanity test for DeleteAccountRequest</t:objective>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -191,7 +191,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -200,10 +200,10 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>			                 
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
 		</t:response>
 	</t:test>
-		
+
 	 <!-- Delete a valid account -->
     <t:test >
         <t:request>
@@ -215,12 +215,12 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckPasswordStrengthRequest_01" type="bhr" >
+<t:test_case testcaseid="CheckPasswordStrengthRequest_01" type="sanity" >
 	<t:objective>Sanity test for CheckPasswordStrengthRequest</t:objective>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -232,7 +232,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -241,10 +241,10 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account6.id"/>			                 
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account6.id"/>
 		</t:response>
 	</t:test>
-		
+
 	<t:test>
         <t:request>
             <CheckPasswordStrengthRequest  xmlns="urn:zimbraAdmin">
@@ -256,12 +256,12 @@
             <t:select path="//admin:CheckPasswordStrengthResponse"/>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="SetPasswordRequest_01" type="bhr" >
+<t:test_case testcaseid="SetPasswordRequest_01" type="sanity" >
 	<t:objective>Sanity test for SetPasswordRequest</t:objective>
-	
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -273,7 +273,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -282,10 +282,10 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account7.id"/>			                 
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account7.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test xmlns="urn:zimbraAdmin">
         <t:request>
             <SetPasswordRequest>
@@ -297,12 +297,12 @@
             <t:select path = "//admin:SetPasswordResponse"/>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="AddAccountAliasRequest_01" type="bhr" >
+<t:test_case testcaseid="AddAccountAliasRequest_01" type="sanity" >
 	<t:objective>Sanity test for AddAccountAliasRequest</t:objective>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -314,7 +314,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -323,10 +323,10 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account8.id"/>			                 
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account8.id"/>
 		</t:response>
 	</t:test>
-	
+
     <!-- Add an alias to the account -->
     <t:test>
         <t:request>
@@ -339,12 +339,12 @@
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="RemoveAccountAliasRequest_01" type="bhr" >
+<t:test_case testcaseid="RemoveAccountAliasRequest_01" type="sanity" >
 	<t:objective>Sanity test for RemoveAccountAliasRequest</t:objective>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -356,7 +356,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -365,10 +365,10 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account9.id"/>			                 
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account9.id"/>
 		</t:response>
 	</t:test>
-	
+
     <!-- Add an alias to the account -->
     <t:test>
         <t:request>
@@ -380,9 +380,9 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>	
-		
-		  
+    </t:test>
+
+
    <!-- Remove alias from the account -->
     <t:test>
         <t:request>
@@ -395,12 +395,12 @@
             <t:select path="//admin:RemoveAccountAliasResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="GetAllAdminAccountsRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAllAdminAccountsRequest_01" type="sanity" >
     <t:objective>Sanity test for GetAllAdminAccountsRequest</t:objective>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test >
@@ -427,9 +427,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAccountInfoRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAccountInfoRequest_01" type="sanity" >
 	<t:objective>Sanity test for GetAccountInfoRequest</t:objective>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -441,7 +441,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -451,12 +451,12 @@
 		</t:request>
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account10.id"/>
-			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct10.server"/>	                 
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct10.server"/>
 		</t:response>
 	</t:test>
-	
+
   	<t:property name="server.zimbraAccount" value="${test_acct10.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -469,24 +469,24 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAccount">
               <account by="name">${test_account10.name}</account>
         </GetAccountInfoRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account10.name}"/>
             <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${account10.id}"/>
         </t:response>
-   </t:test>  
-    
+   </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="GetAvailableSkinsRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAvailableSkinsRequest_01" type="sanity" >
     <t:objective>Sanity test for GetAvailableSkinsRequest</t:objective>
-    
+
     <t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -498,7 +498,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -508,7 +508,7 @@
 		</t:request>
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account11.id"/>
-			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct11.server"/>	                 
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct11.server"/>
 		</t:response>
 	</t:test>
 
@@ -533,13 +533,13 @@
 		<t:response>
 			<t:select path="//acct:GetAvailableSkinsResponse/acct:skin" />
 		</t:response>
-	</t:test>  
+	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAvailableCsvFormatsRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAvailableCsvFormatsRequest_01" type="sanity" >
     <t:objective>Sanity test for GetAvailableCsvFormatsRequest</t:objective>
-    
+
     <t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -551,7 +551,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -561,7 +561,7 @@
 		</t:request>
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account12.id"/>
-			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct12.server"/>	                 
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct12.server"/>
 		</t:response>
 	</t:test>
 
@@ -586,13 +586,13 @@
 		<t:response>
 			<t:select path="//acct:GetAvailableCsvFormatsResponse/acct:csv" />
 		</t:response>
-	</t:test>  
+	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAdminConsoleUICompRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAdminConsoleUICompRequest_01" type="sanity" >
     <t:objective>Sanity test for GetAdminConsoleUICompRequest</t:objective>
-    
+
     <t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -604,20 +604,20 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
-			<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin">				
+			<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin">
 			</GetAdminConsoleUICompRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//admin:GetAdminConsoleUICompResponse/admin:a" />
 		</t:response>
-	</t:test>  
+	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="SearchAccountsRequest_01" type="bhr">
+<t:test_case testcaseid="SearchAccountsRequest_01" type="sanity">
     <t:objective>Sanity test for SearchAccountsRequest </t:objective>
 
 	<t:test required="true">
@@ -631,7 +631,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -643,7 +643,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account13.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test>
         <t:request>
             <SearchAccountsRequest xmlns="urn:zimbraAdmin">
@@ -651,13 +651,13 @@
             </SearchAccountsRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="id"  match="${account13.id}"/>    
+            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="id"  match="${account13.id}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="MigrateAccountRequest_01" type="bhr">
+<t:test_case testcaseid="MigrateAccountRequest_01" type="sanity">
     <t:objective>Sanity test for MigrateAccountRequest </t:objective>
 
 	<t:test required="true">
@@ -671,7 +671,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -683,7 +683,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account14.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test>
         <t:request>
             <MigrateAccountRequest xmlns="urn:zimbraAdmin">
@@ -691,9 +691,9 @@
             </MigrateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:MigrateAccountResponse"/>    
+            <t:select path="//admin:MigrateAccountResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

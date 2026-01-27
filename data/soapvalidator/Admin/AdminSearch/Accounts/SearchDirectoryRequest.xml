@@ -1,21 +1,21 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>  
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>
 <t:property name="Resource.equipment" value="Equipment"/>
 <t:property name="Resource.location" value="Location"/>
 
 <t:property name="account1.user" value="searchdir.${TIME}${COUNTER}"/>
 <t:property name="account1.name" value="${account1.user}@${domain1.name}"/>
-<t:property name="account2.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>  
+<t:property name="account2.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
 
 
 <t:property name="account1.query1" value="(|(uid=*${account1.user}*)(cn=*${account1.user}*)(sn=*${account1.user}*)(gn=*${account1.user}*)(displayName=*${account1.user}*)(zimbraMailAlias=*${account1.user}*)(zimbraId=vc)(zimbraMailAddress=*${account1.user}*)(zimbraMailDeliveryAddress=*${account1.user}*))"/>
 <t:property name="account1.query2" value="(|(uid=*${account1.name}*)(cn=*${account1.name}*)(sn=*${account1.name}*)(gn=*${account1.name}*)(displayName=*${account1.name}*)(zimbraMailAlias=*${account1.name}*)(zimbraId=vc)(zimbraMailAddress=*${account1.name}*)(zimbraMailDeliveryAddress=*${account1.name}*))"/>
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -32,10 +32,10 @@
     <t:objective>Prepare the account for tests</t:objective>
     <t:steps> 1. Login to admin
               2. Create test-accounts
-              3. Create an alias 
-              4. Create a distribution list        
+              3. Create an alias
+              4. Create a distribution list
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -75,7 +75,7 @@
 
 </t:test_case>
 
-    
+
 
 <t:test_case testcaseid="SearchDirectoryRequest_Accounts_01" type="smoke">
     <t:objective>Verify searching for an account where types="accounts" offset="0" limit="0" without domain name</t:objective>
@@ -87,15 +87,15 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>   
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case>    
+</t:test_case>
 
 
-<t:test_case testcaseid="SearchDirectoryRequest_Accounts_02" type="sanity">
-    <t:objective>Verify searching for an account where types="accounts" limit="25" domain="${defaultdomain.name}". </t:objective>    
+<t:test_case testcaseid="SearchDirectoryRequest_Accounts_02" type="functional">
+    <t:objective>Verify searching for an account where types="accounts" limit="25" domain="${defaultdomain.name}". </t:objective>
 
 	<t:test>
         <t:request>
@@ -104,16 +104,16 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>   
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case>     
+</t:test_case>
 
 
 
-<t:test_case testcaseid="SearchDirectoryRequest_Accounts_03" type="sanity">
-    <t:objective>Verify searching for types="accounts,aliases,distributionlists,resources,domains"  </t:objective>    
+<t:test_case testcaseid="SearchDirectoryRequest_Accounts_03" type="functional">
+    <t:objective>Verify searching for types="accounts,aliases,distributionlists,resources,domains"  </t:objective>
 
     <t:test>
         <t:request>
@@ -124,13 +124,13 @@
         <t:response>
             <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="SearchDirectoryRequest_Accounts_04" type="sanity">
+<t:test_case testcaseid="SearchDirectoryRequest_Accounts_04" type="functional">
     <t:objective>Verify searching for deleted particular account </t:objective>
     <t:steps>
         1. Delete the account
@@ -156,11 +156,11 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}" emptyset="1"/>    
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}" emptyset="1"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case>     
+</t:test_case>
 
 
 

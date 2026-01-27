@@ -26,7 +26,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -39,7 +39,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test id="create_test_account1">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -72,12 +72,12 @@
 
 
 
-<t:test_case testcaseid="Appointment_Privacy_SearchRequest_01" type="sanity" bugids="18620">
+<t:test_case testcaseid="Appointment_Privacy_SearchRequest_01" type="functional" bugids="18620">
     <t:objective>Verify Delegatee cannot search private appointment data (summary)</t:objective>
-	
+
 	<t:steps>
 	1. Login to account1 and create an appointment and share the calendar to account2 with manager rights
-	2. Login to account2 and create mountpoint 
+	2. Login to account2 and create mountpoint
 	3. Search for the appointment using appt's subject
 	</t:steps>
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -106,8 +106,8 @@
                     <su>${appt1.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt1.subject}" >
-	                        <s d="${ICALTIME[${appt1.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt1.start}]}"/>  
+	                        <s d="${ICALTIME[${appt1.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt1.start}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>

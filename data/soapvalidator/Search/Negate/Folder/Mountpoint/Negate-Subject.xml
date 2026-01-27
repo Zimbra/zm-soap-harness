@@ -50,7 +50,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -63,7 +63,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -139,7 +139,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-     
+
     <t:test depends="create_test_account2" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -152,7 +152,7 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -177,12 +177,12 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="NegateFolderMountpoints_subject_SearchRequest1" type="bhr">
+<t:test_case testcaseid="NegateFolderMountpoints_subject_SearchRequest1" type="sanity">
 	 <t:objective>
 		Verify a search for "not subject:(text)" in a mountpoint
 	 </t:objective>
@@ -222,7 +222,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="NegateFolderMountpoints_subject_SearchRequest2" type="bhr">
+<t:test_case testcaseid="NegateFolderMountpoints_subject_SearchRequest2" type="sanity">
 	 <t:objective>
 		Verify a search for "not subject:(email01G)" in a remote folder
 	 </t:objective>

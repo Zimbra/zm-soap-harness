@@ -40,10 +40,10 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>                 
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
-        <t:response>            
+        <t:response>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
@@ -53,14 +53,14 @@
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
 
-<t:test_case testcaseid="Bug_60894" type="bhr" bugid="60894">
+<t:test_case testcaseid="Bug_60894" type="sanity" bugid="60894">
     <t:objective>Create contacts starting with lower-case and upper-case letter and check contact sorting is not case sensitive</t:objective>
 
 	 <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${test_account1.name}</account>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -68,58 +68,58 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
                 <cn>
                     <a n="firstName">${contact.firstname}</a>
                     <a n="lastName">${contact.lastname}</a>
-                    <a n="email">${contact.mailid}</a>     	
-                </cn>     
+                    <a n="email">${contact.mailid}</a>
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            	<t:select attr="id" set="contact.id"/> 	  
-            </t:select>	
+            	<t:select attr="id" set="contact.id"/>
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
                 <cn>
                     <a n="firstName">${contact2.firstname}</a>
                     <a n="lastName">${contact2.lastname}</a>
-                    <a n="email">${contact2.mailid}</a>     	
-                </cn>     
+                    <a n="email">${contact2.mailid}</a>
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             	<t:select attr="id" set="contact2.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
                 <cn>
                     <a n="firstName">${contact1.firstname}</a>
                     <a n="lastName">${contact1.lastname}</a>
-                    <a n="email">${contact1.mailid}</a>     	
-                </cn>     
+                    <a n="email">${contact1.mailid}</a>
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             	<t:select attr="id" set="contact1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
 	 <t:request>
 	   <SearchRequest xmlns="urn:zimbraMail" types="contact" sortBy="nameAsc">
@@ -129,11 +129,11 @@
 	  <t:response>
 		<t:select path="//mail:SearchResponse/mail:cn[1]/mail:a" id="lastName" match="${contact.lastname}"/>
 		<t:select path="//mail:SearchResponse/mail:cn[2]/mail:a" id="lastName" match="${contact1.lastname}"/>
-	 	<t:select path="//mail:SearchResponse/mail:cn[3]/mail:a" id="lastName" match="${contact2.lastname}"/>	
+	 	<t:select path="//mail:SearchResponse/mail:cn[3]/mail:a" id="lastName" match="${contact2.lastname}"/>
 	 </t:response>
-	</t:test>	
-   
-</t:test_case> 
+	</t:test>
+
+</t:test_case>
 
 
 </t:tests>

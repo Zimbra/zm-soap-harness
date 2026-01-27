@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
-    
+
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>
+
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
@@ -42,7 +42,7 @@
 <t:property name="view.appointment" value="appointment"/>
 <t:property name="view.note" value="note"/>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -58,7 +58,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="new_CalendarSharing_CalendarsDelegated_Move_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -122,7 +122,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_CalendarSharing_CalendarsDelegated_Move_01" type="sanity" bugids="10843">
+<t:test_case testcaseid="new_CalendarSharing_CalendarsDelegated_Move_01" type="functional" bugids="10843">
     <t:objective>Verify ItemActionRequest can move an appointment from a local calendar to a shared calendar</t:objective>
     <t:steps>
         1. Login as account1.  Share calendar with account2.
@@ -245,7 +245,7 @@
             <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt.apptId"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -258,9 +258,9 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="new_CalendarSharing_CalendarsDelegated_Move_02" type="sanity" bugids="10843">
+
+<t:test_case testcaseid="new_CalendarSharing_CalendarsDelegated_Move_02" type="functional" bugids="10843">
     <t:objective>Verify ItemActionRequest can move an appointment from a local calendar to a shared calendar</t:objective>
     <t:steps>
         1. Login as account1.  Share calendar with account2.  Create an appointment.

@@ -24,9 +24,9 @@
 <t:property name="folder.pname" value="1"/> <!-- Folder's parent ID -->
 <t:property name="test_acct.server" value="NOT_DEFINED"/>
 
-<t:test_case testcaseid = "Ping" type="bhr">
+<t:test_case testcaseid = "Ping" type="sanity">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id = "ping">
         <t:request>
             <PingRequest xmlns = "urn:zimbraAdmin"/>
@@ -35,13 +35,13 @@
             <t:select path = "//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid = "acct1_setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test id = "admin_login" required = "true" depends = "ping">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAdmin">
@@ -58,8 +58,8 @@
             <CreateAccountRequest xmlns = "urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
                 <password>${test_account1.password}</password>
-                <!-- 
-                <a n="zimbraMailHost">${LOCALHOST}</a> 
+                <!--
+                <a n="zimbraMailHost">${LOCALHOST}</a>
                 <a n = "zimbraMailStatus">enabled</a>
                 <a n = "zimbraPasswordMinAge">7</a>
                 Commenting out the optional attributes and sending the request with minimal requirement
@@ -71,7 +71,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
     <t:test id = "auth" required = "true">
@@ -86,7 +86,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id = "Send_mail">
         <t:request>
             <SendMsgRequest xmlns = "urn:zimbraMail">
@@ -125,7 +125,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest2" type="bhr">
+<t:test_case testcaseid = "MsgActionRequest2" type="sanity">
     <t:objective>Mark a mail as unread</t:objective>
 
     <t:test depends = "Send_mail">
@@ -143,7 +143,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest3" type="bhr">
+<t:test_case testcaseid = "MsgActionRequest3" type="sanity">
     <t:objective>Mark a mail as flagged</t:objective>
 
     <t:test depends = "Send_mail">
@@ -161,7 +161,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest4" type="bhr">
+<t:test_case testcaseid = "MsgActionRequest4" type="sanity">
     <t:objective>Mark a mail as unflagged</t:objective>
 
     <t:test depends = "Send_mail">
@@ -179,7 +179,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest5" type="bhr">
+<t:test_case testcaseid = "MsgActionRequest5" type="sanity">
     <t:objective>Tag a Mail</t:objective>
     <t:steps>
         1. Create a TAG
@@ -211,7 +211,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest6" type="bhr">
+<t:test_case testcaseid = "MsgActionRequest6" type="sanity">
     <t:objective>Untag the mail</t:objective>
 
     <t:test depends = "MsgActionRequest5a">
@@ -229,7 +229,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest7" type="functional">
+<t:test_case testcaseid = "MsgActionRequest7" type="regression">
     <t:objective>Tag a mail with invalid id</t:objective>
     <t:steps>
         1. Delete the previously created tag
@@ -260,7 +260,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest8" type="bhr">
+<t:test_case testcaseid = "MsgActionRequest8" type="sanity">
     <t:objective>Move a Mail to a custom folder</t:objective>
     <t:steps>
         1. Create a folder
@@ -292,7 +292,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest9" type="functional">
+<t:test_case testcaseid = "MsgActionRequest9" type="regression">
     <t:objective>Move the mail to nonexisting folder</t:objective>
     <t:steps>
         1. Move the mail back to inbox
@@ -335,7 +335,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest10" type="bhr">
+<t:test_case testcaseid = "MsgActionRequest10" type="sanity">
     <t:objective>delete a message</t:objective>
 
     <t:test id = "MsgActionRequest10a">
@@ -353,7 +353,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest11" type="functional">
+<t:test_case testcaseid = "MsgActionRequest11" type="regression">
     <t:objective>delete a non existing message</t:objective>
 
     <t:test depends = "MsgActionRequest10a">
@@ -370,7 +370,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest12" type="sanity">
+<t:test_case testcaseid = "MsgActionRequest12" type="functional">
     <t:objective>MsgActionRequest without Action tag</t:objective>
 
     <t:test>
@@ -385,7 +385,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest13" type="sanity">
+<t:test_case testcaseid = "MsgActionRequest13" type="functional">
     <t:objective>MsgActionRequest without id in Action tag</t:objective>
 
     <t:test>
@@ -402,7 +402,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest14" type="sanity">
+<t:test_case testcaseid = "MsgActionRequest14" type="functional">
     <t:objective>MsgActionRequest without op in Action tag</t:objective>
 
     <t:test>
@@ -419,7 +419,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest15" type="functional">
+<t:test_case testcaseid = "MsgActionRequest15" type="regression">
     <t:objective>MsgActionRequest with Blank id in Action tag</t:objective>
 
     <t:test>
@@ -436,7 +436,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest16" bugids = "1797" type="functional">
+<t:test_case testcaseid = "MsgActionRequest16" bugids = "1797" type="regression">
     <t:objective>MsgActionRequest with Spaces at id in Action tag</t:objective>
 
     <t:test>
@@ -453,7 +453,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest17" bugids = "1797" type="functional">
+<t:test_case testcaseid = "MsgActionRequest17" bugids = "1797" type="regression">
     <t:objective>MsgActionRequest with Special char at id in Action tag</t:objective>
 
     <t:test>
@@ -470,7 +470,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest18" bugids = "1797" type="functional">
+<t:test_case testcaseid = "MsgActionRequest18" bugids = "1797" type="regression">
     <t:objective>MsgActionRequest with Some text at id in Action tag</t:objective>
 
     <t:test>
@@ -487,10 +487,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest19" type="functional">
+<t:test_case testcaseid = "MsgActionRequest19" type="regression">
     <t:objective>MsgActionRequest with Blank op but valid id in Action tag {op=""}</t:objective>
     <t:steps>
-        1. send a mail with valid address in To field 
+        1. send a mail with valid address in To field
         2. MsgActionRequest with Blank op but valid id in Action tag
     </t:steps>
 
@@ -524,7 +524,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest20" type="functional">
+<t:test_case testcaseid = "MsgActionRequest20" type="regression">
     <t:objective>MsgActionRequest with space in op but valid id in Action tag</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -541,7 +541,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest21" type="functional">
+<t:test_case testcaseid = "MsgActionRequest21" type="regression">
     <t:objective>MsgActionRequest with special char in op but valid id in Action tag {op="^//\\'"}</t:objective>
 
     <t:test id = "MailAction021" depends = "MsgActionRequest19a">
@@ -558,7 +558,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest22" type="functional">
+<t:test_case testcaseid = "MsgActionRequest22" type="regression">
     <t:objective>MsgActionRequest with sometext in op but valid id in Action tag {op="some text"}</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -575,7 +575,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest23" bugids = "1797" type="functional">
+<t:test_case testcaseid = "MsgActionRequest23" bugids = "1797" type="regression">
     <t:objective>MsgActionRequest with valid id and valid operation but leading spaces in id</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -592,7 +592,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest24" bugids = "1797" type="functional">
+<t:test_case testcaseid = "MsgActionRequest24" bugids = "1797" type="regression">
     <t:objective>MsgActionRequest with valid id and valid operation but trailing spaces in id</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -609,7 +609,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest25" bugids = "1797" type="functional">
+<t:test_case testcaseid = "MsgActionRequest25" bugids = "1797" type="regression">
     <t:objective>MsgActionRequest with valid id and valid operation but both leading trailing spaces in id</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -626,7 +626,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest26" type="functional">
+<t:test_case testcaseid = "MsgActionRequest26" type="regression">
 
     <t:objective>MsgActionRequest with valid id and valid operation but leading spaces in op</t:objective>
     <t:test depends = "MsgActionRequest19a">
@@ -643,7 +643,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest27" type="functional">
+<t:test_case testcaseid = "MsgActionRequest27" type="regression">
 
     <t:objective>MsgActionRequest with valid id and valid operation but trailing spaces in op</t:objective>
     <t:test id = "MailAction027" depends = "MsgActionRequest19a">
@@ -659,7 +659,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "MsgActionRequest28" type="functional">
+<t:test_case testcaseid = "MsgActionRequest28" type="regression">
     <t:objective>MsgActionRequest with valid id and valid operation but both leading and trailing spaces in op</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -726,7 +726,7 @@ Content${TIME}${COUNTER}
 
 </t:test_case>
 
-<t:test_case testcaseid="MsgActionRequest30" type="bhr" bugids="28207">
+<t:test_case testcaseid="MsgActionRequest30" type="sanity" bugids="28207">
     <t:objective>Verify the MsgActionRequest(delete) after SyncRequest</t:objective>
 	<t:steps>
 	1. AddMsgRequest
@@ -734,7 +734,7 @@ Content${TIME}${COUNTER}
 	3. SyncRequest
 	4. MsgActionRequest(op=delete) with same ID ... should receive MsgActionResponse instead of NPE
 	</t:steps>
-	
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -772,7 +772,7 @@ Content${TIME}${COUNTER}
         <t:request>
             <SyncRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse"/>
         </t:response>
     </t:test>

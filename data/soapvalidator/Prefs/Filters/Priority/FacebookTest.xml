@@ -46,17 +46,17 @@
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
-    </t:test>    
-    
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="facebookTest_01" type="bhr" bugids="42185">
+<t:test_case testcaseid="facebookTest_01" type="sanity" bugids="42185">
 
     <t:objective>Filter the mail which has X-Facebook-Notify: friend_confirmed header</t:objective>
-    
-    <t:steps> 
+
+    <t:steps>
     		  1. Create a filter with facebookTest for account1 to flag
-			  2. Inject a message for friend confirmation 
+			  2. Inject a message for friend confirmation
 			  3. Verify that the message gets flagged.
     </t:steps>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -74,7 +74,7 @@
 
 	<t:property name="filter_facebook.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_facebook1.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -87,7 +87,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -95,7 +95,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="facebook_msg01.file" value="${testMailRaw.root}/bug42185/facebook-confirm-gmail.txt" />
 
 	<t:mailinjecttest >
@@ -103,14 +103,14 @@
             <filename>${facebook_msg01.file}</filename>
 			<to>${account1.name}</to>
 			<from>notification+kr4mwaer4r4x@facebookmail.com</from>
-			<server>${account1.server}</server>	
+			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
                 <header a="Subject">${filter_facebook1.subject}</header>
-            </modify>		
+            </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
-   
+    </t:mailinjecttest>
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -121,19 +121,19 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_facebook1.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>      
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="facebookTest_02" type="bhr" bugids="42185" >
+<t:test_case testcaseid="facebookTest_02" type="sanity" bugids="42185" >
     <t:objective>Filter the mail which has X-Facebook-Notify: photo_tagged_by_non_owner</t:objective>
-    
-    <t:steps> 
+
+    <t:steps>
     		  1. Create a filter with facebookTest for account1 to flag
 			  2. Inject a message for phototagging(containing X-Facebook-Notify: photo_tagged_by_non_owner)
 			  3. Verify that the message gets flagged.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -149,7 +149,7 @@
 
 	<t:property name="filter_facebook.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_facebook2.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -162,7 +162,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -170,22 +170,22 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="facebook_msg02.file" value="${testMailRaw.root}/bug42185/facebook-photo-tag.txt" />
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${facebook_msg02.file}</filename>
 			<to>${account1.name}</to>
 			<from>update+kr4mwaer4r4x@facebookmail.com</from>
-			<server>${account1.server}</server>	
+			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
                 <header a="Subject">${filter_facebook2.subject}</header>
-            </modify>		
+            </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
-    
+    </t:mailinjecttest>
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -196,13 +196,13 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_facebook2.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>	   
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="facebookTest_03" type="bhr" bugids="42185" >
+<t:test_case testcaseid="facebookTest_03" type="sanity" bugids="42185" >
     <t:objective>Filter the mail which has X-Facebook-Notify: wall</t:objective>
-    
+
     <t:steps> 1. Create a filter with facebookTest for account1 to flag
 			  2. Inject a wall message notification from facebook(containing X-Facebook-Notify: wall)
 			  3. Verify that the message gets flagged.
@@ -222,7 +222,7 @@
 
 	<t:property name="filter_facebook.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_facebook3.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -235,7 +235,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -243,22 +243,22 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="facebook_msg03.file" value="${testMailRaw.root}/bug42185/facebook-wall-gmail.txt" />
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${facebook_msg03.file}</filename>
 			<to>${account1.name}</to>
 			<from>notification+kr4mwaer4r4x@facebookmail.com</from>
-			<server>${account1.server}</server>	
+			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
                 <header a="Subject">${filter_facebook3.subject}</header>
-            </modify>		
+            </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
-    
+    </t:mailinjecttest>
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -269,13 +269,13 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_facebook3.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>	   
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="facebookTest_04" type="bhr" bugids="42185" >
+<t:test_case testcaseid="facebookTest_04" type="sanity" bugids="42185" >
     <t:objective>Filter the mail which has X-Facebook-Notify: msg</t:objective>
-    
+
     <t:steps> 1. Create a filter with facebookTest for account1 to flag
 			  2. Inject a direct message from facebook(containing X-Facebook-Notify: msg)
 			  3. Verify that the message gets flagged.
@@ -295,7 +295,7 @@
 
 	<t:property name="filter_facebook.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_facebook4.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -308,7 +308,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -316,22 +316,22 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="facebook_msg04.file" value="${testMailRaw.root}/bug42185/facebook-direct-msg.txt" />
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${facebook_msg04.file}</filename>
 			<to>${account1.name}</to>
 			<from>notification+kr4mwaer4r4x@facebookmail.com</from>
-			<server>${account1.server}</server>	
+			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
                 <header a="Subject">${filter_facebook4.subject}</header>
-            </modify>		
+            </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
-    
+    </t:mailinjecttest>
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -342,13 +342,13 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_facebook4.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>	   
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="facebookTest_05" type="bhr" bugids="42185" >
+<t:test_case testcaseid="facebookTest_05" type="sanity" bugids="42185" >
     <t:objective>Filter the mail which has X-Facebook-Notify: friend request</t:objective>
-    
+
     <t:steps> 1. Create a filter with facebookTest for account1 to flag
 			  2. Inject a friend request message notification from facebook(containing X-Facebook-Notify: friend)
 			  3. Verify that the message gets flagged.
@@ -368,7 +368,7 @@
 
 	<t:property name="filter_facebook.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_facebook5.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -381,7 +381,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -389,22 +389,22 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="facebook_msg05.file" value="${testMailRaw.root}/bug42185/facebook-friend-request.txt" />
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${facebook_msg05.file}</filename>
 			<to>${account1.name}</to>
 			<from>notification+kr4mwaer4r4x@facebookmail.com</from>
-			<server>${account1.server}</server>	
+			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
                 <header a="Subject">${filter_facebook5.subject}</header>
-            </modify>		
+            </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
-    
+    </t:mailinjecttest>
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -415,7 +415,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_facebook5.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>	   
+    </t:test>
 
 </t:test_case>
 

@@ -10,7 +10,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -31,7 +31,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -43,9 +43,9 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
-    <t:property name="admin.authToken" value="${authToken}"/>  
-    
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -58,7 +58,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,8 +71,8 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
-     
+
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test  required="true">
@@ -108,9 +108,9 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-     
+
     <t:test depends="create_test_account2" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -124,7 +124,7 @@
 
         </t:response>
     </t:test>
- 
+
 	<t:test required="true">
         <t:requestContext>
             <authToken>${authToken}</authToken>
@@ -146,17 +146,17 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
         </t:response>
     </t:test>
-    
-    
+
+
 </t:test_case>
-  
+
 
 <t:test_case testcaseid="FolderActionRequest_ACL_01" type="smoke" bugids="33701">
     <t:objective>Verify the notification block is returned with ACL when granting a share</t:objective>
     <t:steps>
             1. Account1 creates a share to Account2
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test  required="true">
@@ -218,16 +218,16 @@
 			</t:header>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-   
-<t:test_case testcaseid="FolderActionRequest_ACL_02" type="bhr" bugids="33701">
+
+<t:test_case testcaseid="FolderActionRequest_ACL_02" type="sanity" bugids="33701">
     <t:objective>Verify the notification block is returned with ACL when revoking a share</t:objective>
     <t:steps>
             1. Account1 creates a share to Account2
             2. Account1 revokes the share to Account2
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test  required="true">
@@ -281,7 +281,7 @@
             <t:select path="//mail:FolderActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -297,8 +297,8 @@
 			</t:header>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-   
+
 
 </t:tests>

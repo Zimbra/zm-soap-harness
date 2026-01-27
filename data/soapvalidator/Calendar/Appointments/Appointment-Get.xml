@@ -26,7 +26,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -41,7 +41,7 @@
 
 <t:test_case testcaseid="acctSetup1_appointment_get" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -54,7 +54,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -86,7 +86,7 @@
 
 <t:test_case testcaseid="acctSetup2_appointment_get" type="always" >
     <t:objective>login as the test account</t:objective>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -99,7 +99,7 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -108,15 +108,15 @@
     <t:steps>1. Create an appointment.
              2. Give GetAppointmentRequest to obtain the details of the appointment.
     </t:steps>
-    
+
     <t:test id = "GetAppointmentRequest1a">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -131,9 +131,9 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-       
+
     <t:test depends="GetAppointmentRequest1a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.id}"/>
         </t:request>
         <t:response>
@@ -147,91 +147,91 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "GetAppointmentRequest2" type="functional" areas="Calendar">
+<t:test_case testcaseid = "GetAppointmentRequest2" type="regression" areas="Calendar">
     <t:objective>GetAppointmentRequest with invalid values of id.</t:objective>
-          
+
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${id.blank}"/>
         </t:request>
         <t:response>
             <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-          
+
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${id.space}"/>
         </t:request>
         <t:response>
             <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-      
+
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${id.sometext}"/>
         </t:request>
         <t:response>
             <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-          
+
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${id.negative}"/>
         </t:request>
         <t:response>
             <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="mail.NO_SUCH_CALITEM"/>
         </t:response>
     </t:test>
-          
+
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${id.zero}"/>
         </t:request>
         <t:response>
             <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="mail.NO_SUCH_ITEM"/>
         </t:response>
     </t:test>
-          
+
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${id.largenumber}"/>
         </t:request>
         <t:response>
             <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="mail.NO_SUCH_ITEM"/>
         </t:response>
     </t:test>
-          
+
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${id.decimal}"/>
         </t:request>
         <t:response>
             <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
-    <!-- GetAppointmentRequest without id attribute--> 
+
+    <!-- GetAppointmentRequest without id attribute-->
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" />
         </t:request>
         <t:response>
             <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "GetAppointmentRequest3" type="functional" areas="Calendar">
+<t:test_case testcaseid = "GetAppointmentRequest3" type="regression" areas="Calendar">
     <t:objective>GetAppointmentRequest with id of a canceled appointment.</t:objective>
     <t:steps>1. Cancel an appointment.
              2. Give GetAppointmentRequest with id of a canceled appointment.
-    </t:steps>    
-    
+    </t:steps>
+
     <t:test id = "GetAppointmentRequest3a" >
         <t:request>
             <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
@@ -248,9 +248,9 @@
             <t:select path = "//mail:CancelAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="GetAppointmentRequest3a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.id}"/>
         </t:request>
         <t:response>
@@ -260,14 +260,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "GetAppointmentRequest4" type="bhr" areas="Calendar" bugids="48812">
+<t:test_case testcaseid = "GetAppointmentRequest4" type="sanity" areas="Calendar" bugids="48812">
     <t:objective>Obtain the details of an appointment using GetAppointmentRequest with UID.</t:objective>
     <t:steps>1. Create an appointment.
              2. Give GetAppointmentRequest to obtain the details of the appointment using uid.
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -280,15 +280,15 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id = "GetAppointmentRequest4a">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -303,7 +303,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
        <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -314,9 +314,9 @@
              <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp" attr="uid" set="appointment.uid"/>
         </t:response>
     </t:test>
-       
+
     <t:test depends="GetAppointmentRequest4a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" uid="${appointment.uid}"/>
         </t:request>
         <t:response>
@@ -324,7 +324,7 @@
             <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp" attr="loc" match="${appointment.location}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

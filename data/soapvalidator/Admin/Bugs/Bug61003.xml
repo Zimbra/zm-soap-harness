@@ -13,7 +13,7 @@
 	<t:steps> 1. Login as an admin
               2. Create a Glabal and delegated admin account
     </t:steps>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -25,7 +25,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -35,11 +35,11 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id" />		
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id" />
           	<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="admin_global.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -49,20 +49,20 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id" />		
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id" />
           	<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="admin_delegate.server"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="Bug_61003" type="bhr" bugids="61003">
+<t:test_case testcaseid="Bug_61003" type="sanity" bugids="61003">
 	<t:objective>Check that global admin receives NO_SUCH_ACCOUNT error code for non existing account and delegated admin user receives PERM_DENIED error code</t:objective>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -74,7 +74,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-		
+
 	<t:property name="server.zimbraAccount" value="${admin_global.server}"/>
 	<t:test>
 		<t:requestContext>
@@ -82,13 +82,13 @@
 		    <account by="name">${test_account1.name}</account>
 		 </t:requestContext>
 		<t:request>
-			<GetInfoRequest xmlns="urn:zimbraAccount"/>		
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
 			<t:select path= "//zimbra:Code" match="account.NO_SUCH_ACCOUNT"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:test required="true">
 		<t:request>
@@ -101,7 +101,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-		
+
 	<t:test>
 		<t:requestContext>
 			<authToken>${authToken}</authToken>
@@ -114,7 +114,7 @@
 			<t:select path= "//zimbra:Code" match="service.PERM_DENIED"/>
 		</t:response>
 	</t:test>
-		
+
 </t:test_case>
-	
+
 </t:tests>

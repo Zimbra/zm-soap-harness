@@ -44,8 +44,8 @@ So, the domain and accounts must be recreated during execution
     3. Create domain
     4. Create accounts
     </t:steps>
-    
-	
+
+
    <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -59,7 +59,7 @@ So, the domain and accounts must be recreated during execution
     </t:test>
 
     <t:test id="DeleteDomainRequest1a">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain.name}</name>
             </CreateDomainRequest>
@@ -183,7 +183,7 @@ So, the domain and accounts must be recreated during execution
     </t:test>
 
     <t:test id="DeleteDomainRequest1a">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain.name}</name>
             </CreateDomainRequest>
@@ -192,7 +192,7 @@ So, the domain and accounts must be recreated during execution
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -205,7 +205,7 @@ So, the domain and accounts must be recreated during execution
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -305,7 +305,7 @@ So, the domain and accounts must be recreated during execution
 </t:test_case>
 
 
-<t:test_case testcaseid="zimbraPrefMailLocalDeliveryDisabled_02" type="bhr"  areas="smtp" >
+<t:test_case testcaseid="zimbraPrefMailLocalDeliveryDisabled_02" type="sanity"  areas="smtp" >
     <t:objective>Verify that mail is NOT kept locally if zimbraPrefMailLocalDeliveryDisabled=TRUE</t:objective>
     <t:steps>
 	1. Send ModifyPrefsRequest to forward mail to Account2, with Local Delivery Disabled = TRUE

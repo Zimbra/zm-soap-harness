@@ -3,9 +3,9 @@
 
 <t:property name="test_acct.server" value="NOT_DEFINED"/>
 
-<!-- READ ME : 
+<!-- READ ME :
     There are 5 mails in this account.
-	The folders they will be residing are as follows: 
+	The folders they will be residing are as follows:
 
     email17A : Inbox
     email17B : Inbox/Subfolder1 # TODO
@@ -38,11 +38,11 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -52,7 +52,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -76,8 +76,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account17.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
 		    <foldername>${account17.dir}</foldername>
@@ -91,12 +91,12 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" bugids="2395">
+<t:test_case testcaseid="SearchAuthRequest" type="functional" bugids="2395">
     <t:objective> Create setup for the Search Request </t:objective>
     <t:steps>1. Login to the account.
              2. Modify the Prefs to include Trash and Spam in search result.
              3. Search mails to get the message-ids
-             4. Get the ids of various folders 
+             4. Get the ids of various folders
              5. Move some folder within other
              6. Move the mails to different folders.
     </t:steps>
@@ -114,7 +114,7 @@
 
         </t:response>
     </t:test>
-    
+
      <t:test id="modifyPrefsRequest">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -205,7 +205,7 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder_inbox.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder_trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder_sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder_spam.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder_spam.id"/>
         </t:response>
     </t:test>
 
@@ -219,8 +219,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${email17D.id}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test id="msgActionRequest2" depends="searchRequest2,getFolderRequest">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -233,10 +233,10 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="anywhere_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="anywhere_SearchRequest1" type="functional" >
     <t:objective> Verify that a search for query is:anywhere finds all mails </t:objective>
 
     <t:test>
@@ -245,7 +245,7 @@
                 <query> is:anywhere </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${email17A.id}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${email17B.id}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${email17C.id}']"/>
@@ -254,10 +254,10 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="anywhere_SearchRequest2" type="sanity" bugids="2445">
+<t:test_case testcaseid="anywhere_SearchRequest2" type="functional" bugids="2445">
     <t:objective> Verify that a combination search for query "content:(Now) is:anywhere" finds all mails </t:objective>
 
     <t:test>
@@ -266,7 +266,7 @@
                 <query> content:(Now) </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse"/>
         </t:response>
     </t:test>
@@ -276,7 +276,7 @@
                 <query> is:anywhere </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse"/>
         </t:response>
     </t:test>
@@ -287,7 +287,7 @@
                 <query> content:(Now) is:anywhere </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${email17A.id}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${email17B.id}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${email17C.id}']"/>
@@ -297,9 +297,9 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="anywhere_SearchRequest3" type="sanity" bugids="15160">
+<t:test_case testcaseid="anywhere_SearchRequest3" type="functional" bugids="15160">
     <t:objective> Verify that an is:anywhere" finds trashed mails </t:objective>
 
 	<t:property name="message1.content" value="Sample Content is written here"/>
@@ -315,7 +315,7 @@ Subject: email17G
 Date: Wed, 15 Aug 2007 10:11:05 -0700 (PDT)
 
 ${message1.content}
-                    
+
                     </content>
                 </m>
             </AddMsgRequest>
@@ -331,26 +331,26 @@ ${message1.content}
                 <query> ${message1.term} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
 				<t:select path="//mail:m[@id='${message1.id}']" attr="l" match="${folder_inbox.id}"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
             	<action id="${message1.id}" op="move" l="${folder_trash.id}"/>
         	</MsgActionRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:MsgActionResponse">
 				<t:select path="//mail:action" attr="id" match="${message1.id}"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
 
 
     <t:test>
@@ -359,7 +359,7 @@ ${message1.content}
                 <query> ${message1.term} is:anywhere </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
 				<t:select path="//mail:m[@id='${message1.id}']" attr="l" match="${folder_trash.id}"/>
             </t:select>
@@ -367,10 +367,10 @@ ${message1.content}
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="anywhere_SearchRequest4" type="sanity" bugids="34265">
+<t:test_case testcaseid="anywhere_SearchRequest4" type="functional" bugids="34265">
     <t:objective> Verify that "under" and "not under" quesry works fine </t:objective>
 
     <t:test>
@@ -379,7 +379,7 @@ ${message1.content}
                 <query> under:INBOX </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
 				<t:select path="//mail:m" attr="l" match="2"/>
             </t:select>
@@ -392,7 +392,7 @@ ${message1.content}
                 <query> not under:INBOX </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
 				<t:select path="//mail:m" attr="l" match="2" emptyset="1"/>
 				<t:select path="//mail:m" attr="l" match="3" />
@@ -401,7 +401,7 @@ ${message1.content}
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
 
 </t:tests>

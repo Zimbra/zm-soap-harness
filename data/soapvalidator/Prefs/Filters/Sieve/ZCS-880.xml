@@ -38,7 +38,7 @@
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="AcctSetup1_create_account" type="bhr">
+    <t:test_case testcaseid="AcctSetup1_create_account" type="sanity">
         <t:objective>create test accounts</t:objective>
         <t:test required="true">
             <t:request>
@@ -63,7 +63,7 @@
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -72,7 +72,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -88,7 +88,7 @@
                 <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
             </t:response>
         </t:test>
-	    
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -118,7 +118,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account2.server" />
             </t:response>
         </t:test>
-        
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -132,10 +132,10 @@
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account3.server" />
             </t:response>
-        </t:test>        
+        </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="zcs-880_rule1" type="functional" bugids="zcs-880">
+    <t:test_case testcaseid="zcs-880_rule1" type="regression" bugids="zcs-880">
         <t:objective>Verify replaceheader for :index :last</t:objective>
         <t:test required="true">
             <t:request>
@@ -194,9 +194,9 @@
                 <t:select attr="X-Test-Header" match="REPLACED1" />
             </t:restServletResponse>
         </t:resttest>
-    </t:test_case> 
-    
-    <t:test_case testcaseid="zcs-880_rule2" type="functional" bugids="zcs-880">
+    </t:test_case>
+
+    <t:test_case testcaseid="zcs-880_rule2" type="regression" bugids="zcs-880">
         <t:objective>Verify deleteheader for :index :last</t:objective>
         <t:test required="true">
             <t:request>
@@ -256,8 +256,8 @@
             </t:restServletResponse>
         </t:resttest>
     </t:test_case>
-    
-    <t:test_case testcaseid="zcs-880_rule3" type="functional" bugids="zcs-880">
+
+    <t:test_case testcaseid="zcs-880_rule3" type="regression" bugids="zcs-880">
         <t:objective>Verify replaceheader :index :last and deleteheader for only :index </t:objective>
         <t:test required="true">
             <t:request>
@@ -321,7 +321,7 @@
 
     <t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -343,5 +343,5 @@
         </t:test>
 
     </t:finally>
-             
+
 </t:tests>

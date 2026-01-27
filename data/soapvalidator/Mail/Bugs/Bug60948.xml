@@ -7,7 +7,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    	
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -22,7 +22,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AccountSetup_Bug60948" type="bhr">
+<t:test_case testcaseid="AccountSetup_Bug60948" type="sanity">
     <t:objective>Create account.</t:objective>
 
 	<!-- Auth Admin -->
@@ -48,7 +48,7 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
 	</t:test>
@@ -65,11 +65,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug60948" type="bhr" bugids="60948">
+<t:test_case testcaseid="Bug60948" type="sanity" bugids="60948">
     <t:objective>Inject the mime and send rest to print the message ex. http://server/zimbra/h/printmessage?id=msgId</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<!-- Login to the account -->
 	<t:test >
 		<t:request>
@@ -104,7 +104,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse">
-			</t:select>            	
+			</t:select>
         </t:response>
     </t:test>
 

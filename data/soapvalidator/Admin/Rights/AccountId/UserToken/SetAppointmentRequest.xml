@@ -49,7 +49,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -62,7 +62,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -75,7 +75,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -88,7 +88,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- Determine the account1 Calendar folder id -->
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -107,7 +107,7 @@
 	</t:test>
 
 	<t:test>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
@@ -136,7 +136,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AuthToken_User_SetAppointmentRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AuthToken_User_SetAppointmentRequest_Basic01" type="sanity">
     <t:objective>Use a user token to SetAppointmentRequest</t:objective>
     <t:steps>
     1. Login as user0
@@ -145,7 +145,7 @@
 
 	<t:property name="authToken" value="${authToken.account0}"/>
 
-	
+
 	<t:property name="server.zimbraMail" value="${account0.server}"/>
 	<t:property name="appointment1.start" value="1162468800000"/>
 	<t:property name="appointment1.subject" value="1162468800000"/>
@@ -157,8 +157,8 @@
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
                             <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-                            <s d="${ICALTIME[${appointment1.start}]}"/>  
-                            <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>  
+                            <s d="${ICALTIME[${appointment1.start}]}"/>
+                            <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>
                             <or a="${account1.name}"/>
                         </inv>
                         <e a="${account2.name}" t="t"/>
@@ -178,7 +178,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AuthToken_User_SetAppointmentRequest_02" type="sanity" bugids="20175" >
+<t:test_case testcaseid="AuthToken_User_SetAppointmentRequest_02" type="functional" bugids="20175" >
     <t:objective>Use a user token to SetAppointmentRequest with class="PRI"</t:objective>
     <t:steps>
     1. Login as user0
@@ -187,7 +187,7 @@
 
 	<t:property name="authToken" value="${authToken.account0}"/>
 
-	
+
 	<t:property name="server.zimbraMail" value="${account0.server}"/>
 	<t:property name="appointment1.start" value="1448971200000"/>
 	<t:property name="appointment1.subject" value="${TIME}${COUNTER}"/>
@@ -199,8 +199,8 @@
                     <m>
                         <inv class="PRI" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
                             <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-                            <s d="${ICALTIME[${appointment1.start}]}"/>  
-                            <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>  
+                            <s d="${ICALTIME[${appointment1.start}]}"/>
+                            <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>
                             <or a="${account1.name}"/>
                         </inv>
                         <e a="${account2.name}" t="t"/>

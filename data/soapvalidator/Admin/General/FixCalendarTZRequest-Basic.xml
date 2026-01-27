@@ -52,7 +52,7 @@
 
 <t:test_case testcaseid="AccountSetup" type="always" >
     <t:objective>Create test account </t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -64,7 +64,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -91,18 +91,18 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="timezone1" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
 <t:property name="timezone2" value="(GMT-11.00) Midway Island / Samoa"/>
 <t:property name="appointment.timezone" value="${timezone1}"/>
 
-<t:test_case testcaseid="FixCalendarTZRequest_01" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_01" type="sanity">
 	<t:objective>Verify user can fix timezone definitions in appointments.</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -113,8 +113,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -125,8 +125,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -141,7 +141,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -153,24 +153,24 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
             <FixCalendarTZRequest xmlns="urn:zimbraAdmin" >
             	<account name="${test_account1.name}"/>
             	<tzfixup>
-  					<fixupRule>   
+  					<fixupRule>
 	    				<match>
 	    					<any/>
-	    					
+
 	    				</match>
-	    				<replace>     
-      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" > 
+	    				<replace>
+      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" >
       						 	<standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
             					<daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
             				 </tz>
-   						</replace>	    						
-    				</fixupRule>   
+   						</replace>
+    				</fixupRule>
             	</tzfixup>
             </FixCalendarTZRequest>
         </t:request>
@@ -178,14 +178,14 @@
             <t:select path="//admin:FixCalendarTZResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="FixCalendarTZRequest_02" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_02" type="sanity">
 	<t:objective>Send FixCalendarTZRequest with sync=1</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -196,8 +196,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -208,8 +208,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -224,7 +224,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -236,24 +236,24 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-            <FixCalendarTZRequest xmlns="urn:zimbraAdmin" sync="1">       	
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin" sync="1">
             	<account name="${test_account1.name}"/>
             	<tzfixup>
-  					<fixupRule>   
+  					<fixupRule>
 	    				<match>
 	    					<any/>
-	    					
+
 	    				</match>
-	    				<replace>     
-      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" > 
+	    				<replace>
+      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" >
       						 	<standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
             					<daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
             				 </tz>
-   						</replace>	    						
-    				</fixupRule>   
+   						</replace>
+    				</fixupRule>
             	</tzfixup>
             </FixCalendarTZRequest>
         </t:request>
@@ -261,14 +261,14 @@
             <t:select path="//admin:FixCalendarTZResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="FixCalendarTZRequest_03" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_03" type="sanity">
 	<t:objective>Send FixCalendarTZRequest with sync=0 and mills=5000 </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -279,8 +279,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -291,8 +291,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -307,7 +307,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -319,24 +319,24 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-            <FixCalendarTZRequest xmlns="urn:zimbraAdmin" sync="0" after="5000">       	
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin" sync="0" after="5000">
             	<account name="${test_account1.name}"/>
             	<tzfixup>
-  					<fixupRule>   
+  					<fixupRule>
 	    				<match>
 	    					<any/>
-	    					
+
 	    				</match>
-	    				<replace>     
-      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" > 
+	    				<replace>
+      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" >
       						 	<standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
             					<daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
             				 </tz>
-   						</replace>	    						
-    				</fixupRule>   
+   						</replace>
+    				</fixupRule>
             	</tzfixup>
             </FixCalendarTZRequest>
         </t:request>
@@ -344,14 +344,14 @@
             <t:select path="//admin:FixCalendarTZResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="FixCalendarTZRequest_04" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_04" type="sanity">
 	<t:objective>Send FixCalendarTZRequest with multiple accounts</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -362,8 +362,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -374,8 +374,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -390,7 +390,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -402,25 +402,25 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">       	
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">
             	<account name="${test_account1.name}"/>
             	<account name="${test_account2.name}"/>
             	<tzfixup>
-  					<fixupRule>   
+  					<fixupRule>
 	    				<match>
 	    					<any/>
-	    					
+
 	    				</match>
-	    				<replace>     
-      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" > 
+	    				<replace>
+      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" >
       						 	<standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
             					<daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
             				 </tz>
-   						</replace>	    						
-    				</fixupRule>   
+   						</replace>
+    				</fixupRule>
             	</tzfixup>
             </FixCalendarTZRequest>
         </t:request>
@@ -428,14 +428,14 @@
             <t:select path="//admin:FixCalendarTZResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="FixCalendarTZRequest_05" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_05" type="sanity">
 	<t:objective>Send FixCalendarTZRequest without accounts - service.INVALID_REQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -446,8 +446,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -458,8 +458,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -474,7 +474,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -486,24 +486,24 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">       	
-            	
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">
+
             	<tzfixup>
-  					<fixupRule>   
+  					<fixupRule>
 	    				<match>
 	    					<any/>
-	    					
+
 	    				</match>
-	    				<replace>     
-      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" > 
+	    				<replace>
+      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" >
       						 	<standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
             					<daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
             				 </tz>
-   						</replace>	    						
-    				</fixupRule>   
+   						</replace>
+    				</fixupRule>
             	</tzfixup>
             </FixCalendarTZRequest>
         </t:request>
@@ -511,14 +511,14 @@
             <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="FixCalendarTZRequest_06" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_06" type="sanity">
 	<t:objective>Send FixCalendarTZRequest with blank rule </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -529,8 +529,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -541,8 +541,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -557,7 +557,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -569,10 +569,10 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">       	
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">
             	<account name="${test_account1.name}"/>
             	<account name="${test_account2.name}"/>
             	<tzfixup>
@@ -583,14 +583,14 @@
             <t:select path="//admin:FixCalendarTZResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="FixCalendarTZRequest_07" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_07" type="sanity">
 	<t:objective>Send FixCalendarTZRequest without rule- service.INVALID_REQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -601,8 +601,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -613,8 +613,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -629,7 +629,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -641,10 +641,10 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">       	
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">
             	<account name="${test_account1.name}"/>
             	<account name="${test_account2.name}"/>
             </FixCalendarTZRequest>
@@ -653,15 +653,15 @@
             <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="FixCalendarTZRequest_08" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_08" type="sanity">
 	<t:objective>Send FixCalendarTZRequest with all accounts on mailbox server</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -672,8 +672,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -684,8 +684,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -700,7 +700,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -712,24 +712,24 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">       	
-            	<account name="all"/>            	
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">
+            	<account name="all"/>
             	<tzfixup>
-  					<fixupRule>   
+  					<fixupRule>
 	    				<match>
 	    					<any/>
-	    					
+
 	    				</match>
-	    				<replace>     
-      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" > 
+	    				<replace>
+      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" >
       						 	<standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
             					<daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
             				 </tz>
-   						</replace>	    						
-    				</fixupRule>   
+   						</replace>
+    				</fixupRule>
             	</tzfixup>
             </FixCalendarTZRequest>
         </t:request>
@@ -737,14 +737,14 @@
             <t:select path="//admin:FixCalendarTZResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="FixCalendarTZRequest_09" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_09" type="sanity">
 	<t:objective>Send FixCalendarTZRequest with invalid account name- service.INVALID_REQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -755,8 +755,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -767,8 +767,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -783,7 +783,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -795,24 +795,24 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">       	
-            	<account name="invalid.account"/>            	
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">
+            	<account name="invalid.account"/>
             	<tzfixup>
-  					<fixupRule>   
+  					<fixupRule>
 	    				<match>
 	    					<any/>
-	    					
+
 	    				</match>
-	    				<replace>     
-      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" > 
+	    				<replace>
+      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" >
       						 	<standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
             					<daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
             				 </tz>
-   						</replace>	    						
-    				</fixupRule>   
+   						</replace>
+    				</fixupRule>
             	</tzfixup>
             </FixCalendarTZRequest>
         </t:request>
@@ -820,14 +820,14 @@
             <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="FixCalendarTZRequest_10" type="bhr">
+<t:test_case testcaseid="FixCalendarTZRequest_10" type="sanity">
 	<t:objective>Send FixCalendarTZRequest with blank account name - service.INVALID_REQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
- 
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -838,8 +838,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -850,8 +850,8 @@
 	             </tz>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time16}" tz="My Central Timezone"/>  
-                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <s d="${Time16}" tz="My Central Timezone"/>
+                        <e d="${Time17}" tz="My Central Timezone"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -866,7 +866,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -878,24 +878,24 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">       	
-            	<account name=" "/>            	
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin">
+            	<account name=" "/>
             	<tzfixup>
-  					<fixupRule>   
+  					<fixupRule>
 	    				<match>
 	    					<any/>
-	    					
+
 	    				</match>
-	    				<replace>     
-      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" > 
+	    				<replace>
+      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" >
       						 	<standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
             					<daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
             				 </tz>
-   						</replace>	    						
-    				</fixupRule>   
+   						</replace>
+    				</fixupRule>
             	</tzfixup>
             </FixCalendarTZRequest>
         </t:request>
@@ -903,7 +903,7 @@
             <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

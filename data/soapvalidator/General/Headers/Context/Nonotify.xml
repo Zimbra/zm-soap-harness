@@ -71,7 +71,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin" />
@@ -80,13 +80,13 @@
 			<t:select path="//admin:PingResponse" />
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_notification" type="always">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -98,7 +98,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -119,7 +119,7 @@
 
 <t:test_case testcaseid="acctlogin1_notification" type="always">
     <t:objective>login as the test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -137,11 +137,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification25" type="bhr" bugids="18478" >
+<t:test_case testcaseid="Notification25" type="sanity" bugids="18478" >
 	<t:objective> Verify nonotify should turn off notifications, but maintain sessions  </t:objective>
 
     <!-- Per Bug 18478 - nonotify is equivalent to nosession -->
-    
+
     <t:test>
         <t:requestContext>
             <authToken>${authToken}</authToken>

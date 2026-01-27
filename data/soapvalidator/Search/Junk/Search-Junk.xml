@@ -15,11 +15,11 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -29,7 +29,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -53,8 +53,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${junkuser}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server1"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
 <!-- To verify zimbraJunkMessagesIndexingEnabled is true -->
 	<t:test>
 		<t:request xmlns="urn:zimbraAdmin">
@@ -71,7 +71,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
 
-<t:test_case testcaseid="SearchJunkRequest01" type="bhr" bugids="23573">
+<t:test_case testcaseid="SearchJunkRequest01" type="sanity" bugids="23573">
     <t:objective> Create setup for the Search Request </t:objective>
     <t:steps>1. Login to the account.
              2. Modify the Prefs to include Trash and Spam in search result.
@@ -91,7 +91,7 @@
 
         </t:response>
     </t:test>
-    
+
      <t:test id="modifyPrefsRequest">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -103,7 +103,7 @@
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:mailinjecttest>
         <t:lmtpInjectRequest>
 		    <foldername>${junkuser.dir}</foldername>
@@ -138,7 +138,7 @@
 			</t:select>
         </t:response>
     </t:test>
-</t:test_case> 
+</t:test_case>
 
 </t:tests>
 

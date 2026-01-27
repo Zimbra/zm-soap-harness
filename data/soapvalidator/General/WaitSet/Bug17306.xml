@@ -16,16 +16,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="WaitSet_bug17306_aactSetup" type="always">
     <t:objective>create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create an account.    
+             2. Create an account.
     </t:steps>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -37,7 +37,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -50,12 +50,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="WaitSet_bug17306" type="sanity" bugids="17306">
+<t:test_case testcaseid="WaitSet_bug17306" type="functional" bugids="17306">
     <t:objective> Testcase to simulate the recreate waitset functioanlity </t:objective>
     <t:steps>
     1. SyncRequest to determine current sync token
@@ -63,7 +63,7 @@
     3. CreateWaitSet with token set to step1's sync token
     4. WaitSetRequest - should return immediately with the account ID
     </t:steps>
-       
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -83,8 +83,8 @@
         <t:request>
             <SyncRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>
         </t:response>
     </t:test>
 
@@ -95,13 +95,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account1.contact1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -131,10 +131,10 @@
         </t:response>
     </t:test>
 
-   
-   
 
-</t:test_case> 
+
+
+</t:test_case>
 
 
 </t:tests>

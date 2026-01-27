@@ -27,7 +27,7 @@
     <t:steps>
     	Pinging the server
     </t:steps>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -46,7 +46,7 @@
     	Creating organizer
     	Creating invitee
     </t:steps>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -59,7 +59,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <!-- Create Organizer -->
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
@@ -90,7 +90,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MeetingStatus_afterMBoxrestart" type="bhr" areas="Calendar,noncluster">
+<t:test_case testcaseid="MeetingStatus_afterMBoxrestart" type="sanity" areas="Calendar,noncluster">
     <t:objective>Verify participant status is shown to the organizer for an exception to a basic weekly recurrent appointment</t:objective>
     <t:steps>
     1. Login as organizer
@@ -98,7 +98,7 @@
     3. Login as invitee and accept the meeting.
     4. Check the status of the meeting( It should be accepted)
     5. Restart the mailboxd service
-    6. Login as invitee and verify the status of the meeting. It should still be as accepted.  
+    6. Login as invitee and verify the status of the meeting. It should still be as accepted.
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${organizer1.server}"/>
@@ -115,7 +115,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test required="true" >
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -125,14 +125,14 @@
 				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.calendar.folder.id"/>
 			</t:select>
 		</t:response>
-	</t:test>    
-   
+	</t:test>
+
    	<!-- Apt Properties -->
 	<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
 
-	
+
 	<t:property name="time.08Jun2009100000.gmt" value="1244455200000"/>
 	<t:property name="time.08Jun2009100000.pst" value="${TIME(-8h)[${time.08Jun2009100000.gmt}]}"/>
 
@@ -146,7 +146,7 @@
 							<or a="${organizer1.name}"/>
 							<at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="0"/>
 							<s d="${ICALTIME[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}" />
-							<e d="${ICALTIME(+3h)[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}" />							
+							<e d="${ICALTIME(+3h)[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}" />
 						</comp>
 					</inv>
 					<e a="${invitee1.name}" t="t"/>
@@ -167,7 +167,7 @@
         </t:response>
     </t:test>
 
-	
+
     <t:property name="server.zimbraAccount" value="${invitee1.server}"/>
     <!-- Login as the invitee -->
     <t:test id="auth1" required="true">
@@ -201,32 +201,32 @@
 				<query>inid:${invitee1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<!--  <t:select path="//mail:inst[@name='${appointment.exception.subject}']">
 	            	<t:select attr="invId" set="invitee1.exception1.invId"/>
 	            	<t:select attr="compNum" set="invitee1.exception1.compNum"/>
-	            	<t:select attr="name" set="invitee1.exception1.name"/> 
+	            	<t:select attr="name" set="invitee1.exception1.name"/>
             	</t:select>-->
-            	
+
             	<t:select path="//mail:appt[@name='${appointment.subject}']" attr="ptst" match="NE">
 					<t:select attr="compNum" set="invitee1.compNum.val"/>
 					<t:select attr="invId" set="invitee1.invId.val"/>
-					<t:select attr="id" set="invitee1.id.val"/>				
-					<t:select attr="name" set="invitee1.name.val"/> 
-            		<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/> 
-					<!--  <t:select attr="name" set="org.appt.name"/> -->					 
+					<t:select attr="id" set="invitee1.id.val"/>
+					<t:select attr="name" set="invitee1.name.val"/>
+            		<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
+					<!--  <t:select attr="name" set="org.appt.name"/> -->
         		</t:select>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
 
 	<t:property name="verb.response" value="${verb.accept}"/>
 	<t:property name="verb.expected" value="${ptst.accept}"/>
-	
+
     <t:test required="true">
-        <t:request>		
+        <t:request>
 			<SendInviteReplyRequest xmlns="urn:zimbraMail" id="${invitee1.invId.val}" compNum="${invitee1.compNum.val}" verb="${verb.response}" updateOrganizer="TRUE">
 				<m rt="r">
 					<e t="t" a="${invitee1.appt1.or}"/>
@@ -241,7 +241,7 @@
             <t:select path="//mail:SendInviteReplyResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -249,9 +249,9 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetMsgResponse/mail:m[@id='${invitee1.invId.val}']">                      	
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${invitee1.invId.val}']">
             	<t:select path="//mail:reply[@at='${invitee1.name}']" attr="ptst" match="${ptst.accept}"/>
-            <!--<t:select path="//mail:reply[@at='${invitee1.name}']" emptyset="1"/> --> <!-- expected: no response to the series --> 
+            <!--<t:select path="//mail:reply[@at='${invitee1.name}']" emptyset="1"/> --> <!-- expected: no response to the series -->
             </t:select>
         </t:response>
     </t:test>
@@ -291,12 +291,12 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${invitee1.invId.val}']">
-            	<t:select path="//mail:reply[@at='${invitee1.name}']" attr="ptst" match="${ptst.accept}"/>            
+            	<t:select path="//mail:reply[@at='${invitee1.name}']" attr="ptst" match="${ptst.accept}"/>
             	<!--  <t:select path="//mail:at[@a='${invitee1.name}']" attr="ptst" match="${ptst.accept}"/> -->
             </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

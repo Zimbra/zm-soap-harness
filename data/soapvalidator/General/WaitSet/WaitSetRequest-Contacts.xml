@@ -26,16 +26,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="CreateWaitSetRequest_Contacts_AccountSetup" type="always">
     <t:objective>create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create an account.    
+             2. Create an account.
     </t:steps>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -47,7 +47,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -60,7 +60,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -73,12 +73,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="CreateWaitSetRequest_Contacts_01" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_Contacts_01" type="sanity">
     <t:objective>Test Case for WaitSetRequest (non blocking) for Contact changes</t:objective>
     <t:steps>
     1. Login to account1
@@ -86,7 +86,7 @@
     3. Create a new contact into the mailbox
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -123,13 +123,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account1.contact1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -146,9 +146,9 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CreateWaitSetRequest_Contacts_02" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_Contacts_02" type="sanity">
     <t:objective>Test Case for WaitSetRequest (blocking) for Contact changes</t:objective>
     <t:steps>
     1. Login to account1
@@ -156,7 +156,7 @@
     3. Create a new contact into the mailbox
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -199,7 +199,7 @@
     </t:test>
 
 	<t:delay sec="10"/>
-	
+
     <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -207,19 +207,19 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account2.contact1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
 
 	<!-- The WaitSetResponse will be received here, after the contact is created in the mailbox -->
-	
-</t:test_case> 
+
+</t:test_case>
 
 </t:tests>

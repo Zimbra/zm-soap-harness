@@ -6,8 +6,8 @@
 <t:property name="root" value="${soapxml.root}/REST/Calendar/Post/ImportExport/"/>
 <t:property name="ical1.ics" value="${root}/bug25845.ics"/>
 <t:property name="appt.subject" value="Campus Picnic"/>
-<t:property name="ical1.start" value="1148754600000"/> 
-<t:property name="ical1.end" value="1152383400000"/> 
+<t:property name="ical1.start" value="1148754600000"/>
+<t:property name="ical1.end" value="1152383400000"/>
 
 <t:property name="ical2.ics" value="${root}/espanol.ics"/>
 <t:property name="ical2.subject" value="Cáléñdar Subject"/>
@@ -17,7 +17,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -124,7 +124,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${ical1.id}"/>
         </t:request>
         <t:response>
@@ -150,7 +150,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_ImportExport_02" type="bhr" bugids="38977">
+<t:test_case testcaseid="RestServlet_ImportExport_02" type="sanity" bugids="38977">
 	<t:objective>Post a calendar ICS with Spanish characters</t:objective>
 	<t:steps>
 	1. Use the rest servlet to upload a calendar ICS
@@ -204,7 +204,7 @@
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt" attr="invId" set="cal2.id"/>
             </t:select>

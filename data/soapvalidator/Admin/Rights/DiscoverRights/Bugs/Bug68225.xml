@@ -30,7 +30,7 @@
 
 <t:test_case testcaseid="bug68225_setup" type="always">
     <t:objective>Create test accounts and DL</t:objective>
-    
+
 	<!-- Login as the admin to get an auth token -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -56,7 +56,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
             </t:response>
     </t:test>
-    
+
     <t:test id="create_acct2" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -69,7 +69,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
             </t:response>
     </t:test>
-    
+
     <t:test id="create_acct3" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -82,7 +82,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
             </t:response>
     </t:test>
-    
+
     <t:test id="create_acct4" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -95,7 +95,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
             </t:response>
     </t:test>
-    
+
     <t:test id="create_acct5" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -108,7 +108,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
             </t:response>
     </t:test>
-    
+
     <t:test id="create_acct6" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -121,7 +121,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
             </t:response>
     </t:test>
-    
+
     <t:test id="create_acct1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -135,7 +135,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="owner1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -149,7 +149,7 @@
             <t:select path='//admin:CreateDistributionListResponse/admin:dl/admin:a[@n="displayName"]' set="list1.displayname"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest1a">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -162,26 +162,26 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
 				<target type="dl" by="name">${test_list1.name}</target>
 				<grantee type="usr" by="name">${owner1.name}</grantee>
 				<right>ownDistList</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
-	
-</t:test_case> 
+
+</t:test_case>
 
 
 <t:property name="server.zimbraAccount" value="${owner1.server}"/>
 
-<t:test_case testcaseid="bug68225" type="bhr" bugids="68225">
+<t:test_case testcaseid="bug68225" type="sanity" bugids="68225">
     <t:objective>Verify display name is returned in DiscoverRightsRequest.</t:objective>
     <t:steps>
 			1. Login into Account1.
@@ -200,18 +200,18 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<DiscoverRightsRequest xmlns="urn:zimbraAccount">
 				<right>ownDistList</right>
-			</DiscoverRightsRequest>    
+			</DiscoverRightsRequest>
 		</t:request>
 		<t:response>
-                <t:select path="//acct:DiscoverRightsResponse/acct:targets/acct:target" attr="d" match="${list1.displayname}"/>   
+                <t:select path="//acct:DiscoverRightsResponse/acct:targets/acct:target" attr="d" match="${list1.displayname}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 </t:tests>

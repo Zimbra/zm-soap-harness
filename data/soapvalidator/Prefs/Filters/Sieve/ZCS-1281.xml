@@ -8,35 +8,35 @@
 	<t:property name="folder2.name" value="folder2.${TIME}.${COUNTER}"/>
 	<t:property name="folder_rename" value="folder.${TIME}.${COUNTER}"/>
 	<t:property name="tag.name" value="tag${TIME}${COUNTER}" />
-	
+
 	<t:property name="sieve_rule1" value='require ["fileinto", "log"];
 		if anyof address :is "from" "p2@testdomain.com"
-			{ 
-			  if address :is "to" "ds@ds.com" 
+			{
+			  if address :is "to" "ds@ds.com"
 			  {  tag "tagto";  }
 			}
-		elsif anyof header :contains "subject" ["automation", "nunit"]		
+		elsif anyof header :contains "subject" ["automation", "nunit"]
 			{
 			fileinto "FromP2";
 			log "Move message to FromP2 folder";
-			} 
-		elsif anyof header :contains "subject" ["automation", "nunit"] 
+			}
+		elsif anyof header :contains "subject" ["automation", "nunit"]
 			{
 			redirect "qa-automation@testdomain.com";
 			log "Forward message to qa-automation DL";
 			}
-		else 
+		else
 			{ fileinto "Inbox"; }'></t:property>
 
 <t:property name="sieve_rule2" value='require ["fileinto", "log"];
-		if anyof address :is "from" "p2@zqa-380.eng.zimbra.com" 
+		if anyof address :is "from" "p2@zqa-380.eng.zimbra.com"
 			{ fileinto "FromP2"; log "Move message to FromP2 folder"; }
 		elsif anyof (header :contains "subject" ["automation", "nunit"])
 			{ redirect "qa-automation@zqa-380.eng.zimbra.com"; log "Forward message to qa-automation DL"; }'></t:property>
 
 <t:test_case testcaseid="Config setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -91,10 +91,10 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account"/>
 			</t:response>
 		</t:test>
-		
+
 	</t:test_case>
 
-	<t:test_case testcaseid="Incoming_FolderRule" type="functional" bugids="zcs-1281">
+	<t:test_case testcaseid="Incoming_FolderRule" type="regression" bugids="zcs-1281">
 		<t:objective>Folder operations for user </t:objective>
 		<t:steps>
             1. Perform folder operations -- create/rename/move/delete.
@@ -133,7 +133,7 @@
 	            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="absFolderPath" match="/Inbox/${folder1.name}"/>
 	        </t:response>
 		</t:test>
-				
+
 		<t:test>
 	        <t:request>
 	            <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -154,11 +154,11 @@
 	        <t:response>
 	            <t:select path="//mail:FolderActionResponse/mail:action">
 	            <t:select attr="id" match="${folder1.id}"/>
-	            <t:select attr="op" match="rename"/>        
+	            <t:select attr="op" match="rename"/>
 	            </t:select>
 	        </t:response>
 	    </t:test>
-    
+
 		<t:test>
 	        <t:request>
 	            <FolderActionRequest xmlns="urn:zimbraMail">
@@ -168,7 +168,7 @@
 	        <t:response>
 	            <t:select path="//mail:FolderActionResponse/mail:action">
 	            <t:select attr="id" match="${folder1.id}"/>
-	            <t:select attr="op" match="move"/>        
+	            <t:select attr="op" match="move"/>
 	            </t:select>
 	        </t:response>
 	    </t:test>
@@ -182,14 +182,14 @@
 	        <t:response>
 	            <t:select path="//mail:FolderActionResponse/mail:action">
 	            <t:select attr="id" match="${folder1.id}"/>
-	            <t:select attr="op" match="delete"/>        
+	            <t:select attr="op" match="delete"/>
 	            </t:select>
 	        </t:response>
 	    </t:test>
-	    	    		
+
 	</t:test_case>
 
-	<t:test_case testcaseid="Incoming_TagRule" type="functional" bugids="zcs-1281">
+	<t:test_case testcaseid="Incoming_TagRule" type="regression" bugids="zcs-1281">
 		<t:objective>Tag operations for user </t:objective>
 		<t:steps>
             1. Perform tag operations -- create/delete
@@ -234,10 +234,10 @@
 	    	    </t:select>
 		    </t:response>
 		</t:test>
-			    	    		
+
 	</t:test_case>
-	
-	<t:test_case testcaseid="Outgoing_FolderRule" type="functional" bugids="zcs-1281">
+
+	<t:test_case testcaseid="Outgoing_FolderRule" type="regression" bugids="zcs-1281">
 		<t:objective>Folder operations for user </t:objective>
 		<t:steps>
             1. Perform folder operations -- create/rename/move/delete.
@@ -276,7 +276,7 @@
 	            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="absFolderPath" match="/Inbox/${folder1.name}"/>
 	        </t:response>
 		</t:test>
-				
+
 		<t:test>
 	        <t:request>
 	            <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -297,11 +297,11 @@
 	        <t:response>
 	            <t:select path="//mail:FolderActionResponse/mail:action">
 	            <t:select attr="id" match="${folder1.id}"/>
-	            <t:select attr="op" match="rename"/>        
+	            <t:select attr="op" match="rename"/>
 	            </t:select>
 	        </t:response>
 	    </t:test>
-    
+
 		<t:test>
 	        <t:request>
 	            <FolderActionRequest xmlns="urn:zimbraMail">
@@ -311,7 +311,7 @@
 	        <t:response>
 	            <t:select path="//mail:FolderActionResponse/mail:action">
 	            <t:select attr="id" match="${folder1.id}"/>
-	            <t:select attr="op" match="move"/>        
+	            <t:select attr="op" match="move"/>
 	            </t:select>
 	        </t:response>
 	    </t:test>
@@ -325,14 +325,14 @@
 	        <t:response>
 	            <t:select path="//mail:FolderActionResponse/mail:action">
 	            <t:select attr="id" match="${folder1.id}"/>
-	            <t:select attr="op" match="delete"/>        
+	            <t:select attr="op" match="delete"/>
 	            </t:select>
 	        </t:response>
 	    </t:test>
-	    	    		
+
 	</t:test_case>
 
-	<t:test_case testcaseid="Outgoing_TagRule" type="functional" bugids="zcs-1281">
+	<t:test_case testcaseid="Outgoing_TagRule" type="regression" bugids="zcs-1281">
 		<t:objective>Tag operations for user </t:objective>
 		<t:steps>
             1. Perform tag operations -- create/delete
@@ -377,7 +377,7 @@
 	    	    </t:select>
 		    </t:response>
 		</t:test>
-			    	    		
+
 	</t:test_case>
-				
+
 </t:tests>

@@ -28,7 +28,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
- 
+
 	<t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -41,7 +41,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="grantee.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="grantee.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request >
@@ -49,7 +49,7 @@
 				<target type="domain" by="name" >${defaultdomain.name}</target>
 				<grantee type="usr" by="name">${grantee.account}</grantee>
 				<right>domainAdminRights</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -74,7 +74,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug38320" type="bhr" bugids="38320">
+<t:test_case testcaseid="Bug38320" type="sanity" bugids="38320">
  <t:objective> Verify Get*** SOAP calls send the list of attributes and get proper response. </t:objective>
 
 	<t:test required="true" >
@@ -100,7 +100,7 @@
         </t:response>
     </t:test>
 
-	
+
     <t:test>
         <t:request >
             <GetCosRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">

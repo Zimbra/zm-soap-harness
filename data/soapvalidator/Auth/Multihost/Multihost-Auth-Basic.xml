@@ -49,7 +49,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -62,7 +62,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
@@ -70,7 +70,7 @@
 <t:test_case testcaseid="multihostAuthBasic01" hostCount="2" type="smoke">
  <t:objective>Verify that an account configured with zimbraMailHost=A can log into host B</t:objective>
 
-	
+
 	<t:property name="uri" value="${multihostB.mailClientUri}"/>
 
 	<t:test >
@@ -90,10 +90,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="multihostAuthBasic02" hostCount="2" type="bhr">
+<t:test_case testcaseid="multihostAuthBasic02" hostCount="2" type="sanity">
  <t:objective>Verify that an account configured with zimbraMailHost=A can log into host A</t:objective>
 
-	
+
 	<t:property name="uri" value="${multihostA.mailClientUri}"/>
 
 	<t:test >
@@ -113,10 +113,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="multihostAuthBasic03" hostCount="2" type="bhr">
+<t:test_case testcaseid="multihostAuthBasic03" hostCount="2" type="sanity">
  <t:objective>Verify that an account configured with zimbraMailHost=B can log into host A</t:objective>
 
-	
+
 	<t:property name="uri" value="${multihostA.mailClientUri}"/>
 
 	<t:test >
@@ -135,10 +135,10 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="multihostAuthBasic04" hostCount="2" type="bhr">
+<t:test_case testcaseid="multihostAuthBasic04" hostCount="2" type="sanity">
  <t:objective>Verify that an account configured with zimbraMailHost=B can log into host B</t:objective>
 
-	
+
 	<t:property name="uri" value="${multihostB.mailClientUri}"/>
 
 	<t:test >
@@ -158,10 +158,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="multihostAuthBasic10" hostCount="2" type="bhr">
+<t:test_case testcaseid="multihostAuthBasic10" hostCount="2" type="sanity">
  <t:objective>Verify that an auth token from host A is active on host B</t:objective>
 
-	
+
 	<t:property name="uri" value="${multihostA.mailClientUri}"/>
 
 	<t:test >
@@ -185,7 +185,7 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:name" match="${account1.name}"/> 
+			<t:select path="//acct:GetInfoResponse/acct:name" match="${account1.name}"/>
 		</t:response>
 	</t:test>
 

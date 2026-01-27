@@ -130,10 +130,10 @@
 			    </GrantRightRequest>
 			</t:request>
 			<t:response>
-			<t:select path="//admin:GrantRightResponse"/>	
+			<t:select path="//admin:GrantRightResponse"/>
 			</t:response>
 		</t:test>
-		
+
 	<t:test id="GrantRightRequest2" required="true" >
 			<t:request>
 				<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -167,7 +167,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="OnBehalfOf_SendMsgRequest_01" type="bhr" bugids="15766" >
+<t:test_case testcaseid="OnBehalfOf_SendMsgRequest_01" type="sanity" bugids="15766" >
 	<t:objective>Verify that a copy of a sent-as message is saved in the "From:" user's sent folder</t:objective>
 	<t:steps>
 	1. Account3 executes SendMsgRequest with "account by=id" for account4
@@ -193,7 +193,7 @@
 	</t:test>
 
 	<t:test required="true">
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
@@ -229,7 +229,7 @@
 		</t:response>
 	</t:test>
 
-	
+
 
 	<t:delay sec="10"/>
 
@@ -249,7 +249,7 @@
 	</t:test>
 
 	<t:test required="true">
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
@@ -289,7 +289,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="OnBehalfOf_SendMsgRequest_02" type="sanity" >
+<t:test_case testcaseid="OnBehalfOf_SendMsgRequest_02" type="functional" >
 	<t:objective>Verify that an Admin sending message on-behalf-off appears as if the user account sent the message directly</t:objective>
 	<t:steps>
 	1. Admin executes SendMsgRequest with "account by=id" for account2
@@ -386,7 +386,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="OnBehalfOf_SendMsgRequest_03" type="sanity" >
+<t:test_case testcaseid="OnBehalfOf_SendMsgRequest_03" type="functional" >
 	<t:objective>Verify that a DomainAdmin sending message on-behalf-off appears as if the user account sent the message directly</t:objective>
 	<t:steps>
 	1. Domain Admin executes SendMsgRequest with "account by=id" for account2
@@ -424,7 +424,7 @@
 		</t:response>
 	</t:test>
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 	<t:property name="server.restServlet" value="${account4.server}"/>
 

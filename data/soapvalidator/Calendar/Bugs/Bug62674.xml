@@ -44,8 +44,8 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
         <t:test >
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -69,36 +69,36 @@
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id"/>
 		</t:response>
     </t:test>
-    
+
    	 <t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${Resource1.name}</name>
 				<a n="description">${Resource1.description}</a>
 				<a n="displayName">${Resource1.displayName}</a>
-				<a n="zimbraCalResType">${Resource.location}</a>				
+				<a n="zimbraCalResType">${Resource.location}</a>
 			</CreateCalendarResourceRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateCalendarResourceResponse"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${Resource2.name}</name>
 				<a n="description">${Resource2.description}</a>
 				<a n="displayName">${Resource2.displayName}</a>
-				<a n="zimbraCalResType">${Resource.equipment}</a>				
+				<a n="zimbraCalResType">${Resource.equipment}</a>
 			</CreateCalendarResourceRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateCalendarResourceResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -111,11 +111,11 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account1.server"/>
         </t:response>
 	 </t:test>
-	 
+
 	 <t:test >
         <t:request>
 			<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
-				<account id="${domain1.galaccount.id}">			    
+				<account id="${domain1.galaccount.id}">
 				</account>
 			</SyncGalAccountRequest>
         </t:request>
@@ -123,24 +123,24 @@
             <t:select path="//admin:SyncGalAccountResponse"/>
         </t:response>
     </t:test>
-	    
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="resource_search01" type="bhr" bugids="62674">
+<t:test_case testcaseid="resource_search01" type="sanity" bugids="62674">
     <t:objective>Search the resources by Equipment using description.</t:objective>
 	<t:steps>
 			1. Login into test account.
 			2. Search resource by description - By Location
 			3. Search resource by description - By Equipment
 			4. Login in admin console
-			5. Create a location resource/ equipment resource with description 
+			5. Create a location resource/ equipment resource with description
 			6. Login as user
 			7. In appointment view, click Location to open up a dialog to search for location/equipment
 			8. Enter the description created in step #2, click "Search"
 			9. All the equipments/locations should be displayed as search results
-			
+
 	</t:steps>
 
 <t:property name="server.zimbraAccount" value="${test_account1.server}"/>
@@ -157,8 +157,8 @@
                 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
             </t:response>
     </t:test>
-    
-   
+
+
     <t:test>
         <t:request>
 			<SearchCalendarResourcesRequest xmlns="urn:zimbraAccount" attrs="fullName,email,zimbraCalResLocationDisplayName,zimbraCalResContactEmail,description,zimbraCalResType" offset="0" limit="25">
@@ -191,7 +191,7 @@
 	        	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource/acct:a[@n='fullName']" match="${Resource2.displayName}"/>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 

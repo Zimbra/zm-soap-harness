@@ -98,10 +98,10 @@
 
 
 
-<t:test_case testcaseid="filters_delete01" type="bhr">
+<t:test_case testcaseid="filters_delete01" type="sanity">
     <t:objective> Delete a filter rule </t:objective>
-    <t:steps> 1. Create a rule 
-			  2. Delete above created filter rule.            
+    <t:steps> 1. Create a rule
+			  2. Delete above created filter rule.
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
@@ -128,10 +128,10 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${filter1.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${filter1.subject}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />                    
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -141,7 +141,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 
     <!-- Delete the filter rule -->
     <t:test>
@@ -151,10 +151,10 @@
 			</ModifyFilterRulesRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:ModifyFilterRulesResponse"/>        
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -164,21 +164,21 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-		
+
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="filters_delete05" type="sanity">
+<t:test_case testcaseid="filters_delete05" type="functional">
     <t:objective>Verify that filter rules dont not get applied to the messages sent to test account</t:objective>
     <t:steps>1. Login to acocunt2
              2. Create a filter that flags a message
              3. Send mails to account1 with different subject
              4. Inject a message that matches
-             5. Verify that the message is not flagged            
-    </t:steps> 
-    
+             5. Verify that the message is not flagged
+    </t:steps>
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test required="true">
@@ -206,10 +206,10 @@
                 <filterRules>
 					<filterRule name="${filter2.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${message2.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${message2.subject}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />                    
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -219,8 +219,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <!-- Delete the filter rule -->
     <t:test>
         <t:request>
@@ -229,10 +229,10 @@
 			</ModifyFilterRulesRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:ModifyFilterRulesResponse"/>        
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -242,7 +242,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-		
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message2.file}</filename>
@@ -251,7 +251,7 @@
 			<server>${test_acct2.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
     <t:test>
         <t:request>
@@ -262,8 +262,8 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*" emptyset="1"/>
         </t:response>
-    </t:test>   
-	
+    </t:test>
+
 
 </t:test_case>
 
@@ -274,13 +274,13 @@
               2. Create a rule with action "Mark As flagged"
               3. Create a rule with action "Mark As Read"
 			  4. Delete a rule with action "Mark As flagged"
-			  5. GetRulesRequest to verify that rule 1 is deleted 
+			  5. GetRulesRequest to verify that rule 1 is deleted
 			  6. Inject a matching message
 			  7. Verify that mail is not flagged and is read (i.e. not unread)
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -292,7 +292,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test>    
+    </t:test>
 
 	<t:property name="message3.file" value="${testMailRaw.root}/email04/email04b.txt"/>
 	<t:property name="message3.subject" value="email04B"/>
@@ -306,19 +306,19 @@
                 <filterRules>
 					<filterRule name="${filter3.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${message3.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${message3.subject}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />                    
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
                         </filterActions>
                     </filterRule>
-                    
+
                     <filterRule name="${filter4.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${message3.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${message3.subject}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="read" />                    
+                        <filterActions>
+                        	<actionFlag flagName="read" />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -328,19 +328,19 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Delete the filter rule -->
-    
+
     <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
-                <filterRules>    
+                <filterRules>
                     <filterRule name="${filter4.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${message3.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${message3.subject}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="read" />                    
+                        <filterActions>
+                        	<actionFlag flagName="read" />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -350,7 +350,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -360,7 +360,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -370,7 +370,7 @@
 			<server>${test_acct3.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
 	<t:test id="searchRequest1">
         <t:request>
@@ -379,8 +379,8 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse" attr="f" match=".*f.*" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse" attr="f" match=".*u.*" emptyset="1"/> 
+            <t:select path="//mail:SearchResponse" attr="f" match=".*f.*" emptyset="1"/>
+            <t:select path="//mail:SearchResponse" attr="f" match=".*u.*" emptyset="1"/>
         </t:response>
     </t:test>
 

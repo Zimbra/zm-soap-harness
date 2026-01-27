@@ -13,7 +13,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -30,7 +30,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -43,7 +43,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -113,8 +113,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
-   
+
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.location" value="location${TIME}${COUNTER}"/>
 	<t:property name="appointment.content" value="content${TIME}${COUNTER}"/>
@@ -153,7 +153,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -172,13 +172,13 @@
 				<query>${appointment.subject}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
             	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
             	<t:select attr="name" set="invitee1.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -199,7 +199,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Reminders_GetMsgRequest_Basic_02" type="bhr" areas="Calendar" bugids="40322">
+<t:test_case testcaseid="Reminders_GetMsgRequest_Basic_02" type="sanity" areas="Calendar" bugids="40322">
     <t:objective>Verify a reminder is set by default on incoming meeting requests</t:objective>
     <t:steps>
     1. Login as account1
@@ -223,8 +223,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
-   
+
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.location" value="location${TIME}${COUNTER}"/>
 	<t:property name="appointment.content" value="content${TIME}${COUNTER}"/>
@@ -263,7 +263,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -282,11 +282,11 @@
 				<query>subject:(${appointment.subject})</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message1.id"/>
             	<t:select path="//mail:comp" attr="compNum" set="appointment1.compNum"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -313,13 +313,13 @@
 				<query>${appointment.subject}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
             	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
             	<t:select attr="name" set="invitee1.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 

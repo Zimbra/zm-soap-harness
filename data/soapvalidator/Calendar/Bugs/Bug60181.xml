@@ -24,7 +24,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -41,7 +41,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -54,7 +54,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -82,11 +82,11 @@
         </t:response>
     </t:test>
 
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug60181" type="bhr" bugids="60181">
+<t:test_case testcaseid="Bug60181" type="sanity" bugids="60181">
     <t:objective>Replies list is not cleared when reusing item id of a trashed appointment on receiving a new invite</t:objective>
     <t:steps>
     1. User1 invites user2 to a recurring appointment.
@@ -118,7 +118,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test required="true" >
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -130,8 +130,8 @@
 		</t:response>
 	</t:test>
 
-    
-   
+
+
 	<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
@@ -208,7 +208,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${invitee1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -239,7 +239,7 @@
 				<query>inid:${invitee1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:inst[@name='${appointment.exception.subject}']">
 	            	<t:select attr="invId" set="invitee1.exception1.invId"/>
@@ -249,13 +249,13 @@
             	<t:select path="//mail:appt[@name='${appointment.subject}']">
             		<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
         		</t:select>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="verb.response" value="${verb.accept}"/>
 	<t:property name="verb.expected" value="${ptst.accept}"/>
-	
+
 	<t:test required="true">
         <t:request>
 			<SendInviteReplyRequest xmlns="urn:zimbraMail" id="${invitee1.exception1.invId}" compNum="${invitee1.exception1.compNum}" verb="${verb.response}" updateOrganizer="TRUE">
@@ -287,20 +287,20 @@
 
         </t:response>
     </t:test>
-   
+
     <t:test required="true" >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20180101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20180101120000.gmt}]}" types="appointment">
 				<query>inid:${organizer1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@name='${appointment.subject}']">
 	            	<t:select attr="invId" set="organizer1.appt1.invId"/>
 	            	<t:select attr="compNum" set="organizer1.appt1.compNum"/>
-            	</t:select> 
-            </t:select> 
+            	</t:select>
+            </t:select>
         </t:response>
     </t:test>
 
@@ -310,13 +310,13 @@
 				<query>inid:${organizer1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:inst[@name='${appointment.exception.subject}']">
 	            	<t:select attr="invId" set="organizer1.exception1.invId"/>
 	            	<t:select attr="compNum" set="organizer1.exception1.compNum"/>
-            	</t:select> 
-            </t:select> 
+            	</t:select>
+            </t:select>
         </t:response>
     </t:test>
 
@@ -350,7 +350,7 @@
 
 	<!-- Delete the appointment from attendee -->
     <t:property name="server.zimbraAccount" value="${invitee1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -379,7 +379,7 @@
             <t:select path="//mail:CancelAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Create another exception -->
     <t:property name="server.zimbraAccount" value="${organizer1.server}"/>
 
@@ -395,7 +395,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="appointment.exception.subject" value="exception${TIME}.${COUNTER}"/>
     <t:test required="true" >
         <t:request>
@@ -426,10 +426,10 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!-- Check the replies section does not have old replies -->
     <t:property name="server.zimbraAccount" value="${invitee1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -449,11 +449,11 @@
 				<query>inid:${invitee1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="invitee1.appt1.id"/>
         </t:response>
     </t:test>
-    
+
       <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -465,7 +465,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <GetAppointmentRequest xmlns="urn:zimbraMail" id="${invitee1.appt1.id}"/>
@@ -477,14 +477,14 @@
     </t:test>
 
 
-    
 
 
 
 
 
-		
-	
+
+
+
 
 </t:test_case>
 

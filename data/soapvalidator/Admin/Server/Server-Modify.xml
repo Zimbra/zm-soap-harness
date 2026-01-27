@@ -60,9 +60,9 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ModifyServerRequest1" type="bhr" areas="dev_sanity">
+<t:test_case testcaseid="ModifyServerRequest1" type="sanity" areas="dev_sanity">
     <t:objective> Modify a sever with all valid details </t:objective>
-    
+
     <t:test>
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
@@ -83,7 +83,7 @@
                 <a n="zimbraRedologEnabled">TRUE</a>
                 <a n="zimbraRedologLogPath">redolog/redo.log</a>
 <!--
-                <a n="zimbraId">40a7f47f-c79a-11d9-b12e-47f775a1d33c</a>    
+                <a n="zimbraId">40a7f47f-c79a-11d9-b12e-47f775a1d33c</a>
 -->
                 <a n="zimbraSmtpHostname">example.persistent.co.in</a>
                 <a n="zimbraServiceEnabled">TRUE</a>
@@ -97,18 +97,18 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest3" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with zimbraLmtpBindPort = negative value/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest3" bugids="1980" type="functional">
+    <t:objective> Modify a sever with zimbraLmtpBindPort = negative value/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest3a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraLmtpBindPort">${server.negative}</a>            
+                <a n="zimbraLmtpBindPort">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -116,36 +116,36 @@
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest3b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraLmtpBindPort">${server.blank}</a>            
+                <a n="zimbraLmtpBindPort">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
-    </t:test>  
-      
+    </t:test>
+
     <t:test id="modifyserverrequest3c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraLmtpBindPort">${server.sometext}</a>            
+                <a n="zimbraLmtpBindPort">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest3d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraLmtpBindPort">${server.spchar}</a>            
+                <a n="zimbraLmtpBindPort">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -155,27 +155,27 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyServerRequest4" bugids="1981" type="functional">
-    <t:objective> Modify a sever with  objectClass = blanks/specialcharacters </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest4" bugids="1981" type="regression">
+    <t:objective> Modify a sever with  objectClass = blanks/specialcharacters </t:objective>
+
     <t:test id="modifyserverrequest4a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="objectClass">${server.blank}</a>            
+                <a n="objectClass">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <!-- Getting service.INVALID_REQUEST for build:20050609164754 as objectClass is immutable -->
             <t:select path = "//zimbra:Code" match = "service.FAILURE"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest4b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="objectClass">${server.spchar}</a>            
+                <a n="objectClass">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -186,14 +186,14 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ModifyServerRequest6" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with  zimbraPop3BindPort = negative value/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest6" bugids="1980" type="functional">
+    <t:objective> Modify a sever with  zimbraPop3BindPort = negative value/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest6a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraPop3BindPort">${server.negative}</a>            
+                <a n="zimbraPop3BindPort">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -201,36 +201,36 @@
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest6b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraPop3BindPort">${server.blank}</a>            
+                <a n="zimbraPop3BindPort">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest6c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraPop3BindPort">${server.sometext}</a>            
+                <a n="zimbraPop3BindPort">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest6d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraPop3BindPort">${server.spchar}</a>            
+                <a n="zimbraPop3BindPort">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -241,14 +241,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest8" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with  zimbraMailPort = negative value/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest8" bugids="1980" type="functional">
+    <t:objective> Modify a sever with  zimbraMailPort = negative value/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest8a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraMailPort">${server.negative}</a>            
+                <a n="zimbraMailPort">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -256,36 +256,36 @@
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest8b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraMailPort">${server.blank}</a>            
+                <a n="zimbraMailPort">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest8c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraMailPort">${server.sometext}</a>            
+                <a n="zimbraMailPort">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest8d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraMailPort">${server.spchar}</a>            
+                <a n="zimbraMailPort">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -296,14 +296,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest9" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with  zimbraAdminPort = negative value/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest9" bugids="1980" type="functional">
+    <t:objective> Modify a sever with  zimbraAdminPort = negative value/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest9a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraAdminPort">${server.negative}</a>            
+                <a n="zimbraAdminPort">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -311,36 +311,36 @@
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest9b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraAdminPort">${server.blank}</a>            
+                <a n="zimbraAdminPort">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest9c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraAdminPort">${server.sometext}</a>            
+                <a n="zimbraAdminPort">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest9d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraAdminPort">${server.spchar}</a>            
+                <a n="zimbraAdminPort">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -351,51 +351,51 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest13" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with  zimbraRedologRolloverFileSizeKB = negative/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest13" bugids="1980" type="functional">
+    <t:objective> Modify a sever with  zimbraRedologRolloverFileSizeKB = negative/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest13a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologRolloverFileSizeKB">${server.negative}</a>            
+                <a n="zimbraRedologRolloverFileSizeKB">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
              <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest13b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologRolloverFileSizeKB">${server.blank}</a>            
+                <a n="zimbraRedologRolloverFileSizeKB">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest13c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologRolloverFileSizeKB">${server.sometext}</a>            
+                <a n="zimbraRedologRolloverFileSizeKB">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest13d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologRolloverFileSizeKB">${server.spchar}</a>            
+                <a n="zimbraRedologRolloverFileSizeKB">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -406,51 +406,51 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest14" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with  zimbraRedologFsyncIntervalMS = negative/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest14" bugids="1980" type="functional">
+    <t:objective> Modify a sever with  zimbraRedologFsyncIntervalMS = negative/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest14a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologFsyncIntervalMS">${server.negative}</a>            
+                <a n="zimbraRedologFsyncIntervalMS">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
              <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest14b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologFsyncIntervalMS">${server.blank}</a>            
+                <a n="zimbraRedologFsyncIntervalMS">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest14c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologFsyncIntervalMS">${server.sometext}</a>            
+                <a n="zimbraRedologFsyncIntervalMS">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest14d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologFsyncIntervalMS">${server.spchar}</a>            
+                <a n="zimbraRedologFsyncIntervalMS">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -461,50 +461,50 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest15" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with  zimbraPop3NumThreads = negative/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest15" bugids="1980" type="functional">
+    <t:objective> Modify a sever with  zimbraPop3NumThreads = negative/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest15a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraPop3NumThreads">${server.negative}</a>            
+                <a n="zimbraPop3NumThreads">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
              <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest15b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraPop3NumThreads">${server.blank}</a>            
+                <a n="zimbraPop3NumThreads">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest15c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraPop3NumThreads">${server.sometext}</a>            
+                <a n="zimbraPop3NumThreads">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest15d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraPop3NumThreads">${server.spchar}</a>            
+                <a n="zimbraPop3NumThreads">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -515,51 +515,51 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest16" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with  zimbraLmtpNumThreads = negative/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest16" bugids="1980" type="functional">
+    <t:objective> Modify a sever with  zimbraLmtpNumThreads = negative/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest16a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraLmtpNumThreads">${server.negative}</a>            
+                <a n="zimbraLmtpNumThreads">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
              <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest16b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraLmtpNumThreads">${server.blank}</a>            
+                <a n="zimbraLmtpNumThreads">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest16c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraLmtpNumThreads">${server.sometext}</a>            
+                <a n="zimbraLmtpNumThreads">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest16d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraLmtpNumThreads">${server.spchar}</a>            
+                <a n="zimbraLmtpNumThreads">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -570,74 +570,74 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest17" type="sanity">
-    <t:objective> Modify a sever with  zimbraRedologEnabled = TRUE/FALSE/True/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest17" type="functional">
+    <t:objective> Modify a sever with  zimbraRedologEnabled = TRUE/FALSE/True/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest17a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologEnabled">TRUE</a>            
+                <a n="zimbraRedologEnabled">TRUE</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest17b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologEnabled">FALSE</a>            
+                <a n="zimbraRedologEnabled">FALSE</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest17c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologEnabled">True</a>            
+                <a n="zimbraRedologEnabled">True</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest17d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologEnabled">${server.blank}</a>            
+                <a n="zimbraRedologEnabled">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest17e">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologEnabled">${server.sometext}</a>            
+                <a n="zimbraRedologEnabled">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest17f">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraRedologEnabled">${server.spchar}</a>            
+                <a n="zimbraRedologEnabled">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -648,51 +648,51 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest21" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with  zimbraSmtpTimeout = negative/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest21" bugids="1980" type="functional">
+    <t:objective> Modify a sever with  zimbraSmtpTimeout = negative/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest21a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraSmtpTimeout">${server.negative}</a>            
+                <a n="zimbraSmtpTimeout">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
              <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
-    </t:test> 
-       
+    </t:test>
+
     <t:test id="modifyserverrequest21b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraSmtpTimeout">${server.blank}</a>            
+                <a n="zimbraSmtpTimeout">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest21c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraSmtpTimeout">${server.sometext}</a>            
+                <a n="zimbraSmtpTimeout">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest21d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraSmtpTimeout">${server.spchar}</a>            
+                <a n="zimbraSmtpTimeout">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -703,51 +703,51 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest22" bugids="1980" type="sanity">
-    <t:objective> Modify a sever with  zimbraSmtpPort = negative/blank/sometext/special character </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest22" bugids="1980" type="functional">
+    <t:objective> Modify a sever with  zimbraSmtpPort = negative/blank/sometext/special character </t:objective>
+
     <t:test id="modifyserverrequest22a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraSmtpPort">${server.negative}</a>            
+                <a n="zimbraSmtpPort">${server.negative}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
              <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest22b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraSmtpPort">${server.blank}</a>            
+                <a n="zimbraSmtpPort">${server.blank}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest22c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraSmtpPort">${server.sometext}</a>            
+                <a n="zimbraSmtpPort">${server.sometext}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest22d">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraSmtpPort">${server.spchar}</a>            
+                <a n="zimbraSmtpPort">${server.spchar}</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -758,26 +758,26 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest24" type="functional">
-    <t:objective> Modify a sever with leading/trailing spaces of any attribute of a tag. </t:objective>    
-    
+<t:test_case testcaseid="ModifyServerRequest24" type="regression">
+    <t:objective> Modify a sever with leading/trailing spaces of any attribute of a tag. </t:objective>
+
     <t:test id="modifyserverrequest24a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="        zimbraLmtpBindPort">7025</a>        
+                <a n="        zimbraLmtpBindPort">7025</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="account.INVALID_ATTR_NAME"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test id="modifyserverrequest24b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                    <a n="        zimbraLmtpBindPort">7025</a>        
+                    <a n="        zimbraLmtpBindPort">7025</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -788,8 +788,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest25" bugids="1982" type="functional">
-    <t:objective> Modify a sever with non existing id</t:objective>    
+<t:test_case testcaseid="ModifyServerRequest25" bugids="1982" type="regression">
+    <t:objective> Modify a sever with non existing id</t:objective>
     <t:steps>1. Delete a server
             2. Perform modification on the deleted server
     </t:steps>
@@ -803,55 +803,55 @@
         <t:response>
             <t:select path="//admin:DeleteServerResponse"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test id="modifyserverrequest25b" depends="modifyserverrequest25a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id1}</id>
-                <a n="zimbraLmtpBindPort">7025</a>        
+                <a n="zimbraLmtpBindPort">7025</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="account.NO_SUCH_SERVER"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest26" type="functional">
-    <t:objective> Modify a sever with blank/some text/special character at id tag</t:objective>    
+<t:test_case testcaseid="ModifyServerRequest26" type="regression">
+    <t:objective> Modify a sever with blank/some text/special character at id tag</t:objective>
 
     <t:test id="modifyserverrequest26a">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.blank}</id>
-                <a n="zimbraLmtpBindPort">7025</a>        
+                <a n="zimbraLmtpBindPort">7025</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="account.NO_SUCH_SERVER"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifyserverrequest26b">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.sometext}</id>
-                <a n="zimbraLmtpBindPort">7025</a>        
+                <a n="zimbraLmtpBindPort">7025</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="account.NO_SUCH_SERVER"/>
         </t:response>
-    </t:test>       
-     
+    </t:test>
+
     <t:test id="modifyserverrequest26c">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.spchar}</id>
-                <a n="zimbraLmtpBindPort">7025</a>        
+                <a n="zimbraLmtpBindPort">7025</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
@@ -861,20 +861,20 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyServerRequest27" type="functional">
-    <t:objective> Modify a sever with no id tag</t:objective>    
+<t:test_case testcaseid="ModifyServerRequest27" type="regression">
+    <t:objective> Modify a sever with no id tag</t:objective>
 
     <t:test>
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
-                <a n="zimbraLmtpBindPort">7025</a>        
+                <a n="zimbraLmtpBindPort">7025</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 

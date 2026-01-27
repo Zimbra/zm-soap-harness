@@ -164,11 +164,11 @@ ${zimbraQuotaWarnMessage.value}
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="zimbraQuotaWarnMessage_01" type="bhr">
+<t:test_case testcaseid="zimbraQuotaWarnMessage_01" type="sanity">
     <t:objective> Verify the Quota Warn Message can be set </t:objective>
 
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -214,7 +214,7 @@ ${zimbraQuotaWarnMessage.value}
 
 </t:test_case>
 
-<t:test_case testcaseid="zimbraQuotaWarnMessage_02" type="bhr">
+<t:test_case testcaseid="zimbraQuotaWarnMessage_02" type="sanity">
     <t:objective> Verify the Quota Warn Message can be set to I18N characters</t:objective>
 
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -262,12 +262,12 @@ ${zimbraQuotaWarnMessage.value}
 
 
 
-<t:test_case testcaseid="zimbraQuotaWarnMessage_03" type="bhr">
+<t:test_case testcaseid="zimbraQuotaWarnMessage_03" type="sanity">
     <t:objective> Verify the Quota Warn Message can be triggered - lmtp</t:objective>
 
 
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt"/>
-	<t:property name="msg01.subject" value="email01A"/>	
+	<t:property name="msg01.subject" value="email01A"/>
 
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
@@ -276,7 +276,7 @@ ${zimbraQuotaWarnMessage.value}
             <from>${nonZimbraUser.name}</from>
             <server>${account3.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
@@ -381,7 +381,7 @@ foobar!
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account5.folder.inbox.id"/>
         </t:response>
     </t:test>
@@ -390,11 +390,11 @@ foobar!
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account5.folder.inbox.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
@@ -421,7 +421,7 @@ simple text string in the body
 
 
 
-<t:test_case testcaseid="zimbraQuotaWarnMessage_06" type="sanity" >
+<t:test_case testcaseid="zimbraQuotaWarnMessage_06" type="functional" >
     <t:objective> Verify the Quota Warn Message can be received, even if the quota message will send the account over quota</t:objective>
 
 
@@ -435,7 +435,7 @@ simple text string in the body
             <from>${nonZimbraUser.name}</from>
             <server>${account6.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 
@@ -465,7 +465,7 @@ simple text string in the body
 
 </t:test_case>
 
-<t:test_case testcaseid="zimbraQuotaWarnMessage_07" type="sanity" >
+<t:test_case testcaseid="zimbraQuotaWarnMessage_07" type="functional" >
     <t:objective> Verify I18N quota warning message can be sent</t:objective>
 
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -519,7 +519,7 @@ ${zimbraQuotaWarnMessage.encoded}
             <from>${nonZimbraUser.name}</from>
             <server>${account7.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${account7.server}"/>
 
@@ -561,7 +561,7 @@ ${zimbraQuotaWarnMessage.encoded}
 
 </t:test_case>
 
-<t:test_case testcaseid="zimbraQuotaWarnMessage_08" type="sanity" bugids="28142">
+<t:test_case testcaseid="zimbraQuotaWarnMessage_08" type="functional" bugids="28142">
     <t:objective> Verify I18N quota warning message can be sent, with standard quota template</t:objective>
 
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -609,7 +609,7 @@ ${zimbraQuotaWarnMessage.encoded}
             <from>${nonZimbraUser.name}</from>
             <server>${account8.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${account8.server}"/>
 
@@ -649,7 +649,7 @@ ${zimbraQuotaWarnMessage.encoded}
     </t:test>
 
 </t:test_case>
-<t:test_case testcaseid="zimbraQuotaWarnMessage_09" type="sanity">
+<t:test_case testcaseid="zimbraQuotaWarnMessage_09" type="functional">
     <t:objective> Verify  quota warning message can be sent, with Customize quota template</t:objective>
 
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -668,8 +668,8 @@ ${zimbraQuotaWarnMessage.encoded}
 	<t:property name="account9.givenName" value="TestHarness"/>
 	<t:property name="account9.sn" value="TH"/>
 	<t:property name="account9.displayName" value="TestHarness User"/>
-   <t:property name="account9.zimbraQuotaWarnMessage" value="From: Postmaster &lt;postmaster@${RECIPIENT_DOMAIN}&gt;${NEWLINE}To: ${RECIPIENT_NAME} &lt;${RECIPIENT_ADDRESS}&gt;${NEWLINE}Subject: Quota warning ${RECIPIENT_NAME}${NEWLINE}Date: ${DATE}${NEWLINE}Content-Type: text/plain${NEWLINE}${NEWLINE}Dear ${RECIPIENT_NAME},${NEWLINE}Your mailbox size has reached ${MBOX_SIZE_MB}MB, which is over ${WARN_PERCENT}% of your ${QUOTA_MB}MB quota.${NEWLINE}Please delete some messages to avoid exceeding your quota.${NEWLINE}Regards,${NEWLINE}Test" expand="0"/>	
-	
+   <t:property name="account9.zimbraQuotaWarnMessage" value="From: Postmaster &lt;postmaster@${RECIPIENT_DOMAIN}&gt;${NEWLINE}To: ${RECIPIENT_NAME} &lt;${RECIPIENT_ADDRESS}&gt;${NEWLINE}Subject: Quota warning ${RECIPIENT_NAME}${NEWLINE}Date: ${DATE}${NEWLINE}Content-Type: text/plain${NEWLINE}${NEWLINE}Dear ${RECIPIENT_NAME},${NEWLINE}Your mailbox size has reached ${MBOX_SIZE_MB}MB, which is over ${WARN_PERCENT}% of your ${QUOTA_MB}MB quota.${NEWLINE}Please delete some messages to avoid exceeding your quota.${NEWLINE}Regards,${NEWLINE}Test" expand="0"/>
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -704,7 +704,7 @@ ${zimbraQuotaWarnMessage.encoded}
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account9.mta.server"/>
 		</t:response>
     </t:test>
-    
+
 	<t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account9.mta.server}</address>
@@ -712,7 +712,7 @@ ${zimbraQuotaWarnMessage.encoded}
             <recipient>${account9.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
- 
+
 	<t:property name="server.zimbraAccount" value="${account9.server}"/>
 
     <t:test required="true">
@@ -755,7 +755,7 @@ ${zimbraQuotaWarnMessage.encoded}
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="zimbraQuotaWarnMessage_10" type="sanity" bugids="28142" >
+<t:test_case testcaseid="zimbraQuotaWarnMessage_10" type="functional" bugids="28142" >
     <t:objective> Verify i18n quota warning message can be sent, with Customize quota template</t:objective>
 
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -774,8 +774,8 @@ ${zimbraQuotaWarnMessage.encoded}
 	<t:property name="account10.givenName" value="作成"/>
 	<t:property name="account10.sn" value="があります"/>
 	<t:property name="account10.displayName" value="があります 作成"/>
-   <t:property name="account10.zimbraQuotaWarnMessage" value="From: Postmaster &lt;postmaster@${RECIPIENT_DOMAIN}&gt;${NEWLINE}To: ${RECIPIENT_NAME} &lt;${RECIPIENT_ADDRESS}&gt;${NEWLINE}Subject: Quota warning ${RECIPIENT_NAME}${NEWLINE}Date: ${DATE}${NEWLINE}Content-Type: text/plain${NEWLINE}${NEWLINE}Dear ${RECIPIENT_NAME},${NEWLINE}Your mailbox size has reached ${MBOX_SIZE_MB}MB, which is over ${WARN_PERCENT}% of your ${QUOTA_MB}MB quota.${NEWLINE}Please delete some messages to avoid exceeding your quota.${NEWLINE}Regards,${NEWLINE}Test" expand="0"/>	
-	
+   <t:property name="account10.zimbraQuotaWarnMessage" value="From: Postmaster &lt;postmaster@${RECIPIENT_DOMAIN}&gt;${NEWLINE}To: ${RECIPIENT_NAME} &lt;${RECIPIENT_ADDRESS}&gt;${NEWLINE}Subject: Quota warning ${RECIPIENT_NAME}${NEWLINE}Date: ${DATE}${NEWLINE}Content-Type: text/plain${NEWLINE}${NEWLINE}Dear ${RECIPIENT_NAME},${NEWLINE}Your mailbox size has reached ${MBOX_SIZE_MB}MB, which is over ${WARN_PERCENT}% of your ${QUOTA_MB}MB quota.${NEWLINE}Please delete some messages to avoid exceeding your quota.${NEWLINE}Regards,${NEWLINE}Test" expand="0"/>
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -806,7 +806,7 @@ ${zimbraQuotaWarnMessage.encoded}
             <from>${nonZimbraUser.name}</from>
             <server>${account10.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${account10.server}"/>
 

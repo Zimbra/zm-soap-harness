@@ -66,7 +66,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_BlockedAttachments1" type="bhr" bugids="4505">
+<t:test_case testcaseid="RestServlet_BlockedAttachments1" type="sanity" bugids="4505">
 	<t:objective>
 		Verify that attachments can be viewed
 	</t:objective>
@@ -95,8 +95,8 @@
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 	<t:test required="true">
 		<t:request>
@@ -196,7 +196,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_BlockedAttachments2" type="bhr">
+<t:test_case testcaseid="RestServlet_BlockedAttachments2" type="sanity">
 	<t:objective>
 		Verify that attachments cannot be viewed - if zimbraAttachmentsBlocked=TRUE
 	</t:objective>
@@ -327,7 +327,7 @@
 	</t:resttest>
 
 	<!-- Undo the zimbraAttachmentsBlocked setting -->
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:test required="true" >
 		<t:request>
@@ -350,8 +350,8 @@
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 </t:test_case>
 
 

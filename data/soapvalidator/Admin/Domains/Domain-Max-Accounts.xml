@@ -13,7 +13,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -22,13 +22,13 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="admin_auth_domain_max_account" type="always" >
     <t:objective>Login to Admin Account</t:objective>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -44,8 +44,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="domain_max_account" type="bhr">
-<t:objective>Create a domain with limit on number of accounts and create an account more than allowed number</t:objective>    
+<t:test_case testcaseid="domain_max_account" type="sanity">
+<t:objective>Create a domain with limit on number of accounts and create an account more than allowed number</t:objective>
     <t:steps>
 		1.Create a domain which allows 3 accounts to be made at max.
 		2. Create 3 accounts.
@@ -54,7 +54,7 @@
 
     <t:test>
         <t:request>
-            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
   				<name>${domain.name}</name>
 				<a n="zimbraDomainMaxAccounts">${domain.number}</a>
             </CreateDomainRequest>
@@ -63,7 +63,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -74,7 +74,7 @@
         <t:response>
              <t:select path="//admin:CreateAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -86,7 +86,7 @@
         <t:response>
               <t:select path="//admin:CreateAccountResponse/admin:account"/>
        </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -98,7 +98,7 @@
         <t:response>
              <t:select path="//admin:CreateAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -110,7 +110,7 @@
         <t:response>
              <t:select path = "//zimbra:Code" match = "^account.TOO_MANY_ACCOUNTS$"/>
        </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

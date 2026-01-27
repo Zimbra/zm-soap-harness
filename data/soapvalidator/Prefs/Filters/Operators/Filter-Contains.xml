@@ -136,9 +136,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_Contains_01" type="bhr">
+<t:test_case testcaseid="Filter_Contains_01" type="sanity">
     <t:objective> Verify messages for rule "contains" are filtered </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 2
 			  2. Create a filter based on "FROM -> contains -> account3 "
 			  3. Login to account 3 and send a message to account2 (account3 has display name as "Display Name")
@@ -159,18 +159,18 @@
 
         </t:response>
     </t:test>
-	   
+
 	  <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="from" stringComparison="contains" value="${account3.name}"/>                    	     
+                         <headerTest header="from" stringComparison="contains" value="${account3.name}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -180,8 +180,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
 <t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test required="true">
@@ -244,9 +244,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_Contains_02" type="bhr">
+<t:test_case testcaseid="Filter_Contains_02" type="sanity">
     <t:objective> Verify messages for rule " does not contains" are filtered </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 3
 			  2. Create a filter based on "FROM -> not: contains -> account2 "
 			  3. Login to account 1 and send a message to account3 (account3 has display name as "Display Name") with From as account1
@@ -267,18 +267,18 @@
 
         </t:response>
     </t:test>
-	   
+
 	  <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter2.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="from" stringComparison="contains" negative="1" value="${account3.name}"/>                    	     
+                         <headerTest header="from" stringComparison="contains" negative="1" value="${account3.name}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -288,7 +288,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -350,7 +350,7 @@
 
 </t:test_case>
 
-<!-- 
+<!--
 
 Deprecated: http://bugzilla.zimbra.com/show_bug.cgi?id=33793#c12
 See Filter_Contains_06 for the non-trailing space test.
@@ -358,7 +358,7 @@ See Filter_Contains_06 for the non-trailing space test.
 -->
 <t:test_case testcaseid="Filter_Contains_04" type="deprecated">
     <t:objective> Verify filters handle the case where the substring spans multiple lines (with trailing space) </t:objective>
-    <t:steps> 
+    <t:steps>
 		  1. Login to test account4
 		  2. Create a filter based on "Content ->  contains -> "text string"
 		  3. Inject message where "text string" spans two lines
@@ -379,18 +379,18 @@ See Filter_Contains_06 for the non-trailing space test.
 
         </t:response>
     </t:test>
-	   
+
 	  <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter4.name}" active="1">
                          <filterTests condition="anyof">
-                         <bodyTest caseSensitive="0" value="text string"/>    	     
+                         <bodyTest caseSensitive="0" value="text string"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -400,8 +400,8 @@ See Filter_Contains_06 for the non-trailing space test.
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
 	<t:property name="message4.file" value="${testMailRaw.root}/email42/email42.txt"/>
 	<t:property name="message4.subject" value="email42A"/>
 
@@ -428,7 +428,7 @@ See Filter_Contains_06 for the non-trailing space test.
 
 </t:test_case>
 
-<!-- 
+<!--
 
 Deprecated: http://bugzilla.zimbra.com/show_bug.cgi?id=33793#c12
 See Filter_Contains_06 for the non-trailing space test.
@@ -436,7 +436,7 @@ See Filter_Contains_06 for the non-trailing space test.
 -->
 <t:test_case testcaseid="Filter_Contains_05" type="deprecated">
     <t:objective> Verify filters handle the case where the substring spans the entire line (with trailing spaces)</t:objective>
-    <t:steps> 
+    <t:steps>
 		  1. Login to test account5
 		  2. Create a filter based on "Content ->  contains -> "simple text"
 		  3. Inject message where "text string" spans two lines
@@ -457,18 +457,18 @@ See Filter_Contains_06 for the non-trailing space test.
 
         </t:response>
     </t:test>
-    
+
 	  <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter4.name}" active="1">
                          <filterTests condition="anyof">
-                         <bodyTest caseSensitive="0" value="simple text"/>    	     
+                         <bodyTest caseSensitive="0" value="simple text"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -478,8 +478,8 @@ See Filter_Contains_06 for the non-trailing space test.
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:property name="message5.file" value="${testMailRaw.root}/email42/email42.txt"/>
 	<t:property name="message5.subject" value="email42A"/>
 
@@ -506,9 +506,9 @@ See Filter_Contains_06 for the non-trailing space test.
 
 </t:test_case>
 
-<t:test_case testcaseid="Filter_Contains_06" type="bhr">
+<t:test_case testcaseid="Filter_Contains_06" type="sanity">
     <t:objective> Verify filters handle the case where the substring spans multiple lines </t:objective>
-    <t:steps> 
+    <t:steps>
 		  1. Login to test account6
 		  2. Create a filter based on "Content ->  contains -> "text string"
 		  3. Inject message where "text string" spans two lines
@@ -529,18 +529,18 @@ See Filter_Contains_06 for the non-trailing space test.
 
         </t:response>
     </t:test>
-	   
+
 	 <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter4.name}" active="1">
                          <filterTests condition="anyof">
-                         <bodyTest caseSensitive="0" value="text string"/>    	     
+                         <bodyTest caseSensitive="0" value="text string"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -550,8 +550,8 @@ See Filter_Contains_06 for the non-trailing space test.
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:property name="message6.file" value="${testMailRaw.root}/email42/email42b.txt"/>
 	<t:property name="message6.subject" value="email42B"/>
 
@@ -578,9 +578,9 @@ See Filter_Contains_06 for the non-trailing space test.
 
 </t:test_case>
 
-<t:test_case testcaseid="Filter_Contains_07" type="bhr">
+<t:test_case testcaseid="Filter_Contains_07" type="sanity">
     <t:objective> Verify filters handle the case where the substring spans the entire line (without trailing spaces) </t:objective>
-    <t:steps> 
+    <t:steps>
 		  1. Login to test account7
 		  2. Create a filter based on "Content ->  contains -> "simple text"
 		  3. Inject message where "text string" spans two lines
@@ -601,18 +601,18 @@ See Filter_Contains_06 for the non-trailing space test.
 
         </t:response>
     </t:test>
-	   
+
      <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter5.name}" active="1">
                          <filterTests condition="anyof">
-                         <bodyTest caseSensitive="0" value="simple text"/>    	     
+                         <bodyTest caseSensitive="0" value="simple text"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -622,8 +622,8 @@ See Filter_Contains_06 for the non-trailing space test.
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:property name="message7.file" value="${testMailRaw.root}/email42/email42b.txt"/>
 	<t:property name="message7.subject" value="email42B"/>
 

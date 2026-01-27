@@ -43,7 +43,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -77,7 +77,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="backupac.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -90,7 +90,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -102,7 +102,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
-	</t:test>	
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -115,11 +115,11 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 		</t:response>
-	</t:test>	
-			
+	</t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="bug97002_1" type="bhr" bugids="97002">
+<t:test_case testcaseid="bug97002_1" type="sanity" bugids="97002">
     <t:objective>Null pointer exception if X-Zimbra-Calendar-Intended-For account is not present.</t:objective>
 	<t:steps>
 	1. Import the data and verify no NPE is given.
@@ -154,19 +154,19 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug97002_2" type="bhr" bugids="97002">
+<t:test_case testcaseid="bug97002_2" type="sanity" bugids="97002">
     <t:objective>Null pointer exception if X-Zimbra-Calendar-Intended-For account is not present.</t:objective>
 	<t:steps>
-	1. Login to account1. 
+	1. Login to account1.
 	2. Share calendar with account2,
 	2. Preference > Calendar   "For my shared default Calendar forward my invites to"  Account2.
-	3. Login to account3. 
+	3. Login to account3.
 	4. Create an invite with attendee account1.
 	5. Login to account2 and see the forwarded invite.
 	6. delete account1
 	7. Login to account2 click on inbox or folder where invite is present.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -184,7 +184,7 @@
 	<t:test>
         <t:request>
 			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
-				<pref name="zimbraPrefCalendarForwardInvitesTo">${account2.name}</pref>				
+				<pref name="zimbraPrefCalendarForwardInvitesTo">${account2.name}</pref>
 			</ModifyPrefsRequest>
         </t:request>
         <t:response>
@@ -298,7 +298,7 @@
             <t:select path="//mail:CreateAppointmentResponse">
             	<t:select attr="calItemId" set="appt1.calItemId"/>
             	<t:select attr="invId" set="appt1.invId"/>
-            	
+
             </t:select>
         </t:response>
     </t:test>
@@ -319,7 +319,7 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:waitforpostfixqueue/>
 
 	<t:test>
@@ -357,7 +357,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -367,8 +367,8 @@
         <t:response>
 			<t:select path="//admin:DeleteAccountResponse" />
         </t:response>
-    </t:test>	
-    
+    </t:test>
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -383,9 +383,9 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:waitforpostfixqueue/>
-	
+
 	<t:test>
 	 	<t:request>
 	   		<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -409,6 +409,6 @@
             <t:select path="//mail:GetMsgResponse/mail:m" attr="cif" match="${account1.name}"/>
         </t:response>
     </t:test>
-        
-</t:test_case>		
+
+</t:test_case>
 </t:tests>

@@ -68,7 +68,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filters_MultipleActions_01" type="bhr">
+<t:test_case testcaseid="Filters_MultipleActions_01" type="sanity">
     <t:objective>Create Rule with both flagged and tagged actions</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -85,7 +85,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="message1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
     <t:property name="message1.subject" value="email01A"/>
     <t:property name="tag1.name" value="tag${TIME}${COUNTER}"/>
@@ -100,16 +100,16 @@
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag1.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test id="filters_basic01a">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFlag flagName="flagged" />
                         	<actionTag tagName="${tag1.name}" />
                         </filterActions>
@@ -121,7 +121,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -139,7 +139,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -151,10 +151,10 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Filters_MultipleActions_02" type="bhr">
+<t:test_case testcaseid="Filters_MultipleActions_02" type="sanity">
     <t:objective>Create Rule with keep, fileinto, and redirect actions</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -171,7 +171,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="message2.file" value="${testMailRaw.root}/email01/msg02.txt"/>
     <t:property name="message2.subject" value="email01B"/>
     <t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
@@ -195,16 +195,16 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test id="filters_basic01a">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message2.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message2.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionKeep />
                         	<actionRedirect a="${account2.name}" />
                         	<actionFileInto folderPath="/${globals.inbox}/${folder1.name}" />
@@ -217,7 +217,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -235,7 +235,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -266,7 +266,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -289,7 +289,7 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 </t:tests>

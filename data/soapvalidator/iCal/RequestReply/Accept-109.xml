@@ -31,7 +31,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -46,7 +46,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -59,7 +59,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -98,7 +98,7 @@
 <t:property name="server.restServlet" value="${test_acct.server}"/>
 
 
-<t:test_case testcaseid="iCalReplyACCEPT109" type="sanity" >
+<t:test_case testcaseid="iCalReplyACCEPT109" type="functional" >
     <t:objective>Verify existence of alternative message for low fidelity clients</t:objective>
     <t:steps>
 	1. Use lmtp inject to inject the message
@@ -107,20 +107,20 @@
 	4. Check iCal
 	5. Check the MIME reply
     </t:steps>
-    
+
     <t:mailinjecttest>
 	<t:lmtpInjectRequest>
 		<filename>${msgFile}</filename>
 		<to>${account2.name}</to>
 		<from>${account1.name}</from>
 		<server>${test_acct.server}</server>
- 		<modify> 
+ 		<modify>
                     <!--ical a="ORGANIZER">MAILTO:foo@zimbra.com</ical-->
                 <ical a="DTSTART">${appt1.start}</ical>
-                <ical a="DTEND">${appt1.end}</ical> 
+                <ical a="DTEND">${appt1.end}</ical>
                     <!--ical a="DTSTAMP">${appt1.start}Z</ical-->
                    <ical a="DTSTAMP">${appt1.stamp}</ical>
-		</modify> 
+		</modify>
 		</t:lmtpInjectRequest>
     </t:mailinjecttest>
 
@@ -136,8 +136,8 @@
 
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:test>
 	 <t:request>
 	   <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">

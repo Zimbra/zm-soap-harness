@@ -25,7 +25,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -52,7 +52,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -90,8 +90,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="contacts_TagActionRequest1" type="bhr" bugids="2532">
-    <t:objective>search for a tagged contact</t:objective>    <t:steps> 1. Add a contact. 
+<t:test_case testcaseid="contacts_TagActionRequest1" type="sanity" bugids="2532">
+    <t:objective>search for a tagged contact</t:objective>    <t:steps> 1. Add a contact.
               2. Create a new tag.
               3. Tag the contact.
               4. Search for the tag
@@ -105,13 +105,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact1.id"/>           
-            </t:select>    
+            <t:select attr="id" set="contact1.id"/>
+            </t:select>
         </t:response>
     </t:test>
     <t:test id="contacts_TagActionRequest1b">
@@ -145,7 +145,7 @@
                 <query>tag:"${tag.name.default}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:cn">
             <t:select attr="id" match="${contact1.id}"/>
             </t:select>
@@ -155,10 +155,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="contacts_TagActionRequest2" type="functional">
+<t:test_case testcaseid="contacts_TagActionRequest2" type="regression">
     <t:objective>Tag a deleted contact</t:objective>
     <t:steps> 1. Create a contact.
-              2. Delete that contact. 
+              2. Delete that contact.
               3. Create a tag.
               4. Tag that contact.
     </t:steps>
@@ -170,13 +170,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact3.id"/>           
-            </t:select>    
+            <t:select attr="id" set="contact3.id"/>
+            </t:select>
         </t:response>
     </t:test>
 
@@ -190,7 +190,7 @@
             <t:select path="//mail:ContactActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -219,7 +219,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="contacts_TagActionRequest3" type="functional">
+<t:test_case testcaseid="contacts_TagActionRequest3" type="regression">
     <t:objective>Tag a contact with invalid(spaces/blank/spchar/sometext/negative/zero/largenumber/decimal) values of tag.</t:objective>
     <t:steps> 1. Create a contact.
               2. Tag that contact with invalid values of tag id.
@@ -232,13 +232,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact4.id"/>           
-            </t:select>    
+            <t:select attr="id" set="contact4.id"/>
+            </t:select>
         </t:response>
     </t:test>
 
@@ -262,7 +262,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="contactaction3a">
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -284,7 +284,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-  
+
     <t:test depends="contactaction3a">
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -306,7 +306,7 @@
             <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="contactaction3a">
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -327,12 +327,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="contacts_TagActionRequest4" type="sanity">
+<t:test_case testcaseid="contacts_TagActionRequest4" type="functional">
     <t:objective>Tag more than one contact at a time.</t:objective>
     <t:steps> 1. Create two contacts.
               2. Tag those contact at a time.
@@ -344,13 +344,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact5.id"/>           
-            </t:select>    
+            <t:select attr="id" set="contact5.id"/>
+            </t:select>
         </t:response>
     </t:test>
 
@@ -361,13 +361,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact6.id"/>           
-            </t:select>    
+            <t:select attr="id" set="contact6.id"/>
+            </t:select>
         </t:response>
     </t:test>
 
@@ -399,7 +399,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="contacts_TagActionRequest5" type="functional" bugids="9885">
+<t:test_case testcaseid="contacts_TagActionRequest5" type="regression" bugids="9885">
     <t:objective>Tag invalid (spaces/blank/spchar/sometext/negative/zero/largenumber/decimal) values of contact .</t:objective>
 
     <t:test>
@@ -423,7 +423,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -445,7 +445,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -467,7 +467,7 @@
             <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_CONTACT"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -488,12 +488,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="contacts_TagActionRequest6" type="functional">
+<t:test_case testcaseid="contacts_TagActionRequest6" type="regression">
     <t:objective>Tag a contact with more than one tag at the same time.</t:objective>
     <t:steps> 1. Create a contacts.
               2. Create two tags.
@@ -507,13 +507,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact7.id"/>  
-            </t:select>    
+            <t:select attr="id" set="contact7.id"/>
+            </t:select>
         </t:response>
     </t:test>
 
@@ -544,7 +544,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -555,7 +555,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

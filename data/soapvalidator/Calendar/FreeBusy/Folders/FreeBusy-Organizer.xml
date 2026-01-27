@@ -23,7 +23,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test id="ping">
@@ -40,7 +40,7 @@
 
 <t:test_case testcaseid="Folders_FreeBusy_Organizer_AccountSetup" type="always" >
     <t:objective>Create a test account</t:objective>
-    <steps> 
+    <steps>
         1. Login to admin account
         2. Create test accounts
     </steps>
@@ -56,84 +56,84 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="create_test_account2" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="create_test_account3" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account3.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="create_test_account4" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account4.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="create_test_account5" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account5.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Folders_FreeBusy_Organizer_01" type="bhr">
+<t:test_case testcaseid="Folders_FreeBusy_Organizer_01" type="sanity">
     <t:objective>Verify Free/Busy Status is combined across folders</t:objective>
-    <steps> 
+    <steps>
         1. Login as Account1
         2. Create 2 Calendar Folders
         3. Create 1 appointment (fb='B') in Calendar1
         4. Create 1 appointment (fb='T') in Calendar2
         5. Login as Account2
-        4. Get Free/Busy status of Account1 - Both appointments should show   
+        4. Get Free/Busy status of Account1 - Both appointments should show
     </steps>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -163,7 +163,7 @@
 	</t:test>
 
 	<t:property name="folder.name" value="calendar.${TIME}.${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -176,7 +176,7 @@
 	</t:test>
 
 	<t:property name="folder.name" value="calendar.${TIME}.${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -249,19 +249,19 @@
 	<t:property name="tentative1.finish" value="${TIME(+4h)[${now.standard}]}"/>
 	<t:property name="free3.start" value="${TIME(+4h)[${now.standard}]}"/>
 	<t:property name="free3.finish" value="${TIME(+5h)[${now.standard}]}"/>
-	
+
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now.standard}" e="${TIME(+5h)[${now.standard}])}" uid="${account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse">
 	            <t:select path="//mail:f[@s='${free1.start}']" attr="e" match="${free1.finish}"/>
 	            <t:select path="//mail:b[@s='${busy1.start}']" attr="e" match="${busy1.finish}"/>
 	            <t:select path="//mail:f[@s='${free2.start}']" attr="e" match="${free2.finish}"/>
 	            <t:select path="//mail:t[@s='${tentative1.start}']" attr="e" match="${tentative1.finish}"/>
 	            <t:select path="//mail:f[@s='${free3.start}']" attr="e" match="${free3.finish}"/>
-            </t:select>     
+            </t:select>
         </t:response>
     </t:test>
 
@@ -275,7 +275,7 @@
                 <t:select path="//mail:ItemActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -286,19 +286,19 @@
                 <t:select path="//mail:ItemActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now.standard}" e="${TIME(+5h)[${now.standard}])}" uid="${account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse">
 	            <t:select path="//mail:f[@s='${free1.start}']" attr="e" match="${free1.finish}"/>
 	            <t:select path="//mail:b[@s='${busy1.start}']" attr="e" match="${busy1.finish}"/>
 	            <t:select path="//mail:f[@s='${free2.start}']" attr="e" match="${free2.finish}"/>
 	            <t:select path="//mail:t[@s='${tentative1.start}']" attr="e" match="${tentative1.finish}"/>
 	            <t:select path="//mail:f[@s='${free3.start}']" attr="e" match="${free3.finish}"/>
-            </t:select>     
+            </t:select>
         </t:response>
     </t:test>
 
@@ -310,12 +310,12 @@
                 <usr id="${account1.id}" l="${folder2.id}"/>
 			</GetFreeBusyRequest>
 		</t:request>
-		<t:response>      
+		<t:response>
 			<t:select path="//mail:GetFreeBusyResponse">
 			<t:select path="//mail:f[@s='${free2.start}']" attr="e" match="${free2.finish}"/>
 			<t:select path="//mail:t[@s='${tentative1.start}']" attr="e" match="${tentative1.finish}"/>
 			<t:select path="//mail:f[@s='${free3.start}']" attr="e" match="${free3.finish}"/>
-			</t:select>     
+			</t:select>
 		</t:response>
 	</t:test>
 
@@ -325,11 +325,11 @@
                 <usr id="${account1.id}" l="${folder1.id}"/>
 			</GetFreeBusyRequest>
 		</t:request>
-		<t:response>      
+		<t:response>
 			<t:select path="//mail:GetFreeBusyResponse">
 			<t:select path="//mail:f[@s='${free1.start}']" attr="e" match="${free1.finish}"/>
 			<t:select path="//mail:b[@s='${busy1.start}']" attr="e" match="${busy1.finish}"/>
-			</t:select>     
+			</t:select>
 		</t:response>
 	</t:test>
 

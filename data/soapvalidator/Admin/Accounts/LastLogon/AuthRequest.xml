@@ -60,7 +60,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -73,7 +73,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
@@ -103,7 +103,7 @@
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test>
@@ -115,7 +115,7 @@
         <t:response>
             <t:select path="//admin:FlushCacheResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
@@ -126,20 +126,20 @@
         <t:response>
             <t:select path="//admin:FlushCacheResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:finally>
 
 
 
-<t:test_case testcaseid="LastLogon_AuthRequest_01" type="sanity" >
+<t:test_case testcaseid="LastLogon_AuthRequest_01" type="functional" >
 	<t:objective>AuthRequest - verify zimbraLastLogonTimestamp is updated</t:objective>
 	<t:steps>
 	1. Set the zimbraLastLogonTimestampFrequency to 1 second
 	2. Login as account1
 	3. Wait for 60 seconds
 	4. Login as account1
-	5. Verify that the zimbraLastLogonTimestamp is updated 
+	5. Verify that the zimbraLastLogonTimestamp is updated
 	</t:steps>
 
 
@@ -166,7 +166,7 @@
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
     <t:test>
@@ -178,13 +178,13 @@
         <t:response>
             <t:select path="//admin:FlushCacheResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -226,11 +226,11 @@
 	</t:test>
 
 	<t:delay sec="60"/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -270,7 +270,7 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 

@@ -21,7 +21,7 @@
 <t:property name="Time2" value="${ICALTIME(+2h)}"/>
 
 
-<t:property name="now1" value="${TIME(+10800s)}"/> 
+<t:property name="now1" value="${TIME(+10800s)}"/>
 <t:property name="now2" value="${TIME(+1h)}"/>
 
 <t:property name="Time4" value="${ICALTIME(+1h)}"/>
@@ -34,7 +34,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -49,9 +49,9 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create a test account</t:objective>
-    <steps> 
+    <steps>
         1. Login to admin account
-        2. Create a test_account1     
+        2. Create a test_account1
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -65,25 +65,25 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>              
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="create_test_account2" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
-                <password>${test_account2.password}</password>              
+                <password>${test_account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -95,7 +95,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
-                <password>${test_account3.password}</password>              
+                <password>${test_account3.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -109,9 +109,9 @@
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
 
-<t:test_case testcaseid="acct_setup2" type="bhr" >
+<t:test_case testcaseid="acct_setup2" type="sanity" >
     <t:objective>login to the test account</t:objective>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -135,163 +135,163 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now}" e="${end}"  uid="${test_account1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>      
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest2" type="functional" >
+<t:test_case testcaseid="GetFreeBusyRequest2" type="regression" >
     <t:objective>GetFreeBusyRequest with blank values for s, e and a valid uid </t:objective>
 
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="calendar.blank" e="calendar.blank"  uid="${test_account1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>      
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest3" type="functional" >
+<t:test_case testcaseid="GetFreeBusyRequest3" type="regression" >
     <t:objective>GetFreeBusyRequest with sometext values for s, e and a valid uid </t:objective>
 
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="calendar.sometext" e="calendar.sometext"  uid="${test_account1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>      
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest4" type="functional" >
+<t:test_case testcaseid="GetFreeBusyRequest4" type="regression" >
     <t:objective>GetFreeBusyRequest with very big interger values for s, e and a valid uid </t:objective>
 
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now}${now}" e="${now}${now}"  uid="${test_account1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>      
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest5" type="functional" >
+<t:test_case testcaseid="GetFreeBusyRequest5" type="regression" >
     <t:objective>GetFreeBusyRequest with valid values for s, e and a valid uid with leading spaces</t:objective>
 
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now}" e="${end}"  uid="${calendar.space}${test_account1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>     
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest6" type="functional" >
+<t:test_case testcaseid="GetFreeBusyRequest6" type="regression" >
     <t:objective>GetFreeBusyRequest with valid values for s, e and a valid uid with trailing spaces</t:objective>
 
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now}" e="${end}"  uid="${test_account1.id}${calendar.space}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>     
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest7" type="functional" bugids="2182">
+<t:test_case testcaseid="GetFreeBusyRequest7" type="regression" bugids="2182">
     <t:objective>GetFreeBusyRequest with valid values for s, e and a blank uid </t:objective>
 
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now}" e="${end}"  uid="${calendar.blank}"/>
         </t:request>
-        <t:response>      
-             <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>      
+        <t:response>
+             <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest8" type="functional" bugids="2182">
+<t:test_case testcaseid="GetFreeBusyRequest8" type="regression" bugids="2182">
     <t:objective>GetFreeBusyRequest with valid values for s, e and a sometext at uid </t:objective>
 
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now}" e="${end}"  uid="${calendar.sometext}"/>
         </t:request>
-        <t:response>      
-             <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>      
+        <t:response>
+             <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest9" type="functional" >
+<t:test_case testcaseid="GetFreeBusyRequest9" type="regression" >
     <t:objective>GetFreeBusyRequest with valid value for uid attribute and no e and s attributes </t:objective>
 
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" uid="${test_account1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>      
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest10" type="functional" >
+<t:test_case testcaseid="GetFreeBusyRequest10" type="regression" >
     <t:objective>GetFreeBusyRequest with valid  value for e and s attribute and no uid attributes </t:objective>
 
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" uid="${test_account1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>      
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFreeBusyRequest11" type="bhr">
+<t:test_case testcaseid="GetFreeBusyRequest11" type="sanity">
     <t:objective>GetFreeBusy status of attendees</t:objective>
     <t:steps>
         1.Create an appointment of test_account1 with test_account2.
         2.Check the status FreeBusy for test_account1(busy).
     </t:steps>
-   
+
     <t:test required="true">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}" tz="${tz.default}"/>  
-                        <e d="${Time2}" tz="${tz.default}"/>  
+                        <s d="${Time1}" tz="${tz.default}"/>
+                        <e d="${Time2}" tz="${tz.default}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -307,15 +307,15 @@
         </t:response>
 
 	</t:test>
-    
+
     <t:delay sec="30"/>
-  
+
     <t:test>
-        <t:request>     
+        <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)}" e="${TIME(+2d)}" uid="${test_account1.name}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>
         </t:response>
     </t:test>
 

@@ -194,7 +194,7 @@
 
 
 
-<t:test_case testcaseid="import_Zimbra_contacts_01" type="bhr">
+<t:test_case testcaseid="import_Zimbra_contacts_01" type="sanity">
 	<t:objective>
 		Import a basic Zimbra contacts csv file with one contact
 	</t:objective>
@@ -257,12 +257,12 @@
 <t:property name="uploadServletServer" value="${test_acct2.server}"/>
 
 
-<t:test_case testcaseid="import_Zimbra_contacts_02" type="bhr">
+<t:test_case testcaseid="import_Zimbra_contacts_02" type="sanity">
 	<t:objective>
 		Import a basic Zimbra contacts csv file with two contacts
 	</t:objective>
-	
-	
+
+
         <t:test >
                 <t:request>
                         <AuthRequest xmlns="urn:zimbraAccount">
@@ -305,12 +305,12 @@
 <t:property name="uploadServletServer" value="${test_acct3.server}"/>
 
 
-<t:test_case testcaseid="import_Zimbra_contacts_03" type="bhr">
+<t:test_case testcaseid="import_Zimbra_contacts_03" type="sanity">
 	<t:objective>
 		Import a basic Zimbra contacts csv file with multiple (3) contacts
 	</t:objective>
-	
-	
+
+
         <t:test >
                 <t:request>
                         <AuthRequest xmlns="urn:zimbraAccount">
@@ -353,11 +353,11 @@
 <t:property name="uploadServletServer" value="${test_acct4.server}"/>
 
 
-<t:test_case testcaseid="import_Zimbra_contacts_04" type="bhr">
+<t:test_case testcaseid="import_Zimbra_contacts_04" type="sanity">
 	<t:objective>
 		Import a basic Zimbra contacts csv file with all fields filled
 	</t:objective>
-	
+
         <t:test >
                 <t:request>
                         <AuthRequest xmlns="urn:zimbraAccount">
@@ -399,11 +399,11 @@
 <t:property name="uploadServletServer" value="${test_acct5.server}"/>
 
 
-<t:test_case testcaseid="import_Zimbra_contacts_05" type="bhr" bugids="4291">
+<t:test_case testcaseid="import_Zimbra_contacts_05" type="sanity" bugids="4291">
 	<t:objective>
 		Import a Zimbra contacts csv file with special characters
 	</t:objective>
-	
+
         <t:test >
                 <t:request>
                         <AuthRequest xmlns="urn:zimbraAccount">
@@ -445,12 +445,12 @@
 <t:property name="uploadServletServer" value="${test_acct6.server}"/>
 
 
-<t:test_case testcaseid="import_Zimbra_contacts_06" type="bhr">
+<t:test_case testcaseid="import_Zimbra_contacts_06" type="sanity">
 	<t:objective>
-		Import a large Zimbra contacts (2000 contacts) csv file 
+		Import a large Zimbra contacts (2000 contacts) csv file
 	</t:objective>
-	
-	
+
+
         <t:test >
                 <t:request>
                         <AuthRequest xmlns="urn:zimbraAccount">
@@ -500,11 +500,11 @@
 <t:property name="uploadServletServer" value="${test_acct7.server}"/>
 
 
-<t:test_case testcaseid="import_Zimbra_contacts_07" type="sanity">
+<t:test_case testcaseid="import_Zimbra_contacts_07" type="functional">
 	<t:objective>
 		Import a Zimbra contacts csv file with 0 contacts
 	</t:objective>
-	
+
         <t:test >
                 <t:request>
                         <AuthRequest xmlns="urn:zimbraAccount">
@@ -545,7 +545,7 @@
 <t:property name="server.zimbraAccount" value="${test_acct10.server}"/>
 <t:property name="uploadServletServer" value="${test_acct10.server}"/>
 
-<t:test_case testcaseid="import_Zimbra_contacts_10" type="sanity" bugids="4330">
+<t:test_case testcaseid="import_Zimbra_contacts_10" type="functional" bugids="4330">
 	<t:objective>
 		Verify bug 4330 - "import contacts:  shouldn't duplicate contacts"
 	</t:objective>
@@ -554,7 +554,7 @@
 2. Import the same contacts csv
 3. Duplicate contacts will be created for all contacts
 	</t:steps>
-	
+
         <t:test >
                 <t:request>
                         <AuthRequest xmlns="urn:zimbraAccount">
@@ -617,7 +617,7 @@
 <t:property name="server.zimbraAccount" value="${test_acct11.server}"/>
 <t:property name="uploadServletServer" value="${test_acct11.server}"/>
 
-<t:test_case testcaseid="import_Zimbra_contacts_11" type="sanity" bugids="4330">
+<t:test_case testcaseid="import_Zimbra_contacts_11" type="functional" bugids="4330">
 	<t:objective>
 		Verify bug 4330 - "import contacts:  shouldn't duplicate contacts"
 	</t:objective>
@@ -625,7 +625,7 @@
 1. Create a contact
 2. Import a contacts csv that has the same contact
 	</t:steps>
-	
+
         <t:test >
                 <t:request>
                         <AuthRequest xmlns="urn:zimbraAccount">
@@ -648,7 +648,7 @@
                     <a n="firstName">First</a>
                     <a n="lastName">Last</a>
                     <a n="email">email@foo.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>

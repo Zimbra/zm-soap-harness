@@ -4,12 +4,12 @@
 <t:property name="account1.name" value="lmtp${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account1.password" value="${defaultpassword.value}"/>
 
-<t:property name="root" value="${soapxml.root}/Mail/LMTP/AppleMail"/> 
-    
+<t:property name="root" value="${soapxml.root}/Mail/LMTP/AppleMail"/>
+
 <t:property name="msg01.file" value="${root}/applemail-textformat.txt"/>
 <t:property name="msg02.file" value="${root}/applemail-htmlformat.txt"/>
 <t:property name="msg03.file" value="${root}/applemail-attachments.txt"/>
-    
+
 <t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject2.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject3.valid" value="Subject${TIME}${COUNTER}"/>
@@ -22,7 +22,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -31,16 +31,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
+
 
 <t:test_case testcaseid="acctSetup1_AppleMail_MIMEBasic" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create a test account        
+             2. Create a test account
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -52,7 +52,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -67,7 +67,7 @@
     </t:test>
 
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 <t:test_case testcaseid="acctSetup2_AppleMail_MIMEBasic" type="always">
@@ -111,7 +111,7 @@
                 <header a="Subject">${subject1.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_AppleMail_MIMEBasic1a">
         <t:request>
@@ -124,7 +124,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_AppleMail_MIMEBasic1a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -135,12 +135,12 @@
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg1.id}"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="text/plain"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="lmtp_AppleMail_MIMEBasic2" type="bhr">
+
+<t:test_case testcaseid="lmtp_AppleMail_MIMEBasic2" type="sanity">
     <t:objective>Verify a MIME message in HTML format from an account configured to AppleMail is received properly</t:objective>
     <t:steps>
         1. Upload a message
@@ -161,7 +161,7 @@
                 <header a="Subject">${subject2.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_AppleMail_MIMEBasic2a">
         <t:request>
@@ -174,7 +174,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_AppleMail_MIMEBasic2a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -186,12 +186,12 @@
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp[@ct='multipart/alternative']"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='text/html']"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-   
 
-<t:test_case testcaseid="lmtp_AppleMail_MIMEBasic3" type="bhr">
+
+<t:test_case testcaseid="lmtp_AppleMail_MIMEBasic3" type="sanity">
     <t:objective>Verify a MIME message with attachments from an account configured to AppleMail is received properly</t:objective>
     <t:steps>
         1. Upload a message
@@ -212,7 +212,7 @@
                 <header a="Subject">${subject3.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_AppleMail_MIMEBasic3a">
         <t:request>
@@ -225,7 +225,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_AppleMail_MIMEBasic3a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -234,12 +234,12 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg3.id}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/mixed"/>   
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/mixed"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>            
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case>    
-    
+</t:test_case>
+
 </t:tests>

@@ -27,9 +27,9 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="SendMsgRequest_01" type="bhr">
+<t:test_case testcaseid="SendMsgRequest_01" type="sanity">
     <t:objective>Sanity test for SendMsgRequest</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -41,7 +41,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -69,7 +69,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -87,7 +87,7 @@
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
-					<e t="t" a="${account2.name}"/>					
+					<e t="t" a="${account2.name}"/>
 					<su>${message.subject}</su>
 					<mp ct="text/plain">
 						<content>Antique store owners in lower Manhattan, ticket vendors at India's Taj Mahal and Brazilian business executives heading to China all have one thing in common these days: They don't want U.S. dollars.</content>
@@ -99,13 +99,13 @@
 			<t:select path="//mail:SendMsgResponse"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddMsgRequest_01" type="bhr">
+<t:test_case testcaseid="AddMsgRequest_01" type="sanity">
     <t:objective>Sanity test for AddMsgRequest</t:objective>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -117,7 +117,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -129,9 +129,9 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -144,16 +144,16 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account3.folder.inbox.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -166,12 +166,12 @@
             <t:select path="//mail:AddMsgResponse/mail:m" />
         </t:response>
     </t:test>
-   	
+
 </t:test_case>
 
-<t:test_case testcaseid="SaveDraftRequest_01" type="bhr">
+<t:test_case testcaseid="SaveDraftRequest_01" type="sanity">
     <t:objective>Sanity test for SaveDraftRequest</t:objective>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -183,7 +183,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -195,9 +195,9 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -210,7 +210,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -224,15 +224,15 @@
             </SaveDraftRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDraftResponse" />            
+            <t:select path="//mail:SaveDraftResponse" />
         </t:response>
-    </t:test>  
-	
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="GetMsgRequest_01" type="bhr">
+<t:test_case testcaseid="GetMsgRequest_01" type="sanity">
     <t:objective>Sanity test for GetMsgRequest</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -244,7 +244,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -256,7 +256,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -270,7 +270,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -287,7 +287,7 @@
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
-					<e t="t" a="${account6.name}"/>					
+					<e t="t" a="${account6.name}"/>
 					<su>${message.subject}</su>
 					<mp ct="text/plain">
 						<content>Antique store owners in lower Manhattan, ticket vendors at India's Taj Mahal and Brazilian business executives heading to China all have one thing in common these days: They don't want U.S. dollars.</content>
@@ -299,7 +299,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
 	        <GetMsgRequest xmlns="urn:zimbraMail" >
@@ -307,10 +307,10 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${message1.id}" /> 
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${message1.id}" />
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -318,16 +318,16 @@
             </MsgActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:MsgActionResponse"/> 
+            <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvRequest_01" type="bhr">
+<t:test_case testcaseid="ConvRequest_01" type="sanity">
     <t:objective>Sanity test for GetConvRequest, ConvActionRequest, SearchConvRequest</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -339,7 +339,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -351,7 +351,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -365,7 +365,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account7.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -383,7 +383,7 @@
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
-					<e t="t" a="${account8.name}"/>					
+					<e t="t" a="${account8.name}"/>
 					<su>${message2.subject}</su>
 					<mp ct="text/plain">
 						<content>Antique store owners in lower Manhattan, ticket vendors at India's Taj Mahal and Brazilian business executives heading to China all have one thing in common these days: They don't want U.S. dollars.</content>
@@ -395,9 +395,9 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id" />
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account8.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -410,7 +410,7 @@
 
         </t:response>
     </t:test>
-	
+
 	  <t:test required="true">
         <t:request>
 	        <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -420,7 +420,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message2.id"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -440,7 +440,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchConv">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -451,7 +451,7 @@
             <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetConvRequest xmlns="urn:zimbraMail">
@@ -462,18 +462,18 @@
 			<t:select path="//mail:GetConvResponse"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test id="ConvActionRequest">
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
                 <action id="${conv.id1}" op="${op.read}"/>
             </ConvActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv.id1}">
@@ -485,12 +485,12 @@
             <t:select path="//mail:SearchConvResponse/mail:m[@id='${message3.id}']" />
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="MsgActionRequest_01" type="bhr">
+<t:test_case testcaseid="MsgActionRequest_01" type="sanity">
     <t:objective>Sanity test for MsgActionRequest</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -502,7 +502,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -514,7 +514,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account9.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -528,7 +528,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account9.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -546,7 +546,7 @@
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
-					<e t="t" a="${account10.name}"/>					
+					<e t="t" a="${account10.name}"/>
 					<su>${message.subject}</su>
 					<mp ct="text/plain">
 						<content>Antique store owners in lower Manhattan, ticket vendors at India's Taj Mahal and Brazilian business executives heading to China all have one thing in common these days: They don't want U.S. dollars.</content>
@@ -558,7 +558,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message3.id" />
 		</t:response>
 	</t:test>
-	
+
     <t:test required="true">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -566,15 +566,15 @@
             </MsgActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:MsgActionResponse"/> 
+            <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="GetMsgMetadataRequest_01" type="bhr">
+<t:test_case testcaseid="GetMsgMetadataRequest_01" type="sanity">
     <t:objective>Sanity test for GetMsgMetadataRequest</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -586,7 +586,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -598,9 +598,9 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account13.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account13.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -618,7 +618,7 @@
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
-					<e t="t" a="${account13.name}"/>					
+					<e t="t" a="${account13.name}"/>
 					<su>${message.subject}</su>
 					<mp ct="text/plain">
 						<content>Antique store owners in lower Manhattan, ticket vendors at India's Taj Mahal and Brazilian business executives heading to China all have one thing in common these days: They don't want U.S. dollars.</content>
@@ -630,7 +630,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message13.id" />
 		</t:response>
 	</t:test>
-	
+
     <t:test required="true">
         <t:request>
             <GetMsgMetadataRequest xmlns="urn:zimbraMail">
@@ -638,15 +638,15 @@
             </GetMsgMetadataRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetMsgMetadataResponse/mail:m" attr="id" match="${message13.id}" /> 
+            <t:select path="//mail:GetMsgMetadataResponse/mail:m" attr="id" match="${message13.id}" />
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="ItemActionRequest_01" type="bhr">
+<t:test_case testcaseid="ItemActionRequest_01" type="sanity">
     <t:objective>Sanity test for ItemActionRequest</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -658,7 +658,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -670,7 +670,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account11.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -684,7 +684,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account11.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -702,7 +702,7 @@
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
-					<e t="t" a="${account12.name}"/>					
+					<e t="t" a="${account12.name}"/>
 					<su>${message.subject}</su>
 					<mp ct="text/plain">
 						<content>Antique store owners in lower Manhattan, ticket vendors at India's Taj Mahal and Brazilian business executives heading to China all have one thing in common these days: They don't want U.S. dollars.</content>
@@ -714,7 +714,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message4.id" />
 		</t:response>
 	</t:test>
-	
+
     <t:test required="true">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -725,12 +725,12 @@
             <t:select path="//mail:ItemActionResponse/mail:action" attr="id" match="${message4.id}"/>
 		</t:response>
     </t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="SendDeliveryReportRequest_01" type="bhr">
+<t:test_case testcaseid="SendDeliveryReportRequest_01" type="sanity">
     <t:objective>Sanity test for SendDeliveryReportRequest</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -742,7 +742,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -754,9 +754,9 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account14.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account14.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -773,7 +773,7 @@
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
-					<e t="t" a="${account14.name}"/>					
+					<e t="t" a="${account14.name}"/>
 					<su>${message.subject}</su>
 					<mp ct="text/plain">
 						<content>Antique store owners in lower Manhattan, ticket vendors at India's Taj Mahal and Brazilian business executives heading to China all have one thing in common these days: They don't want U.S. dollars.</content>
@@ -785,7 +785,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message14.id" />
 		</t:response>
 	</t:test>
-	
+
    <t:test>
 		<t:request>
 			<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${message14.id}"/>
@@ -794,12 +794,12 @@
 			<t:select path="//mail:SendDeliveryReportResponse"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="RemoveAttachmentsRequest_01" type="bhr">
+<t:test_case testcaseid="RemoveAttachmentsRequest_01" type="sanity">
     <t:objective>Sanity test for RemoveAttachmentsRequest</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -811,7 +811,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -823,9 +823,9 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account15.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account15.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -838,7 +838,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -847,7 +847,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account15.folder.briefcase.id"/>
 		</t:response>
 	</t:test>
-    
+
     <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -856,7 +856,7 @@
 			<t:select attr="id" set="document.attach.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	  
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -869,11 +869,11 @@
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document1.attachfile.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
 			<SaveDraftRequest xmlns="urn:zimbraMail">
-			 <m> 			 
+			 <m>
 			    <attach>
 			    <doc id="${document1.attachfile.id}" />
 			    </attach>
@@ -888,14 +888,14 @@
 
 	<t:test >
 		<t:request>
-			<SendMsgRequest xmlns="urn:zimbraMail">			
+			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m id="${document.attach.aid}">
 					<e t="t" a='${account15.name}'/>
-					<su> "Send with attachment" </su>					
-					<mp ct="text/plain" />				
+					<su> "Send with attachment" </su>
+					<mp ct="text/plain" />
 					 <attach>
 							<mp mid="${account15.document.attach.id}" part="1" />
-					</attach>				
+					</attach>
 				</m>
 			</SendMsgRequest>
 		</t:request>
@@ -903,7 +903,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sentmsg1.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test required="true">
         <t:request>
             <RemoveAttachmentsRequest xmlns="urn:zimbraMail">
@@ -914,7 +914,7 @@
             <t:select path="//mail:RemoveAttachmentsResponse/mail:m" />
 		</t:response>
     </t:test>
-	
+
 </t:test_case>
 
 </t:tests>

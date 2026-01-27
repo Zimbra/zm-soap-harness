@@ -69,14 +69,14 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="DraftQuotaCheck" type="sanity">
+<t:test_case testcaseid="DraftQuotaCheck" type="functional">
     <t:objective>To Send a draft mail</t:objective>
     <t:steps>
         1. Compose a message and save it as Draft
         2. Upload the attachment
-        2. Reopen the draft and attach the attachment uploaded 
+        2. Reopen the draft and attach the attachment uploaded
     </t:steps>
-  
+
   	<!-- Login to the user account -->
   	<t:test id="auth" required="true">
         <t:request>
@@ -91,7 +91,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="saveDraftRequest7a">
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -110,7 +110,7 @@
     </t:test>
 
 	<!-- upload the attachment -->
-	<t:delay msec="2000"/>	
+	<t:delay msec="2000"/>
 
 	<t:property name="uploadServletServer" value="${test_acct.server}"/>
 
@@ -123,14 +123,14 @@
 			<t:select attr="StatusCode" match="200"/>
         </t:uploadServletResponse>
     </t:uploadservlettest>
-		
+
 	<t:delay msec="5000"/>
 
 	<!-- Again save the draft with an attachment, Response should be quota exceeded -->
 	<t:test id="saveDraftRequest7a">
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
-                <m id ="${draft7.id}">                	
+                <m id ="${draft7.id}">
                     <e t="t" a='${test_account1.name}'/>
                     <su> re changing of draft </su>
                     <mp ct="text/plain">
@@ -143,8 +143,8 @@
         <t:response>
             <t:select path="//zimbra:Code" match="mail.QUOTA_EXCEEDED"/>
         </t:response>
-    </t:test>		
-	
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

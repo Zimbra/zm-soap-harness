@@ -71,11 +71,11 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="test_list2.id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveDistributionListAliasRequest1" type="bhr">
+<t:test_case testcaseid="RemoveDistributionListAliasRequest1" type="sanity">
     <t:objective> Remove an Alias from list </t:objective>
 
     <t:test>
@@ -88,7 +88,7 @@
         <t:response>
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -100,12 +100,12 @@
         <t:response>
             <t:select path="//admin:RemoveDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveDistributionListAliasRequest2" type="sanity" >
+<t:test_case testcaseid="RemoveDistributionListAliasRequest2" type="functional" >
     <t:objective> Remove an invalid Alias (without domain name) from a DL </t:objective>
 
     <t:test>
@@ -118,12 +118,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveDistributionListAliasRequest3" type="sanity" >
+<t:test_case testcaseid="RemoveDistributionListAliasRequest3" type="functional" >
     <t:objective> Remove an Alias with non-existing domain name from a DL  </t:objective>
 
     <t:test>
@@ -136,12 +136,12 @@
         <t:response>
                 <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_DOMAIN"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveDistributionListAliasRequest4" type="functional" >
+<t:test_case testcaseid="RemoveDistributionListAliasRequest4" type="regression" >
     <t:objective> Remove an Alias with names as spchar/blank </t:objective>
 
     <t:test>
@@ -154,9 +154,9 @@
         <t:response>
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ALIAS"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-   
+
     <t:test>
         <t:request>
             <RemoveDistributionListAliasRequest xmlns="urn:zimbraAdmin">
@@ -167,13 +167,13 @@
         <t:response>
                 <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveDistributionListAliasRequest5" type="sanity" >
+<t:test_case testcaseid="RemoveDistributionListAliasRequest5" type="functional" >
     <t:objective> Remove an Alias with names as numbers </t:objective>
 
     <t:test>
@@ -186,7 +186,7 @@
         <t:response>
                 <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -198,13 +198,13 @@
         <t:response>
                 <t:select path="//admin:RemoveDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveDistributionListAliasRequest6" type="functional" >
+<t:test_case testcaseid="RemoveDistributionListAliasRequest6" type="regression" >
     <t:objective> Remove already deleted alias from the DL </t:objective>
 	<t:steps> 1. Create an alias
               2. Remove it
@@ -221,7 +221,7 @@
         <t:response>
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
         <t:request>
@@ -233,7 +233,7 @@
         <t:response>
                 <t:select path= "//admin:RemoveDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
         <t:request>
@@ -245,11 +245,11 @@
         <t:response>
                 <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ALIAS"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="RemoveDistributionListAliasRequest7" type="functional" bugids="45983,56944">
+<t:test_case testcaseid="RemoveDistributionListAliasRequest7" type="regression" bugids="45983,56944">
     <t:objective> Remove an Alias from a non existing list </t:objective>
 
     <t:test>
@@ -262,16 +262,16 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_DISTRIBUTION_LIST"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveDistributionListAliasRequest8" type="sanity" bugids="45983,56944">
+<t:test_case testcaseid="RemoveDistributionListAliasRequest8" type="functional" bugids="45983,56944">
     <t:objective>Verify that deleting the original DL deletes the aliases as well </t:objective>
     <t:steps> 1. Create a DL and its alias.
               2. Delete the DL.
-              3. Try to remove alias from deleted DL.              
+              3. Try to remove alias from deleted DL.
     </t:steps>
 
 	<t:test required="true">
@@ -296,7 +296,7 @@
         <t:response>
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id ="deleteDistributionListRequest1b" depends="deleteDistributionListRequest1a">
         <t:request>
@@ -319,17 +319,17 @@
         <t:response>
                 <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_DISTRIBUTION_LIST"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest9" type="sanity">
+<t:test_case testcaseid="RemoveAccountAliasRequest9" type="functional">
     <t:objective>Verify that the original DL does not get deleted if alias is deleted </t:objective>
     <t:steps> 1. Create a DL.Create an alias.
               2. Create an alias.
               3. Remove alias account.
-              4. Try to get DistributionList.       
+              4. Try to get DistributionList.
     </t:steps>
 
 	<t:test required="true">
@@ -354,7 +354,7 @@
         <t:response>
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
         <t:request>
@@ -366,7 +366,7 @@
         <t:response>
                 <t:select path= "//admin:RemoveDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
         <t:request>

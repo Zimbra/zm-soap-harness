@@ -50,7 +50,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="server.zimbraAccount"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
@@ -59,7 +59,7 @@
 	<t:objective>Basic Test: AuthRequest - login to the client using by="name"</t:objective>
 
 
-	
+
 	<t:test >
 	 <t:request>
 	  <AuthRequest xmlns="urn:zimbraAccount">
@@ -81,7 +81,7 @@
 	<t:objective>Basic Test: AuthRequest - login to the client using by="id"</t:objective>
 
 
-	
+
 	<t:test >
 	 <t:request>
 	  <AuthRequest xmlns="urn:zimbraAccount">
@@ -97,11 +97,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AuthRequest_basic_03" type="sanity" bugids="10929">
+<t:test_case testcaseid="AuthRequest_basic_03" type="functional" bugids="10929">
 	<t:objective>Basic Test: AuthRequest - login to the client using by="foreignPrincipal"</t:objective>
 
 
-	
+
 	<t:test >
 	 <t:request>
 	  <AuthRequest xmlns="urn:zimbraAccount">
@@ -117,7 +117,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AuthRequest_basic_05" type="bhr" bugids="18705">
+<t:test_case testcaseid="AuthRequest_basic_05" type="sanity" bugids="18705">
 <t:objective>Verify User auth token should not be able to execute RunUnitTestRequest</t:objective>
 
 	<t:test >
@@ -146,7 +146,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AuthRequest_basic_04" type="sanity" bugids="11387">
+<t:test_case testcaseid="AuthRequest_basic_04" type="functional" bugids="11387">
 <t:objective>Verify that Accented characters in password field is allowed.</t:objective>
 	<t:steps>
 					1. Create test account with Accented characters in password.
@@ -175,7 +175,7 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="server.zimbraAccount"/>
 			</t:response>
-		</t:test>  
+		</t:test>
 
 		<t:test >
 			<t:request>
@@ -191,8 +191,8 @@
 		</t:test>
 
 	</t:test_case>
-	
-	<t:test_case testcaseid="AuthRequest_basic_05" type="bhr" bugids="82139">
+
+	<t:test_case testcaseid="AuthRequest_basic_05" type="sanity" bugids="82139">
 	<t:objective> Verify account AuthRequest support "account by" syntax and without default domain name </t:objective>
 
     <t:test required="true" >
@@ -218,7 +218,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin.Id"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -230,7 +230,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

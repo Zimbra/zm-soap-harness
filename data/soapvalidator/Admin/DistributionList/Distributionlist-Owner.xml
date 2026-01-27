@@ -81,7 +81,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -95,7 +95,7 @@
 		</t:response>
 	</t:test>
 
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -108,7 +108,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="owner2.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -121,7 +121,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="owner3.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -134,7 +134,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="owner4.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -147,7 +147,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="owner5.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -160,7 +160,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="owner6.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
 	<t:test required="true">
 		<t:request>
@@ -173,7 +173,7 @@
 		<t:response>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
 	<t:test required="true">
 		<t:request>
@@ -189,8 +189,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner01" type="bhr" bugids="" >
-    <t:objective>Add owners by name to DL  </t:objective>    
+<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner01" type="sanity" bugids="" >
+    <t:objective>Add owners by name to DL  </t:objective>
     <t:steps>
     </t:steps>
 
@@ -206,7 +206,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -220,7 +220,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" />  -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -236,9 +236,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -250,12 +250,12 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}"/>
         </t:response>
-        </t:test>  
+        </t:test>
     </t:test_case>
-    
-    
-    <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner02" type="bhr" bugids="" >
-    <t:objective>Add owners by id to DL  </t:objective>    
+
+
+    <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner02" type="sanity" bugids="" >
+    <t:objective>Add owners by id to DL  </t:objective>
     <t:steps>
     </t:steps>
 
@@ -271,7 +271,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -285,7 +285,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl2.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -301,9 +301,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -315,11 +315,11 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}"/>
         </t:response>
-        </t:test>  
+        </t:test>
     </t:test_case>
-    
-    <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner03" type="bhr" bugids="" >
-    <t:objective>Add all members of one DL as owner of another DL  </t:objective>    
+
+    <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner03" type="sanity" bugids="" >
+    <t:objective>Add all members of one DL as owner of another DL  </t:objective>
     <t:steps>
     </t:steps>
 
@@ -335,7 +335,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -349,7 +349,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl3a.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -364,7 +364,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -378,7 +378,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account2.dl3b.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account2.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -394,8 +394,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
+    </t:test>
+
   	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -408,7 +408,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
          <t:test >
         <t:request >
@@ -422,8 +422,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-     
+    </t:test>
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -434,8 +434,8 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account2.dl3b.name}']" attr="id" match="${account2.dl3b.id}"/>
         </t:response>
-        </t:test> 
-        
+        </t:test>
+
           	<t:property name="server.zimbraAccount" value="${owner1.server}"/>
 
     <t:test >
@@ -448,7 +448,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
       <t:test >
         <t:request >
@@ -460,13 +460,13 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account2.dl3b.name}']" attr="id" match="${account2.dl3b.id}"/>
         </t:response>
-     </t:test>  
-		 
+     </t:test>
+
     </t:test_case>
-    
-    <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner04" type="bhr" bugids="" >
-    <t:objective>Add owners by name to DL Perform all admin operation by owner on DL  </t:objective>    
- 
+
+    <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner04" type="sanity" bugids="" >
+    <t:objective>Add owners by name to DL Perform all admin operation by owner on DL  </t:objective>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -479,7 +479,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -493,7 +493,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl4.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -502,16 +502,16 @@
             	<dl by="id">${account1.dl4.id}</dl>
                  <action op="addOwners">
                  	<owner type="usr" by="name">${owner1.name}</owner>
-                 	<owner type="usr" by="name">${owner4.name}</owner> 
+                 	<owner type="usr" by="name">${owner4.name}</owner>
                  </action>
           	</DistributionListActionRequest>
         </t:request>
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -523,7 +523,7 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	 	<t:property name="member.account.name" value="${account2.name}"/>
 		<t:property name="member.account.id" value="${account2.id}"/>
@@ -537,7 +537,7 @@
 		<t:property name="ownernew.id" value="${owner3.id}"/>
 		<t:property name="dl.newname" value="newname.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 		<t:include filename="DL-Owner-Allowed.inc" />
-		
+
 		<t:property name="member.account.name" value="${account2.name}"/>
 		<t:property name="member.account.id" value="${account2.id}"/>
 		<t:property name="member.account.server" value="${account2.server}"/>
@@ -550,13 +550,13 @@
 		<t:property name="ownernew.id" value="${owner3.id}"/>
 		<t:property name="dl.newname" value="newname.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 		<t:include filename="DL-Owner-Allowed.inc" />
-	
+
 	</t:test_case>
 
-	
-	<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner05" type="bhr" bugids="" >
-    <t:objective>Add owners by name to DL remove the creator as owner  </t:objective>    
- 
+
+	<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner05" type="sanity" bugids="" >
+    <t:objective>Add owners by name to DL remove the creator as owner  </t:objective>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -569,7 +569,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -583,7 +583,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl5.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -599,9 +599,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -612,12 +612,12 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}"/>
-			
+
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
 	<t:property name="server.zimbraAccount" value="${owner1.server}"/>
-		
+
     <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -628,9 +628,9 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-	
-    
+    </t:test>
+
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -643,9 +643,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
-     
+
     <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -659,9 +659,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner06" type="bhr" bugids="" >
-    
-    <t:objective>Remove owners by name to DL  </t:objective>    
+<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner06" type="sanity" bugids="" >
+
+    <t:objective>Remove owners by name to DL  </t:objective>
     <t:steps>
     </t:steps>
 
@@ -677,7 +677,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -691,7 +691,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl6.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -707,9 +707,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -719,10 +719,10 @@
         <t:response>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
-        	<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}"/>      	
+        	<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}"/>
         </t:response>
-        </t:test>  
-        
+        </t:test>
+
             <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -736,9 +736,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -750,12 +750,12 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}" emptyset="1"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}" emptyset="1"/>
         </t:response>
-        </t:test> 
+        </t:test>
     </t:test_case>
-    
-    
- <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner07" type="bhr" bugids="" >
-    <t:objective>Remove owners by id to DL  </t:objective>    
+
+
+ <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner07" type="sanity" bugids="" >
+    <t:objective>Remove owners by id to DL  </t:objective>
     <t:steps>
     </t:steps>
 
@@ -771,7 +771,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -785,7 +785,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl7.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -801,9 +801,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -815,8 +815,8 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}"/>
         </t:response>
-     </t:test>     
-     
+     </t:test>
+
      <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -830,8 +830,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test>  
-     
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -843,12 +843,12 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}" emptyset="1"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}" emptyset="1"/>
         </t:response>
-     </t:test>  
+     </t:test>
     </t:test_case>
-    
-    
-<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner08" type="bhr" bugids="" >
-    <t:objective>Remove owners by itself  </t:objective>    
+
+
+<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner08" type="sanity" bugids="" >
+    <t:objective>Remove owners by itself  </t:objective>
     <t:steps>
     </t:steps>
 
@@ -864,7 +864,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -876,7 +876,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl8.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -891,9 +891,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -903,8 +903,8 @@
         <t:response>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" emptyset="1"/>
         </t:response>
-        </t:test>  
- 
+        </t:test>
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -914,8 +914,8 @@
         <t:response>
 				<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" emptyset="1"/>
         </t:response>
-        </t:test> 
- 
+        </t:test>
+
         <t:property name="creator.account.name" value="${account1.name}"/>
 	    <t:property name="creator.account.id" value="${account1.id}"/>
 	    <t:property name="creator.account.server" value="${account1.server}"/>
@@ -930,15 +930,15 @@
 		<t:property name="ownernew.name" value="${owner3.name}"/>
 		<t:property name="ownernew.id" value="${owner3.id}"/>
 		<t:property name="dl.newname" value="newname.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-	
+
 		<t:include filename="DL-Owner-Denied.inc"/>
- 
+
     </t:test_case>
 
 
-<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner09" type="bhr" bugids="" >
-    <t:objective>Delete DL by delegated Owner </t:objective>    
- 
+<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner09" type="sanity" bugids="" >
+    <t:objective>Delete DL by delegated Owner </t:objective>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -951,7 +951,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -965,7 +965,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl9.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -980,9 +980,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -993,10 +993,10 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
 	<t:property name="server.zimbraAccount" value="${owner1.server}"/>
-		
+
     <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1007,9 +1007,9 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-	
-    
+    </t:test>
+
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -1021,14 +1021,14 @@
         <t:response>
         	<t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-     
-    </t:test_case>	
- 
- 
-<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner10" type="bhr" bugids="" >
-    <t:objective>Add owner  to DL  perform all owner operations Remove Owner perform all operation verify after removing it get PERM Denied. </t:objective>    
+
+    </t:test_case>
+
+
+<t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner10" type="sanity" bugids="" >
+    <t:objective>Add owner  to DL  perform all owner operations Remove Owner perform all operation verify after removing it get PERM Denied. </t:objective>
     <t:steps>
     </t:steps>
 
@@ -1044,7 +1044,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -1058,7 +1058,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl10.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -1073,9 +1073,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -1087,7 +1087,7 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
         </t:response>
       </t:test>
-      
+
         <t:property name="creator.account.name" value="${account1.name}"/>
 	    <t:property name="creator.account.id" value="${account1.id}"/>
 	    <t:property name="creator.account.server" value="${account1.server}"/>
@@ -1102,9 +1102,9 @@
 		<t:property name="ownernew.name" value="${owner3.name}"/>
 		<t:property name="ownernew.id" value="${owner3.id}"/>
 		<t:property name="dl.newname" value="newname.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-		
+
 		<t:include filename="DL-Owner-Allowed.inc"/>
-		
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -1117,8 +1117,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	    <t:property name="creator.account.name" value="${account1.name}"/>
 	    <t:property name="creator.account.id" value="${account1.id}"/>
 	    <t:property name="creator.account.server" value="${account1.server}"/>
@@ -1133,13 +1133,13 @@
 		<t:property name="ownernew.name" value="${owner3.name}"/>
 		<t:property name="ownernew.id" value="${owner3.id}"/>
 		<t:property name="dl.newname" value="newname.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-	
+
 		<t:include filename="DL-Owner-Denied.inc"/>
-   
+
     </t:test_case>
 
-  <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner11" type="bhr" bugids="" >
-    <t:objective>Add all members of one DL as owner of another DL verify any member belongs to owner DL can perform all operations  </t:objective>    
+  <t:test_case testcaseid="DistributionListActionRequest_AddRemoveOwner11" type="sanity" bugids="" >
+    <t:objective>Add all members of one DL as owner of another DL verify any member belongs to owner DL can perform all operations  </t:objective>
     <t:steps>
     </t:steps>
 
@@ -1155,7 +1155,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -1169,7 +1169,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account2.dl11.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account2.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -1184,8 +1184,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
+    </t:test>
+
   	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -1198,7 +1198,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -1210,8 +1210,8 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl11.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -1224,8 +1224,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-     
+    </t:test>
+
       <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -1236,10 +1236,10 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account2.dl11.name}']" attr="id" match="${account2.dl11.id}"/>
         </t:response>
-        </t:test> 
-        
+        </t:test>
+
        <t:property name="server.zimbraAccount" value="${owner1.server}"/>
-		 
+
 	 	<t:property name="member.account.name" value="${account2.name}"/>
 		<t:property name="member.account.id" value="${account2.id}"/>
 		<t:property name="member.account.server" value="${account2.server}"/>
@@ -1253,10 +1253,10 @@
 		<t:property name="dl.newname" value="newname.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 		<t:include filename="DL-Owner-Allowed.inc"/>
 </t:test_case>
-    
-    
-<t:test_case testcaseid="DistributionListActionRequest_setOwner01" type="bhr" bugids="68419" >
-    <t:objective>Set owners by name to DL and check previous owner is replaced by new owner </t:objective>    
+
+
+<t:test_case testcaseid="DistributionListActionRequest_setOwner01" type="sanity" bugids="68419" >
+    <t:objective>Set owners by name to DL and check previous owner is replaced by new owner </t:objective>
   	 <t:steps>
   	 	1. account1 login
   	 	2. Create a dl
@@ -1264,7 +1264,7 @@
   	 	4. Set two owners by name
   	 	5. Check old owner is replaced by new owners
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -1277,7 +1277,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -1289,7 +1289,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl12.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request >
@@ -1300,8 +1300,8 @@
         <t:response>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
         </t:response>
-    </t:test>  
-   
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -1315,8 +1315,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
+    </t:test>
+
      <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -1328,11 +1328,11 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}"/>
         </t:response>
-      </t:test>  
+      </t:test>
     </t:test_case>
-    
- <t:test_case testcaseid="DistributionListActionRequest_setOwner02" type="bhr" bugids="68419" >
-    <t:objective>Set owners by id to DL and check previous owner is replaced by new owner </t:objective>    
+
+ <t:test_case testcaseid="DistributionListActionRequest_setOwner02" type="sanity" bugids="68419" >
+    <t:objective>Set owners by id to DL and check previous owner is replaced by new owner </t:objective>
   	 <t:steps>
   	 	1. account1 login
   	 	2. Create a dl
@@ -1340,7 +1340,7 @@
   	 	4. Set two owners by name
   	 	5. Check old owner is replaced by new owners
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -1353,7 +1353,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -1365,7 +1365,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl13.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" set="account1.id" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request >
@@ -1376,8 +1376,8 @@
         <t:response>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
         </t:response>
-    </t:test>  
-   
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -1391,8 +1391,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
+    </t:test>
+
      <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -1404,11 +1404,11 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner1.name}']" attr="id" match="${owner1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${owner4.name}']" attr="id" match="${owner4.id}"/>
         </t:response>
-      </t:test>  
+      </t:test>
     </t:test_case>
-    
-    
+
+
   </t:tests>
-    
-    
-    
+
+
+

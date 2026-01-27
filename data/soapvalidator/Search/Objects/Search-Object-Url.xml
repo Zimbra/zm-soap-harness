@@ -55,7 +55,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account05.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
     <t:mailinjecttest >
@@ -72,7 +72,7 @@
 
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
     <t:objective> Login as the appropriate test account and search for message  </t:objective>
     <t:steps> 1. Login to test account
               2. Search for messages to get their message id
@@ -92,7 +92,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest1">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -105,7 +105,7 @@
             </t:select>
         </t:response>
     </t:test>
-   
+
     <t:test id="searchRequest2">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -119,7 +119,7 @@
             </t:select>
         </t:response>
     </t:test>
- 
+
     <t:test id="searchRequest2">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -137,7 +137,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="specific_domain_SearchRequest1" type="sanity" areas="verity">
+<t:test_case testcaseid="specific_domain_SearchRequest1" type="functional" areas="verity">
     <t:objective> Verify that a search for URL is successful (for url in Subject/body/attachment of messages) </t:objective>
 
     <t:test>
@@ -152,7 +152,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

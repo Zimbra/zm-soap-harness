@@ -33,9 +33,9 @@
 		value='require ["log","fileinto","relational"];
 if address :value "eq" :comparator "i;ascii-casemap"
     "from" "admin@${defaultdomain.name}"
-{     
+{
 		log"Comparator rule 1";
-		fileinto "Junk";	
+		fileinto "Junk";
 }
 ' />
 
@@ -78,22 +78,22 @@ if anyof ( address :count "eq" :comparator "i;ascii-numeric"
 	<t:property name="sieve_ComparatorTest_5"
 		value='require ["log","fileinto","flag","relational"];
  if address :all :comparator "i;ascii-casemap"
-                         ["to", "cc"] "${account2.name}" 
-  {	
+                         ["to", "cc"] "${account2.name}"
+  {
   		log "Comparator test 5";
   		fileinto "Junk";
-  } 
+  }
   ' />
 
 	<t:property name="sieve_ComparatorTest_6"
 		value='require ["log","fileinto","flag","relational"];
 if header :value "ne" :comparator "i;ascii-casemap"
     		["subject"]["SPAM"]
-{     
+{
 	keep;
-	log "Not a spam."; 
+	log "Not a spam.";
 	redirect "${account3.name}";
-}  
+}
 else
 {
 	log "Discard message as a spam";
@@ -106,11 +106,11 @@ else
 		value='require ["log","fileinto","flag","relational", "comparator-i;ascii-numeric"];
 if address :count "le" :comparator "i;ascii-numeric"
     		["to","cc"]["3"]
-{     
+{
 	keep;
 	log "Seems a legit mail";
-	fileinto "${folder2.name}"; 
-}  
+	fileinto "${folder2.name}";
+}
 else
 {
 	discard;
@@ -121,9 +121,9 @@ else
 
 <t:property name="sieve_ComparatorTest_8"
 		value='require ["log","fileinto","relational"];
-if header :value "eq" :comparator "i;octet" 
-			"from" "admin@${defaultdomain.name}" 
-{	
+if header :value "eq" :comparator "i;octet"
+			"from" "admin@${defaultdomain.name}"
+{
 		log "Succeed on comparator 8 test";
         fileinto "${folder1.name}";
  }
@@ -137,7 +137,7 @@ if header :value "eq" :comparator "i;octet"
 
 
 	<t:test_case testcaseid="AcctSetup1_filters_actions_discard_basic"
-		type="functional">
+		type="regression">
 		<t:objective> Create test account and login to first account
 		</t:objective>
 
@@ -266,9 +266,9 @@ if header :value "eq" :comparator "i;octet"
 		</t:test>
 
 	</t:test_case>
-	
+
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_1"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -349,7 +349,7 @@ if header :value "eq" :comparator "i;octet"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_2"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -379,7 +379,7 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
-		<!-- Send a mail with low priority. If priority less than 3, redirect to 
+		<!-- Send a mail with low priority. If priority less than 3, redirect to
 			folder 2 -->
 
 		<t:test>
@@ -433,7 +433,7 @@ if header :value "eq" :comparator "i;octet"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_3"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -462,7 +462,7 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
-		<!-- Send a mail with attendees more than equal to 2. In case true, redirect 
+		<!-- Send a mail with attendees more than equal to 2. In case true, redirect
 			the mail to folder 1, else discard -->
 
 		<t:test>
@@ -576,7 +576,7 @@ if header :value "eq" :comparator "i;octet"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_4"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -714,7 +714,7 @@ if header :value "eq" :comparator "i;octet"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_5"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -797,7 +797,7 @@ if header :value "eq" :comparator "i;octet"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_6"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -961,7 +961,7 @@ if header :value "eq" :comparator "i;octet"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_7"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -1109,10 +1109,10 @@ if header :value "eq" :comparator "i;octet"
 	</t:test_case>
 
     <t:test_case testcaseid="SendMail_And_checkFilter_Execution_8"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1138,13 +1138,13 @@ if header :value "eq" :comparator "i;octet"
 					attr="name" match="${account1.name}" />
 			</t:response>
 		</t:test>
-		
+
 		<!-- Send message with from as admin user. Should go in folder 1 -->
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
 					<m f="?">
-						<e t="t" a="${account1.name}" />				
+						<e t="t" a="${account1.name}" />
 						<su>${subject12}</su>
 						<mp ct="text/plain">
 							<content>Content 12
@@ -1158,7 +1158,7 @@ if header :value "eq" :comparator "i;octet"
 					set="Sent_message1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1184,9 +1184,9 @@ if header :value "eq" :comparator "i;octet"
 					match="${subject12}"/>
 			</t:response>
 		</t:test>
-		
-		
-		
+
+
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1199,13 +1199,13 @@ if header :value "eq" :comparator "i;octet"
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<!-- Send message with from as user 2. Should go redirected to account3 -->
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
 					<m f="?">
-						<e t="t" a="${account1.name}" />				
+						<e t="t" a="${account1.name}" />
 						<su>${subject13}</su>
 						<mp ct="text/plain">
 							<content>Content 13
@@ -1219,7 +1219,7 @@ if header :value "eq" :comparator "i;octet"
 					set="Sent_message1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1232,7 +1232,7 @@ if header :value "eq" :comparator "i;octet"
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail">
@@ -1244,7 +1244,7 @@ if header :value "eq" :comparator "i;octet"
 					match="${subject13}"/>
 			</t:response>
 		</t:test>
-		
-</t:test_case>		
+
+</t:test_case>
 
 </t:tests>

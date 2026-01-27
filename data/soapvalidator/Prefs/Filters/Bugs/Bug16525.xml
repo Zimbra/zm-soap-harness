@@ -73,7 +73,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug16525_01" type="bhr" bugs="16525" >
+<t:test_case testcaseid="Bug16525_01" type="sanity" bugs="16525" >
 	<t:objective>Verify bug 16525: Filter a mail with invalid mime</t:objective>
 	<t:steps>
 		1. Login to test account1.
@@ -104,9 +104,9 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="contains"  value="${message1.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="contains"  value="${message1.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionRedirect a="${account2.name}" />
                         	<actionStop />
                         </filterActions>
@@ -118,7 +118,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -137,7 +137,7 @@
         </params>
     </t:request>
 	</t:staftask>
-	
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message1.file}</filename>
@@ -148,7 +148,7 @@
     </t:mailinjecttest>
 
 	<t:delay sec="10"/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -177,7 +177,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Bug16525_02" type="sanity" bugs="16525" >
+<t:test_case testcaseid="Bug16525_02" type="functional" bugs="16525" >
 	<t:objective>Verify bug 16525: Filter a mail with invalid mime (Content-Type: text; charset=utf-8)</t:objective>
 	<t:steps>
 		1. Login to test account1.
@@ -208,9 +208,9 @@
                 <filterRules>
 					<filterRule name="${filter2.name}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="contains"  value="${message2.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="contains"  value="${message2.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionRedirect a="${account2.name}" />
                         	<actionStop />
                         </filterActions>
@@ -222,8 +222,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -243,7 +243,7 @@
     </t:mailinjecttest>
 
 	<t:delay sec="10"/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">

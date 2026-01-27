@@ -37,7 +37,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -110,11 +110,11 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_partFmtAsHTML_01" type="sanity" areas="verity" bugids="8474">
+<t:test_case testcaseid="RestServlet_partFmtAsHTML_01" type="functional" areas="verity" bugids="8474">
 	<t:objective>Rest Servlet - verify fmt=html returns "No HTML formatter available for item" - the URL should be view=html</t:objective>
 	<t:steps>
 			1. Inject a mime message with a word doc attachment
@@ -129,8 +129,8 @@
             <from>${nonZimbraUser.name}</from>
             <server>${account1.server}</server>
          </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
-	
+    </t:mailinjecttest>
+
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 

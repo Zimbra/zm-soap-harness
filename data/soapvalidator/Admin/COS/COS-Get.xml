@@ -42,11 +42,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createcosrequest1" required="true">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos.name}</name>        
+                <name xmlns="">${cos.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -54,13 +54,13 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAllCosRequest1" type="bhr" areas="dev_sanity">
+<t:test_case testcaseid="GetAllCosRequest1" type="sanity" areas="dev_sanity">
     <t:objective> Test GetAllCosRequest </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetAllCosRequest/>
@@ -73,9 +73,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest1" type="bhr" areas="dev_sanity">
+<t:test_case testcaseid="GetCosRequest1" type="sanity" areas="dev_sanity">
     <t:objective> Get COS details for a cos with valid id </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -90,9 +90,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest2" type="bhr" areas="dev_sanity">
+<t:test_case testcaseid="GetCosRequest2" type="sanity" areas="dev_sanity">
     <t:objective> Get COS details for a cos with valid name </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -107,9 +107,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest3" type="functional" >
+<t:test_case testcaseid="GetCosRequest3" type="regression" >
     <t:objective> Get COS details for a cos with blank id </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -124,9 +124,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest4" type="functional" >
+<t:test_case testcaseid="GetCosRequest4" type="regression" >
     <t:objective> Get COS details for a cos with special character at id </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -141,9 +141,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest5" type="functional" bugids="2112">
+<t:test_case testcaseid="GetCosRequest5" type="regression" bugids="2112">
     <t:objective> Get COS details for a cos with blank name </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -158,9 +158,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest6" type="functional" bugids="2112">
+<t:test_case testcaseid="GetCosRequest6" type="regression" bugids="2112">
     <t:objective> Get COS details for a cos with special characters in name </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -175,9 +175,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest7" type="functional" >
+<t:test_case testcaseid="GetCosRequest7" type="regression" >
     <t:objective> Get COS details for a cos with blank value for 'by' attribute </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -192,9 +192,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest8" type="functional">
+<t:test_case testcaseid="GetCosRequest8" type="regression">
     <t:objective> Get COS details for a cos with some text value for 'by' attribute </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -209,9 +209,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest9" type="functional">
+<t:test_case testcaseid="GetCosRequest9" type="regression">
     <t:objective> Get COS details for a cos without 'by' attribute </t:objective>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -226,9 +226,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest10" type="functional">
+<t:test_case testcaseid="GetCosRequest10" type="regression">
     <t:objective> Get COS details for a cos with 'by' = 'id/name' with leading space </t:objective>
-        
+
     <t:test id="getcosrequest10a">
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -254,9 +254,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest11" type="functional">
+<t:test_case testcaseid="GetCosRequest11" type="regression">
     <t:objective> Get COS details for a cos with 'by' = 'id/name' with trailing space </t:objective>
-        
+
     <t:test id="getcosrequest11a">
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -282,9 +282,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCosRequest12" type="functional">
+<t:test_case testcaseid="GetCosRequest12" type="regression">
     <t:objective> Get COS details for a deleted cos </t:objective>
-        
+
     <t:test id="getcosrequest12a">
         <t:request>
             <DeleteCosRequest xmlns="urn:zimbraAdmin">
@@ -312,9 +312,9 @@
 
 
 
-<t:test_case testcaseid="GetCosRequest13" type="sanity" bugids="7590">
+<t:test_case testcaseid="GetCosRequest13" type="functional" bugids="7590">
     <t:objective>Verify the default settings on the default COS</t:objective>
-        
+
 	<!--
 		To determine the default value of the skin, see bug 7590 and
 		script ZimbraQA/data/zimbraInstall/soapScripts/postUpgrade/bug7590PostUpgrade.xml

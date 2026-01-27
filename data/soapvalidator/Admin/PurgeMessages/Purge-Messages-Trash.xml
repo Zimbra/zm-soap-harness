@@ -76,7 +76,7 @@
 	<t:property name="admin.authToken" value="${authToken}"/>
 
 	<!-- Create the domain for the test accounts -->
-	
+
     <t:test id="CreateDomainRequest0a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -212,7 +212,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="PurgeTrashMessagesRequest1" type="sanity" bugids="46613">
+<t:test_case testcaseid="PurgeTrashMessagesRequest1" type="functional" bugids="46613">
  <t:objective>Purge messages for a single account with zimbraMailPurgeUseChangeDateForTrash=true </t:objective>
  <t:steps>
     Set zimbraMailPurgeUseChangeDateForTrash=true
@@ -222,7 +222,7 @@
  	PurgeMessagesRequest with the account ID.
     GetMailboxRequest to make sure the trash is not empty
 </t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 	<t:test >
         <t:request>
@@ -236,7 +236,7 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -299,7 +299,7 @@
         <t:response>
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="purge02.mbxid"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:requestContext>
@@ -325,7 +325,7 @@
         <t:response>
             <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${purge02.mbxid}$"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 <!-- TODO: This should work without the requestContext but simply using the SearchRequest:mbox parameter.
                 <mbx id="${purge02.id}"/>
@@ -342,12 +342,12 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="^${mail01A.subject}$" />
-            
+
         </t:response>
-    </t:test>      
+    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="PurgeTrashMessagesRequest2" type="sanity" bugids="46613">
+<t:test_case testcaseid="PurgeTrashMessagesRequest2" type="functional" bugids="46613">
  <t:objective>
 	Purge messages for a single account with one message with zimbraMailPurgeUseChangeDateForTrash=false
  </t:objective>
@@ -357,7 +357,7 @@
 	3. Modify the account setting to zimbraMailTrashLifetime=10s
 	3. Check that the mailbox does not contains the messages
  </t:steps>
-   
+
 <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
     <t:test >
         <t:request>
@@ -459,7 +459,7 @@
         <t:response>
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="purge03.mbxid"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
     <t:test>
@@ -479,7 +479,7 @@
     </t:test>
 
 	<t:delay msec="10000"/>
-	
+
     <t:test>
         <t:request>
             <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
@@ -489,7 +489,7 @@
         <t:response>
             <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${purge03.mbxid}$"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
     <t:test>
@@ -509,7 +509,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="PurgeTrashMessagesRequest3" type="sanity" bugids="46613">
+<t:test_case testcaseid="PurgeTrashMessagesRequest3" type="functional" bugids="46613">
   <t:objective>
 	Purge messages for a single account with zimbraMailPurgeUseChangeDateForTrash=false
   </t:objective>
@@ -523,7 +523,7 @@
 	Message should not be purged and should be present in inbox.
   </t:steps>
 
-   
+
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
     <t:test >
         <t:request>
@@ -562,7 +562,7 @@
             <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="^${mail01A.id}$"/>
         </t:response>
     </t:test>
-    
+
     <t:delay msec="10000"/>
 
 
@@ -605,7 +605,7 @@
         <t:response>
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="purge04.mbxid"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:requestContext>
@@ -635,7 +635,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
                <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -644,8 +644,8 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox.id"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test >
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -656,10 +656,10 @@
             <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="^${mail01A.id}$"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:property name="authToken" value="${admin.authToken}"/>
-    
+
     <t:test>
         <t:request>
             <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
@@ -669,7 +669,7 @@
         <t:response>
             <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${purge04.mbxid}$"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:requestContext>
@@ -686,7 +686,7 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 </t:tests>
 

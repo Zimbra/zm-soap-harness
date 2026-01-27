@@ -12,93 +12,93 @@
 	<t:property name="subject7" value="sub7.${TIME}${COUNTER}" />
 	<t:property name="subject8" value="sub8.${TIME}${COUNTER}" />
 	<t:property name="subject9" value="sub9.${TIME}${COUNTER}" />
-	
+
 
 	<t:property name="sieve_test1"
-		value='require ["log","fileinto"];	
+		value='require ["log","fileinto"];
 if header :contains :comparator "i;ascii-casemap" "" ""
-   {	
+   {
    		log "Should not be executed";
        fileinto "Junk";
-       discard;	
-    }  
+       discard;
+    }
 ' />
 
 <t:property name="sieve_test2"
-		value='require ["log","fileinto"];	
+		value='require ["log","fileinto"];
 if header :contains :comparator "i;ascii-casemap" "Subject_notexists" ""
    {
    		log "Should not be executed";
        fileinto "Junk";
-       discard;	
-    }  
+       discard;
+    }
 ' />
 
 <t:property name="sieve_test3"
-		value='require ["log","fileinto"];	
+		value='require ["log","fileinto"];
 if header :contains :comparator "i;ascii-casemap" "Subject" ""
    {
    		log "Should be executed";
        fileinto "Junk";
-       discard;	
-    }  
+       discard;
+    }
 ' />
 
 <t:property name="sieve_test4"
-		value='require ["log","fileinto"];	
+		value='require ["log","fileinto"];
 if header :contains :comparator "i;ascii-casemap" "" "sub4"
    {
    		log "Should not be executed";
        fileinto "Junk";
-       discard;	
-    }  
+       discard;
+    }
 ' />
 
 <t:property name="sieve_test5"
-		value='require ["log","fileinto"];	
+		value='require ["log","fileinto"];
 if header :contains :comparator "i;ascii-casemap" "Invalid" "Invalid"
    {
    		log "Should not be executed";
        fileinto "Junk";
-       discard;	
-    }  
+       discard;
+    }
 ' />
 
 <t:property name="sieve_test6"
-		value='require ["log","fileinto"];	
+		value='require ["log","fileinto"];
 if header :contains :comparator "i;ascii-casemap" "From" "user1"
    {
    		log "Should not be executed";
        fileinto "Sent";
-       discard;	
-    } 
+       discard;
+    }
  elsif header :contains :comparator "i;ascii-casemap" "" ""
  {
  		log "Should not be  executed";
        fileinto "Junk";
-       discard;	
+       discard;
  }
 ' />
 
 <t:property name="sieve_test7"
-		value='require ["log","fileinto"];	
+		value='require ["log","fileinto"];
 if header :contains :comparator "i;ascii-casemap" "Invalid" "\"
    {
    		log "Should not be executed";
        fileinto "Junk";
-       discard;	
-    }  
+       discard;
+    }
 ' />
 
 
 <t:property name="sieve_test8"
-		value='require ["log","fileinto"];	
+		value='require ["log","fileinto"];
 if header :contains :comparator "i;ascii-casemap" "\" "\"
    {
    		log "Should not be executed";
        fileinto "Junk";
-       discard;	
-    }  
+       discard;
+    }
 ' />
 
 	<t:property name="admin_script_value_before"
@@ -122,7 +122,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 	<t:property name="admin_script_value_after"
 		value='require ["fileinto","log"];
 if header :contains :comparator "i;ascii-casemap" "" ""
-{ 
+{
 	log "Admin after should not be executed";
  	fileinto "Sent";
  }
@@ -130,7 +130,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 
 
 <t:test_case testcaseid="AcctSetup1_filters_actions"
-		type="functional">
+		type="regression">
 		<t:objective> Create test account and login to first account
 		</t:objective>
 
@@ -165,9 +165,9 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		</t:test>
 
 	</t:test_case>
-		
+
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_1"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script for with header name and value empty
 		</t:objective>
 
@@ -233,7 +233,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Junk subject:${subject1}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject1}" emptyset="1" />
@@ -244,7 +244,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 	</t:test_case>
 
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_2"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script for with invalid header name and value empty
 		</t:objective>
 
@@ -310,7 +310,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Junk subject:${subject2}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject2}" emptyset="1"/>
@@ -320,7 +320,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 	</t:test_case>
 
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_3"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script for with correct header name and value empty
 		</t:objective>
 
@@ -350,7 +350,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -390,7 +390,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Junk subject:${subject3}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject3}"/>
@@ -398,9 +398,9 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		</t:test>
 
 	 </t:test_case>
-	
+
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_4"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script for with empty header name and valid value
 		</t:objective>
 
@@ -465,7 +465,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Junk subject:${subject4}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject4}" emptyset="1"/>
@@ -476,7 +476,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 	</t:test_case>
 
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_5"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script for with invalid header name and value
 		</t:objective>
 
@@ -541,7 +541,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Junk subject:${subject5}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject5}" emptyset="1"/>
@@ -550,9 +550,9 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 
 
 	</t:test_case>
-	
+
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_6"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script for with empty condition in else action
 		</t:objective>
 
@@ -581,7 +581,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -618,19 +618,19 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Junk subject:${subject6}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject6}" emptyset="1"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Sent subject:${subject6}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject6}" emptyset="1"/>
@@ -639,9 +639,9 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 
 
 	</t:test_case>
-	
+
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_7"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script for with Invalid header name and value as '\' which should be escaped
 		</t:objective>
 
@@ -707,7 +707,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Junk subject:${subject7}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject7}" emptyset="1"/>
@@ -716,9 +716,9 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 
 
 	</t:test_case>
-	
+
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_8"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script for with both header name and value as '\' to be escaped
 		</t:objective>
 
@@ -747,7 +747,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -784,7 +784,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Junk subject:${subject8}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject8}" emptyset="1"/>
@@ -793,9 +793,9 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 
 
 	</t:test_case>
-	
+
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_9"
-		type="functional">
+		type="regression">
 		<t:objective> Set sieve script  with header name and value empty for admin before, user script and admin after
 		</t:objective>
 
@@ -862,7 +862,7 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<SearchRequest xmlns="urn:zimbraMail">
 					<query>in:Sent subject:${subject9}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:c" attr="su"
 					match="${subject9}" emptyset="1"/>

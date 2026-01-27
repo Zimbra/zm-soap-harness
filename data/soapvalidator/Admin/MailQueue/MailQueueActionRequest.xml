@@ -4,7 +4,7 @@
 
 <t:property name="account1.name" value="queue${TIME}${COUNTER}@${defaultdomain.name}"/>
 
-	
+
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
 
@@ -87,7 +87,7 @@
 
 </t:finally>
 
-<t:test_case testcaseid="MailQueueActionRequest_01" type="bhr" bugids="50878" areas="virus,mta, noncluster">
+<t:test_case testcaseid="MailQueueActionRequest_01" type="sanity" bugids="50878" areas="virus,mta, noncluster">
     <t:objective>Sanity check of MailQueueActionRequest</t:objective>
     <t:steps>
     1. Stop amavis so messages will be queued
@@ -143,7 +143,7 @@
 	</t:test>
 
 	<t:delay msec="15000"/>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true" >
@@ -171,12 +171,12 @@
 		<t:response>
 			<t:select path="//admin:GetMailQueueResponse"/>
 		</t:response>
-    </t:test >  
+    </t:test >
 
 	<t:for start="1" end="5" break="response">
-	
+
 		<t:delay msec="1000"/>
-	
+
 	    <t:test required="true">
 	        <t:request>
 	    		<GetMailQueueRequest xmlns="urn:zimbraAdmin">
@@ -189,10 +189,10 @@
 	        </t:request>
 			<t:response>
 				<t:select path="//admin:GetMailQueueResponse">
-					<t:select path="//admin:queue[@scan='0']" attr="name" set="response"/>	
+					<t:select path="//admin:queue[@scan='0']" attr="name" set="response"/>
 				</t:select>
 			</t:response>
-	    </t:test >  
+	    </t:test >
 
 	</t:for>
 
@@ -209,11 +209,11 @@
 		<t:response>
 			<t:select path="//admin:GetMailQueueResponse">
 				<t:select path="//admin:queue[@name='deferred']">
-					<t:select path="//admin:qi" attr="id" set="queue.message.id"/>	
+					<t:select path="//admin:qi" attr="id" set="queue.message.id"/>
 				</t:select>
 			</t:select>
 		</t:response>
-    </t:test >  
+    </t:test >
 
     <t:test >
         <t:request>
@@ -228,7 +228,7 @@
 		<t:response>
 			<t:select path="//admin:MailQueueActionResponse"/>
 		</t:response>
-    </t:test >  
+    </t:test >
 
 </t:test_case>
 

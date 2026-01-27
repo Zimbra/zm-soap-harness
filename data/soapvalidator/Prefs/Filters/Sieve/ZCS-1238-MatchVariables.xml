@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
 	<!-- Following bug is included as part of this testcase -->
-	<!-- zcs-1238:- SIEVE: Match variable not getting replaced within header 
+	<!-- zcs-1238:- SIEVE: Match variable not getting replaced within header
 		name of replaceheader -->
 
 	<t:property name="account1.name"
@@ -18,10 +18,10 @@
 	<t:property name="sieve_test1"
 		value='require ["editheader", "variables"];
 		addheader "X-Header" "val1test";
-		if allof address :matches "from" "admin@${defaultdomain.name}" 
-		{ 
+		if allof address :matches "from" "admin@${defaultdomain.name}"
+		{
 			replaceheader :newname "${1}" :newvalue "${2}" :matches "X-Header" "va*1*";
-		} 
+		}
 ' />
 
 
@@ -31,21 +31,21 @@
 		set :upperfirst :lower "h2" "tEst-sieve";
 		addheader "${h1}" "${h1}";
 		addheader "${h1}" "${h1}";
-		if allof address :matches "from" "admin@${defaultdomain.name}" 
-		{ 
+		if allof address :matches "from" "admin@${defaultdomain.name}"
+		{
 			replaceheader :newname "${h2}" :newvalue "${h1}" :matches "${h1}" "${h1}";
-		} 
-		 
+		}
+
 ' />
 
 	<t:property name="sieve_test3"
 		value='require ["editheader", "variables"];
 		addheader "X-Header" "val1test";
-		if allof address :matches "from" "admin@${defaultdomain.name}" 
-		{ 
+		if allof address :matches "from" "admin@${defaultdomain.name}"
+		{
 			replaceheader :newname "${1}" :newvalue "${2}" :matches "X-Header" "va?1?*";
 		}
-		 
+
 ' />
 
 	<t:test_case testcaseid="AcctSetup1_zcs1238" type="always"
@@ -76,7 +76,7 @@
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -85,7 +85,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -101,7 +101,7 @@
                         <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
                     </t:response>
                 </t:test>
-	    
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -123,7 +123,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-1238_Filter1" type="functional"
+	<t:test_case testcaseid="ZCS-1238_Filter1" type="regression"
 		bugids="ZCS-1238">
 		<t:objective>ReplaceHeader command should match variable within the
 			new header name
@@ -213,7 +213,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-1238_Filter2" type="functional"
+	<t:test_case testcaseid="ZCS-1238_Filter2" type="regression"
 		bugids="ZCS-1238">
 		<t:objective>ReplaceHeader command should match variable within the
 			new header name
@@ -304,7 +304,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-1238_Filter3" type="functional"
+	<t:test_case testcaseid="ZCS-1238_Filter3" type="regression"
 		bugids="ZCS-1238">
 		<t:objective>ReplaceHeader command should match variable within the
 			new header name
@@ -396,7 +396,7 @@
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -417,7 +417,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 

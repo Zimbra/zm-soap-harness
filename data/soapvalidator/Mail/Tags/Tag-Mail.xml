@@ -86,7 +86,7 @@
 
         </t:response>
     </t:test>
-  
+
     <t:test id="getFolderRequest">
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -95,20 +95,20 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="mail_TagActionRequest1" type="bhr" bugids="6473">
+<t:test_case testcaseid="mail_TagActionRequest1" type="sanity" bugids="6473">
     <t:objective>search for a tagged email (MsgActionRequest - tag)</t:objective>
-    <t:steps> 
-                1. Add an email.  
+    <t:steps>
+                1. Add an email.
                 2. Create a new tag;
-                3. Tag the email; 
+                3. Tag the email;
                 4. Search for the tag
                 5. Verify that the correct email was returned
     </t:steps>
@@ -116,7 +116,7 @@
     <t:test>
         <t:request>
 	        <AddMsgRequest xmlns="urn:zimbraMail">
-		        <m l="${folder.inbox}">   
+		        <m l="${folder.inbox}">
 		        <content>Subject: hello1
 do it
     		    </content></m>
@@ -132,7 +132,7 @@ do it
 	        <AddMsgRequest xmlns="urn:zimbraMail">
 		        <m l="${folder.inbox}">
                 <content>Subject: hello2
-                
+
 do it
     		    </content></m>
 	        </AddMsgRequest>
@@ -174,13 +174,13 @@ do it
                 <query>tag:"${tag1.name}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m">
             <t:select attr="id" match="${message1.id}"/>
             </t:select>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <MsgActionRequest  xmlns="urn:zimbraMail">
@@ -199,21 +199,21 @@ do it
                 <query>tag:"${tag1.name}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="id" match="${message1.id}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="id" match="${message2.id}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="mail_TagActionRequest2" type="bhr" bugids="2358, 6473" >
+<t:test_case testcaseid="mail_TagActionRequest2" type="sanity" bugids="2358, 6473" >
     <t:objective>search for a tagged email (MsgActionRequest - update)</t:objective>
-    <t:steps> 
-              1. Add an email.  
-              2. Create a new tag; 
-              3. Tag the email; 
+    <t:steps>
+              1. Add an email.
+              2. Create a new tag;
+              3. Tag the email;
               4. Search for the tag
               5. Verify that the correct email was returned
     </t:steps>
@@ -279,7 +279,7 @@ do it
                 <query>tag:"${tag2.name}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m">
             <t:select attr="id" match="${message1.id}"/>
             </t:select>
@@ -289,12 +289,12 @@ do it
 </t:test_case>
 
 
-<t:test_case testcaseid="mail_TagActionRequest3" type="bhr" bugids="6473">
+<t:test_case testcaseid="mail_TagActionRequest3" type="sanity" bugids="6473">
     <t:objective>search for a tagged email (ItemActionRequest - tag)</t:objective>
-    <t:steps> 
-              1. Add an email.  
+    <t:steps>
+              1. Add an email.
               2. Create a new tag;
-              3. Tag the email; 
+              3. Tag the email;
               4. Search for the tag
               5. Verify that the correct email was returned
     </t:steps>
@@ -361,7 +361,7 @@ do it
                 <query>tag:"${tag3.name}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m">
             <t:select attr="id" match="${message1.id}"/>
             </t:select>
@@ -371,12 +371,12 @@ do it
 </t:test_case>
 
 
-<t:test_case testcaseid="mail_TagActionRequest4" type="bhr" bugids="6473">
+<t:test_case testcaseid="mail_TagActionRequest4" type="sanity" bugids="6473">
     <t:objective>search for a tagged email (ItemActionRequest - update)</t:objective>
-    <t:steps> 
-              1. Add an email.  
+    <t:steps>
+              1. Add an email.
               2. Create a new tag;
-              3. Tag the email; 
+              3. Tag the email;
               4. Search for the tag
               5. Verify that the correct email was returned
     </t:steps>
@@ -441,7 +441,7 @@ do it
                 <query>tag:"${tag4.name}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m">
             <t:select attr="id" match="${message1.id}"/>
             </t:select>
@@ -451,18 +451,18 @@ do it
 </t:test_case>
 
 
-<t:test_case testcaseid="mail_TagActionRequest5" type="functional" >
+<t:test_case testcaseid="mail_TagActionRequest5" type="regression" >
     <t:objective>Tagging a email </t:objective>
-    <t:steps> 
-               1. Add a email.  
+    <t:steps>
+               1. Add a email.
                2. Create a new tag;
-               3. Tag the email with invalid attibutes; 
+               3. Tag the email with invalid attibutes;
     </t:steps>
 
     <t:test>
         <t:request>
 	        <AddMsgRequest xmlns="urn:zimbraMail">
-		        <m l="${folder.inbox}">   
+		        <m l="${folder.inbox}">
 		        <content>Subject: hello1
 do it
     		    </content></m>
@@ -491,14 +491,14 @@ do it
     <t:test >
         <t:request>
             <MsgActionRequest  xmlns="urn:zimbraMail">
-                 
+
             </MsgActionRequest >
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match = "service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <!-- missing op and tag attribute -->
     <t:test >
         <t:request>
@@ -510,7 +510,7 @@ do it
             <t:select path="//zimbra:Code" match = "service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <!-- missing tag attribute -->
     <t:test >
         <t:request>
@@ -522,7 +522,7 @@ do it
             <t:select path="//zimbra:Code" match = "service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <!-- missing id attribute -->
     <t:test >
         <t:request>
@@ -534,13 +534,13 @@ do it
             <t:select path="//zimbra:Code" match = "service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="mail_TagActionRequest6" type="functional" >
+<t:test_case testcaseid="mail_TagActionRequest6" type="regression" >
     <t:objective>Tagging a non existing email </t:objective>
-    <t:steps> 
+    <t:steps>
                1. Create a new tag;
                2. Tag the email.
     </t:steps>
@@ -569,21 +569,21 @@ do it
             <t:select path="//zimbra:Code" match="^mail.NO_SUCH_MSG$" />
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="mail_TagActionRequest7" type="functional" >
+<t:test_case testcaseid="mail_TagActionRequest7" type="regression" >
     <t:objective>Trying to tag a email with non existing tag</t:objective>
-    <t:steps> 
-               1. Add an email.  
+    <t:steps>
+               1. Add an email.
                2. Tag the email with non existing tag
     </t:steps>
 
     <t:test>
         <t:request>
 	        <AddMsgRequest xmlns="urn:zimbraMail">
-		        <m l="${folder.inbox}">   
+		        <m l="${folder.inbox}">
 		        <content>Subject: hello1
 do it
     		    </content></m>

@@ -15,7 +15,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -27,9 +27,9 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
-    <t:property name="admin.authToken" value="${authToken}"/>  
-    
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -42,7 +42,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="create_test_account2" required="true" depends="admin_login" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -55,8 +55,8 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="acct2.server"/>
         </t:response>
     </t:test>
-     
-      
+
+
 	<t:property name="server.zimbraAccount" value="${acct1.server}"/>
 
     <t:test depends="create_test_account1" required="true">
@@ -78,15 +78,15 @@
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="acct1.folder.briefcase"/>       
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="acct1.folder.briefcase"/>
         </t:response>
     </t:test>
 
-    <t:property name="acct1.authToken" value="${authToken}"/>  
+    <t:property name="acct1.authToken" value="${authToken}"/>
 
 	<t:property name="server.zimbraAccount" value="${acct2.server}"/>
-     
-    
+
+
     <t:test depends="create_test_account2" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -100,21 +100,21 @@
 
         </t:response>
     </t:test>
- 
-    <t:property name="acct2.authToken" value="${authToken}"/>  
 
- 
+    <t:property name="acct2.authToken" value="${authToken}"/>
+
+
     <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-     	   <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="acct2.folder.briefcase"/>           
+     	   <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="acct2.folder.briefcase"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-  
+
 
 <t:test_case testcaseid="Briefcase_AcctSetup2_GreateMountpoint" type="always">
     <t:objective>Create a folder, give read permissions.</t:objective>
@@ -123,11 +123,11 @@
             2. Create a folder.
             3. Give permissions.
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${acct1.server}"/>
 
     <t:property name="authToken" value="${acct1.authToken}"/>
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -151,11 +151,11 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
-</t:test_case>
-  
 
-<t:test_case testcaseid="Briefcase_Get_MountFolder01" type="sanity">
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_Get_MountFolder01" type="functional">
     <t:objective>Verify GetFolder by path of the shared folder works </t:objective>
     <t:steps>
             1. Login to second account.
@@ -165,9 +165,9 @@
 
 	<t:property name="server.zimbraAccount" value="${acct2.server}"/>
 
-    <t:property name="authToken" value="${acct2.authToken}"/>  
+    <t:property name="authToken" value="${acct2.authToken}"/>
 
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -179,7 +179,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="mount1.name"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail">
@@ -192,8 +192,8 @@
     </t:test>
 
 </t:test_case>
-   
-<t:test_case testcaseid="Briefcase_Get_MountFolder02" type="sanity">
+
+<t:test_case testcaseid="Briefcase_Get_MountFolder02" type="functional">
     <t:objective>Verify GetFolder by path of the shared sub-folder works </t:objective>
     <t:steps>
             1. Login to first account.
@@ -206,9 +206,9 @@
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${acct1.server}"/>
-    <t:property name="authToken" value="${acct1.authToken}"/>  
+    <t:property name="authToken" value="${acct1.authToken}"/>
 
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -220,8 +220,8 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="acct1.briefcase_folder1.id"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -230,7 +230,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -259,7 +259,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${acct2.server}"/>
-    <t:property name="authToken" value="${acct2.authToken}"/>  
+    <t:property name="authToken" value="${acct2.authToken}"/>
 
 
     <t:test>
@@ -273,7 +273,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="mount12.name"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail">
@@ -284,7 +284,7 @@
             <t:select path="//mail:GetFolderResponse"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
              <SearchRequest xmlns = "urn:zimbraMail" types="document">
@@ -294,7 +294,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:doc" attr="name"  match="contact1.txt"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 

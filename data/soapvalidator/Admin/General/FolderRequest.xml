@@ -34,11 +34,11 @@
 
 <t:property name="type1" value="message"/>
 
- 
-  
-<t:test_case testcaseid="GetFolderRequest_01" type="bhr"  >
+
+
+<t:test_case testcaseid="GetFolderRequest_01" type="sanity"  >
     <t:objective>Sanity test for GetFolderRequest </t:objective>
-   
+
      <t:test  >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -63,7 +63,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -76,8 +76,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test id="getFolderRequest">
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -86,13 +86,13 @@
             <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
-    </t:test>      
-    
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="CreateFolderRequest_01" type="bhr"  >
+<t:test_case testcaseid="CreateFolderRequest_01" type="sanity"  >
     <t:objective>Sanity test for CreateFolderRequest </t:objective>
-   
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -117,7 +117,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -130,8 +130,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -140,23 +140,23 @@
             <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="${folder.briefcase}" name="${folder1.name}"/>  	 
+                <folder l="${folder.briefcase}" name="${folder1.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="FolderActionRequest_01" type="bhr"  >
+<t:test_case testcaseid="FolderActionRequest_01" type="sanity"  >
     <t:objective>Sanity test for FolderActionRequest </t:objective>
-   
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -181,7 +181,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-     
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test >
@@ -194,8 +194,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -204,18 +204,18 @@
             <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="${folder.briefcase}" name="${folder2.name}"/>  	 
+                <folder l="${folder.briefcase}" name="${folder2.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -223,15 +223,15 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action[@id='${folder2.id}']" attr="op" match="trash"/>			
+            <t:select path="//mail:FolderActionResponse/mail:action[@id='${folder2.id}']" attr="op" match="trash"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="GetItemRequest_01" type="bhr"  >
+<t:test_case testcaseid="GetItemRequest_01" type="sanity"  >
     <t:objective>Sanity test for GetItemRequest </t:objective>
-   
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -255,7 +255,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test>
@@ -268,8 +268,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test id="getFolderRequest">
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -277,8 +277,8 @@
         <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox.id"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <GetItemRequest xmlns="urn:zimbraMail">
@@ -288,13 +288,13 @@
          <t:response>
               <t:select path="//mail:GetItemResponse/mail:folder" attr="name" match="Inbox" />
          </t:response>
-    </t:test>    
-    
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="SearchFolderRequest_01" type="bhr" >   
+<t:test_case testcaseid="SearchFolderRequest_01" type="sanity" >
 	<t:objective>Sanity test for CreateSearchFolderRequest, GetSearchFolderRequest and ModifySearchFolderRequest</t:objective>
-	
+
      <t:test  >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -318,9 +318,9 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
-		
+
 	<t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -331,13 +331,13 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
-					<e t="t" a="${account5.name}"/>					
+					<e t="t" a="${account5.name}"/>
 					<su>${message.subject}</su>
 					<mp ct="text/plain">
 						<content>{$message.content}</content>
@@ -349,7 +349,7 @@
 			<t:select path="//mail:SendMsgResponse"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateSearchFolderRequest xmlns="urn:zimbraMail">
@@ -359,10 +359,10 @@
 		<t:response>
 			<t:select path="//mail:CreateSearchFolderResponse"/>
 			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="name" match="${search.name1}"/>
-			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="id" set="searchFolder.id"/>				
+			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="id" set="searchFolder.id"/>
 		</t:response>
 	</t:test>
-		
+
 	<t:test>
 		<t:request>
 			<GetSearchFolderRequest xmlns="urn:zimbraMail">
@@ -372,7 +372,7 @@
 			<t:select path="//mail:GetSearchFolderResponse/mail:search "/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<ModifySearchFolderRequest xmlns="urn:zimbraMail">
@@ -388,9 +388,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateMountpointRequest_01" type="bhr" >   
+<t:test_case testcaseid="CreateMountpointRequest_01" type="sanity" >
 	<t:objective>Sanity test for  CreateMountpointRequest</t:objective>
-	
+
      <t:test  >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -414,8 +414,8 @@
          	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -427,9 +427,9 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
-		
+
 	<t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -440,19 +440,19 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="${folder.briefcase}" name="${folder5.name}"  view="document" />  	 
+                <folder l="${folder.briefcase}" name="${folder5.name}"  view="document" />
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.briefcase.folder.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.briefcase.folder.id"/>
         </t:response>
     </t:test>
-    
+
     <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account6.document.textfile}</filename>
@@ -461,7 +461,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -474,7 +474,7 @@
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account6.document1.id"/>
         </t:response>
     </t:test>
-       
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -487,7 +487,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-   
+
    <t:property name="server.zimbraAccount" value="${account7.server}"/>
 
     <t:test >
@@ -500,14 +500,14 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account7.folder.root"/>           
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account7.folder.root"/>
         </t:response>
     </t:test>
 
@@ -523,13 +523,13 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account6.name}"/>
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account7.shared.folder.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="SendShareNotificationRequest_01" type="bhr" >
-    <t:objective>Sanity test for SendShareNotificationRequest </t:objective> 
-    
+<t:test_case testcaseid="SendShareNotificationRequest_01" type="sanity" >
+    <t:objective>Sanity test for SendShareNotificationRequest </t:objective>
+
      <t:test  >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -553,8 +553,8 @@
          	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account8.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account8.server"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -573,22 +573,22 @@
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account9.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
             <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>	
-		
+    </t:test>
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account9.folder.calendar.id"/>
-			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account9.folder.Briefcase.id"/>			
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account9.folder.Briefcase.id"/>
 		</t:response>
 	</t:test>
 
@@ -605,7 +605,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<!--  Send share notificationrequest to Account8 -->
 
     <t:test >
@@ -618,13 +618,13 @@
         <t:response>
             <t:select path="//mail:SendShareNotificationResponse"/>
         </t:response>
-    </t:test>    
-         
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="GetEffectivePermsRequest_01" type="bhr" >
-    <t:objective>Sanity test for GetEffectivePermsRequest </t:objective> 
-    
+<t:test_case testcaseid="GetEffectivePermsRequest_01" type="sanity" >
+    <t:objective>Sanity test for GetEffectivePermsRequest </t:objective>
+
     <t:test  >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -648,24 +648,24 @@
          	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account10.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account10.server"/>
         </t:response>
-    </t:test>    
-    
-    
+    </t:test>
+
+
 	<t:property name="server.zimbraAccount" value="${account10.server}"/>
 
 	<t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account10.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
             <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>	
-		
+    </t:test>
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -678,14 +678,14 @@
     <t:test >
         <t:request>
             <GetEffectiveFolderPermsRequest xmlns="urn:zimbraMail">
-                <folder l="${account10.folder.calendar.id}" />				
+                <folder l="${account10.folder.calendar.id}" />
             </GetEffectiveFolderPermsRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:GetEffectiveFolderPermsResponse/mail:folder"/>
         </t:response>
-    </t:test>    
-         
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/> 
-<t:property name="domain2.name" value="domain${TIME}${COUNTER}.com"/>    
+
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>
+<t:property name="domain2.name" value="domain${TIME}${COUNTER}.com"/>
 <t:property name="user1.name" value="test.${TIME}.${COUNTER}@${domain1.name}"/>
 <t:property name="user2.name" value="test.${TIME}.${COUNTER}@${domain2.name}"/>
 
@@ -26,8 +26,8 @@
 <t:property name="view.appointment" value="appointment"/>
 <t:property name="view.note" value="note"/>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
-  
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -43,7 +43,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="CalendarSharing_Public_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -62,7 +62,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 
     <t:test required="true">
         <t:request>
@@ -100,7 +100,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 		<CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -111,7 +111,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -124,7 +124,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -137,7 +137,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="CalendarSharing_Public_01" type="smoke" bugids="14306">
@@ -199,11 +199,11 @@
             <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt.apptId"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test delay="10000"/> <!-- wait for appt to get delivered -->
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -215,7 +215,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -226,11 +226,11 @@
 			</t:select>
 		</t:response>
 	</t:test>
-    
+
     <t:for start="1" end="30" break="response">
-	
+
 		<t:delay msec="1000"/>
-	
+
 		<t:test >
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -243,26 +243,26 @@
 		</t:test>
 
 	</t:for>
-    
+
     <t:test required="true" >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${range.start}" calExpandInstEnd="${range.end}" types="appointment">
 				<query>inid:${account2.calendar.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appt.subject}']">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
             	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
             	<t:select attr="name" set="invitee1.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="verb.response" value="ACCEPT"/>
 	<t:property name="verb.expected" value="AC"/>
-	
+
 	<t:test>
         <t:request>
 			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${invitee1.appt1.invId}" compNum="${invitee1.appt1.compNum}" updateOrganizer="TRUE">
@@ -279,10 +279,10 @@
             <t:select path="//mail:SendInviteReplyResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:delay msec="5000"/> <!-- wait for the reply to be delivered -->
-    
-    
+
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -297,7 +297,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -320,9 +320,9 @@
             <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -334,9 +334,9 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="url.shared.calendar" value="https://${zimbraServer.name}:443/home/${account1.name}/Calendar.ics"/>
-    
+
     <t:test >
 		<t:request>
 			<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -350,21 +350,21 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true" >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${range.start}" calExpandInstEnd="${range.end}" types="appointment">
 				<query>inid:${account2.calendar.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appt.subject}']"/>
         </t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="CalendarSharing_Public_02" type="bhr" bugids="14306">
+
+ <t:test_case testcaseid="CalendarSharing_Public_02" type="sanity" bugids="14306">
     <t:objective>subscribing to calendar hosted on different zimbra domain subsumes appointments that are on both user calendar and subscribed calendar </t:objective>
     <t:steps>
         1. Login as account1.  Create an appointment and invite account2.
@@ -423,9 +423,9 @@
             <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt.apptId"/>
         </t:response>
     </t:test>
-    
-	
-	
+
+
+
 	<t:test delay="10000"/> <!-- wait for appt to get delivered -->
 	<t:property name="server.zimbraAccount" value="${user2.server}"/>
     <t:test required="true">
@@ -439,7 +439,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -450,11 +450,11 @@
 			</t:select>
 		</t:response>
 	</t:test>
-    
+
     <t:for start="1" end="30" break="response1">
-	
+
 		<t:delay msec="1000"/>
-	
+
 		<t:test >
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -467,26 +467,26 @@
 		</t:test>
 
 	</t:for>
-    
+
     <t:test required="true" >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${range.start}" calExpandInstEnd="${range.end}" types="appointment">
 				<query>inid:${user2.calendar.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appt.subject}']">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
             	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
             	<t:select attr="name" set="invitee1.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="verb.response" value="ACCEPT"/>
 	<t:property name="verb.expected" value="AC"/>
-	
+
 	<t:test>
         <t:request>
 			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${invitee1.appt1.invId}" compNum="${invitee1.appt1.compNum}" updateOrganizer="TRUE">
@@ -503,10 +503,10 @@
             <t:select path="//mail:SendInviteReplyResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:delay msec="5000"/> <!-- wait for the reply to be delivered -->
-    
-    
+
+
     <t:property name="server.zimbraAccount" value="${user1.server}"/>
 
     <t:test required="true">
@@ -521,7 +521,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -544,9 +544,9 @@
             <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${user2.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -558,14 +558,14 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
  <t:staftask>
     <t:request>
         <server>${zimbraServer.name}</server>
         <service>PROCESS</service>
         <params>
             <!-- Add IPs AND the Hostname explicitly -->
-            START SHELL COMMAND "su - zimbra -c 'zmlocalconfig -e zimbra_feed_manager_whitelist=\"127.0.0.1,127.0.1.1,10.0.0.169,${defaultdomain.name}\"'" 
+            START SHELL COMMAND "su - zimbra -c 'zmlocalconfig -e zimbra_feed_manager_whitelist=\"127.0.0.1,127.0.1.1,10.0.0.169,${defaultdomain.name}\"'"
             RETURNSTDOUT RETURNSTDERR WAIT 60000
         </params>
     </t:request>
@@ -583,7 +583,7 @@
 <!-- 5. Wait for Service to be Fully Up -->
 <t:delay msec="60000"/> <!-- Waiting 60 seconds to be safe -->
     <t:property name="url.shared.calendar" value="https://${zimbraServer.name}:443/home/${user1.name}/Calendar?fmt=ics"/>
-    
+
     <t:test >
 		<t:request>
 			<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -597,18 +597,18 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true" >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${range.start}" calExpandInstEnd="${range.end}" types="appointment">
 				<query>inid:${user2.calendar.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appt.subject}']"/>
         </t:response>
     </t:test>
-    
+
  </t:test_case>
 
 <t:finally>
@@ -623,7 +623,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
         <!-- Reset whitelist back to empty or default -->
     <t:staftask>
         <t:request>
@@ -635,7 +635,7 @@
             </params>
         </t:request>
     </t:staftask>
-    
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>
@@ -644,7 +644,7 @@
                     ${staf.process.timeout.zmmtactl}</params>
             </t:request>
     </t:staftask>
-    
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>

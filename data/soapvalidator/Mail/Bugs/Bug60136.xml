@@ -7,7 +7,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    	
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -22,7 +22,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AccountSetup_Bug60948" type="bhr">
+<t:test_case testcaseid="AccountSetup_Bug60948" type="sanity">
     <t:objective>Create account.</t:objective>
 
 	<!-- Auth Admin -->
@@ -48,7 +48,7 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
 	</t:test>
@@ -65,11 +65,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug60136" type="bhr" bugids="60136">
+<t:test_case testcaseid="Bug60136" type="sanity" bugids="60136">
     <t:objective>Inject the mime and verify that .mht file is rendered</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<!-- Login to the account -->
 	<t:test >
 		<t:request>
@@ -105,12 +105,12 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp[@ct='multipart/mixed']">
             	<t:select path="mail:mp[@ct='message/rfc822']" attr="part" set="message1.part1.id"/>
-            </t:select>        	
+            </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="server.restServlet" value="${account1.server}"/>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg01.id}</id>

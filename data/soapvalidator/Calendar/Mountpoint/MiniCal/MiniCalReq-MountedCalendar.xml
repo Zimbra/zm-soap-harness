@@ -13,7 +13,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -27,7 +27,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -40,7 +40,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_owner" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -66,10 +66,10 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user1.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="MiniCal_MountedCalendar_01" type="sanity">
+<t:test_case testcaseid="MiniCal_MountedCalendar_01" type="functional">
     <t:objective>Verify GetMiniCalRequest return mounted calendar's appointments </t:objective>
     <t:steps>
         1. Login as owner1. Create an appointment and share the calendar with the user1.
@@ -78,7 +78,7 @@
         4. Send GetMiniCalRequest to search the mounted calendar.
         5. Verify the appointment date
     </t:steps>
-    
+
 <t:property name="server.zimbraAccount" value="${owner1.server}"/>
 
     <t:test required="true">
@@ -107,20 +107,20 @@
 	<t:property name="appointment1.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment1.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment1.content" value="Content of the message${TIME}.${COUNTER}"/>
-	<t:property name="appt1.start.gmt" value="${TIME(+1h)}"/> 
+	<t:property name="appt1.start.gmt" value="${TIME(+1h)}"/>
     <t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>
-    
+
      <t:test>
         <t:request>
 			<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m >
 					<inv>
 						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment1.subject}">
-							<or a="${owner1.name}"/>							
+							<or a="${owner1.name}"/>
 							<s d="${ICALTIME[${appt1.start.pst}]}" tz="${timezone.pst}" />
 							<e d="${ICALTIME(+3h)[${appt1.start.pst}]}" tz="${timezone.pst}" />
 						</comp>
-					</inv>					
+					</inv>
 					<su>${appointment1.subject}</su>
 					<mp ct="text/plain">
 						<content>${appointment1.content}</content>
@@ -129,11 +129,11 @@
 			</CreateAppointmentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateAppointmentResponse">            	
+            <t:select path="//mail:CreateAppointmentResponse">
             </t:select>
         </t:response>
     </t:test>
-	
+
     <t:test required="true">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -181,34 +181,34 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${owner1.name}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
-            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-1d)}" e="${TIME(+3d)}">       
-				<folder id="${user1.delegated.id}" />				
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-1d)}" e="${TIME(+3d)}">
+				<folder id="${user1.delegated.id}" />
 			</GetMiniCalRequest>
-        </t:request>        
-        <t:response>			 
-			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE()}"/>			
+        </t:request>
+        <t:response>
+			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE()}"/>
         </t:response>
     </t:test>
-     
+
 </t:test_case>
 
-<t:test_case testcaseid="MiniCal_MountedCalendar_02" type="sanity">
+<t:test_case testcaseid="MiniCal_MountedCalendar_02" type="functional">
   <t:objective>Verify GetMiniCalRequest return mounted calendar's appointments along with own calendar appts </t:objective>
     <t:steps>
-         
+
         1. Login as owner1. Create an appointment and share the calendar with the user1.
         2. Login as user1.
         3. Accept and mount the shared calendar
-        4. Login as usr1. Create an appointment          
+        4. Login as usr1. Create an appointment
         5. Send GetMiniCalRequest to search the mounted calendar  and own calendar.
         3. Verify the appointment dates
     </t:steps>
- 
+
  <t:property name="server.zimbraAccount" value="${owner1.server}"/>
-   
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -234,20 +234,20 @@
 	<t:property name="appointment1.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment1.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment1.content" value="Content of the message${TIME}.${COUNTER}"/>
-	<t:property name="appt1.start.gmt" value="${TIME(+1h)}"/> 
+	<t:property name="appt1.start.gmt" value="${TIME(+1h)}"/>
     <t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>
-    
+
      <t:test>
         <t:request>
 			<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m >
 					<inv>
 						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment1.subject}">
-							<or a="${owner1.name}"/>							
+							<or a="${owner1.name}"/>
 							<s d="${ICALTIME[${appt1.start.pst}]}" tz="${timezone.pst}" />
 							<e d="${ICALTIME(+3h)[${appt1.start.pst}]}" tz="${timezone.pst}" />
 						</comp>
-					</inv>					
+					</inv>
 					<su>${appointment1.subject}</su>
 					<mp ct="text/plain">
 						<content>${appointment1.content}</content>
@@ -256,11 +256,11 @@
 			</CreateAppointmentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateAppointmentResponse">            	
+            <t:select path="//mail:CreateAppointmentResponse">
             </t:select>
         </t:response>
     </t:test>
-	
+
     <t:test required="true">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -309,8 +309,8 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="user1.delegated.id"/>
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${owner1.name}"/>
         </t:response>
-    </t:test>    
-  <!--  
+    </t:test>
+  <!--
     <t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -319,14 +319,14 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="user1.folder.calendar.id"/>
         </t:response>
     </t:test> -->
-    
+
     <t:property name="appointment2.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment2.location" value="Location of meeting${TIME}.${COUNTER}"/>
-	<t:property name="appointment2.content" value="Content of the message${TIME}.${COUNTER}"/>	
-	
-    <t:property name="appt2.start.gmt" value="${TIME(+2d)}"/> 
+	<t:property name="appointment2.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+    <t:property name="appt2.start.gmt" value="${TIME(+2d)}"/>
     <t:property name="appt2.start.pst" value="${TIME(-8h)[${appt2.start.gmt}]}"/>
-   
+
     <t:test >
         <t:request>
 			<CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -346,23 +346,23 @@
 			</CreateAppointmentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateAppointmentResponse" />        	   
+            <t:select path="//mail:CreateAppointmentResponse" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
-            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-1d)}" e="${TIME(+3d)}">       
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-1d)}" e="${TIME(+3d)}">
 				<folder id="${user1.delegated.id}" />
-				<folder id="${user1.folder.calendar.id}" />					
+				<folder id="${user1.folder.calendar.id}" />
 			</GetMiniCalRequest>
-        </t:request>        
-        <t:response>			 
-        
+        </t:request>
+        <t:response>
+
 			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE(+2d)}"/>
-			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE()}"/>			 		
+			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE()}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 </t:tests>

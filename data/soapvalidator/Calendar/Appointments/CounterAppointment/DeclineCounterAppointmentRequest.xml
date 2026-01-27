@@ -52,7 +52,7 @@
 
 <t:test_case testcaseid="AccountSetup" type="always" >
     <t:objective>Account setup</t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -64,7 +64,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -91,14 +91,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="DeclineCounterAppointmentRequest_01" type="smoke">
-    <t:objective>Verify organizer should able to decline the new proposed time by attendee</t:objective>	
+    <t:objective>Verify organizer should able to decline the new proposed time by attendee</t:objective>
     <t:steps>
      1. Login as Organizer.
-     2. Create an appointment 
+     2. Create an appointment
      3. Login as attendee
      4. Propose new time for appointment,send it to organizer
      5. Login as Organizer
@@ -118,15 +118,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time12}"/>  
-                        <e d="${Time13}"/>  
+                        <s d="${Time12}"/>
+                        <e d="${Time13}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -141,7 +141,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="calItemId" set="calItemId1"/>
         </t:response>
     </t:test>
-    
+
    <t:test required="true">
       <t:request>
         <GetAppointmentRequest xmlns="urn:zimbraMail" id="${calItemId1}"/>
@@ -167,23 +167,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <CounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>New Time Proposed: ${appointment.subject}</su>
             <mp ct="text/plain">
               <content>Let's meet some other time.  uid=${calItemUid1}, seq=${calItemSeq1}</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="${Time13}"/>  
-                 <e d="${Time14}"/>  
+                 <s d="${Time13}"/>
+                 <e d="${Time14}"/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
          </CounterAppointmentRequest>
         </t:request>
@@ -191,7 +191,7 @@
             <t:select path="//mail:CounterAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
    <t:test>
@@ -205,23 +205,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <DeclineCounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>Proposal Declined:: ${appointment.subject}</su>
             <mp ct="text/plain">
                <content>No, let's stick to the original plan.</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="${Time13}"/>  
-                 <e d="${Time14}"/>  
+                 <s d="${Time13}"/>
+                 <e d="${Time14}"/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
         </DeclineCounterAppointmentRequest>
       </t:request>
@@ -229,12 +229,12 @@
            <t:select path="//mail:DeclineCounterAppointmentResponse"/>
       </t:response>
    </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="DeclineCounterAppointmentRequest_02" type="bhr">
-    <t:objective>Smoke test for DeclineCounterAppointmentRequest with blank time. - service.INVALID_REQUEST </t:objective>	
+<t:test_case testcaseid="DeclineCounterAppointmentRequest_02" type="sanity">
+    <t:objective>Smoke test for DeclineCounterAppointmentRequest with blank time. - service.INVALID_REQUEST </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -249,15 +249,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time12}"/>  
-                        <e d="${Time13}"/>  
+                        <s d="${Time12}"/>
+                        <e d="${Time13}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -272,7 +272,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="calItemId" set="calItemId1"/>
         </t:response>
     </t:test>
-    
+
    <t:test required="true">
       <t:request>
         <GetAppointmentRequest xmlns="urn:zimbraMail" id="${calItemId1}"/>
@@ -298,23 +298,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <CounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>New Time Proposed: ${appointment.subject}</su>
             <mp ct="text/plain">
               <content>Let's meet some other time.  uid=${calItemUid1}, seq=${calItemSeq1}</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="${Time13}"/>  
-                 <e d="${Time14}"/>  
+                 <s d="${Time13}"/>
+                 <e d="${Time14}"/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
          </CounterAppointmentRequest>
         </t:request>
@@ -322,7 +322,7 @@
             <t:select path="//mail:CounterAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
    <t:test>
@@ -336,23 +336,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <DeclineCounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>Proposal Declined:: ${appointment.subject}</su>
             <mp ct="text/plain">
                <content>No, let's stick to the original plan.</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d=""/>  
-                 <e d=""/>  
+                 <s d=""/>
+                 <e d=""/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
         </DeclineCounterAppointmentRequest>
       </t:request>
@@ -360,11 +360,11 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
       </t:response>
    </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="DeclineCounterAppointmentRequest_03" type="bhr">
-    <t:objective>Smoke test for DeclineCounterAppointmentRequest with invalid time - service.INVALID_REQUEST </t:objective>	
+<t:test_case testcaseid="DeclineCounterAppointmentRequest_03" type="sanity">
+    <t:objective>Smoke test for DeclineCounterAppointmentRequest with invalid time - service.INVALID_REQUEST </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -379,15 +379,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time12}"/>  
-                        <e d="${Time13}"/>  
+                        <s d="${Time12}"/>
+                        <e d="${Time13}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -402,7 +402,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="calItemId" set="calItemId1"/>
         </t:response>
     </t:test>
-    
+
    <t:test required="true">
       <t:request>
         <GetAppointmentRequest xmlns="urn:zimbraMail" id="${calItemId1}"/>
@@ -428,23 +428,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <CounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>New Time Proposed: ${appointment.subject}</su>
             <mp ct="text/plain">
               <content>Let's meet some other time.  uid=${calItemUid1}, seq=${calItemSeq1}</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="${Time13}"/>  
-                 <e d="${Time14}"/>  
+                 <s d="${Time13}"/>
+                 <e d="${Time14}"/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
          </CounterAppointmentRequest>
         </t:request>
@@ -452,7 +452,7 @@
              <t:select path="//mail:CounterAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
    <t:test>
@@ -466,23 +466,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <DeclineCounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>Proposal Declined:: ${appointment.subject}</su>
             <mp ct="text/plain">
                <content>No, let's stick to the original plan.</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="-11111"/>  
-                 <e d="-22222"/>  
+                 <s d="-11111"/>
+                 <e d="-22222"/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
         </DeclineCounterAppointmentRequest>
       </t:request>
@@ -490,11 +490,11 @@
            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
       </t:response>
    </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="DeclineCounterAppointmentRequest_04" type="bhr">
-    <t:objective>Smoke test for DeclineCounterAppointmentRequest with blank time -d="${Time13}      "</t:objective>	
+<t:test_case testcaseid="DeclineCounterAppointmentRequest_04" type="sanity">
+    <t:objective>Smoke test for DeclineCounterAppointmentRequest with blank time -d="${Time13}      "</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -509,15 +509,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time12}"/>  
-                        <e d="${Time13}"/>  
+                        <s d="${Time12}"/>
+                        <e d="${Time13}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -532,7 +532,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="calItemId" set="calItemId1"/>
         </t:response>
     </t:test>
-    
+
    <t:test required="true">
       <t:request>
         <GetAppointmentRequest xmlns="urn:zimbraMail" id="${calItemId1}"/>
@@ -558,23 +558,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <CounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>New Time Proposed: ${appointment.subject}</su>
             <mp ct="text/plain">
               <content>Let's meet some other time.  uid=${calItemUid1}, seq=${calItemSeq1}</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="${Time13}"/>  
-                 <e d="${Time14}"/>  
+                 <s d="${Time13}"/>
+                 <e d="${Time14}"/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
          </CounterAppointmentRequest>
         </t:request>
@@ -582,7 +582,7 @@
             <t:select path="//mail:CounterAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
    <t:test>
@@ -596,23 +596,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <DeclineCounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>Proposal Declined:: ${appointment.subject}</su>
             <mp ct="text/plain">
                <content>No, let's stick to the original plan.</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="${Time13}      "/>  
-                 <e d="${Time14}      "/>  
+                 <s d="${Time13}      "/>
+                 <e d="${Time14}      "/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
         </DeclineCounterAppointmentRequest>
       </t:request>
@@ -620,11 +620,11 @@
            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
       </t:response>
    </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="DeclineCounterAppointmentRequest_05" type="bhr">
-    <t:objective>smoke test for DeclineCounterAppointmentRequest with blank time - d="  ${Time13}"</t:objective>	
+<t:test_case testcaseid="DeclineCounterAppointmentRequest_05" type="sanity">
+    <t:objective>smoke test for DeclineCounterAppointmentRequest with blank time - d="  ${Time13}"</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -639,15 +639,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time12}"/>  
-                        <e d="${Time13}"/>  
+                        <s d="${Time12}"/>
+                        <e d="${Time13}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -662,7 +662,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="calItemId" set="calItemId1"/>
         </t:response>
     </t:test>
-    
+
    <t:test required="true">
       <t:request>
         <GetAppointmentRequest xmlns="urn:zimbraMail" id="${calItemId1}"/>
@@ -688,23 +688,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <CounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>New Time Proposed: ${appointment.subject}</su>
             <mp ct="text/plain">
               <content>Let's meet some other time.  uid=${calItemUid1}, seq=${calItemSeq1}</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="${Time13}"/>  
-                 <e d="${Time14}"/>  
+                 <s d="${Time13}"/>
+                 <e d="${Time14}"/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
          </CounterAppointmentRequest>
         </t:request>
@@ -712,7 +712,7 @@
             <t:select path="//mail:CounterAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
    <t:test>
@@ -726,23 +726,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <DeclineCounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>Proposal Declined:: ${appointment.subject}</su>
             <mp ct="text/plain">
                <content>No, let's stick to the original plan.</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="    ${Time13}"/>  
-                 <e d="    ${Time14}"/>  
+                 <s d="    ${Time13}"/>
+                 <e d="    ${Time14}"/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
         </DeclineCounterAppointmentRequest>
       </t:request>
@@ -750,11 +750,11 @@
            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
       </t:response>
    </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="DeclineCounterAppointmentRequest_06" type="bhr">
-    <t:objective>smoke test for DeclineCounterAppointmentRequest with blank time - s d="  ${Time13}  "</t:objective>	
+<t:test_case testcaseid="DeclineCounterAppointmentRequest_06" type="sanity">
+    <t:objective>smoke test for DeclineCounterAppointmentRequest with blank time - s d="  ${Time13}  "</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -769,15 +769,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time12}"/>  
-                        <e d="${Time13}"/>  
+                        <s d="${Time12}"/>
+                        <e d="${Time13}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -792,7 +792,7 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="calItemId" set="calItemId1"/>
         </t:response>
     </t:test>
-    
+
    <t:test required="true">
       <t:request>
         <GetAppointmentRequest xmlns="urn:zimbraMail" id="${calItemId1}"/>
@@ -818,23 +818,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <CounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>New Time Proposed: ${appointment.subject}</su>
             <mp ct="text/plain">
               <content>Let's meet some other time.  uid=${calItemUid1}, seq=${calItemSeq1}</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="${Time13}"/>  
-                 <e d="${Time14}"/>  
+                 <s d="${Time13}"/>
+                 <e d="${Time14}"/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
          </CounterAppointmentRequest>
         </t:request>
@@ -842,7 +842,7 @@
             <t:select path="//mail:CounterAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
    <t:test>
@@ -856,23 +856,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
       <t:request>
         <DeclineCounterAppointmentRequest xmlns="urn:zimbraMail">
           <m>
-            <e a="${test_account2.name}" t="t"/>          
+            <e a="${test_account2.name}" t="t"/>
             <su>Proposal Declined:: ${appointment.subject}</su>
             <mp ct="text/plain">
                <content>No, let's stick to the original plan.</content>
             </mp>
             <inv>
               <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
-                 <s d="    ${Time13}   "/>  
-                 <e d="    ${Time14}   "/>  
+                 <s d="    ${Time13}   "/>
+                 <e d="    ${Time14}   "/>
                 <or a="${test_account1.name}"/>
               </comp>
-        	</inv>           
+        	</inv>
           </m>
         </DeclineCounterAppointmentRequest>
       </t:request>
@@ -880,7 +880,7 @@
            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
       </t:response>
    </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

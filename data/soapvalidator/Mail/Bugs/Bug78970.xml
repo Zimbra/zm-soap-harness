@@ -28,9 +28,9 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
- 
+
 
 <t:test_case testcaseid = "acctSetup1" type="always">
     <t:objective>Create test Distribution List </t:objective>
@@ -49,7 +49,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	   <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -75,7 +75,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
         <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -88,7 +88,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -112,7 +112,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
       <t:test id="addDistributionListMemberRequest2">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -124,34 +124,34 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
   	<t:test>
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
 				<target type="dl" by="name">${list1.name}</target>
 				<grantee type="usr" by="name">${account3.name}</grantee>
 				<right>sendToDistList</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
-	
+
   	<t:test>
 		<t:request>
 			<FlushCacheRequest  xmlns='urn:zimbraAdmin'>
 				<cache type='galgroup'/>
-			</FlushCacheRequest>    
+			</FlushCacheRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:FlushCacheResponse"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="bug78970" type="bhr" bugids="78970">
+<t:test_case testcaseid="bug78970" type="sanity" bugids="78970">
     <t:objective>DL not expanded consistently in GetMsgRequest</t:objective>
     <t:steps>
 		1. Create new DL.  Add two new accounts as members
@@ -159,7 +159,7 @@
 		3. Log in as User2
 		4. Send GetMsgRequest verify exp attribute
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -174,7 +174,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
@@ -208,7 +208,7 @@
 
         </t:response>
     </t:test>
-    
+
     	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -219,7 +219,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
 		</t:response>
 	</t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -228,12 +228,12 @@
         </t:request>
         <t:response>
          <t:select path = "//mail:GetMsgResponse/mail:m/mail:e[@a='${list1.name}']" attr="isGroup" match="1"/>
-			<t:select path = "//mail:GetMsgResponse/mail:m/mail:e[@a='${list1.name}']" attr="exp" match="1"/>             
+			<t:select path = "//mail:GetMsgResponse/mail:m/mail:e[@a='${list1.name}']" attr="exp" match="1"/>
         </t:response>
     </t:test>
-    
-    
-	
+
+
+
 </t:test_case>
 
 

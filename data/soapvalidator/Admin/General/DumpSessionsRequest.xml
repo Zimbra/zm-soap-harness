@@ -17,7 +17,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="DumpSessionsRequest01" type="bhr">
+<t:test_case testcaseid="DumpSessionsRequest01" type="sanity">
     <t:objective>Login into Admin and check the Dump Sessions Request</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -52,19 +52,19 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>    
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DumpSessionsRequest02" type="bhr">
+<t:test_case testcaseid="DumpSessionsRequest02" type="sanity">
     <t:objective>Login into account and check the Dump Sessions Request</t:objective>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>

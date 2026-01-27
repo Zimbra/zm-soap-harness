@@ -42,7 +42,7 @@
     <t:steps> 1. Login to Admin
               2. Create test accounts
     </t:steps>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -65,7 +65,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
     <t:test required="true">
@@ -78,8 +78,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
-        </t:response>        
-    </t:test>     
+        </t:response>
+    </t:test>
 
 </t:test_case>
 
@@ -87,7 +87,7 @@
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 <t:test_case testcaseid="acctSetup2_searchFetch" type="always">
     <t:objective>Setup the accounts for test purpose </t:objective>
-    <t:steps>1. Login to account2 
+    <t:steps>1. Login to account2
              2. Send a mail to account1
              3. Login to account 1 for test purpose
     </t:steps>
@@ -203,23 +203,23 @@
 	<t:test>
         <t:request>
             <ReIndexRequest xmlns="urn:zimbraAdmin" action="start">
-               <mbox id="${test_account1.id}"/>   
+               <mbox id="${test_account1.id}"/>
             </ReIndexRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ReIndexResponse" attr="status" match="started"/>
         </t:response>
     </t:test>
-	
+
 	<t:for start="1" end="60" break="response">
-	
+
 		<t:delay msec="1000"/>
-	
+
 		<t:test >
 			<t:request>
 				<ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
 				  <mbox id="${test_account1.id}"/>
-				</ReIndexRequest>  
+				</ReIndexRequest>
 			</t:request>
 			<t:response>
 			    <t:select path="//admin:ReIndexResponse" attr="status" match="idle" query="response"/>
@@ -231,23 +231,23 @@
 	<t:test>
         <t:request>
             <ReIndexRequest xmlns="urn:zimbraAdmin" action="start">
-               <mbox id="${test_account2.id}"/>   
+               <mbox id="${test_account2.id}"/>
             </ReIndexRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ReIndexResponse" attr="status" match="started"/>
         </t:response>
     </t:test>
-	
+
 	<t:for start="1" end="60" break="response">
-	
+
 		<t:delay msec="1000"/>
-	
+
 		<t:test >
 			<t:request>
 				<ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
 				  <mbox id="${test_account2.id}"/>
-				</ReIndexRequest>  
+				</ReIndexRequest>
 			</t:request>
 			<t:response>
 						    <t:select path="//admin:ReIndexResponse" attr="status" match="idle" query="response"/>
@@ -274,7 +274,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="search_fetch01" type="bhr">
+<t:test_case testcaseid="search_fetch01" type="sanity">
     <t:objective>Verify fetch attribute of search for fetch="1" along with type="message,appointment".</t:objective>
     <t:test>
         <t:request>
@@ -285,16 +285,16 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account2.name}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
-            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${msg_content}"/>            
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${msg_content}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_fetch02" type="bhr">
+<t:test_case testcaseid="search_fetch02" type="sanity">
     <t:objective>Verify fetch attribute of search for fetch="0".</t:objective>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="0">
@@ -304,15 +304,15 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account2.name}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
-            <t:select path="//mail:SearchResponse/mail:m/mail:mp" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:mp" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="search_fetch03" type="bhr">
+<t:test_case testcaseid="search_fetch03" type="sanity">
     <t:objective>Verify fetch attribute of search for fetch="all"</t:objective>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="all">
@@ -321,19 +321,19 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse">
-            	<t:select path="//mail:content" match="(?s)${conversation1.message1.content}.*"/>            
-            	<t:select path="//mail:content" match="(?s)${conversation1.message2.content}.*"/>            
-            	<t:select path="//mail:content" match="(?s)${conversation1.message3.content}.*"/>            
+            	<t:select path="//mail:content" match="(?s)${conversation1.message1.content}.*"/>
+            	<t:select path="//mail:content" match="(?s)${conversation1.message2.content}.*"/>
+            	<t:select path="//mail:content" match="(?s)${conversation1.message3.content}.*"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_fetch04" type="functional" bugids="27139">
+<t:test_case testcaseid="search_fetch04" type="regression" bugids="27139">
     <t:objective>Verify fetch attribute of search by putting invalid values of fetch. (blank,spchar,integers,negative,sometext,alpha,space) </t:objective>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="">
@@ -410,11 +410,11 @@
 			<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_fetch05" type="functional" bugids="27139">
+<t:test_case testcaseid="search_fetch05" type="regression" bugids="27139">
     <t:objective>Verify fetch attributes of search by putting leading space with its value=1.</t:objective>
 
     <t:test>
@@ -427,11 +427,11 @@
 			 <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_fetch06" type="functional" bugids="27139">
+<t:test_case testcaseid="search_fetch06" type="regression" bugids="27139">
     <t:objective>Verify fetch attributes of search by putting trailing space with its value=1.</t:objective>
 
     <t:test>
@@ -444,11 +444,11 @@
 			 <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_fetch07" type="functional">
+<t:test_case testcaseid="search_fetch07" type="regression">
     <t:objective>Verify fetch attributes of search by putting decimal value.</t:objective>
 
     <t:test>
@@ -461,7 +461,7 @@
 			<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

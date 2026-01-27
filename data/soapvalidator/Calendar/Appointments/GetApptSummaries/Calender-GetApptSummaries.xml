@@ -20,7 +20,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -34,9 +34,9 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create a test account</t:objective>
-    <steps> 
+    <steps>
         1. Login to admin account
-        2. Create a test_account1     
+        2. Create a test_account1
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -56,8 +56,8 @@
                 <name>${test_account1.name}</name>
                 <password>${test_account1.password}</password>
                 <!--
-				 <a n="zimbraMailHost">${LOCALHOST}</a> 
-                 <a n="zimbraMailStatus">enabled</a>               
+				 <a n="zimbraMailHost">${LOCALHOST}</a>
+                 <a n="zimbraMailStatus">enabled</a>
                 <a n="zimbraPasswordMinAge">7</a>
                 Commenting out the optional attributes and sending the request with minimal requirement
                  -->
@@ -67,7 +67,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
@@ -75,7 +75,7 @@
 
 <t:test_case testcaseid="acct_setup2" type="always" >
     <t:objective>login to the test account</t:objective>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -106,7 +106,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries2" type="functional" >
+<t:test_case testcaseid="GetApptSummaries2" type="regression" >
     <t:objective>Get appointment details with blank in s attribute and valid e attribute</t:objective>
 
     <t:test id="GetApptSummaries2">
@@ -123,7 +123,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries3" type="functional" >
+<t:test_case testcaseid="GetApptSummaries3" type="regression" >
     <t:objective>Get appointment details with spaces in s attribute and valid e attribute</t:objective>
 
     <t:test id="GetApptSummaries3">
@@ -140,7 +140,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries4" type="functional" >
+<t:test_case testcaseid="GetApptSummaries4" type="regression" >
     <t:objective>Get appointment details with some text in s attribute and valid e attribute</t:objective>
 
     <t:test id="GetApptSummaries4">
@@ -157,7 +157,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries5" type="functional" >
+<t:test_case testcaseid="GetApptSummaries5" type="regression" >
     <t:objective>Get appointment details with special characters in s attribute and valid e attribute</t:objective>
 
     <t:test id="GetApptSummaries5">
@@ -174,7 +174,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries6" type="functional" >
+<t:test_case testcaseid="GetApptSummaries6" type="regression" >
     <t:objective>Get appointment details with valid value in s attribute and blank in e attribute</t:objective>
 
     <t:test id="GetApptSummaries6">
@@ -191,7 +191,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries7" type="functional" >
+<t:test_case testcaseid="GetApptSummaries7" type="regression" >
     <t:objective>Get appointment details with valid value in s attribute and spaces in e attribute</t:objective>
 
     <t:test id="GetApptSummaries7">
@@ -208,7 +208,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries8" type="functional" >
+<t:test_case testcaseid="GetApptSummaries8" type="regression" >
     <t:objective>Get appointment details with valid value in s attribute and sometext in e attribute</t:objective>
 
     <t:test id="GetApptSummaries8">
@@ -225,7 +225,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries9" type="functional" >
+<t:test_case testcaseid="GetApptSummaries9" type="regression" >
     <t:objective>Get appointment details with valid value in s attribute and special characters in e attribute</t:objective>
 
     <t:test id="GetApptSummaries9">
@@ -242,7 +242,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries10" type="functional" >
+<t:test_case testcaseid="GetApptSummaries10" type="regression" >
     <t:objective>Get appointment details with valid value in s and e attribute with leading spaces</t:objective>
 
     <t:test id="GetApptSummaries10">
@@ -253,14 +253,14 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
             <!--  6/07/2005 : vinay - getting service.INVALID_REQUEST instead of account.INVALID_ATTR_VALUE for build 20050606144723
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> -->
-            
+
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries11" type="functional" >
+<t:test_case testcaseid="GetApptSummaries11" type="regression" >
     <t:objective>Get appointment details with valid value in s and e attribute with trailing spaces</t:objective>
 
     <t:test id="GetApptSummaries11">
@@ -277,7 +277,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries12" type="functional" >
+<t:test_case testcaseid="GetApptSummaries12" type="regression" >
     <t:objective>Get appointment details with valid value in s and without e attribute</t:objective>
 
     <t:test id="GetApptSummaries12">
@@ -292,7 +292,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetApptSummaries13" type="functional" >
+<t:test_case testcaseid="GetApptSummaries13" type="regression" >
     <t:objective>Get appointment details with valid value in e and without s attribute</t:objective>
 
     <t:test id="GetApptSummaries13">

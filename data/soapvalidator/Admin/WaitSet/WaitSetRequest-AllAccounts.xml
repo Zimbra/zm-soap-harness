@@ -26,14 +26,14 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 
 
 
-<t:test_case testcaseid="CreateWaitSetRequest_AllAccounts_01" type="sanity" bugids="16519">
+<t:test_case testcaseid="CreateWaitSetRequest_AllAccounts_01" type="functional" bugids="16519">
     <t:objective>WaitSetRequest with allaccounts attribute (blocking)</t:objective>
     <t:steps>
     1. Login to admin
@@ -41,7 +41,7 @@
     3. Inject a message into the mailbox
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:property name="server.zimbraMail" value="${zimbraServer.name}"/>
 
@@ -56,7 +56,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -69,7 +69,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="${interest.all}" allaccounts="1">
@@ -94,7 +94,7 @@
     </t:test>
 
 	<t:delay sec="100"/>
-	
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt"/>
 
     <t:mailinjecttest >
@@ -109,9 +109,9 @@
     <!-- The WaitSetRequest will return here, once the LMTP message is received -->
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CreateWaitSetRequest_AllAccounts_02" type="sanity">
+<t:test_case testcaseid="CreateWaitSetRequest_AllAccounts_02" type="functional">
     <t:objective>WaitSetRequest with allaccounts attribute with a new account (non-blocking)</t:objective>
     <t:steps>
     1. Login to admin
@@ -120,7 +120,7 @@
     4. Inject a message into the mailbox
     5. using the account ID from step 2, find the account and make sure the correct account was returned
     </t:steps>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:property name="server.zimbraMail" value="${zimbraServer.name}"/>
 
@@ -135,7 +135,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="${interest.all}" allaccounts="1">
@@ -164,7 +164,7 @@
     </t:test>
 
 	<t:delay sec="10"/>
-	
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -177,7 +177,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt"/>
 
     <t:mailinjecttest >
@@ -190,7 +190,7 @@
     </t:mailinjecttest>
 
     <!-- The WaitSetRequest will return here, once the LMTP message is received -->
-    
+
     <!-- Just to make sure, wait for a few seconds for the other threads to finish -->
 	<t:delay sec="40"/>
 
@@ -206,7 +206,7 @@
 		</t:response>
 	</t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
 </t:tests>

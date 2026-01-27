@@ -5,7 +5,7 @@
 <t:property name="message1.file" value="${testMailRaw.root}/bugs/30433/msg01.txt"/>
 <t:property name="message2.file" value="${testMailRaw.root}/bugs/30433/msg02.txt"/>
 
-    
+
 <t:property name="subject.msg" value="繁體測試" />
 <t:property name="subject2.msg" value="Make Your Job Easier" />
 
@@ -55,10 +55,10 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="CharEncSubjectBug_gbk" type="bhr">
+<t:test_case testcaseid="CharEncSubjectBug_gbk" type="sanity">
      <t:objective>Checking if i am getting a response to the injected message </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -74,7 +74,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
- 
+
  	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message1.file}</filename>
@@ -83,7 +83,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-      
+
     <t:test id="filters_basic01">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -93,24 +93,24 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id" />
         </t:response>
-    </t:test> 
-      
+    </t:test>
+
     <t:test>
     	<t:request>
     	 	<GetMsgRequest xmlns="urn:zimbraMail">
                 <m id="${message.id}"/>
             </GetMsgRequest>
     	</t:request>
-    	<t:response>    		
-    		<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id}']">    		
+    	<t:response>
+    		<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id}']">
     			<t:select path="//mail:su" match="${subject.msg}"/>
     		</t:select>
-    	</t:response>    
-    </t:test>        
-          
+    	</t:response>
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="CharEncBug_cp1252" type="bhr">
+<t:test_case testcaseid="CharEncBug_cp1252" type="sanity">
      <t:objective>Checking if i am getting a response to the injected message </t:objective>
 
 	 <t:test required="true">
@@ -124,7 +124,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message2.file}</filename>
@@ -133,7 +133,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-      
+
     <t:test id="filters_basic02">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -145,9 +145,9 @@
             	<t:select attr="fr" match="(?s).*We're sure you'll agree that it's.*"/>
             </t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
-	     
+
   <!--  <t:test>
     	<t:request>
     	 	<GetMsgRequest xmlns="urn:zimbraMail">
@@ -155,15 +155,15 @@
             </GetMsgRequest>
     	</t:request>
     	<t:response>
-    		<t:select path="//mail:GetMsgResponse/mail:m[@id='${message2.id}']">    			
+    		<t:select path="//mail:GetMsgResponse/mail:m[@id='${message2.id}']">
     			<t:select path="//mail:mp[@part='1']">
-    				<t:select path="//mail:content" match="(?s).*We’re sure you’ll agree that it’s.*"/>    			
+    				<t:select path="//mail:content" match="(?s).*We’re sure you’ll agree that it’s.*"/>
     			</t:select>
-    		</t:select>	
-    	</t:response>    
-    </t:test> -->            
+    		</t:select>
+    	</t:response>
+    </t:test> -->
 
  </t:test_case>
- 
+
 </t:tests>
 

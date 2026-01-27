@@ -12,7 +12,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -42,7 +42,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,7 +71,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -86,20 +86,20 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="436735" type="bhr" areas="Calendar">
+<t:test_case testcaseid="436735" type="sanity" areas="Calendar">
     <t:objective> Create Private calendar - Default.</t:objective>
 
 
 	<t:property name="time.20251201120000.gmt" value="1764590400000"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" class="PRI" >
-	                        <s d="${ICALTIME[${time.20251201120000.gmt}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20251201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20251201120000.gmt}]}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20251201120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -136,7 +136,7 @@
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appointment1.id}']"/>
             </t:select>

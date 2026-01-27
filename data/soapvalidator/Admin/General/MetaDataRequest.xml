@@ -11,9 +11,9 @@
 <t:property name="message.content" value="content${TIME}.${COUNTER}"/>
 <t:property name="message.subject" value="subject${TIME}.${COUNTER}"/>
 
-<t:test_case testcaseid="SetCustomMetadata_01" type="bhr" >
+<t:test_case testcaseid="SetCustomMetadata_01" type="sanity" >
     <t:objective>Sanity test for SetCustomMetadataRequest </t:objective>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -25,7 +25,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -50,19 +50,19 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="1">
-                    <content>From: foo@foo.com 
-						To: foo@foo.com 
+                    <content>From: foo@foo.com
+						To: foo@foo.com
 						Subject: email01A
-						MIME-Version: 1.0 
-						Content-Type: text/plain; charset=utf-8 
+						MIME-Version: 1.0
+						Content-Type: text/plain; charset=utf-8
 						Content-Transfer-Encoding: 7bit
-						
+
 						simple text string in the body
 					</content>
                 </m>
@@ -71,7 +71,7 @@
         <t:response>
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="metadata.section.key" value="zwc:${TIME}${COUNTER}"/>
 	<t:property name="meta.key" value="key${TIME}${COUNTER}"/>
@@ -82,20 +82,20 @@
 				<meta section="${metadata.section.key}">
 					<a n="${meta.key}">${meta.value}</a>
 				</meta>
-			</SetCustomMetadataRequest>   
+			</SetCustomMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SetCustomMetadataResponse">
 			</t:select>
 		</t:response>
 	</t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetCustomMetadataRequest_01" type="bhr" >
+<t:test_case testcaseid="GetCustomMetadataRequest_01" type="sanity" >
     <t:objective>Sanity test for GetCustomMetadataRequest </t:objective>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -107,7 +107,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -133,19 +133,19 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="1">
-                    <content>From: foo@foo.com 
-						To: foo@foo.com 
+                    <content>From: foo@foo.com
+						To: foo@foo.com
 						Subject: email01A
-						MIME-Version: 1.0 
-						Content-Type: text/plain; charset=utf-8 
+						MIME-Version: 1.0
+						Content-Type: text/plain; charset=utf-8
 						Content-Transfer-Encoding: 7bit
-						
+
 						simple text string in the body
 					</content>
                 </m>
@@ -165,14 +165,14 @@
 				<meta section="${metadata.section.key}">
 					<a n="${meta.key}">${meta.value}</a>
 				</meta>
-			</SetCustomMetadataRequest>   
+			</SetCustomMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SetCustomMetadataResponse">
 			</t:select>
 		</t:response>
 	</t:test>
-  
+
 	<t:test>
 		<t:request>
 			<GetCustomMetadataRequest id="${message2.id}"  xmlns="urn:zimbraMail">
@@ -186,14 +186,14 @@
             	</t:select>
             </t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="SetMailboxMetadataRequest_01" type="bhr" >
+<t:test_case testcaseid="SetMailboxMetadataRequest_01" type="sanity" >
     <t:objective>Sanity test for SetMailboxMetadataRequest</t:objective>
-   
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -205,7 +205,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -242,19 +242,19 @@
 				<meta section="${metadata.section.key}">
 					<a n="${meta.key}">${meta.value}</a>
 				</meta>
-			</SetMailboxMetadataRequest>   
+			</SetMailboxMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SetMailboxMetadataResponse"/>
 		</t:response>
-	</t:test>  
-	
+	</t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetMailboxMetadataRequest_01" type="bhr" >
+<t:test_case testcaseid="GetMailboxMetadataRequest_01" type="sanity" >
     <t:objective>Sanity test for GetMailboxMetadataRequest</t:objective>
-   
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -266,7 +266,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -300,13 +300,13 @@
 				<meta section="${metadata.section.key}">
 					<a n="${meta.key}">${meta.value}</a>
 				</meta>
-			</SetMailboxMetadataRequest>   
+			</SetMailboxMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SetMailboxMetadataResponse"/>
 		</t:response>
 	</t:test>
-  
+
 	<t:test>
 		<t:request>
 			<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
@@ -321,13 +321,13 @@
             </t:select>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyMailboxMetadataRequest_01" type="bhr" >
+<t:test_case testcaseid="ModifyMailboxMetadataRequest_01" type="sanity" >
     <t:objective>Sanity test for ModifyMailboxMetadataRequest</t:objective>
-   
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -339,7 +339,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -376,29 +376,29 @@
 				<meta section="${metadata.section.key}">
 					<a n="${meta.key}">${meta.value}</a>
 				</meta>
-			</SetMailboxMetadataRequest>   
+			</SetMailboxMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SetMailboxMetadataResponse"/>
 		</t:response>
 	</t:test>
-  
+
 	 <t:property name="modified.section.key" value="zwc:${TIME}${COUNTER}"/>
 	 <t:property name="modified.key" value="key${TIME}${COUNTER}"/>
 	 <t:property name="modified.value" value="value${TIME}${COUNTER}"/>
-	 
+
 	<t:test>
 		<t:request>
 			<ModifyMailboxMetadataRequest xmlns="urn:zimbraMail">
 				<meta section="${metadata.section.key}">
 					<a n="${modified.key}">${modified.value}</a>
 				</meta>
-			</ModifyMailboxMetadataRequest>   
+			</ModifyMailboxMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:ModifyMailboxMetadataResponse"/>
 		</t:response>
-	</t:test>	
+	</t:test>
 
 </t:test_case>
 

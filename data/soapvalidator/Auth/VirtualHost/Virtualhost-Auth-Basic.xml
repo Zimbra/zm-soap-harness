@@ -145,7 +145,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="VirtualHost_AuthBasic_02" type="bhr">
+<t:test_case testcaseid="VirtualHost_AuthBasic_02" type="sanity">
  <t:objective>login as the test account using only the name part of the email address</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -247,7 +247,7 @@
 <t:finally>
 
     <!-- Remove virtual host from all domains because if it could not resolved then nginx proxy failed to restart -->
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -259,7 +259,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
    	<t:test >
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -270,8 +270,8 @@
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
         </t:response>
-    </t:test>    
-        
+    </t:test>
+
    	<t:test >
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -282,7 +282,7 @@
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:finally>
 

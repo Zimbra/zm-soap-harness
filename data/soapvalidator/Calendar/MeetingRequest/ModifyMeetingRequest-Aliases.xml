@@ -26,7 +26,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -43,7 +43,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -56,7 +56,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -93,7 +93,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
@@ -113,9 +113,9 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
-    
-   
+
+
+
 	<t:property name="appointment.subject" value="Subject${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content${TIME}.${COUNTER}"/>
@@ -197,7 +197,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -216,7 +216,7 @@
 				<query>subject:(${appointment.subject}) is:anywhere</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt" attr="invId" set="account2.appointment.invId"/>
             </t:select>
@@ -238,9 +238,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyAppointmentRequest_Aliases_02" type="bhr" areas="Calendar" bugids="39966">
+<t:test_case testcaseid="ModifyAppointmentRequest_Aliases_02" type="sanity" areas="Calendar" bugids="39966">
     <t:objective>Update a singleton event - add an alias and remove email address</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -254,9 +254,9 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
-    
-   
+
+
+
 	<t:property name="appointment.subject" value="Subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.location" value="Location${TIME}${COUNTER}"/>
 	<t:property name="appointment.content" value="Content${TIME}${COUNTER}"/>
@@ -303,7 +303,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -331,7 +331,7 @@
 				<query>inid:${folder.calendar}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt" attr="invId" set="account2.appointment.invId"/>
             </t:select>
@@ -383,14 +383,14 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
     <t:test required="true">
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20180101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20180101120000.gmt}]}" types="appointment">
 				<query>subject:(${appointment.subject}) is:anywhere</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt" attr="invId" set="account1.appointment.invId"/>
             </t:select>
@@ -446,7 +446,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -465,7 +465,7 @@
 				<query>inid:${folder.calendar}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt" attr="invId" set="account2.appointment.invId"/>
             </t:select>

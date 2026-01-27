@@ -2,14 +2,14 @@
 
 <t:property name="test_acct.server" value="NOT_DEFINED"/>
 
-<!-- READ ME : 
+<!-- READ ME :
     There are 6 folders in this account. Folder heirarchy is as follows:
     folder1's parent: USER_ROOT; folder2's parent: Inbox; folder3's parent: Trash; folder4's parent: Sent; folder5's parent: folder1; folder6's parent: Root
 
-    There are 12 mails in this account. The folders they will be residing are as follows: 
-    mail1 -> Inbox         mail2 -> Inbox/folder2       mail3 -> Trash/folder3  
-    mail4 -> Sent/folder4  mail5 -> folder1/folder5     mail6 -> Trash  
-    mail7 -> Spam          mail8 -> folder6             mail9 -> Sent 
+    There are 12 mails in this account. The folders they will be residing are as follows:
+    mail1 -> Inbox         mail2 -> Inbox/folder2       mail3 -> Trash/folder3
+    mail4 -> Sent/folder4  mail5 -> folder1/folder5     mail6 -> Trash
+    mail7 -> Spam          mail8 -> folder6             mail9 -> Sent
     mail10 -> folder1      mail11 -> Inbox              mail12 -> Trash
 -->
 
@@ -46,11 +46,11 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -60,7 +60,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -84,7 +84,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account13.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
@@ -94,16 +94,16 @@
 		    <server>${test_acct.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
     <t:objective> Create setup for the Search Request </t:objective>
     <t:steps>1. Login to the account.
              2. Search mails to get the message-ids
-             3. Create 6 folders 
-             4. Get the ids of various folders 
+             3. Create 6 folders
+             4. Get the ids of various folders
              5. Move some folder within other
              6. Move the mails to different folders.
     </t:steps>
@@ -121,7 +121,7 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test id="searchRequest1">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -146,7 +146,7 @@
             <t:select path="//mail:SearchResponse/mail:m">
             <t:select attr="su" match="^${mail2.subject}$"/>
             <t:select attr="id" set="message.id2"/>
-            </t:select>            
+            </t:select>
         </t:response>
     </t:test>
 
@@ -159,8 +159,8 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m">
             <t:select attr="su" match="^${mail3.subject}$"/>
-            <t:select attr="id" set="message.id3"/>  
-         </t:select>          
+            <t:select attr="id" set="message.id3"/>
+         </t:select>
         </t:response>
     </t:test>
 
@@ -174,7 +174,7 @@
             <t:select path="//mail:SearchResponse/mail:m">
             <t:select attr="su" match="^${mail4.subject}$"/>
             <t:select attr="id" set="message.id4"/>
-        </t:select>            
+        </t:select>
         </t:response>
     </t:test>
 
@@ -261,7 +261,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest11">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -300,10 +300,10 @@
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
             <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest1" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -314,7 +314,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest2" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -333,10 +333,10 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest4" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -344,10 +344,10 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest5" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -355,10 +355,10 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest6" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -366,7 +366,7 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder6.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder6.id"/>
         </t:response>
     </t:test>
 
@@ -380,8 +380,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test id="msgActionRequest2" depends="searchRequest2,getFolderRequest">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -404,7 +404,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest4" depends="searchRequest4,getFolderRequest">
         <t:request>
@@ -416,7 +416,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id4}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest5" depends="searchRequest5,getFolderRequest">
         <t:request>
@@ -428,7 +428,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id5}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest6" depends="searchRequest6,getFolderRequest">
         <t:request>
@@ -440,7 +440,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id6}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest7" depends="searchRequest7,getFolderRequest">
         <t:request>
@@ -452,7 +452,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id7}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest8" depends="searchRequest8,getFolderRequest">
         <t:request>
@@ -464,7 +464,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id8}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest9" depends="searchRequest9,getFolderRequest">
         <t:request>
@@ -476,8 +476,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id9}"/>
         </t:response>
-    </t:test> 
- 
+    </t:test>
+
     <t:test id="msgActionRequest10" depends="searchRequest10,getFolderRequest">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -488,7 +488,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id10}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest11" depends="searchRequest11,getFolderRequest">
         <t:request>
@@ -500,7 +500,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id11}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest12" depends="searchRequest12,getFolderRequest">
         <t:request>
@@ -512,14 +512,14 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id12}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="combo_from_folders_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_from_folders_SearchRequest1" type="functional" >
     <t:objective> Verify the results are correct for query using cc: and all folders </t:objective>
-                  
+
     <!-- From: and Inbox: -->
     <t:test>
         <t:request>
@@ -542,7 +542,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- From: and Drafts: -->
     <t:test>
         <t:request>
@@ -762,9 +762,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_to_folders_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_to_folders_SearchRequest1" type="functional" >
     <t:objective>  Verify the results are correct for query using to: and all folders </t:objective>
-                  
+
     <!-- TO: and Inbox: -->
     <t:test>
         <t:request>
@@ -787,7 +787,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- TO:  and DRAFTS: -->
     <t:test>
         <t:request>
@@ -985,9 +985,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_cc_folders_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_cc_folders_SearchRequest1" type="functional" >
     <t:objective>  Verify the results are correct for query using cc: and all folders  </t:objective>
-                  
+
     <!-- Cc: and Inbox: -->
     <t:test>
         <t:request>
@@ -999,7 +999,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Cc: and DRAFTS: -->
     <t:test>
         <t:request>
@@ -1129,9 +1129,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="combo_subject_folders_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_subject_folders_SearchRequest1" type="functional" >
     <t:objective>  Verify the results are correct for query using subject: and all folders </t:objective>
-                  
+
     <!-- SUBJECT: and Inbox: -->
     <t:test>
         <t:request>
@@ -1154,7 +1154,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
-  
+
     <!-- SUBJECT: and DRAFTS: -->
     <t:test>
         <t:request>
@@ -1375,9 +1375,9 @@
 
 <t:property name="content.text" value="simple text in body"/>
 
-<t:test_case testcaseid="combo_content_folders_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_content_folders_SearchRequest1" type="functional" >
     <t:objective>  Verify the results are correct for query using content: and all folders  </t:objective>
-                  
+
     <!-- CONTENT: and Inbox:   -->
     <t:test>
         <t:request>
@@ -1389,7 +1389,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" />
         </t:response>
     </t:test>
-    
+
     <!-- CONTENT: and DRAFTS:   -->
     <t:test>
         <t:request>
@@ -1520,9 +1520,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_from_folders_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_from_folders_SearchRequest2" type="functional" >
     <t:objective> Verify the results are correct for query using from: OR any folders </t:objective>
-                  
+
     <!-- From: OR Inbox: -->
     <t:test>
         <t:request>
@@ -1545,7 +1545,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- From: OR  DRAFTS: -->
     <t:test>
         <t:request>
@@ -1798,9 +1798,9 @@
 
 
 
-<t:test_case testcaseid="combo_to_folders_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_to_folders_SearchRequest2" type="functional" >
     <t:objective> Verify the results are correct for query using to: OR any folders </t:objective>
-                  
+
     <!-- TO: OR Inbox: -->
     <t:test>
         <t:request>
@@ -1823,7 +1823,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']"  emptyset="1" />
         </t:response>
     </t:test>
-    
+
     <!-- TO: OR  DRAFTS: -->
     <t:test>
         <t:request>
@@ -2075,9 +2075,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_cc_folders_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_cc_folders_SearchRequest2" type="functional" >
     <t:objective> Verify the results are correct for query using cc: OR any folders </t:objective>
-                  
+
     <!-- CC: OR Inbox: -->
     <t:test>
         <t:request>
@@ -2100,7 +2100,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1" />
         </t:response>
     </t:test>
-    
+
     <!-- CC: OR  DRAFTS: -->
     <t:test>
         <t:request>
@@ -2212,7 +2212,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
       </t:response>
     </t:test>
 
@@ -2235,7 +2235,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2257,7 +2257,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2279,7 +2279,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2301,7 +2301,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2323,7 +2323,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2345,16 +2345,16 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_subject_folders_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_subject_folders_SearchRequest2" type="functional" >
     <t:objective>  Verify the results are correct for query using subject: OR all folders </t:objective>
-                  
+
     <!-- SUBJECT: OR Inbox: -->
     <t:test>
         <t:request>
@@ -2374,10 +2374,10 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" />
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
-  
+
     <!-- SUBJECT: OR DRAFTS: -->
     <t:test>
         <t:request>
@@ -2397,7 +2397,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2420,7 +2420,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" />
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2443,7 +2443,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']"/>
         </t:response>
     </t:test>
 
@@ -2466,7 +2466,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2489,7 +2489,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2512,7 +2512,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" />
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2534,7 +2534,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2556,7 +2556,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2578,7 +2578,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2600,7 +2600,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2622,16 +2622,16 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_content_folders_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_content_folders_SearchRequest2" type="functional" >
     <t:objective>  Verify the results are correct for query using content: OR all folders  </t:objective>
-                  
+
     <!-- CONTENT: OR Inbox:   -->
     <t:test>
         <t:request>
@@ -2651,10 +2651,10 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" />
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- CONTENT: OR DRAFTS:   -->
     <t:test>
         <t:request>
@@ -2674,7 +2674,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2697,7 +2697,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" />
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2720,7 +2720,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']"/>
         </t:response>
     </t:test>
 
@@ -2743,7 +2743,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2766,7 +2766,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2789,7 +2789,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2811,7 +2811,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2833,7 +2833,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2855,7 +2855,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2877,7 +2877,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -2899,7 +2899,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>  
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']" emptyset="1"/>
         </t:response>
     </t:test>
 

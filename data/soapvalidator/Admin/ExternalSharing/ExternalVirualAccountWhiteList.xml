@@ -67,7 +67,7 @@
 		</t:response>
 	</t:test>
 
-	
+
 
 	<t:test required="true">
 		<t:request>
@@ -82,12 +82,12 @@
 		</t:response>
 	</t:test>
 
-		
+
  </t:test_case>
 
-<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled01" type="bhr">
+<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled01" type="sanity">
     <t:objective>Verify zimbraExternalShareDomainWhitelistEnabled by default on any account that has default COS.  </t:objective>
-    
+
     	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -101,7 +101,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -112,12 +112,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -128,7 +128,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -161,7 +161,7 @@
     	<t:select path="//mail:FolderActionResponse" />
    	</t:response>
    </t:test>
-   
+
    	<!-- Clearing ACL -->
 	<t:test>
         <t:request>
@@ -175,15 +175,15 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-	
-      
+
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled02" type="bhr">
+<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled02" type="sanity">
     <t:objective>Verify zimbraExternalShareDomainWhitelistEnabled=TRUE on cos inherited by account </t:objective>
-    
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -201,7 +201,7 @@
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name xmlns="">${cos1.name}</name>
-                <a n="zimbraExternalShareDomainWhitelistEnabled">TRUE</a>       
+                <a n="zimbraExternalShareDomainWhitelistEnabled">TRUE</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -209,7 +209,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -238,7 +238,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -249,12 +249,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -278,7 +278,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -311,7 +311,7 @@
     		<t:select path="//zimbra:Code" match="service.PERM_DENIED" />
    		</t:response>
    </t:test>
-   
+
       	<!-- Clearing ACL -->
 	<t:test>
         <t:request>
@@ -325,12 +325,12 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-       
+
 </t:test_case>
 
-<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled03" type="bhr">
+<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled03" type="sanity">
     <t:objective>Verify zimbraExternalShareDomainWhitelistEnabled=TRUE on account override COS value. </t:objective>
-    
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -347,7 +347,7 @@
 	<t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos2.name}</name>        
+                <name xmlns="">${cos2.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -355,7 +355,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos2.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -384,7 +384,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -395,12 +395,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -412,7 +412,7 @@
     	</t:response>
     </t:test>
 
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -458,18 +458,18 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
-    </t:test>      
+    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled04" type="bhr">
+<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled04" type="sanity">
     <t:objective>Verify disabling zimbraExternalShareDomainWhitelistEnabled on COS take effect on existing share. </t:objective>
-	<t:steps>1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=TRUE) 
-		2. create account having the COS create 
+	<t:steps>1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=TRUE)
+		2. create account having the COS create
 		3. share with internal and external account
 		4. Modify COS (zimbraExternalShareDomainWhitelistEnabled=TRUE)
-		5.  Verify no further external share possible..  
-	</t:steps>	
-    
+		5.  Verify no further external share possible..
+	</t:steps>
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -486,7 +486,7 @@
 	<t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos3.name}</name>        
+                <name xmlns="">${cos3.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -494,7 +494,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos3.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -522,7 +522,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -533,12 +533,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -549,7 +549,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -609,7 +609,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-   
+
    <t:test >
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -617,7 +617,7 @@
                 <a n="zimbraExternalShareDomainWhitelistEnabled">TRUE</a>
             </ModifyCosRequest>
         </t:request>
-        <t:response>   
+        <t:response>
 			<select path="//admin:ModifyCosResponse" />
 		</t:response>
 	</t:test>
@@ -634,7 +634,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -645,7 +645,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -695,15 +695,15 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled05" type="bhr">
+<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled05" type="sanity">
     <t:objective>Verify disabling zimbraExternalShareDomainWhitelistEnabled on Account take effect on existing share. </t:objective>
-	<t:steps>1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=TRUE) 
-		2. create account having the COS create 
+	<t:steps>1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=TRUE)
+		2. create account having the COS create
 		3. share with internal and external account
 		4. Modify Account(zimbraExternalShareDomainWhitelistEnabled=TRUE)
-		5. Verify no further external share possible.. 
-	</t:steps>	
-    
+		5. Verify no further external share possible..
+	</t:steps>
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -720,7 +720,7 @@
 	<t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos4.name}</name>        
+                <name xmlns="">${cos4.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -728,7 +728,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos4.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -756,7 +756,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -767,12 +767,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -783,7 +783,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -816,7 +816,7 @@
     		<t:select path="//mail:FolderActionResponse" />
    		</t:response>
    </t:test>
-   
+
      	<!-- Clearing ACL -->
 	<t:test>
         <t:request>
@@ -843,7 +843,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-   
+
    <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -851,7 +851,7 @@
                 <a n="zimbraExternalShareDomainWhitelistEnabled">TRUE</a>
             </ModifyAccountRequest>
         </t:request>
-        <t:response>   
+        <t:response>
 			<select path="//admin:ModifyAccountResponse" />
 		</t:response>
 	</t:test>
@@ -868,7 +868,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -879,7 +879,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -928,17 +928,17 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled06" type="bhr">
+<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled06" type="sanity">
     <t:objective>Verify disabling zimbraExternalShareDomainWhitelistEnabled on COS take effect on existing share. </t:objective>
 	<t:steps>
-		1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=TRUE) 
+		1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=TRUE)
 		2. Add a domain to whitelist.
-		3. create account having the COS create 
+		3. create account having the COS create
 		6. Verify sharing possible to only whitelisted external domains.
 		7. Remove the domain from whitelist
 		8. verify no external sharing possible to removed domain.
-	</t:steps>	
-    
+	</t:steps>
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -966,7 +966,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos5.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -994,7 +994,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -1005,12 +1005,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1021,7 +1021,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1079,7 +1079,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-   
+
    <t:test >
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -1087,7 +1087,7 @@
                 <a n="-zimbraExternalShareWhitelistDomain">yahoo.com</a>
             </ModifyCosRequest>
         </t:request>
-        <t:response>   
+        <t:response>
 			<select path="//admin:ModifyCosResponse" />
 		</t:response>
 	</t:test>
@@ -1104,7 +1104,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1115,7 +1115,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1166,17 +1166,17 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled07" type="bhr">
+<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled07" type="sanity">
     <t:objective>Verify disabling zimbraExternalShareDomainWhitelistEnabled on Account take effect on existing share. </t:objective>
 	<t:steps>
-		1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=FALSE) 
-		2. create account having the COS create 
+		1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=FALSE)
+		2. create account having the COS create
 		3. share with internal and external account
 		4. Modify Account(zimbraExternalShareDomainWhitelistEnabled=TRUE)
 		5. Add domain to whitelist
 		5. Verify external share possible to only whitelisted domain.
-	</t:steps>	
-    
+	</t:steps>
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -1194,7 +1194,7 @@
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name xmlns="">${cos6.name}</name>
-				<a n="zimbraExternalShareDomainWhitelistEnabled">FALSE</a>	
+				<a n="zimbraExternalShareDomainWhitelistEnabled">FALSE</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -1202,7 +1202,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos6.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1230,7 +1230,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -1241,12 +1241,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1257,7 +1257,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1315,17 +1315,17 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-   
+
    <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                 <id>${cos6.account1.id}</id>
                 <a n="zimbraExternalShareDomainWhitelistEnabled">TRUE</a>
 				<a n="zimbraExternalShareWhitelistDomain">yahoo.com</a>
-				<a n="zimbraExternalShareWhitelistDomain">${subdomain.internal}</a> 
+				<a n="zimbraExternalShareWhitelistDomain">${subdomain.internal}</a>
             </ModifyAccountRequest>
         </t:request>
-        <t:response>   
+        <t:response>
 			<select path="//admin:ModifyAccountResponse" />
 		</t:response>
 	</t:test>
@@ -1342,7 +1342,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1353,7 +1353,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1402,18 +1402,18 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled08" type="bhr">
+<t:test_case testcaseid="zimbraExternalShareDomainWhitelistEnabled08" type="sanity">
     <t:objective>Verify  zimbraExternalSharingEnabled=FALSE disables sharing to external whitelisted domains. </t:objective>
 	<t:steps>
-		1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=TRUE and zimbraExternalSharingEnabled=FALSE) 
-		2. create account having the COS create 
+		1. Create  COS (zimbraExternalShareDomainWhitelistEnabled=TRUE and zimbraExternalSharingEnabled=FALSE)
+		2. create account having the COS create
 		3. share with internal and external account
 		4. verify no external sharing possible. not to whitelisted domain.
 		4. Modify Account(zimbraExternalSharingEnabled=TRUE)
 		5. Add domain to whitelist
 		5. Verify external share possible to only whitelisted domain.
-	</t:steps>	
-    
+	</t:steps>
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -1431,10 +1431,10 @@
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name xmlns="">${cos7.name}</name>
-				<a n="zimbraExternalSharingEnabled">FALSE</a>	
-				<a n="zimbraExternalShareDomainWhitelistEnabled">TRUE</a>	
+				<a n="zimbraExternalSharingEnabled">FALSE</a>
+				<a n="zimbraExternalShareDomainWhitelistEnabled">TRUE</a>
 				<a n="zimbraExternalShareWhitelistDomain">yahoo.com</a>
-				<a n="zimbraExternalShareWhitelistDomain">${subdomain.internal}</a> 	
+				<a n="zimbraExternalShareWhitelistDomain">${subdomain.internal}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -1442,7 +1442,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos7.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1470,7 +1470,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -1481,12 +1481,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1497,7 +1497,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1555,7 +1555,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-   
+
    <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -1563,7 +1563,7 @@
                 <a n="zimbraExternalSharingEnabled">TRUE</a>
             </ModifyAccountRequest>
         </t:request>
-        <t:response>   
+        <t:response>
 			<select path="//admin:ModifyAccountResponse" />
 		</t:response>
 	</t:test>
@@ -1580,7 +1580,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1591,7 +1591,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">

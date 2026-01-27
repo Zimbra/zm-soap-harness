@@ -95,7 +95,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -125,9 +125,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_Pattern_01" type="bhr">
+<t:test_case testcaseid="Filter_Pattern_01" type="sanity">
     <t:objective> Verify pattern works for filter </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account1
 			  2. Create a filter based on "Patterns " as "Subjecy -> matches -> bananas* "
 			  3. Inject message with subject as "Banana leaves" and verify it get filtered
@@ -150,18 +150,18 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                        	 <headerTest header="subject" stringComparison="matches" value="banana*"/>           	     
+                        	 <headerTest header="subject" stringComparison="matches" value="banana*"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -171,7 +171,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -221,9 +221,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_Pattern_02" type="bhr">
+<t:test_case testcaseid="Filter_Pattern_02" type="sanity">
     <t:objective> Verify "does not match pattern" works for filter </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account2
 			  2. Create a filter based on patterns as  "Subject -> does not matches -> bananas* "
 			  3. Inject message with subject any subject and verify it get filtered
@@ -243,18 +243,18 @@
 
         </t:response>
     </t:test>
-    
+
 	 <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter2.name}" active="1">
                          <filterTests condition="anyof">
-                        	 <headerTest header="subject" negative="1" stringComparison="matches" value="banana*"/>           	     
+                        	 <headerTest header="subject" negative="1" stringComparison="matches" value="banana*"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -264,7 +264,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -291,9 +291,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_Pattern_03" type="bhr" bugids="21701">
+<t:test_case testcaseid="Filter_Pattern_03" type="sanity" bugids="21701">
     <t:objective> Verify filter works for conditions containing square bracket "[" </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account3
 			  2. Create a filter based on patterns as  "Subject -> matches -> [JIRA Created* "
 			  3. Inject message with subject "[JIRA Created" and verify it gets filtered
@@ -313,18 +313,18 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter3.name}" active="1">
                          <filterTests condition="anyof">
-                        	 <headerTest header="subject" stringComparison="matches" value="[JIRA Created*"/>           	     
+                        	 <headerTest header="subject" stringComparison="matches" value="[JIRA Created*"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -334,7 +334,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -360,7 +360,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Filter_Pattern_04" type="sanity">
+<t:test_case testcaseid="Filter_Pattern_04" type="functional">
     <t:objective> Verify filters can be created using non-ascii chars and works properly </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
@@ -376,22 +376,22 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:property name="message4.file" value="${testMailRaw.root}/charsets/iso-8859-8/iso-8859-8d.txt"/>
 	<t:property name="message4.subject" value="abcמתלףקצdef"/>
 	<t:property name="message4.content" value="content12453542936874"/>
-	
+
 	<t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter4.name}" active="1">
                          <filterTests condition="anyof">
-                        	 <headerTest header="subject" stringComparison="is" value="${message4.subject}"/>           	     
+                        	 <headerTest header="subject" stringComparison="is" value="${message4.subject}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -401,7 +401,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message4.file}</filename>
@@ -425,9 +425,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Filter_Pattern_05" type="bhr" bugids="27801,21701">
+<t:test_case testcaseid="Filter_Pattern_05" type="sanity" bugids="27801,21701">
     <t:objective> Verify filter works for conditions containing square bracket "[text]" </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account3
 			  2. Create a filter based on patterns as  "Subject -> matches -> jam [JIRA-jerry]* "
 			  3. Inject message with subject "[JIRA Created" and verify it gets filtered
@@ -447,7 +447,7 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -467,19 +467,19 @@
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter5.name}" active="1">
                          <filterTests condition="anyof">
-                        	 <headerTest header="subject" stringComparison="is" value="jam [JIRA-jerry]*"/>           	     
+                        	 <headerTest header="subject" stringComparison="is" value="jam [JIRA-jerry]*"/>
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="${folder1.name}" />
-                        	<actionStop />                 
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -489,7 +489,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -515,7 +515,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-	
+
 
     <t:test>
         <t:request>
@@ -525,11 +525,11 @@
         </t:request>
         <t:response>
         	<t:select path="//mail:SearchResponse/mail:m" >
-        		<t:select path="//mail:e" attr="a" match="tom@jerry.com" />            
+        		<t:select path="//mail:e" attr="a" match="tom@jerry.com" />
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -538,18 +538,18 @@
         </t:request>
         <t:response>
         	<t:select path="//mail:SearchResponse/mail:m" >
-        		<t:select path="//mail:e" attr="a" match="jerry@jerry.com" />            
+        		<t:select path="//mail:e" attr="a" match="jerry@jerry.com" />
             </t:select>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
 <!-- see new test cases in the FilterRules folder -->
 <t:test_case testcaseid="Filter_Pattern_06" type="deprecated" bugids="40764">
     <t:objective> Verify filter works for pattern matching on received header</t:objective>
-    <t:steps> 
+    <t:steps>
 		  1. Login to test account6
 		  2. Create a combination filter based on from (contains) and header (matches regex)
 		  3. Inject messages that should be filtered
@@ -569,19 +569,19 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="allof">
-                        	 <headerTest header="from" stringComparison="contains" value="jmolet"/>    
-                        	 <headerTest header="Recieved" stringComparison="is" value="*int-mx*.intmail.prod.int.phx2.redhat.com*"/>       	     
+                        	 <headerTest header="from" stringComparison="contains" value="jmolet"/>
+                        	 <headerTest header="Recieved" stringComparison="is" value="*int-mx*.intmail.prod.int.phx2.redhat.com*"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -591,8 +591,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <foldername>${testMailRaw.root}/bugs/40764</foldername>
@@ -616,7 +616,7 @@
         	</t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.restServlet" value="${account6.server}"/>
 
 	<t:resttest>
@@ -639,7 +639,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 

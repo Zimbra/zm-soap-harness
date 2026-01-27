@@ -79,10 +79,10 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id" />
 			</t:response>
 		</t:test>
-		
+
 	</t:test_case>
-	
-	 <t:test_case testcaseid="Set_recovery_email" type="bhr" bugids="ZCS-4798">
+
+	 <t:test_case testcaseid="Set_recovery_email" type="sanity" bugids="ZCS-4798">
 		<t:objective>Set recovery email and validate it using code</t:objective>
 
 		<t:steps>
@@ -128,7 +128,7 @@
 		</t:test>
 
 		<t:delay sec="20"/>
-		
+
 		<t:test id="SearchRequest_for_recoveryCode_email">
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail">
@@ -140,9 +140,9 @@
 				<t:select path="//mail:SearchResponse/mail:c/mail:fr" set="message.content" />
 			</t:response>
 		</t:test>
-		
+
 		<t:regex input="${message.content}" regex="^Verification of your recovery email address Recovery email verification code: (.*) The code expires by: (.*)$" group="1" set="account1.recoverycode"/>
-		
+
 		<t:test id="auth_testAccount1" required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -175,7 +175,7 @@
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id="Verify_recoveryEmail_status">
 			<t:request>
 				<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -191,18 +191,18 @@
 				</t:select>
 			</t:response>
 		</t:test>
-				
+
 	</t:test_case>
-	
- 	<t:test_case testcaseid="Get_Recovery_Account" type="bhr" bugids="ZCS-4798">
+
+ 	<t:test_case testcaseid="Get_Recovery_Account" type="sanity" bugids="ZCS-4798">
 		<t:objective>Get recovery details for the account.</t:objective>
-		
+
 		<t:steps>
 		1. Log in with account 1.
 		2. Get recovery email for account 1 email address.
 		3. Verify that recovery email is same as that of account 2 email address.
 		</t:steps>
-		
+
 		<t:test id="auth_testAccount1" required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -214,7 +214,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id="getRecoveryAccount_for_valid_user">
 			<t:request>
 				<RecoverAccountRequest op="getRecoveryAccount" email="${account1.name}" channel="email" xmlns="urn:zimbraMail" />
@@ -224,16 +224,16 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-	
-	<t:test_case testcaseid="Send_Recovery_Code" type="bhr" bugids="ZCS-4798">
+
+	<t:test_case testcaseid="Send_Recovery_Code" type="sanity" bugids="ZCS-4798">
 		<t:objective>Get recovery details for the account.</t:objective>
-		
+
 		<t:steps>
 		1. Log in with account 1.
 		2. Send recovery code to the recovery email.
 		3. Verify that recovery email account receives recovery code.
 		</t:steps>
-		
+
 		<t:test id="auth_testAccount1" required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -245,7 +245,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id="sendRecoveryCode_for_valid_user">
 			<t:request>
 				<RecoverAccountRequest op="sendRecoveryCode" email="${account1.name}" channel="email" xmlns="urn:zimbraMail" />
@@ -254,7 +254,7 @@
 				<t:select path="//mail:RecoverAccountResponse"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test id="auth_testAccount2" required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -268,7 +268,7 @@
 		</t:test>
 
 		<t:delay sec="60"/>
-		
+
 		<t:test id="SearchRequest_for_recoveryCode_email">
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail">
@@ -280,20 +280,20 @@
 				<t:select path="//mail:SearchResponse/mail:c/mail:fr" set="message.content" />
 			</t:response>
 		</t:test>
-		
-		<t:regex input="${message.content}" regex="^We have received a password reset request for your account, ${account1.name}. Temporary Reset Code: (.*) Use ...$" group="1" set="account1.resetcode"/>
-		
-	</t:test_case> 
 
-	<t:test_case testcaseid="Resend_Recovery_Code" type="bhr" bugids="ZCS-4798" >
+		<t:regex input="${message.content}" regex="^We have received a password reset request for your account, ${account1.name}. Temporary Reset Code: (.*) Use ...$" group="1" set="account1.resetcode"/>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="Resend_Recovery_Code" type="sanity" bugids="ZCS-4798" >
 		<t:objective>Verify resend feature of the RecoverAccount API.</t:objective>
-		
+
 		<t:steps>
 		1. Log in with account 3.
 		2. Send recovery code to the recovery email and verify that new code is sent after first one expires.
 		3. Send recovery codes to exceed max resend limit and verify error response.
 		</t:steps>
-		
+
 		<t:test id="auth_testAccount1" required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -305,7 +305,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id="resendRecoveryCode_for_valid_user_attempt1">
 			<t:request>
 				<RecoverAccountRequest op="sendRecoveryCode" email="${account1.name}" channel="email" xmlns="urn:zimbraMail" />
@@ -314,7 +314,7 @@
 				<t:select path="//mail:RecoverAccountResponse"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test id="auth_testAccount2" required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -328,7 +328,7 @@
 		</t:test>
 
 		<t:delay sec="50"/>
-		
+
 		<t:test id="SearchRequest_for_recoveryCode_email">
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail">
@@ -340,7 +340,7 @@
 				<t:select path="//mail:SearchResponse/mail:c/mail:fr" contains="account1.resetcode" emptyset="1" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id="resendRecoveryCode_for_valid_user_attempt2">
 			<t:request>
 				<RecoverAccountRequest op="sendRecoveryCode" email="${account1.name}" channel="email" xmlns="urn:zimbraMail" />
@@ -349,9 +349,9 @@
 				<t:select path="//mail:RecoverAccountResponse"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:delay sec="10"/>
-		
+
 		<t:test id="resendRecoveryCode_for_valid_user_attempt3">
 			<t:request>
 				<RecoverAccountRequest op="sendRecoveryCode" email="${account1.name}" channel="email" xmlns="urn:zimbraMail" />
@@ -370,7 +370,7 @@
 				<t:select path="//zimbra:Code" match="service.MAX_ATTEMPTS_REACHED_SUSPEND_FEATURE"/>
 			</t:response>
 		</t:test>
-		
-	</t:test_case>	
-	
+
+	</t:test_case>
+
 </t:tests>

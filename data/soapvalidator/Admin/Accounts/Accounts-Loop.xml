@@ -7,7 +7,7 @@
 <t:property name = "test_account.name3" value = "test.${TIME}.${COUNTER}@${domain.name}"/>
 <t:property name = "test_account.name4" value = "test.${TIME}.${COUNTER}@${domain.name}"/>
 <t:property name = "test_account.name5" value = "test.${TIME}.${COUNTER}@${domain.name}"/>
-<t:property name = "test_account.name6" value = "test.${TIME}.${COUNTER}@${domain.name}"/>  
+<t:property name = "test_account.name6" value = "test.${TIME}.${COUNTER}@${domain.name}"/>
 
 <t:property name = "alias1.name" value = "Alias.${TIME}.${COUNTER}@${domain.name}"/>
 <t:property name = "alias2.name" value = "Alias.${TIME}.${COUNTER}@${domain.name}"/>
@@ -39,10 +39,10 @@
 <t:test_case testcaseid="acctSetup1_account_loop" type="always" >
     <t:objective>Login as the admin and create new Domain</t:objective>
     <t:steps>
-            1. Login as admin 
-            2. Create a new Domain 
+            1. Login as admin
+            2. Create a new Domain
     </t:steps>
-    
+
 	<t:test required="true" >
 	    <t:request>
 	        <AuthRequest xmlns="urn:zimbraAdmin">
@@ -54,7 +54,7 @@
 	        <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test required="true" >
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -71,9 +71,9 @@
 
 
 
-<t:test_case testcaseid="Account_loop1" type="bhr" duration="long">
+<t:test_case testcaseid="Account_loop1" type="sanity" duration="long">
     <t:objective>Create 1000 account with valid username and password</t:objective>
-    
+
     <t:test_loop count="1000">
         <t:test id="account_loop1a" timeframeMax="3000">
             <t:request>
@@ -86,12 +86,12 @@
 	            <t:select path="//admin:CreateAccountResponse/admin:account"/>
             </t:response>
         </t:test>
-    </t:test_loop>      
+    </t:test_loop>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Account_loop2" type="sanity" duration="long" >
+<t:test_case testcaseid="Account_loop2" type="functional" duration="long" >
     <t:objective> GetAccountRequest with valid value of "id" </t:objective>
     <t:steps> 1) Create an account
               2) Send GetAccountRequest to retrieve it
@@ -107,8 +107,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test depends="account_loop2a">
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin" timeframeMax="1000">
@@ -123,7 +123,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Account_loop3" type="sanity" duration="long"> 
+<t:test_case testcaseid="Account_loop3" type="functional" duration="long">
     <t:objective> Modify an account with all valid details </t:objective>
     <t:steps> 1) Create an account
               2) Modify it
@@ -140,8 +140,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test> 
-     
+    </t:test>
+
     <t:test depends="account_loop3a" timeframeMax="3000">
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -202,18 +202,18 @@
                 <a n="zimbraPrefContactsInitialView">cards</a>
                 <a n="cn">test.1117345120686.1</a>
                 <a n="zimbraPrefUseKeyboardShortcuts">FALSE</a>
-                <a n="zimbraNewMailNotificationFrom">Notification &lt;notify@$xyz.com&gt;</a>                
+                <a n="zimbraNewMailNotificationFrom">Notification &lt;notify@$xyz.com&gt;</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account" attr="id" match="${test_account2.id}" />            
+            <t:select path = "//admin:ModifyAccountResponse/admin:account" attr="id" match="${test_account2.id}" />
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Account_loop4" type="sanity" duration="long">
+<t:test_case testcaseid="Account_loop4" type="functional" duration="long">
     <t:objective> Deleting the account with valid "id/name"  </t:objective>
     <t:steps> 1) create an account
               2) delete it
@@ -230,7 +230,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
     <t:test depends="account_loop4a" timeframeMax="5000">
@@ -248,7 +248,7 @@
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-<t:test_case testcaseid="Account_loop5" type="sanity" duration="long">
+<t:test_case testcaseid="Account_loop5" type="functional" duration="long">
     <t:objective>Rename an account with valid new-name</t:objective>
     <t:steps> 1) create an account
               2) Rename it
@@ -264,8 +264,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test depends="account_loop5a" timeframeMax="3000">
         <t:request>
 	        <RenameAccountRequest xmlns="urn:zimbraAdmin" timeframeMax="4000">
@@ -281,7 +281,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Account_loop6" type="sanity" duration="long">
+<t:test_case testcaseid="Account_loop6" type="functional" duration="long">
     <t:objective> Add an Alias to an account </t:objective>
     <t:steps> 1) create an account
               2) Alias it
@@ -297,8 +297,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account5.id" />
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test depends="account_loop6a" timeframeMax="3000">
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -308,19 +308,19 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse" attr="id" match="${test_account5.id}" />
-        </t:response> 
-    </t:test>  
+        </t:response>
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Account_loop7" type="sanity" duration="long">
+<t:test_case testcaseid="Account_loop7" type="functional" duration="long">
     <t:objective> Remove an alias from an account </t:objective>
     <t:steps> 1. Create an account
               2. Alias it
               3. Remove alias
     </t:steps>
-    
+
     <t:test id="account_loop7a">
          <t:request>
              <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -331,8 +331,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account6.id" />
         </t:response>
-    </t:test> 
-     
+    </t:test>
+
     <t:test id="account_loop7b" timeframeMax="3000">
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -343,7 +343,7 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse" attr="id" match="${test_account6.id}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test depends="account_loop7a,account_loop7b" timeframeMax="3000">
         <t:request>
@@ -355,17 +355,17 @@
         <t:response>
             <t:select path="//admin:RemoveAccountAliasResponse" attr="id" match="${test_account6.id}" />
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Account_loop8" type="sanity" duration="long">
+<t:test_case testcaseid="Account_loop8" type="functional" duration="long">
     <t:objective>Verify that SearchAccountsRequest receives a response</t:objective>
     <t:steps> 1. Create an account
               2. Search for this account
     </t:steps>
-    
+
     <t:test id="account_loop8a">
          <t:request>
              <CreateAccountRequest xmlns="urn:zimbraAdmin" timeframeMax="3500" >
@@ -376,8 +376,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account7.id" />
         </t:response>
-    </t:test> 
-     
+    </t:test>
+
     <t:test depends="account_loop8a" timframe="3000">
         <t:request>
             <SearchAccountsRequest xmlns="urn:zimbraAdmin">
@@ -385,17 +385,17 @@
             </SearchAccountsRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="id" match="${test_account7.id}"/>    
+            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="id" match="${test_account7.id}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="Account_loop9" type="sanity" duration="long">
+
+<t:test_case testcaseid="Account_loop9" type="functional" duration="long">
     <t:objective> Test for GetAllAdminAccountsRequest. </t:objective>
-   
-    <t:test timeframeMax="50000">       
+
+    <t:test timeframeMax="50000">
         <t:request>
             <GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
@@ -405,5 +405,5 @@
     </t:test>
 
 </t:test_case>
-    
+
 </t:tests>

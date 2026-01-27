@@ -30,7 +30,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -47,7 +47,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -60,7 +60,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -223,7 +223,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -235,8 +235,8 @@
 		</t:response>
 	</t:test>
 
-    
-   
+
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -282,7 +282,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${invitee1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -313,13 +313,13 @@
 				<query>inid:${invitee1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
             	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
             	<t:select attr="name" set="invitee1.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -377,7 +377,7 @@
 
         </t:response>
     </t:test>
-   
+
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -395,14 +395,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_RecurringYearly_02" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_RecurringYearly_02" type="sanity" areas="Calendar">
     <t:objective>Create an yearly recurring appointment.  5 occurrences.</t:objective>
 
 
 
 	<t:property name="server.zimbraAccount" value="${organizer2.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -415,7 +415,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -427,7 +427,7 @@
 		</t:response>
 	</t:test>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -473,7 +473,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${invitee2.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -504,7 +504,7 @@
 				<query>inid:${invitee2.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appt1.invId"/>
         </t:response>
     </t:test>
@@ -539,14 +539,14 @@
 
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_RecurringYearly_03" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_RecurringYearly_03" type="sanity" areas="Calendar">
     <t:objective>Create an yearly recurring appointment, every 3 years.</t:objective>
 
 
 
 	<t:property name="server.zimbraAccount" value="${organizer3.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -559,7 +559,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -571,7 +571,7 @@
 		</t:response>
 	</t:test>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -616,7 +616,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${invitee3.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -647,7 +647,7 @@
 				<query>inid:${invitee3.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appt1.invId"/>
         </t:response>
     </t:test>
@@ -679,14 +679,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_RecurringYearly_04" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_RecurringYearly_04" type="sanity" areas="Calendar">
     <t:objective>Create an yearly recurring appointment, every 3 years.  4 occurences</t:objective>
 
 
 
 	<t:property name="server.zimbraAccount" value="${organizer4.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -699,7 +699,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -711,7 +711,7 @@
 		</t:response>
 	</t:test>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -757,7 +757,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${invitee4.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -788,7 +788,7 @@
 				<query>inid:${invitee4.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appt1.invId"/>
         </t:response>
     </t:test>
@@ -819,7 +819,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateAppointmentRequest_RecurringYearly_05" type="sanity" bugids="5778">
+<t:test_case testcaseid="CreateAppointmentRequest_RecurringYearly_05" type="functional" bugids="5778">
 	<t:objective> Create an appointment on 29 feb of the leap year </t:objective>
        <t:steps> 1. Create the appontment through CreateAppointmentRequest
                  2. to verify the appointment et created
@@ -829,7 +829,7 @@
 
 	<t:property name="server.zimbraAccount" value="${organizer5.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -842,7 +842,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -854,7 +854,7 @@
 		</t:response>
 	</t:test>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -900,7 +900,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${invitee5.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -931,7 +931,7 @@
 				<query>inid:${invitee2.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appt1.invId"/>
         </t:response>
     </t:test>
@@ -963,14 +963,14 @@
 	<t:property name="time.20140228120000.gmt" value="1393588800000"/>
 	<t:property name="time.20150228120000.gmt" value="1425124800000"/>
 	<t:property name="time.20160228120000.gmt" value="1456660800000"/>
-	
+
     <t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-2d)[${time.20130228120000.gmt}]}" calExpandInstEnd="${TIME(+2d)[${time.20130228120000.gmt}]}" types="appointment">
 				<query>inid:${invitee2.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" emptyset="1"/>
         </t:response>
     </t:test>
@@ -981,7 +981,7 @@
 				<query>inid:${invitee2.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" emptyset="1"/>
         </t:response>
     </t:test>
@@ -992,7 +992,7 @@
 				<query>inid:${invitee2.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" emptyset="1"/>
         </t:response>
     </t:test>
@@ -1003,7 +1003,7 @@
 				<query>inid:${invitee2.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="invId" match="${appt1.invId}"/>
         </t:response>
     </t:test>

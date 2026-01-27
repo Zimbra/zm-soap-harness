@@ -1,11 +1,11 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
+
 <!--
 
 Author rights should allow another user to create a new appointment, but not modify/delete it
 
 -->
-    
+
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
@@ -48,7 +48,7 @@ Author rights should allow another user to create a new appointment, but not mod
 
 
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -64,7 +64,7 @@ Author rights should allow another user to create a new appointment, but not mod
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="CalendarSharing_CalendarsDelegated_Get_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -168,7 +168,7 @@ Author rights should allow another user to create a new appointment, but not mod
 </t:test_case>
 
 
-<t:test_case testcaseid="CalendarSharing_Outlook_AuthorRights_01" type="bhr" bugids="17135">
+<t:test_case testcaseid="CalendarSharing_Outlook_AuthorRights_01" type="sanity" bugids="17135">
     <t:objective>Verify SetApointmentRequest a shared calendar (author rights - ri)</t:objective>
     <t:steps>
         1. Login as account1.  Share calendar with account2 as auther.
@@ -222,10 +222,10 @@ Author rights should allow another user to create a new appointment, but not mod
             <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt.apptId"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-<t:test_case testcaseid="CalendarSharing_Outlook_AuthorRights_02" type="bhr" bugids="17135" >
+
+<t:test_case testcaseid="CalendarSharing_Outlook_AuthorRights_02" type="sanity" bugids="17135" >
     <t:objective>Verify SetApointmentRequest (modify - PERM_DENIED) a shared calendar (author rights - ri)</t:objective>
     <t:steps>
         1. Login as account1.  Share calendar with account2 as auther.
@@ -280,7 +280,7 @@ Author rights should allow another user to create a new appointment, but not mod
             <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt.apptId"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="appt.subject.new" value="subject.${TIME}.${COUNTER}"/>
 
     <t:test>
@@ -305,8 +305,8 @@ Author rights should allow another user to create a new appointment, but not mod
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
+
 
 </t:tests>

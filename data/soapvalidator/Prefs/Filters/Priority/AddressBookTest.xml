@@ -54,7 +54,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-    
+
    <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -74,48 +74,48 @@
                 <cn>
                     <a n="firstName">${contact1.firstname}</a>
                     <a n="lastName">${contact1.lastname}</a>
-                    <a n="email">${contact1.mailid}</a>    
-                </cn>     
+                    <a n="email">${contact1.mailid}</a>
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
                 <cn>
                     <a n="firstName">${contact2.firstname}</a>
                     <a n="lastName">${contact2.lastname}</a>
-                    <a n="email">${contact2.mailid}</a>    
-                </cn>     
+                    <a n="email">${contact2.mailid}</a>
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact2.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
-    
-      
+
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="addressBookTest_01" type="bhr" bugids="42185" >
+<t:test_case testcaseid="addressBookTest_01" type="sanity" bugids="42185" >
      <t:objective>Verify that received message from a contact is filtered for addressBookTest filter</t:objective>
-    
+
     <t:steps> 1. Create filter for addressBookTest header="From" for accoun1 to flag
-			  2. account1 receives a message  from a contact			  
+			  2. account1 receives a message  from a contact
 			  3. Verify that the message gets flagged in accoun1 inbox.
     </t:steps>
-	
-	
+
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -129,31 +129,31 @@
         </t:response>
     </t:test>
 
-    
+
 	<t:property name="filter_AddressBook.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_AddressBook.subject" value="addressbooktest ${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_AddressBook.name}" active="1">
 						<filterTests condition="allof">
-						 <addressBookTest header="From"/>			
+						 <addressBookTest header="From"/>
 						</filterTests>
 						<filterActions>
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
-    </t:test>    
-   
+    </t:test>
+
 	<t:property name="addressBook_msg01.file" value="${testMailRaw.root}/bug42185/addressbook01.txt" />
 
     <t:delay sec="10" />
@@ -167,11 +167,11 @@
 			<modify>
 				<header a="To">${account1.name}</header>
 				<header a="From">${contact1.mailid}</header>
-                <header a="Subject">${filter_AddressBook.subject}</header>               
+                <header a="Subject">${filter_AddressBook.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -180,23 +180,23 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_AddressBook.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
     </t:test>
-   
-    
-          
-</t:test_case> 
 
-<t:test_case testcaseid="addressBookTest_02" type="bhr" bugids="42185" >
+
+
+</t:test_case>
+
+<t:test_case testcaseid="addressBookTest_02" type="sanity" bugids="42185" >
      <t:objective>Verify that received message which is CCed to  a contact is filtered for addressBookTest filter</t:objective>
-    
+
     <t:steps> 1. Create filter for addressBookTest header="CC" for account1 to flag
-			  2. account1 receives a message which is CC to a contact			  
+			  2. account1 receives a message which is CC to a contact
 			  3. Verify that the message gets flagged in accoun1 inbox.
     </t:steps>
-	
-	
+
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -210,23 +210,23 @@
         </t:response>
     </t:test>
 
-    
+
 	<t:property name="filter_AddressBook1.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter_AddressBook2.subject" value="addressbooktest ${TIME}${COUNTER}"/>		
-	
+	<t:property name="filter_AddressBook2.subject" value="addressbooktest ${TIME}${COUNTER}"/>
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_AddressBook1.name}" active="1">
 						<filterTests condition="allof">
-						 <addressBookTest header="CC"/>			
+						 <addressBookTest header="CC"/>
 						</filterTests>
 						<filterActions>
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -234,11 +234,11 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="addressBook_msg02.file" value="${testMailRaw.root}/bug42185/addressbook02.txt" />
-    
+
     <t:delay sec="10" />
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${addressBook_msg02.file}</filename>
@@ -248,12 +248,12 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-				<header a="CC">${contact2.mailid}</header>				
-                <header a="Subject">${filter_AddressBook2.subject}</header>               
+				<header a="CC">${contact2.mailid}</header>
+                <header a="Subject">${filter_AddressBook2.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
-    
+    </t:mailinjecttest>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -262,10 +262,10 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_AddressBook2.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
-    </t:test>  
-          
-</t:test_case> 
+    </t:test>
+
+</t:test_case>
 
 </t:tests>

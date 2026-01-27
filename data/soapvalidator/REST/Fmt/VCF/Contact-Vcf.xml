@@ -77,7 +77,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_contact_vcf_01" type="bhr">
+<t:test_case testcaseid="RestServlet_contact_vcf_01" type="sanity">
     <t:objective>Using the REST servlet, get a contact using vcf format</t:objective>
 	<t:steps>
 	1. Create a contact
@@ -93,13 +93,13 @@
                     <a n="firstName">${contact01.FirstName}</a>
                     <a n="lastName">${contact01.LastName}</a>
                     <a n="email">${contact01.emailAddress}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
 				<t:select attr="id" set="contact.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -123,7 +123,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_contact_vcf_02" type="sanity" >
+<t:test_case testcaseid="RestServlet_contact_vcf_02" type="functional" >
     <t:objective>Using the REST servlet, get a contact (with all fields) using vcf format</t:objective>
 	<t:steps>
 	1. Create a contact
@@ -162,16 +162,16 @@
                     <a n="workCountry">tt</a>
                     <a n="workURL">tt</a>
                     <a n="notes">hihohioohhghghgjhjhj</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact.id"/> 	  
-            </t:select>	
+            <t:select attr="id" set="contact.id"/>
+            </t:select>
         </t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${contact.id}</id>
@@ -190,7 +190,7 @@
 
 
 
-<t:test_case testcaseid="RestServlet_contact_vcf_03" type="sanity" >
+<t:test_case testcaseid="RestServlet_contact_vcf_03" type="functional" >
     <t:objective>Using the REST servlet, get a deleted contact - receive 404 response</t:objective>
 	<t:steps>
 	1. Create a contact
@@ -206,13 +206,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
 				<t:select attr="id" set="contact.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -242,7 +242,7 @@
 
 
 
-<t:test_case testcaseid="RestServlet_contact_vcf_04" type="sanity">
+<t:test_case testcaseid="RestServlet_contact_vcf_04" type="functional">
     <t:objective>Using the REST servlet, get a contact that was imported as vcf</t:objective>
 
     <t:test >
@@ -258,14 +258,14 @@ TEL;WORK;FAX:+1 (919) 555-9876
 ADR;WORK;PARCEL;POSTAL;DOM:Suite 101;1 Central St.;Any Town;NC;27654
 END:VCARD
 </vcard>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${contact.id}</id>
@@ -283,7 +283,7 @@ END:VCARD
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_contact_vcf_05" type="sanity">
+<t:test_case testcaseid="RestServlet_contact_vcf_05" type="functional">
     <t:objective>Using the REST servlet, get a contact that was imported as vcf (exported from Outlook)</t:objective>
 
     <t:test >
@@ -332,7 +332,7 @@ FBURL:?????????????????
 REV:20060321T084730Z
 END:VCARD
 </vcard>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>

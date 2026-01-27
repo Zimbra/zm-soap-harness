@@ -70,7 +70,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -83,13 +83,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="calendar_getfreebusy4418" type="sanity" bugids="4418">
+<t:test_case testcaseid="calendar_getfreebusy4418" type="functional" bugids="4418">
     <t:objective>Setup bug 4418, and verify F/B is set correctly</t:objective>
-    <steps> 
+    <steps>
         1. Login to admin account
         2. Create test accounts
         3. test accounts setup F/B status
-        4. test account queries the F/B status for all other accounts    
+        4. test account queries the F/B status for all other accounts
     </steps>
 
     <t:test >
@@ -108,7 +108,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${acct0.name}</name>
-                <password>${acct0.password}</password>              
+                <password>${acct0.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -128,25 +128,25 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${acct1.name}</name>
-                <password>${acct1.password}</password>              
+                <password>${acct1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${acct2.name}</name>
-                <password>${acct2.password}</password>              
+                <password>${acct2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -159,7 +159,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${acct3.name}</name>
-                <password>${acct3.password}</password>              
+                <password>${acct3.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -172,7 +172,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${acct4.name}</name>
-                <password>${acct4.password}</password>              
+                <password>${acct4.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -185,7 +185,7 @@
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -207,8 +207,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appt1" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt1.s}"/>  
-                        <e d="${appt1.e}"/>  
+                        <s d="${appt1.s}"/>
+                        <e d="${appt1.e}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -220,9 +220,9 @@
             </CreateAppointmentRequest>
         </t:request>
         <t:response>
-           <!--  <t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt1.id"/>--> 
+           <!--  <t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt1.id"/>-->
             <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="acct1.appt1.invId"/>
-            
+
         </t:response>
     </t:test>
 
@@ -232,8 +232,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appt2" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt2.s}"/>  
-                        <e d="${appt2.e}"/>  
+                        <s d="${appt2.s}"/>
+                        <e d="${appt2.e}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -256,8 +256,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="T" transp="O" allDay="0" name="appt3" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt3.s}"/>  
-                        <e d="${appt3.e}"/>  
+                        <s d="${appt3.s}"/>
+                        <e d="${appt3.e}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -269,7 +269,7 @@
             </CreateAppointmentRequest>
         </t:request>
         <t:response>
-           <!-- <t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt3.id"/> --> 
+           <!-- <t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt3.id"/> -->
             <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="acct1.appt3.invId"/>
         </t:response>
     </t:test>
@@ -280,8 +280,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appt9" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt9.s}"/>  
-                        <e d="${appt9.e}"/>  
+                        <s d="${appt9.s}"/>
+                        <e d="${appt9.e}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -322,8 +322,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="T" transp="O" allDay="0" name="appt4" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt4.s}"/>  
-                        <e d="${appt4.e}"/>  
+                        <s d="${appt4.s}"/>
+                        <e d="${appt4.e}"/>
                         <or a="${acct2.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -346,8 +346,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="T" transp="O" allDay="0" name="appt5" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt5.s}"/>  
-                        <e d="${appt5.e}"/>  
+                        <s d="${appt5.s}"/>
+                        <e d="${appt5.e}"/>
                         <or a="${acct2.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -359,7 +359,7 @@
             </CreateAppointmentRequest>
         </t:request>
         <t:response>
-           <!--<t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt5.id"/>  --> 
+           <!--<t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt5.id"/>  -->
               <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="acct2.appt5.invId"/>
         </t:response>
     </t:test>
@@ -370,8 +370,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appt6" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt6.s}"/>  
-                        <e d="${appt6.e}"/>  
+                        <s d="${appt6.s}"/>
+                        <e d="${appt6.e}"/>
                         <or a="${acct2.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -394,8 +394,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appt10" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt10.s}"/>  
-                        <e d="${appt10.e}"/>  
+                        <s d="${appt10.s}"/>
+                        <e d="${appt10.e}"/>
                         <or a="${acct2.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -407,7 +407,7 @@
             </CreateAppointmentRequest>
         </t:request>
         <t:response>
-           <!--  <t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt10.id"/>--> 
+           <!--  <t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt10.id"/>-->
             <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="acct2.appt10.invId"/>
         </t:response>
     </t:test>
@@ -418,8 +418,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appt11" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt11.s}"/>  
-                        <e d="${appt11.e}"/>  
+                        <s d="${appt11.s}"/>
+                        <e d="${appt11.e}"/>
                         <or a="${acct2.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -462,8 +462,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appt7" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt7.s}"/>  
-                        <e d="${appt7.e}"/>  
+                        <s d="${appt7.s}"/>
+                        <e d="${appt7.e}"/>
                         <or a="${acct3.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -486,8 +486,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="T" transp="O" allDay="0" name="appt8" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt8.s}"/>  
-                        <e d="${appt8.e}"/>  
+                        <s d="${appt8.s}"/>
+                        <e d="${appt8.e}"/>
                         <or a="${acct3.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -510,8 +510,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appt12" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt12.s}"/>  
-                        <e d="${appt12.e}"/>  
+                        <s d="${appt12.s}"/>
+                        <e d="${appt12.e}"/>
                         <or a="${acct3.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -534,8 +534,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appt13" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${appt13.s}"/>  
-                        <e d="${appt13.e}"/>  
+                        <s d="${appt13.s}"/>
+                        <e d="${appt13.e}"/>
                         <or a="${acct3.name}"/>
                     </inv>
                     <e a="${acct4.name}" t="t"/>
@@ -547,7 +547,7 @@
             </CreateAppointmentRequest>
         </t:request>
         <t:response>
-           <!-- <t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt13.id"/> --> 
+           <!-- <t:select path="//mail:CreateAppointmentResponse" attr="id" set="appt13.id"/> -->
             <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="acct3.appt13.invId"/>
         </t:response>
     </t:test>
@@ -574,7 +574,7 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.now}" e="${time.+24}"  uid="${acct1.id},${acct2.id},${acct3.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${acct1.id}']"/>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${acct2.id}']"/>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${acct2.id}']"/>
@@ -585,7 +585,7 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+24}" e="${time.+48}"  uid="${acct1.id},${acct2.id},${acct3.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${acct1.id}']"/>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${acct2.id}']"/>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${acct2.id}']"/>

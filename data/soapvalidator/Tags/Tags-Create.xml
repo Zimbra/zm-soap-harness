@@ -37,7 +37,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin" />
@@ -46,13 +46,13 @@
             <t:select path="//admin:PingResponse" />
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_tags_create" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -64,7 +64,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -84,7 +84,7 @@
 
 <t:test_case testcaseid="acct1_login" type="always">
     <t:objective>login as the test account</t:objective>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -102,9 +102,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest1" type="bhr">
+<t:test_case testcaseid="CreateTagRequest1" type="sanity">
     <t:objective>create a new Tag </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -123,9 +123,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest2" type="sanity">
+<t:test_case testcaseid="CreateTagRequest2" type="functional">
     <t:objective>create a new Tag with blank name  </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -140,9 +140,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest3" type="sanity">
+<t:test_case testcaseid="CreateTagRequest3" type="functional">
     <t:objective>create a new Tag with all spaces in name  </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -157,9 +157,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest5" type="sanity">
+<t:test_case testcaseid="CreateTagRequest5" type="functional">
     <t:objective>create a Tag with Duplicate name  </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -174,9 +174,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest6" type="sanity">
+<t:test_case testcaseid="CreateTagRequest6" type="functional">
     <t:objective>create a Tag with Special Characters in name  </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -191,9 +191,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest7" type="functional">
+<t:test_case testcaseid="CreateTagRequest7" type="regression">
     <t:objective>create a Tag with Unique name and with color value > 8  </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -210,9 +210,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest8" type="functional">
+<t:test_case testcaseid="CreateTagRequest8" type="regression">
     <t:objective>create a Tag with Unique name and with color value negative  </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -229,9 +229,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest9" type="functional" bugids="1744">
+<t:test_case testcaseid="CreateTagRequest9" type="regression" bugids="1744">
     <t:objective>create a new Tag with all spaces in the color  </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -246,9 +246,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest10" type="functional" bugids="1744">
+<t:test_case testcaseid="CreateTagRequest10" type="regression" bugids="1744">
     <t:objective>create a new Tag with special chars in the color </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -263,9 +263,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest11" type="functional" bugids="1744">
+<t:test_case testcaseid="CreateTagRequest11" type="regression" bugids="1744">
     <t:objective>create a new Tag with blank in the color  </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -280,9 +280,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest12" type="functional">
+<t:test_case testcaseid="CreateTagRequest12" type="regression">
     <t:objective>create a new Tag with invalid attributes  </t:objective>
-        
+
     <!--Create a tag without giving any attribute -->
     <t:test>
         <t:request>
@@ -292,7 +292,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
         </t:response>
     </t:test>
-        
+
     <!-- Create a tag by giving the attribute twice -->
     <t:test>
         <t:request>
@@ -308,13 +308,13 @@
             </t:select>
         </t:response>
     </t:test>
-           
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest13" type="functional">
+<t:test_case testcaseid="CreateTagRequest13" type="regression">
     <t:objective>create a new Tag with spaces in the tag name and color  </t:objective>
-        
+
         <!--create a new Tag with Leading spaces in the tag name and color -->
         <t:test>
             <t:request>
@@ -326,7 +326,7 @@
                 <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
             </t:response>
         </t:test>
-        
+
         <!--create a new Tag with Trailing spaces in the tag name and color -->
         <t:test>
             <t:request>
@@ -338,7 +338,7 @@
                 <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
             </t:response>
         </t:test>
-        
+
         <!--create a new Tag with Leading and Trailing spaces in the tag name and color -->
         <t:test>
             <t:request>
@@ -350,13 +350,13 @@
                 <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
             </t:response>
         </t:test>
-        
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest14" type="functional">
+<t:test_case testcaseid="CreateTagRequest14" type="regression">
     <t:objective>Create a new Tag with valid name and Spaces in color  </t:objective>
-        
+
         <!--create a new Tag with Leading spaces in color -->
         <t:test>
             <t:request>
@@ -368,7 +368,7 @@
                 <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
             </t:response>
         </t:test>
-        
+
         <!--create a new Tag with Trailing spaces in color -->
         <t:test>
             <t:request>
@@ -380,7 +380,7 @@
                 <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
             </t:response>
         </t:test>
-        
+
         <!--create a new Tag with Leading and Trailing spaces in color -->
         <t:test>
             <t:request>
@@ -392,12 +392,12 @@
                 <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
             </t:response>
         </t:test>
-        
+
 </t:test_case>
 
-<t:test_case testcaseid="CreateTagRequest15" type="bhr" bugids="51823">
+<t:test_case testcaseid="CreateTagRequest15" type="sanity" bugids="51823">
     <t:objective>create a new Tag with default color </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -415,9 +415,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateTagRequest16" type="bhr" bugids="51823">
+<t:test_case testcaseid="CreateTagRequest16" type="sanity" bugids="51823">
     <t:objective>create a new Tag with different color modify it to default color. </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -445,7 +445,7 @@
     	    </t:select>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test >
 	 <t:request>
 	   <GetTagRequest xmlns="urn:zimbraMail"/>
@@ -457,7 +457,7 @@
 		</t:select>
 	 </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 </t:tests>

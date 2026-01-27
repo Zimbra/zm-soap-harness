@@ -63,7 +63,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account2" required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -77,7 +77,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test id="create_test_account3" required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -96,14 +96,14 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="DraftQuotaCheck" type="bhr">
+<t:test_case testcaseid="DraftQuotaCheck" type="sanity">
     <t:objective>To Send a draft mail</t:objective>
     <t:steps>
         1. Compose a message and save it as Draft
         2. Upload the attachment
-        2. Reopen the draft and attach the attachment uploaded 
+        2. Reopen the draft and attach the attachment uploaded
     </t:steps>
-  
+
   	<!-- Login to the user account -->
   	<t:test id="auth" required="true">
         <t:request>
@@ -118,9 +118,9 @@
 
         </t:response>
     </t:test>
-    
+
     <!-- upload the attachment -->
-	<t:delay msec="2000"/>	
+	<t:delay msec="2000"/>
 
 	<t:property name="uploadServletServer" value="${test_acct.server}"/>
 
@@ -133,9 +133,9 @@
 			<t:select attr="StatusCode" match="200"/>
         </t:uploadServletResponse>
     </t:uploadservlettest>
-		
+
 	<t:delay msec="5000"/>
-	
+
 	<t:test>
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
@@ -153,10 +153,10 @@
 			<t:select path="//zimbra:Code" match="mail.QUOTA_EXCEEDED"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-      
+
       <t:test id="admin_login" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -168,7 +168,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -180,7 +180,7 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 	<t:property name="uploadServletServer" value="${test_acct.server}"/>
 
@@ -205,7 +205,7 @@
             <t:select attr="id" set="message1.aid"/>
         </t:uploadServletResponse>
     </t:uploadservlettest>
-			
+
 	<t:test id="saveDraftRequest7a">
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -223,8 +223,8 @@
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
         </t:response>
     </t:test>
-    
-  
+
+
     <t:test depends="saveDraftRequest7a">
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -247,18 +247,18 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug75108" type="bhr" bugids="75108">
+<t:test_case testcaseid="bug75108" type="sanity" bugids="75108">
     <t:objective>zimbraMailAllowReceiveButNotSendWhenOverQuota doesn't deliver mail when over quota</t:objective>
     <t:steps>
         1. Create user U1, U2 and set zimbraMailAllowReceiveButNotSendWhenOverQuota TRUE, zimbraMailQuota 1MB
-		2. send mail to U1 so that 1MB quota should be reached. 
+		2. send mail to U1 so that 1MB quota should be reached.
 		3. Login as U2, Compose a mail and send to U1
 		4. User U1 should receive the message.
 
     </t:steps>
-  
+
   	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-  	   
+
   	<t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -272,9 +272,9 @@
 
         </t:response>
     </t:test>
-    
+
        <!-- upload the attachment -->
-	<t:delay msec="2000"/>	
+	<t:delay msec="2000"/>
 
 	<t:property name="uploadServletServer" value="${test_acct2.server}"/>
 
@@ -287,9 +287,9 @@
 			<t:select attr="StatusCode" match="200"/>
         </t:uploadServletResponse>
     </t:uploadservlettest>
-		
+
 	<t:delay msec="5000"/>
-	
+
 	<t:test>
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
@@ -307,9 +307,9 @@
 			<t:select path="//zimbra:Code" match="mail.QUOTA_EXCEEDED"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-      
+
       <t:test id="admin_login" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -321,7 +321,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -333,9 +333,9 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
-	
+
 	<t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -349,7 +349,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
@@ -366,9 +366,9 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
 		</t:response>
 	</t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-  
+
   	<t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -382,7 +382,7 @@
 
         </t:response>
     </t:test>
-         
+
 	<t:test required="true">
 	 	<t:request>
 	   		<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -392,8 +392,8 @@
 	  	<t:response>
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id"/>
 	 	</t:response>
-	</t:test>		
-	
+	</t:test>
+
 </t:test_case>
 
 </t:tests>

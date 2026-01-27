@@ -7,7 +7,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -28,7 +28,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -40,7 +40,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -53,7 +53,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -66,12 +66,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
-  
 
-<t:test_case testcaseid="Mountpoint_ParentFolder_01" type="bhr" bugids="27843">
+
+<t:test_case testcaseid="Mountpoint_ParentFolder_01" type="sanity" bugids="27843">
     <t:objective>Verify that the parent folder in the refresh block (GetFolderRequest) is fully qualified.</t:objective>
     <t:steps>
             1. Login to account1
@@ -80,9 +80,9 @@
             4. Create mountpoint to folder1
 
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-     
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -95,11 +95,11 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="account1.authToken" value="${authToken}"/>
 
-    
- 
+
+
     <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -108,8 +108,8 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -161,12 +161,12 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
-    
-    <t:property name="server.zimbraAccount" value="${account2.server}"/>   
+
+
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:property name="authToken" value=""/>
 
-    
+
     <t:test required="true">
         <t:requestContext>
         	<session/>
@@ -191,7 +191,7 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -205,7 +205,7 @@
         </t:response>
     </t:test>
 
-   
+
     <t:test >
         <t:requestContext>
         	<session/>

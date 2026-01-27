@@ -7,11 +7,11 @@
 
 <t:property name="account1.name" value="fp.${TIME}.${COUNTER}@${domain1.name}"/>
 <t:property name="account1.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="account2.name" value="fp.${TIME}.${COUNTER}@${domain1.name}"/>
 <t:property name="account2.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
 <t:property name="account2.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
-    
+
 
 
 <t:test_case testcaseid="Ping" type="always" >
@@ -54,7 +54,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_SearchDirectoryRequest_01" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_SearchDirectoryRequest_01" type="sanity">
     <t:objective>Search for an account with a foreign principal attribute</t:objective>
 
 
@@ -69,7 +69,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -82,12 +82,12 @@
             	<t:select path="admin:a[@n='zimbraForeignPrincipal']" match="${account1.foreignPrincipal}"/>
             </t:select>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_SearchDirectoryRequest_02" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_SearchDirectoryRequest_02" type="sanity">
     <t:objective>Search for an account with two foreign principal attributes</t:objective>
 
 
@@ -103,7 +103,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -117,7 +117,7 @@
             	<t:select path="admin:a[@n='zimbraForeignPrincipal']" match="${account2.foreignPrincipal2}"/>
             </t:select>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

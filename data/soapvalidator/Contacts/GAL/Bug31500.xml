@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -43,9 +43,9 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create two test account</t:objective>
-    <steps>1. Login to admin account  
+    <steps>1. Login to admin account
         2. Create the domains
-        3. Create a test accounts 
+        3. Create a test accounts
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -59,7 +59,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createDomainRequest1" required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -67,10 +67,10 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createDomainRequest2" required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -80,14 +80,14 @@
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain2.id"/>
         </t:response>
-        
+
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -95,12 +95,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account2" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
-                <password>${test_account2.password}</password>               
+                <password>${test_account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -108,12 +108,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account3" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
-                <password>${test_account3.password}</password>                
+                <password>${test_account3.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -121,12 +121,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
- 
+
     <t:test id="create_test_account4" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account4.name}</name>
-                <password>${test_account4.password}</password>                
+                <password>${test_account4.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -134,14 +134,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="SearchGalStarChar" type="functional" >
+<t:test_case testcaseid="SearchGalStarChar" type="regression" >
     <t:objective>Search a GAL with blank within the name tag</t:objective>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -154,7 +154,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test required="true" >
 		<t:request>
             <SearchGalRequest xmlns="urn:zimbraAccount">
@@ -163,10 +163,10 @@
         </t:request>
         <t:response>
             <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>
-			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account2.name}"/>			
+			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account2.name}"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="auth2" required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -179,7 +179,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test id="SearchStarCharReq" required="true" >
 		<t:request>
             <SearchGalRequest xmlns="urn:zimbraAccount">
@@ -188,10 +188,10 @@
         </t:request>
         <t:response>
             <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account3.name}"/>
-			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account4.name}"/>						
+			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account4.name}"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 </t:tests>

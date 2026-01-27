@@ -21,7 +21,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -36,7 +36,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -49,7 +49,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -176,7 +176,7 @@
             <t:select path="//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test id="auth1" required="true">
@@ -236,7 +236,7 @@
 				<query>inid:${account1.calendar.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="fr" match="${appointment.content1}"/>
             <t:select path="//mail:SearchResponse/mail:appt" attr="fr" match="${appointment.content2}" emptyset="1"/>
         </t:response>
@@ -245,7 +245,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GrantPermission02" type="bhr" areas="Calendar" bugids="32832">
+<t:test_case testcaseid="GrantPermission02" type="sanity" areas="Calendar" bugids="32832">
     <t:objective> Verify "Allow these users to see my free/busy information" works</t:objective>
 
     <t:steps>
@@ -322,8 +322,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.pst}]}" e="${TIME(+1d)[${time.20180101120000.pst}]}" uid="${account3.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>
         </t:response>
     </t:test>
 
@@ -346,8 +346,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.pst}]}" e="${TIME(+1d)[${time.20180101120000.pst}]}" uid="${account3.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:n"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:n"/>
         </t:response>
     </t:test>
 

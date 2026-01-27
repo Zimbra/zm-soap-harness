@@ -31,7 +31,7 @@
 
 <t:test_case testcaseid="Account Setup" type="always" >
     <t:objective>basic system check</t:objective>
-    	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true">
@@ -63,7 +63,7 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
 	</t:test>
@@ -76,11 +76,11 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test >
 	    <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -89,21 +89,21 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 	    </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="Bug69488_1" type="bhr" bugids="69488">
+<t:test_case testcaseid="Bug69488_1" type="sanity" bugids="69488">
     <t:objective>ParseException when forwarding a message with a voicemail attachment</t:objective>
     <t:steps>
 	1. Inject test message
 	2. Log in as user1.
-	3. Forward message to user2. 
+	3. Forward message to user2.
     </t:steps>
-	
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${mail01.file}</filename>
@@ -112,7 +112,7 @@
 			<server>${account1.server}</server>
 		</t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 	<t:test >
@@ -174,10 +174,10 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="mail01.forward.id"/>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
-<t:test_case testcaseid="Bug69488_2" type="bhr" bugids="69488">
+<t:test_case testcaseid="Bug69488_2" type="sanity" bugids="69488">
     <t:objective>ParseException when forwarding a message with a voicemail attachment</t:objective>
     <t:steps>
 	1) UserA has attached message in the Inbox
@@ -185,7 +185,7 @@
 	3) UserB accepts and mounts UserA's Inbox
 	4) UserB attempts to forward message
     </t:steps>
-	
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${mail01.file}</filename>
@@ -194,7 +194,7 @@
 			<server>${account1.server}</server>
 		</t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
 	<t:test >
@@ -209,7 +209,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	  <t:test id="getFolderRequest">
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -220,7 +220,7 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -233,9 +233,9 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
       <t:property name="server.zimbraAccount" value="${account2.server}"/>
-  
+
       <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -248,7 +248,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test id="getFolderRequest">
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -257,8 +257,8 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
         </t:response>
     </t:test>
-    
- 
+
+
 	<t:test >
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -270,7 +270,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="folder.name"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -317,11 +317,11 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="mail01.forward.id"/>
         </t:response>
     </t:test>
-    
-    
+
+
 </t:test_case>
 
-<t:test_case testcaseid="Bug76830" type="bhr" bugids="76830">
+<t:test_case testcaseid="Bug76830" type="sanity" bugids="76830">
     <t:objective>'invalid request' error on reading Share modified mail</t:objective>
     <t:steps>
 	1) user1 and share any folder with user2 with viewer rights
@@ -329,7 +329,7 @@
 	3) user1 and modify the share rights to 'Manager' for user2
 	4) try to access the share modified email > verify perm attribute in GetMsgResponse
     </t:steps>
-	 
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 	<t:test >
@@ -344,7 +344,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	  <t:test id="getFolderRequest">
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -355,7 +355,7 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -368,9 +368,9 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
       <t:property name="server.zimbraAccount" value="${account2.server}"/>
-  
+
       <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -383,7 +383,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test id="getFolderRequest">
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -392,8 +392,8 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
         </t:response>
     </t:test>
-    
- 
+
+
 	<t:test >
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -405,8 +405,8 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="folder.name"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 	<t:test >
@@ -421,7 +421,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	  <t:test id="getFolderRequest">
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -432,7 +432,7 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -445,7 +445,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
       <t:test >
         <t:request>
             <SendShareNotificationRequest xmlns="urn:zimbraMail" action="edit">
@@ -458,11 +458,11 @@
             <t:select path="//mail:SendShareNotificationResponse"/>
         </t:response>
     </t:test>
-           
+
     <t:delay msec="3000"/>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-  
+
       <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -475,7 +475,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -487,23 +487,23 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Modified: Inbox shared by ${account1.name}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
     	<t:request>
     	 	<GetMsgRequest xmlns="urn:zimbraMail">
                 <m id="${message.id}"/>
             </GetMsgRequest>
     	</t:request>
-    	<t:response>    		
-    		<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id}']">    		
+    	<t:response>
+    		<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id}']">
     			<t:select path="//mail:su" match="Share Modified: Inbox shared by ${account1.name}"/>
-    			<t:select path="//mail:mp/mail:mp[@part='3']" attr="ct" match="xml/x-zimbra-share"/>    				       
+    			<t:select path="//mail:mp/mail:mp[@part='3']" attr="ct" match="xml/x-zimbra-share"/>
     			<t:select path="//mail:shr" attr="content" contains="perm"/>
     		</t:select>
-    	</t:response>    
+    	</t:response>
     </t:test>
-    
-    
+
+
 </t:test_case>
 
 

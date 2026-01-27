@@ -9,7 +9,7 @@
 
 <t:test_case testcaseid="Bug 56203 Account Setup" type="always" >
     <t:objective>basic system check</t:objective>
-    	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true">
@@ -41,7 +41,7 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
 	</t:test>
@@ -54,7 +54,7 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
 	</t:test>
@@ -62,15 +62,15 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Bug56203" type="bhr" bugids="56203">
+<t:test_case testcaseid="Bug56203" type="sanity" bugids="56203">
     <t:objective>Verify bug 56203: double-quotes and open-parens break encoded-words</t:objective>
     <t:steps>
 	1. Inject test message
 	2. Verify the attachment name appears correctly
-	3. Forward the message.  
+	3. Forward the message.
 	4. Verify no exceptions encountered  and message delivered and displayed properly.
     </t:steps>
-	
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${mail01.file}</filename>
@@ -79,10 +79,10 @@
 			<server>${account1.server}</server>
 		</t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -142,10 +142,10 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="mail01.forward.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -169,20 +169,20 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="mail01.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
                 <m id="${mail01.id}"/>
             </GetMsgRequest>
         </t:request>
-        
+
         <t:response>
            <t:select path="//mail:mp[@ct='text/plain' and @cd='attachment']">
     		<t:select attr="filename" match="SCH支出金额权限表-20101001.xls"/>
 			</t:select>
         </t:response>
-        
+
         <!--
 			<t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${mail01.id}']">
@@ -193,7 +193,7 @@
         </t:response>
 		 -->
     </t:test>
-    
+
 </t:test_case>
 
 

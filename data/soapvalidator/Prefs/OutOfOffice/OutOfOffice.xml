@@ -124,7 +124,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -159,7 +159,7 @@
 
 
 
-<t:test_case testcaseid="OutOfOffice01" type="sanity" bugids="15975">
+<t:test_case testcaseid="OutOfOffice01" type="functional" bugids="15975">
     <t:objective>Verify that an out of office reply contains the correct encoding for the subject</t:objective>
     <t:steps>
 	1. Login to Account2.
@@ -236,7 +236,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="OutOfOffice02" type="bhr" bugids="30548">
+<t:test_case testcaseid="OutOfOffice02" type="sanity" bugids="30548">
     <t:objective>Verify that an out of office reply works if mail is sent to alias </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -317,10 +317,10 @@
 		</t:response>
 	</t:test>
 
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="OutOfOffice03" type="bhr" bugids="84788">
+<t:test_case testcaseid="OutOfOffice03" type="sanity" bugids="84788">
     <t:objective>Verify that an out of office reply works if mail has empty subject </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
@@ -380,15 +380,15 @@
 			<t:select path="//mail:GetMsgResponse"/>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="OutOfOffice04" type="bhr" bugids="84788">
+<t:test_case testcaseid="OutOfOffice04" type="sanity" bugids="84788">
     <t:objective>Verify that an out of office reply works if mail has no subject header </t:objective>
 
 
 	<t:property name="message1.file" value="${testMailRaw.root}/bugs/84788/msg01.txt"/>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message1.file}</filename>
@@ -440,10 +440,10 @@
 			<t:select path="//mail:GetMsgResponse"/>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="OutOfOffice05" type="sanity" bugids="57009">
+<t:test_case testcaseid="OutOfOffice05" type="functional" bugids="57009">
     <t:objective>Verify that an out of office reply is not sent for BCC messages </t:objective>
 
 
@@ -484,8 +484,8 @@
 	<!-- Wait for a minute while the OOO reply is received -->
 	<t:delay sec="60"/>
 
-<!-- 
-Per http://bugzilla.zimbra.com/show_bug.cgi?id=57009 ... no OOO response should be found 
+<!--
+Per http://bugzilla.zimbra.com/show_bug.cgi?id=57009 ... no OOO response should be found
 Since the bug (enhancement) is currently open, make this test case fail by looking for the OOO response
 -->
 
@@ -500,8 +500,8 @@ Since the bug (enhancement) is currently open, make this test case fail by looki
 		</t:response>
 	</t:test>
 
-		
-		
+
+
 </t:test_case>
 
 

@@ -17,7 +17,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-	
+
 		<t:test id="ping">
 			<t:request>
 				<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -103,7 +103,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="get_task_01" type="bhr">
+<t:test_case testcaseid="get_task_01" type="sanity">
 	<t:objective>To obtain the details of a task using GetTaskRequest</t:objective>
 	<t:steps>
 		1. Create a Task.
@@ -134,11 +134,11 @@
 			<t:select path="//mail:CreateTaskResponse" attr="invId" set ="task1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:delay sec="10"/>
 
     <t:test depends="GetTaskRequest1a">
-        <t:request> 
+        <t:request>
             <GetTaskRequest  xmlns="urn:zimbraMail" id="${task1.id}"/>
         </t:request>
         <t:response>
@@ -153,13 +153,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="get_task_02" type="sanity">
+<t:test_case testcaseid="get_task_02" type="functional">
 	<t:objective>To send GetTaskRequest with id of a canceled Task. It should get moved to trash.</t:objective>
 	<t:steps>
 		1. Cancel a task.
         2. Give GetTaskRequest with id of the canceled task.
 	</t:steps>
-	
+
 	<t:test id="GetTaskRequest2a">
 		<t:request>
 			<CancelTaskRequest xmlns="urn:zimbraMail" id="${task1.id}" comp="0">
@@ -171,7 +171,7 @@
 	</t:test>
 
     <t:test depends="GetTaskRequest2a">
-        <t:request> 
+        <t:request>
             <GetTaskRequest  xmlns="urn:zimbraMail" id="${task1.id}"/>
         </t:request>
         <t:response>

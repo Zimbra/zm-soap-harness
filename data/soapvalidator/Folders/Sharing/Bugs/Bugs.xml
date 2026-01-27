@@ -21,7 +21,7 @@
     <t:objective>basic system check</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test  id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -155,7 +155,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug_30049" type="bhr" bugids="30049">
+<t:test_case testcaseid="Bug_30049" type="sanity" bugids="30049">
     <t:objective> Verify "key" grantee type for folder ACL. </t:objective>
 	<t:steps>
 		1. Login to account1
@@ -189,7 +189,7 @@
         </t:response>
 	</t:test>
 
-  
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -203,7 +203,7 @@
         </t:response>
     </t:test>
 
-    
+
 	<t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -222,10 +222,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug_23590" type="bhr" bugids="23590">
+<t:test_case testcaseid="Bug_23590" type="sanity" bugids="23590">
     <t:objective> Verify Searching Shared Folders that have subfolder works fine </t:objective>
 	<t:steps>
-		1. Crete a subfolder of inbox for account2 
+		1. Crete a subfolder of inbox for account2
 		2. Add test mails to inbox and sub-folder
 		3. Share Inbox with inh="1" with account3
 		4. Authenticate as account3 and create mountpoint
@@ -279,7 +279,7 @@ ${msg.folder}
             <t:select path="//mail:AddMsgResponse/mail:m"/>
         </t:response>
     </t:test>
-	
+
 
   <t:test>
         <t:request>
@@ -350,7 +350,7 @@ ${msg.inbox}
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg.inbox}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">

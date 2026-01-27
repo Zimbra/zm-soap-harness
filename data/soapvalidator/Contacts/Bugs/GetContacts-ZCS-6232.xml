@@ -6,7 +6,7 @@
     <t:property name="user2" value="user2_${TIME}@${domain}" />
     <t:property name="user3" value="user3_${TIME}@${domain}" />
     <t:property name="user4" value="user4_${TIME}@${domain}" />
-    
+
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
         <t:test id="ping" required="true">
@@ -18,8 +18,8 @@
             </t:response>
         </t:test>
     </t:test_case>
-    
-    <t:test_case testcaseid="CreateDLAndAddMembers" type="bhr" bugids="ZCS-6232">
+
+    <t:test_case testcaseid="CreateDLAndAddMembers" type="sanity" bugids="ZCS-6232">
         <t:objective>CheckRightsRequest Default user rights on DL</t:objective>
         <t:test required="true">
             <t:request>
@@ -53,10 +53,10 @@
                 <t:select path="//admin:CreateDomainResponse" />
             </t:response>
         </t:test>
-        
+
         <t:property name="domain1.galaccount.datasource.name" value="galaccount${TIME}${COUNTER}" />
         <t:property name="domain1.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain}" />
-        
+
         <t:test>
             <t:request>
                 <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain1.galaccount.datasource.name}" type="zimbra"
@@ -180,17 +180,17 @@
             </t:response>
         </t:test>
     </t:test_case>
-    
-    <t:test_case testcaseid="GetContactsDenyView" type="functional" bugids="ZCS-6232">
+
+    <t:test_case testcaseid="GetContactsDenyView" type="regression" bugids="ZCS-6232">
         <t:objective>Denying the user to view DL should not return the DL members in GetContactsResponse</t:objective>
         <t:steps>
         1. Deny viewDistList right to user 1 for admin.dl1.name.
         2. Allow viewDistList right to user 2 for admin.dl1.name.
         3. SyncGalRequest with user 1 auth token to get the id of admin.dl1.name.
-        4. GetContactsRequest with admin.dl1.name step 3 id to verify members are not returned in response 
+        4. GetContactsRequest with admin.dl1.name step 3 id to verify members are not returned in response
         5. SyncGalRequest with idOnly=false to verify admin.dl1.name has no members returned in SyncGalResponse.
         6. AuthRequest for user 2.
-        7. GetContactsRequest with admin.dl1.name step 3 id to verify members are returned in response 
+        7. GetContactsRequest with admin.dl1.name step 3 id to verify members are returned in response
         8. SyncGalRequest with idOnly=false to verify admin.dl1.name has members returned in SyncGalResponse.
         </t:steps>
         <t:test required="true">

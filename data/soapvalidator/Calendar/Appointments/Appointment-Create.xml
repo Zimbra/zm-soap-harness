@@ -35,7 +35,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -51,7 +51,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -64,7 +64,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -120,7 +120,7 @@
 
 <t:test_case testcaseid="acct_setup2" type="always" >
     <t:objective>login as the test account</t:objective>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -134,20 +134,20 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest3" type="functional" areas="Calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest3" type="regression" areas="Calendar">
     <t:objective>Create an appointment starting with 1 hour before the current time and ending half hour before the current time.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -168,17 +168,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest5" type="functional" areas="Calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest5" type="regression" areas="Calendar">
     <t:objective>Create an appointment starting and ending yesterday. </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -198,17 +198,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest6" type="functional" bugids="2550" areas="Calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest6" type="regression" bugids="2550" areas="Calendar">
     <t:objective>Create an appointment with non-existing account name in attendees</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account3.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account3.name}" t="t"/>
@@ -220,7 +220,7 @@
             </CreateAppointmentRequest>
         </t:request>
         <t:response>
-            <!-- <t:select path="//mail:CreateAppointmentResponse/mail:m"/> -->            <t:select path = "//mail:CreateAppointmentResponse"/>            
+            <!-- <t:select path="//mail:CreateAppointmentResponse/mail:m"/> -->            <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
 	<t:delay msec="8000"/>		<t:test>
@@ -248,17 +248,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest7" type="functional" bugids="2551" areas="Calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest7" type="regression" bugids="2551" areas="Calendar">
     <t:objective>Create an appointment which starts and end at the same time.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time1}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time1}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -278,17 +278,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest8" type="functional" bugids="2551" areas="Calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest8" type="regression" bugids="2551" areas="Calendar">
     <t:objective>Create an appointment which ends before the start time.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time2}"/>  
-                        <e d="${Time5}"/>  
+                        <s d="${Time2}"/>
+                        <e d="${Time5}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -306,17 +306,17 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest10" type="functional" areas="Calendar" bugids="4255">
+<t:test_case testcaseid = "CreateAppointmentRequest10" type="regression" areas="Calendar" bugids="4255">
     <t:objective>Create an appointment with start and end time as alphabets </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="aaaa"/>  
-                        <e d="bbbb"/>  
+                        <s d="aaaa"/>
+                        <e d="bbbb"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -338,7 +338,7 @@
 
 <t:test_case testcaseid = "CreateAppointmentRequest11" type="smoke" areas="Calendar">
     <t:objective>Create an appointment inviting multiple people.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -346,8 +346,8 @@
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account4.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -368,9 +368,9 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest12" type="functional" bugids="2550" areas="Calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest12" type="regression" bugids="2550" areas="Calendar">
     <t:objective>Create an appointment inviting multiple people in which address of one attendee is invalid .</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -378,8 +378,8 @@
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account5.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -398,12 +398,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest14" type="functional" bugids="2550" areas="Calendar" >
+<t:test_case testcaseid = "CreateAppointmentRequest14" type="regression" bugids="2550" areas="Calendar" >
     <t:objective>Create an appointment having attendee whose account has been deleted.</t:objective>
     <t:steps>1.Login to admin.
             2.delete an account.
             3.Login to mail client.
-            4.Create an appointment with attendee whose account has been deleted.        
+            4.Create an appointment with attendee whose account has been deleted.
     </t:steps>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -420,19 +420,19 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    <!-- delete an account.-->   
+
+    <!-- delete an account.-->
     <t:test>
         <t:request>
             <DeleteAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account6.id}</id>                
+                <id>${test_account6.id}</id>
             </DeleteAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-  
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
     <!-- login to mail client -->
     <t:test>
@@ -447,7 +447,7 @@
 
 
         </t:response>
-    </t:test>   
+    </t:test>
 
     <!--Create an appointment with attendee whose account has been deleted.-->
     <t:test>
@@ -456,8 +456,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account6.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account6.name}" t="t"/>
@@ -480,7 +480,7 @@
 		<t:response>
 			<t:select path="//mail:SearchResponse"/>
 		</t:response>
-	</t:test>	
+	</t:test>
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -498,15 +498,15 @@
 
 <t:test_case testcaseid = "CreateAppointmentRequest15" type="smoke" areas="calendar">
     <t:objective>create a daily appointment never ending.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time1}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time1}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -531,17 +531,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest16" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest16" type="sanity" areas="calendar">
     <t:objective>create a daily appointment ending in one month(30 days)</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -569,17 +569,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest17" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest17" type="regression" areas="calendar">
     <t:objective>create a daily appointment ending on the same day.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -606,17 +606,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest18" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest18" type="sanity" areas="calendar">
     <t:objective>create a daily appointment for(ending after) 2 times</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -642,17 +642,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest19" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest19" type="sanity" areas="calendar">
     <t:objective>create a daily appointment every 2 day never ending.</t:objective>
-    
+
     <t:test>
         <t:request>
                <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -677,17 +677,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest20" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest20" type="sanity" areas="calendar">
     <t:objective>create a daily appointment every 2 days ending in one month(30 days) </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -714,15 +714,15 @@
 
 <t:test_case testcaseid = "CreateAppointmentRequest22" type="smoke" areas="calendar">
     <t:objective>create a weekly appointment never ending.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -747,17 +747,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest23" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest23" type="sanity" areas="calendar">
     <t:objective>create a weekly appointment ending in one month(30 days)</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -784,17 +784,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest24" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest24" type="regression" areas="calendar">
     <t:objective>create a weekly appointment ending on the same day.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -821,17 +821,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest25" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest25" type="sanity" areas="calendar">
     <t:objective>create a weekly appointment for(ending after) 2 times</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -856,17 +856,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest26" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest26" type="sanity" areas="calendar">
     <t:objective>create a weekly appointment every 2 weeks never ending.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -896,15 +896,15 @@
 
 <t:test_case testcaseid = "CreateAppointmentRequest29" type="smoke" areas="calendar">
     <t:objective>create a monthly appointment never ending.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                            <s d="${Time1}"/>  
-                            <e d="${Time2}"/>  
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
                             <or a="${test_account1.name}"/>
                             <recur>
                                 <add>
@@ -929,17 +929,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest30" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest30" type="sanity" areas="calendar">
     <t:objective>create a monthly appointment ending in one month(30 days)</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -966,7 +966,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest31" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest31" type="regression" areas="calendar">
     <t:objective>create a monthly appointment ending on the same day.</t:objective>
 
     <t:test>
@@ -975,8 +975,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1003,7 +1003,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest32" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest32" type="sanity" areas="calendar">
 <t:objective>create a monthly appointment for(ending after) 2 times</t:objective>
 
     <t:test>
@@ -1012,8 +1012,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1039,7 +1039,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest33" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest33" type="regression" areas="calendar">
     <t:objective>create a monthly appointment every 2 months on 1,2 and 3rd date of month never ending </t:objective>
 
     <t:test>
@@ -1048,8 +1048,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1078,7 +1078,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest34" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest34" type="sanity" areas="calendar">
     <t:objective>create a monthly appointment every 2 months  on 1,2 and 3rd date of month ending in 6 month(180 days).</t:objective>
 
     <t:test>
@@ -1087,14 +1087,14 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
                                 <rule freq="MON" ival="2">
                                  <until d="${Time9}"/>
-              
+
                                     <bymonthday modaylist="1,2,3"/>
                                     <x-name name="repeatCustomType" value="S"/>
                                 </rule>
@@ -1116,7 +1116,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest36" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest36" type="regression" areas="calendar">
     <t:objective>create a monthly appointment every 2 months on second monday of month never ending  </t:objective>
 
     <t:test>
@@ -1125,8 +1125,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1156,7 +1156,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest37" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest37" type="sanity" areas="calendar">
     <t:objective>create a monthly appointment every 2 months on second monday of month ending in 6 month(180 days) .</t:objective>
 
     <t:test>
@@ -1165,8 +1165,8 @@
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                             <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                            <s d="${Time1}"/>  
-                            <e d="${Time2}"/>  
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
                             <or a="${test_account1.name}"/>
                             <recur>
                                 <add>
@@ -1195,7 +1195,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest40" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest40" type="sanity" areas="calendar">
     <t:objective>create a yearly appointment ending in one month(30 days)</t:objective>
 
     <t:test>
@@ -1204,8 +1204,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1233,7 +1233,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest41" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest41" type="regression" areas="calendar">
     <t:objective>create a yearly appointment ending on the same day.</t:objective>
 
     <t:test>
@@ -1242,8 +1242,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1270,7 +1270,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest42" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest42" type="sanity" areas="calendar">
     <t:objective>create a yearly appointment for(ending after) 1 time</t:objective>
 
     <t:test>
@@ -1279,8 +1279,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1306,7 +1306,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest43" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest43" type="sanity" areas="calendar">
     <t:objective>create a yearly appointment on a date of May </t:objective>
 
     <t:test>
@@ -1315,8 +1315,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1345,7 +1345,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest44" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest44" type="sanity" areas="calendar">
     <t:objective>create a yearly appointment on a date of May ending in 3 years(1080 days)</t:objective>
 
     <t:test>
@@ -1354,8 +1354,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1383,7 +1383,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest46" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest46" type="sanity" areas="calendar">
     <t:objective>create a yearly appointment on the last monday of april never ending.</t:objective>
 
     <t:test>
@@ -1404,7 +1404,7 @@
                                     </byday>
                                 </rule>
                             </add>
-                        </recur>    
+                        </recur>
                     </inv>
                     <mp content-type="text/plain">
                         <content>${appointment.content}</content>
@@ -1422,7 +1422,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest47" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest47" type="sanity" areas="calendar">
     <t:objective>create a yearly appointment on the last monday of april ending in one month(30 days)</t:objective>
 
     <t:test>
@@ -1431,8 +1431,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1462,7 +1462,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest49" type="bhr" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest49" type="sanity" areas="calendar">
     <t:objective>create a yearly appointment on the last monday of april for(ending after) 1 time</t:objective>
 
     <t:test>
@@ -1471,8 +1471,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1512,11 +1512,11 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF"  allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
-                    <!-- Matt: is this a typo? 
+                    <!-- Matt: is this a typo?
                     <e a="${test_account2.name}" t="t"/>
                      -->
                     <mp content-type="text/plain">
@@ -1535,7 +1535,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest51" type="bhr" areas="calendar" bugids="4106">
+<t:test_case testcaseid = "CreateAppointmentRequest51" type="sanity" areas="calendar" bugids="4106">
     <t:objective>create a all day daily appointment ending in one month(30 days)</t:objective>
 
     <t:test>
@@ -1544,8 +1544,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1572,7 +1572,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest52" type="functional" areas="calendar"   bugids="4106">
+<t:test_case testcaseid = "CreateAppointmentRequest52" type="regression" areas="calendar"   bugids="4106">
     <t:objective>create a all day daily appointment ending on the same day.</t:objective>
 
     <t:test>
@@ -1581,8 +1581,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1609,7 +1609,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest53" type="bhr" areas="calendar" bugids="4106">
+<t:test_case testcaseid = "CreateAppointmentRequest53" type="sanity" areas="calendar" bugids="4106">
     <t:objective>create a all day daily appointment for(ending after) 1 time</t:objective>
 
     <t:test>
@@ -1618,8 +1618,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1645,7 +1645,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest54" type="functional" areas="calendar"   bugids="4106">
+<t:test_case testcaseid = "CreateAppointmentRequest54" type="regression" areas="calendar"   bugids="4106">
     <t:objective>create a all day daily appointment every 2 day never ending.</t:objective>
 
     <t:test>
@@ -1654,8 +1654,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O"   allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1678,17 +1678,17 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest57" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest57" type="regression" areas="calendar">
     <t:objective>create a daily appointment ending one month(30 days) before the current day</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1713,17 +1713,17 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest58" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest58" type="regression" areas="calendar">
     <t:objective>create a daily appointment for(ending after) -1 times</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1748,17 +1748,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest59" type="functional" areas="calendar">
-    <t:objective>create a daily appointment for(ending after) 0 times</t:objective> 
-    
+<t:test_case testcaseid = "CreateAppointmentRequest59" type="regression" areas="calendar">
+    <t:objective>create a daily appointment for(ending after) 0 times</t:objective>
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1783,17 +1783,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest60" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest60" type="regression" areas="calendar">
     <t:objective>create a daily appointment every -2 days never ending.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1818,17 +1818,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest61" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest61" type="regression" areas="calendar">
     <t:objective>create a daily appointment every 0 days never ending.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1853,17 +1853,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest62" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest62" type="regression" areas="calendar">
     <t:objective>create a weekly appointment ending one month(30 days) before the current day</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1890,17 +1890,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest63" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest63" type="regression" areas="calendar">
     <t:objective>create a weekly appointment for(ending after) -1 times</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1925,17 +1925,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest64" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest64" type="regression" areas="calendar">
     <t:objective>create a weekly appointment for(ending after) 0 times</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -1960,17 +1960,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest65" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest65" type="regression" areas="calendar">
     <t:objective>create a weekly appointment every -2 weeks never ending.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2000,17 +2000,17 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest66" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest66" type="regression" areas="calendar">
     <t:objective>create a weekly appointment every 0 weeks never ending.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2040,7 +2040,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest67" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest67" type="regression" areas="calendar">
     <t:objective>create a monthly appointment ending one month(30 days) before the current day.</t:objective>
 
     <t:test>
@@ -2049,8 +2049,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2078,7 +2078,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest68" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest68" type="regression" areas="calendar">
     <t:objective>create a monthly appointment for(ending after) -1 times</t:objective>
 
     <t:test>
@@ -2087,8 +2087,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2113,7 +2113,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest69" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest69" type="regression" areas="calendar">
     <t:objective>create a monthly appointment for(ending after) 0 times</t:objective>
 
     <t:test>
@@ -2122,8 +2122,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2146,7 +2146,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "CreateAppointmentRequest71" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest71" type="regression" areas="calendar">
     <t:objective>create a monthly appointment every 0 months  on 1,2 and 3rd date of month never ending.</t:objective>
 
     <t:test>
@@ -2155,8 +2155,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2184,7 +2184,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest72" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest72" type="regression" areas="calendar">
     <t:objective>create a monthly appointment every -2 months on second monday of month never ending .</t:objective>
 
         <t:test>
@@ -2193,8 +2193,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2224,7 +2224,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest73" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest73" type="regression" areas="calendar">
     <t:objective>create a monthly appointment every 0 months on second monday of month never ending  .</t:objective>
 
     <t:test>
@@ -2233,8 +2233,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2264,7 +2264,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest74" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest74" type="regression" areas="calendar">
     <t:objective>create a yearly appointment ending in one month(30 days) before the current day.</t:objective>
 
     <t:test>
@@ -2273,8 +2273,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2301,7 +2301,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest75" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest75" type="regression" areas="calendar">
     <t:objective>create a yearly appointment for(ending after) -1 times</t:objective>
 
     <t:test>
@@ -2310,8 +2310,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2336,7 +2336,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest76" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest76" type="regression" areas="calendar">
     <t:objective>create a yearly appointment for(ending after) 0 times</t:objective>
 
     <t:test>
@@ -2345,8 +2345,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2371,7 +2371,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest77" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest77" type="regression" areas="calendar">
     <t:objective>create a yearly appointment on the last monday of april ending in one month(30 days) before the current day.</t:objective>
 
     <t:test>
@@ -2380,8 +2380,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2413,7 +2413,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest78" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest78" type="regression" areas="calendar">
     <t:objective>create a yearly appointment  on the last monday of april for(ending after) -1 times</t:objective>
 
     <t:test>
@@ -2422,8 +2422,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                     <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                    <s d="${Time1}"/>  
-                    <e d="${Time2}"/>  
+                    <s d="${Time1}"/>
+                    <e d="${Time2}"/>
                     <or a="${test_account1.name}"/>
                     <recur>
                         <add>
@@ -2454,7 +2454,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest79" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest79" type="regression" areas="calendar">
     <t:objective>create a yearly appointment on the last monday of april for(ending after) 0 times</t:objective>
 
     <t:test>
@@ -2463,8 +2463,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2495,7 +2495,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest80" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest80" type="regression" areas="calendar">
     <t:objective>create a all day daily appointment ending in one month(30 days) before the current day</t:objective>
 
     <t:test>
@@ -2504,8 +2504,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2533,7 +2533,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest81" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest81" type="regression" areas="calendar">
     <t:objective>create a all day daily appointment for(ending after) -1 times</t:objective>
 
     <t:test>
@@ -2542,8 +2542,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2568,7 +2568,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest82" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest82" type="regression" areas="calendar">
     <t:objective>create a all day daily appointment for(ending after) 0 times</t:objective>
 
     <t:test>
@@ -2577,8 +2577,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2603,7 +2603,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest83" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest83" type="regression" areas="calendar">
     <t:objective>create a all day daily appointment every -2 days never ending.</t:objective>
 
     <t:test>
@@ -2612,8 +2612,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                         <recur>
                             <add>
@@ -2638,7 +2638,7 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest84" type="functional" areas="calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest84" type="regression" areas="calendar">
     <t:objective>create a all day daily appointment every 0 days never ending.</t:objective>
 
     <t:test>
@@ -2647,8 +2647,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time11}"/>  
-                        <e d="${Time11}"/>  
+                        <s d="${Time11}"/>
+                        <e d="${Time11}"/>
                         <or a="${test_account1.name}"/>
                             <recur>
                                 <add>
@@ -2675,14 +2675,14 @@
 
 <t:test_case testcaseid = "CreateAppointmentRequest85" type="smoke" areas="Calendar">
     <t:objective>Create an appointment with valid values and time zone included.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}" tz="(GMT-10.00) Hawaii"/>  
+                        <s d="${Time1}" tz="(GMT-10.00) Hawaii"/>
                         <e d="${Time2}" tz="(GMT-10.00) Hawaii"/>
                         <or a="${test_account1.name}"/>
                     </inv>
@@ -2703,9 +2703,9 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest86" type="bhr" areas="Calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest86" type="sanity" areas="Calendar">
     <t:objective>Create an appointment with invalid time zone in start time.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -2733,9 +2733,9 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest87" type="bhr" areas="Calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest87" type="sanity" areas="Calendar">
     <t:objective>Create an appointment with invalid time zone in end time.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -2763,9 +2763,9 @@
 
 
 
-<t:test_case testcaseid = "CreateAppointmentRequest88" type="bhr" areas="Calendar">
+<t:test_case testcaseid = "CreateAppointmentRequest88" type="sanity" areas="Calendar">
     <t:objective>Create an appointment with invalid time zone in start and end time.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -2793,9 +2793,9 @@
 
 
 
-<t:test_case testcaseid="appointment_create4258A" type="sanity" bugids="4258">
+<t:test_case testcaseid="appointment_create4258A" type="functional" bugids="4258">
     <t:objective>create a lot of appointments in an account to test 4258</t:objective>
-   
+
 	<t:property name="4258acct1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
 	<t:property name="4258acct2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
@@ -2812,7 +2812,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -2838,7 +2838,7 @@
         </t:response>
     </t:test>
 
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
     <t:test >
         <t:request>
@@ -2853,16 +2853,16 @@
 
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+1h)}"/>  
-                        <e d="${ICALTIME(+2h)}"/>  
+                        <s d="${ICALTIME(+1h)}"/>
+                        <e d="${ICALTIME(+2h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -2884,8 +2884,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+3h)}"/>  
-                        <e d="${ICALTIME(+4h)}"/>  
+                        <s d="${ICALTIME(+3h)}"/>
+                        <e d="${ICALTIME(+4h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -2907,8 +2907,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+5h)}"/>  
-                        <e d="${ICALTIME(+6h)}"/>  
+                        <s d="${ICALTIME(+5h)}"/>
+                        <e d="${ICALTIME(+6h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -2930,8 +2930,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+7h)}"/>  
-                        <e d="${ICALTIME(+8h)}"/>  
+                        <s d="${ICALTIME(+7h)}"/>
+                        <e d="${ICALTIME(+8h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -2953,8 +2953,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+9h)}"/>  
-                        <e d="${ICALTIME(+10h)}"/>  
+                        <s d="${ICALTIME(+9h)}"/>
+                        <e d="${ICALTIME(+10h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -2976,8 +2976,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+11h)}"/>  
-                        <e d="${ICALTIME(+12h)}"/>  
+                        <s d="${ICALTIME(+11h)}"/>
+                        <e d="${ICALTIME(+12h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -2999,8 +2999,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+13h)}"/>  
-                        <e d="${ICALTIME(+14h)}"/>  
+                        <s d="${ICALTIME(+13h)}"/>
+                        <e d="${ICALTIME(+14h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3022,8 +3022,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+15h)}"/>  
-                        <e d="${ICALTIME(+16h)}"/>  
+                        <s d="${ICALTIME(+15h)}"/>
+                        <e d="${ICALTIME(+16h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3045,8 +3045,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+17h)}"/>  
-                        <e d="${ICALTIME(+18h)}"/>  
+                        <s d="${ICALTIME(+17h)}"/>
+                        <e d="${ICALTIME(+18h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3068,8 +3068,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+19h)}"/>  
-                        <e d="${ICALTIME(+20h)}"/>  
+                        <s d="${ICALTIME(+19h)}"/>
+                        <e d="${ICALTIME(+20h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3091,8 +3091,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+21h)}"/>  
-                        <e d="${ICALTIME(+22h)}"/>  
+                        <s d="${ICALTIME(+21h)}"/>
+                        <e d="${ICALTIME(+22h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3114,8 +3114,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+23h)}"/>  
-                        <e d="${ICALTIME(+24h)}"/>  
+                        <s d="${ICALTIME(+23h)}"/>
+                        <e d="${ICALTIME(+24h)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3137,8 +3137,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+1440m)}"/>  
-                        <e d="${ICALTIME(+1500m)}"/>  
+                        <s d="${ICALTIME(+1440m)}"/>
+                        <e d="${ICALTIME(+1500m)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3160,8 +3160,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+2880m)}"/>  
-                        <e d="${ICALTIME(+2960m)}"/>  
+                        <s d="${ICALTIME(+2880m)}"/>
+                        <e d="${ICALTIME(+2960m)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3183,8 +3183,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+4320m)}"/>  
-                        <e d="${ICALTIME(+4400m)}"/>  
+                        <s d="${ICALTIME(+4320m)}"/>
+                        <e d="${ICALTIME(+4400m)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3206,8 +3206,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+5760m)}"/>  
-                        <e d="${ICALTIME(+5860m)}"/>  
+                        <s d="${ICALTIME(+5760m)}"/>
+                        <e d="${ICALTIME(+5860m)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3229,8 +3229,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+7200m)}"/>  
-                        <e d="${ICALTIME(+7280m)}"/>  
+                        <s d="${ICALTIME(+7200m)}"/>
+                        <e d="${ICALTIME(+7280m)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3252,8 +3252,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+8640m)}"/>  
-                        <e d="${ICALTIME(+8720m)}"/>  
+                        <s d="${ICALTIME(+8640m)}"/>
+                        <e d="${ICALTIME(+8720m)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3275,8 +3275,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="appointment">
                         <at role="OPT" ptst="NE" rsvp="1" a="${4258acct2.name}"/>
-                        <s d="${ICALTIME(+10080m)}"/>  
-                        <e d="${ICALTIME(+10160m)}"/>  
+                        <s d="${ICALTIME(+10080m)}"/>
+                        <e d="${ICALTIME(+10160m)}"/>
                         <or a="${4258acct1.name}"/>
                     </inv>
                     <e a="${4258acct2.name}" t="t"/>
@@ -3305,7 +3305,7 @@
 
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 

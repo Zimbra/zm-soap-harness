@@ -71,7 +71,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -97,7 +97,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
 	    </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -109,12 +109,12 @@
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
 	    </t:response>
-    </t:test>               
+    </t:test>
 
 </t:test_case>
 
 
- <t:test_case testcaseid="ZCS-371_FilterByNameAdminNS" type="functional" bugids="ZCS-371">
+ <t:test_case testcaseid="ZCS-371_FilterByNameAdminNS" type="regression" bugids="ZCS-371">
     <t:objective>Execute Modify and Get Filter Request by Username for Admin namespace</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -134,7 +134,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -143,7 +143,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="parentfolder.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -166,7 +166,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -176,7 +176,7 @@
                         <filterVariables xmlns="urn:zimbraMail">
                                 <filterVariable name="var" value="${folder1.name}" />
                                 <filterVariable name="var_new" value="${dollar}{var}" />
-                        </filterVariables>						
+                        </filterVariables>
 						<filterTests condition="anyof" xmlns="urn:zimbraMail">
 							<headerTest header="Subject" stringComparison="is" value="${msg01.subject}" />
 						</filterTests>
@@ -184,7 +184,7 @@
 				            <actionFileInto folderPath="Inbox/${dollar}{var_new}" index="0"/>
 				            <actionStop index="1"/>
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -197,7 +197,7 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account1.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterVariables//mail:filterVariable" attr="value" contains="var"/>
@@ -213,7 +213,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -226,7 +226,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -237,9 +237,9 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg01.subject}"/>
         </t:response>
     </t:test>
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="ZCS-371_FilterByIDAdminNS" type="functional" bugids="ZCS-371">
+<t:test_case testcaseid="ZCS-371_FilterByIDAdminNS" type="regression" bugids="ZCS-371">
     <t:objective>Execute Modify and Get Filter Request by ID for Admin namespace</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -259,7 +259,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -268,7 +268,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="parentfolder.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -291,7 +291,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -301,7 +301,7 @@
                         <filterVariables xmlns="urn:zimbraMail">
                                 <filterVariable name="var" value="${folder1.name}" />
                                 <filterVariable name="var_new" value="${dollar}{var}" />
-                        </filterVariables>						
+                        </filterVariables>
 						<filterTests condition="anyof" xmlns="urn:zimbraMail">
 							<headerTest header="Subject" stringComparison="is" value="${msg01.subject}" />
 						</filterTests>
@@ -309,7 +309,7 @@
 				            <actionFileInto folderPath="Inbox/${dollar}{var_new}" index="0"/>
 				            <actionStop index="1"/>
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -322,7 +322,7 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account2.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterVariables//mail:filterVariable" attr="value" contains="var"/>
@@ -338,7 +338,7 @@
 			<server>${account2.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -351,7 +351,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -362,9 +362,9 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg01.subject}"/>
         </t:response>
     </t:test>
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="ZCS-371_TagTestByID" type="functional" bugids="ZCS-371">
+<t:test_case testcaseid="ZCS-371_TagTestByID" type="regression" bugids="ZCS-371">
     <t:objective>Execute Modify and Get Filter Request by UserID</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -383,7 +383,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -392,7 +392,7 @@
 					<filterRule name="${filter1.name}" active="1">
                         <filterVariables xmlns="urn:zimbraMail">
                                 <filterVariable name="tagname" value="newtag" />
-                        </filterVariables>						
+                        </filterVariables>
 						<filterTests condition="anyof" xmlns="urn:zimbraMail">
 							<headerTest header="Subject" stringComparison="is" value="${msg01.subject}" />
 						</filterTests>
@@ -400,7 +400,7 @@
 				            <actionTag tagName="${dollar}{tagname}"/>
 				            <actionStop index="1"/>
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -413,7 +413,7 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account3.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterVariables//mail:filterVariable" attr="name" match="tagname"/>
@@ -429,7 +429,7 @@
 			<server>${account3.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -442,7 +442,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -454,10 +454,10 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="tn" set="newtag" />
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-371_TagTestByName" type="functional" bugids="ZCS-371">
+<t:test_case testcaseid="ZCS-371_TagTestByName" type="regression" bugids="ZCS-371">
     <t:objective>Execute Modify and Get Filter Request by Username</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -476,7 +476,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -485,7 +485,7 @@
 					<filterRule name="${filter1.name}" active="1">
                         <filterVariables xmlns="urn:zimbraMail">
                                 <filterVariable name="tagname" value="newtag" />
-                        </filterVariables>						
+                        </filterVariables>
 						<filterTests condition="anyof" xmlns="urn:zimbraMail">
 							<headerTest header="Subject" stringComparison="is" value="${msg02.subject}" />
 						</filterTests>
@@ -493,7 +493,7 @@
 				            <actionTag tagName="${dollar}{tagname}"/>
 				            <actionStop index="1"/>
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -506,7 +506,7 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account2.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterVariables//mail:filterVariable" attr="name" match="tagname"/>
@@ -522,7 +522,7 @@
 			<server>${account2.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -535,7 +535,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -547,10 +547,10 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="tn" set="newtag" />
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-371_FilterByName_zimbraMailNS" type="functional" bugids="ZCS-371">
+<t:test_case testcaseid="ZCS-371_FilterByName_zimbraMailNS" type="regression" bugids="ZCS-371">
     <t:objective>Execute Modify and Get Filter Request by Username for zimbraMail namespace</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -570,7 +570,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -579,7 +579,7 @@
 					<filterRule name="${filter1.name}" active="1">
                         <filterVariables>
                                 <filterVariable name="tagname" value="newtag" />
-                        </filterVariables>						
+                        </filterVariables>
 						<filterTests condition="anyof" xmlns="urn:zimbraMail">
 							<headerTest header="Subject" stringComparison="is" value="${msg01.subject}" />
 						</filterTests>
@@ -587,7 +587,7 @@
 				            <actionTag tagName="${dollar}{tagname}"/>
 				            <actionStop index="1"/>
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -600,7 +600,7 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail">
             	<account by="name">${account4.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterVariables//mail:filterVariable" attr="name" match="tagname"/>
@@ -616,7 +616,7 @@
 			<server>${account4.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -629,7 +629,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -641,10 +641,10 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="tn" set="newtag" />
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-371_FilterByName_JsonzimbraMailNS" type="functional" bugids="ZCS-371">
+<t:test_case testcaseid="ZCS-371_FilterByName_JsonzimbraMailNS" type="regression" bugids="ZCS-371">
     <t:objective>Execute Modify and Get Json Filter Request by Username for zimbraMail namespace</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -664,7 +664,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -673,7 +673,7 @@
 					<filterRule name="${filter1.name}" active="1">
                         <filterVariables>
                                 <filterVariable name="tagname" value="newtag" />
-                        </filterVariables>						
+                        </filterVariables>
 						<filterTests condition="anyof" xmlns="urn:zimbraMail">
 							<headerTest header="Subject" stringComparison="is" value="${msg01.subject}" />
 						</filterTests>
@@ -681,7 +681,7 @@
 				            <actionTag tagName="${dollar}{tagname}"/>
 				            <actionStop index="1"/>
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -698,7 +698,7 @@
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail">
             	<account by="name">${account5.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterVariables//mail:filterVariable" attr="name" match="tagname"/>
@@ -714,7 +714,7 @@
 			<server>${account5.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -727,7 +727,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -739,10 +739,10 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="tn" set="newtag" />
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-371_FilterByID_JsonAdminNS" type="functional" bugids="ZCS-371">
+<t:test_case testcaseid="ZCS-371_FilterByID_JsonAdminNS" type="regression" bugids="ZCS-371">
     <t:objective>Execute Modify and Get Filter Json Request by ID for Admin Namespace</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -761,7 +761,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -770,7 +770,7 @@
 					<filterRule name="${filter1.name}" active="1">
                         <filterVariables xmlns="urn:zimbraMail">
                                 <filterVariable name="tagname" value="newtag" />
-                        </filterVariables>						
+                        </filterVariables>
 						<filterTests condition="anyof" xmlns="urn:zimbraMail">
 							<headerTest header="Subject" stringComparison="is" value="${msg02.subject}" />
 						</filterTests>
@@ -778,7 +778,7 @@
 				            <actionTag tagName="${dollar}{tagname}"/>
 				            <actionStop index="1"/>
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -791,11 +791,11 @@
         <t:requestContext>
         	<authToken>${authToken}</authToken>
             <format type="js"/>
-        </t:requestContext>    
+        </t:requestContext>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             	<account by="name">${account5.name}</account>
-            </GetFilterRulesRequest>	
+            </GetFilterRulesRequest>
 	 </t:request>
 	 <t:response>
             <t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/admin:filterVariables//admin:filterVariable" attr="name" match="tagname"/>
@@ -811,7 +811,7 @@
 			<server>${account5.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -824,7 +824,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -836,7 +836,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="tn" set="newtag" />
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 </t:tests>

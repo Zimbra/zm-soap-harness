@@ -7,15 +7,15 @@
         value="user2.${TIME}${COUNTER}@${defaultdomain.name}" />
     <t:property name="account3.name"
         value="user3.${TIME}${COUNTER}@${defaultdomain.name}" />
-    
+
 
     <!-- Variables declaration -->
     <t:property name="mail_subject_1" value="test mail" />
     <t:property name="mail_content" value="test content" />
-   
+
     <!-- Sieve rules declaration -->
 
-        
+
       <t:property name="sieve_rule1" value='
         require ["fileinto", "reject", "tag", "flag"];
         if anyof (address :all :contains :comparator "i;ascii-casemap" ["to"] "user") {
@@ -76,11 +76,11 @@
         </t:test>
 </t:test_case>
 
-    
+
     <!-- Tests -->
-    
+
    <t:test_case testcaseid="bug106993_1"
-        type="functional" bugids="106993">
+        type="regression" bugids="106993">
         <t:objective> Regression</t:objective>
 
         <t:test required="true">
@@ -151,7 +151,7 @@
             </t:response>
         </t:test>
     </t:test_case>
-   
-    
-   
+
+
+
 </t:tests>

@@ -48,7 +48,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -61,7 +61,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 	<!-- account1 creates an appointment -->
@@ -86,11 +86,11 @@
                 <filterRules>
 					<filterRule name="filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="subject${TIME}${COUNTER}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="subject${TIME}${COUNTER}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -100,7 +100,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
 	<t:test required="true">
@@ -119,7 +119,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_User_GetFilterRulesRequest_Basic01" type="bhr" bugids="62702">
+<t:test_case testcaseid="AccountBy_User_GetFilterRulesRequest_Basic01" type="sanity" bugids="62702">
     <t:objective>Use a user token with accountby to GetFilterRulesRequest</t:objective>
     <t:steps>
     1. Use user0 authtoken with accountby=user1 to GetFilterRulesRequest - PERM_DENIED

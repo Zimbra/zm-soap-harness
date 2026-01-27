@@ -19,7 +19,7 @@
     </t:test>
 
 </t:test_case>
- 
+
 <t:test_case testcaseid="bug89682" type="always" bugids="89682">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -54,12 +54,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug89682" type="bhr" bugids="89682" >
+<t:test_case testcaseid="bug89682" type="sanity" bugids="89682" >
     <t:objective>Error when importing .ics file calendar from GoToMeeting in Zimbra 8</t:objective>
 	<t:steps>
 		1. Upload the webinar.ics and verify its uploaded correctly
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -107,14 +107,14 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="1374517800000" calExpandInstEnd="1409077800000" types="appointment">
 				<query>inid:"${calendar.folder.id}"</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt" attr="invId" set="ical1.invId"/>
             	<t:select path="//mail:appt" attr="dur" match="0" emptyset="1"/>  <!--  should be 86400000 -->
@@ -122,7 +122,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
-</t:test_case> 
+
+</t:test_case>
 
 </t:tests>

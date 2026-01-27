@@ -62,7 +62,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -86,7 +86,7 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
@@ -97,7 +97,7 @@
 <t:steps>
 1. Account1 save message to draft with all required fields.
 2. Account1 Send message to account2 using send from draft.
-3. Verify account receives correct message. 
+3. Verify account receives correct message.
 </t:steps>
 
  	<t:test id="auth" required="true">
@@ -132,7 +132,7 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
    <t:test>
         <t:request>
@@ -144,9 +144,9 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
- 
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -174,12 +174,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SendFromDraft02" type="bhr">
+<t:test_case testcaseid="SendFromDraft02" type="sanity">
   <t:objective>Send mail from saved draft with attachment </t:objective>
 <t:steps>
 1. Account1 save message to draft  with attachment and all required fields.
 2. Account1 Send message to account2 using send from draft.
-3. Verify account receives correct message with attachment. 
+3. Verify account receives correct message with attachment.
 </t:steps>
 
  	<t:test id="auth" required="true">
@@ -221,13 +221,13 @@
                     </mp>
 					<attach aid="${message1.aid}" />
                 </m>
-				
+
             </SaveDraftRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
    <t:test>
         <t:request>
@@ -239,9 +239,9 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
- 
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -278,16 +278,16 @@
 	         </t:select>
         </t:response>
     </t:test>
-	
+
 
 
 </t:test_case>
 
-<t:test_case testcaseid="SendFromDraft03" type="bhr">
+<t:test_case testcaseid="SendFromDraft03" type="sanity">
   <t:objective>Send mail from non existing draft id </t:objective>
 <t:steps>
 1. Account1 Send mail from non existing draft id.
-2. Verify it gives error. 
+2. Verify it gives error.
 </t:steps>
 
  	<t:test id="auth" required="true">
@@ -314,17 +314,17 @@
             <t:select path="//zimbra:Code" match="mail.NO_SUCH_MSG"/>
         </t:response>
     </t:test>
- 
+
 
 
 </t:test_case>
 
-<t:test_case testcaseid="SendFromDraft04" type="bhr">
+<t:test_case testcaseid="SendFromDraft04" type="sanity">
   <t:objective>Send mail from saved draft without recipients </t:objective>
 <t:steps>
 1. Account1 save message to draft with all required fields.
 2. Account1 Send message to account2 using send from draft.
-3. Verify Send Message fail. 
+3. Verify Send Message fail.
 </t:steps>
 
  	<t:test id="auth" required="true">
@@ -348,7 +348,7 @@
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
                 <m>
-                    
+
                     <su>${subject1} </su>
                     <mp ct="text/plain">
                         <content>${content1}</content>
@@ -359,7 +359,7 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
    <t:test>
         <t:request>
@@ -371,16 +371,16 @@
             <t:select path="//zimbra:Code" match="mail.SEND_FAILURE"/>
         </t:response>
     </t:test>
- 
- 
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SendFromDraft05" type="bhr">
+<t:test_case testcaseid="SendFromDraft05" type="sanity">
   <t:objective>Send mail from saved draft </t:objective>
 <t:steps>
 1. Account1 save message to draft with all required fields.
 2. Account1 Send message to account2 using send from draft also add cc/bcc field.
-3. Verify account receives correct message to all recipients.. 
+3. Verify account receives correct message to all recipients..
 </t:steps>
 
  	<t:test id="auth" required="true">
@@ -417,7 +417,7 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
    <t:test>
         <t:request>
@@ -432,9 +432,9 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
- 
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -460,7 +460,7 @@
 	</t:test>
 
 	    <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -486,7 +486,7 @@
 	</t:test>
 
 		    <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -511,16 +511,16 @@
 		</t:response>
 	</t:test>
 
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="SendFromDraft_conversation01" type="bhr">
+<t:test_case testcaseid="SendFromDraft_conversation01" type="sanity">
     <t:objective>Send mail from saved draft as reply of a conversation </t:objective>
-    
+
     <t:steps>
         1. Account 1 send an email to account 2(message1)
         2. Account 2 forward back to account1(message2)
-        3. Account 1 get the conversation id       
+        3. Account 1 get the conversation id
         4  Save draft reply with original id(message1).
         5. Send Mail to account2 using draft id.
     </t:steps>
@@ -538,7 +538,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -555,9 +555,9 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -571,7 +571,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -588,7 +588,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id2"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
  	<t:test id="auth" required="true">
@@ -631,8 +631,8 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
        <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -643,9 +643,9 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
         </t:response>
     </t:test>
- 
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">

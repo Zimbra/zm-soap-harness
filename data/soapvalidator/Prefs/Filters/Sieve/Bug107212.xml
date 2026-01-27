@@ -46,7 +46,7 @@ replaceheader :newvalue "[NEWVAL] ${mail_subject}" :is "X-Sieve-Header1" "Oldval
 log "done";'/>
 
 <t:property name="sieve_rule6" value='require ["editheader", "log"];
-replaceheader :index 2 :newname "X-Sieve-HeaderNew" :newvalue "[NEWVAL] ${mail_subject}" :matches "X-Sieve-Header2" "Oldval2 Oldvalabc"; 
+replaceheader :index 2 :newname "X-Sieve-HeaderNew" :newvalue "[NEWVAL] ${mail_subject}" :matches "X-Sieve-Header2" "Oldval2 Oldvalabc";
 log "done";'/>
 
 <t:property name="sieve_rule8" value='require ["editheader", "log", "variables"];
@@ -72,7 +72,7 @@ log "Sieve rule 11";
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin" />
@@ -81,12 +81,12 @@ log "Sieve rule 11";
 			<t:select path="//admin:PingResponse" />
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="acctSetup1" type="functional">
+<t:test_case testcaseid="acctSetup1" type="regression">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -110,7 +110,7 @@ log "Sieve rule 11";
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -119,7 +119,7 @@ log "Sieve rule 11";
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -135,7 +135,7 @@ log "Sieve rule 11";
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
         </t:response>
        </t:test>
-	                
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -162,8 +162,8 @@ log "Sieve rule 11";
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test>   
-  
+    </t:test>
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -176,7 +176,7 @@ log "Sieve rule 11";
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -190,7 +190,7 @@ log "Sieve rule 11";
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account4.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test required="true">
@@ -219,7 +219,7 @@ log "Sieve rule 11";
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account6.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -233,42 +233,42 @@ log "Sieve rule 11";
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account7.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account8.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraCOSId">${cosid}</a>                
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account8.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct8.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account9.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraCOSId">${cosid}</a>              
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account9.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct9.server"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account10.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraCOSId">${cosid}</a>                
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -276,13 +276,13 @@ log "Sieve rule 11";
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct10.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account11.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraCOSId">${cosid}</a>                
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -290,13 +290,13 @@ log "Sieve rule 11";
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct11.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account12.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraCOSId">${cosid}</a>               
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -304,14 +304,14 @@ log "Sieve rule 11";
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct12.server"/>
         </t:response>
     </t:test>
-                              
+
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule1" type="functional" bugids="107212">
+<t:test_case testcaseid="bug107212_rule1" type="regression" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using "matches"</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for a user to match multiline header and replace it with new one as per the sieve rule
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -324,19 +324,19 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account2.id}</id>
-                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule1}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule1}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -344,7 +344,7 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -370,23 +370,23 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -397,14 +397,14 @@ log "Sieve rule 11";
 			<t:select attr="X-Sieve-Header3" match="Oldval3"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
- 
-<t:test_case testcaseid="bug107212_rule2" type="functional" bugids="107212">
+
+<t:test_case testcaseid="bug107212_rule2" type="regression" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using "is"</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for a user to match multiline header and replace it with new one as per the sieve rule
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -417,19 +417,19 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account3.id}</id>
-                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule2}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule2}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -437,7 +437,7 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -463,23 +463,23 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -490,14 +490,14 @@ log "Sieve rule 11";
 			<t:select attr="X-Sieve-Header3" match="Oldval3"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule3" type="functional" bugids="107212">
+<t:test_case testcaseid="bug107212_rule3" type="regression" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using contains</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for a user to match multiline header and replace it with new one as per the sieve rule
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -510,19 +510,19 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account4.id}</id>
-                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule3}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule3}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -530,7 +530,7 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -556,23 +556,23 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -583,14 +583,14 @@ log "Sieve rule 11";
 			<t:select attr="X-Sieve-Header3" match="Oldval3"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule4" type="functional" bugids="107212">
+<t:test_case testcaseid="bug107212_rule4" type="regression" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using contains and space in the match value</t:objective>
-    <steps> 
+    <steps>
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -603,19 +603,19 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account5.id}</id>
-                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule4}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule4}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -623,7 +623,7 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -649,23 +649,23 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -676,14 +676,14 @@ log "Sieve rule 11";
 			<t:select attr="X-Sieve-Header3" match="Oldval3Oldvalabc"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
-</t:test_case>  
 
-<t:test_case testcaseid="bug107212_rule5" type="functional" bugids="107212">
+</t:test_case>
+
+<t:test_case testcaseid="bug107212_rule5" type="regression" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail where mime has multiple multi line headers</t:objective>
-    <steps> 
+    <steps>
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -696,19 +696,19 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account6.id}</id>
-                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule5}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule5}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -716,7 +716,7 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -742,23 +742,23 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -769,14 +769,14 @@ log "Sieve rule 11";
 			<t:select attr="X-Sieve-Header3" match="Oldval3Oldvalabc"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule6" type="functional" bugids="107212">
+<t:test_case testcaseid="bug107212_rule6" type="regression" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using index value</t:objective>
-    <steps> 
+    <steps>
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -789,19 +789,19 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account7.id}</id>
-                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule6}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule6}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -809,7 +809,7 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -835,23 +835,23 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -862,14 +862,14 @@ log "Sieve rule 11";
 			<t:select attr="X-Sieve-Header3" match="Oldval3Oldvalabc"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
-</t:test_case>   
 
-<t:test_case testcaseid="bug107212_rule8" type="functional" bugids="107212">
+</t:test_case>
+
+<t:test_case testcaseid="bug107212_rule8" type="regression" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using dollar1</t:objective>
-    <steps> 
+    <steps>
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -882,19 +882,19 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account9.id}</id>
-                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule8}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule8}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -902,7 +902,7 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -928,23 +928,23 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -955,14 +955,14 @@ log "Sieve rule 11";
 			<t:select attr="X-Sieve-Header3" match="Oldval3Oldvalabc"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
-</t:test_case> 
 
-<t:test_case testcaseid="bug107212_rule9" type="functional" bugids="107212">
+</t:test_case>
+
+<t:test_case testcaseid="bug107212_rule9" type="regression" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail if mime has 3-4 multiline value in header</t:objective>
-    <steps> 
+    <steps>
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -975,19 +975,19 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account10.id}</id>
-                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule9}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule9}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -995,7 +995,7 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1021,23 +1021,23 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -1048,14 +1048,14 @@ log "Sieve rule 11";
 			<t:select attr="X-Sieve-Header3" match="Oldval3Oldvalabc"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule10" type="functional" bugids="107212">
+<t:test_case testcaseid="bug107212_rule10" type="regression" bugids="107212">
    <t:objective>Verify all the matching headers should be deleted using :matches</t:objective>
-    <steps> 
+    <steps>
         1. Verify the matching header is deleted if value has some part of it in all headers.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -1068,19 +1068,19 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account11.id}</id>
-                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule10}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule10}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1088,7 +1088,7 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1114,23 +1114,23 @@ log "Sieve rule 11";
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -1144,7 +1144,7 @@ log "Sieve rule 11";
 
 </t:test_case>
 
-	<t:test_case testcaseid="bug107212_SieveRule11" type="functional" bugids="107212">
+	<t:test_case testcaseid="bug107212_SieveRule11" type="regression" bugids="107212">
 		<t:objective>Add a sieve rule to delete custom header and verify the mime via rest servlet</t:objective>
 
 		<t:test required="true">
@@ -1220,11 +1220,11 @@ log "Sieve rule 11";
 				<t:select attr="X-Test-Header" match="unRandom" emptyset="0" />
 			</t:restServletResponse>
 		</t:resttest>
-	</t:test_case>	     
+	</t:test_case>
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1245,9 +1245,9 @@ log "Sieve rule 11";
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 
-    </t:finally>-->   
+    </t:finally>-->
 </t:tests>

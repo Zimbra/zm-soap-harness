@@ -31,7 +31,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -40,13 +40,13 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="admin_auth_domain_max_account" type="always" >
     <t:objective>Login to Admin Account</t:objective>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -62,10 +62,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug_54928" type="bhr" bugids="54928">
-<t:objective>Modify account/cos request should be allowed after account limit reached.</t:objective>    
+<t:test_case testcaseid="bug_54928" type="sanity" bugids="54928">
+<t:objective>Modify account/cos request should be allowed after account limit reached.</t:objective>
     <t:steps>
-		1. Create 2 COS 
+		1. Create 2 COS
 		2. Create a domain which allows 4 accounts to be made at max. limit 2 for each cos and default cos as cos1.
 		3. Create account1 with default cos i.e cos1 .
 		4. Create account2 with cos2
@@ -81,7 +81,7 @@
     <t:test  required="true">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name>${cos1.name}</name>        
+                <name>${cos1.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -93,7 +93,7 @@
    <t:test  required="true">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos2.name}</name>        
+                <name xmlns="">${cos2.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -104,7 +104,7 @@
 
     <t:test>
         <t:request>
-            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
   				<name>${domain.name}</name>
 				<a n="zimbraDomainDefaultCOSId">${cos1.id}</a>
 				<a n="zimbraDomainCOSMaxAccounts">${cos1.id}:${cos1.max.limit}</a>
@@ -116,7 +116,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -128,14 +128,14 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server1"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
                 <password>${defaultpassword.value}</password>
-				<a n="zimbraCOSId">${cos2.id}</a>	
+				<a n="zimbraCOSId">${cos2.id}</a>
             </CreateAccountRequest>
         </t:request>
          <t:response>
@@ -143,7 +143,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraCOSId"]' match="${cos2.id}"/>
 	    <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server2"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -156,19 +156,19 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server3"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account4.name}</name>
-                <password>${defaultpassword.value}</password>	
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
              <t:select path = "//zimbra:Code" match = "^account.TOO_MANY_ACCOUNTS$"/>
        </t:response>
-    </t:test> 
+    </t:test>
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -182,22 +182,22 @@
 	   		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraCOSId"]' match="${cos2.id}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server4"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account5.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraCOSId">${cos2.id}</a>	
+                <a n="zimbraCOSId">${cos2.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
              <t:select path = "//zimbra:Code" match = "^account.TOO_MANY_ACCOUNTS$"/>
        </t:response>
-    </t:test> 
-    
-    
+    </t:test>
+
+
     <t:test>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -209,7 +209,7 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-     
+
     <t:test>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -221,7 +221,7 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -233,7 +233,7 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -245,8 +245,8 @@
                 <t:select path = "//zimbra:Code" match = "^account.TOO_MANY_ACCOUNTS$"/>
         </t:response>
     </t:test>
-    
-    
+
+
      <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -254,14 +254,14 @@
                 <a n="zimbraFeatureCalendarEnabled">TRUE</a>
                 <a n="zimbraPrefMailInitialSearch">in:inbox</a>
                 <a c="1" n="description">New cos for modification </a>
-                <a n="zimbraNewMailNotificationFrom">Notification </a>    
+                <a n="zimbraNewMailNotificationFrom">Notification </a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${cos1.id}"/>
         </t:response>
     </t:test>
-    
+
       <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -269,7 +269,7 @@
                 <a n="zimbraFeatureCalendarEnabled">TRUE</a>
                 <a n="zimbraPrefMailInitialSearch">in:inbox</a>
                 <a c="1" n="description">New cos for modification </a>
-                <a n="zimbraNewMailNotificationFrom">Notification </a>    
+                <a n="zimbraNewMailNotificationFrom">Notification </a>
             </ModifyCosRequest>
         </t:request>
         <t:response>

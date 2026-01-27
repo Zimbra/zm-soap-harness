@@ -95,7 +95,7 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -104,15 +104,15 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
-    
+
     </t:test_case>
 
-    <t:test_case testcaseid="bug106846_rule1" type="functional" bugids="106846">
+    <t:test_case testcaseid="bug106846_rule1" type="regression" bugids="106846">
         <t:objective>notify - if body param is not specified, a notification with empty body should be sent</t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -123,7 +123,7 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
-        </t:test>        
+        </t:test>
 
         <t:test>
             <t:request>
@@ -215,7 +215,7 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -236,7 +236,7 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 

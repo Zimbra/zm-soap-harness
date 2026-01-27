@@ -11,7 +11,7 @@
 <t:property name="COS.name7" value="cos${TIME}${COUNTER}"/>
 
 
-<t:test_case testcaseid="CreateCosRequest_01" type="bhr">
+<t:test_case testcaseid="CreateCosRequest_01" type="sanity">
     <t:objective>Sanity test for CreateCosRequest</t:objective>
 
 	<t:test>
@@ -25,11 +25,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name1}</name>        
+                <name xmlns="">${COS.name1}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -40,7 +40,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CopyCosRequest_01" type="bhr" >
+<t:test_case testcaseid="CopyCosRequest_01" type="sanity" >
     <t:objective>Sanity test for CopyCosRequest</t:objective>
 
 	<t:test id="admin_login" required="true" >
@@ -54,11 +54,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name2}</name>        
+                <name xmlns="">${COS.name2}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -70,17 +70,17 @@
         <t:request>
             <CopyCosRequest xmlns="urn:zimbraAdmin">
                 <name>${COS.copyname}</name>
-                <cos by="id"> ${Cos2.id}</cos>       
+                <cos by="id"> ${Cos2.id}</cos>
             </CopyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CopyCosResponse/admin:cos" attr="name" match="${COS.copyname}"/>            
+            <t:select path="//admin:CopyCosResponse/admin:cos" attr="name" match="${COS.copyname}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="GetCosRequest_01" type="bhr" >
+<t:test_case testcaseid="GetCosRequest_01" type="sanity" >
     <t:objective>Sanity test for GetCosRequest</t:objective>
 
 	<t:test id="admin_login" required="true" >
@@ -94,11 +94,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name3}</name>        
+                <name xmlns="">${COS.name3}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -108,18 +108,18 @@
 
 	<t:test>
         <t:request>
-            <GetCosRequest xmlns="urn:zimbraAdmin">                
-                <cos by="id"> ${Cos3.id}</cos>       
+            <GetCosRequest xmlns="urn:zimbraAdmin">
+                <cos by="id"> ${Cos3.id}</cos>
             </GetCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="${COS.name3}"/>            
+            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="${COS.name3}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCosRequest_01" type="bhr" >
+<t:test_case testcaseid="ModifyCosRequest_01" type="sanity" >
     <t:objective>Sanity test for ModifyCosRequest</t:objective>
 
 	<t:test id="admin_login" required="true" >
@@ -133,11 +133,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name4}</name>        
+                <name xmlns="">${COS.name4}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -148,18 +148,18 @@
 	<t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-            	<id>${Cos4.id}</id>            
-            	<a n="zimbraMailQuota">20</a>       
+            	<id>${Cos4.id}</id>
+            	<a n="zimbraMailQuota">20</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="name" match="${COS.name4}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="name" match="${COS.name4}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="RenameCosRequest_01" type="functional" bugsids="zcs-8393" >
+<t:test_case testcaseid="RenameCosRequest_01" type="regression" bugsids="zcs-8393" >
     <t:objective>Sanity test for RenameCosRequest</t:objective>
 
 	<t:test id="admin_login" required="true" >
@@ -173,11 +173,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name5}</name>        
+                <name xmlns="">${COS.name5}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -188,19 +188,19 @@
 	<t:test>
         <t:request>
             <RenameCosRequest xmlns="urn:zimbraAdmin">
-            	<id>${Cos5.id}</id>            
-            	<newName>${COS.newname}</newName>       
+            	<id>${Cos5.id}</id>
+            	<newName>${COS.newname}</newName>
             </RenameCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:RenameCosResponse/admin:cos" attr="name" match="${COS.newname}"/>            
+            <t:select path="//admin:RenameCosResponse/admin:cos" attr="name" match="${COS.newname}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteCosRequest01" type="bhr" >
+<t:test_case testcaseid="DeleteCosRequest01" type="sanity" >
     <t:objective>Sanity test for DeleteCosRequest</t:objective>
 
 	<t:test id="admin_login" required="true" >
@@ -214,11 +214,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name6}</name>        
+                <name xmlns="">${COS.name6}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -229,17 +229,17 @@
 	<t:test>
         <t:request>
             <DeleteCosRequest xmlns="urn:zimbraAdmin">
-            	<id>${Cos6.id}</id>   
+            	<id>${Cos6.id}</id>
             </DeleteCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:DeleteCosResponse"/>            
+            <t:select path="//admin:DeleteCosResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="DelegatedAdminConstraintsRequest_01" type="bhr" >
+<t:test_case testcaseid="DelegatedAdminConstraintsRequest_01" type="sanity" >
     <t:objective>Sanity test for ModifyDelegatedAdminConstraintsRequest, GetDelegatedAdminConstraintsRequest</t:objective>
 
 	<t:test id="admin_login" required="true" >
@@ -253,18 +253,18 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name7}</name>        
+                <name xmlns="">${COS.name7}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="Cos7.id"/>
         </t:response>
     </t:test>
- 
+
 	<t:test>
         <t:request>
             <ModifyDelegatedAdminConstraintsRequest xmlns="urn:zimbraAdmin" type="cos" name="${COS.name7}">
@@ -272,31 +272,31 @@
 				    <constraint>
 				      <max>524288000</max>
 				      <min>20971520</min>
-				    </constraint>      
-				</a>         	
+				    </constraint>
+				</a>
             </ModifyDelegatedAdminConstraintsRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyDelegatedAdminConstraintsResponse"/>            
+            <t:select path="//admin:ModifyDelegatedAdminConstraintsResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetDelegatedAdminConstraintsRequest xmlns="urn:zimbraAdmin" type="cos" name="${COS.name7}">
-            	<a name="zimbraMailQuota"/>      	
+            	<a name="zimbraMailQuota"/>
             </GetDelegatedAdminConstraintsRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:GetDelegatedAdminConstraintsResponse/admin:a/admin:constraint"/>            
+            <t:select path="//admin:GetDelegatedAdminConstraintsResponse/admin:a/admin:constraint"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="GetAllCosRequest01" type="bhr" >
+<t:test_case testcaseid="GetAllCosRequest01" type="sanity" >
     <t:objective>Sanity test for GetAllCosRequest </t:objective>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -308,7 +308,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetAllCosRequest/>
@@ -321,9 +321,9 @@
 </t:test_case>
 
 <!--
-<t:test_case testcaseid="GetClusterStatusRequest_01" type="bhr" >
+<t:test_case testcaseid="GetClusterStatusRequest_01" type="sanity" >
     <t:objective>Sanity Test for GetClusterStatusRequest </t:objective>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -335,7 +335,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request xmlns="urn:zimbraAdmin">
             <GetClusterStatusRequest/>

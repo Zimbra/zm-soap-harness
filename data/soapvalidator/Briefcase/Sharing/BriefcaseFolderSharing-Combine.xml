@@ -90,7 +90,7 @@
     <t:objective>Create test accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
+
     <t:test  id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -184,7 +184,7 @@
     <t:test >
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name >${cos4.name}</name>        
+                <name >${cos4.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -360,7 +360,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_01" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_01" type="sanity">
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and a group (delete)</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -371,7 +371,7 @@
 		6. Get document1 (success)
 		7. Delete document1 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -388,7 +388,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -408,7 +408,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -417,7 +417,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -427,10 +427,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document1.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document1.id"/>
         </t:response>
     </t:test>
-    
+
 
     <t:test >
         <t:request>
@@ -518,7 +518,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_02" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_02" type="sanity">
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and a domain (delete)</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -529,7 +529,7 @@
 		5. Get document2 (success)
 		5. Delete document2 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -545,7 +545,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -565,7 +565,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder2.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -574,7 +574,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -584,7 +584,7 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document2.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document2.id"/>
         </t:response>
     </t:test>
 
@@ -675,7 +675,7 @@
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_03" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_03" type="sanity">
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and a COS (delete)</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -686,7 +686,7 @@
 		5. Get document3 (success)
 		5. Delete document3 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -722,7 +722,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder3.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -731,7 +731,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -741,10 +741,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document3.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -833,7 +833,7 @@
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_04" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_04" type="sanity">
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and all (delete)</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -844,7 +844,7 @@
 		6. Get document4 (success)
 		7. Delete document4 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -860,7 +860,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -880,7 +880,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder4.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -889,7 +889,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -899,7 +899,7 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document4.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document4.id"/>
         </t:response>
     </t:test>
 
@@ -991,7 +991,7 @@
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_05" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_05" type="sanity">
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and a pub (delete)</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -1002,7 +1002,7 @@
 		5. Get document5 (success)
 		5. Delete document5 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -1019,7 +1019,7 @@
 
         </t:response>
     </t:test>
-    
+
        <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -1039,7 +1039,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder5.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -1048,7 +1048,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -1058,7 +1058,7 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document5.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document5.id"/>
         </t:response>
     </t:test>
 
@@ -1151,7 +1151,7 @@
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_06" type="sanity" >
+<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_06" type="functional" >
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and a guest (delete)</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -1162,7 +1162,7 @@
 		6. Get document6 (PERM_DENIED - requires password?)
 		7. Delete document6 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -1179,7 +1179,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -1199,7 +1199,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder6.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -1208,7 +1208,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -1218,9 +1218,9 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document6.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document6.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -1311,7 +1311,7 @@
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_07" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_07" type="sanity">
     <t:objective>Verify that different combinations of rights can be combined (read + insert)</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -1322,7 +1322,7 @@
 		6. Get document7 (success)
 		7. Add a new document7 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -1338,7 +1338,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -1358,7 +1358,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder7.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -1367,7 +1367,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -1377,10 +1377,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document7.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document7.id"/>
         </t:response>
     </t:test>
-    
+
 
     <t:test >
         <t:request>
@@ -1456,7 +1456,7 @@
             <t:select path="//mail:GetItemResponse/mail:doc"/>
         </t:response>
     </t:test>
-    
+
     <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account11.document.htmlfile}</filename>
@@ -1465,7 +1465,7 @@
 			<t:select attr="id" set="document.htmlfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -1475,16 +1475,16 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account2.document7.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account2.document7.id"/>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_08" type="sanity" >
+<t:test_case testcaseid="BriefcaseFoldersSharingCombineBasic_08" type="functional" >
     <t:objective>Verify the specific rights read and none are combined: both should be applied meaning read access allowed</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -1495,7 +1495,7 @@
 		6. Mount the drive (success)
 		7. Get document8 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -1512,7 +1512,7 @@
 
         </t:response>
     </t:test>
-    
+
        <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -1532,7 +1532,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder8.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -1541,7 +1541,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -1551,7 +1551,7 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document8.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document8.id"/>
         </t:response>
     </t:test>
 

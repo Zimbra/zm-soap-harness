@@ -40,7 +40,7 @@
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
 
-	
+
 
     <t:test required="true">
         <t:request>
@@ -53,7 +53,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 	<!-- Create a contact -->
@@ -79,20 +79,20 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account1.contact1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
 	</t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountId_Admin_GetContactsRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountId_Admin_GetContactsRequest_Basic01" type="sanity">
     <t:objective>Use an admin token to GetContactsRequest</t:objective>
     <t:steps>
     1. Login as admin

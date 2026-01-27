@@ -47,21 +47,21 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 
 
 
-<t:test_case testcaseid="twitterTest_01" type="bhr" bugids="42185" >
+<t:test_case testcaseid="twitterTest_01" type="sanity" bugids="42185" >
 
     <t:objective>Verify that twitter direct message is filtered for twitterTest filter</t:objective>
-    
+
     <t:steps> 1. Create filter with twitterTest to flag for account1
-			  2. Inject a twitter direct message to the user(account1) 
+			  2. Inject a twitter direct message to the user(account1)
 			  3. Verify that the message gets flagged.
     </t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -75,27 +75,27 @@
         </t:response>
     </t:test>
 
-	<t:property name="filter_twitter.name" value="filter${TIME}${COUNTER}"/>	
-	<t:property name="filter_twitter1.subject" value="filter${TIME}${COUNTER}"/>	
-	
-	<!-- 
+	<t:property name="filter_twitter.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_twitter1.subject" value="filter${TIME}${COUNTER}"/>
+
+	<!--
 Test Case: twitterTest_01 (Bug)
 Note: Original test used <twitterTest/> element which is not working correctly.
 Updated to use headerExistsTest which achieves the same filtering goal.
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_twitter.name}" active="1">
 						<filterTests condition="allof">
-						 <twitterTest/>						
+						 <twitterTest/>
 						</filterTests>
 						<filterActions>
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -103,10 +103,10 @@ Updated to use headerExistsTest which achieves the same filtering goal.
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
-	
+
+
 	<t:property name="twitter_msg02.file" value="${testMailRaw.root}/bug42185/twitter-direct-msg.txt" />
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${twitter_msg02.file}</filename>
@@ -119,9 +119,9 @@ Updated to use headerExistsTest which achieves the same filtering goal.
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
--->	
-	
-	
+-->
+
+
 	<t:test>
     <t:request>
         <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -174,18 +174,18 @@ Updated to use headerExistsTest which achieves the same filtering goal.
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_twitter1.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']" />
         </t:response>
-    </t:test>	
-    
-</t:test_case> 
+    </t:test>
 
-<t:test_case testcaseid="twitterTest_02" type="bhr" bugids="42185" >
+</t:test_case>
+
+<t:test_case testcaseid="twitterTest_02" type="sanity" bugids="42185" >
     <t:objective>Verify that twitter mentioned message is filtered for twitterTest</t:objective>
-    
+
     <t:steps> 1. Create filter with twitterTest to flag
-			  2. Inject a twitter mentioned message to the user 
+			  2. Inject a twitter mentioned message to the user
 			  3. Verify that the message gets flagged.
     </t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -199,32 +199,32 @@ Updated to use headerExistsTest which achieves the same filtering goal.
         </t:response>
     </t:test>
 
-	<t:property name="filter_twitter.name" value="filter${TIME}${COUNTER}"/>	
-	<t:property name="filter_twitter2.subject" value="filter${TIME}${COUNTER}"/>	
-	<!-- 
+	<t:property name="filter_twitter.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_twitter2.subject" value="filter${TIME}${COUNTER}"/>
+	<!--
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_twitter.name}" active="1">
 						<filterTests condition="allof">
-						 <twitterTest/>						
+						 <twitterTest/>
 						</filterTests>
 						<filterActions>
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
-    </t:test>   
-	
+    </t:test>
+
 	<t:property name="twitter_msg03.file" value="${testMailRaw.root}/bug42185/twitter-mention.txt" />
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${twitter_msg03.file}</filename>
@@ -236,11 +236,11 @@ Updated to use headerExistsTest which achieves the same filtering goal.
                 <header a="Subject">${filter_twitter2.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
-	
+    </t:mailinjecttest>
+
 -->
 
-	
+
 <t:test>
     <t:request>
         <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -257,7 +257,7 @@ Updated to use headerExistsTest which achieves the same filtering goal.
                         <actionFlag flagName="flagged"/>
                         <actionStop/>
                     </filterActions>
-                </filterRule>                                  
+                </filterRule>
             </filterRules>
         </ModifyFilterRulesRequest>
     </t:request>
@@ -267,7 +267,7 @@ Updated to use headerExistsTest which achieves the same filtering goal.
 </t:test>
 
 	<t:property name="twitter_msg03.file" value="${testMailRaw.root}/bug42185/twitter-mention.txt" />
-    
+
 <t:mailinjecttest>
     <t:lmtpInjectRequest>
         <filename>${twitter_msg03.file}</filename>
@@ -291,8 +291,8 @@ Updated to use headerExistsTest which achieves the same filtering goal.
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_twitter2.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']" />
         </t:response>
-    </t:test>	     
-   
-</t:test_case> 
+    </t:test>
+
+</t:test_case>
 
 </t:tests>

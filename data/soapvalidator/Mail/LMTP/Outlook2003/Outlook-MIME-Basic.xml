@@ -10,7 +10,7 @@
 <t:property name="msg02.file" value="${root}/outlook2003-htmlformatted.txt"/>
 <t:property name="msg03.file" value="${root}/outlook2003-attachments.txt"/>
 <t:property name="msg04.file" value="${root}/outlook2003-rtfformatted.txt"/>
-    
+
 <t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject2.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject3.valid" value="Subject${TIME}${COUNTER}"/>
@@ -20,11 +20,11 @@
 <t:property name="attachment1.name" value="Sample.jpg"/>
 <t:property name="attachment2.type" value="application/vnd.ms-excel"/>
 <t:property name="attachment2.name" value="SOAPTask_TBD.xls"/>
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
-    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -33,16 +33,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
+
 
 <t:test_case testcaseid="acctSetup1_Outlook_MIMEBasic" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create a test account        
+             2. Create a test account
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -54,7 +54,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -69,7 +69,7 @@
     </t:test>
 
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 <t:test_case testcaseid="acctSetup2_Outlook_MIMEBasic" type="always">
@@ -92,7 +92,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_Outlook_MIMEBasic1" type="bhr">
+<t:test_case testcaseid="lmtp_Outlook_MIMEBasic1" type="sanity">
     <t:objective>Verify a MIME message in text format from an account configured to Outlook2003 </t:objective>
     <t:steps>
         1. Upload a message
@@ -113,7 +113,7 @@
                 <header a="Subject">${subject1.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_Outlook_MIMEBasic1a">
         <t:request>
@@ -126,7 +126,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_Outlook_MIMEBasic1a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -137,12 +137,12 @@
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg1.id}"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="text/plain"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="lmtp_Outlook_MIMEBasic2" type="bhr">
+
+<t:test_case testcaseid="lmtp_Outlook_MIMEBasic2" type="sanity">
     <t:objective>Verify a MIME message in HTML format from an account configured to Outlook2003 </t:objective>
     <t:steps>
         1. Upload a message
@@ -163,7 +163,7 @@
                 <header a="Subject">${subject2.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_Outlook_MIMEBasic2a">
         <t:request>
@@ -176,7 +176,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_Outlook_MIMEBasic2a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -185,15 +185,15 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg2.id}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/alternative"/>            
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/alternative"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='text/html']"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-   
 
-<t:test_case testcaseid="lmtp_Outlook_MIMEBasic3" type="bhr">
+
+<t:test_case testcaseid="lmtp_Outlook_MIMEBasic3" type="sanity">
     <t:objective>Verify a MIME message with attachments from an account configured to Outlook2003 </t:objective>
     <t:steps>
         1. Upload a message
@@ -214,7 +214,7 @@
                 <header a="Subject">${subject3.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_Outlook_MIMEBasic3a">
         <t:request>
@@ -227,7 +227,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_Outlook_MIMEBasic3a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -236,17 +236,17 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg3.id}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/mixed"/>            
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/mixed"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='multipart/alternative']"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>            
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-    
- 
-<t:test_case testcaseid="lmtp_Outlook_MIMEBasic4" type="sanity">
+
+
+<t:test_case testcaseid="lmtp_Outlook_MIMEBasic4" type="functional">
     <t:objective>Verify a MIME message in RTF format from an account configured to Outlook2003 </t:objective>
     <t:steps>
         1. Upload a message
@@ -267,7 +267,7 @@
                 <header a="Subject">${subject4.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_Outlook_MIMEBasic4a">
         <t:request>
@@ -280,7 +280,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_Outlook_MIMEBasic4a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -293,8 +293,8 @@
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='multipart/alternative']"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp/mail:mp[@ct='text/html']"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case>    
-    
+</t:test_case>
+
 </t:tests>

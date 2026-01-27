@@ -12,7 +12,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    	
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -27,7 +27,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AccountSetup" type="functional">
+<t:test_case testcaseid="AccountSetup" type="regression">
     <t:objective>Create account.</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -55,7 +55,7 @@
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
 	    <t:request>
@@ -65,7 +65,7 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
 	</t:test>
@@ -77,16 +77,16 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CustomHeader_SendMsgRequest01" type="functional" bugids="50277">
+<t:test_case testcaseid="CustomHeader_SendMsgRequest01" type="regression" bugids="50277">
     <t:objective>Verify send receive message with custom header </t:objective>
     	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<!-- Login to the account -->
 	<t:test >
 		<t:request>
@@ -100,13 +100,13 @@
 		</t:response>
 	</t:test>
     <t:property name="subject1" value="sub${TIME}.${COUNTER}"/>
-  
+
 	<t:test>
 	 <t:request>
 	    <SendMsgRequest xmlns="urn:zimbraMail">
 	    <m>
-		 <header name="${header1.name}">${header1.value}</header>	
-		 <header name="${header2.name}">${header2.value}</header>	
+		 <header name="${header1.name}">${header1.value}</header>
+		 <header name="${header2.name}">${header2.value}</header>
 		   <e t="t" a='${account2.name}'/>
 		   <su>${subject1}</su>
 		   <mp ct="text/plain">
@@ -121,7 +121,7 @@
 	</t:test>
 
     	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 
 	<!-- Login to the account -->
 	<t:test >
@@ -147,10 +147,10 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id" />
 		</t:response>
 	</t:test>
-    
 
-        
- 
+
+
+
     <t:test >
 		<t:request>
 			<GetMsgRequest xmlns="urn:zimbraMail" >
@@ -164,14 +164,14 @@
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:header[@n='${header1.name}']"  match="${header1.value}"/>
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:header[@n='${header2.name}']"  match="${header2.value}"/>
 		</t:response>
-	</t:test>    
-    
+	</t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="CustomHeader_SendMsgRequest02" type="functional" bugids="50277">
+<t:test_case testcaseid="CustomHeader_SendMsgRequest02" type="regression" bugids="50277">
     <t:objective>Verify send receive message with not configured custom header gives error</t:objective>
     	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<!-- Login to the account -->
 	<t:test >
 		<t:request>
@@ -185,12 +185,12 @@
 		</t:response>
 	</t:test>
     <t:property name="subject1a" value="sub${TIME}.${COUNTER}"/>
-  
+
 	<t:test>
 	 <t:request>
 	    <SendMsgRequest xmlns="urn:zimbraMail">
 	    <m>
-		 <header name="X-NonConfigurred">Some text</header>	
+		 <header name="X-NonConfigurred">Some text</header>
 		   <e t="t" a='${account2.name}'/>
 		   <su>${subject1a}</su>
 		   <mp ct="text/plain">
@@ -205,11 +205,11 @@
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CustomHeader_SaveDraftRequest01" type="functional" bugids="50277">
+<t:test_case testcaseid="CustomHeader_SaveDraftRequest01" type="regression" bugids="50277">
     <t:objective>Verify save draft message with custom header </t:objective>
 
     	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<!-- Login to the account -->
 	<t:test >
 		<t:request>
@@ -223,13 +223,13 @@
 		</t:response>
 	</t:test>
     <t:property name="subject2" value="sub${TIME}.${COUNTER}"/>
-  
+
     <t:test id="saveDraftRequest1a">
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
                 <m>
- 				   <header name="${header1.name}">${header1.value}</header>	
-				   <header name="${header2.name}">${header2.value}</header>	
+ 				   <header name="${header1.name}">${header1.value}</header>
+				   <header name="${header2.name}">${header2.value}</header>
                     <e t="t" a='${account2.name}'/>
                     <su> ${subject2} </su>
                     <mp ct="text/plain">
@@ -242,7 +242,7 @@
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
 		<t:request>
 			<GetMsgRequest xmlns="urn:zimbraMail" >
@@ -256,15 +256,15 @@
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:header[@n='${header1.name}']"  match="${header1.value}"/>
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:header[@n='${header2.name}']"  match="${header2.value}"/>
 		</t:response>
-	</t:test>    
-  
+	</t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="CustomHeader_SaveDraftRequest02" type="functional" bugids="50277">
+<t:test_case testcaseid="CustomHeader_SaveDraftRequest02" type="regression" bugids="50277">
     <t:objective>Verify save draft message with non configured custom header gives error</t:objective>
 
     	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<!-- Login to the account -->
 	<t:test >
 		<t:request>
@@ -278,12 +278,12 @@
 		</t:response>
 	</t:test>
     <t:property name="subject2a" value="sub${TIME}.${COUNTER}"/>
-  
+
     <t:test id="saveDraftRequest1a">
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
                 <m>
- 				   <header name="X-NonConfigured">${header1.value}</header>	
+ 				   <header name="X-NonConfigured">${header1.value}</header>
                     <e t="t" a='${account2.name}'/>
                     <su> ${subject2a} </su>
                     <mp ct="text/plain">
@@ -296,12 +296,12 @@
             <t:select path="//zimbra:Code"/>
         </t:response>
     </t:test>
- </t:test_case>   
+ </t:test_case>
 
-<t:test_case testcaseid="CustomHeader_CreateAppointmentRequest01" type="functional" bugids="50277">
+<t:test_case testcaseid="CustomHeader_CreateAppointmentRequest01" type="regression" bugids="50277">
     <t:objective>Create Appointment with custom header </t:objective>
     	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<!-- Login to the account -->
 	<t:test >
 		<t:request>
@@ -321,12 +321,12 @@
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                	<header name="${header1.name}">${header1.value}</header>	
-				   <header name="${header2.name}">${header2.value}</header>	 
+                	<header name="${header1.name}">${header1.value}</header>
+				   <header name="${header2.name}">${header2.value}</header>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${subject3}" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${account2.name}" t="t"/>
@@ -343,7 +343,7 @@
     </t:test>
 
     	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 
 	<!-- Login to the account -->
 	<t:test >
@@ -370,7 +370,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="appt1.id" />
 		</t:response>
 	</t:test>
-    
+
     <t:test >
 		<t:request>
 			<GetMsgRequest xmlns="urn:zimbraMail" >
@@ -384,16 +384,16 @@
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:header[@n='${header1.name}']"  match="${header1.value}"/>
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:header[@n='${header2.name}']"  match="${header2.value}"/>
 		</t:response>
-	</t:test>    
-    
+	</t:test>
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="CustomHeader_CreateAppointmentRequest02" type="functional" bugids="50277">
+<t:test_case testcaseid="CustomHeader_CreateAppointmentRequest02" type="regression" bugids="50277">
     <t:objective>Create Appointment with non configured custom header gives error</t:objective>
     	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<!-- Login to the account -->
 	<t:test >
 		<t:request>
@@ -413,11 +413,11 @@
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                	<header name="X-NonExist">Dummy</header>	
+                	<header name="X-NonExist">Dummy</header>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${subject3}" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${account2.name}" t="t"/>
@@ -432,5 +432,5 @@
             <t:select path = "//zimbra:Code"/>
         </t:response>
     </t:test>
-</t:test_case>    
+</t:test_case>
 </t:tests>

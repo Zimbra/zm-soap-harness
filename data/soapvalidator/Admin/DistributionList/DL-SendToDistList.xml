@@ -63,8 +63,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="dl_sendToDistList01" type="bhr" bugids="74149" >
-    <t:objective>Provide sendToDistList to a internal user </t:objective>    
+<t:test_case testcaseid="dl_sendToDistList01" type="sanity" bugids="74149" >
+    <t:objective>Provide sendToDistList to a internal user </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -78,7 +78,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -90,23 +90,23 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
     		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount"  >
             	<dl by="id">${account1.dl1.id}</dl>
-                 <action op="setRights">                  	
+                 <action op="setRights">
 				    <right right="sendToDistList">
 				    	<grantee type="email" by="name">${account2.name}</grantee>
-				    </right>          
+				    </right>
                  </action>
           	</DistributionListActionRequest>
         </t:request>
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -117,14 +117,14 @@
         <t:response>
         	<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl1.name}']/acct:rights/acct:right/acct:grantee" attr="name" match="${account2.name}" />
        		<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl1.name}']/acct:rights/acct:right/acct:grantee" attr="type" match="gst" />
-       		
+
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="dl_sendToDistList02" type="bhr" bugids="74149" >
-    <t:objective>Provide sendToDistList to a external user </t:objective>    
+<t:test_case testcaseid="dl_sendToDistList02" type="sanity" bugids="74149" >
+    <t:objective>Provide sendToDistList to a external user </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -138,7 +138,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -150,23 +150,23 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl2.id" />
     		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount"  >
             	<dl by="id">${account1.dl2.id}</dl>
-                 <action op="setRights">                  	
+                 <action op="setRights">
 				    <right right="sendToDistList">
 				    	<grantee type="email" by="name">${POP3.Yahoo.username}</grantee>
-				    </right>          
+				    </right>
                  </action>
           	</DistributionListActionRequest>
         </t:request>
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -177,14 +177,14 @@
         <t:response>
         	<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl2.name}']/acct:rights/acct:right/acct:grantee" attr="name" match="${POP3.Yahoo.username}" />
        		<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl2.name}']/acct:rights/acct:right/acct:grantee" attr="type" match="gst" />
-       		
+
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="dl_sendToDistList03" type="bhr" bugids="74149" >
-    <t:objective>Provide sendToDistList to a external  and internal user </t:objective>    
+<t:test_case testcaseid="dl_sendToDistList03" type="sanity" bugids="74149" >
+    <t:objective>Provide sendToDistList to a external  and internal user </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -198,7 +198,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -210,24 +210,24 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl3.id" />
     		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount"  >
             	<dl by="id">${account1.dl3.id}</dl>
-                 <action op="setRights">                  	
+                 <action op="setRights">
 				    <right right="sendToDistList">
 				    	<grantee type="email" by="name">${POP3.Yahoo.username}</grantee>
 				    	<grantee type="email" by="name">${account2.name}</grantee>
-				    </right>          
+				    </right>
                  </action>
           	</DistributionListActionRequest>
         </t:request>
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -240,7 +240,7 @@
        		<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl3.name}']/acct:rights/acct:right/acct:grantee" attr="type" match="gst" />
        		<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl3.name}']/acct:rights/acct:right/acct:grantee" attr="name" match="${account2.name}" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

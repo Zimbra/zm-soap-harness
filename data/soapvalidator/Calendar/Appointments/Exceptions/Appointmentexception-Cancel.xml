@@ -114,7 +114,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct3.id"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
 </t:test_case>
 
@@ -138,7 +138,7 @@
     </t:test>
 
     <t:property name="mail1.authToken" value="${authToken}"/>
-    
+
     <t:test>
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -151,7 +151,7 @@
         </t:response>
     </t:test>
 
-    
+
     <!--Create Appointments-->
     <t:test>
         <t:request>
@@ -159,8 +159,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                         <recur>
                             <add>
@@ -189,8 +189,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                         <recur>
                             <add>
@@ -220,8 +220,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment3.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                         <recur>
                             <add>
@@ -244,15 +244,15 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment4.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                         <recur>
                             <add>
@@ -367,7 +367,7 @@
 
 <t:test_case testcaseid="CancelAppointmentExceptionRequest1" type="smoke" areas="Calendar">
     <t:objective>Cancel an instance of daily appointment</t:objective>
-    
+
     <t:test id="CancelAppointmentExceptionRequest1a">
         <t:request>
             <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
@@ -387,18 +387,18 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest2" type="functional" areas="Calendar">
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest2" type="regression" areas="Calendar">
     <t:objective>Cancel the whole series (No inst element) and verify cancelling it again  </t:objective>
     <t:steps>1. Cancel an instance of series
              2. Cancel the instance again
-        
+
     </t:steps>
 
     <t:test id="cancelAppointmentExceptionRequest2a">
         <t:request>
-            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">                
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">
                 <m>
                     <e a="${acct2.name}" t="t"/>
                     <su> Cancelled:${appointment2.subject}</su>
@@ -414,8 +414,8 @@
     </t:test>
 
     <t:test depends="CancelAppointmentExceptionRequest2a">
-        <t:request>            
-            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">              
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">
                 <m>
                     <e a="${acct2.name}" t="t"/>
                     <su> Cancelled:${appointment1.subject}</su>
@@ -430,9 +430,9 @@
 			<t:select path = "//soap:Text" match=".*cannot cancel a calendar item under trash.*"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment2.id}"/>
         </t:request>
         <t:response>
@@ -444,8 +444,8 @@
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="CancelAppointmentExceptionRequest3" type="functional" areas="Calendar">
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest3" type="regression" areas="Calendar">
     <t:objective>Modify the series which is already cancelled</t:objective>
 
     <t:test depends="CancelAppointmentExceptionRequest2a">
@@ -474,14 +474,14 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest4" type="sanity" areas="Calendar">
-    <t:objective> CancelAppointmentRequest without optional m and id elements </t:objective>    
-    
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest4" type="functional" areas="Calendar">
+    <t:objective> CancelAppointmentRequest without optional m and id elements </t:objective>
+
     <t:test id="CancelAppointmentExceptionRequest4a">
         <t:request>
-            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment3.id}" comp="0">                
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment3.id}" comp="0">
             </CancelAppointmentRequest>
         </t:request>
         <t:response>
@@ -490,13 +490,13 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest5" type="functional" areas="Calendar">
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest5" type="regression" areas="Calendar">
     <t:objective> CancelAppointmentRequest with the id of cancelled appointment</t:objective>
     <t:steps> 1.Cancel the created series
               2.Cancel any instance of that series
-    </t:steps>    
+    </t:steps>
 
     <t:test id="CancelAppointmentExceptionRequest5a">
         <t:request>
@@ -507,10 +507,10 @@
             <t:select path = "//mail:CancelAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
-            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4.id}" comp="0">                
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4.id}" comp="0">
             </CancelAppointmentRequest>
         </t:request>
         <t:response>
@@ -518,9 +518,9 @@
 			<t:select path = "//soap:Text" match=".*cannot cancel a calendar item under trash.*"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment4.id}"/>
         </t:request>
         <t:response>
@@ -531,9 +531,9 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest6" type="functional" areas="Calendar">
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest6" type="regression" areas="Calendar">
     <t:objective> CancelAppointmentRequest with the invalid numeric id (negative/zero/largepositive)</t:objective>
     <t:steps> 1.Cancel the created series
               2.Cancel any instance of that series
@@ -541,7 +541,7 @@
 
     <t:test>
         <t:request>
-            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="-994785686748" comp="0">                
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="-994785686748" comp="0">
             </CancelAppointmentRequest>
         </t:request>
         <t:response>
@@ -570,9 +570,9 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="functional" areas="Calendar" bugids="3843">
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="regression" areas="Calendar" bugids="3843">
     <t:objective> CancelAppointmentRequest with the invalid non-numeric id (blank/spaces/special character/some text)</t:objective>
     <t:steps> 1.Cancel the created series
               2.Cancel any instance of that series
@@ -580,7 +580,7 @@
 
     <t:test>
         <t:request>
-            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.blank}" comp="0">                
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.blank}" comp="0">
             </CancelAppointmentRequest>
         </t:request>
         <t:response>
@@ -621,7 +621,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="functional" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="regression" areas="Calendar">
     <t:objective> CancelAppointmentRequest with the invalid missing id attribute </t:objective>
     <t:steps> 1.Cancel the created series
               2.Cancel any instance of that series
@@ -629,7 +629,7 @@
 
     <t:test>
         <t:request>
-            <CancelAppointmentRequest xmlns="urn:zimbraMail" comp="0">                
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" comp="0">
             </CancelAppointmentRequest>
         </t:request>
         <t:response>
@@ -641,7 +641,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest8" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest8" type="functional" areas="Calendar">
     <t:objective> Searching the mail in another account for cancelled instance</t:objective>
     <t:steps>1. Login to any account2
              2. Search the mail for cancelled instance of series
@@ -690,9 +690,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest9" type="sanity" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest9" type="functional" areas="Calendar">
     <t:objective>To cancel two different instance of same series </t:objective>
-    
+
     <t:test>
         <t:request>
             <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment5.id}" comp="0">
@@ -748,9 +748,9 @@
     </t:test>
 
 </t:test_case>
-    
-     
-<t:test_case testcaseid="CancelAppointmentExceptionRequest10" type="functional" areas="Calendar">
+
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest10" type="regression" areas="Calendar">
     <t:objective>CancelAppointmentRequest with invalid value of 'd' in inst element </t:objective>
 
     <t:test>
@@ -825,7 +825,7 @@
         </t:response>
     </t:test>
 </t:test_case>
-    
-  
+
+
 
 </t:tests>

@@ -11,7 +11,7 @@
     <t:objective>Basic system check</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -52,7 +52,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -76,17 +76,17 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 <t:test_case testcaseid="add account alias for account1" type="always" >
     <t:objective>Add account alias</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
-	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
 </t:test_case>
 
-<t:test_case testcaseid="bug89672" type="bhr" bugids="89672">
+<t:test_case testcaseid="bug89672" type="sanity" bugids="89672">
     <t:objective>envelope from address does not change when sending mail using persona</t:objective>
 	<t:steps>
 	1. Change zimbraSmtpRestrictEnvelopeFrom to FALSE for user1
@@ -105,7 +105,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
       <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -117,7 +117,7 @@
             <t:select path="//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
 	<t:test id="auth1" required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -129,7 +129,7 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	    
+
 	<t:test id="sendmail1" required="true">
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
@@ -180,7 +180,7 @@
 			<t:select attr="Return-Path" contains="${alias.name}"/>
 		</t:restServletResponse>
 	</t:resttest>
-	
+
 </t:test_case>
 
 </t:tests>

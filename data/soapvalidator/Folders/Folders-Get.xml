@@ -152,7 +152,7 @@
 </t:test_case>
 
 
- <t:test_case testcaseid="GetFolderRequest02" type="bhr">
+ <t:test_case testcaseid="GetFolderRequest02" type="sanity">
 	<t:objective>Verify the basic system folders present.</t:objective>
 
 	<t:test>
@@ -193,7 +193,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest03" type="bhr">
+<t:test_case testcaseid="CreateFolderRequest03" type="sanity">
 	<t:objective>get folder with specific folder id </t:objective>
 
 	<t:test id="CreateFolderRequest03a" >
@@ -209,7 +209,7 @@
 
 	<t:test depends="CreateFolderRequest03a">
 		<t:request>
-			<GetFolderRequest xmlns="urn:zimbraMail" l="${folder.id}">        
+			<GetFolderRequest xmlns="urn:zimbraMail" l="${folder.id}">
 			</GetFolderRequest>
 		</t:request>
 		<t:response>
@@ -220,7 +220,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest04" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest04" type="functional" >
 	<t:objective>get folder with deleted folder id </t:objective>
 	<t:steps>create the folder, delete it, GetFolderRequest with the id</t:steps>
 
@@ -243,7 +243,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
-            <t:select attr="id" match="${folder1.id}"/>      
+            <t:select attr="id" match="${folder1.id}"/>
             </t:select>
         </t:response>
 	</t:test>
@@ -262,12 +262,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest05" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest05" type="functional" >
 	<t:objective>get folder with specific id leading space </t:objective>
 
 	<t:test >
 		<t:request>
-			<GetFolderRequest xmlns="urn:zimbraMail"> 
+			<GetFolderRequest xmlns="urn:zimbraMail">
 			<folder l="${folder.id}"/>
 			<cn id="   ${folder.id}"/>
 			</GetFolderRequest>
@@ -280,12 +280,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest06" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest06" type="functional" >
 	<t:objective>get folder with specific id trailing space </t:objective>
 
 	<t:test >
 		<t:request>
-			<GetFolderRequest xmlns="urn:zimbraMail"> 
+			<GetFolderRequest xmlns="urn:zimbraMail">
 			<folder l="${folder.id}"/>
 			<cn id="${folder.id}   "/>
 			</GetFolderRequest>
@@ -298,12 +298,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest07" type="functional" >
+<t:test_case testcaseid="CreateFolderRequest07" type="regression" >
 	<t:objective>get folder with blank location </t:objective>
 
 	<t:test >
 		<t:request>
-			<GetFolderRequest xmlns="urn:zimbraMail"> 
+			<GetFolderRequest xmlns="urn:zimbraMail">
 			<folder l="${folder.blank}" />
 			</GetFolderRequest>
 		</t:request>
@@ -315,7 +315,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest08" type="bhr">
+<t:test_case testcaseid="CreateFolderRequest08" type="sanity">
 	<t:objective>get folder with changed location. </t:objective>
 
 	<t:test id="CreateFolderRequest2a" >
@@ -342,7 +342,7 @@
 
 	<t:test depends="CreateFolderRequest08a">
 		<t:request>
-			<GetFolderRequest xmlns="urn:zimbraMail" > 
+			<GetFolderRequest xmlns="urn:zimbraMail" >
 			<folder l="5" />
 			</GetFolderRequest>
 		</t:request>
@@ -354,13 +354,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest08" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest08" type="functional" >
 	<t:objective>get folder with non existing folder name </t:objective>
- 
+
 	<t:test >
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail">
-			<folder l="${folder3.name}"/> 
+			<folder l="${folder3.name}"/>
 			</GetFolderRequest>
 		</t:request>
 		<t:response>
@@ -371,7 +371,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFolders_Visible_01" type="bhr" bugids="22100, 22378">
+<t:test_case testcaseid="GetFolders_Visible_01" type="sanity" bugids="22100, 22378">
 	<t:objective> GetFolderRequest with visible="1" and "0" for share sud-folders </t:objective>
 	<t:steps> 1. Login to account2
               2. create 3 folders like Inbox/one/two/three
@@ -433,7 +433,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="name" set="account2.folder2.name"/>
         </t:response>
 	</t:test>
-     
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -457,7 +457,7 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
-    </t:test>     
+    </t:test>
 
 	<t:test>
         <t:request>
@@ -541,7 +541,7 @@
 
 			<account by="id">${account2.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" visible="1"/>
         </t:request>
         <t:response>
@@ -557,7 +557,7 @@
 
 			<account by="id">${account2.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" visible="1">
 				<folder l="${account2.id}:${account2.folder1.id}"/>
 			</GetFolderRequest>
@@ -576,7 +576,7 @@
 
 			<account by="id">${account2.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" visible="0"/>
         </t:request>
         <t:response>
@@ -591,7 +591,7 @@
 
 			<account by="id">${account2.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" visible="0">
 			<folder l="${account2.id}:${account2.folder1.id}"/>
 			</GetFolderRequest>
@@ -605,15 +605,15 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFolders_Visible_02" type="bhr">
+<t:test_case testcaseid="GetFolders_Visible_02" type="sanity">
 	<t:objective> GetFolderRequest with visible="1" and "0" for share folders </t:objective>
 	<t:steps> 1. Account1 creates Inbox/folder1..
 			  2. Account1 shares folder1... with Account2
 			  3. Login to account2
-			  4. Account2 sends GetFolderRequest to account1 with visible="1" and can see folder1 
-			  5. Account2 sends GetFolderRequest to account1 with visible="0" and gets "PERM_DENIED" 
-			  6. Account2 sends GetFolderRequest by id to account1 with visible="1" and can see folder1 
-			  7. Account2 sends GetFolderRequest by id to account1 with visible="0" and can see folder1 
+			  4. Account2 sends GetFolderRequest to account1 with visible="1" and can see folder1
+			  5. Account2 sends GetFolderRequest to account1 with visible="0" and gets "PERM_DENIED"
+			  6. Account2 sends GetFolderRequest by id to account1 with visible="1" and can see folder1
+			  7. Account2 sends GetFolderRequest by id to account1 with visible="0" and can see folder1
 	</t:steps>
 
 	<t:property name="server.zimbraAccount" value="${acct_server1}"/>
@@ -670,14 +670,14 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:requestContext>
 			<authToken>${authToken}</authToken>
 
 			<account by="id">${account1.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" visible="1"/>
         </t:request>
         <t:response>
@@ -691,7 +691,7 @@
 
 			<account by="id">${account1.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" visible="0"/>
         </t:request>
         <t:response>
@@ -706,7 +706,7 @@
 
 			<account by="id">${account1.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" visible="1" >
 			<folder l="${account1.id}:${account1.folder1.id}"/>
 			</GetFolderRequest>
@@ -722,7 +722,7 @@
 
 			<account by="id">${account1.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" visible="0">
 			<folder l="${account1.id}:${account1.folder1.id}"/>
 			</GetFolderRequest>
@@ -735,7 +735,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFolders_Rest_01" type="bhr" bugids="22637">
+<t:test_case testcaseid="GetFolders_Rest_01" type="sanity" bugids="22637">
 	<t:objective>Verify the REST for each folder type and for GetInfoRequest</t:objective>
 	<t:steps>
 	1. Account1 creates Inbox/rest/folder1 , folder2, .. folder3, of each folder type
@@ -869,7 +869,7 @@
 
 	<!-- Bug 22637 change - no more rest in GetFolderResponse -->
 	<t:test>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" />
         </t:request>
         <t:response>
@@ -1033,7 +1033,7 @@
 	</t:test>
 
 	<t:test>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail" />
         </t:request>
         <t:response>

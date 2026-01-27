@@ -48,13 +48,13 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct01.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
-	
+    </t:test>
+
 </t:test_case>
 
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
 	<t:objective> Login as the appropriate test account
 	</t:objective>
 
@@ -67,7 +67,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime" 
+		<t:select path="//acct:AuthResponse/acct:lifetime"
 						match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken"
 						set="authToken"/>
@@ -77,16 +77,16 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="blobAttachViewTest" type="sanity" >
+<t:test_case testcaseid="blobAttachViewTest" type="functional" >
 	<t:objective>
 		Verify bug 11331
 	</t:objective>
 	<t:steps>
-	 	1. LmtpInject the files from 11331 directory	
+	 	1. LmtpInject the files from 11331 directory
 	 	2. To check if the message can be viewed (i.e if I can do GetMsgRequest)
-	 	3. To check if the attachment can be viewed 	
+	 	3. To check if the attachment can be viewed
 	</t:steps>
-	
+
 
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -95,7 +95,7 @@
 		<from>${nonZimbraUser.name}</from>
 		<server>${test_acct.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
 	<t:test>
 		<t:request>
@@ -115,10 +115,10 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetMsgResponse/mail:m"/>            	            	
+            <t:select path="//mail:GetMsgResponse/mail:m"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="MsgGetRequest2" depends="MsgGetRequest1">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -127,9 +127,9 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse"/>
-            	<t:select path="//mail:m" attr="su" contains="visit to saint andrews 18"/>            	
+            	<t:select path="//mail:m" attr="su" contains="visit to saint andrews 18"/>
         </t:response>
-    </t:test>	
+    </t:test>
 
 </t:test_case>
 

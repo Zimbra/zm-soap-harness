@@ -32,10 +32,10 @@
 		</t:request>
 		<t:response>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-			
+
 		</t:response>
 	</t:test>
-	
+
 	     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -48,7 +48,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin_del.Id"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -74,7 +74,7 @@
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
 		</t:response>
-	</t:test>  
+	</t:test>
 
 </t:test_case>
 
@@ -83,12 +83,12 @@
 
 
 
-<t:test_case testcaseid = "ModifyAccountAuthLifeToken" type="bhr" bugids="39720">
+<t:test_case testcaseid = "ModifyAccountAuthLifeToken" type="sanity" bugids="39720">
     <t:objective>Do not allow auth token lifetime to be zero</t:objective>
-    <t:steps> 
+    <t:steps>
           1) Verify if admin/delegated admin/regular user can not have auth lifetime token to be 0.
      </t:steps>
-     
+
       <t:test>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -100,7 +100,7 @@
             <t:select path = "//zimbra:Code" match = "service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 
     <t:test>
         <t:request>
@@ -113,7 +113,7 @@
             <t:select path = "//zimbra:Code" match = "service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -125,9 +125,9 @@
             <t:select path = "//zimbra:Code" match = "service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
 
-   
+
+
 </t:test_case>
 
 

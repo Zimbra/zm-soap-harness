@@ -36,7 +36,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -51,7 +51,7 @@
 
 <t:test_case testcaseid="acctSetup1" type="always">
     <t:objective>create test account</t:objective>
-       
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -63,9 +63,9 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
-    <t:property name="admin.authToken" value="${authToken}"/>  
-    
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="create_test_account2" required="true" depends="admin_login" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -91,7 +91,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-     
+
     <t:test  >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -104,7 +104,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-          
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -120,7 +120,7 @@
         </t:response>
     </t:test>
 
- 
+
     <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -132,7 +132,7 @@
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -148,7 +148,7 @@
         </t:response>
     </t:test>
 
- 
+
     <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -160,11 +160,11 @@
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root.id"/>
         </t:response>
     </t:test>
-    
-</t:test_case>
-  
 
-<t:test_case testcaseid="bug72334_1" type="bhr" bugids="72334">
+</t:test_case>
+
+
+<t:test_case testcaseid="bug72334_1" type="sanity" bugids="72334">
     <t:objective>Filter not updated when a mountpoint is renamed</t:objective>
     <t:steps>
             1. user1 grants write access on a mail folder to user2
@@ -187,12 +187,12 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="folder${TIME}${COUNTER}" l="${account1.folder.inbox.id}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse">
@@ -200,7 +200,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -213,7 +213,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -242,7 +242,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
              <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -251,18 +251,18 @@
             <t:select path="//mail:link[@id='${account2.mount1.id}']"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="message1.subject" value="test${TIME}${COUNTER}"/>
-    
+
     <t:test id="filters_basic01a">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="/${globals.inbox}/${account2.mount1.foldername}" />
                         </filterActions>
                     </filterRule>
@@ -273,8 +273,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -283,9 +283,9 @@
             <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterActions/mail:actionFileInto" attr="folderPath" match="/Inbox/${account2.mount1.foldername}"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="folder.newname" value="newname${TIME}${COUNTER}"/>
-    
+
      <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -295,11 +295,11 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
             <t:select attr="id" match="${account2.mount1.id}"/>
-            <t:select attr="op" match="rename"/>        
+            <t:select attr="op" match="rename"/>
             </t:select>
         </t:response>
     </t:test>
-   
+
      <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -308,10 +308,10 @@
             <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterActions/mail:actionFileInto" attr="folderPath" match="/Inbox/${folder.newname}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug72334_2" type="bhr" bugids="72334">
+<t:test_case testcaseid="bug72334_2" type="sanity" bugids="72334">
     <t:objective>Filter not updated when a mountpoint is deleted</t:objective>
     <t:steps>
             1. user1 grants write access on a mail folder to user2
@@ -334,12 +334,12 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="folder1${TIME}${COUNTER}" l="${account1.folder.inbox.id}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse">
@@ -347,7 +347,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -360,7 +360,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -389,7 +389,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
              <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -398,18 +398,18 @@
             <t:select path="//mail:link[@id='${account2.mount1.id}']"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="message1.subject" value="test${TIME}${COUNTER}"/>
-    
+
     <t:test id="filters_basic01a">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="Filter1${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="/${globals.inbox}/${account2.mount1.foldername}" />
                         </filterActions>
                     </filterRule>
@@ -420,8 +420,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -430,9 +430,9 @@
             <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterActions/mail:actionFileInto" attr="folderPath" match="/Inbox/${account2.mount1.foldername}"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="folder.newname" value="newname${TIME}${COUNTER}"/>
-    
+
      <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -442,11 +442,11 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
             <t:select attr="id" match="${account2.mount1.id}"/>
-            <t:select attr="op" match="delete"/>        
+            <t:select attr="op" match="delete"/>
             </t:select>
         </t:response>
     </t:test>
-   
+
      <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -455,10 +455,10 @@
             <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule" attr="active" match="0"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug72334_3" type="bhr" bugids="72334">
+<t:test_case testcaseid="bug72334_3" type="sanity" bugids="72334">
     <t:objective>Filter not updated when a mountpoint is move</t:objective>
     <t:steps>
             1. user1 grants write access on a mail folder to user2
@@ -481,12 +481,12 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="folder1${TIME}${COUNTER}" l="${account1.folder.inbox.id}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse">
@@ -494,7 +494,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -507,7 +507,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -536,7 +536,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
              <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -545,18 +545,18 @@
             <t:select path="//mail:link[@id='${account2.mount1.id}']"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="message1.subject" value="test${TIME}${COUNTER}"/>
-    
+
     <t:test id="filters_basic01a">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="Filter1${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="/${globals.inbox}/${account2.mount1.foldername}" />
                         </filterActions>
                     </filterRule>
@@ -567,8 +567,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -577,9 +577,9 @@
             <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterActions/mail:actionFileInto" attr="folderPath" match="/Inbox/${account2.mount1.foldername}"/>
         </t:response>
     </t:test>
-    
-  
-    
+
+
+
  <t:test>
          <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -588,8 +588,8 @@
         </t:request>
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
-            <t:select attr="id" match="${account2.mount1.id}"/>      
-               <t:select attr="op" match="move"/>      
+            <t:select attr="id" match="${account2.mount1.id}"/>
+               <t:select attr="op" match="move"/>
             </t:select>
         </t:response>
     </t:test>
@@ -602,7 +602,7 @@
             <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterActions/mail:actionFileInto" attr="folderPath" match="/Sent/${account2.mount1.foldername}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-  
+
 </t:tests>

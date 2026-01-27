@@ -46,7 +46,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -63,7 +63,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -76,7 +76,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -129,7 +129,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -154,7 +154,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -197,7 +197,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
     <t:test required="true">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -277,9 +277,9 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
 			<CancelAppointmentRequest comp="0" id="${account1.id}:${account1.appointment.invId}" xmlns="urn:zimbraMail">
@@ -297,7 +297,7 @@
             <t:select path="//mail:CancelAppointmentResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test id="auth1" required="true">
@@ -311,7 +311,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
@@ -326,7 +326,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Mountpoints_CancelMeetingRequest_02" type="bhr" areas="Calendar" bugids="41378">
+<t:test_case testcaseid="Mountpoints_CancelMeetingRequest_02" type="sanity" areas="Calendar" bugids="41378">
     <t:objective>Verify a user cannot cancel a meeting in a shared mountpoint (read permissions)</t:objective>
     <t:steps>
     1. Login as account1
@@ -353,7 +353,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
     <t:test required="true">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -433,9 +433,9 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
 			<CancelAppointmentRequest comp="0" id="${account1.id}:${account1.appointment.invId}" xmlns="urn:zimbraMail">
@@ -453,7 +453,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test id="auth1" required="true">
@@ -467,7 +467,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">

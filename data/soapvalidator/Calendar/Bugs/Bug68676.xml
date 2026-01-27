@@ -37,7 +37,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -52,7 +52,7 @@
 
 <t:test_case testcaseid="acctSetup1_appointment" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -65,7 +65,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -91,11 +91,11 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "bug_68676" type="bhr" areas="Calendar" bugids="68676">
+<t:test_case testcaseid = "bug_68676" type="sanity" areas="Calendar" bugids="68676">
     <t:objective>Verify DismissCalendarItemAlarmRequest returned with error - permission denied: cannot dismiss alarms of a shared calendar </t:objective>
     <t:steps>1. Log as user say user1
 			 2. Create an appointment with Reminder
@@ -118,7 +118,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -140,9 +140,9 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
         </t:response>
-    </t:test>	
-	
-	
+    </t:test>
+
+
 <t:property name="appointment1.id" value=""/>
 <t:property name="appointment.id" value=""/>
 <t:property name="time.20251201120000.gmt" value="1764590400000"/>
@@ -232,7 +232,7 @@
 
         </t:response>
     </t:test>
-    
+
     <!-- Get Folders in Invitee list and set the id-->
     <t:test required="true">
         <t:request>
@@ -242,7 +242,7 @@
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="invitee.folder.root"/>
         </t:response>
     </t:test>
-    
+
     	<!-- Mount the shared folder in invitees calendar root folder-->
     <t:test required="true">
         <t:request>
@@ -250,16 +250,16 @@
                 <link l="${invitee.folder.root}" name="Calendar.${TIME}.${COUNTER}" view="appointment" rid="${organizer.folder.calendar}" zid="${test_account1.id}"/>
             </CreateMountpointRequest>
         </t:request>
-        <t:response>        
+        <t:response>
             <!--  <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="invitee.delegated.name"/>
-            <t:select path="//mail:CreateMountPointResponse/mail:link" attr="id" set="invitee.mounted.cal.id"/> -->        
+            <t:select path="//mail:CreateMountPointResponse/mail:link" attr="id" set="invitee.mounted.cal.id"/> -->
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="invitee1.mounted.cal.id"/>
-             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="calendar.name"/>     
+             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="calendar.name"/>
         </t:response>
     </t:test>
-	
+
 	<t:delay sec="15"/>
-    
+
      <t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -269,9 +269,9 @@
             <t:select path="//mail:folder/mail:link" attr="id" set="calendar.id"/>
             <t:select path="//mail:folder/mail:link" attr="zid" set="calendar.zid"/>
         </t:response>
-    </t:test>  
+    </t:test>
     <t:delay sec="15"/>
-    
+
     <!-- ================= SAFE SEARCH ================= -->
 <t:test>
     <t:request>
@@ -283,12 +283,12 @@
         </SearchRequest>
     </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment.subject1}"/>    
+            <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment.subject1}"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="apptId1" value="${calendar.zid}:${calendar.id}"/>
-    
+
     <t:test>
         <t:request>
 			<SnoozeCalendarItemAlarmRequest xmlns="urn:zimbraMail">
@@ -299,7 +299,7 @@
 			<t:select path="//zimbra:Code"  match="^service.PERM_DENIED" />
 		</t:response>
 	</t:test>
-	
+
     <!-- Dismiss alarm -->
     <t:test id="Dismiss alarm">
       <t:request>
@@ -311,7 +311,7 @@
         <t:select path="//zimbra:Code"  match="^service.PERM_DENIED" />
       </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

@@ -1,6 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>  
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>
 
 <t:property name="account1.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
 <t:property name="search.validquery" value="(|(cn=*searchdir*)(sn=*searchdir*)(gn=*searchdir*)(displayName=*searchdir*)(zimbraMailAlias=*searchdir*)(zimbraMailAddress=*searchdir*)(zimbraMailDeliveryAddress=*searchdir*))"/>
@@ -8,9 +8,9 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="SearchDirectoryRequest_01" type="bhr" >
+<t:test_case testcaseid="SearchDirectoryRequest_01" type="sanity" >
     <t:objective>Sanity test for SearchDirectoryRequest</t:objective>
-   
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -22,7 +22,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -54,10 +54,10 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse/admin:account" />   
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" />
         </t:response>
-    </t:test> 
-   
+    </t:test>
+
 </t:test_case>
 
 

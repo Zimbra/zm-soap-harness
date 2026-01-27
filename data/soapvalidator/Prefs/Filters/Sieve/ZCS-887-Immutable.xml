@@ -7,7 +7,7 @@
 	<t:property name="test_account3.name"
 		value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
 
-<t:property name="cos1.name" value="mycos1${TIME}${COUNTER}" />        
+<t:property name="cos1.name" value="mycos1${TIME}${COUNTER}" />
 	<t:property name="mail_subject" value="subject.${TIME}.${COUNTER}" />
 
 <t:property name="account1.reply" value="reply content"/>
@@ -15,14 +15,14 @@
 	<t:property name="sieve_rule1"
 		value='require ["editheader","log"];
   deleteheader "Auto-Submitted";
-  log "Sieve rule 1"; 
+  log "Sieve rule 1";
  ' />
- 
+
  	<t:property name="sieve_rule2"
 		value='require ["editheader","log"];
   deleteheader "Auto-Submitted";
   addheader "X-Test-Header" "Val1";
-  log "Sieve rule 1"; 
+  log "Sieve rule 1";
  ' />
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
@@ -55,7 +55,7 @@
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
         <t:test id="CreateCosRequest1">
             <t:request>
                 <CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -68,7 +68,7 @@
                 <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id" />
             </t:response>
         </t:test>
-	    
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -121,7 +121,7 @@
 					set="test_acct3.server" />
 			</t:response>
 		</t:test>
-		
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
     <t:test >
@@ -147,17 +147,17 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test>	
-    	
+    </t:test>
+
 </t:test_case>
 
-	<t:test_case testcaseid="zcs-887_SieveRule1" type="functional" bugids="zcs-887">
+	<t:test_case testcaseid="zcs-887_SieveRule1" type="regression" bugids="zcs-887">
 		<t:objective>Add a sieve rule to delete Auto-Submitted header and verify the mime via rest servlet</t:objective>
 	    <t:steps>
 		1. Login to Account2.
 		2. Send mail from Account2 to Account1.
 		3. Verify that the OOO reply is received at Account2 and verify Auto-Submitted header is not deleted
-	    </t:steps>			
+	    </t:steps>
 
     <t:test >
         <t:request>
@@ -189,7 +189,7 @@
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		   <t:delay sec="30" />
 
         <t:test>
@@ -199,7 +199,7 @@
            </SearchRequest>
          </t:request>
           <t:response>
-                <t:select path="//mail:SearchResponse/mail:m[@l='2']" attr="id" set="message1.inbox"/> 
+                <t:select path="//mail:SearchResponse/mail:m[@l='2']" attr="id" set="message1.inbox"/>
          </t:response>
         </t:test>
 
@@ -213,7 +213,7 @@
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="content" match="(?s)${account1.reply}.*"/>
         </t:response>
     </t:test>
-    		   
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${message1.inbox}</id>
@@ -222,17 +222,17 @@
 				<t:select attr="Auto-Submitted" emptyset="0" />
 			</t:restServletResponse>
 		</t:resttest>
-	</t:test_case> 
+	</t:test_case>
 
-	<t:test_case testcaseid="zcs-887_SieveRule2" type="functional" bugids="zcs-887">
+	<t:test_case testcaseid="zcs-887_SieveRule2" type="regression" bugids="zcs-887">
 		<t:objective>Add a sieve rule to delete immutable header and verify the mime via rest servlet</t:objective>
 	    <t:steps>
-		1. Modify cos and remove Auto-Submitted from immutable header list 
+		1. Modify cos and remove Auto-Submitted from immutable header list
 		2. Login to Account3.
 		3. Send mail from Account3 to Account1.
 		4. Verify that the OOO reply is received at Account3 and verify Auto-Submitted header is deleted and new header is added
 	    </t:steps>
-	    
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -244,7 +244,7 @@
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	    <!--<t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -253,7 +253,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -265,10 +265,10 @@
                     </ModifyAccountRequest>
                 </t:request>
                 <t:response>
-                    <t:select path="//admin:ModifyAccountResponse/admin:account"/>            
+                    <t:select path="//admin:ModifyAccountResponse/admin:account"/>
                 </t:response>
             </t:test>
-	    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -299,7 +299,7 @@
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		   <t:delay sec="30" />
 
         <t:test>
@@ -309,7 +309,7 @@
            </SearchRequest>
          </t:request>
           <t:response>
-                <t:select path="//mail:SearchResponse/mail:m[@l='2']" attr="id" set="message1.inbox"/> 
+                <t:select path="//mail:SearchResponse/mail:m[@l='2']" attr="id" set="message1.inbox"/>
          </t:response>
         </t:test>
 
@@ -323,7 +323,7 @@
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="content" match="(?s)${account1.reply}.*"/>
         </t:response>
     </t:test>
-    		   
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${message1.inbox}</id>
@@ -333,6 +333,6 @@
 				<t:select attr="X-Test-Header" match="Val1" />
 			</t:restServletResponse>
 		</t:resttest>
-	</t:test_case>  
+	</t:test_case>
 </t:tests>
 

@@ -47,7 +47,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -60,7 +60,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
@@ -80,7 +80,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AuthToken_User_GetFolderRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AuthToken_User_GetFolderRequest_Basic01" type="sanity">
     <t:objective>Use a user token to GetFolderRequest</t:objective>
     <t:steps>
     1. Login as user0
@@ -89,11 +89,11 @@
 
 	<t:property name="authToken" value="${authToken.account0}"/>
 
-	
+
 	<t:property name="server.zimbraMail" value="${account0.server}"/>
 
 	<t:test>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${account1.id}:1"/>
 			</GetFolderRequest>

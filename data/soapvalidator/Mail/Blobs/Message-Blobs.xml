@@ -41,7 +41,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -52,7 +52,7 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
 		</t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetConfigRequest xmlns="urn:zimbraAdmin">
@@ -65,7 +65,7 @@
         	</t:select>
         </t:response>
     </t:test>
-        
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -117,7 +117,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-    
+
    <t:test required="true">
         <t:request>
             <GetConfigRequest xmlns="urn:zimbraAdmin">
@@ -129,7 +129,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:staftask>
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -137,21 +137,21 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
 		</t:request>
 	</t:staftask>
-	
+
 	<!-- Sleep for 5 minutes to wait for mbox to come up -->
 	<t:delay sec="300"/>
-	
+
 
 </t:test_case>
 
 
 <t:test_case testcaseid="MessageBlobs_01" type="smoke">
     <t:objective>Verify that a message sent to 2 accounts can be viewed by both after one account deletes the message</t:objective>
-    
+
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -184,7 +184,7 @@
 	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -207,7 +207,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message1.id"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -218,12 +218,12 @@
             </MsgActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:MsgActionResponse"/> 
+            <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -246,7 +246,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message1.id"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -257,19 +257,19 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetMsgResponse"/> 
+            <t:select path="//mail:GetMsgResponse"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="MessageBlobs_02" type="bhr" areas="noncluster">
+<t:test_case testcaseid="MessageBlobs_02" type="sanity" areas="noncluster">
     <t:objective>Verify that a message sent to 3 accounts can be viewed by both after one account deletes the message</t:objective>
-    
+
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -303,7 +303,7 @@
 	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -326,7 +326,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message1.id"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -337,12 +337,12 @@
             </MsgActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:MsgActionResponse"/> 
+            <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -365,7 +365,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message1.id"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -376,12 +376,12 @@
             </MsgActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:MsgActionResponse"/> 
+            <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -404,7 +404,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message1.id"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -415,7 +415,7 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetMsgResponse"/> 
+            <t:select path="//mail:GetMsgResponse"/>
         </t:response>
     </t:test>
 
@@ -441,7 +441,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -471,12 +471,12 @@
             <t:select path="//admin:GetConfigResponse"/>
         </t:response>
     </t:test>
-        
-	
+
+
 </t:finally>
 
 
-<t:test_case testcaseid="MessageBlobs_03" type="bhr" bugids="25484" areas="noncluster">
+<t:test_case testcaseid="MessageBlobs_03" type="sanity" bugids="25484" areas="noncluster">
     <t:objective>Verify that a message sent to 2 accounts can be viewed by both after one account deletes the message (large file)</t:objective>
     <t:steps>
     1. Login as admin.  Set max mta size to 3 GB
@@ -484,7 +484,7 @@
     3. Login as account2.  Delete the received message
     4. Login as account3.  View the received message
     </t:steps>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:property name="MessageSize.4GB" value="4096000"/>
 	<t:test >
@@ -529,7 +529,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:staftask>
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -537,7 +537,7 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol status \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
 		</t:request>
 	</t:staftask>
-	
+
 	<t:staftask>
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -545,13 +545,13 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmilterctl status \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
 		</t:request>
 	</t:staftask>
-	
+
 	<t:property name="message1.file" value="${testMailRaw.root}/email07/email07e.txt"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -582,8 +582,8 @@
 					<e t="t" a="${account3.name}"/>
 					<su>${message1.subject}</su>
 					<mp ct="text/plain">
-						<content>In this case, we're getting an Rpc exception.  If it's an ssl error, or a 
-winhttp connection, invalid url, login failure, or secure failure, we'll go 
+						<content>In this case, we're getting an Rpc exception.  If it's an ssl error, or a
+winhttp connection, invalid url, login failure, or secure failure, we'll go
 into offline mode and put up the error message.
 </content>
 					</mp>
@@ -597,7 +597,7 @@ into offline mode and put up the error message.
 	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -620,7 +620,7 @@ into offline mode and put up the error message.
         <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message1.id"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -631,12 +631,12 @@ into offline mode and put up the error message.
             </MsgActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:MsgActionResponse"/> 
+            <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -659,7 +659,7 @@ into offline mode and put up the error message.
         <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message1.id"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -670,7 +670,7 @@ into offline mode and put up the error message.
             </GetMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetMsgResponse"/> 
+            <t:select path="//mail:GetMsgResponse"/>
         </t:response>
     </t:test>
 

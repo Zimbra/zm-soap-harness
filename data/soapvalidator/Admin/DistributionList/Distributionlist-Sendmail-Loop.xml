@@ -48,13 +48,13 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
-           
-    
-</t:test_case>
- 
+    </t:test>
 
-<t:test_case testcaseid="dl_sendmail_loop_01" type="sanity" duration="long">
+
+</t:test_case>
+
+
+<t:test_case testcaseid="dl_sendmail_loop_01" type="functional" duration="long">
     <t:objective>Verify that 5000 members can be added to a DL, and that a message will be sent to all</t:objective>
 	<t:steps>
 	1. Create a DL
@@ -64,7 +64,7 @@
 	5. Send a mail to the DL
 	6. Verify that member1 and member2 received the mail
 	</t:steps>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -77,7 +77,7 @@
         </t:response>
     </t:test>
 
-    
+
     <t:test >
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -101,8 +101,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="firstMember.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="firstMember.server"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
     <t:test >
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -112,13 +112,13 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AddDistributionListMemberResponse" />
-        </t:response>               
-    </t:test>    
-    
+        </t:response>
+    </t:test>
+
     <t:test_loop count="5000">
-    
+
 		<t:property name="account.name" value="dl1.member.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-		
+
         <t:test timeframeMax="5000">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -130,7 +130,7 @@
                 <t:select path="//admin:CreateAccountResponse" />
             </t:response>
         </t:test>
-        
+
         <t:test timeframeMax="5000">
             <t:request>
                 <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -140,10 +140,10 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:AddDistributionListMemberResponse" />
-            </t:response>               
-        </t:test>    
-      
-    </t:test_loop>    
+            </t:response>
+        </t:test>
+
+    </t:test_loop>
 
     <t:test >
         <t:request>
@@ -156,8 +156,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="lastMember.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="lastMember.server"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
     <t:test >
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -167,11 +167,11 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AddDistributionListMemberResponse" />
-        </t:response>               
-    </t:test>    
+        </t:response>
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -185,7 +185,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -203,13 +203,13 @@
         </t:response>
     </t:test>
 
-    
+
 	<!-- Wait here for to 10 minutes to let the disk catch up -->
 	<t:delay sec="600"/>
-	
-	
+
+
 	<t:property name="server.ZimbraAccount" value="${firstMember.server}"/>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -223,7 +223,7 @@
 
         </t:response>
     </t:test>
-    
+
 
     <t:test >
         <t:request>
@@ -234,10 +234,10 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" />
         </t:response>
-    </t:test>     
-    
+    </t:test>
+
 	<t:property name="server.ZimbraAccount" value="${lastMember.server}"/>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -251,7 +251,7 @@
 
         </t:response>
     </t:test>
-    
+
 
     <t:test >
         <t:request>
@@ -262,8 +262,8 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" />
         </t:response>
-    </t:test>     
-    
-</t:test_case>    
+    </t:test>
+
+</t:test_case>
 
 </t:tests>

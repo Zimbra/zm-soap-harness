@@ -55,7 +55,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -68,7 +68,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
@@ -93,7 +93,7 @@
 		<t:response>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -109,8 +109,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteDistributionListRequest01" type="bhr" bugids="" >
-    <t:objective>Create and delete distribution list by id . </t:objective>    
+<t:test_case testcaseid="DeleteDistributionListRequest01" type="sanity" bugids="" >
+    <t:objective>Create and delete distribution list by id . </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -124,7 +124,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -136,11 +136,11 @@
         </t:request>
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
-    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->	
+    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -151,7 +151,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -162,12 +162,12 @@
         <t:response>
         	<t:select path="//acct:GetDistributionListResponse/acct:dl[@id='${account1.dl1.id}']" emptyset="1"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="DeleteDistributionListRequest02" type="bhr" bugids="" >
-    <t:objective>Create and delete distribution list by name . </t:objective>    
+<t:test_case testcaseid="DeleteDistributionListRequest02" type="sanity" bugids="" >
+    <t:objective>Create and delete distribution list by name . </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -181,7 +181,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -195,9 +195,9 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl2.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />  -->
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -208,7 +208,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -219,12 +219,12 @@
         <t:response>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl[@id='${account1.dl2.id}']" emptyset="1"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="DeleteDistributionListRequest03" type="bhr" bugids="" >
-    <t:objective>Create distribution list add members delete it . </t:objective>    
+<t:test_case testcaseid="DeleteDistributionListRequest03" type="sanity" bugids="" >
+    <t:objective>Create distribution list add members delete it . </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -238,7 +238,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -250,9 +250,9 @@
         </t:request>
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl3.id" />
-    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->	
+    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
      <t:test >
         <t:request >
@@ -266,9 +266,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    
-    
+    </t:test>
+
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -279,7 +279,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -290,13 +290,13 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl[@id='${account1.dl3.id}']" emptyset="1"/>
         <t:response>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteDistributionListRequest04" type="bhr" bugids="" >
-    <t:objective>Add member to deleted distribution list . </t:objective>    
+<t:test_case testcaseid="DeleteDistributionListRequest04" type="sanity" bugids="" >
+    <t:objective>Add member to deleted distribution list . </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -310,7 +310,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -322,7 +322,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl4.id" />
     		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
      <t:test >
         <t:request >
@@ -336,9 +336,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    
-    
+    </t:test>
+
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -349,7 +349,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -360,8 +360,8 @@
         <t:response>
         	<t:select path="//acct:GetDistributionListResponse/acct:dl[@id='${account1.dl4.id}']" emptyset="1"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -374,11 +374,11 @@
         <t:response>
         	<t:select path="//zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-<t:test_case testcaseid="DeleteDistributionListRequest05" type="bhr" bugids="" >
-    <t:objective>Create and delete distribution and re-create distribution list by same name . </t:objective>    
+<t:test_case testcaseid="DeleteDistributionListRequest05" type="sanity" bugids="" >
+    <t:objective>Create and delete distribution and re-create distribution list by same name . </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -392,7 +392,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -403,11 +403,11 @@
         </t:request>
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl5.id" />
-    	<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />  -->	
+    	<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />  -->
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -418,7 +418,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -428,15 +428,15 @@
         </t:request>
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl5.id" />
-    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->	
+    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteDistributionListRequest06" type="bhr" bugids="" >
-    <t:objective>Try to delete distribution where user does not have createDistRight right on that domain. </t:objective>    
+<t:test_case testcaseid="DeleteDistributionListRequest06" type="sanity" bugids="" >
+    <t:objective>Try to delete distribution where user does not have createDistRight right on that domain. </t:objective>
 
 	<t:steps>
 			1. Login into account1.
@@ -458,7 +458,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -468,10 +468,10 @@
         </t:request>
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl6.id" />
-    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->	
+    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -484,8 +484,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -498,8 +498,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -510,12 +510,12 @@
         <t:response>
         	<t:select path="//zimbra:Code" match="service.PERM_DENIED" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="DeleteDistributionListRequest07" type="bhr" bugids="69485" >
-    <t:objective>Try to delete distribution where user is granted with createDistRight right on that domain. </t:objective>    
+<t:test_case testcaseid="DeleteDistributionListRequest07" type="sanity" bugids="69485" >
+    <t:objective>Try to delete distribution where user is granted with createDistRight right on that domain. </t:objective>
 
 	<t:steps>
 			1. Login into account1.
@@ -525,9 +525,9 @@
 			5. Try to delete the DL. account2 will get service.PERM_DENIED.
 			6. Admin grant createDistRight on the domain to account 2
 			7. Login into account2.
-			8. Try to delete the DL. account2 will be able to delete sucessfully.			
+			8. Try to delete the DL. account2 will be able to delete sucessfully.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -540,7 +540,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -550,10 +550,10 @@
         </t:request>
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl7.id" />
-    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->	
+    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -566,22 +566,22 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
             	<dl by="id">${account1.dl7.id}</dl>
                  <action op="addOwners">
-                 	<owner type="usr" by="id">${account2.id}</owner>                 	
+                 	<owner type="usr" by="id">${account2.id}</owner>
                  </action>
           	</DistributionListActionRequest>
         </t:request>
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test>   
-     
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -592,8 +592,8 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account2.name}']" attr="id" match="${account2.id}"/>
         </t:response>
-     </t:test>  
-    
+     </t:test>
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -606,8 +606,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -618,10 +618,10 @@
         <t:response>
         	<t:select path="//zimbra:Code" match="service.PERM_DENIED" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -633,7 +633,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -645,7 +645,7 @@
 		<t:response>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -658,8 +658,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -670,8 +670,8 @@
         <t:response>
         	<DistributionListActionResponse xmlns="urn:zimbraAccount"></DistributionListActionResponse>
         </t:response>
-    </t:test>     
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" >
@@ -681,12 +681,12 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl[@id='${account1.dl7.id}']" emptyset="1"/>
         <t:response>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="DeleteDistributionListRequest08" type="bhr" bugids="69485" >
-    <t:objective>Try to delete distribution where user is granted with ownertRight right on that domain but has no createDistRight. </t:objective>    
+<t:test_case testcaseid="DeleteDistributionListRequest08" type="sanity" bugids="69485" >
+    <t:objective>Try to delete distribution where user is granted with ownertRight right on that domain but has no createDistRight. </t:objective>
 
 	<t:steps>
 			1. Login into account1.
@@ -697,9 +697,9 @@
 			6. Admin grant createDistRight on the domain to account 2
 			7. Login into account2.
 			8. Try to delete the DL. account2 will be able to delete sucessfully.
-			
+
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -712,7 +712,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -724,8 +724,8 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl8.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -738,23 +738,23 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
             	<dl by="id">${account1.dl8.id}</dl>
                  <action op="addOwners">
-                 	<owner type="usr" by="id">${account2.id}</owner>                 	
+                 	<owner type="usr" by="id">${account2.id}</owner>
                  </action>
           	</DistributionListActionRequest>
         </t:request>
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-  
-     
+    </t:test>
+
+
     <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
@@ -765,8 +765,8 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
 			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account2.name}']" attr="id" match="${account2.id}"/>
         </t:response>
-     </t:test>  
-   
+     </t:test>
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -779,8 +779,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -791,10 +791,10 @@
         <t:response>
         	<t:select path="//zimbra:Code" match="service.PERM_DENIED" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -806,7 +806,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -818,7 +818,7 @@
 		<t:response>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -831,8 +831,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -843,8 +843,8 @@
         <t:response>
         	<DistributionListActionResponse xmlns="urn:zimbraAccount"></DistributionListActionResponse>
         </t:response>
-    </t:test>     
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" >
@@ -854,7 +854,7 @@
 			<t:select path="//acct:GetDistributionListResponse/acct:dl[@id='${account1.dl8.id}']" emptyset="1"/>
         <t:response>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

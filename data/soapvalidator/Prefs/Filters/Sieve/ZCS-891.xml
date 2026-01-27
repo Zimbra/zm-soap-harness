@@ -5,7 +5,7 @@
     <t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}" />
-    
+
 
 <t:property name="dollar" value="$"/>
 <t:property name="folder_inbox" value="Inbox" />
@@ -33,7 +33,7 @@
 <t:property name="sieve_rule5" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
   if address :count "eq" ["to"] ["1"] :comparator "i;ascii-numeric" {tag "eqtag";}
   ' />
-      
+
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
         <t:test required="true">
@@ -86,7 +86,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account2.server" />
             </t:response>
         </t:test>
-        
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -99,7 +99,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account3.server" />
             </t:response>
         </t:test>
-        
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -112,7 +112,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account4.server" />
             </t:response>
         </t:test>
-        
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -124,11 +124,11 @@
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account5.id" />
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account5.server" />
             </t:response>
-        </t:test>                
+        </t:test>
     </t:test_case>
 
 
-    <t:test_case testcaseid="zcs-891_rule1" type="functional" bugids="zcs-891">
+    <t:test_case testcaseid="zcs-891_rule1" type="regression" bugids="zcs-891">
         <t:objective>Verify no errors are seen in :comparator is specified before :matches</t:objective>
         <t:test required="true">
             <t:request>
@@ -141,7 +141,7 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-        
+
         <t:test id="modifyaccountrequest1">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -197,8 +197,8 @@
         </t:test>
 
     </t:test_case>
-    
-    <t:test_case testcaseid="zcs-891_rule2" type="functional" bugids="zcs-891">
+
+    <t:test_case testcaseid="zcs-891_rule2" type="regression" bugids="zcs-891">
         <t:objective>Verify no errors are seen in :comparator is specified after :matches</t:objective>
         <t:test required="true">
             <t:request>
@@ -211,7 +211,7 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-        
+
         <t:test id="modifyaccountrequest1">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -266,9 +266,9 @@
             </t:response>
         </t:test>
 
-    </t:test_case> 
-    
-    <t:test_case testcaseid="zcs-891_rule3" type="functional" bugids="zcs-891">
+    </t:test_case>
+
+    <t:test_case testcaseid="zcs-891_rule3" type="regression" bugids="zcs-891">
         <t:objective>Verify no errors are seen in :count is specified before :matches</t:objective>
         <t:test required="true">
             <t:request>
@@ -281,7 +281,7 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-        
+
         <t:test id="modifyaccountrequest1">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -337,8 +337,8 @@
         </t:test>
 
     </t:test_case>
-    
-    <t:test_case testcaseid="zcs-891_rule4" type="functional" bugids="zcs-891">
+
+    <t:test_case testcaseid="zcs-891_rule4" type="regression" bugids="zcs-891">
         <t:objective>Verify no errors are seen in :count is specified before :matches</t:objective>
         <t:test required="true">
             <t:request>
@@ -351,7 +351,7 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-        
+
         <t:test id="modifyaccountrequest1">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -407,8 +407,8 @@
         </t:test>
 
     </t:test_case>
-    
-    <t:test_case testcaseid="zcs-891_rule5" type="functional" bugids="zcs-891">
+
+    <t:test_case testcaseid="zcs-891_rule5" type="regression" bugids="zcs-891">
         <t:objective>Negative test: Verify syntax error is seen in :count if parameters are not specified correctly</t:objective>
         <t:test required="true">
             <t:request>
@@ -421,7 +421,7 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-        
+
         <t:test id="modifyaccountrequest1">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -477,5 +477,5 @@
         </t:test>
 
     </t:test_case>
-                   
+
 </t:tests>

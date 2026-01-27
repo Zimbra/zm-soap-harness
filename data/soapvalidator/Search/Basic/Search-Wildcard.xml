@@ -49,7 +49,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -62,7 +62,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -74,13 +74,13 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="search_wildcard_01" type="sanity"> 
+<t:test_case testcaseid="search_wildcard_01" type="functional">
 	<!-- Note: Moving all tests to functional since this bug is not part of JP -->
 	<t:objective>Login to account 2 and send a mail</t:objective>
 	<t:steps>
@@ -122,7 +122,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="search_wildcard_02" type="sanity" bugids="7581,14292,60820">
+<t:test_case testcaseid="search_wildcard_02" type="functional" bugids="7581,14292,60820">
 	<t:objective>Login to account 2 and verify wildcard search functionality for TO header.</t:objective>
 	<t:steps>
 		1. Login to account2.
@@ -157,7 +157,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -169,7 +169,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -181,7 +181,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -193,10 +193,10 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="search_wildcard_03" type="sanity" bugids="7581,14292,60820">
+<t:test_case testcaseid="search_wildcard_03" type="functional" bugids="7581,14292,60820">
 	<t:objective>Verify wildcard search functionality for CC header</t:objective>
 	<t:steps>
 		1. Verify wildcard search functionality for CC header
@@ -213,7 +213,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -225,7 +225,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -237,7 +237,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -249,10 +249,10 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="search_wildcard_03" type="sanity" bugids="7581,14292,60820">
+<t:test_case testcaseid="search_wildcard_03" type="functional" bugids="7581,14292,60820">
 	<t:objective>Verify wildcard search functionality for FROM header.</t:objective>
 	<t:steps>
 		1. Verify wildcard search functionality for FROM header.
@@ -269,7 +269,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -281,7 +281,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -293,7 +293,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -305,10 +305,10 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="search_wildcard_04" type="sanity" bugids="7581,14292,60820">
+<t:test_case testcaseid="search_wildcard_04" type="functional" bugids="7581,14292,60820">
 	<t:objective>Verify wildcard search functionality for subject.</t:objective>
 	<t:steps>
 		1. Verify wildcard search functionality for subject
@@ -327,7 +327,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -339,7 +339,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -351,7 +351,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -363,10 +363,10 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="search_wildcard_05" type="sanity" bugids="7581,14292,60820">
+<t:test_case testcaseid="search_wildcard_05" type="functional" bugids="7581,14292,60820">
 	<t:objective>Verify wildcard search functionality for contents.</t:objective>
 	<t:steps>
 		1. Verify wildcard functionality for contents.
@@ -383,7 +383,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -395,7 +395,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -407,7 +407,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail">
@@ -419,7 +419,7 @@
  			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 </t:tests>

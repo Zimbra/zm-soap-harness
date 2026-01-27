@@ -8,7 +8,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -29,7 +29,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -41,7 +41,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -54,7 +54,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -67,18 +67,18 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
-    
-</t:test_case>  
 
- 
 
-<t:test_case testcaseid="bug75100" type="bhr">
+</t:test_case>
+
+
+
+<t:test_case testcaseid="bug75100" type="sanity">
     <t:objective>Search query </t:objective>
     <t:steps>
 		1. user1 shares two folders folderA and folderB  with user2
-		2. user2 accepts the shares 
-		3. user2 searches under share folderA and folderB using the following query: 
+		2. user2 accepts the shares
+		3. user2 searches under share folderA and folderB using the following query:
 
 		assume zid of user1:0175f363-b576-466b-a168-f3a7cde6aada
 		rid of folderA: 271
@@ -103,13 +103,13 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account0.folder.root.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account0.folder.root.id"/>
         </t:response>
     </t:test>
 
@@ -124,7 +124,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account0.folder1.id"/>
         </t:response>
 	</t:test>
-	
+
 		<t:property name="folder2.name" value="folder1${TIME}.${COUNTER}" />
     <t:test >
         <t:request>
@@ -161,7 +161,7 @@ hi This is message1
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account0.message1.id"/>
         </t:response>
     </t:test>
-	
+
 	    <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -198,7 +198,7 @@ hi This is message2
         </t:response>
     </t:test>
 
-	
+
 	 <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -212,7 +212,7 @@ hi This is message2
         </t:response>
     </t:test>
 
-	
+
 			<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -233,7 +233,7 @@ hi This is message2
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-                       <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root.id"/> 
+                       <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root.id"/>
         </t:response>
     </t:test>
 
@@ -247,7 +247,7 @@ hi This is message2
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account1.folder1.shared.id"/>
         </t:response>
     </t:test>
-	
+
 	    <t:test >
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -270,7 +270,7 @@ hi This is message2
 			<t:select path="//mail:SearchResponse/mail:m[@id='${account0.id}:${account0.message2.id}']" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -282,9 +282,9 @@ hi This is message2
 			<t:select path="//mail:SearchResponse/mail:m[@id='${account0.id}:${account0.message1.id}']" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
-	</t:test_case>	
+
+	</t:test_case>
 
 
 
-</t:tests>	
+</t:tests>

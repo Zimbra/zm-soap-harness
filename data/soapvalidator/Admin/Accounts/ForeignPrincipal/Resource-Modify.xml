@@ -12,10 +12,10 @@
 <t:property name="resource1.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="resource1.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
 <t:property name="resource1.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="resource2.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="resource2.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="resource3.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="resource3.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
 <t:property name="resource3.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
@@ -56,7 +56,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos1.name}</name>        
+                <name xmlns="">${cos1.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -67,7 +67,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_AccountModify_01" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_AccountModify_01" type="sanity">
     <t:objective>Modify the foreign principal attribute</t:objective>
 
 
@@ -87,7 +87,7 @@
         <t:response>
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -112,7 +112,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_CALENDAR_RESOURCE$"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 		    <GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -123,12 +123,12 @@
 			<t:select path="//admin:GetCalendarResourceResponse/admin:calresource" attr="id" match="${resource1.id}"/>
 		</t:response>
 	</t:test>
-	
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_AccountModify_02" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_AccountModify_02" type="sanity">
     <t:objective>Add the foreign principal attribute to an existing account</t:objective>
 
 
@@ -147,7 +147,7 @@
         <t:response>
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id"  set="resource2.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -175,7 +175,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ForeignPrincipal_AccountModify_03" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_AccountModify_03" type="sanity">
     <t:objective>Add a second foreign principal to the account</t:objective>
 
 
@@ -195,7 +195,7 @@
         <t:response>
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource3.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -220,7 +220,7 @@
 			<t:select path="//admin:GetCalendarResourceResponse/admin:calresource" attr="id" match="${resource3.id}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 		    <GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -231,7 +231,7 @@
 			<t:select path="//admin:GetCalendarResourceResponse/admin:calresource" attr="id" match="${resource3.id}"/>
 		</t:response>
 	</t:test>
-	
+
 
 
 </t:test_case>

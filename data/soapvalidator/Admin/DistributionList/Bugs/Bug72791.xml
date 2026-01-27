@@ -48,7 +48,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="owner2.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
 	<t:test required="true">
 		<t:request>
@@ -78,8 +78,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug72791_1" type="bhr" bugids="72791" >
-    <t:objective>Verify DL owner will not becomes orphan if owner adds fake owner email address in "List Owners:" </t:objective>    
+<t:test_case testcaseid="bug72791_1" type="sanity" bugids="72791" >
+    <t:objective>Verify DL owner will not becomes orphan if owner adds fake owner email address in "List Owners:" </t:objective>
     <t:steps>
     1. Login as account1
     2. Create Distribution list
@@ -98,7 +98,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -109,9 +109,9 @@
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl2.id" />
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -124,7 +124,7 @@
         <t:response>
         	<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -135,19 +135,19 @@
         <t:response>
         	<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="bug72791_2" type="bhr" bugids="72791" >
-    <t:objective>Try to add fake owner (with action= setOwners) > account.NO_SUCH_ACCOUNT</t:objective>    
+<t:test_case testcaseid="bug72791_2" type="sanity" bugids="72791" >
+    <t:objective>Try to add fake owner (with action= setOwners) > account.NO_SUCH_ACCOUNT</t:objective>
     <t:steps>
     1. Login as account1
     2. Create Distribution list
     3. Try to add fake owner (with action= setOwners) > account.NO_SUCH_ACCOUNT
     4. Send GetDistributionListRequest > verify GetDistributionListRequest return with account1.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -160,7 +160,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -172,9 +172,9 @@
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl3.id" />
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -187,7 +187,7 @@
         <t:response>
         	<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -198,7 +198,7 @@
         <t:response>
         	<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

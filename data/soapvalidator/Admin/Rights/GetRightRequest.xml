@@ -28,14 +28,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetRightRequest01" type="bhr">
+<t:test_case testcaseid="GetRightRequest01" type="sanity">
  <t:objective>basic request check</t:objective>
 
 	<t:test>
 		<t:request>
 			<GetRightRequest xmlns="urn:zimbraAdmin">
 				<right>createAccount</right>
-			</GetRightRequest>    
+			</GetRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GetRightResponse"/>
@@ -51,7 +51,7 @@
 		<t:request>
 			<GetRightRequest xmlns="urn:zimbraAdmin" expandAllAttrs="1">
 				<right>configureAdminUI</right>
-			</GetRightRequest>    
+			</GetRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GetRightResponse"/>
@@ -62,7 +62,7 @@
 		<t:request>
 			<GetRightRequest xmlns="urn:zimbraAdmin" expandAllAttrs="1">
 				<right>publishAccountShareInfo</right>
-			</GetRightRequest>    
+			</GetRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//zimbra:Code" match="^account.NO_SUCH_RIGHT$"/>
@@ -73,7 +73,7 @@
 		<t:request>
 			<GetRightRequest xmlns="urn:zimbraAdmin" expandAllAttrs="1">
 				<right>modifyAccount</right>
-			</GetRightRequest>    
+			</GetRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GetRightResponse"/>
@@ -83,14 +83,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetRightRequest03" type="bhr">
+<t:test_case testcaseid="GetRightRequest03" type="sanity">
  <t:objective> GetRightResponse now returns right type for nested rights </t:objective>
 
 	<t:test>
 		<t:request>
 			<GetRightRequest xmlns="urn:zimbraAdmin">
 				<right>adminConsoleAccountsZimletsTabRights</right>
-			</GetRightRequest>    
+			</GetRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GetRightResponse/admin:right" attr="type" match="combo"/>

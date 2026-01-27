@@ -27,7 +27,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -53,9 +53,9 @@
 		<t:request>
 		    <CreateDomainRequest xmlns="urn:zimbraAdmin">
 		          <name>${domain.name1}</name>
-		        	<a n="zimbraPublicServiceHostname">${public.hostname}</a>    
-				<a n="zimbraPublicServicePort">${public.port}</a>    
-				<a n="zimbraPublicServiceProtocol">${public.protocol}</a>    
+		        	<a n="zimbraPublicServiceHostname">${public.hostname}</a>
+				<a n="zimbraPublicServicePort">${public.port}</a>
+				<a n="zimbraPublicServiceProtocol">${public.protocol}</a>
 		    </CreateDomainRequest>
 		</t:request>
 		<t:response>
@@ -114,7 +114,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestURL_zimbraPublicServicePort_01" type="bhr" bugids="20558">
+<t:test_case testcaseid="RestURL_zimbraPublicServicePort_01" type="sanity" bugids="20558">
 	<t:objective>Verify that providing zimbraPublicServicePort is reflected in the rest URL </t:objective>
 	<t:steps>
 	1. Create a domain with zimbraPublicServiceHostname, zimbraPublicServicePort
@@ -153,7 +153,7 @@
         </t:response>
     </t:test>
 
-	
+
 	<t:test >
 		<t:request>
 			<GetInfoRequest sections="mbox" xmlns="urn:zimbraAccount"/>
@@ -163,6 +163,6 @@
 			<t:select path="//acct:GetInfoResponse/acct:publicURL" match="${public.url}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 </t:tests>

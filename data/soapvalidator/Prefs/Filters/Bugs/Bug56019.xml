@@ -50,7 +50,7 @@
 
 
 
-<t:test_case testcaseid="Bug56019" type="bhr" bugids="56019" >
+<t:test_case testcaseid="Bug56019" type="sanity" bugids="56019" >
     <t:objective>Filter on special character in message body.</t:objective>
     <t:steps>
     1. Login as user1
@@ -75,8 +75,8 @@
 
 	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter1.subject" value="subject${TIME}${COUNTER}"/>
-	<t:property name="filter1.body" value="André"/>	
-	
+	<t:property name="filter1.body" value="André"/>
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -88,8 +88,8 @@
 						<filterActions>
 							<actionFlag flagName="flagged" />
 							<actionStop />
-						</filterActions> 
-						</filterRule>                           
+						</filterActions>
+						</filterRule>
 					</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -110,7 +110,7 @@
                 <header a="Subject">${filter1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test >
         <t:request>
@@ -122,7 +122,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter1.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>	   
+    </t:test>
 </t:test_case>
 
 </t:tests>

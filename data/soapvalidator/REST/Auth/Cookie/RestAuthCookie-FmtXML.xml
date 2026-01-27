@@ -21,7 +21,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -61,14 +61,14 @@
 
 
 
-<t:test_case testcaseid="RestServlet_AuthCookie_XmlFormatter_01" type="sanity" bugids="35917">
+<t:test_case testcaseid="RestServlet_AuthCookie_XmlFormatter_01" type="functional" bugids="35917">
 	<t:objective>Verify 403 return code when using fmt=xml and query="query" without auth cookie (without user part)</t:objective>
 	<t:steps>
 	1. Auth as user 1
 	2. Add a message in the inbox
 	3. Use REST - user=~, auth=co, fmt=xml, query=content - 200
 	4. Clear the auth token
-	5. Use REST - user=~, auth=co, fmt=xml, query=content - 403		
+	5. Use REST - user=~, auth=co, fmt=xml, query=content - 403
 	</t:steps>
 
 
@@ -90,7 +90,7 @@
         <t:request>
                <GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
         </t:response>
     </t:test>
@@ -101,17 +101,17 @@
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${inboxFolder.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
 ${message1.content}
 
-					
+
 					</content>
                 </m>
             </AddMsgRequest>
@@ -150,14 +150,14 @@ ${message1.content}
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_AuthCookie_XmlFormatter_02" type="sanity" bugids="35917">
+<t:test_case testcaseid="RestServlet_AuthCookie_XmlFormatter_02" type="functional" bugids="35917">
 	<t:objective>Verify 200 return code when using fmt=xml and query="query" without auth cookie (with user part)</t:objective>
 	<t:steps>
 	1. Auth as user 1
 	2. Add a message in the inbox
 	3. Use REST - user=account, auth=co, fmt=xml, query=content - 200
 	4. Clear the auth token
-	5. Use REST - user=account, auth=co, fmt=xml, query=content - 200		
+	5. Use REST - user=account, auth=co, fmt=xml, query=content - 200
 	</t:steps>
 
 
@@ -179,7 +179,7 @@ ${message1.content}
         <t:request>
                <GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
         </t:response>
     </t:test>
@@ -190,17 +190,17 @@ ${message1.content}
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${inboxFolder.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
 ${message1.content}
 
-					
+
 					</content>
                 </m>
             </AddMsgRequest>
@@ -242,14 +242,14 @@ ${message1.content}
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_AuthCookie_XmlFormatter_03" type="sanity" bugids="35917">
+<t:test_case testcaseid="RestServlet_AuthCookie_XmlFormatter_03" type="functional" bugids="35917">
 	<t:objective>Verify 403 return code when using fmt=xml and query="query" (with user part and invalid auth token)</t:objective>
 	<t:steps>
 	1. Auth as user 1
 	2. Add a message in the inbox
 	3. Use REST - auth=co, fmt=xml, query=content - 200
 	4. Clear the auth token
-	5. Use REST - auth=co, fmt=xml, query=content - 401		
+	5. Use REST - auth=co, fmt=xml, query=content - 401
 	</t:steps>
 
 
@@ -271,7 +271,7 @@ ${message1.content}
         <t:request>
                <GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
         </t:response>
     </t:test>
@@ -282,17 +282,17 @@ ${message1.content}
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${inboxFolder.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
 ${message1.content}
 
-					
+
 					</content>
                 </m>
             </AddMsgRequest>

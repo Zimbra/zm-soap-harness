@@ -4,9 +4,9 @@
 
 
 
-<t:test_case testcaseid="GenerateUUIDRequest_01" type="bhr" >
+<t:test_case testcaseid="GenerateUUIDRequest_01" type="sanity" >
     <t:objective>Sanity test for GenerateUUIDRequest with admin token</t:objective>
-   
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -18,7 +18,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-  
+
         <t:test>
                 <t:request>
                         <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -34,19 +34,19 @@
 
     <t:test >
         <t:request>
-			<GenerateUUIDRequest xmlns="urn:zimbraMail"/>			
+			<GenerateUUIDRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
             <t:select path="//mail:GenerateUUIDResponse"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GenerateUUIDRequest_02" type="bhr" >
+<t:test_case testcaseid="GenerateUUIDRequest_02" type="sanity" >
     <t:objective>Sanity test for GenerateUUIDRequest with user token</t:objective>
-   
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test >
@@ -65,17 +65,17 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>				
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
-       		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>	
+       		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">
@@ -87,16 +87,16 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
-			<GenerateUUIDRequest xmlns="urn:zimbraMail"/>			
+			<GenerateUUIDRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
             <t:select path="//mail:GenerateUUIDResponse"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

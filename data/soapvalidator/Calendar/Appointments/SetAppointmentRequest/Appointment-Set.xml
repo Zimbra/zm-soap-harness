@@ -38,7 +38,7 @@
 <t:property name="Time4" value="${CURRDATE}"/>
 
 <t:property name="tz.GMT" value="(GMT) Greenwich Mean Time - Dublin / Edinburgh / Lisbon / London"/>
-<t:property name="timezone.gmt.regex" value="Europe\/London" /> 
+<t:property name="timezone.gmt.regex" value="Europe\/London" />
 
 <t:property name="tz.other" value="(GMT-10.00) Hawaii"/>
 <t:property name="timezone.other.regex" value="Pacific\/Honolulu" />
@@ -46,7 +46,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -61,7 +61,7 @@
 
 <t:test_case testcaseid="acctSetup1_SetAppointmentRequest" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -74,7 +74,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -117,7 +117,7 @@
 
 <t:test_case testcaseid="acctSetup2_SetAppointmentRequest" type="always" >
     <t:objective>Login as the test account</t:objective>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test id="auth1" required="true">
         <t:request>
@@ -131,13 +131,13 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="SetAppointmentRequest1" type="smoke" areas="Calendar">
     <t:objective>Create a normal appointment with one attendee with all paramters.</t:objective>
-    
+
     <t:test id="setAppointmentRequest1">
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail" bugid="7619">
@@ -145,8 +145,8 @@
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment1.location}">
                             <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                            <s d="${Time1}"/>  
-                            <e d="${Time2}"/>  
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
                             <or a="${test_account1.name}"/>
                         </inv>
                         <e a="${test_account2.name}" t="t"/>
@@ -175,7 +175,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetAppointmentRequest2" type="bhr" areas="Calendar">
+<t:test_case testcaseid="SetAppointmentRequest2" type="sanity" areas="Calendar">
     <t:objective>Create an all day appointment with single attendee.</t:objective>
 
     <t:test id="setAppointmentRequest2">
@@ -215,7 +215,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetAppointmentRequest3" type="bhr" areas="Calendar">
+<t:test_case testcaseid="SetAppointmentRequest3" type="sanity" areas="Calendar">
     <t:objective>Create a normal appointment with multiple attendees </t:objective>
 
     <t:test id="setAppointmentRequest3">
@@ -226,8 +226,8 @@
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment3.subject}" loc="">
                             <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
                             <at role="OPT" ptst="NE" rsvp="1" a="${test_account3.name}"/>
-                            <s d="${Time1}"/>  
-                            <e d="${Time2}"/>  
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
                             <or a="${test_account1.name}"/>
                         </inv>
                         <e a="${test_account2.name}" t="t"/>
@@ -256,9 +256,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetAppointmentRequest4" type="sanity" areas="Calendar">
+<t:test_case testcaseid="SetAppointmentRequest4" type="functional" areas="Calendar">
     <t:objective>Create a normal appointment in GMT time zone </t:objective>
-    
+
     <t:test id="setAppointmentRequest4">
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail" bugid="7619">
@@ -266,8 +266,8 @@
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment4.subject}" loc="">
                             <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                            <s d="${Time1}" tz="${tz.GMT}"/>  
-                            <e d="${Time2}" tz="${tz.GMT}"/>  
+                            <s d="${Time1}" tz="${tz.GMT}"/>
+                            <e d="${Time2}" tz="${tz.GMT}"/>
                             <or a="${test_account1.name}"/>
                         </inv>
                         <e a="${test_account2.name}" t="t"/>
@@ -296,7 +296,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetAppointmentRequest5" type="sanity" areas="Calendar">
+<t:test_case testcaseid="SetAppointmentRequest5" type="functional" areas="Calendar">
     <t:objective>Create a normal appointment in some other time zone </t:objective>
 
     <t:test id="setAppointmentRequest5">
@@ -306,8 +306,8 @@
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment5.subject}" loc="">
                             <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                            <s d="${Time1}" tz="${tz.other}"/>  
-                            <e d="${Time2}" tz="${tz.other}"/>  
+                            <s d="${Time1}" tz="${tz.other}"/>
+                            <e d="${Time2}" tz="${tz.other}"/>
                             <or a="${test_account1.name}"/>
                         </inv>
                         <e a="${test_account2.name}" t="t"/>
@@ -336,7 +336,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetAppointmentRequest6" type="sanity" areas="Calendar">
+<t:test_case testcaseid="SetAppointmentRequest6" type="functional" areas="Calendar">
     <t:objective>Create never ending daily repeat appointment </t:objective>
 
     <t:test id="setAppointmentRequest6">
@@ -346,8 +346,8 @@
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment6.subject}" loc="">
                             <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                            <s d="${Time1}"/>  
-                            <e d="${Time2}"/>  
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
                             <or a="${test_account1.name}"/>
                             <recur>
                                 <add>
@@ -381,7 +381,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetAppointmentRequest7" type="sanity" areas="Calendar">
+<t:test_case testcaseid="SetAppointmentRequest7" type="functional" areas="Calendar">
     <t:objective>Create weekly repeat appointment ending after 3 times </t:objective>
 
     <t:test id="setAppointmentRequest7">
@@ -391,8 +391,8 @@
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment7.subject}" loc="">
                             <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                            <s d="${Time1}"/>  
-                            <e d="${Time2}"/>  
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
                             <or a="${test_account1.name}"/>
                             <recur>
                                 <add>
@@ -429,7 +429,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetAppointmentRequest8" type="sanity" areas="Calendar">
+<t:test_case testcaseid="SetAppointmentRequest8" type="functional" areas="Calendar">
     <t:objective>Create monthly repeat appointment ending on some date </t:objective>
 
     <t:test id="setAppointmentRequest8">
@@ -439,8 +439,8 @@
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment8.subject}" loc="">
                             <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                            <s d="${Time1}"/>  
-                            <e d="${Time2}"/>  
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
                             <or a="${test_account1.name}"/>
                             <recur>
                                 <add>
@@ -475,9 +475,9 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="SetAppointmentRequest9" type="sanity" areas="Calendar">
+
+<t:test_case testcaseid="SetAppointmentRequest9" type="functional" areas="Calendar">
     <t:objective>Create custom weekly repeat appointment ending after 3 times </t:objective>
 
     <t:test id="setAppointmentRequest9">
@@ -487,8 +487,8 @@
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment9.subject}" loc="">
                             <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                            <s d="${Time1}"/>  
-                            <e d="${Time2}"/>  
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
                             <or a="${test_account1.name}"/>
                             <recur>
                                 <add>
@@ -532,7 +532,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetAppointmentRequest10" type="functional" areas="Calendar">
+<t:test_case testcaseid="SetAppointmentRequest10" type="regression" areas="Calendar">
     <t:objective>SetAppointmentRequest without default tag</t:objective>
 
     <t:test id="setAppointmentRequest10">

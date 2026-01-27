@@ -24,9 +24,9 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="acctSetup1_dlAddMember_loop" type="always">
     <t:objective>Create test domain </t:objective>
@@ -55,13 +55,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DistributionList_addMember_loop1" type="sanity" duration="long">
+<t:test_case testcaseid="DistributionList_addMember_loop1" type="functional" duration="long">
     <t:objective> Creating 500 accounts in single DistributionList with valid name and password </t:objective>
     <t:steps> 1. Create a DistributionList.
               2. Create 500 accounts.
               3. Add 500 accounts to DistributionList.
     </t:steps>
-    
+
     <t:test timeframeMax="2000">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -73,7 +73,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id" />
         </t:response>
     </t:test>
-    
+
     <t:test_loop count="500">
         <t:test timeframeMax="5000">
             <t:request>
@@ -86,7 +86,7 @@
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="test_accout1.name" />
             </t:response>
         </t:test>
-        
+
         <t:test timeframeMax="1000">
             <t:request>
                 <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -96,21 +96,21 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:AddDistributionListMemberResponse" />
-            </t:response>               
-        </t:test>    
-      
-    </t:test_loop>    
+            </t:response>
+        </t:test>
+
+    </t:test_loop>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DistributionList_addMember_loop2" type="functional" duration="long">
+<t:test_case testcaseid="DistributionList_addMember_loop2" type="regression" duration="long">
     <t:objective> Remove an account from the distribution list </t:objective>
     <t:steps> 1. Create an account
               2. Add account to the distribution list
               3. Remove the same account from the distribution list
     </t:steps>
-    
+
     <t:test id="distributionList_addMember_loop2a" timeframeMax="2000">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -122,8 +122,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${user1}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
     <t:test id="distributionList_addMember_loop2b" depends="distributionList_addMember_loop2a" timeframeMax="1000">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -135,7 +135,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse" attr="id" match="${list1.id}" />
         </t:response>
     </t:test>
-   
+
     <t:test depends="distributionList_addMember_loop2b" timeframeMax="1000">
         <t:request>
             <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -151,16 +151,16 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DistributionList_addMember_loop3" type="functional" duration="long">
+<t:test_case testcaseid="DistributionList_addMember_loop3" type="regression" duration="long">
     <t:objective> Verifying the accounts of Distribution list get the mail, even having 1000 accounts </t:objective>
     <t:steps> 1. Create two accounts.
               2. Add two accounts to the DistributionList.
               3. Login to first account.
               4. Send Msg to DistributionList.
               5. Login to second account.
-              6. Verifying second account get Msg.  
+              6. Verifying second account get Msg.
     </t:steps>
-    
+
     <t:test id="distributionList_addMember_loop3a" timeframeMax="2000">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -173,7 +173,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="distributionList_addMember_loop3b" timeframeMax="2000">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -186,7 +186,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test depends="distributionList_addMember_loop3b" timeframeMax="1000">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -196,9 +196,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AddDistributionListMemberResponse" attr="id" match="${list1.id}" />
-        </t:response>               
-    </t:test>  
-    
+        </t:response>
+    </t:test>
+
      <t:test depends="distributionList_addMember_loop3b" timeframeMax="1000">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -208,10 +208,10 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AddDistributionListMemberResponse" attr="id" match="${list1.id}" />
-        </t:response>               
-    </t:test> 
-    
-<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>    
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
     <t:test id="distributionList_addMember_loop3c" depends="distributionList_addMember_loop3a" timeframeMax="3000">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -225,7 +225,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test depends="distributionList_addMember_loop3c" timeframeMax="3000">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -242,8 +242,8 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-    
-<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>    
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
     <!--
     	Need to give postfix more time, since 1000's of accounts will receive this mail
     	Allow 1 minute for all mails to go through the system
@@ -271,8 +271,8 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message1.id}']" />
         </t:response>
-    </t:test>     
-    
-</t:test_case>    
+    </t:test>
+
+</t:test_case>
 
 </t:tests>

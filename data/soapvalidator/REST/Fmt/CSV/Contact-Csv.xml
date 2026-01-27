@@ -46,7 +46,7 @@
 <t:test_case testcaseid="RestServlet_contact_csv_account_setup" type="always" >
     <t:objective>create test account</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test id="admin_login" required="true" >
         <t:request>
@@ -110,13 +110,13 @@
                     <a n="firstName">${contact01.FirstName}</a>
                     <a n="lastName">${contact01.LastName}</a>
                     <a n="email">${contact01.emailAddress}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
 				<t:select attr="id" set="contact.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -147,7 +147,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_contact_csv_02" type="bhr">
+<t:test_case testcaseid="RestServlet_contact_csv_02" type="sanity">
     <t:objective>Using the REST servlet, get all contacts using csv format</t:objective>
 	<t:steps>
 	1. Create a contact
@@ -221,13 +221,13 @@ deprecate this test case.
                     <a n="firstName">${contact01.FirstName}</a>
                     <a n="lastName">${contact01.LastName}</a>
                     <a n="email">${contact01.emailAddress}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
 				<t:select attr="id" set="contact01.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -238,13 +238,13 @@ deprecate this test case.
                     <a n="firstName">${contact02.FirstName}</a>
                     <a n="lastName">${contact02.LastName}</a>
                     <a n="email">${contact02.emailAddress}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
 				<t:select attr="id" set="contact02.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -255,13 +255,13 @@ deprecate this test case.
                     <a n="firstName">${contact03.FirstName}</a>
                     <a n="lastName">${contact03.LastName}</a>
                     <a n="email">${contact03.emailAddress}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
 				<t:select attr="id" set="contact03.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -280,7 +280,7 @@ deprecate this test case.
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_contact_csv_04" type="bhr" bugids="12689">
+<t:test_case testcaseid="RestServlet_contact_csv_04" type="sanity" bugids="12689">
     <t:objective>Using the REST servlet with spaces, get contact, the spaces should get trimmed.</t:objective>
 	<t:steps>
 	1. Create a contact

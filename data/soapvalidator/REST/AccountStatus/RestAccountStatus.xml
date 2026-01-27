@@ -13,7 +13,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -92,7 +92,7 @@
 
 
 
-<t:test_case testcaseid="RestServlet_AccountStatus_01" type="sanity" >
+<t:test_case testcaseid="RestServlet_AccountStatus_01" type="functional" >
 	<t:objective>Verify if account status = active, that the rest servlet is active for the account</t:objective>
 	<t:steps>
 	1. Login account (remember the authtoken) and create a message
@@ -125,7 +125,7 @@
         <t:request>
 			<GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.inbox.folder.id"/>
         </t:response>
     </t:test>
@@ -134,11 +134,11 @@
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.inbox.folder.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
@@ -190,7 +190,7 @@ simple text string in the body
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="server.restServlet" value="${account1.server}"/>
-	
+
 	<t:property name="authToken" value="${account1.authToken}"/>
 
 
@@ -208,7 +208,7 @@ simple text string in the body
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_AccountStatus_02" type="sanity" bugids="17327" >
+<t:test_case testcaseid="RestServlet_AccountStatus_02" type="functional" bugids="17327" >
 	<t:objective>Verify if account status = maintenance, that the rest servlet is not active for the account</t:objective>
 	<t:steps>
 	1. Login account and create a message
@@ -241,7 +241,7 @@ simple text string in the body
         <t:request>
 			<GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.inbox.folder.id"/>
         </t:response>
     </t:test>
@@ -250,11 +250,11 @@ simple text string in the body
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account2.inbox.folder.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
@@ -323,7 +323,7 @@ simple text string in the body
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_AccountStatus_03" type="sanity" bugids="17327" >
+<t:test_case testcaseid="RestServlet_AccountStatus_03" type="functional" bugids="17327" >
 	<t:objective>Verify if account status = locked, that the rest servlet is not active for the account</t:objective>
 	<t:steps>
 	1. Login account and create a message
@@ -356,7 +356,7 @@ simple text string in the body
         <t:request>
 			<GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account3.inbox.folder.id"/>
         </t:response>
     </t:test>
@@ -365,11 +365,11 @@ simple text string in the body
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account3.inbox.folder.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
@@ -438,7 +438,7 @@ simple text string in the body
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_AccountStatus_04" type="sanity" bugids="17327" >
+<t:test_case testcaseid="RestServlet_AccountStatus_04" type="functional" bugids="17327" >
 	<t:objective>Verify if account status = closed, that the rest servlet is not active for the account</t:objective>
 	<t:steps>
 	1. Login account and create a message
@@ -471,7 +471,7 @@ simple text string in the body
         <t:request>
 			<GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account4.inbox.folder.id"/>
         </t:response>
     </t:test>
@@ -480,11 +480,11 @@ simple text string in the body
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account4.inbox.folder.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body

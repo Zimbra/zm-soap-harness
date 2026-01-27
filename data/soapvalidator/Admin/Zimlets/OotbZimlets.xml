@@ -8,9 +8,9 @@
 <t:property name="acctServer" value="NOT_DEFINED"/>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-<t:test_case testcaseid="ootbZimletsNet" type="bhr" areas="network" bugids="6551,8400">
+<t:test_case testcaseid="ootbZimletsNet" type="sanity" areas="network" bugids="6551,8400">
     <t:objective>Check Default Zimlets</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -32,12 +32,12 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <!-- check default on zimlets are enabled -->
             <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="false" and @name="com_zimbra_phone"]' match=".*"/>
             <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="false" and @name="com_zimbra_tracking"]' match=".*"/-->

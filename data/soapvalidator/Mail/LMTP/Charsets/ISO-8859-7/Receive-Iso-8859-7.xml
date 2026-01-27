@@ -18,14 +18,14 @@
 <t:property name="message03.content" value="content12452811140406"/>
 <t:property name="contact03.first" value="abcαβ"/>
 <t:property name="contact03.last" value="γδdef"/>
-	
-	
+
+
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -34,16 +34,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-                  2. Create a test account.       
+                  2. Create a test account.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -55,7 +55,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -80,13 +80,13 @@
     </t:mailinjecttest>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="Charsets_ISO_8859_7_Receive_01" type="bhr">
+
+<t:test_case testcaseid="Charsets_ISO_8859_7_Receive_01" type="sanity">
     <t:objective>Verify account can receive iso 8859-7 encoded content</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -113,7 +113,7 @@
     </t:test>
 
 	<t:test >
-        <t:request> 
+        <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${message01.id}"/>
 			</GetMsgRequest>
@@ -123,7 +123,7 @@
 				<t:select path="//mail:m">
 					<t:select path="//mail:content" match="(?s).*${message01.content}.*"/>
 				</t:select>
-			</t:select> 
+			</t:select>
         </t:response>
     </t:test>
 
@@ -140,11 +140,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Charsets_ISO_8859_7_Receive_02" type="bhr">
+<t:test_case testcaseid="Charsets_ISO_8859_7_Receive_02" type="sanity">
     <t:objective>Verify account can receive iso 8859-7 encoded subject</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -171,7 +171,7 @@
     </t:test>
 
 	<t:test >
-        <t:request> 
+        <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${message02.id}"/>
 			</GetMsgRequest>
@@ -181,7 +181,7 @@
 				<t:select path="//mail:m">
 					<t:select path="//mail:su" match="${message02.subject}"/>
 				</t:select>
-			</t:select> 
+			</t:select>
         </t:response>
     </t:test>
 
@@ -198,11 +198,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Charsets_ISO_8859_7_Receive_03" type="bhr">
+<t:test_case testcaseid="Charsets_ISO_8859_7_Receive_03" type="sanity">
     <t:objective>Verify account can receive iso 8859-7 encoded recipient</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -229,7 +229,7 @@
     </t:test>
 
 	<t:test >
-        <t:request> 
+        <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${message03.id}"/>
 			</GetMsgRequest>
@@ -240,7 +240,7 @@
 	            	<t:select path="//mail:e[@t='t']" attr="d" match="${contact03.first}"/>
 	            	<t:select path="//mail:e[@t='t']" attr="p" match="${contact03.first} ${contact03.last}"/>
 				</t:select>
-			</t:select> 
+			</t:select>
         </t:response>
     </t:test>
 
@@ -250,7 +250,7 @@
 		</t:restServletRequest>
 		<t:restServletResponse>
 			<t:select attr="StatusCode" match="200"/>
-			<!--  
+			<!--
 				should match:
 				=?ISO-8859-7?Q?abc=E1=E2_=E3=E4def?= <account@domain.com>
 			-->

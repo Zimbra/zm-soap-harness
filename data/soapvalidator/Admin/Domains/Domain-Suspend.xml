@@ -51,15 +51,15 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-  
+
   <t:property name="admin.authToken" value="${authToken}"/>
 
 </t:test_case >
 
 
-<t:test_case testcaseid="DomainSuspend01" type="bhr">
+<t:test_case testcaseid="DomainSuspend01" type="sanity">
     <t:objective>Create a Domain with suspend status  </t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -73,14 +73,14 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DomainSuspend02" type="bhr" bugids="36096">
+<t:test_case testcaseid="DomainSuspend02" type="sanity" bugids="36096">
     <t:objective> Verify account cannot be created in the suspended domain </t:objective>
 
     <t:test>
@@ -99,7 +99,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DomainSuspend03" type="bhr">
+<t:test_case testcaseid="DomainSuspend03" type="sanity">
     <t:objective> Verify admin can send getdomain request for suspended domain </t:objective>
 
     <t:test>
@@ -116,7 +116,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DomainSuspend04" type="sanity" bugids="28021">
+<t:test_case testcaseid="DomainSuspend04" type="functional" bugids="28021">
     <t:objective> Modify a domain from supended to active through ModifyDomainRequest  </t:objective>
 
 <t:steps> 1. ModifyDomain and change the status only
@@ -136,7 +136,7 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id4"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id4"/>
         </t:response>
     </t:test>
 
@@ -165,7 +165,7 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id5"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id5"/>
         </t:response>
     </t:test>
 
@@ -187,7 +187,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DomainSuspend05" type="sanity" >
+<t:test_case testcaseid="DomainSuspend05" type="functional" >
     <t:objective> Login to a user in the suspended domain  </t:objective>
 
 <t:steps>   1. Create an active domain
@@ -210,7 +210,7 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id6"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id6"/>
         </t:response>
     </t:test>
 
@@ -218,7 +218,7 @@
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${test_account2.name}@${domain.name6}</name>
-				<password>${defaultpassword.value}</password>   
+				<password>${defaultpassword.value}</password>
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
@@ -253,13 +253,13 @@
             <t:select path="//zimbra:Code" match="^account.MAINTENANCE_MODE$"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="DomainSuspend06" type="sanity" bugids="36096">
+<t:test_case testcaseid="DomainSuspend06" type="functional" bugids="36096">
     <t:objective> Modify an account and try to change the domain to suspended domain </t:objective>
-	
+
     <t:property name="authToken" value="${admin.authToken}"/>
 
     <t:test>
@@ -275,7 +275,7 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id7"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id7"/>
         </t:response>
     </t:test>
 
@@ -283,7 +283,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>               
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -309,13 +309,13 @@
 
 
 
-<t:test_case testcaseid="DomainSuspend07" type="sanity" >
+<t:test_case testcaseid="DomainSuspend07" type="functional" >
     <t:objective> Verify mail do not get bounced if user's domain get suspended </t:objective>
 	<t:steps> 1. Create a domain
 			  2. Create an account on it
 			  3. Suspend that domain
 			  4. Login to an account and send a mail to the user whose domain is suspended. No error message.
-			  5. Activate that domain 
+			  5. Activate that domain
 			  6. Check mail got received properly
 	</t:steps>
 
@@ -332,7 +332,7 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id8"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id8"/>
         </t:response>
     </t:test>
 
@@ -340,7 +340,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account4.name}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>               
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -446,10 +446,10 @@
 			<t:select path="//mail:SearchResponse/mail:c/mail:e" attr="a" match="${admin.user}"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="DomainSuspend08" type="sanity" >
+<t:test_case testcaseid="DomainSuspend08" type="functional" >
     <t:objective> Verify domain admin can't change the zimbraDomainStatus </t:objective>
 
   <t:property name="authToken" value="${admin.authToken}"/>
@@ -467,8 +467,8 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id9"/>            
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name9"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id9"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name9"/>
         </t:response>
     </t:test>
 
@@ -524,12 +524,12 @@
 			<t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
 		</t:response>
 	</t:test>
-   
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DomainSuspend09" type="sanity" >
+<t:test_case testcaseid="DomainSuspend09" type="functional" >
     <t:objective> Verify globaladmin can change the zimbraDomainStatus of its own domain  </t:objective>
 
   <t:property name="authToken" value="${admin.authToken}"/>
@@ -547,8 +547,8 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id10"/>            
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name10"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id10"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name10"/>
         </t:response>
     </t:test>
 
@@ -608,7 +608,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DomainSuspend10" type="sanity" >
+<t:test_case testcaseid="DomainSuspend10" type="functional" >
     <t:objective> Verify GetDomain by domain admin for suspended domain gives AUTH_EXPIRED (assuming it's already authed) </t:objective>
 
   <t:property name="authToken" value="${admin.authToken}"/>
@@ -626,8 +626,8 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id11"/>            
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name11"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id11"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name11"/>
         </t:response>
     </t:test>
 
@@ -645,7 +645,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain.admin.server2"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request >
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -653,7 +653,7 @@
 				<grantee type="usr" by="name">${domain.admin.name2}</grantee>
 				<right>get.domain.zimbraDomainStatus</right>
 				<right>set.domain.zimbraDomainStatus</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -705,7 +705,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DomainSuspend11" type="sanity" >
+<t:test_case testcaseid="DomainSuspend11" type="functional" >
     <t:objective> Verify domainadmin can't login to if domain is suspended </t:objective>
 
   <t:property name="authToken" value="${admin.authToken}"/>
@@ -723,8 +723,8 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id12"/>            
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name12"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id12"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name12"/>
         </t:response>
     </t:test>
 

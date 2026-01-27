@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
 	<!-- Following bug is included as part of this testcase -->
-	<!-- ZCS-860 Sieve: addheader/replaceheader must not add a header without 
+	<!-- ZCS-860 Sieve: addheader/replaceheader must not add a header without
 		header name -->
 
 	<t:property name="account1.name"
@@ -27,8 +27,8 @@
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub1"
 			{
 				addheader "" "Val1";
-				tag "tag1";	
-			}   
+				tag "tag1";
+			}
 	' />
 
 	<t:property name="sieve_test2"
@@ -36,8 +36,8 @@
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub2"
 			{
 				addheader "X-Header1" "";
-				tag "tag2";	
-			}   
+				tag "tag2";
+			}
 	' />
 
 	<t:property name="sieve_test3"
@@ -45,17 +45,17 @@
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub3"
 			{
 				addheader "" "";
-				tag "tag3";	
-			}   
+				tag "tag3";
+			}
 	' />
 
 	<t:property name="sieve_test4"
 		value='require ["tag","editheader"];
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub4"
 			{
-				addheader :last "  " "Val2";  
-				tag "tag4";	
-			}   
+				addheader :last "  " "Val2";
+				tag "tag4";
+			}
 	' />
 
 	<t:property name="sieve_test5"
@@ -63,9 +63,9 @@
 			addheader "X-ZCS860-Header1" "Val3";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub5"
 			{
-				replaceheader :newname "" :newvalue "Val4" :comparator "i;octet" :matches "X-ZCS860-Header1" "Val3";  
-				tag "tag5";	
-			}   
+				replaceheader :newname "" :newvalue "Val4" :comparator "i;octet" :matches "X-ZCS860-Header1" "Val3";
+				tag "tag5";
+			}
 	' />
 
 	<t:property name="sieve_test6"
@@ -73,9 +73,9 @@
 			addheader "X-ZCS860-Header2" "Val5";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub6"
 			{
-					replaceheader :index 1 :newname "" :newvalue "Val6" :comparator "i;ascii-casemap" :value "eq" "X-ZCS860-Header2" "Val5";		
-					tag "tag6";	
-			}   
+					replaceheader :index 1 :newname "" :newvalue "Val6" :comparator "i;ascii-casemap" :value "eq" "X-ZCS860-Header2" "Val5";
+					tag "tag6";
+			}
 	' />
 
 	<t:property name="sieve_test7"
@@ -83,9 +83,9 @@
 			addheader "X-ZCS860-Header3" "Val7";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub7"
 			{
-					replaceheader :index 1 :newname "  " :newvalue " " :comparator "i;ascii-casemap" :value "eq" "X-ZCS860-Header3" "Val7";		
-					tag "tag7";	
-			}   
+					replaceheader :index 1 :newname "  " :newvalue " " :comparator "i;ascii-casemap" :value "eq" "X-ZCS860-Header3" "Val7";
+					tag "tag7";
+			}
 	' />
 
 	<t:property name="sieve_test8"
@@ -93,9 +93,9 @@
 			addheader "X-ZCS860-Header4" "Val8";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub8"
 			{
-					replaceheader :last :newname "X-ZCS860-ReplaceName" :newvalue "Val9" :comparator "i;ascii-casemap" :matches "" "Val8";		
-					tag "tag8";	
-			}   
+					replaceheader :last :newname "X-ZCS860-ReplaceName" :newvalue "Val9" :comparator "i;ascii-casemap" :matches "" "Val8";
+					tag "tag8";
+			}
 	' />
 
 	<t:property name="sieve_test9"
@@ -103,9 +103,9 @@
 			addheader "X-ZCS860-Header5" "Val10";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub9"
 			{
-					replaceheader :last :index 0 :newname "X-ZCS860-ReplaceName" :newvalue "" :comparator "i;ascii-casemap" :matches "X-ZCS860-Header5" "Val10";		
-					tag "tag9";	
-			}   
+					replaceheader :last :index 0 :newname "X-ZCS860-ReplaceName" :newvalue "" :comparator "i;ascii-casemap" :matches "X-ZCS860-Header5" "Val10";
+					tag "tag9";
+			}
 	' />
 
 	<t:property name="sieve_test10"
@@ -113,9 +113,9 @@
 			addheader "X-ZCS860-Header6" "Val11";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub10"
 			{
-					deleteheader :comparator "i;ascii-casemap" :matches "" "Val11";				
-					tag "tag10";	
-			}   
+					deleteheader :comparator "i;ascii-casemap" :matches "" "Val11";
+					tag "tag10";
+			}
 	' />
 
 	<t:property name="sieve_test11"
@@ -123,9 +123,9 @@
 			addheader "X-ZCS860-Header7" "Val12";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub11"
 			{
-					deleteheader :comparator "i;ascii-casemap" :matches " X-ZCS860-Header7" "Val12";				
-					tag "tag11";	
-			}   
+					deleteheader :comparator "i;ascii-casemap" :matches " X-ZCS860-Header7" "Val12";
+					tag "tag11";
+			}
 	' />
 
 	<t:property name="sieve_test12"
@@ -133,9 +133,9 @@
 			addheader "X-ZCS860-Header8" "Val13";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub12"
 			{
-					deleteheader :comparator "i;ascii-casemap" :matches "   " "Val13";				
-					tag "tag12";	
-			}   
+					deleteheader :comparator "i;ascii-casemap" :matches "   " "Val13";
+					tag "tag12";
+			}
 	' />
 
 
@@ -167,7 +167,7 @@
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -176,7 +176,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -193,7 +193,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
         </t:response>
     </t:test>
-	    
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -210,8 +210,8 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-  
-	<t:test_case testcaseid="ZCS-860_Filter1" type="functional"
+
+	<t:test_case testcaseid="ZCS-860_Filter1" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Add a header with empty name. Should give error and
 			message should not be tagged.
@@ -259,7 +259,7 @@
 					set="Sent_message1.id" />
 			</t:response>
 		</t:test>
-	
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -288,7 +288,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter2" type="functional"
+	<t:test_case testcaseid="ZCS-860_Filter2" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Add a header with empty value. Rule should pass and
 			message should be tagged.
@@ -376,7 +376,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter3" type="functional"
+	<t:test_case testcaseid="ZCS-860_Filter3" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Add a header with empty name and value. Rule should not
 			pass and message should not be tagged.
@@ -454,7 +454,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter4" type="functional"
+	<t:test_case testcaseid="ZCS-860_Filter4" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Add a header with empty space in header name . Rule
 			should not pass and message should not be tagged.
@@ -533,7 +533,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter5" type="functional"
+	<t:test_case testcaseid="ZCS-860_Filter5" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty new header name . Rule should
 			not pass and message should not be tagged
@@ -581,7 +581,7 @@
 					set="Sent_message5.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -612,7 +612,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter6" type="functional"
+	<t:test_case testcaseid="ZCS-860_Filter6" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty space in header name . Rule
 			should not pass and message should not be tagged
@@ -689,7 +689,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter7" type="functional"
+	<t:test_case testcaseid="ZCS-860_Filter7" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty space in header name and
 			value . Rule should not pass and message should not be tagged
@@ -765,8 +765,8 @@
 		</t:test>
 
 	</t:test_case>
-	
-	<t:test_case testcaseid="ZCS-860_Filter8" type="functional"
+
+	<t:test_case testcaseid="ZCS-860_Filter8" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty "tobe replaced" header name .
 			Rule should not pass and message should not be tagged
@@ -814,7 +814,7 @@
 					set="Sent_message8.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -841,9 +841,9 @@
 			</t:response>
 		</t:test>
 
-	</t:test_case>  
+	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter9" type="functional"
+	<t:test_case testcaseid="ZCS-860_Filter9" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty new header value . Rule
 			should pass and message should be tagged
@@ -931,8 +931,8 @@
 
 
 	</t:test_case>
- 
-	<t:test_case testcaseid="ZCS-860_Filter10" type="functional"
+
+	<t:test_case testcaseid="ZCS-860_Filter10" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Delete a header with empty header name . Rule should not
 			pass and message should not be tagged
@@ -980,7 +980,7 @@
 					set="Sent_message10.id" />
 			</t:response>
 		</t:test>
-	
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1009,7 +1009,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter11" type="functional"
+	<t:test_case testcaseid="ZCS-860_Filter11" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Delete a header with header name preceded by space . Rule
 			should not pass and message should not be tagged
@@ -1086,7 +1086,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter12" type="functional"
+	<t:test_case testcaseid="ZCS-860_Filter12" type="regression"
 		bugids="ZCS-860">
 		<t:objective>Delete a header with index 1 containing empty space
 			header name . Rule should not pass and message should not be tagged
@@ -1166,7 +1166,7 @@
 
     <t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1187,7 +1187,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 

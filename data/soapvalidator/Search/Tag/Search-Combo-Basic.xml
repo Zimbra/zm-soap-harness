@@ -22,11 +22,11 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -36,7 +36,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -60,7 +60,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account15.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
@@ -70,16 +70,16 @@
 		    <server>${test_acct.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 </t:test_case>
 
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
     <t:objective> Create setup for the Search </t:objective>
     <t:steps>1. Login to the account.
-             2. Cerate Tag 
-             3. Search a mail to get the message-id 
+             2. Cerate Tag
+             3. Search a mail to get the message-id
     </t:steps>
 
     <t:test id="login" required="true">
@@ -95,7 +95,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id = "createTagRequest">
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -163,7 +163,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest5">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -177,7 +177,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!--
     <t:test id = "createTagRequest">
         <t:request>
@@ -188,7 +188,7 @@
         </t:response>
     </t:test>
     -->
-     
+
     <t:test id="msgActionRequest1" depends="searchRequest1,createTagRequest">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -199,8 +199,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test id="msgActionRequest2" depends="searchRequest2,createTagRequest">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -223,7 +223,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest4" depends="searchRequest4,createTagRequest">
         <t:request>
@@ -235,14 +235,14 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id4}"/>
         </t:response>
-    </t:test> 
-      
+    </t:test>
+
 </t:test_case>
- 
- 
-<t:test_case testcaseid="combo_tag_from_SearchRequest1" type="sanity">
-    <t:objective> Verify the results are correct for query using tag: and from: </t:objective> 
-                   
+
+
+<t:test_case testcaseid="combo_tag_from_SearchRequest1" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and from: </t:objective>
+
     <!-- tag: with from: -->
     <t:test>
         <t:request>
@@ -258,7 +258,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -273,7 +273,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -288,7 +288,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -303,7 +303,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -318,13 +318,13 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-</t:test_case>    
+
+</t:test_case>
 
 
-<t:test_case testcaseid="combo_tag_to_SearchRequest1" type="sanity">
-    <t:objective> Verify the results are correct for query using tag: and to: </t:objective> 
-                   
+<t:test_case testcaseid="combo_tag_to_SearchRequest1" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and to: </t:objective>
+
     <!-- tag: with to: -->
     <t:test>
         <t:request>
@@ -340,7 +340,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -355,7 +355,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -385,7 +385,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -400,14 +400,14 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_tag_cc_SearchRequest1" type="sanity">
+<t:test_case testcaseid="combo_tag_cc_SearchRequest1" type="functional">
     <t:objective> Verify the results are correct for query using tag: and cc: </t:objective>
-                    
+
     <!-- tag: with cc: -->
     <t:test>
         <t:request>
@@ -423,7 +423,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -438,7 +438,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -453,7 +453,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -468,7 +468,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -487,9 +487,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_tag_subject_SearchRequest1" type="sanity">
-    <t:objective> Verify the results are correct for query using tag: and subject: </t:objective> 
-                   
+<t:test_case testcaseid="combo_tag_subject_SearchRequest1" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and subject: </t:objective>
+
     <!-- tag: with subject: -->
     <t:test>
         <t:request>
@@ -505,7 +505,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -520,7 +520,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -539,9 +539,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_tag_content_SearchRequest1" type="sanity">
-    <t:objective> Verify the results are correct for query using tag: and content: </t:objective> 
-                   
+<t:test_case testcaseid="combo_tag_content_SearchRequest1" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and content: </t:objective>
+
     <!-- tag: with content: -->
     <t:test>
         <t:request>
@@ -557,7 +557,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -572,7 +572,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -591,9 +591,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_tag_from_SearchRequest2" type="sanity">
-    <t:objective> Verify the results are correct for query using tag: and from: (for conversation)  </t:objective> 
-                   
+<t:test_case testcaseid="combo_tag_from_SearchRequest2" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and from: (for conversation)  </t:objective>
+
     <!-- tag: with from: -->
     <t:test>
         <t:request>
@@ -609,7 +609,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -624,7 +624,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -639,7 +639,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -654,7 +654,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -669,13 +669,13 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-</t:test_case>    
+
+</t:test_case>
 
 
-<t:test_case testcaseid="combo_tag_to_SearchRequest2" type="sanity">
-    <t:objective> Verify the results are correct for query using tag: and to: (for conversation)  </t:objective> 
-                   
+<t:test_case testcaseid="combo_tag_to_SearchRequest2" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and to: (for conversation)  </t:objective>
+
     <!-- tag: with to: -->
     <t:test>
         <t:request>
@@ -691,7 +691,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -706,7 +706,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -736,7 +736,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -751,14 +751,14 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_tag_cc_SearchRequest2" type="sanity">
+<t:test_case testcaseid="combo_tag_cc_SearchRequest2" type="functional">
     <t:objective> Verify the results are correct for query using tag: and cc: </t:objective>
-                    
+
     <!-- tag: with cc: -->
     <t:test>
         <t:request>
@@ -774,7 +774,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -789,7 +789,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -804,7 +804,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -819,7 +819,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -838,9 +838,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_tag_subject_SearchRequest2" type="sanity">
-    <t:objective> Verify the results are correct for query using tag: and subject: (for conversation)  </t:objective> 
-                   
+<t:test_case testcaseid="combo_tag_subject_SearchRequest2" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and subject: (for conversation)  </t:objective>
+
     <!-- tag: with subject: -->
     <t:test>
         <t:request>
@@ -856,7 +856,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -871,7 +871,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -890,9 +890,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_tag_content_SearchRequest2" type="sanity">
-    <t:objective> Verify the results are correct for query using tag: and content: (for conversation)  </t:objective> 
-                   
+<t:test_case testcaseid="combo_tag_content_SearchRequest2" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and content: (for conversation)  </t:objective>
+
     <!-- tag: with content: -->
     <t:test>
         <t:request>
@@ -908,7 +908,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -923,7 +923,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -940,8 +940,8 @@
     </t:test>
 
 </t:test_case>
-       
-   
+
+
 </t:tests>
 
 

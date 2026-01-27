@@ -146,10 +146,10 @@
 
 <t:test_case testcaseid="DataSource_Import_01" type="smoke">
 	<t:objective>Basic ImportDataRequest request for IMAP</t:objective>
-	
+
     <t:property name="folder.name" value="imapsource${TIME}${COUNTER}"/>
     <t:property name="source.name" value="imapsource${TIME}${COUNTER}"/>
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -164,7 +164,7 @@
 	<t:test>
 		<t:request>
 			<CreateDataSourceRequest xmlns="urn:zimbraMail">
-				<imap name="${source.name}" isEnabled="${globals.true}" l="${folder.id}" 
+				<imap name="${source.name}" isEnabled="${globals.true}" l="${folder.id}"
 				emailAddress="${imap.source.name}" username="${imap.source.name}" password="${defaultpassword.value}"
 				host="${imap.source.server}" port="993" connectionType="ssl" leaveOnServer="${globals.true}" />
 			</CreateDataSourceRequest>
@@ -182,14 +182,14 @@
 				<imap id="${account1.datasource.id}"/>
 			</ImportDataRequest>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:ImportDataResponse"/>
         </t:response>
     </t:test>
 
 
 	<t:for start="1" end="30" break="response">
-	
+
 		<t:delay msec="1000"/>
 		<t:test >
 			<t:request>
@@ -217,12 +217,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="DataSource_Import_02" type="bhr">
+<t:test_case testcaseid="DataSource_Import_02" type="sanity">
 	<t:objective>Basic ImportDataRequest request for POP</t:objective>
-	
+
     <t:property name="folder.name" value="imapsource${TIME}${COUNTER}"/>
     <t:property name="source.name" value="imapsource${TIME}${COUNTER}"/>
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -235,15 +235,15 @@
 	</t:test>
 
 	<!-- TODO -->
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="DataSource_Import_03" type="bhr">
+<t:test_case testcaseid="DataSource_Import_03" type="sanity">
 	<t:objective>Basic ImportDataRequest request for DSRC</t:objective>
-	
+
     <t:property name="folder.name" value="imapsource${TIME}${COUNTER}"/>
     <t:property name="source.name" value="imapsource${TIME}${COUNTER}"/>
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -256,15 +256,15 @@
 	</t:test>
 
 	<!-- TODO -->
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="DataSource_Import_04" type="sanity" bugids="21106">
+<t:test_case testcaseid="DataSource_Import_04" type="functional" bugids="21106">
 	<t:objective>Basic ImportDataRequest request for DSRC</t:objective>
-	
+
     <t:property name="folder.name" value="imapsource${TIME}${COUNTER}"/>
     <t:property name="source.name" value="imapsource${TIME}${COUNTER}"/>
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -279,7 +279,7 @@
 	<t:test>
 		<t:request>
 			<CreateDataSourceRequest xmlns="urn:zimbraMail">
-				<imap name="${source.name}" isEnabled="${globals.true}" l="${folder.id}" 
+				<imap name="${source.name}" isEnabled="${globals.true}" l="${folder.id}"
 				emailAddress="${imap.source.name}" username="${imap.source.name}" password="${defaultpassword.value}"
 				host="${imap.source.server}" port="993" connectionType="ssl" leaveOnServer="${globals.true}" />
 			</CreateDataSourceRequest>
@@ -297,11 +297,11 @@
 				<imap id="invalid${account1.datasource.id}"/>
 			</ImportDataRequest>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 

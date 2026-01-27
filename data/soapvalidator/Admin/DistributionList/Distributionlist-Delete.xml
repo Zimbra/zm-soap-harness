@@ -30,7 +30,7 @@
         </t:response>
     </t:test>
 </t:test_case>
- 
+
 
 <t:test_case testcaseid = "acctSetup1_distributionlist_create" type="always">
     <t:objective>Create test domain </t:objective>
@@ -59,12 +59,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "DeleteDistributionListRequest1" type="bhr">
+<t:test_case testcaseid = "DeleteDistributionListRequest1" type="sanity">
     <t:objective> Delete a distribution list </t:objective>
     <t:steps> 1. Create a Distribution List
               2. Delete the same created DL
     </t:steps>
-    
+
     <t:test id="deleteDistributionListRequest1a">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -91,9 +91,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "DeleteDistributionListRequest2" type="functional">
+<t:test_case testcaseid = "DeleteDistributionListRequest2" type="regression">
     <t:objective> Try to delete already deleted DL </t:objective>
-    
+
     <t:test depends="deleteDistributionListRequest1b">
         <t:request>
             <DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -108,9 +108,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "DeleteDistributionListRequest3" type="functional">
+<t:test_case testcaseid = "DeleteDistributionListRequest3" type="regression">
     <t:objective> Invalid id in the DeleteDistributionListRequest (sometext/spchar/number/zero/negative/decimal/blank) </t:objective>
-    
+
     <t:test>
         <t:request>
             <DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -190,9 +190,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "DeleteDistributionListRequest4" type="functional">
+<t:test_case testcaseid = "DeleteDistributionListRequest4" type="regression">
     <t:objective> DeleteDistributionListRequest without id attribute  </t:objective>
-    
+
     <t:test>
         <t:request>
             <DeleteDistributionListRequest xmlns="urn:zimbraAdmin"/>
@@ -205,10 +205,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "DeleteDistributionListRequest5" type="functional" bugids="4091">
+<t:test_case testcaseid = "DeleteDistributionListRequest5" type="regression" bugids="4091">
     <t:objective> Delete an account that exists in a distribution list, and verify the account is removed from the DL </t:objective>
     <t:steps> 1. Create a distribution list
-              2. Create an account 
+              2. Create an account
               3. Add that account to DL
               3. Delete the same account
               4. Verify the account is deleted from the distribution list
@@ -236,7 +236,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test depends="deleteDistributionListRequest5a,deleteDistributionListRequest5b">
         <t:request>
@@ -274,7 +274,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "DeleteDistributionListRequest6" type="functional" bugids="4091">
+<t:test_case testcaseid = "DeleteDistributionListRequest6" type="regression" bugids="4091">
     <t:objective> Delete an alias from an account where the alias exists in the distribution list and verify alias get removed from the DL </t:objective>
     <t:steps> 1. Create a distribution list
               2. Create an account
@@ -307,7 +307,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="deleteDistributionListRequest6c" depends="deleteDistributionListRequest6b">
         <t:request>
@@ -319,7 +319,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="deleteDistributionListRequest6d" depends="deleteDistributionListRequest6b">
         <t:request>
@@ -365,7 +365,7 @@
         <t:response>
             <t:select path="//admin:RemoveAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test depends="deleteDistributionListRequest6f">
         <t:request>

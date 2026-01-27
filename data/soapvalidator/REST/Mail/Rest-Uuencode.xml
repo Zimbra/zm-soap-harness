@@ -18,7 +18,7 @@
 
 <t:test_case testcaseid = "Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id = "ping">
         <t:request>
             <PingRequest xmlns = "urn:zimbraAdmin"/>
@@ -27,13 +27,13 @@
             <t:select path = "//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid = "acct1_setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test id = "admin_login" required = "true" depends = "ping">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAdmin">
@@ -58,7 +58,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id = "create_test_account2" required = "true" depends = "admin_login">
         <t:request>
             <CreateAccountRequest xmlns = "urn:zimbraAdmin">
@@ -71,15 +71,15 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "RestServlet_searchUuencode01" type="functional" bugids="1246"  areas="verity">
+<t:test_case testcaseid = "RestServlet_searchUuencode01" type="regression" bugids="1246"  areas="verity">
     <t:objective>
 		Verify that a search for content in adobe PDF is successful
 	</t:objective>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -88,7 +88,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 
@@ -131,13 +131,13 @@
 	</t:test>
 
 	<!-- TODO: improve content servlet to be able to match content to a known source -->
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "RestServlet_lmtpUuencode01" type="functional" bugids="1246,700"  areas="verity">
+<t:test_case testcaseid = "RestServlet_lmtpUuencode01" type="regression" bugids="1246,700"  areas="verity">
     <t:objective>inject a mime message with a uuencoded attachment using LMTP</t:objective>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg02.file}</filename>
@@ -146,7 +146,7 @@
 			<server>${account2.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >

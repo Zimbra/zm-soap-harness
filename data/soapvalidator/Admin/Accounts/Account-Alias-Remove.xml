@@ -58,9 +58,9 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
          </t:response>
     </t:test>
-    
+
     <t:property name="admin.authToken" value="${authToken}"/>
-    
+
     <t:test required="true" >
          <t:request>
               <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -95,7 +95,7 @@
             </CreateDomainRequest>
         </t:request>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -107,16 +107,16 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest1" type="bhr" areas="dev_sanity">
+<t:test_case testcaseid="RemoveAccountAliasRequest1" type="sanity" areas="dev_sanity">
     <t:objective> Remove an alias from an account </t:objective>
     <t:steps> 1. Create an alias
               2. Remove it
     </t:steps>
-    
+
     <t:test id="removeaccountaliasrequest1a">
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -127,7 +127,7 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test depends="removeaccountaliasrequest1a">
         <t:request>
@@ -139,12 +139,12 @@
         <t:response>
             <t:select path="//admin:RemoveAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
- 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest2" type="functional" >
+
+<t:test_case testcaseid="RemoveAccountAliasRequest2" type="regression" >
     <t:objective> Remove an invalid alias (without domain name) from an account </t:objective>
 
     <t:test>
@@ -157,12 +157,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest3" type="functional" >
+<t:test_case testcaseid="RemoveAccountAliasRequest3" type="regression" >
     <t:objective> Remove an invalid alias (with non existing domain name) from an account </t:objective>
 
     <t:test>
@@ -175,13 +175,13 @@
         <t:response>
             <!-- Getting account.NO_SUCH_ALIAS instead of account.NO_SUCH_DOMAIN in build 20050609164754_main -->
 			<!-- Getting account.NO_SUCH_DOMAIN now and this response seems to be proper -->
-            <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_DOMAIN"/> 
+            <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_DOMAIN"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="RemoveAccountAliasRequest4" type="functional" >
+<t:test_case testcaseid="RemoveAccountAliasRequest4" type="regression" >
     <t:objective> Remove an alias with name as blank/spchar/numbers </t:objective>
 
     <t:test>
@@ -192,9 +192,9 @@
             </RemoveAccountAliasRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/> 
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
@@ -204,9 +204,9 @@
             </RemoveAccountAliasRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/> 
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
@@ -216,14 +216,14 @@
             </RemoveAccountAliasRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/> 
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest5" bugids="2157" type="functional" >
+<t:test_case testcaseid="RemoveAccountAliasRequest5" bugids="2157" type="regression" >
     <t:objective> Remove already deleted alias from the account </t:objective>
     <t:steps> 1. Create an alias
               2. Remove it
@@ -240,7 +240,7 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="removeaccountaliasrequest5b" depends="removeaccountaliasrequest5a">
         <t:request>
@@ -252,7 +252,7 @@
         <t:response>
             <t:select path="//admin:RemoveAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test depends="removeaccountaliasrequest5b">
         <t:request>
@@ -262,18 +262,18 @@
             </RemoveAccountAliasRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_ALIAS"/> 
+            <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_ALIAS"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest6" type="sanity" bugids="4091">
+<t:test_case testcaseid="RemoveAccountAliasRequest6" type="functional" bugids="4091">
     <t:objective>Remove an alias from an account without removing alias from distribution list. </t:objective>
     <t:steps> 1. Create an alias.
               2. Add that alias to distribution list.
-              3. Remove it from account.              
+              3. Remove it from account.
     </t:steps>
 
     <t:test id="removeaccountaliasrequest6a">
@@ -286,8 +286,8 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
-  
+    </t:test>
+
     <t:test>
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -310,7 +310,7 @@
         <t:response>
             <t:select path="//admin:RemoveAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -322,11 +322,11 @@
             <t:select path="//admin:GetDistributionListResponse/admin:dl/admin:dlm" match="${alias.name1}" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "RemoveAccountAliasRequest7" type="functional">
+<t:test_case testcaseid = "RemoveAccountAliasRequest7" type="regression">
     <t:objective> Remove an alias from the distribution list without removing account from the distribution list. </t:objective>
     <t:steps> 1. Create an account
               2. Create an alias of the same account
@@ -345,7 +345,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -357,7 +357,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -382,7 +382,7 @@
             <t:select path="//admin:RemoveDistributionListMemberResponse" />
         </t:response>
     </t:test>
-   
+
     <t:test>
         <t:request>
             <SearchAccountsRequest xmlns="urn:zimbraAdmin">
@@ -393,11 +393,11 @@
             <t:select path='//admin:SearchAccountsResponse/admin:account/admin:a[@n="zimbraMailAlias"]' match="${alias.name1a}"/>
             </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "RemoveAccountAliasRequest8" type="functional" bugids="4091">
+<t:test_case testcaseid = "RemoveAccountAliasRequest8" type="regression" bugids="4091">
     <t:objective>Delete an account.The alias of that account added in the distribution list should also get deleted from distribution list.</t:objective>
     <t:steps> 1. Create an account
               2. Create an alias of the same account
@@ -417,7 +417,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -429,7 +429,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -442,7 +442,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 
     <t:test>
@@ -455,7 +455,7 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -466,16 +466,16 @@
             <t:select path="//admin:GetDistributionListResponse/admin:dl/admin:dlm" match="${alias.name1b}" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest9" type="sanity">
+<t:test_case testcaseid="RemoveAccountAliasRequest9" type="functional">
     <t:objective>Verify that deleting the original account deletes the aliases as well </t:objective>
     <t:steps> 1. Create an account and its alias
               2. Verify that you can log into alias account
               3. Delete the account
-              4. Try to log into alias account              
+              4. Try to log into alias account
     </t:steps>
 
     <t:test id="RemoveAccountAliasRequest9a">
@@ -501,7 +501,7 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
 
@@ -513,7 +513,7 @@
             </AuthRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
@@ -543,7 +543,7 @@
         <t:response>
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
     <t:test depends="RemoveAccountAliasRequest9d">
@@ -554,7 +554,7 @@
             </AuthRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match ="^account.AUTH_FAILED"/> 
+            <t:select path= "//zimbra:Code" match ="^account.AUTH_FAILED"/>
         </t:response>
     </t:test>
 
@@ -566,21 +566,21 @@
             </AuthRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match ="^account.AUTH_FAILED"/> 
+            <t:select path= "//zimbra:Code" match ="^account.AUTH_FAILED"/>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-<t:test_case testcaseid="RemoveAccountAliasRequest10" type="sanity">
+<t:test_case testcaseid="RemoveAccountAliasRequest10" type="functional">
     <t:objective>Verify that the original account does not get deleted if alias is deleted </t:objective>
     <t:steps> 1. Create an alias
               2. Try to log into alias account (should be allowed)
               3. Remove alias account
               4. Try to log into alias account (should not be allowed)
-              5. Try to log into original account (should be allowed)            
+              5. Try to log into original account (should be allowed)
     </t:steps>
 
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -606,9 +606,9 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test> 
-     
-<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>   
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test depends="RemoveAccountAliasRequest10a">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -617,7 +617,7 @@
             </AuthRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
@@ -625,7 +625,7 @@
 
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:property name="authToken" value="${admin.authToken}"/>
-    
+
     <t:test id="RemoveAccountAliasRequest10b" depends="RemoveAccountAliasRequest10a">
         <t:request>
             <RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -636,8 +636,8 @@
         <t:response>
             <t:select path="//admin:RemoveAccountAliasResponse"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test depends="RemoveAccountAliasRequest10b">
         <t:request>
@@ -654,7 +654,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest11" type="sanity">
+<t:test_case testcaseid="RemoveAccountAliasRequest11" type="functional">
     <t:objective> Create an alias with same name as that deleted for some other account </t:objective>
     <t:steps> 1. Create an account and its alias
               2. Remove the alias
@@ -697,7 +697,7 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="RemoveAccountAliasRequest11c" depends="RemoveAccountAliasRequest11b">
         <t:request>
@@ -709,7 +709,7 @@
         <t:response>
             <t:select path="//admin:RemoveAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test depends="RemoveAccountAliasRequest11c">
         <t:request>
@@ -721,12 +721,12 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test> 
-   
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest12" type="sanity" bugids="8399">
+<t:test_case testcaseid="RemoveAccountAliasRequest12" type="functional" bugids="8399">
     <t:objective>Verify that one cannot send mail to a deleted alias </t:objective>
     <t:steps> 1. Create an alias
               2. Log into test_account1 and send mail to alias address
@@ -758,9 +758,9 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>    
+<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
     <t:test id="RemoveAccountAliasRequest12b">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAccount">
@@ -805,8 +805,8 @@
         <t:response>
             <t:select path="//admin:RemoveAccountAliasResponse"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
     <t:test id="RemoveAccountAliasRequest12d">
         <t:request>
@@ -850,7 +850,7 @@
 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${message.subject1}"/>
 		</t:response>
 	</t:test>
-		
+
 </t:test_case>
 
 

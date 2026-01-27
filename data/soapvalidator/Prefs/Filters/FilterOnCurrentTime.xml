@@ -64,7 +64,7 @@
     </t:test>-->
 </t:test_case>
 
-<t:test_case testcaseid="FilterAfterSpecificTimeofDay_01" type="bhr" bugids="13902" >
+<t:test_case testcaseid="FilterAfterSpecificTimeofDay_01" type="sanity" bugids="13902" >
     <t:objective>Filter the mail received after specific time based of user's default timezone</t:objective>
     <t:steps> 1. Create filter with rule "message received after (current time for user -1 min)" apply flag
 			  2. Send a message to user verify  message gets flagged.
@@ -83,7 +83,7 @@
     </t:test>
 
 	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -96,7 +96,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -104,7 +104,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
 
 	<t:mailinjecttest >
@@ -117,7 +117,7 @@
                 <header a="Subject">${filter1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test >
         <t:request>
@@ -129,11 +129,11 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter1.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>	   
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="FilterBeforeSpecificTimeofDay_01" type="bhr" bugids="13902" >
+<t:test_case testcaseid="FilterBeforeSpecificTimeofDay_01" type="sanity" bugids="13902" >
     <t:objective>Filter the mail received after specific time based of user's default timezone</t:objective>
     <t:steps> 1. Create filter with rule "message received before (current time user +2 min)" apply flag
 			  2. Send a message to user verify  message gets flagged.
@@ -165,7 +165,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -173,7 +173,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
 
 	<t:mailinjecttest >
@@ -186,7 +186,7 @@
                 <header a="Subject">${filter2.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test >
         <t:request>
@@ -198,11 +198,11 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter2.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>	   
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="FilterBetweenSpecificTimeofDay_01" type="bhr" bugids="13902" >
+<t:test_case testcaseid="FilterBetweenSpecificTimeofDay_01" type="sanity" bugids="13902" >
     <t:objective>Filter the mail received between specific time based of user's default timezone</t:objective>
     <t:steps> 1. Create filter with rule "message received before (current time user +2 min)" and "message received after (current time for user -2 min)"  and apply flag
 			  2. Send a message to user verify  message gets flagged.
@@ -222,7 +222,7 @@
     </t:test>
 
 	<t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter3a.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter3a.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter3b.subject" value="filter${TIME}${COUNTER}"/>
 	<t:test>
 		<t:request>
@@ -237,7 +237,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -245,7 +245,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
 
 	<t:mailinjecttest >
@@ -258,7 +258,7 @@
                 <header a="Subject">${filter3a.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test >
         <t:request>
@@ -270,8 +270,8 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter3a.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>	   
-    
+    </t:test>
+
     <t:delay msec="120000" />
 
 	<t:mailinjecttest >
@@ -284,7 +284,7 @@
                 <header a="Subject">${filter3b.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
@@ -296,12 +296,12 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter3b.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']" emptyset="1"/>
         </t:response>
-    </t:test>	   
-    
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="FilterBetweenSpecificTimeofDay_02" type="sanity" bugids="13902" >
+<t:test_case testcaseid="FilterBetweenSpecificTimeofDay_02" type="functional" bugids="13902" >
     <t:objective>Filter the mail received after specific time based of user's default timezone</t:objective>
     <t:steps> 1. Create filter with rule "message received after (current time user +2 min)" and "message received before (current time for user -2 min)"  and apply flag
 			  2. Send a message to user verify  message does not get flagged.
@@ -321,7 +321,7 @@
     </t:test>
 
 	<t:property name="filter4.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter4a.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter4a.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter4b.subject" value="filter${TIME}${COUNTER}"/>
 	<t:test>
 		<t:request>
@@ -336,7 +336,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -344,7 +344,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
 
 	<t:mailinjecttest >
@@ -357,7 +357,7 @@
                 <header a="Subject">${filter4a.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
@@ -369,8 +369,8 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter4a.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']" emptyset="1"/>
         </t:response>
-    </t:test>	   
-    
+    </t:test>
+
     <t:delay sec="120" />
 
 	<t:mailinjecttest >
@@ -383,7 +383,7 @@
                 <header a="Subject">${filter4b.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -395,11 +395,11 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter4b.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']" emptyset="1"/>
         </t:response>
-    </t:test>	   	
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="FilterOnSpecificWeekDay_01" type="bhr" bugids="13902" >
+<t:test_case testcaseid="FilterOnSpecificWeekDay_01" type="sanity" bugids="13902" >
     <t:objective>Filter the mail received on specific weekday</t:objective>
     <t:steps> 1. Create filter with rule "message received on current weekday"   apply flag
 			  2. Send a message to user verify  message gets flagged.
@@ -418,7 +418,7 @@
     </t:test>
 
 	<t:property name="filter5.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter5.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter5.subject" value="filter${TIME}${COUNTER}"/>
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -431,7 +431,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -439,7 +439,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
 
 	<t:mailinjecttest >
@@ -452,7 +452,7 @@
                 <header a="Subject">${filter5.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -468,7 +468,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="FilterOnSpecificWeekDay_02" type="bhr" bugids="13902" >
+<t:test_case testcaseid="FilterOnSpecificWeekDay_02" type="sanity" bugids="13902" >
     <t:objective>Filter the mail received on specific weekday</t:objective>
     <t:steps> 1. Create filter with rule "message received on 2 days after current weekday and 2 days before current weekday"   apply flag
 			  2. Send a message to user verify  message does not flagged.
@@ -487,7 +487,7 @@
     </t:test>
 
 	<t:property name="filter6.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter6.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter6.subject" value="filter${TIME}${COUNTER}"/>
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -500,7 +500,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -508,7 +508,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
 
 	<t:mailinjecttest >
@@ -521,7 +521,7 @@
                 <header a="Subject">${filter6.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -536,7 +536,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="FilteronTimeIvalidValues_01" type="functional" bugids="58018" >
+<t:test_case testcaseid="FilteronTimeIvalidValues_01" type="regression" bugids="58018" >
     <t:objective>Verify Filter Rule on Date Time throws error on invalid value</t:objective>
     <t:steps>.
     </t:steps>
@@ -567,7 +567,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -575,7 +575,7 @@
             <t:select path="//zimbra:Code" match="^service.*"/>
         </t:response>
     </t:test>
-    
+
     	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -588,7 +588,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -596,7 +596,7 @@
             <t:select path="//zimbra:Code" match="^service.*"/>
         </t:response>
     </t:test>
-    
+
     	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -609,7 +609,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -617,7 +617,7 @@
             <t:select path="//zimbra:Code" match="^service.*"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -630,7 +630,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -638,7 +638,7 @@
             <t:select path="//zimbra:Code" match="^service.*"/>
         </t:response>
     </t:test>
-    
+
         <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -651,7 +651,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -659,7 +659,7 @@
             <t:select path="//zimbra:Code" match="^service.*"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -672,7 +672,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -692,14 +692,14 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^service.*"/>
         </t:response>
-    </t:test>    
+    </t:test>
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -712,7 +712,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -733,7 +733,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -753,7 +753,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -774,7 +774,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -795,7 +795,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -816,7 +816,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>

@@ -42,7 +42,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>   
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -53,15 +53,15 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug48306" type="bhr" bugids="48306" >
-    <t:objective> Allow for selecting the field delimiter for CSV imports</t:objective> 
+<t:test_case testcaseid="bug48306" type="sanity" bugids="48306" >
+    <t:objective> Allow for selecting the field delimiter for CSV imports</t:objective>
 	<t:steps> 1. Upload a contact and import it
 			  2. Get id of that contact
 			  3. Verify the contact details
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -84,11 +84,11 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="uploadServletServer" value="${test_acct.server}"/>
 
 	<t:uploadservlettest>

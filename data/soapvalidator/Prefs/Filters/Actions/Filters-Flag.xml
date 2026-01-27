@@ -12,7 +12,7 @@
     <t:objective>basic system check</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -29,7 +29,7 @@
     <t:objective> Create test account and login to first account </t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -72,19 +72,19 @@
 
 
 
-<t:test_case testcaseid="Filters_Flagged_01" type="bhr">
+<t:test_case testcaseid="Filters_Flagged_01" type="sanity">
     <t:objective>  Create Rules with different action="flag" (as flagged) </t:objective>
 	<t:steps>
               1. Login to account1
-			  2. Add rule "action"-> flag .. as flagged 
-			  3. Send a mail 
+			  2. Add rule "action"-> flag .. as flagged
+			  3. Send a mail
 			  4. Login to Account1
 			  6. Search the injected message by subject, verify that it is flagged
-	
+
     </t:steps>
- 
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -107,9 +107,9 @@
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFlag flagName="flagged" />
                         </filterActions>
                     </filterRule>
@@ -138,7 +138,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
     <t:test>
         <t:request>
@@ -152,22 +152,22 @@
 		</t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Filters_Read_01" type="bhr">
+<t:test_case testcaseid="Filters_Read_01" type="sanity">
     <t:objective>  Create Rules with different action="flag" (as read) </t:objective>
 	<t:steps>
               1. Login to account1
-			  2. Add rule "action"-> flag .. as read 
-			  3. Send a mail 
+			  2. Add rule "action"-> flag .. as read
+			  3. Send a mail
 			  4. Login to Account1
 			  6. Search the injected message by subject, verify that it is read
-	
+
     </t:steps>
- 
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -183,16 +183,16 @@
 
     <t:property name="message2.file" value="${testMailRaw.root}/email01/msg03.txt"/>
     <t:property name="message2.subject" value="email01C"/>
-    
+
     <t:test id="filters_basic01a">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message2.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message2.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFlag flagName="read" />
                         </filterActions>
                     </filterRule>
@@ -222,7 +222,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
     <t:test>
         <t:request>
@@ -236,7 +236,7 @@
 		</t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 

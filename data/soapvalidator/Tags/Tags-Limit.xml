@@ -30,7 +30,7 @@
 <t:test_case testcaseid="TagCount_Limit_acctSetup1" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-             2. Create admin account. 
+             2. Create admin account.
     </t:steps>
 
     <t:test id="admin_login" required="true">
@@ -49,7 +49,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -83,14 +83,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="TagCount_Limit_01" type="bhr">
+<t:test_case testcaseid="TagCount_Limit_01" type="sanity">
     <t:objective>Creating more than 63 tags</t:objective>
     <t:steps> 1. Create Tags
-              2. Send GetTagRequest to check the count        
-    </t:steps> 
+              2. Send GetTagRequest to check the count
+    </t:steps>
 
-    <t:test_loop count="65">      
-        
+    <t:test_loop count="65">
+
         <t:test>
             <t:request>
                 <CreateTagRequest xmlns="urn:zimbraMail">
@@ -98,10 +98,10 @@
                 </CreateTagRequest>
             </t:request>
             <t:response>
-                <t:select path="//mail:CreateTagResponse/mail:tag" attr="id"/>                                    
+                <t:select path="//mail:CreateTagResponse/mail:tag" attr="id"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
     </t:test_loop>
 
     <t:test timeframeMax="3000">
@@ -112,17 +112,17 @@
             <t:select path="//mail:GetTagResponse/mail:tag[65]" attr="color" match="${tag.colorvalid1}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="TagCount_Limit_02" type="sanity">
+<t:test_case testcaseid="TagCount_Limit_02" type="functional">
     <t:objective>Check if >256 tags can be created</t:objective>
     <t:steps> 1. Create more than 256 Tags
-              2. Send GetTagRequest to check the count        
-    </t:steps> 
+              2. Send GetTagRequest to check the count
+    </t:steps>
 
-    <t:test_loop count="257">      
-        
+    <t:test_loop count="257">
+
         <t:test>
             <t:request>
                 <CreateTagRequest xmlns="urn:zimbraMail">
@@ -130,10 +130,10 @@
                 </CreateTagRequest>
             </t:request>
             <t:response>
-                <t:select path="//mail:CreateTagResponse/mail:tag" attr="id"/>                                    
+                <t:select path="//mail:CreateTagResponse/mail:tag" attr="id"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
     </t:test_loop>
 
     <t:test timeframeMax="3000">
@@ -144,7 +144,7 @@
             <t:select path="//mail:GetTagResponse/mail:tag[257]" attr="color" match="${tag.colorvalid1}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

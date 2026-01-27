@@ -19,7 +19,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -72,7 +72,7 @@
 
 
 <!-- Added bug id for 10.0.X version, it is working on 9.0.0 version -->
-<t:test_case testcaseid="RestServlet_MailPost_01" type="bhr" bugids="ZCS-14808">
+<t:test_case testcaseid="RestServlet_MailPost_01" type="sanity" bugids="ZCS-14808">
 	<t:objective>Post a basic calendar ICS to the REST servlet</t:objective>
 	<t:steps>
 	1. Use the rest servlet to upload a calendar ICS
@@ -118,7 +118,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">

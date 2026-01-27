@@ -90,15 +90,15 @@
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="FilterCc_01" type="bhr">
+<t:test_case testcaseid="FilterCc_01" type="sanity">
     <t:objective>Verify messages that match Cc: are filtered</t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "Cc:" account2
 			  3. Inject a message to account2
 			  4. Verify the message is filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -111,19 +111,19 @@
 
         </t:response>
     </t:test>
-	   
-	   
+
+
 	  <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="cc" stringComparison="contains" value="${account2.name}"/>                    	     
+                         <headerTest header="cc" stringComparison="contains" value="${account2.name}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -133,7 +133,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -169,15 +169,15 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="FilterCc_02" type="bhr">
+<t:test_case testcaseid="FilterCc_02" type="sanity">
     <t:objective>Verify messages that do not match Cc: are not filtered</t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "Cc:" account2
 			  3. Inject a message to account3
 			  4. Verify the message is not filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -190,18 +190,18 @@
 
         </t:response>
     </t:test>
-	   
+
     <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter2.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="cc" stringComparison="contains" value="${account2.name}"/>                    	     
+                         <headerTest header="cc" stringComparison="contains" value="${account2.name}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -211,7 +211,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>

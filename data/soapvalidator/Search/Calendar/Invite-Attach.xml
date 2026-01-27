@@ -52,7 +52,7 @@
 		</t:request>
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="bug10227.id"/>
-			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="bug10227.server"/>                    
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="bug10227.server"/>
 		</t:response>
 	</t:test>
 
@@ -64,7 +64,7 @@
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:CreateAccountResponse/admin:account"/>                    
+			<t:select path="//admin:CreateAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
 
@@ -77,7 +77,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${bug10227.server}"/>
-	
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -108,13 +108,13 @@
 		<t:request>
 			<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m >
-					<inv 
-							method="REQUEST" 
-							type="event" 
-							fb="B" 
-							transp="O" 
-							status="CONF" 
-							allDay="0" 
+					<inv
+							method="REQUEST"
+							type="event"
+							fb="B"
+							transp="O"
+							status="CONF"
+							allDay="0"
 							name="${appt10227.A.subject}">
 						<at a="${bug10227.destination.user}" role="REQ" ptst="NE" rsvp="1" />
 						<s d="${ICALTIME}" tz="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
@@ -143,13 +143,13 @@
 		<t:request>
 			<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m >
-					<inv 
-							method="REQUEST" 
-							type="event" 
-							fb="B" 
-							transp="O" 
-							status="CONF" 
-							allDay="0" 
+					<inv
+							method="REQUEST"
+							type="event"
+							fb="B"
+							transp="O"
+							status="CONF"
+							allDay="0"
 							name="${appt10227.B.subject}">
 						<at a="${bug10227.destination.user}" role="REQ" ptst="NE" rsvp="1" />
                         <at role="OPT" ptst="NE" rsvp="1" a="${bug10227.destination.user}"/>
@@ -175,11 +175,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SearchCalendar_Attachements_Bug10227_01" type="sanity" bugids="10227">
+<t:test_case testcaseid="SearchCalendar_Attachements_Bug10227_01" type="functional" bugids="10227">
 	<t:objective>Verify that "attachment:any" returns invitations that have attachments</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${bug10227.server}"/>
-	
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -208,11 +208,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SearchCalendar_Attachements_Bug10227_02" type="sanity" bugids="10227">
+<t:test_case testcaseid="SearchCalendar_Attachements_Bug10227_02" type="functional" bugids="10227">
 	<t:objective>Verify that "attachment:none" does not return invitations that have attachments</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${bug10227.server}"/>
-	
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">

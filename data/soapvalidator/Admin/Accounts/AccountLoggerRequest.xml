@@ -8,9 +8,9 @@
 <t:property name="destination.name" value="rights${TIME}${COUNTER}@${defaultdomain.name}"/>
 
 
-<t:test_case testcaseid="AddAccountLoggerRequest_01" type="bhr" >
+<t:test_case testcaseid="AddAccountLoggerRequest_01" type="sanity" >
     <t:objective>Sanity test for AddAccountLoggerRequest</t:objective>
-   
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test >
@@ -29,14 +29,14 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>				
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddAccountLoggerRequest  xmlns="urn:zimbraAdmin">
@@ -51,9 +51,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RemoveAccountLoggerRequestt_01" type="bhr" >
+<t:test_case testcaseid="RemoveAccountLoggerRequestt_01" type="sanity" >
     <t:objective>Sanity test for RemoveAccountLoggerRequest</t:objective>
-   
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test >
@@ -72,14 +72,14 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${defaultpassword.value}</password>				
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddAccountLoggerRequest  xmlns="urn:zimbraAdmin">
@@ -91,7 +91,7 @@
             <t:select path="//admin:AddAccountLoggerResponse/admin:logger"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <RemoveAccountLoggerRequest  xmlns="urn:zimbraAdmin">
@@ -106,9 +106,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAccountLoggersRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAccountLoggersRequest_01" type="sanity" >
     <t:objective>Sanity test for GetAccountLoggersRequest</t:objective>
-   
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test >
@@ -127,14 +127,14 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account3.name}</name>
-                <password>${defaultpassword.value}</password>				
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddAccountLoggerRequest  xmlns="urn:zimbraAdmin">
@@ -146,7 +146,7 @@
             <t:select path="//admin:AddAccountLoggerResponse/admin:logger"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountLoggersRequest  xmlns="urn:zimbraAdmin">
@@ -160,9 +160,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAllAccountLoggersRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAllAccountLoggersRequest_01" type="sanity" >
     <t:objective>Sanity test for GetAllAccountLoggersRequest</t:objective>
-   
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test >
@@ -181,14 +181,14 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account4.name}</name>
-                <password>${defaultpassword.value}</password>				
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddAccountLoggerRequest  xmlns="urn:zimbraAdmin">
@@ -200,7 +200,7 @@
             <t:select path="//admin:AddAccountLoggerResponse/admin:logger"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAllAccountLoggersRequest  xmlns="urn:zimbraAdmin" />

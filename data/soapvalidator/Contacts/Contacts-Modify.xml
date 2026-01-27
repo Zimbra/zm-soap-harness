@@ -147,7 +147,7 @@
 
 <t:test_case testcaseid = "Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test required = "true">
         <t:request>
             <PingRequest xmlns = "urn:zimbraAdmin"/>
@@ -156,13 +156,13 @@
             <t:select path = "//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid = "ContactsModify_acctsetup1" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test required = "true">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAdmin">
@@ -174,7 +174,7 @@
             <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required = "true">
         <t:request>
             <CreateAccountRequest xmlns = "urn:zimbraAdmin">
@@ -187,14 +187,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
 <t:test_case testcaseid = "ContactsModify_acctlogin" type="always">
     <t:objective>login as the test account</t:objective>
-    
+
     <t:test required = "true">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAccount">
@@ -209,7 +209,7 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -218,7 +218,7 @@
     <t:steps>1. create a new contact with email address A
         2. change the contact to email address B
     </t:steps>
-    
+
     <t:test id = "modifycontactrequest1a">
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -231,11 +231,11 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact.id"/>            
+            <t:select attr = "id" set = "contact.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id = "modifycontactrequest1b" depends = "modifycontactrequest1a">
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
@@ -248,7 +248,7 @@
             <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends = "modifycontactrequest1b">
         <t:request>
             <GetContactsRequest xmlns = "urn:zimbraMail">
@@ -259,17 +259,17 @@
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email']"  match = "${contact1.newemail}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "ModifyContactRequest2" bugids="2532" type="bhr">
+<t:test_case testcaseid = "ModifyContactRequest2" bugids="2532" type="sanity">
     <t:objective>Modify a contact: change the each of the fields </t:objective>
     <t:steps>1. Create a new contact.
              2. Modify the content
              3. Verify for the modification
     </t:steps>
-    
+
     <t:test id = "modifycontactrequest2a">
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -307,11 +307,11 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact3.id"/>                
+            <t:select attr = "id" set = "contact3.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id = "modifycontactrequest2b" depends = "modifycontactrequest2a">
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0" force="0">
@@ -351,17 +351,17 @@
             <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends = "modifycontactrequest2b">
         <t:request>
             <GetContactsRequest xmlns = "urn:zimbraMail">
                 <cn id="${contact3.id}" />
             </GetContactsRequest>
         </t:request>
-        <t:response>    
+        <t:response>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email']" match = "${NewContact3.email}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='firstName']" match = "${NewContact3.fname}"/>
-            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match="${NewContact3.lname}"/>            
+            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match="${NewContact3.lname}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='company']" match="${NewContact3.company}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='workFax']" match="${NewContact3.workFax}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='workPhone2']" match="${NewContact3.workPhone2}"/>
@@ -392,7 +392,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "ModifyContactRequest3" bugids="2532" type="functional">
+<t:test_case testcaseid = "ModifyContactRequest3" bugids="2532" type="regression">
     <t:objective>Modify a contact: Verify proper functioning of attribute replace =0/1</t:objective>
     <t:steps>1. Create a new contact.
              2. Modify the content with replace = 0
@@ -400,7 +400,7 @@
              4. Modify again with replace =1 .
              5. Verify the content.
     </t:steps>
-    
+
     <t:test id = "modifycontactrequest3a">
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -438,18 +438,18 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-                <t:select attr = "id" set = "contact4.id"/>                
+                <t:select attr = "id" set = "contact4.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id = "modifycontactrequest3b" depends = "modifycontactrequest3a">
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
                 <cn id = "${contact4.id}">
                     <a n = "firstName">${NewContact4.fname}</a>
-                    <a n = "lastName">${NewContact4.lname}</a>                    
-                    <a n = "middleName">${NewContact4.mname}</a>                    
+                    <a n = "lastName">${NewContact4.lname}</a>
+                    <a n = "middleName">${NewContact4.mname}</a>
                 </cn>
             </ModifyContactRequest>
         </t:request>
@@ -457,16 +457,16 @@
             <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends = "modifycontactrequest3b">
         <t:request>
             <GetContactsRequest xmlns = "urn:zimbraMail">
                 <cn id="${contact4.id}" />
             </GetContactsRequest>
         </t:request>
-        <t:response>    
+        <t:response>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='firstName']" match = "${NewContact4.fname}"/>
-            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match="${NewContact4.lname}"/>            
+            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match="${NewContact4.lname}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='middleName']" match="${NewContact4.mname}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email']" match = "${contact4.email}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='company']" match="${contact4.company}"/>
@@ -480,7 +480,7 @@
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='otherFax']" match="${contact4.otherFax}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email1']" match="${contact4.email1}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email2']" match="${contact4.email2}"/>
-            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email3']" match="${contact4.email3}"/>            
+            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email3']" match="${contact4.email3}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='jobTitle']" match="${contact4.jobTitle}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='workPhone']" match="${contact4.workPhone}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='homePhone']" match="${contact4.homePhone}"/>
@@ -495,14 +495,14 @@
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='notes']" match="${contact4.notes1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id = "modifycontactrequest3c" depends = "modifycontactrequest3a">
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace="1">
                 <cn id = "${contact4.id}" >
                     <a n = "firstName">${NewContact4.fname}</a>
-                    <a n = "lastName">${NewContact4.lname}</a>                    
-                    <a n = "middleName">${NewContact4.mname}</a>                    
+                    <a n = "lastName">${NewContact4.lname}</a>
+                    <a n = "middleName">${NewContact4.mname}</a>
                 </cn>
             </ModifyContactRequest>
         </t:request>
@@ -510,16 +510,16 @@
             <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends = "modifycontactrequest3c">
         <t:request>
             <GetContactsRequest xmlns = "urn:zimbraMail">
                 <cn id="${contact4.id}" />
             </GetContactsRequest>
         </t:request>
-        <t:response>    
+        <t:response>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='firstName']" match = "${NewContact4.fname}"/>
-            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match="${NewContact4.lname}"/>            
+            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match="${NewContact4.lname}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='middleName']" match="${NewContact4.mname}"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email']" emptyset="1"/>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='company']" emptyset="1"/>
@@ -533,7 +533,7 @@
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='otherFax']" emptyset="1" />
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email1']" emptyset="1" />
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email2']" emptyset="1" />
-            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email3']" emptyset="1" />            
+            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email3']" emptyset="1" />
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='jobTitle']" emptyset="1" />
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='workPhone']" emptyset="1" />
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='homePhone']" emptyset="1" />
@@ -545,10 +545,10 @@
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='workPostalCode']" emptyset="1" />
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='workCountry']" emptyset="1" />
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='workURL']" emptyset="1" />
-            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='notes']" emptyset="1" />            
+            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='notes']" emptyset="1" />
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
 </t:test_case>
 
 
@@ -558,7 +558,7 @@
              2. Modify the contact with force = 0
              3. Modify the contact with force = 1
     </t:steps>
-    
+
     <t:test id = "modifycontactrequest4a">
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -575,7 +575,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id = "modifycontactrequest4b" depends = "modifycontactrequest4a">
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "0">
@@ -588,7 +588,7 @@
             <t:select path = "//zimbra:Code" match="mail.MODIFY_CONFLICT"/>
         </t:response>
     </t:test>
-    
+
     <t:test id = "modifycontactrequest4c" depends = "modifycontactrequest4a">
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
@@ -601,11 +601,11 @@
             <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "ModifyContactRequest5" type="functional">
+<t:test_case testcaseid = "ModifyContactRequest5" type="regression">
     <t:objective> Modify a contact and delete all the info of contact </t:objective>
 
     <t:test id = "modifycontactrequest5a">
@@ -624,7 +624,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test depends = "modifycontactrequest5a">
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail">
@@ -639,11 +639,11 @@
             <t:select path = "//zimbra:Code" match="service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "ModifyContactRequest6" type="functional">
+<t:test_case testcaseid = "ModifyContactRequest6" type="regression">
     <t:objective> Modify a contact and delete all the info of contact with replace="1" force="1" </t:objective>
 
     <t:test id = "modifycontactrequest6a">
@@ -662,7 +662,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test depends = "modifycontactrequest6a">
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "1" force = "1">
@@ -684,17 +684,17 @@
                 <cn id="${contact6.id}" />
             </GetContactsRequest>
         </t:request>
-        <t:response>    
+        <t:response>
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='firstName']" match = "${NewContact4.fname}" />
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match = "${NewContact4.lname}" />
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='middleName']" match = "${NewContact4.mname}" />
         </t:response>
-    </t:test>   
-  
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "ModifyContactRequest7" type="functional">
+<t:test_case testcaseid = "ModifyContactRequest7" type="regression">
     <t:objective> Modify a contact with fileas option as invalid (>7/alpha/negative/decimal/zero/blank)</t:objective>
 
     <t:test id = "modifycontactrequest7a">
@@ -794,7 +794,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "ModifyContactRequest8" type="bhr">
+<t:test_case testcaseid = "ModifyContactRequest8" type="sanity">
     <t:objective> Modify a contact to change fileas option to all allowed values i.e from 1 to 7 </t:objective>
 
     <t:test id = "modifycontactrequest8a">
@@ -920,7 +920,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "ModifyContactRequest9" type="functional">
+<t:test_case testcaseid = "ModifyContactRequest9" type="regression">
     <t:objective> Modify a contact with invalid id (numbers/alpha/negative/blank)</t:objective>
 
     <t:test>
@@ -977,14 +977,14 @@
 
 </t:test_case>
 
-<!--  Test case corresponding to 15589 --> 
+<!--  Test case corresponding to 15589 -->
 
-<t:test_case testcaseid = "ModifyContactRequest10" type="bhr">
+<t:test_case testcaseid = "ModifyContactRequest10" type="sanity">
     <t:objective>To change the email address of a contact with verbose="0" and verify that only "id" is returned in response</t:objective>
     <t:steps>1. create a new contact with email address A
         2. change the contact to email address B
     </t:steps>
-    
+
     <t:test id = "modifycontactrequest10a">
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -997,11 +997,11 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact.id"/>            
+            <t:select attr = "id" set = "contact.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id = "modifycontactrequest10b" depends = "modifycontactrequest1a">
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1" verbose ="0">
@@ -1017,7 +1017,7 @@
             <t:select path = "//mail:ModifyContactResponse/mail:cn/mail:a" attr="email" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends = "modifycontactrequest10b">
         <t:request>
             <GetContactsRequest xmlns = "urn:zimbraMail">
@@ -1028,35 +1028,35 @@
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='email']"  match = "${contact10.newemail}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="uploadFile1.name" value="${testMailRaw.root}/contact/invalidimage.jpg"/>
 
-<t:test_case testcaseid = "ModifyContactRequest11" type="bhr" bugid="71868">
+<t:test_case testcaseid = "ModifyContactRequest11" type="sanity" bugid="71868">
     <t:objective>Modify a contact with invalid image file</t:objective>
-    <t:steps>	1. Create a new contact 
-    			2. Upload a invalid picture(text file renamed as jpg file) 
+    <t:steps>	1. Create a new contact
+    			2. Upload a invalid picture(text file renamed as jpg file)
     			3. Modify the picture with upload-id
         		4. Server should return invalid image error code
     </t:steps>
-    
+
     <t:test >
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
                 <cn>
                     <a n = "firstName">${contact11.first}</a>
-                    <a n = "lastName">${contact11.last}</a>                  
+                    <a n = "lastName">${contact11.last}</a>
                 </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact11.id"/>            
+            <t:select attr = "id" set = "contact11.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile1.name}</filename>
@@ -1065,7 +1065,7 @@
 			<t:select attr="id" set="contactimage11.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test>
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail">
@@ -1077,8 +1077,8 @@
         <t:response>
              <t:select path = "//zimbra:Code" match="mail.INVALID_IMAGE"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
 </t:test_case>
 
 

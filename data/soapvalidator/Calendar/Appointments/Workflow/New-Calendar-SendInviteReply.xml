@@ -11,7 +11,7 @@
 <t:property name="calendar.verb3" value="TENTATIVE"/>
 
 <t:property name="calendar.comp1" value="0"/>
-<t:property name="calendar.comp2" value="1"/>    
+<t:property name="calendar.comp2" value="1"/>
 
 <t:property name="appointment.subject1" value="subject1 ${TIME}.${COUNTER}"/>
 <t:property name="appointment.subject2" value="subject2 ${TIME}.${COUNTER}"/>
@@ -48,7 +48,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -63,7 +63,7 @@
 
 <t:test_case testcaseid="new_acct_setup1_sendInviteReply" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -76,7 +76,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -113,7 +113,7 @@
               2. Send some invitations to account2
               3. Login to account2
     </t:steps>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -126,15 +126,15 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject1}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}" tz="${tz.default}"/>  
-                        <e d="${Time2}" tz="${tz.default}"/>  
+                        <s d="${Time1}" tz="${tz.default}"/>
+                        <e d="${Time2}" tz="${tz.default}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -156,8 +156,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject2}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time3}" tz="${tz.default}"/>  
-                        <e d="${Time4}" tz="${tz.default}"/>  
+                        <s d="${Time3}" tz="${tz.default}"/>
+                        <e d="${Time4}" tz="${tz.default}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -179,8 +179,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject3}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time5}" tz="${tz.default}"/>  
-                        <e d="${Time6}" tz="${tz.default}"/>  
+                        <s d="${Time5}" tz="${tz.default}"/>
+                        <e d="${Time6}" tz="${tz.default}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -202,8 +202,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject4}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time7}" tz="${tz.default}"/>  
-                        <e d="${Time8}" tz="${tz.default}"/>  
+                        <s d="${Time7}" tz="${tz.default}"/>
+                        <e d="${Time8}" tz="${tz.default}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -280,7 +280,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
@@ -321,11 +321,11 @@
 
 
 <t:test_case testcaseid="new_SendInviteReplyRequest1" type="smoke">
-    <t:objective>Accepting invitation request</t:objective>    
+    <t:objective>Accepting invitation request</t:objective>
     <t:steps>1. Search the invitation
              2. Accept it
     </t:steps>
-    
+
     <t:test >
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account2.appointment1.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
@@ -341,7 +341,7 @@
         <t:response>
            <t:select path = "//mail:SendInviteReplyResponse" attr="apptId" match="${account2_appt1.id}"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 
@@ -372,13 +372,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest3" type="bhr">
+<t:test_case testcaseid="new_SendInviteReplyRequest3" type="sanity">
     <t:objective>Tentative reply for invitaion </t:objective>
     <t:steps>1. Search the invitation
              2. Send tentative reply
     </t:steps>
-    
-    
+
+
 
     <t:test id="new_SendInviteReplyRequest3b" >
         <t:request>
@@ -402,10 +402,10 @@
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 <t:test_case testcaseid="new_SendInviteReplyRequest4" type="smoke">
     <t:objective>Verify the mails for accept/tentative/decline of invitation are received properly</t:objective>
-    <t:steps>1. Login to account1 
+    <t:steps>1. Login to account1
              2. Search the invitation replies
     </t:steps>
-    
+
     <t:test id="new_SendInviteReplyRequest4a" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -463,11 +463,11 @@
             <t:select path="//mail:SearchResponse"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest5" type="functional">
+<t:test_case testcaseid="new_SendInviteReplyRequest5" type="regression">
     <t:objective> SendInviteReplyRequest with invalid value for verb (Space/blank/sometext/special character)</t:objective>
 
     <t:test depends="new_SendInviteReplyRequest3b">
@@ -541,9 +541,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest6" type="functional" bugids="3830">
+<t:test_case testcaseid="new_SendInviteReplyRequest6" type="regression" bugids="3830">
     <t:objective> SendInviteReplyRequest with invalid positive value for id (Zero/large number)</t:objective>
-    
+
     <t:test depends="new_SendInviteReplyRequest3b">
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${calendar.zero}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
@@ -581,9 +581,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest7" type="functional" bugids="1797">
+<t:test_case testcaseid="new_SendInviteReplyRequest7" type="regression" bugids="1797">
     <t:objective> SendInviteReplyRequest with invalid value for id (Negative/Space/blank/sometext/special character)</t:objective>
-    
+
     <t:test depends="new_SendInviteReplyRequest3b">
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${calendar.negative}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
@@ -672,14 +672,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest8" type="functional">
+<t:test_case testcaseid="new_SendInviteReplyRequest8" type="regression">
     <t:objective> SendInviteReplyRequest with deleted id </t:objective>
     <t:steps>1. Search the invitation
-             2. Delete it 
+             2. Delete it
              3. Reply to the deleted invitation
     </t:steps>
 
-   
+
     <t:test id="new_SendInviteReplyRequest8a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -690,7 +690,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="test_account1.invitation4.id"/>
         </t:response>
     </t:test>
-    
+
 
     <t:test id="new_SendInviteReplyRequest8b" depends="new_SendInviteReplyRequest8a">
         <t:request>
@@ -718,12 +718,12 @@
         <t:response>
            <t:select path = "//zimbra:Code" match="^mail.NO_SUCH_MSG$"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest9" type="functional" bugids="3831">
+<t:test_case testcaseid="new_SendInviteReplyRequest9" type="regression" bugids="3831">
     <t:objective> SendInviteReplyRequest with invalid numeric value for compNum (Negative/large positive number) </t:objective>
 
     <t:test depends="new_SendInviteReplyRequest3b">
@@ -759,13 +759,13 @@
            <t:select path = "//zimbra:Code" match="mail.NO_SUCH_ITEM|mail.NO_SUCH_CALITEM|mail.INVITE_OUT_OF_DATE"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest10" type="functional">
+<t:test_case testcaseid="new_SendInviteReplyRequest10" type="regression">
     <t:objective> SendInviteReplyRequest with invalid non numeric value for compNum (Space/blank/sometext/special character) </t:objective>
-    
+
     <t:test depends="new_SendInviteReplyRequest3b">
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="${calendar.space}" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
@@ -837,9 +837,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest11" type="sanity">
+<t:test_case testcaseid="new_SendInviteReplyRequest11" type="functional">
     <t:objective>SendInviteReplyRequest with updateOrganizer=True/False </t:objective>
-    
+
     <t:test depends="new_SendInviteReplyRequest3b">
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${globals.true}">
@@ -879,8 +879,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest12" type="sanity">
-    <t:objective>SendInviteReplyRequest with updateOrganizer=zero/one </t:objective>    
+<t:test_case testcaseid="new_SendInviteReplyRequest12" type="functional">
+    <t:objective>SendInviteReplyRequest with updateOrganizer=zero/one </t:objective>
 
     <t:test depends="new_SendInviteReplyRequest3b">
         <t:request>
@@ -920,12 +920,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest13" type="functional">
+<t:test_case testcaseid="new_SendInviteReplyRequest13" type="regression">
     <t:objective>SendInviteReplyRequest with updateOrganizer=Invalid values (blank/space/sometext/special charecter) </t:objective>
     <t:steps>1. Search for the invitation
              2. Verify updateOrganizer= true/false
     </t:steps>
-    
+
     <t:test depends="new_SendInviteReplyRequest3b">
         <t:request>
             <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${calendar.blank}">
@@ -997,12 +997,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_SendInviteReplyRequest14" type="sanity">
+<t:test_case testcaseid="new_SendInviteReplyRequest14" type="functional">
     <t:objective>SendInviteReplyRequest without m element </t:objective>
-    
+
     <t:test depends="new_SendInviteReplyRequest3b">
         <t:request>
-            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${globals.true}">                
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${globals.true}">
             </SendInviteReplyRequest>
         </t:request>
         <t:response>
@@ -1010,7 +1010,7 @@
            <t:select path = "//mail:SendInviteReplyResponse"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 </t:tests>

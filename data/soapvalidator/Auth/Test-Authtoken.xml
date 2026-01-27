@@ -69,7 +69,7 @@
         </t:response>
     </t:test>
 
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test>
         <t:requestContext>
@@ -78,7 +78,7 @@
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAccount">
                 <account by = "name">${test_account1.name}</account>
-                <password>${test_account1.password}</password>                
+                <password>${test_account1.password}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -95,7 +95,7 @@
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAccount">
                 <account by = "name">${test_account2.name}</account>
-                <password>${test_account1.password}</password>                
+                <password>${test_account1.password}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -104,12 +104,12 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="RequestContext1" type="bhr">
+<t:test_case testcaseid="RequestContext1" type="sanity">
     <t:objective> GetFolderRequest with authtoken and name of first account (using context specified by name) </t:objective>
 
     <t:test>
@@ -128,8 +128,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RequestContext2" type="bhr">
-    <t:objective> GetFolderRequest with authtoken and name of first account (using context specified by ID) </t:objective>    
+<t:test_case testcaseid="RequestContext2" type="sanity">
+    <t:objective> GetFolderRequest with authtoken and name of first account (using context specified by ID) </t:objective>
 
     <t:test>
         <t:requestContext>
@@ -146,7 +146,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="RequestContext3" type="bhr">
+<t:test_case testcaseid="RequestContext3" type="sanity">
     <t:objective> Login to test_account2 with admin's authtoken (using context specified by name)</t:objective>
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
@@ -167,7 +167,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RequestContext4" type="bhr">
+<t:test_case testcaseid="RequestContext4" type="sanity">
     <t:objective> Login to test_account2 with admin's authtoken (using context specified by id)</t:objective>
 
     <t:test>
@@ -185,7 +185,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RequestContext5" type="functional" >
+<t:test_case testcaseid="RequestContext5" type="regression" >
     <t:objective> Login to test_account2 with test_account1's auth token (using context specified by name) </t:objective>
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
@@ -206,7 +206,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RequestContext6" type="functional" >
+<t:test_case testcaseid="RequestContext6" type="regression" >
     <t:objective> Login to test_account2 with test_account1's auth token (using context specified by id) </t:objective>
 
     <t:test>
@@ -225,7 +225,7 @@
 </t:test_case>
 
 <!-- Poonam: Commenting out this tc as we cant set sessionId due to change in the harness
-<t:test_case testcaseid="RequestContext7" type="functional" >
+<t:test_case testcaseid="RequestContext7" type="regression" >
     <t:objective> Login to test_account2 with its different session-id and without authtoken (using context specified by name/id) </t:objective>
 
     <t:test>
@@ -257,7 +257,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RequestContext8" type="functional" >
+<t:test_case testcaseid="RequestContext8" type="regression" >
     <t:objective> Login to test_account2 with its own session-id and without authtoken (using context specified by id/name) </t:objective>
 
     <t:test>
@@ -291,7 +291,7 @@
 
 <!-- Commenting these test cases as we are confused with zimbra user and admin user -->
 <!--
-<t:test_case testcaseid="RequestContext9" type="bhr">
+<t:test_case testcaseid="RequestContext9" type="sanity">
     <t:objective> Login to admin.mailaccount with adminlogin authtoken (requestContext specified by name)</t:objective>
 
     <t:test>
@@ -306,13 +306,13 @@
             <t:select path="//mail:GetFolderResponse/mail:folder"/>
         </t:response>
     </t:test>
-     
+
 </t:test_case>
 
 
-<t:test_case testcaseid="RequestContext10" type="sanity" >
+<t:test_case testcaseid="RequestContext10" type="functional" >
     <t:objective> Login to admin.mailaccount with test_account1's auth token (requestContext specified by name)</t:objective>
-    
+
     <t:test>
         <t:requestContext>
             <authToken>${authToken1}</authToken>
@@ -329,17 +329,17 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RequestContext11" type="sanity" >
+<t:test_case testcaseid="RequestContext11" type="functional" >
     <t:objective> Login to test_account1 with admin.mailaccount's authtoken (requestContext specified by name\id)</t:objective>
      <t:steps>1. Get the admin.mailaccount authToken
               2. Login to test_account1 with admin.mailaccount's authtoken.
     </t:steps>
-    
+
      <t:test id="requestcontext11a">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAccount">
                 <account by = "name">${admin.mailaccount}</account>
-                <password>${admin.mailaccount.password}</password>                
+                <password>${admin.mailaccount.password}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -347,7 +347,7 @@
             <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken.admin"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="requestcontext11a">
         <t:requestContext>
             <authToken>${authToken.admin}</authToken>
@@ -360,7 +360,7 @@
             <t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="${test_account1.id}:1"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="requestcontext11a">
         <t:requestContext>
             <authToken>${authToken.admin}</authToken>

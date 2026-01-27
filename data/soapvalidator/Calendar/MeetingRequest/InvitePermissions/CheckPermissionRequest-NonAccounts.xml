@@ -17,7 +17,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -34,7 +34,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -47,7 +47,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -64,9 +64,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_NonAccount_01" type="bhr" bugids="39939">
+<t:test_case testcaseid="CheckPermissionRequest_NonAccount_01" type="sanity" bugids="39939">
     <t:objective>Basic test case for CheckPermissionRequest for non Zimbra Accounts</t:objective>
-   
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -80,7 +80,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<CheckPermissionRequest xmlns="urn:zimbraMail">

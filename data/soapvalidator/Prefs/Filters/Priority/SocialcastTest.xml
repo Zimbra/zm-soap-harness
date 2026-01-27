@@ -36,20 +36,20 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="socialcastTest_01" type="bhr" bugids="42185" >
+<t:test_case testcaseid="socialcastTest_01" type="sanity" bugids="42185" >
 
     <t:objective>Verify that socialcast message sent to the user is filtered for socialcastTest filter</t:objective>
-    
+
     <t:steps> 1. Create filter for socialcastTest to flag for account1
 			  2. Inject a direct message from support@socialcast.com to the user.
 			  3. Verify that the message gets flagged.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -65,7 +65,7 @@
 
 	<t:property name="filter_soacialcast.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_soacialcast1.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -78,7 +78,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -86,7 +86,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="socialcast_msg01.file" value="${testMailRaw.root}/bug42185/socialcast-direct-msg.txt" />
 
 	<t:mailinjecttest >
@@ -99,9 +99,9 @@
                 <header a="Subject">${filter_soacialcast1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
-	
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -112,21 +112,21 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_soacialcast1.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
 
-<t:test_case testcaseid="socialcastTest_02" type="bhr" bugids="42185" >
+<t:test_case testcaseid="socialcastTest_02" type="sanity" bugids="42185" >
 
     <t:objective>Verify that socialcast message to 'do-not-reply@socialcast.com' is filtered for socialcastTest filter</t:objective>
-    
+
     <t:steps> 1. Create filter for socialcastTest to flag for account1
 			  2. Inject a message from support@socialcast.com  to 'do-not-reply@socialcast.com' with reply header to the user.
 			  3. Verify that the message gets flagged.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -154,7 +154,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -162,7 +162,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="socialcast_msg02.file" value="${testMailRaw.root}/bug42185/socialcast-broadcast-message.txt" />
 
 	<t:mailinjecttest >
@@ -175,8 +175,8 @@
                 <header a="Subject">${filter_soacialcast2.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>		
-	
+    </t:mailinjecttest>
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -187,21 +187,21 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_soacialcast2.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
-    </t:test>    
-   
-
-</t:test_case> 
+    </t:test>
 
 
-<t:test_case testcaseid="socialcastTest_03" type="bhr" bugids="42185" >
+</t:test_case>
+
+
+<t:test_case testcaseid="socialcastTest_03" type="sanity" bugids="42185" >
 
     <t:objective>Verify that socialcast general update message is not filtered for socialcastTest filter</t:objective>
-    
+
     <t:steps> 1. Create filter for socialcastTest
 			  2. Inject a message from support@socialcast.com with no reply header to the user.
 			  3. Verify that the message does not get flagged.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -217,7 +217,7 @@
 
 	<t:property name="filter_soacialcast.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_soacialcast3.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -230,7 +230,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -238,9 +238,9 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="socialcast_msg03.file" value="${testMailRaw.root}/bug42185/socialcast-updates.txt" />
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${socialcast_msg03.file}</filename>
@@ -251,8 +251,8 @@
                 <header a="Subject">${filter_soacialcast3.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
-	
+    </t:mailinjecttest>
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -263,8 +263,8 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_soacialcast3.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*" emptyset="1"/>
         </t:response>
-    </t:test>    
-   
-</t:test_case> 
+    </t:test>
+
+</t:test_case>
 
 </t:tests>

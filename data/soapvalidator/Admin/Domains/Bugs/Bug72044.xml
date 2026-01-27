@@ -1,10 +1,10 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
-<t:property name="testdomain1.name" value="${TIME}.domain${COUNTER}.com"/>    
-<t:property name="testdomain1_new.name" value="new${TIME}.domain${COUNTER}.com"/>    
-    
+
+<t:property name="testdomain1.name" value="${TIME}.domain${COUNTER}.com"/>
+<t:property name="testdomain1_new.name" value="new${TIME}.domain${COUNTER}.com"/>
+
 <t:property name="account1.name" value="amavis${COUNTER}"/>
 
 <t:test_case testcaseid="Ping" type="always">
@@ -22,7 +22,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug72044" type="bhr">
+<t:test_case testcaseid="bug72044" type="sanity">
     <t:objective>RenameDomain (zmprov -l rd) should rename the value in zimbraAmavisQuarantineAccount</t:objective>
     <t:steps>
 
@@ -39,8 +39,8 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:test required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -50,9 +50,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
 
     <t:test required="true">
         <t:request>
@@ -66,7 +66,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-	
+
 	 <t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -77,7 +77,7 @@
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:staftask >
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -98,8 +98,8 @@
             </t:select>
         </t:response>
     </t:test>
-	</t:test_case>	
+	</t:test_case>
 
 
 
-</t:tests>	
+</t:tests>

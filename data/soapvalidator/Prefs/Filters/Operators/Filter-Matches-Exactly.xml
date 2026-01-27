@@ -82,15 +82,15 @@
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="Filter_MatchesExactly_01" type="bhr">
+<t:test_case testcaseid="Filter_MatchesExactly_01" type="sanity">
     <t:objective> Verify messages that for rule "matches exactly" are filtered </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "FROM matches exactly account2 "
 			  3. Inject a message to account1 with from as account2
 			  4. Verify the message is filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -103,18 +103,18 @@
 
         </t:response>
     </t:test>
-	   
+
 	 <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="from" stringComparison="is" value="${account2.name}"/>                    	     
+                         <headerTest header="from" stringComparison="is" value="${account2.name}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -124,9 +124,9 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
-	
+
+
+
 	<t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -135,7 +135,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -161,10 +161,10 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Filter_MatchesExactly_02" type="bhr">
+<t:test_case testcaseid="Filter_MatchesExactly_02" type="sanity">
 
     <t:objective> Verify messages that for rule "does not matches exactly" are filtered </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "FROM does not matches account3"
 			  3. Inject a message to account1 with From as account3
@@ -185,18 +185,18 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
 	<t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter2.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="from" stringComparison="is" negative="1" value="${account3.name}"/>                    	     
+                         <headerTest header="from" stringComparison="is" negative="1" value="${account3.name}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -206,7 +206,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 
 	<t:test>
         <t:request>
@@ -216,7 +216,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -265,9 +265,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_MatchesExactly_03" type="sanity" bugids="20317" >
+<t:test_case testcaseid="Filter_MatchesExactly_03" type="functional" bugids="20317" >
     <t:objective> Verify filter works for substring search </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 2
 			  2. Create a filter based on "header :is "from" "account3"
 			  3. Inject a message to account2 with From as account3
@@ -299,7 +299,7 @@
 							<actionFlag flagName="flagged"/>
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -307,7 +307,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>

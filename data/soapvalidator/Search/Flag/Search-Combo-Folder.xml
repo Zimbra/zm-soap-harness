@@ -2,15 +2,15 @@
 
 <t:property name="test_acct.server" value="NOT_DEFINED"/>
 
-<!-- READ ME : 
+<!-- READ ME :
 
     There are 5 folders in this account. Folder hierarchy is as follows:
-    folder1's parent: USER_ROOT;    folder2's parent: USER_ROOT; 
-    folder3's parent: folder2;      folder4's parent: inbox; 
-    folder5's parent: contacts; 
+    folder1's parent: USER_ROOT;    folder2's parent: USER_ROOT;
+    folder3's parent: folder2;      folder4's parent: inbox;
+    folder5's parent: contacts;
 
-    There are 24 mails in this account. The folders they will be residing are as follows: 
-    email19A and email19B : Inbox;      email19C and email19D : drafts; 
+    There are 24 mails in this account. The folders they will be residing are as follows:
+    email19A and email19B : Inbox;      email19C and email19D : drafts;
     email19E and email19F : sent;       email19G and email19H : spam;
     email19I and email19J : trash;      email19K and email19L : folder1;
     email19M and email19N : folder2;    email19O and email19P : folder3;
@@ -70,11 +70,11 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -84,7 +84,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -108,7 +108,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account19.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -121,7 +121,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account2.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
@@ -134,14 +134,14 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="account_setup1" type="sanity" >
+<t:test_case testcaseid="account_setup1" type="functional" >
     <t:objective>Login as the test account to get message Ids</t:objective>
-    <t:steps>  
+    <t:steps>
                1. Login to the account.
                2. Search a mail to get the message-id
     </t:steps>
@@ -159,7 +159,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest1">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -171,10 +171,10 @@
             <t:select attr="su" match="^${mail1.subject}$"/>
             <t:select attr="id" set="message.id1"/>
             </t:select>
-            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender1"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender1"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest2">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -189,7 +189,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender2"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest3">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -204,7 +204,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender3"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest4">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -219,7 +219,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender4"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest5">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -234,7 +234,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender5"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest6">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -249,7 +249,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender6"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest7">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -264,7 +264,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender7"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest8">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -279,7 +279,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender8"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest9">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -294,7 +294,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender9"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest10">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -309,7 +309,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender10"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest11">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -324,7 +324,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender11"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest12">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -339,7 +339,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender12"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest13">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -354,7 +354,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender13"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest14">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -369,7 +369,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender14"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest15">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -384,7 +384,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender15"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest16">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -399,7 +399,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender16"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest17">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -411,10 +411,10 @@
             <t:select attr="su" match="^${mail17.subject}$"/>
             <t:select attr="id" set="message.id17"/>
             </t:select>
-            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender17"/> 
+            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender17"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest18">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -429,7 +429,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender18"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest19">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -444,7 +444,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender19"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest20">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -459,7 +459,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender20"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest21">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -474,7 +474,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender21"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest22">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -489,7 +489,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender22"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest23">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -501,10 +501,10 @@
             <t:select attr="su" match="^${mail23.subject}$"/>
             <t:select attr="id" set="message.id23"/>
             </t:select>
-            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender23"/> 
+            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender23"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest24">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -523,9 +523,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="account_setup2" type="sanity" >
+<t:test_case testcaseid="account_setup2" type="functional" >
     <t:objective>Adding flag to the 12 messages </t:objective>
-    
+
     <t:test id="msgActionRequest1" depends="searchRequest1">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -536,8 +536,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.flag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest2" depends="searchRequest3">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -548,8 +548,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.flag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest3" depends="searchRequest5">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -560,8 +560,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.flag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id5}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest4" depends="searchRequest7">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -573,7 +573,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id7}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest5" depends="searchRequest9">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -585,7 +585,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id9}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest6" depends="searchRequest11">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -596,8 +596,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.flag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id11}"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test id="msgActionRequest7" depends="searchRequest13">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -608,8 +608,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.flag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id13}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest8" depends="searchRequest15">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -621,7 +621,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id15}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest9" depends="searchRequest17">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -633,7 +633,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id17}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest10" depends="searchRequest19">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -645,7 +645,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id19}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest11" depends="searchRequest21">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -657,7 +657,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id21}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest12" depends="searchRequest23">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -669,12 +669,12 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id23}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="account_setup3" type="sanity" >
+<t:test_case testcaseid="account_setup3" type="functional" >
     <t:objective>Mark 12 messages as read </t:objective>
-    
+
     <t:test id="msgActionRequest13" depends="searchRequest1">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -685,8 +685,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.read}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest14" depends="searchRequest3">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -697,8 +697,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.read}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest15" depends="searchRequest5">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -709,8 +709,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.read}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id5}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest16" depends="searchRequest7">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -722,7 +722,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id7}"/>
         </t:response>
     </t:test>
-     
+
     <t:test id="msgActionRequest17" depends="searchRequest9">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -734,7 +734,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id9}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest18" depends="searchRequest11">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -745,8 +745,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.read}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id11}"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test id="msgActionRequest19" depends="searchRequest13">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -757,8 +757,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.read}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id13}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest20" depends="searchRequest15">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -770,7 +770,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id15}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest21" depends="searchRequest17">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -782,7 +782,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id17}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest22" depends="searchRequest19">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -794,7 +794,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id19}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest23" depends="searchRequest21">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -806,7 +806,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id21}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest24" depends="searchRequest23">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -818,10 +818,10 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id23}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="account_setup4" type="sanity" >
+<t:test_case testcaseid="account_setup4" type="functional" >
     <t:objective> Reply to the 12 mails  </t:objective>
 
     <t:test id="sendMsgRequest1" depends="searchRequest1">
@@ -837,9 +837,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest2" depends="searchRequest3">
         <t:request>
@@ -854,9 +854,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest3" depends="searchRequest5">
         <t:request>
@@ -871,9 +871,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest4" depends="searchRequest7">
         <t:request>
@@ -888,9 +888,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest5" depends="searchRequest9">
         <t:request>
@@ -905,9 +905,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest6" depends="searchRequest11">
         <t:request>
@@ -922,9 +922,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest7" depends="searchRequest13">
         <t:request>
@@ -939,9 +939,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest8" depends="searchRequest15">
         <t:request>
@@ -956,9 +956,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest9" depends="searchRequest17">
         <t:request>
@@ -973,9 +973,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest10" depends="searchRequest19">
         <t:request>
@@ -990,9 +990,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest11" depends="searchRequest21">
         <t:request>
@@ -1007,9 +1007,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest12" depends="searchRequest23">
         <t:request>
@@ -1024,16 +1024,16 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="account_setup5" type="sanity" >
+<t:test_case testcaseid="account_setup5" type="functional" >
     <t:objective> forward the 12 mails   </t:objective>
-    
+
     <t:test id="sendMsgRequest13" depends="searchRequest2">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1047,10 +1047,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest14" depends="searchRequest4">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1064,10 +1064,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest15" depends="searchRequest6">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1081,10 +1081,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest16" depends="searchRequest8">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1098,10 +1098,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest17" depends="searchRequest10">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1115,10 +1115,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest18" depends="searchRequest12">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1132,10 +1132,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest19" depends="searchRequest14">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1149,10 +1149,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest20" depends="searchRequest16">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1166,10 +1166,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest21" depends="searchRequest18">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1183,10 +1183,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest22" depends="searchRequest20">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1200,10 +1200,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest23" depends="searchRequest22">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1217,10 +1217,10 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
     <t:test id="sendMsgRequest24" depends="searchRequest24">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1234,15 +1234,15 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="account_setup6" type="sanity" >
+<t:test_case testcaseid="account_setup6" type="functional" >
     <t:objective>Creating folders in proper structure </t:objective>
-    
+
     <t:test id="getFolderRequest">
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -1255,10 +1255,10 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spam.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trash.id"/>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest1" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1269,7 +1269,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest2" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1288,10 +1288,10 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest4" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1299,10 +1299,10 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest5" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1310,308 +1310,308 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>
         </t:response>
     </t:test>
-    
-</t:test_case>
-   
 
-<t:test_case testcaseid="account_setup7" type="sanity" >
+</t:test_case>
+
+
+<t:test_case testcaseid="account_setup7" type="functional" >
     <t:objective>Moving messages(mails) to respected folders </t:objective>
-    
+
     <t:test id="msgActionRequest25">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id1}" op="${op.move}" l="${inbox.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest26">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id2}" op="${op.move}" l="${inbox.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id2}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id2}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest27">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id3}" op="${op.move}" l="${drafts.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest28">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id4}" op="${op.move}" l="${drafts.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id4}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id4}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest29">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id5}" op="${op.move}" l="${sent.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id5}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id5}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest30">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id6}" op="${op.move}" l="${sent.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id6}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id6}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest31">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id7}" op="${op.move}" l="${spam.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id7}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id7}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest32">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id8}" op="${op.move}" l="${spam.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id8}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id8}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest33">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id9}" op="${op.move}" l="${trash.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id9}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id9}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest34">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id10}" op="${op.move}" l="${trash.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id10}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id10}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest35">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id11}" op="${op.move}" l="${folder1.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id11}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id11}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest36">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id12}" op="${op.move}" l="${folder1.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id12}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id12}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest37">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id13}" op="${op.move}" l="${folder2.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id13}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id13}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest38">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id14}" op="${op.move}" l="${folder2.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id14}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id14}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest39">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id15}" op="${op.move}" l="${folder3.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id15}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id15}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest40">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id16}" op="${op.move}" l="${folder3.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id16}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id16}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest41">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id17}" op="${op.move}" l="${folder4.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id17}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id17}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest42">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id18}" op="${op.move}" l="${folder4.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id18}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id18}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest43">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id19}" op="${op.move}" l="${folder5.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id19}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id19}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest44">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id20}" op="${op.move}" l="${folder5.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id20}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id20}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest45">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id21}" op="${op.move}" l="${contacts.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id21}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id21}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest46">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id22}" op="${op.move}" l="${contacts.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id22}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id22}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest47">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id23}" op="${op.move}" l="${calendar.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id23}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id23}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="msgActionRequest48">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
                 <action id="${message.id24}" op="${op.move}" l="${calendar.id}"/>
             </MsgActionRequest>
         </t:request>
-        <t:response>            
+        <t:response>
                 <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
-                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id24}"/>            
+                <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id24}"/>
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_flag_folder_SearchRequest1" type="sanity" budid="2690">
+<t:test_case testcaseid="combo_flag_folder_SearchRequest1" type="functional" budid="2690">
     <t:objective> Verify that a search for flagged mail in corresponding folders is successful </t:objective>
 
     <t:test>
@@ -1647,7 +1647,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1681,7 +1681,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1715,7 +1715,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1749,7 +1749,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1783,7 +1783,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1817,7 +1817,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1851,7 +1851,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1885,7 +1885,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1919,7 +1919,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1953,7 +1953,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1987,7 +1987,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2025,7 +2025,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_unflag_folder_SearchRequest1" type="sanity" budid="2690" >
+<t:test_case testcaseid="combo_unflag_folder_SearchRequest1" type="functional" budid="2690" >
     <t:objective> Verify that a search for unflagged mails in corresponding folders is successful </t:objective>
 
     <t:test>
@@ -2061,7 +2061,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2095,7 +2095,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2129,7 +2129,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2163,7 +2163,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2197,7 +2197,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2231,7 +2231,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2265,7 +2265,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2299,7 +2299,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2333,7 +2333,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2367,7 +2367,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2401,7 +2401,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2439,10 +2439,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_read_folder_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_read_folder_SearchRequest1" type="functional" >
     <t:objective> Verify that a search for read mail in corresponding folders is successful </t:objective>
-    
-    
+
+
     <t:test id="msgActionRequestUnread" depends="searchRequest9">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -2488,7 +2488,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2522,7 +2522,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2556,7 +2556,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2590,7 +2590,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2624,7 +2624,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2658,7 +2658,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2692,7 +2692,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2726,7 +2726,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2760,7 +2760,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2794,7 +2794,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2828,7 +2828,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2866,7 +2866,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_unread_folder_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_unread_folder_SearchRequest1" type="functional" >
     <t:objective> Verify that a search for unread mails in corresponding folders is successful </t:objective>
 
     <t:test>
@@ -2902,7 +2902,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2936,7 +2936,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2970,7 +2970,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3004,7 +3004,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3038,7 +3038,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3072,7 +3072,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3106,7 +3106,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3140,7 +3140,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3174,7 +3174,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3208,7 +3208,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3242,7 +3242,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3281,7 +3281,7 @@
 
 
 
-<t:test_case testcaseid="combo_reply_folder_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_reply_folder_SearchRequest1" type="functional" >
     <t:objective> Verify that a search for reply mail in corresponding folders is successful </t:objective>
 
     <t:test>
@@ -3317,7 +3317,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3351,7 +3351,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3385,7 +3385,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3419,7 +3419,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3453,7 +3453,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3487,7 +3487,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3521,7 +3521,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3555,7 +3555,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3589,7 +3589,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3623,7 +3623,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3657,7 +3657,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3695,7 +3695,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_forward_folder_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_forward_folder_SearchRequest1" type="functional" >
     <t:objective> Verify that a search for forward mails in corresponding folders is successful </t:objective>
 
     <t:test>
@@ -3765,7 +3765,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3799,7 +3799,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3833,7 +3833,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3867,7 +3867,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3901,7 +3901,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3935,7 +3935,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -3969,7 +3969,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -4003,7 +4003,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -4037,7 +4037,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -4071,7 +4071,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -4109,7 +4109,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_flag_folder_SearchRequest2" type="sanity" budid="2690">
+<t:test_case testcaseid="combo_flag_folder_SearchRequest2" type="functional" budid="2690">
     <t:objective> Verify that a search for flagged mail in corresponding folders is successful (for conversation) </t:objective>
 
     <t:test>
@@ -4145,7 +4145,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4179,7 +4179,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4213,7 +4213,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4247,7 +4247,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4281,7 +4281,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4315,7 +4315,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4349,7 +4349,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4383,7 +4383,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4417,7 +4417,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4451,7 +4451,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4485,7 +4485,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4523,7 +4523,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_unflag_folder_SearchRequest2" type="sanity" budid="2690" >
+<t:test_case testcaseid="combo_unflag_folder_SearchRequest2" type="functional" budid="2690" >
     <t:objective> Verify that a search for unflagged mails in corresponding folders is successful (for conversation) </t:objective>
 
     <t:test>
@@ -4559,7 +4559,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4593,7 +4593,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4627,7 +4627,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4661,7 +4661,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4695,7 +4695,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4729,7 +4729,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4763,7 +4763,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4797,7 +4797,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4831,7 +4831,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4865,7 +4865,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4899,7 +4899,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -4937,10 +4937,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_read_folder_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_read_folder_SearchRequest2" type="functional" >
     <t:objective> Verify that a search for read mail in corresponding folders is successful (for conversation) </t:objective>
-    
-    
+
+
     <t:test id="msgActionRequestUnread" depends="searchRequest9">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -4986,7 +4986,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5020,7 +5020,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5054,7 +5054,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5088,7 +5088,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5122,7 +5122,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5156,7 +5156,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5190,7 +5190,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5224,7 +5224,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5258,7 +5258,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5292,7 +5292,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5326,7 +5326,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5364,7 +5364,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_unread_folder_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_unread_folder_SearchRequest2" type="functional" >
     <t:objective> Verify that a search for unread mails in corresponding folders is successful (for conversation) </t:objective>
 
     <t:test>
@@ -5400,7 +5400,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5434,7 +5434,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5468,7 +5468,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5502,7 +5502,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5536,7 +5536,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5570,7 +5570,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5604,7 +5604,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5638,7 +5638,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5672,7 +5672,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5706,7 +5706,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5740,7 +5740,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5779,7 +5779,7 @@
 
 
 
-<t:test_case testcaseid="combo_reply_folder_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_reply_folder_SearchRequest2" type="functional" >
     <t:objective> Verify that a search for reply mail in corresponding folders is successful (for conversation) </t:objective>
 
     <t:test>
@@ -5815,7 +5815,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5849,7 +5849,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5883,7 +5883,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5917,7 +5917,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5951,7 +5951,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -5985,7 +5985,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6019,7 +6019,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6053,7 +6053,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6087,7 +6087,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6121,7 +6121,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6155,7 +6155,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6193,7 +6193,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_forward_folder_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_forward_folder_SearchRequest2" type="functional" >
     <t:objective> Verify that a search for forward mails in corresponding folders is successful (for conversation) </t:objective>
 
     <t:test>
@@ -6263,7 +6263,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6297,7 +6297,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6331,7 +6331,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6365,7 +6365,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6399,7 +6399,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6433,7 +6433,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6467,7 +6467,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6501,7 +6501,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6535,7 +6535,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -6569,7 +6569,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id24}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">

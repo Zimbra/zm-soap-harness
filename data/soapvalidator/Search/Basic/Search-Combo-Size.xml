@@ -10,7 +10,7 @@
 <t:property name="mail5.subject" value="email12E"/>
 <t:property name="mail6.subject" value="email12F"/>
 
-<!-- 
+<!--
  Below are the size of the mail injected into the account
 <t:property name="messages1.size" value="157b"/>
 <t:property name="messages2.size" value="559b"/>
@@ -28,11 +28,11 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -42,7 +42,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -66,7 +66,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account12.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
@@ -76,14 +76,14 @@
 		    <server>${test_acct.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
     <t:objective> Create setup for the Search </t:objective>
     <t:steps>1. Login to the account.
-             2. Search a mail to get the message-id 
+             2. Search a mail to get the message-id
     </t:steps>
 
     <t:test id="login" required="true">
@@ -187,9 +187,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_from_size_SearchRequest" type="sanity">
+<t:test_case testcaseid="combo_from_size_SearchRequest" type="functional">
     <t:objective> Verify the results are correct for query using from:() smaller:/larger:   </t:objective>
-                  
+
     <!-- From: smaller (bytes) -->
     <t:test>
         <t:request>
@@ -201,7 +201,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -258,7 +258,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
         </t:response>
     </t:test>
-    
+
     <!-- From: larger (KB) -->
     <t:test>
         <t:request>
@@ -288,7 +288,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
         </t:response>
     </t:test>
-    
+
     <!-- From: larger (MB) -->
     <t:test>
         <t:request>
@@ -305,9 +305,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="combo_to_size_SearchRequest" type="sanity">
+<t:test_case testcaseid="combo_to_size_SearchRequest" type="functional">
     <t:objective> Verify the results are correct for query using to:() smaller:/larger: </t:objective>
-                  
+
     <!-- TO: smaller (bytes) -->
     <t:test>
         <t:request>
@@ -319,7 +319,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -376,7 +376,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
         </t:response>
     </t:test>
-    
+
     <!-- TO: larger (KB) -->
     <t:test>
         <t:request>
@@ -406,7 +406,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
         </t:response>
     </t:test>
-    
+
     <!-- TO: larger (MB) -->
     <t:test>
         <t:request>
@@ -420,10 +420,10 @@
     </t:test>
 
 </t:test_case>
-      
-<t:test_case testcaseid="combo_cc_size_SearchRequest" type="sanity">
+
+<t:test_case testcaseid="combo_cc_size_SearchRequest" type="functional">
     <t:objective> Verify the results are correct for query using cc:() smaller:/larger: </t:objective>
-                  
+
     <!-- Cc: smaller (bytes) -->
     <t:test>
         <t:request>
@@ -435,7 +435,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -481,7 +481,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Cc: larger (KB) -->
     <t:test>
         <t:request>
@@ -505,7 +505,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
         </t:response>
     </t:test>
-    
+
     <!-- Cc: larger (MB) -->
     <t:test>
         <t:request>
@@ -522,9 +522,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_subject_size_SearchRequest" type="sanity">
+<t:test_case testcaseid="combo_subject_size_SearchRequest" type="functional">
     <t:objective> Verify the results are correct for query using subject() smaller:/larger: </t:objective>
-                  
+
     <!-- SUBJECT: smaller (bytes) -->
     <t:test>
         <t:request>
@@ -536,7 +536,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -582,7 +582,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
         </t:response>
     </t:test>
-    
+
     <!-- SUBJECT: larger (KB) -->
     <t:test>
         <t:request>
@@ -606,7 +606,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
         </t:response>
     </t:test>
-    
+
     <!-- SUBJECT: larger (MB) -->
     <t:test>
         <t:request>
@@ -624,9 +624,9 @@
 
 <t:property name="content.text" value="simple text in body"/>
 
-<t:test_case testcaseid="combo_content_size_SearchRequest" type="sanity">
+<t:test_case testcaseid="combo_content_size_SearchRequest" type="functional">
     <t:objective> Verify the results are correct for query using content:() smaller:/larger: </t:objective>
-                  
+
     <!-- CONTENT: smaller (bytes) -->
     <t:test>
         <t:request>
@@ -638,7 +638,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -684,7 +684,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- CONTENT: larger (KB) -->
     <t:test>
         <t:request>
@@ -708,7 +708,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- CONTENT: larger (MB) -->
     <t:test>
         <t:request>
@@ -725,9 +725,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_from_size_SearchRequest" type="sanity">
+<t:test_case testcaseid="combo_from_size_SearchRequest" type="functional">
     <t:objective> Verify the results are correct for query using from:() smaller:/larger:   </t:objective>
-                  
+
     <!-- From: smaller (bytes) -->
     <t:test>
         <t:request>
@@ -739,7 +739,7 @@
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -796,7 +796,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
         </t:response>
     </t:test>
-    
+
     <!-- From: larger (KB) -->
     <t:test>
         <t:request>
@@ -826,7 +826,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
         </t:response>
     </t:test>
-    
+
     <!-- From: larger (MB) -->
     <t:test>
         <t:request>
@@ -842,9 +842,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_to_size_SearchRequest01" type="functional" bugids="4987">
+<t:test_case testcaseid="combo_to_size_SearchRequest01" type="regression" bugids="4987">
     <t:objective> Verify that a proper error message is displayed for invalid query using to:() smaller:/larger:</t:objective>
-                  
+
     <!-- TO: smaller (invalid criteria like 10ab) -->
     <t:test>
         <t:request>
@@ -867,14 +867,14 @@
         <t:response>
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_from_size_SearchRequest01" type="functional" bugids="4987">
+<t:test_case testcaseid="combo_from_size_SearchRequest01" type="regression" bugids="4987">
     <t:objective>  Verify that a proper error message is displayed for invalid query using from:() smaller:/larger:   </t:objective>
-                  
+
     <!-- From: smaller (invalid criteria like 10ab) -->
     <t:test>
         <t:request>
@@ -902,9 +902,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_cc_size_SearchRequest01" type="functional" bugids="4987">
+<t:test_case testcaseid="combo_cc_size_SearchRequest01" type="regression" bugids="4987">
     <t:objective>Verify that a proper error message is displayed for query using cc:() smaller:/larger: </t:objective>
-                  
+
     <!-- Cc: smaller (invalid criteria like 10ab) -->
     <t:test>
         <t:request>
@@ -916,7 +916,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <!-- Cc: larger (invalid criteria like 10ab) -->
     <t:test>
         <t:request>
@@ -932,9 +932,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_subject_size_SearchRequest01" type="functional" bugids="4987">
+<t:test_case testcaseid="combo_subject_size_SearchRequest01" type="regression" bugids="4987">
     <t:objective> Verify that a proper error message is displayed for query using subject() smaller:/larger: </t:objective>
-                  
+
     <!-- SUBJECT: smaller (invalid criteria like 10ab)  -->
     <t:test>
         <t:request>
@@ -946,7 +946,7 @@
 			<t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <!-- SUBJECT: larger (invalid criteria like 10ab)  -->
     <t:test>
         <t:request>
@@ -961,9 +961,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="combo_content_size_SearchRequest01" type="functional" bugids="4987">
+<t:test_case testcaseid="combo_content_size_SearchRequest01" type="regression" bugids="4987">
     <t:objective>  Verify that a proper error message is displayed for query using content:() smaller:/larger: </t:objective>
-                  
+
     <!-- CONTENT: smaller  (invalid criteria like 10ab) -->
     <t:test>
         <t:request>
@@ -975,7 +975,7 @@
 			<t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 
     <!-- CONTENT: larger  (invalid criteria like 10ab) -->
     <t:test>

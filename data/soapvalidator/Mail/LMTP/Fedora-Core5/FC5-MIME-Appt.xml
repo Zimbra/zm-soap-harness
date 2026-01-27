@@ -25,11 +25,11 @@
 <t:property name="msg02.file" value="${root}/fc5-appt-allday.txt"/>
 <t:property name="msg03.file" value="${root}/fc5-appt-recurring.txt"/>
 
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -38,16 +38,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_FC5_MIMEBasic" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-                  2. Create a test account.       
+                  2. Create a test account.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -59,7 +59,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -74,7 +74,7 @@
     </t:test>
 
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 <t:test_case testcaseid="acctSetup2_FC5_MIMEBasic" type="always">
@@ -97,7 +97,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_FC5_MIME_Appt_Basic1" type="bhr">
+<t:test_case testcaseid="lmtp_FC5_MIME_Appt_Basic1" type="sanity">
     <t:objective>Verify a MIME message in text format from a FC5 Account</t:objective>
     <t:steps>
         1. Upload an appointment request.
@@ -113,7 +113,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_FC5_MIMEBasic1a">
         <t:request>
@@ -130,20 +130,20 @@
 
 
 	<t:test depends="lmtp_FC5_MIMEBasic1a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt1.id}"/>
         </t:request>
         <t:response>
 			<t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp" attr="name" match="${appt1.subject}"/>
             <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:s" attr="d" match="${appt1.start}"/>
-            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:e" attr="d" match="${appt1.end}"/>  
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:e" attr="d" match="${appt1.end}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_FC5_MIME_Appt_Basic2" type="bhr">
+<t:test_case testcaseid="lmtp_FC5_MIME_Appt_Basic2" type="sanity">
     <t:objective>Verify a MIME message in text format from a FC5 Account</t:objective>
     <t:steps>
         1. Upload an appointment request.
@@ -159,7 +159,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_FC5_MIMEBasic2a">
         <t:request>
@@ -176,20 +176,20 @@
 
 
 	<t:test depends="lmtp_FC5_MIMEBasic2a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt2.id}"/>
         </t:request>
         <t:response>
-			<t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp" attr="name" match="${appt2.subject}"/> 
+			<t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp" attr="name" match="${appt2.subject}"/>
             <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:s" attr="d" match="${appt2.start}"/>
-            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:e" attr="d" match="${appt2.end}"/>  
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:e" attr="d" match="${appt2.end}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_FC5_MIME_Appt_Basic3" type="bhr">
+<t:test_case testcaseid="lmtp_FC5_MIME_Appt_Basic3" type="sanity">
     <t:objective>Verify a MIME message in text format from a FC5 Account</t:objective>
     <t:steps>
         1. Upload an appointment request.
@@ -205,7 +205,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_FC5_MIMEBasic3a">
         <t:request>
@@ -222,13 +222,13 @@
 
 
 	<t:test depends="lmtp_FC5_MIMEBasic3a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt3.id}"/>
         </t:request>
         <t:response>
 			<t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp" attr="name" match="${appt3.subject}"/>
             <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:s" attr="d" match="${appt3.start}"/>
-            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:e" attr="d" match="${appt3.end}"/>  
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:e" attr="d" match="${appt3.end}"/>
         </t:response>
     </t:test>
 

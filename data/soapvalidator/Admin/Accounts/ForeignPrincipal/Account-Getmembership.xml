@@ -3,10 +3,10 @@
 
 <t:property name="account1.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account1.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="account2.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="account3.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account3.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
 
@@ -24,7 +24,7 @@
 <t:test_case testcaseid = "Ping" type="always">
     <t:objective>basic system check</t:objective>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -33,9 +33,9 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
- 
+
 
 <t:test_case testcaseid = "acctSetup1_account_getmembership" type="always">
     <t:objective>Account Setup </t:objective>
@@ -43,7 +43,7 @@
 			1. Create domainList1, domainList2, domainList3, domainList4
 			2. Add domainList3 to domainList2
 			3. Add domainList4 to domainList3
-			
+
 			1. Create account1, account2, account3
 			2. Add account1 to domainList1
 			3. Add account2 to domainList4
@@ -141,7 +141,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -166,7 +166,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -191,12 +191,12 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "ForeignPrincipal_AccountGetMembership_01" type="bhr">
+<t:test_case testcaseid = "ForeignPrincipal_AccountGetMembership_01" type="sanity">
     <t:objective> Verify GetAccountMembershipRequest by ForeignPrincipal, account is member of one DL</t:objective>
 
     <t:test>
@@ -206,13 +206,13 @@
 			</GetAccountMembershipRequest>
         </t:request>
         <t:response>
-	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${distributionList1.name}"/>        
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${distributionList1.name}"/>
 		</t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid = "ForeignPrincipal_AccountGetMembership_02" type="bhr">
+<t:test_case testcaseid = "ForeignPrincipal_AccountGetMembership_02" type="sanity">
     <t:objective> Verify GetAccountMembershipRequest by ForeignPrincipal, account is member of sub DLs</t:objective>
 
     <t:test>
@@ -222,15 +222,15 @@
 			</GetAccountMembershipRequest>
         </t:request>
         <t:response>
-	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${distributionList2.name}"/>        
-	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${distributionList3.name}"/>        
-	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${distributionList4.name}"/>        
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${distributionList2.name}"/>
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${distributionList3.name}"/>
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${distributionList4.name}"/>
 		</t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid = "ForeignPrincipal_AccountGetMembership_03" type="bhr">
+<t:test_case testcaseid = "ForeignPrincipal_AccountGetMembership_03" type="sanity">
     <t:objective> Verify GetAccountMembershipRequest by ForeignPrincipal, account is not a member of any DLs</t:objective>
 
     <t:test>
@@ -240,7 +240,7 @@
 			</GetAccountMembershipRequest>
         </t:request>
         <t:response>
-	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" emptyset="1"/>        
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" emptyset="1"/>
 		</t:response>
     </t:test>
 

@@ -23,7 +23,7 @@
     </t:test>
 
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="SyncGalRequest_AccountSetup_01" type="always">
     <t:objective>Account Setup </t:objective>
@@ -71,7 +71,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateAccount2a" required="true" depends="adminlogin">
         <t:request>
@@ -84,7 +84,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateAccount3a" required="true" depends="adminlogin">
         <t:request>
@@ -97,7 +97,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 
@@ -140,12 +140,12 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_01
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<!-- change to the admin auth token -->
@@ -163,7 +163,7 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_01
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 	<t:delay msec="50000"/>
 
 
@@ -174,14 +174,14 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_01
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse/acct:cn[contains(@id,'${account4}')]">
  				<t:select path="//acct:a[@n='email']" match="${account4}@${domain}"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
@@ -208,12 +208,12 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_02
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<!-- change to the admin auth token -->
@@ -230,7 +230,7 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_02
         <t:response>
             <t:select path="//admin:ModifyAccountResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 	<t:delay msec="5000"/>
 
 
@@ -241,14 +241,14 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_02
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse/acct:cn[contains(@id,'${account2}')]">
  				<t:select path="//acct:a[@n='fullName']" match="${account2.newDisplayName}"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
@@ -275,12 +275,12 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_03
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<!-- change to the admin auth token -->
@@ -296,7 +296,7 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_03
         <t:response>
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 	<t:delay msec="5000"/>
 
 
@@ -307,17 +307,17 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_03
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse/acct:cn[contains(@id,'${account3}')]" emptyset="1"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="SyncGalRequest_04" type="bhr">
+<t:test_case testcaseid="SyncGalRequest_04" type="sanity">
     <t:objective>Verify SyncGalRequest cannot be sent with zimbraFeatureGalEnabled set to "False"</t:objective>
 	<t:steps>
 	1. Login as admin.
@@ -325,7 +325,7 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_03
 	3. Send SyncGalRequest to verify that permission denied error is returned.
 	</t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>  
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test  id="SyncGalRequest_04b">
         <t:request>
@@ -338,7 +338,7 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_03
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="SyncGalRequest_04b" depends="SyncGalRequest_04a">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -359,12 +359,12 @@ Deprecated.  See test case in GALAccount_SyncGalRequest_03
 
 	<t:test id="SyncGalRequest_04c">
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

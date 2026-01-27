@@ -60,13 +60,13 @@
 
 <t:test_case testcaseid="Filter_Attachment_01" type="smoke">
     <t:objective> Verify messages that has attachment get filtered </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "has attachment"
 			  3. Inject two message with attachment using AddMsg and SendMsg request
 			  4. Verify both messages get filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -78,18 +78,18 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	   
+
 	 <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	 <attachmentTest/>                    	     
+                         	 <attachmentTest/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -99,7 +99,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -157,15 +157,15 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_Attachment_02" type="bhr">
+<t:test_case testcaseid="Filter_Attachment_02" type="sanity">
     <t:objective>Verify messages that do not has attachment are not filtered </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "has attachment"
 			  3. Send a message to itself
 			  4. Verify the message is not filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -177,18 +177,18 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	   
+
 	   <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	 <attachmentTest/>                    	     
+                         	 <attachmentTest/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -198,8 +198,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
 
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
@@ -210,7 +210,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 
 	<t:property name="mail.subject" value="subject${TIME}${COUNTER}"/>
 	<t:test >
@@ -248,15 +248,15 @@
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="Filter_Attachment_03" type="bhr">
+<t:test_case testcaseid="Filter_Attachment_03" type="sanity">
     <t:objective> Verify messages that are uploaded as AddMsgRequest attachments do not get filtered </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "has attachment"
-			  3. Inject message as attachment using AddMsg 
+			  3. Inject message as attachment using AddMsg
 			  4. Verify  message does not get filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -268,18 +268,18 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	   
+
     <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	 <attachmentTest/>                    	     
+                         	 <attachmentTest/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -289,7 +289,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>

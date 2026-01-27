@@ -26,9 +26,9 @@
 <t:property name="MailQuota2MB" value="2097152"/>
 
 <t:property name="root" value="${soapxml.root}/Admin/LMTP/Attachments"/>
-<t:property name="msg1mb.file" value="${root}/1mb.txt"/> 
-<t:property name="msg2mb.file" value="${root}/2mb.txt"/> 
-<t:property name="msg5mb.file" value="${root}/5mb.txt"/> 
+<t:property name="msg1mb.file" value="${root}/1mb.txt"/>
+<t:property name="msg2mb.file" value="${root}/2mb.txt"/>
+<t:property name="msg5mb.file" value="${root}/5mb.txt"/>
 
 <t:property name="blank" value=""/>
 <t:property name="space" value="             "/>
@@ -56,11 +56,11 @@
 
 <t:test_case testcaseid="Acct_setup02_GetQuotaUsage" type="always" >
     <t:objective>Create Domain, COS and test account</t:objective>
-    <steps> 
+    <steps>
         1. Login to admin account.
         2. Create a new Domain.
 		3. Create a COS with valid name.
-		4. Create test accounts as, 
+		4. Create test accounts as,
 		5. Account1 with default domain and default COS.
 		6. Account2 with default domain and user-defined COS.
 		7. Account3 with user-defined domain and user-defined COS.
@@ -78,7 +78,7 @@
         </t:response>
     </t:test>
 
-    
+
     <t:test id="CreateDomainRequest1a" depends="admin_login">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -89,11 +89,11 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name"/>
         </t:response>
     </t:test>
-    
+
     <t:test id = "CreateCosRequest1a" depends="admin_login" >
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos.name}</name>        
+                <name xmlns="">${cos.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -117,7 +117,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>    
+                <password>${defaultpassword.value}</password>
 				<a n="zimbraCOSId">${defcos.id}</a>
             </CreateAccountRequest>
         </t:request>
@@ -125,13 +125,13 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="create_account2" required="false" depends="CreateCosRequest1a">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${defaultpassword.value}</password>  
+                <password>${defaultpassword.value}</password>
 				<a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
@@ -171,7 +171,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetQuotaUsage01B" type="bhr">
+<t:test_case testcaseid="GetQuotaUsage01B" type="sanity">
     <t:objective>Verify the accounts using sortBy percentUsed </t:objective>
 
 	<t:test>
@@ -185,7 +185,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetQuotaUsage01C" type="bhr">
+<t:test_case testcaseid="GetQuotaUsage01C" type="sanity">
     <t:objective>Verify the accounts using sortBy quotaLimit </t:objective>
 
 	<t:test>
@@ -200,7 +200,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage02" type="bhr">
+<t:test_case testcaseid="GetQuotaUsage02" type="sanity">
     <t:objective>Verify the accounts using domain="defaultdomain.name"</t:objective>
     <t:test>
         <t:request>
@@ -218,10 +218,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage03" type="bhr">
+<t:test_case testcaseid="GetQuotaUsage03" type="sanity">
     <t:objective>Verify the accounts using domain="test domain"</t:objective>
-    
-    
+
+
 	<t:property name="server.zimbraAdmin" value="${account3.server}"/>
 
     <t:test>
@@ -257,7 +257,7 @@
 
 <t:test_case testcaseid="GetQuotaUsage05" type="deprecated" >
     <t:objective>Verify the accounts using cos="test cos"</t:objective>
-    
+
 	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
     <t:test>
         <t:request>
@@ -269,7 +269,7 @@
             <t:select path="//admin:GetQuotaUsageResponse/admin:account[@name='${account2.name}']" attr="limit" match="0"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAdmin" value="${account3.server}"/>
     <t:test>
         <t:request>
@@ -281,15 +281,15 @@
             <t:select path="//admin:GetQuotaUsageResponse/admin:account[@name='${account3.name}@${domain.name}']" attr="limit" match="0"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="GetQuotaUsage06" type="deprecated" bugids="7734" >
     <t:objective>Verify the accounts using domain and cos="default"</t:objective>
-    
+
 	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
-    
+
     <t:test>
         <t:request>
   			<GetQuotaUsageRequest xmlns="urn:zimbraAdmin" cos="${defcos.name}" domain="${defaultdomain.name}" />
@@ -304,10 +304,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage07" type="sanity" >
+<t:test_case testcaseid="GetQuotaUsage07" type="functional" >
     <t:objective>Verify the accounts using domain='test domain' and cos='test cos' </t:objective>
-    
-	<t:property name="server.zimbraAdmin" value="${account3.server}"/>    
+
+	<t:property name="server.zimbraAdmin" value="${account3.server}"/>
     <t:test>
         <t:request>
   			<GetQuotaUsageRequest xmlns="urn:zimbraAdmin" cos="${cos.name}" domain="${domain.name}" offset="0" limit="25"/>
@@ -321,7 +321,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage08" type="bhr" bugids="7734" >
+<t:test_case testcaseid="GetQuotaUsage08" type="sanity" bugids="7734" >
     <t:objective>Verify the accounts using domain and cos="default" and sortBy="totalUsed" </t:objective>
 
 
@@ -339,7 +339,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage09" type="sanity" >
+<t:test_case testcaseid="GetQuotaUsage09" type="functional" >
     <t:objective>Verify the accounts using domain='test domain',cos='test cos' and sortBy="totalUsed" </t:objective>
 
 
@@ -357,7 +357,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage10" type="sanity" >
+<t:test_case testcaseid="GetQuotaUsage10" type="functional" >
     <t:objective>Verify the accounts using domain='test domain',cos='test cos',sortBy="totalUsed" </t:objective>
 
 
@@ -375,7 +375,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage11" type="bhr">
+<t:test_case testcaseid="GetQuotaUsage11" type="sanity">
     <t:objective>Verify the accounts using default domain ,sortBy="totalUsed" and sortAscending="0"</t:objective>
 
 
@@ -393,7 +393,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage12" type="sanity" >
+<t:test_case testcaseid="GetQuotaUsage12" type="functional" >
     <t:objective>Verify the accounts using domain='test domain',cos='test cos',sortBy="totalUsed" and sortAscending="0"</t:objective>
 
 
@@ -408,11 +408,11 @@
             <t:select path="//admin:GetQuotaUsageResponse/admin:account[@name='${account3.name}@${domain.name}']" attr="limit" match="0"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage13" type="functional" >
+<t:test_case testcaseid="GetQuotaUsage13" type="regression" >
     <t:objective>Verify the accounts using non existing domain, cos,sortBy and sortAscending</t:objective>
     <t:test>
         <t:request>
@@ -425,7 +425,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage14" type="functional" >
+<t:test_case testcaseid="GetQuotaUsage14" type="regression" >
     <t:objective>Verify the accounts using non-existing/spaces/blank/spchar/sometext/negative/zero domain </t:objective>
        <t:test>
         <t:request>
@@ -435,7 +435,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
 		</t:response>
     </t:test>
-    
+
 	<t:test>
         <t:request>
   			<GetQuotaUsageRequest xmlns="urn:zimbraAdmin" domain="${blank}" offset="0" limit="25"/>
@@ -503,7 +503,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_COS"/>
 		</t:response>
     </t:test>
-    
+
 	<t:test>
         <t:request>
   			<GetQuotaUsageRequest xmlns="urn:zimbraAdmin" cos="${blank}" offset="0" limit="25"/>
@@ -561,7 +561,7 @@
 
 
 
-<t:test_case testcaseid="GetQuotaUsage17" type="functional" >
+<t:test_case testcaseid="GetQuotaUsage17" type="regression" >
     <t:objective>Verify the accounts using spaces/blank/spchar/sometext/negative/zero sortBy </t:objective>
 
 	<t:test>
@@ -629,7 +629,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetQuotaUsage18" type="functional" >
+<t:test_case testcaseid="GetQuotaUsage18" type="regression" >
     <t:objective>Verify the accounts using invalid values in sortAscending</t:objective>
     <t:test>
         <t:request>
@@ -678,12 +678,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetQuotaUsage19A" type="sanity" bugids="7906" >
+<t:test_case testcaseid="GetQuotaUsage19A" type="functional" bugids="7906" >
     <t:objective>Verify the specific order of accounts, if sorted using sortyby=totalUsed after injecting mails into the accounts. </t:objective>
 	<t:steps>
 			1. Login into admin and Create a test domain.
 			2. Create Accounts.
-			3. Inject mails into the account such that 
+			3. Inject mails into the account such that
 					  Account4 displays 9 MB used, 90 MB limit, 10% quota used.
 					  Account5 displays 5 MB used, 5500 KB limit, 90% quota used
 					  Account6 displays 1 MB used, 2 MB limit, 50% quota used
@@ -701,7 +701,7 @@
         </t:response>
     </t:test>
 
-    
+
     <t:test id="CreateDomainRequest2a" depends="admin_login">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -717,7 +717,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account4.name}@${domainlimit.name}</name>
-                <password>${defaultpassword.value}</password>    
+                <password>${defaultpassword.value}</password>
 				<a n="zimbraMailQuota">${MailQuota90MB}</a>
             </CreateAccountRequest>
         </t:request>
@@ -725,13 +725,13 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="create_account5" required="true" depends="admin_login" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account5.name}@${domainlimit.name}</name>
-                <password>${defaultpassword.value}</password>  
+                <password>${defaultpassword.value}</password>
 				<a n="zimbraMailQuota">${MailQuota5.5MB}</a>
             </CreateAccountRequest>
         </t:request>
@@ -798,7 +798,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${account6.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest> 
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -846,6 +846,6 @@
     </t:test>
 
 </t:test_case>
- 
+
 
 </t:tests>

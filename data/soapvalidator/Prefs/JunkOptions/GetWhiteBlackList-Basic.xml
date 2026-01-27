@@ -76,7 +76,7 @@
     </t:test>
 
 	<t:test id="CreateDomainRequest1">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain1.black.name}</name>
             </CreateDomainRequest>
@@ -87,7 +87,7 @@
     </t:test>
 
 	<t:test id="CreateDomainRequest2">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain2.black.name}</name>
             </CreateDomainRequest>
@@ -98,7 +98,7 @@
     </t:test>
 
 	<t:test id="CreateDomainRequest3">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain1.white.name}</name>
             </CreateDomainRequest>
@@ -109,7 +109,7 @@
     </t:test>
 
 	<t:test id="CreateDomainRequest4">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain2.white.name}</name>
             </CreateDomainRequest>
@@ -251,7 +251,7 @@
 
         </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetWhiteBlackListRequest xmlns="urn:zimbraAccount"/>
@@ -265,7 +265,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_02" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_02" type="sanity">
     <t:objective>Verify that GetWhiteBlackListRequest set to user is obeyed </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -312,10 +312,10 @@
 			<t:select path="//acct:GetWhiteBlackListResponse/acct:blackList/acct:addr" match="${account5.name}"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_03" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_03" type="sanity">
     <t:objective>Verify that GetWhiteBlackListRequest set to user  + domain is obeyed </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -364,10 +364,10 @@
 			<t:select path="//acct:GetWhiteBlackListResponse/acct:blackList/acct:addr" match="${domain1.black.name}"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_04" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_04" type="sanity">
     <t:objective>Verify that GetWhiteBlackListRequest set to domain is obeyed </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -414,10 +414,10 @@
 			<t:select path="//acct:GetWhiteBlackListResponse/acct:whiteList/acct:addr" match="${domain1.white.name}"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_05" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_05" type="sanity">
     <t:objective>Verify that GetWhiteBlackListRequest set to user and domain is obeyed </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -464,10 +464,10 @@
 			<t:select path="//acct:GetWhiteBlackListResponse/acct:whiteList/acct:addr" match="${account7.name}"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_06" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_06" type="sanity">
     <t:objective>Verify that GetWhiteBlackListRequest set to user and domain is obeyed </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -510,7 +510,7 @@
 
         </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetWhiteBlackListRequest xmlns="urn:zimbraAccount"/>
@@ -526,7 +526,7 @@
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_07" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_07" type="sanity">
     <t:objective>Remove all records from whitelist and black list. </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -571,7 +571,7 @@
             <t:select path="//acct:ModifyWhiteBlackListResponse"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetWhiteBlackListRequest xmlns="urn:zimbraAccount"/>
@@ -608,12 +608,12 @@
 				<t:select path="//acct:blackList/acct:addr" emptyset="1"/>
 			</t:select>
         </t:response>
-	</t:test>		
+	</t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_08" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_08" type="sanity">
     <t:objective>Remove all records only from whitelist </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -658,7 +658,7 @@
             <t:select path="//acct:ModifyWhiteBlackListResponse"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetWhiteBlackListRequest xmlns="urn:zimbraAccount"/>
@@ -694,12 +694,12 @@
 				<t:select path="//acct:blackList/acct:addr" match="${account8d.name}"/>
 			</t:select>
         </t:response>
-	</t:test>		
+	</t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_09" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_09" type="sanity">
     <t:objective>Remove all records only from blacklist </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -744,7 +744,7 @@
             <t:select path="//acct:ModifyWhiteBlackListResponse"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetWhiteBlackListRequest xmlns="urn:zimbraAccount"/>
@@ -780,12 +780,12 @@
 				<t:select path="//acct:blackList/acct:addr" emptyset="1"/>
 			</t:select>
         </t:response>
-	</t:test>		
+	</t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_10" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_10" type="sanity">
     <t:objective>Add and remove whitelist and black list in same request </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -829,7 +829,7 @@
             <t:select path="//acct:ModifyWhiteBlackListResponse"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetWhiteBlackListRequest xmlns="urn:zimbraAccount"/>
@@ -871,16 +871,16 @@
 				<t:select path="//acct:whiteList/acct:addr" match="${account10e.name}"/>
 			</t:select>
         </t:response>
-	</t:test>		
+	</t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_11" type="bhr">
+<t:test_case testcaseid="GetWhiteBlackListRequest_Basic_11" type="sanity">
     <t:objective>Add same record to whitelist and blacklist. </t:objective>
     <t:steps>
 	1. Login to Account1.
-	2. Add same record to whitelist and blacklist. 
+	2. Add same record to whitelist and blacklist.
 	3. It should give error.
 
     </t:steps>

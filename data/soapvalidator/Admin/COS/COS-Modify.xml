@@ -58,13 +58,13 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-            
+
     <t:property name="admin.authToken" value="${authToken}"/>
-    
+
     <t:test id="modifycosrequest1a" required="true">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name}</name>        
+                <name xmlns="">${COS.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -72,11 +72,11 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS.id1"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="modifycosrequest1b" required="true">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS1.name}</name>        
+                <name xmlns="">${COS1.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -105,7 +105,7 @@
 <t:test_case testcaseid="ModifyCosRequest1" type="smoke" areas="dev_sanity">
     <t:objective> Modify a COS with valid id and valid values for all the attributes </t:objective>
     <t:steps>1. Create the COS.
-             2. Modify it with value values for each of the attributes. 
+             2. Modify it with value values for each of the attributes.
     </t:steps>
 
     <t:test id="modifycosrequest1b" depends="modifycosrequest1a">
@@ -163,18 +163,18 @@
                 <a n="zimbraPrefUseKeyboardShortcuts">FALSE</a>
                 <a c="1" n="description">New cos for modification </a>
                 <a n="zimbraMailHostPool" c="1">${server.id}</a>
-                <a n="zimbraNewMailNotificationFrom">Notification </a>    
+                <a n="zimbraNewMailNotificationFrom">Notification </a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest2" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest2" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureCalendarEnabled = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest2a">
@@ -185,7 +185,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest2b">
@@ -196,14 +196,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest3" type="functional">
+<t:test_case testcaseid="ModifyCosRequest3" type="regression">
     <t:objective> Modify a COS and set zimbraFeatureCalendarEnabled = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest3a">
@@ -214,7 +214,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest3b">
@@ -225,7 +225,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest3c">
@@ -236,7 +236,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest3d">
@@ -247,14 +247,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest4" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest4" type="sanity">
     <t:objective> Modify a COS and set zimbraContactMaxNumEntries = valid values </t:objective>
 
     <t:test id="modifycosrequest4a">
@@ -265,7 +265,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest4b">
@@ -276,7 +276,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
@@ -284,7 +284,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest5" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest5" type="regression" >
     <t:objective> Modify a COS and set zimbraContactMaxNumEntries = Invalid values- negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest5a">
@@ -296,7 +296,7 @@
         </t:request>
         <t:response>
             <!-- Getting now account.INVALID_ATTR_VALUE for build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/> 
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest5b">
@@ -307,7 +307,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest5c">
@@ -318,7 +318,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest5d">
@@ -329,14 +329,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest6" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest6" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureGalEnabled = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest6a">
@@ -347,7 +347,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest6b">
@@ -358,14 +358,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest7" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest7" type="regression" >
     <t:objective> Modify a COS and set zimbraFeatureGalEnabled = Invalid values - True/blank/sometext/special character </t:objective>
 
 
@@ -377,7 +377,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest7b">
@@ -388,7 +388,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest7c">
@@ -399,7 +399,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest7d">
@@ -410,14 +410,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest8" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest8" type="sanity">
     <t:objective> Modify a COS and set zimbraPasswordMaxAge = valid values </t:objective>
 
     <t:test id="modifycosrequest8a">
@@ -428,7 +428,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest8b">
@@ -439,14 +439,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest9" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest9" type="regression" >
     <t:objective> Modify a COS and set zimbraPasswordMaxAge = Invalid values - negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest9a">
@@ -458,7 +458,7 @@
         </t:request>
         <t:response>
             <!-- Getting now account.INVALID_ATTR_VALUE for build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>            
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest9b">
@@ -469,7 +469,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest9c">
@@ -480,7 +480,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest9d">
@@ -491,16 +491,16 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest10" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest10" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefSentMailFolder = valid value </t:objective>
-    
+
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -509,16 +509,16 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest11" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest11" type="sanity">
     <t:objective> Modify a COS and set zimbraNewMailNotificationSubject = valid value </t:objective>
-    
+
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -527,14 +527,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest12" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest12" type="sanity">
     <t:objective> Modify a COS and set zimbraPasswordEnforceHistory = valid value </t:objective>
 
     <t:test>
@@ -545,13 +545,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCosRequest13" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest13" type="functional" >
     <t:objective> Modify a COS and set zimbraPasswordEnforceHistory = Invalid values - negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest13a">
@@ -563,7 +563,7 @@
         </t:request>
         <t:response>
             <!-- Getting now account.INVALID_ATTR_VALUE for build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>            
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest13b">
@@ -574,7 +574,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest13c">
@@ -585,7 +585,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest13d">
@@ -596,14 +596,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest14" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest14" type="sanity">
     <t:objective> Modify a COS and set zimbraPasswordMinLength = valid value </t:objective>
 
     <t:test id="modifycosrequest14a">
@@ -614,7 +614,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
@@ -626,13 +626,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCosRequest15" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest15" type="regression" >
     <t:objective> Modify a COS and set zimbraPasswordMinLength = Invalid values - negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest15a">
@@ -644,7 +644,7 @@
         </t:request>
         <t:response>
             <!-- Getting now account.INVALID_ATTR_VALUE for build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>            
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest15b">
@@ -655,7 +655,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest15c">
@@ -666,7 +666,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest15d">
@@ -677,14 +677,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest16" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest16" type="sanity">
     <t:objective> Modify a COS and set zimbraMailTrashLifetime = valid values </t:objective>
 
     <t:test id="modifycosrequest16a">
@@ -695,7 +695,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest16b">
@@ -706,14 +706,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest17" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest17" type="regression" >
     <t:objective> Modify a COS and set zimbraMailTrashLifetime = Invalid values - negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest17a">
@@ -725,7 +725,7 @@
         </t:request>
         <t:response>
             <!-- Getting now account.INVALID_ATTR_VALUE for build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest17b">
@@ -736,7 +736,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest17c">
@@ -768,7 +768,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest18" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest18" type="sanity">
     <t:objective> Modify a COS and set zimbraMailIdleSessionTimeout = valid value </t:objective>
 
     <t:test>
@@ -779,14 +779,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest19" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest19" type="regression" >
     <t:objective> Modify a COS and set zimbraMailIdleSessionTimeout = Invalid value - negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest19a">
@@ -809,7 +809,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest19c">
@@ -840,7 +840,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest20" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest20" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureTaggingEnabled = TRUE/FALSE</t:objective>
     <t:test id="modifycosrequest20a">
         <t:request>
@@ -850,7 +850,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest20b">
@@ -861,16 +861,16 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest21" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest21" type="regression" >
     <t:objective> Modify a COS and set zimbraFeatureTaggingEnabled = Invalid values - True/blank/sometext/special character </t:objective>
-    
+
     <t:test id="modifycosrequest21a">
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -879,7 +879,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest121b">
@@ -890,7 +890,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest21e">
@@ -901,7 +901,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest21f">
@@ -912,14 +912,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest22" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest22" type="sanity">
     <t:objective> Modify a COS and set zimbraMailQuota = Valid values </t:objective>
     <t:test id="modifycosrequest22a">
         <t:request>
@@ -929,7 +929,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest22b">
@@ -940,14 +940,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest23" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest23" type="regression" >
     <t:objective> Modify a COS and set zimbraMailQuota = negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest23a">
@@ -958,7 +958,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>           
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest23b">
@@ -969,7 +969,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest23c">
@@ -980,7 +980,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest23d">
@@ -991,14 +991,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest25" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest25" type="sanity">
     <t:objective> Modify a COS and set zimbraMailMessageLifetime = valid values </t:objective>
 
     <t:test id="modifycosrequest25a">
@@ -1009,7 +1009,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest25b">
@@ -1020,7 +1020,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest25c">
@@ -1031,14 +1031,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest26" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest26" type="regression" >
     <t:objective> Modify a COS and set zimbraMailMessageLifetime = Invalid values - negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest26a">
@@ -1061,7 +1061,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest26c">
@@ -1092,7 +1092,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest27" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest27" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureChangePasswordEnabled = TRUE/FALSE </t:objective>
 
         <t:test id="modifycosrequest127a">
@@ -1103,7 +1103,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest27b">
@@ -1114,14 +1114,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest28" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest28" type="regression" >
     <t:objective> Modify a COS and set zimbraFeatureChangePasswordEnabled = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest28a">
@@ -1132,7 +1132,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest28b">
@@ -1143,7 +1143,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest28c">
@@ -1154,7 +1154,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest28d">
@@ -1165,14 +1165,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest29" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest29" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefReplyIncludeOriginalText = includeNone/includeAsAttachment/includeBody/includeBodyWithPrefix </t:objective>
 
     <t:test id="modifycosrequest29a">
@@ -1183,7 +1183,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest29b">
@@ -1194,7 +1194,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest29c">
@@ -1205,7 +1205,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>           
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest29d">
@@ -1216,14 +1216,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest30" type="functional">
+<t:test_case testcaseid="ModifyCosRequest30" type="regression">
     <t:objective> Modify a COS and set zimbraPrefReplyIncludeOriginalText = Sometext that is not in the list/blank </t:objective>
 
     <t:test id="modifycosrequest30a">
@@ -1235,7 +1235,7 @@
         </t:request>
         <t:response>
             <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>            
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest30b">
@@ -1246,14 +1246,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest31" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest31" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefForwardIncludeOriginalText = includeAsAttachment/includeBody/includeBodyWithPrefix </t:objective>
 
     <t:test id="modifycosrequest31a">
@@ -1264,7 +1264,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest31b">
@@ -1275,7 +1275,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>           
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest31c">
@@ -1286,15 +1286,15 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest32" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest32" type="regression" >
     <t:objective> Modify a COS and set zimbraPrefForwardIncludeOriginalText = blank/Sometext that is not in the list </t:objective>
-    
+
     <t:test id="modifycosrequest32a">
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -1303,7 +1303,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>           
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest32b">
@@ -1314,14 +1314,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest33" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest33" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureFiltersEnabled = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest33a">
@@ -1332,7 +1332,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest33b">
@@ -1343,14 +1343,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest34" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest34" type="regression" >
     <t:objective> Modify a COS and set zimbraFeatureFiltersEnabled = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest34a">
@@ -1361,7 +1361,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest34b">
@@ -1372,7 +1372,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest34c">
@@ -1383,7 +1383,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest34d">
@@ -1394,14 +1394,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest35" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest35" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefSaveToSent = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest35a">
@@ -1412,7 +1412,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest35b">
@@ -1423,14 +1423,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest36" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest36" type="regression" >
     <t:objective> Modify a COS and set zimbraPrefSaveToSent = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest36a">
@@ -1441,7 +1441,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest36b">
@@ -1452,7 +1452,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest36c">
@@ -1463,7 +1463,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest36d">
@@ -1474,14 +1474,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest37" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest37" type="sanity">
     <t:objective> Modify a COS and set zimbraAttachmentsViewInHtmlOnly = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest37a">
@@ -1492,7 +1492,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest37b">
@@ -1503,14 +1503,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest38" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest38" type="regression" >
     <t:objective> Modify a COS and set zimbraAttachmentsViewInHtmlOnly = Invalid value - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest38a">
@@ -1521,7 +1521,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest38b">
@@ -1532,7 +1532,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest38c">
@@ -1543,7 +1543,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest38d">
@@ -1554,14 +1554,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest39" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest39" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefMessageViewHtmlPreferred = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest39a">
@@ -1572,7 +1572,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest39b">
@@ -1583,14 +1583,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest40" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest40" type="regression" >
     <t:objective> Modify a COS and set zimbraPrefMessageViewHtmlPreferred = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest40a">
@@ -1601,7 +1601,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest40b">
@@ -1612,7 +1612,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest40c">
@@ -1623,7 +1623,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest40d">
@@ -1634,14 +1634,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest41" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest41" type="sanity">
     <t:objective> Modify a COS and set zimbraAttachmentsBlocked = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest41a">
@@ -1652,7 +1652,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest41b">
@@ -1663,14 +1663,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest42" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest42" type="regression" >
     <t:objective> Modify a COS and set zimbraAttachmentsBlocked = Innvalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest42a">
@@ -1681,7 +1681,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest42b">
@@ -1692,7 +1692,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest42c">
@@ -1703,7 +1703,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest42d">
@@ -1714,14 +1714,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest43" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest43" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureSavedSearchesEnabled = TRUE/FLASE </t:objective>
 
     <t:test id="modifycosrequest43a">
@@ -1732,7 +1732,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest43b">
@@ -1743,14 +1743,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest44" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest44" type="regression" >
     <t:objective> Modify a COS and set zimbraFeatureSavedSearchesEnabled = TRUE/FALSE/True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest44a">
@@ -1761,7 +1761,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest44b">
@@ -1772,7 +1772,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest44c">
@@ -1783,7 +1783,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest44d">
@@ -1794,13 +1794,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCosRequest45" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest45" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureContactsEnabled = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest45a">
@@ -1811,7 +1811,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest45b">
@@ -1822,13 +1822,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest46" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest46" type="regression" >
     <t:objective> Modify a COS and set zimbraFeatureContactsEnabled = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest46a">
@@ -1839,7 +1839,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest46b">
@@ -1850,7 +1850,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest46c">
@@ -1861,7 +1861,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest46d">
@@ -1872,16 +1872,16 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest47" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest47" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefMailItemsPerPage = Valid value </t:objective>
-    
+
     <t:test id="modifycosrequest47a">
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -1890,7 +1890,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest47b">
@@ -1901,14 +1901,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest48" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest48" type="functional" >
     <t:objective> Modify a COS and set zimbraPrefMailItemsPerPage = negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest48a">
@@ -1919,7 +1919,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>           
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest48b">
@@ -1930,7 +1930,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest48c">
@@ -1941,7 +1941,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest48d">
@@ -1952,7 +1952,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
@@ -1960,7 +1960,7 @@
 
 
 
-<t:test_case testcaseid="ModifyCosRequest49" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest49" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefIncludeSpamInSearch = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest49a">
@@ -1971,7 +1971,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest49b">
@@ -1982,13 +1982,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest50" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest50" type="regression" >
     <t:objective> Modify a COS and set zimbraPrefIncludeSpamInSearch = Invalid values- True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest50a">
@@ -1999,7 +1999,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest50b">
@@ -2010,7 +2010,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest50c">
@@ -2021,7 +2021,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest50d">
@@ -2032,16 +2032,16 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest51" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest51" type="sanity">
     <t:objective> Modify a COS and set zimbraPasswordMinAge = valid values  </t:objective>
-    
+
     <t:test id="modifycosrequest51a">
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -2050,7 +2050,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest51b">
@@ -2061,14 +2061,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest52" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest52" type="functional" >
     <t:objective> Modify a COS and set zimbraPasswordMinAge = negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest52a">
@@ -2080,7 +2080,7 @@
         </t:request>
         <t:response>
             <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest52b">
@@ -2091,7 +2091,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest52c">
@@ -2102,7 +2102,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest52d">
@@ -2113,14 +2113,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest53" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest53" type="functional" >
     <t:objective> Modify a COS and set zimbraPasswordMinAge = negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest53a">
@@ -2132,7 +2132,7 @@
         </t:request>
         <t:response>
             <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest53b">
@@ -2143,7 +2143,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest53c">
@@ -2154,7 +2154,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest53d">
@@ -2165,14 +2165,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest54" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest54" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefAutoAddAddressEnabled = TRUE/FALSE</t:objective>
 
     <t:test id="modifycosrequest54a">
@@ -2183,7 +2183,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest54b">
@@ -2194,14 +2194,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest55" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest55" type="regression" >
     <t:objective> Modify a COS and set zimbraPrefAutoAddAddressEnabled = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest55a">
@@ -2212,7 +2212,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest55b">
@@ -2223,7 +2223,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest55c">
@@ -2234,7 +2234,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest55d">
@@ -2245,14 +2245,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest56" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest56" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureConversationsEnabled = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest56a">
@@ -2263,7 +2263,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest56b">
@@ -2274,14 +2274,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest57" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest57" type="regression" >
     <t:objective> Modify a COS and set zimbraFeatureConversationsEnabled = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest57a">
@@ -2292,7 +2292,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest57b">
@@ -2303,7 +2303,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest57c">
@@ -2314,7 +2314,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest57d">
@@ -2325,14 +2325,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest58" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest58" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureAdvancedSearchEnabled = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest58a">
@@ -2343,7 +2343,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest58b">
@@ -2354,14 +2354,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest59" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest59" type="regression" >
     <t:objective> Modify a COS and set zimbraFeatureAdvancedSearchEnabled = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest59a">
@@ -2372,7 +2372,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest59b">
@@ -2383,7 +2383,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest59c">
@@ -2394,7 +2394,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest59d">
@@ -2405,14 +2405,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest60" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest60" type="sanity">
     <t:objective> Modify a COS and set zimbraPasswordLocked = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest60a">
@@ -2423,7 +2423,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest60b">
@@ -2434,14 +2434,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest61" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest61" type="regression" >
     <t:objective> Modify a COS and set zimbraPasswordLocked = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest61a">
@@ -2452,7 +2452,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest61b">
@@ -2463,7 +2463,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest61c">
@@ -2474,7 +2474,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest61d">
@@ -2485,13 +2485,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCosRequest62" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest62" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefUseKeyboardShortcuts = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest62a">
@@ -2502,7 +2502,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest62b">
@@ -2513,14 +2513,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest63" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest63" type="regression" >
     <t:objective> Modify a COS and set zimbraPrefUseKeyboardShortcuts = Invalid value - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest63a">
@@ -2531,7 +2531,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest63b">
@@ -2542,7 +2542,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest63c">
@@ -2553,7 +2553,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest63d">
@@ -2564,13 +2564,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCosRequest64" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest64" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefIncludeTrashInSearch = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest64a">
@@ -2581,7 +2581,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest64b">
@@ -2592,14 +2592,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest65" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest65" type="regression" >
     <t:objective> Modify a COS and set zimbraPrefIncludeTrashInSearch = Invalid value - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest65a">
@@ -2610,7 +2610,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest65b">
@@ -2621,7 +2621,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest65c">
@@ -2632,7 +2632,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest65d">
@@ -2643,14 +2643,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest66" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest66" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureInitialSearchPreferenceEnabled = TRUE/FALSE </t:objective>
 
     <t:test id="modifycosrequest66a">
@@ -2661,7 +2661,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest66b">
@@ -2672,14 +2672,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest67" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest67" type="regression" >
     <t:objective> Modify a COS and set zimbraFeatureInitialSearchPreferenceEnabled = Invalid values - True/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest67a">
@@ -2690,7 +2690,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest67b">
@@ -2701,7 +2701,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest67c">
@@ -2712,7 +2712,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest67d">
@@ -2723,14 +2723,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest68" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest68" type="sanity">
     <t:objective> Modify a COS and set zimbraPasswordMaxLength = valid values </t:objective>
 
     <t:test id="modifycosrequest68a">
@@ -2741,7 +2741,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest68b">
@@ -2752,14 +2752,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest69" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest69" type="functional" >
     <t:objective> Modify a COS and set zimbraPasswordMaxLength = negative/blank/sometext/special character </t:objective>
 
     <t:test id="modifycosrequest69a">
@@ -2782,7 +2782,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest69c">
@@ -2793,7 +2793,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest69d">
@@ -2804,14 +2804,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest70" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest70" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefGroupMailBy = conversation/message </t:objective>
 
     <t:test id="modifycosrequest70a">
@@ -2822,7 +2822,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest70b">
@@ -2833,14 +2833,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest71" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest71" type="regression" >
     <t:objective> Modify a COS and set zimbraPrefGroupMailBy = Invalid value blank/sometext that is not in the list </t:objective>
 
     <t:test id="modifycosrequest71a">
@@ -2851,7 +2851,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest71b">
@@ -2865,12 +2865,12 @@
             <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest72" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest72" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefMailPollingInterval = valid values </t:objective>
 
     <t:test id="modifycosrequest72a">
@@ -2881,7 +2881,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest72b">
@@ -2892,14 +2892,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest73" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest73" type="regression" >
     <t:objective> Modify a COS and set zimbraPrefMailPollingInterval = Invalid values- blank/negative/sometext </t:objective>
 
     <t:test id="modifycosrequest73a">
@@ -2910,7 +2910,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest73b">
@@ -2941,7 +2941,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest74" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest74" type="sanity">
     <t:objective> Modify a COS and set zimbraAdminAuthTokenLifetime = valid values </t:objective>
 
     <t:test id="modifycosrequest74a">
@@ -2952,7 +2952,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest74b">
@@ -2963,14 +2963,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest75" type="functional">
+<t:test_case testcaseid="ModifyCosRequest75" type="regression">
     <t:objective> Modify a COS and set zimbraAdminAuthTokenLifetime = Invalid values- blank/negative/sometext </t:objective>
 
     <t:test id="modifycosrequest75a">
@@ -2981,7 +2981,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest75b">
@@ -3012,7 +3012,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest76" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest76" type="sanity">
     <t:objective> Modify a COS and set zimbraMailSpamLifetime = valid values </t:objective>
 
     <t:test id="modifycosrequest76a">
@@ -3023,7 +3023,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest76b">
@@ -3034,14 +3034,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest77" type="functional">
+<t:test_case testcaseid="ModifyCosRequest77" type="regression">
     <t:objective> Modify a COS and set zimbraMailSpamLifetime = Invalid values- blank/negative/sometext </t:objective>
 
     <t:test id="modifycosrequest77a">
@@ -3052,7 +3052,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest77b">
@@ -3083,7 +3083,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest78" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest78" type="sanity">
     <t:objective> Modify a COS and set zimbraAuthTokenLifetime = valid values </t:objective>
 
     <t:test id="modifycosrequest78a">
@@ -3094,7 +3094,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest78b">
@@ -3105,14 +3105,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest79" type="functional">
+<t:test_case testcaseid="ModifyCosRequest79" type="regression">
     <t:objective> Modify a COS and set zimbraAuthTokenLifetime = Invalid values- blank/negative/sometext </t:objective>
 
     <t:test id="modifycosrequest79a">
@@ -3123,7 +3123,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
     <t:test id="modifycosrequest79b">
@@ -3154,7 +3154,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest80" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest80" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefDedupeMessagesSentToSelf= valid values (dedupeNone/moveSentMessageToInbox/secondCopyifOnToOrCC) </t:objective>
 
     <t:test id="modifycosrequest80a">
@@ -3165,7 +3165,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
@@ -3181,7 +3181,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 -->
@@ -3194,7 +3194,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
@@ -3206,14 +3206,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest81" type="functional">
+<t:test_case testcaseid="ModifyCosRequest81" type="regression">
     <t:objective> Modify a COS and set zimbraPrefDedupeMessagesSentToSelf = Invalid values- negative/sometext </t:objective>
 
         <t:test id="modifycosrequest81b">
@@ -3255,7 +3255,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest82" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest82" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefMailSignatureStyle = valid values </t:objective>
 
     <t:test>
@@ -3266,13 +3266,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest83" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest83" type="sanity">
     <t:objective> Modify a COS and set zimbraPrefForwardReplyPrefixChar = valid values </t:objective>
 
     <t:test>
@@ -3283,13 +3283,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest84" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest84" type="sanity">
     <t:objective> Modify a COS and set description = valid values </t:objective>
 
     <t:test>
@@ -3300,13 +3300,13 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>      
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest85" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest85" type="regression" >
     <t:objective> Modify a COS with blank/sometext at id</t:objective>
 
     <t:test>
@@ -3317,7 +3317,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS$"/>      
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS$"/>
         </t:response>
     </t:test>
     <t:test>
@@ -3328,14 +3328,14 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS$"/>    
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest86" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest86" type="regression" >
     <t:objective> Modify a COS with deleted(nonexisting) id</t:objective>
     <t:steps>1. Delete the existing COS
         2. Modify the COS with deleted id.
@@ -3344,7 +3344,7 @@
         <t:request>
             <DeleteCosRequest xmlns="urn:zimbraAdmin">
                     <id>${COS.id1}</id>
-                </DeleteCosRequest>        
+                </DeleteCosRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:DeleteCosResponse"/>
@@ -3358,50 +3358,50 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS$"/>    
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest87" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest87" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPrefShowFragments</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowFragments">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowFragments">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest88" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest88" type="regression" >
     <t:objective>Modify a COS with invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefShowFragments</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowFragments">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3413,7 +3413,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowFragments">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3425,7 +3425,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowFragments">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3437,7 +3437,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowFragments">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3449,7 +3449,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowFragments">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3461,7 +3461,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowFragments">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3473,37 +3473,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest89" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest89" type="functional" >
     <t:objective>Modify a COS with valid value for zimbraMailMinPollingInterval</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">2m</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">2h</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">2s</a>
             </ModifyCosRequest>
         </t:request>
@@ -3515,7 +3515,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">2d</a>
             </ModifyCosRequest>
         </t:request>
@@ -3527,13 +3527,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest90" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest90" type="regression" >
     <t:objective>Modify a COS with invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraMailMinPollingInterval</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3545,7 +3545,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3557,7 +3557,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3569,7 +3569,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3581,7 +3581,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3593,7 +3593,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailMinPollingInterval">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3611,24 +3611,24 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
@@ -3641,7 +3641,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3653,7 +3653,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3665,7 +3665,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3677,7 +3677,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3689,7 +3689,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3701,7 +3701,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3713,13 +3713,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest93" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest93" type="functional" >
     <t:objective>Modify a COS with valid values for zimbraPrefContactsPerPage </t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsPerPage">25</a>
             </ModifyCosRequest>
         </t:request>
@@ -3731,13 +3731,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest94" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest94" type="regression" >
     <t:objective>Modify a COS with invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefContactsPerPage</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsPerPage">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3749,7 +3749,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsPerPage">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3761,7 +3761,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsPerPage">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3773,7 +3773,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsPerPage">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3785,7 +3785,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsPerPage">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3797,7 +3797,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsPerPage">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3809,43 +3809,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest95" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest95" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPrefComposeInNewWindow</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeInNewWindow">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeInNewWindow">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest96" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest96" type="regression" >
     <t:objective>Modify a COS with invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefComposeInNewWindow</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeInNewWindow">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3857,7 +3857,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeInNewWindow">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3869,7 +3869,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeInNewWindow">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3881,7 +3881,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeInNewWindow">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3893,7 +3893,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeInNewWindow">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3905,7 +3905,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeInNewWindow">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3917,37 +3917,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest97" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest97" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPrefTimeZoneId</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">2m</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">2h</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">2s</a>
             </ModifyCosRequest>
         </t:request>
@@ -3959,7 +3959,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">2d</a>
             </ModifyCosRequest>
         </t:request>
@@ -3971,13 +3971,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest98" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest98" type="regression" >
     <t:objective>Modify a COS with invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefTimeZoneId</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -3989,7 +3989,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4001,7 +4001,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4013,7 +4013,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4025,7 +4025,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4037,7 +4037,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefTimeZoneId">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4049,43 +4049,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest99" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest99" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPrefMailInitialSearch</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefMailInitialSearch">in:${globals.inbox}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefMailInitialSearch">in:${globals.sent}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest100" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest100" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefMailInitialSearch</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefMailInitialSearch">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4097,7 +4097,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefMailInitialSearch">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4109,7 +4109,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefMailInitialSearch">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4121,7 +4121,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefMailInitialSearch">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4133,7 +4133,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefMailInitialSearch">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4145,7 +4145,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefMailInitialSearch">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4157,43 +4157,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest101" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest101" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPrefUseTimeZoneListInCalendar</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest102" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest102" type="regression" >
     <t:objective>Modify a COS with invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefUseTimeZoneListInCalendar</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4205,7 +4205,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4217,7 +4217,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4229,7 +4229,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4241,7 +4241,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4253,7 +4253,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4265,43 +4265,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest103" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest103" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPrefImapSearchFoldersEnabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest104" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest104" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefImapSearchFoldersEnabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4313,7 +4313,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4325,7 +4325,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4337,7 +4337,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4349,7 +4349,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4361,7 +4361,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4373,43 +4373,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest105" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest105" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraFeatureHtmlComposeEnabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraFeatureHtmlComposeEnabled">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraFeatureHtmlComposeEnabled">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest106" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest106" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraFeatureHtmlComposeEnabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4421,7 +4421,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4433,7 +4433,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4445,7 +4445,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4457,7 +4457,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4469,7 +4469,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4481,79 +4481,79 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest107" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest107" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraNewMailNotificationFrom</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraNewMailNotificationFrom">postmaster@ RECIPIENT_DOMAIN</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest108" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest108" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraNewMailNotificationBody</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraNewMailNotificationBody">New message received at RECIPIENT_ADDRESS</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest109" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest109" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraAttachmentsIndexingEnabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraAttachmentsIndexingEnabled">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraAttachmentsIndexingEnabled">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest110" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest110" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraAttachmentsIndexingEnabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4565,7 +4565,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4577,7 +4577,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4589,7 +4589,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4601,7 +4601,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4613,7 +4613,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4631,24 +4631,24 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsInitialView">cards</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsInitialView">list</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
@@ -4661,7 +4661,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsInitialView">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4673,7 +4673,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsInitialView">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4685,7 +4685,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsInitialView">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4697,7 +4697,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsInitialView">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4709,7 +4709,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsInitialView">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4721,7 +4721,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefContactsInitialView">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4733,43 +4733,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest113" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest113" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPop3Enabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPop3Enabled">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPop3Enabled">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest114" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest114" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPop3Enabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPop3Enabled">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4781,7 +4781,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPop3Enabled">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4793,7 +4793,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPop3Enabled">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4805,7 +4805,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPop3Enabled">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4817,7 +4817,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPop3Enabled">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4829,7 +4829,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPop3Enabled">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4841,43 +4841,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest115" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest115" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPrefComposeFormat</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeFormat">text</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeFormat">html</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest116" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest116" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefComposeFormat</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeFormat">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4889,7 +4889,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeFormat">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4901,7 +4901,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeFormat">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4913,7 +4913,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeFormat">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4925,7 +4925,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeFormat">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4937,7 +4937,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefComposeFormat">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4949,43 +4949,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest117" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest117" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraImapEnabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraImapEnabled">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraImapEnabled">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest118" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest118" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraImapEnabled</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraImapEnabled">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -4997,7 +4997,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraImapEnabled">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5009,7 +5009,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraImapEnabled">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5021,7 +5021,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraImapEnabled">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5033,7 +5033,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraImapEnabled">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5045,7 +5045,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraImapEnabled">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5057,43 +5057,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest119" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest119" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPrefShowSearchString</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowSearchString">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowSearchString">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest120" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest120" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefShowSearchString</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowSearchString">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5105,7 +5105,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowSearchString">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5117,7 +5117,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowSearchString">${COS.sometext}</a>
             </ModifyCosRequest>
             </t:request>
@@ -5129,7 +5129,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowSearchString">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5141,7 +5141,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowSearchString">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5153,7 +5153,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefShowSearchString">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5165,37 +5165,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest121" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest121" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraPrefCalendarInitialView</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">day</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">week</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">workWeek</a>
             </ModifyCosRequest>
         </t:request>
@@ -5207,7 +5207,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">month</a>
             </ModifyCosRequest>
         </t:request>
@@ -5215,17 +5215,17 @@
             <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest122" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest122" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefCalendarInitialView</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5237,7 +5237,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5249,7 +5249,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5261,7 +5261,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5273,7 +5273,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5285,7 +5285,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraPrefCalendarInitialView">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5297,31 +5297,31 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest123" type="sanity" >
+<t:test_case testcaseid="ModifyCosRequest123" type="functional" >
     <t:objective>Modify a COS with  valid value for zimbraMailHostPool</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailHostPool">${server.id}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>         
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest123a" type="sanity" bugids="4432">
+<t:test_case testcaseid="ModifyCosRequest123a" type="functional" bugids="4432">
     <t:objective>Modify a COS with non-existent server for zimbraMailHostPool</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailHostPool">56befee4-ca8c-11d9-a9ac-ffc390e6bc86</a>
             </ModifyCosRequest>
         </t:request>
@@ -5333,37 +5333,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest124" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest124" type="regression" >
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraMailHostPool</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailHostPool">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse"/>         
+            <t:select path="//admin:ModifyCosResponse"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailHostPool">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse"/>         
+            <t:select path="//admin:ModifyCosResponse"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailHostPool">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5375,7 +5375,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailHostPool">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5387,7 +5387,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailHostPool">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5399,7 +5399,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraMailHostPool">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5411,13 +5411,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest125" type="functional" bugids="5074">
+<t:test_case testcaseid="ModifyCosRequest125" type="regression" bugids="5074">
     <t:objective>Modify a COS with  invalid(blank/space/spchar/negative number/zero/sometext) value for n</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="${COS.blank}">${COS.blank}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5429,7 +5429,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="${COS.space}">${COS.space}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5441,7 +5441,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="${COS.sometext}">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5453,7 +5453,7 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="${COS.spchar}">${COS.spchar}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5466,20 +5466,20 @@
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="${COS.negative}">${COS.negative}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyCosResponse/admin:cos"/>
-            <!-- <t:select path="//zimbra:Code" match="account.INVALID_ATTR_NAME"/> -->        
+            <!-- <t:select path="//zimbra:Code" match="account.INVALID_ATTR_NAME"/> -->
 		</t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="${COS.zero}">${COS.zero}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5491,9 +5491,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest126" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest126" type="regression" >
     <t:objective>Modify a COS with out id element.</t:objective>
-    
+
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -5508,13 +5508,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest127" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest127" type="regression" >
     <t:objective>Modify a COS with out a element.</t:objective>
-    
+
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-               <id>${COS.id2}</id> 
+               <id>${COS.id2}</id>
             </ModifyCosRequest>
         </t:request>
         <t:response>
@@ -5525,9 +5525,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest128" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest128" type="regression" >
     <t:objective>Modify a COS with out id and a element.</t:objective>
-    
+
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -5541,13 +5541,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest129" type="functional" bugids="3960">
+<t:test_case testcaseid="ModifyCosRequest129" type="regression" bugids="3960">
     <t:objective>Modify a COS with n="cn"</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="cn">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5559,13 +5559,13 @@
 </t:test_case>
 
 <!-- Modifying the test cases as objectClass is no longer immutable -->
-<t:test_case testcaseid="ModifyCosRequest130" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest130" type="regression" >
     <t:objective>Modify a COS with n="objectclass"</t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="objectclass">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5577,13 +5577,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest131" type="functional" >
+<t:test_case testcaseid="ModifyCosRequest131" type="regression" >
     <t:objective>Modify a COS with n="zimbraID" </t:objective>
 
     <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
-                <id>${COS.id2}</id>       
+                <id>${COS.id2}</id>
                 <a n="zimbraID">${COS.sometext}</a>
             </ModifyCosRequest>
         </t:request>
@@ -5596,7 +5596,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest132" type="sanity">
+<t:test_case testcaseid="ModifyCosRequest132" type="functional">
     <t:objective> Modify a COS with zimbraPrefSaveToSent=TRUE and Override COS=FALSE</t:objective>
     <t:steps>
             1. Create a COS.
@@ -5604,7 +5604,7 @@
             3. Modify that COS with zimbraPrefSaveToSent=TRUE.
             4. Get account info (The property Save to Sent should be TRUE).
     </t:steps>
-   
+
     <t:test id="modifycosrequest132a">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -5616,7 +5616,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="modifycosrequest132a" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -5628,17 +5628,17 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid2.id"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id= "modifycosrequest132b" depends="modifycosrequest132a">
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
                 <id>${COS2.id}</id>
-                <a n="zimbraPrefSaveToSent">${globals.true}</a> 
+                <a n="zimbraPrefSaveToSent">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS2.id}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS2.id}"/>
         </t:response>
     </t:test>
 
@@ -5651,25 +5651,25 @@
         <t:response>
             <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraPrefSaveToSent']"  match="TRUE"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest133" type="sanity">
+<t:test_case testcaseid="ModifyCosRequest133" type="functional">
     <t:objective> Modify a COS with zimbraPrefSaveToSent=FALSE and Override COS=FALSE</t:objective>
     <t:steps>
             1. Create a COS.
             2. Create an account with that COS.
             3. Modify that COS with zimbraPrefSaveToSent=FALSE
-            4. Get account info (The property Save to Sent should be FALSE).  
+            4. Get account info (The property Save to Sent should be FALSE).
     </t:steps>
-  
+
     <t:test id="modifycosrequest133a">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name xmlns="">${COS3.name}</name>
-                <a n="zimbraPrefSaveToSent">${globals.false}</a>       
+                <a n="zimbraPrefSaveToSent">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -5677,7 +5677,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="modifycosrequest133a" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -5690,16 +5690,16 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid3.id"/>
         </t:response>
     </t:test>
-         
+
     <t:test id="modifycosrequest133b" depends="modifycosrequest133a">
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
                 <id>${COS3.id}</id>
-                <a n="zimbraPrefSaveToSent">${globals.false}</a> 
+                <a n="zimbraPrefSaveToSent">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS3.id}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS3.id}"/>
         </t:response>
     </t:test>
 
@@ -5717,20 +5717,20 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest134" type="sanity">
+<t:test_case testcaseid="ModifyCosRequest134" type="functional">
     <t:objective> Modify a COS with zimbraPrefSaveToSent=FALSE and Override COS=TRUE</t:objective>
     <t:steps>
             1. Create a COS with zimbraPrefSaveToSent=TRUE.
             2. Create an account with that COS with Override COS=TRUE and Save to Sent=TRUE.
             3. Modify COS with  zimbraPrefSaveToSent=FALSE.
             4. Get account info (The property Save to Sent should be TRUE).
-               
+
     </t:steps>
     <t:test id="modifycosrequest134a">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name xmlns="">${COS4.name}</name>
-                <a n="zimbraPrefSaveToSent">${globals.true}</a>       
+                <a n="zimbraPrefSaveToSent">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -5738,7 +5738,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="modifycosrequest134a" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -5751,17 +5751,17 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid4.id"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test depends="modifycosrequest134a">
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
                 <id>${COS4.id}</id>
-                <a n="zimbraPrefSaveToSent">${globals.false}</a> 
+                <a n="zimbraPrefSaveToSent">${globals.false}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS4.id}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS4.id}"/>
         </t:response>
     </t:test>
 
@@ -5775,24 +5775,24 @@
             <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraPrefSaveToSent']"  match="TRUE"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest135" type="sanity">
+<t:test_case testcaseid="ModifyCosRequest135" type="functional">
     <t:objective> Modify a COS with zimbraPrefSaveToSent=TRUE and Override COS=TRUE</t:objective>
     <t:steps>
             1. Create a COS with zimbraPrefSaveToSent=FALSE.
             2. Create an account with that COS with Override COS=TRUE and Save to Sent=FALSE.
             3. Modify COS with  zimbraPrefSaveToSent=TRUE.
             4. Get account info (The property Save to Sent should be FALSE).
-               
+
     </t:steps>
     <t:test id="modifycosrequest135a">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name xmlns="">${COS5.name}</name>
-                <a n="zimbraPrefSaveToSent">${globals.false}</a>       
+                <a n="zimbraPrefSaveToSent">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -5800,7 +5800,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS5.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="modifycosrequest135a" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -5813,17 +5813,17 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid5.id"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test depends="modifycosrequest135a">
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
                 <id>${COS5.id}</id>
-                <a n="zimbraPrefSaveToSent">${globals.true}</a> 
+                <a n="zimbraPrefSaveToSent">${globals.true}</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS5.id}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS5.id}"/>
         </t:response>
     </t:test>
 
@@ -5837,17 +5837,17 @@
             <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraPrefSaveToSent']"  match="FALSE"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCosRequest136" type="bhr">
+<t:test_case testcaseid="ModifyCosRequest136" type="sanity">
     <t:objective> Modify a COS and set zimbraFeatureChangePasswordEnabled = TRUE/FALSE </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS7.name}</name>        
+                <name xmlns="">${COS7.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -5865,7 +5865,7 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id7}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id7}"/>
         </t:response>
     </t:test>
 
@@ -5877,22 +5877,22 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id7}"/>            
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id7}"/>
         </t:response>
     </t:test>
-    
+
         <t:test id="modifyserverrequest">
         <t:request>
             <ModifyServerRequest xmlns="urn:zimbraAdmin">
                 <id>${server.id}</id>
-                <a n="-zimbraServiceEnabled">mailbox</a>            
+                <a n="-zimbraServiceEnabled">mailbox</a>
             </ModifyServerRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
-    </t:test>      
-    
+    </t:test>
+
 
 </t:test_case>
 

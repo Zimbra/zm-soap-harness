@@ -14,7 +14,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -42,7 +42,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -58,7 +58,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="DL_Appointments_01" type="sanity" >
+<t:test_case testcaseid="DL_Appointments_01" type="functional" >
     <t:objective>Send a meeting request to a DL.  Verify the members can accept the request.</t:objective>
     <t:steps>
     1. Create a DL with two members
@@ -80,7 +80,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -130,7 +130,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -142,8 +142,8 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
 	<t:test required="true">
@@ -158,7 +158,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.start" value="1233489600000"/>	<!-- Feb 1, 2009  12:00:00 -->
 
@@ -247,12 +247,12 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${appointment.start}]}" e="${TIME(+1d)[${appointment.start}]}"  uid="${list1.id},${list1.account1.id},${list1.account2.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse">
             	<!--t:select path="//mail:usr[@id='${list1.id}']">
             		<t:select path="//mail:n"/>
@@ -265,10 +265,10 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
             		<t:select path="//mail:t" attr="s" match="${appointment.start}"/>
             		<t:select path="//mail:t" attr="e" match="${TIME(+1h)[${appointment.start}]}"/>
             	</t:select>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
 

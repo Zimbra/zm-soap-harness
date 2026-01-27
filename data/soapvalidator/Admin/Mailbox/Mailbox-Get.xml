@@ -46,15 +46,15 @@
 
 <t:property name="admin.authToken" value="authToken"/>
 
-    
+
     <t:test id="createaccountrequest" required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account.name}</name>
                 <password>${account.password}</password>
-                <!-- 
+                <!--
                 <a n="zimbraNotes">test of adding via SOAP</a>
-                <a n="zimbraPrefSaveToSent">FALSE</a>    
+                <a n="zimbraPrefSaveToSent">FALSE</a>
                 <a n="zimbraMailHost">${LOCALHOST}</a>
                 <a n="zimbraMailStatus">enabled</a>
                 <a n="zimbraPasswordMinAge">7</a>
@@ -70,9 +70,9 @@
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-<t:test_case testcaseid="GetMailboxRequest1" type="bhr">
+<t:test_case testcaseid="GetMailboxRequest1" type="sanity">
     <t:objective> GetMailboxRequest with valid account id. </t:objective>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -87,9 +87,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetMailboxRequest2" type="functional">
+<t:test_case testcaseid="GetMailboxRequest2" type="regression">
     <t:objective> GetMailboxRequest with leading space in account id </t:objective>
-   
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -104,9 +104,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetMailboxRequest3" type="functional">
+<t:test_case testcaseid="GetMailboxRequest3" type="regression">
     <t:objective> GetMailboxRequest with trailing space in account id </t:objective>
-   
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -118,12 +118,12 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="GetMailboxRequest4" type="functional">
+<t:test_case testcaseid="GetMailboxRequest4" type="regression">
     <t:objective> GetMailboxRequest with blank account id </t:objective>
-   
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -138,9 +138,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetMailboxRequest5" type="functional">
+<t:test_case testcaseid="GetMailboxRequest5" type="regression">
     <t:objective> GetMailboxRequest with sometext at account id </t:objective>
-   
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -155,9 +155,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetMailboxRequest6" type="functional">
+<t:test_case testcaseid="GetMailboxRequest6" type="regression">
     <t:objective> GetMailboxRequest with special character at account id </t:objective>
-   
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -172,12 +172,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetMailboxRequest7" type="functional" bugids="2051">
+<t:test_case testcaseid="GetMailboxRequest7" type="regression" bugids="2051">
     <t:objective> GetMailboxRequest with deleted account-id </t:objective>
     <t:steps>1. Delete the existing account.
-        2. Get Mailbox of existing account. 
+        2. Get Mailbox of existing account.
     </t:steps>
-    
+
     <t:test id="getmailboxrequest7a">
         <t:request>
             <DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -188,7 +188,7 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="getmailboxrequest7b" depends="getmailboxrequest7a">
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -203,9 +203,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetMailboxRequest8" type="functional">
+<t:test_case testcaseid="GetMailboxRequest8" type="regression">
     <t:objective> GetMailboxRequest with no id attribute</t:objective>
-   
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -220,9 +220,9 @@
 </t:test_case>
 <!-- A testcase 'Get the deleted mailbox' can be added here once DeleteMailboxRequest works properly. -->
 
-<t:test_case testcaseid="GetMailboxRequest9" type="functional">
+<t:test_case testcaseid="GetMailboxRequest9" type="regression">
     <t:objective> Get the deleted mailbox </t:objective>
-   
+
     <t:steps> 1. Create a test account
               2. Login to the test account for mailbox to get created
               3. Login to admin to have admin authtoken
@@ -281,7 +281,7 @@
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test depends="getMailboxRequest9c">
         <t:request>
@@ -296,9 +296,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAllMailboxRequest01" type="bhr">
+<t:test_case testcaseid="GetAllMailboxRequest01" type="sanity">
     <t:objective> Verify GetAllMailboxesRequest works </t:objective>
-   
+
     <t:test>
         <t:request>
             <GetAllMailboxesRequest xmlns="urn:zimbraAdmin" limit="5" />

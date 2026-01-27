@@ -31,7 +31,7 @@
 <t:property name="sieve_rule3" value='require ["tag", "variables"];
     set "var_one" "sieve test";
  	if header "subject" "${dollar}{var_one}" {tag "tag1";}
-'/>	
+'/>
 
 <t:property name="sieve_rule4" value='require ["editheader", "variables"];
 if header :matches "To" "test4.*@${defaultdomain.name}" {
@@ -99,7 +99,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -108,7 +108,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -165,7 +165,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account2.server" />
             </t:response>
         </t:test>
-        
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -223,7 +223,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
         </t:test>
      </t:test_case>
 
-     <t:test_case testcaseid="zcs-861_rule1" type="bhr" bugids="zcs-861">
+     <t:test_case testcaseid="zcs-861_rule1" type="sanity" bugids="zcs-861">
         <t:objective>Verify replace and deleteheader works without specifying :is</t:objective>
         <t:test required="true">
             <t:request>
@@ -236,7 +236,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-     
+
 
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
@@ -286,7 +286,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
         </t:resttest>
     </t:test_case>
 
-     <t:test_case testcaseid="zcs-861_rule2" type="bhr" bugids="zcs-861">
+     <t:test_case testcaseid="zcs-861_rule2" type="sanity" bugids="zcs-861">
         <t:objective>Verify string works without specifying :is</t:objective>
         <t:test required="true">
             <t:request>
@@ -342,10 +342,10 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
                 <t:select path="//mail:SearchResponse/mail:m" attr="su" match="sieve test" />
             </t:response>
         </t:test>
-        
-    </t:test_case>    
-    
-  	 <t:test_case testcaseid="zcs-861_rule3" type="bhr" bugids="zcs-861">
+
+    </t:test_case>
+
+  	 <t:test_case testcaseid="zcs-861_rule3" type="sanity" bugids="zcs-861">
         <t:objective>Verify envelop works without specifying :is</t:objective>
         <t:test required="true">
             <t:request>
@@ -403,7 +403,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
 
     </t:test_case>
 
-    <t:test_case testcaseid="ZCS-2520_rule4" type="bhr" bugids="ZCS-2520">
+    <t:test_case testcaseid="ZCS-2520_rule4" type="sanity" bugids="ZCS-2520">
         <t:objective>Verify performing addheader to the header with encoded line-breaks</t:objective>
         <t:steps>
             1. applied addheader action to account4
@@ -472,7 +472,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="ZCS-2520_rule5" type="bhr" bugids="ZCS-2520">
+    <t:test_case testcaseid="ZCS-2520_rule5" type="sanity" bugids="ZCS-2520">
         <t:objective>Verify performing replaceheader to the header with encoded line-breaks</t:objective>
         <t:steps>
             1. applied replaceheader action to account5
@@ -541,7 +541,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="ZCS-2212_rule6" type="bhr" bugids="ZCS-2212">
+    <t:test_case testcaseid="ZCS-2212_rule6" type="sanity" bugids="ZCS-2212">
         <t:objective>Verify performing replaceheader who matches backslashes </t:objective>
         <t:steps>
             1. applied replaceheader action to account6
@@ -621,7 +621,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -642,7 +642,7 @@ deleteheader :matches "X-HeaderZ" "sample\\\\\\\\\\\\\\\\\\\\pattern";
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 

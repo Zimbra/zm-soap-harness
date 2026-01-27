@@ -94,7 +94,7 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse"/> 
+			<t:select path="//acct:GetInfoResponse"/>
 		</t:response>
 	</t:test>
 
@@ -117,15 +117,15 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="VirtualHost_GetInfoRequest_01" type="bhr">
+<t:test_case testcaseid="VirtualHost_GetInfoRequest_01" type="sanity">
 	<t:objective>Verify the URL for GetInfoRequest uses the virtual host name</t:objective>
 	<t:steps>
 	1. Login to the virtual domain, using full email address
 	2. Execute GetInfoRequest
 	3. Verify the rest and soapURL attributes in the GetFolderResponse
 	</t:steps>
-	
-	
+
+
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -151,7 +151,7 @@
 			<t:select path="//acct:GetInfoResponse">
 				<t:select path="//acct:rest" match=".*${domain1.virtual.name}.*"/>
 				<t:select path="//acct:soapURL" match=".*${domain1.virtual.name}.*"/>
-			</t:select> 
+			</t:select>
 		</t:response>
 	</t:test>
 
@@ -160,7 +160,7 @@
 <t:finally>
 
     <!-- Remove virtual host from all domains because if it could not resolved then nginx proxy failed to restart -->
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -172,7 +172,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
    	<t:test >
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -183,11 +183,11 @@
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 
 
-	
+
 </t:finally>
 
 </t:tests>

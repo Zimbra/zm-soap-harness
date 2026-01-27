@@ -11,7 +11,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -25,7 +25,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -38,7 +38,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -51,8 +51,8 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:property name="server.zimbraAdmin" value="${account1.server}"/>
     <t:test required="true">
 		<t:request>
@@ -65,18 +65,18 @@
 		<t:response>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug75714_1" type="bhr" bugids="75714">
+<t:test_case testcaseid="bug75714_1" type="sanity" bugids="75714">
     <t:objective>Create distribution list with zimbraNotes.</t:objective>
     <t:steps>
     1. Login as a Admin
     2. Send CreateDistributionListRequest with zimbraNotes > success.
     </t:steps>
-    
+
 	 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	 
+
 	 <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -89,7 +89,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin" dynamic="1">
@@ -101,10 +101,10 @@
         <t:response>
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
             <t:select path= "//zimbra:Code" emptyset="1"/>
-            
+
         </t:response>
     </t:test>
-	
+
 	 <t:test>
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin" dynamic="0">
@@ -118,16 +118,16 @@
             <t:select path= "//zimbra:Code" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug75714_2" type="bhr" bugids="75714">
+<t:test_case testcaseid="bug75714_2" type="sanity" bugids="75714">
     <t:objective>Create distribution list with zimbraNotes</t:objective>
     <t:steps>
     1. Login as a Account1
     2. Send CreateDistributionListRequest with zimbraNotes > success.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -140,7 +140,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -156,8 +156,8 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="list3.id" />
         	<t:select path= "//zimbra:Code" emptyset="1"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request >
             <CreateDistributionListRequest xmlns="urn:zimbraAccount" dynamic="0" >
@@ -170,8 +170,8 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="list4.id" />
         	<t:select path= "//zimbra:Code" emptyset="1"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

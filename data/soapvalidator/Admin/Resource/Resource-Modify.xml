@@ -95,14 +95,14 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">TestCos${TIME}${COUNTER}</name>        
+                <name xmlns="">TestCos${TIME}${COUNTER}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -131,7 +131,7 @@
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -160,12 +160,12 @@
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource6.id"/>
         </t:response>
     </t:test>
- 
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource01" type="bhr">
+<t:test_case testcaseid="ModifyCalendarResource01" type="sanity">
     <t:objective>Create a resource with type= Equipment and modify with type= Location </t:objective>
 
     <t:test>
@@ -184,7 +184,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource02" type="functional" bugids="7575">
+<t:test_case testcaseid="ModifyCalendarResource02" type="regression" bugids="7575">
     <t:objective>Create a resource with type= Equipment and modify with type= blank/space/sometext/spchar/negative/zero values </t:objective>
 
     <t:test>
@@ -293,7 +293,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource03" type="bhr">
+<t:test_case testcaseid="ModifyCalendarResource03" type="sanity">
     <t:objective>Create a resource with type= Location and modify with type= Equipment </t:objective>
 
     <t:test>
@@ -341,7 +341,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource04" type="functional" bugids="7575">
+<t:test_case testcaseid="ModifyCalendarResource04" type="regression" bugids="7575">
     <t:objective>Create a resource with type= location and modify with type= blank/space/sometext/spchar/negative/zero values </t:objective>
 
     <t:test>
@@ -450,7 +450,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource05" type="sanity" >
+<t:test_case testcaseid="ModifyCalendarResource05" type="functional" >
     <t:objective>Create a resource and modify all the attributes </t:objective>
 	<t:steps>
 			1. Create a COS.
@@ -461,7 +461,7 @@
   <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">TestCos1${TIME}${COUNTER}</name>        
+                <name xmlns="">TestCos1${TIME}${COUNTER}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -501,7 +501,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource5.id}</id>					
+					<id>${resource5.id}</id>
 					<a n="postalCode">${Newpostalcode}</a>
 					<a n="zimbraCalResAutoDeclineIfBusy">TRUE</a>
 					<a n="street">${Newstreet}</a>
@@ -545,13 +545,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCalendarResource06" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource06" type="regression" >
     <t:objective>Modify the postalCode attribute with all possible values </t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="postalCode">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -563,7 +563,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="postalCode">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -575,7 +575,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="postalCode">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -587,7 +587,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="postalCode">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -599,13 +599,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource07" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource07" type="regression" >
     <t:objective>Modify the zimbraCalResAutoDeclineIfBusy attribute with all possible values </t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraCalResAutoDeclineIfBusy">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -617,7 +617,7 @@
 	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraCalResAutoDeclineIfBusy">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -629,7 +629,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraCalResAutoDeclineIfBusy">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -641,7 +641,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraCalResAutoDeclineIfBusy">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -653,7 +653,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraCalResAutoDeclineIfBusy">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -665,7 +665,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraCalResAutoDeclineIfBusy">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -677,13 +677,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource08" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource08" type="regression" >
     <t:objective>Modify the street attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="street">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -695,7 +695,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="street">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -707,7 +707,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="street">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -719,7 +719,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="street">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -731,7 +731,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="street">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -743,7 +743,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="street">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -755,13 +755,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource09" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource09" type="regression" >
     <t:objective>Modify the zimbraNewNotes attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraNotes">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -773,7 +773,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraNotes">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -785,7 +785,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraNotes">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -797,7 +797,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraNotes">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -809,20 +809,20 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="zimbraNotes">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:ModifyCalendarResourceResponse/admin:calresource/admin:a[@n='zimbraNotes']"  match="${zero}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCal_resource10" type="functional">
+<t:test_case testcaseid="ModifyCal_resource10" type="regression">
 	<t:objective>Modify the zimbraCOSId attribute with all possible values.</t:objective>
-    
+
 	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -855,7 +855,7 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-			 <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE" /> 
+			 <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE" />
 		</t:response>
 	</t:test>
 
@@ -867,13 +867,13 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-			 <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE" /> 
+			 <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE" />
 		</t:response >
 	</t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCal_resource11" type="functional" bugids="7575">
+<t:test_case testcaseid="ModifyCal_resource11" type="regression" bugids="7575">
     <t:objective> Modify the displayName attribute with all possible values</t:objective>
 
 	<t:test>
@@ -885,7 +885,7 @@
 		</t:request>
 		<t:response>
 <!--             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> -->
-            <t:select path="//zimbra:Code" match="service.FAILURE"/> 
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
 		</t:response>
 	</t:test>
 
@@ -897,7 +897,7 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-            <t:select path="//admin:ModifyCalendarResourceResponse"  /> 
+            <t:select path="//admin:ModifyCalendarResourceResponse"  />
 		</t:response>
 	</t:test>
 
@@ -923,7 +923,7 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-            <t:select path="//admin:ModifyCalendarResourceResponse"  /> 
+            <t:select path="//admin:ModifyCalendarResourceResponse"  />
 		</t:response>
 	</t:test>
 
@@ -935,7 +935,7 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-            <t:select path="//admin:ModifyCalendarResourceResponse"  /> 
+            <t:select path="//admin:ModifyCalendarResourceResponse"  />
 		</t:response>
 	</t:test>
 
@@ -947,14 +947,14 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-            <t:select path="//admin:ModifyCalendarResourceResponse"  /> 
+            <t:select path="//admin:ModifyCalendarResourceResponse"  />
 		</t:response>
 	</t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCal_resource12" type="functional" bugids="7575">
+<t:test_case testcaseid="ModifyCal_resource12" type="regression" bugids="7575">
     <t:objective> Modify the zimbraAccountCalendarUserType attribute with all possible values</t:objective>
 
 	<t:test>
@@ -966,7 +966,7 @@
 		</t:request>
 		<t:response>
 <!--             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> -->
-            <t:select path="//zimbra:Code" match="^service.FAILURE"/> 
+            <t:select path="//zimbra:Code" match="^service.FAILURE"/>
 		</t:response>
 	</t:test>
 
@@ -978,7 +978,7 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
 		</t:response>
 	</t:test>
 
@@ -1004,7 +1004,7 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
 		</t:response>
 	</t:test>
 
@@ -1016,7 +1016,7 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
 		</t:response>
 	</t:test>
 
@@ -1028,20 +1028,20 @@
 			</ModifyCalendarResourceRequest >
 		</t:request>
 		<t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
 		</t:response>
 	</t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource13" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource13" type="regression" >
     <t:objective>Modify the l(City) attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="l">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1053,7 +1053,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="l">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1065,7 +1065,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="l">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1077,7 +1077,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="l">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1089,7 +1089,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="l">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1101,7 +1101,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="l">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1112,14 +1112,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource14" type="functional" bugids="7575">
+<t:test_case testcaseid="ModifyCalendarResource14" type="regression" bugids="7575">
     <t:objective>Modify the sn(displayName) attribute with all possible values</t:objective>
 
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="sn">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1132,7 +1132,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="sn">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1145,7 +1145,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="sn">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1157,7 +1157,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="sn">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1169,7 +1169,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="sn">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1181,7 +1181,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource1.id}</id>					
+					<id>${resource1.id}</id>
 					<a n="sn">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1192,7 +1192,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource15A" type="functional" bugids="45028">
+<t:test_case testcaseid="ModifyCalendarResource15A" type="regression" bugids="45028">
     <t:objective>Modify the zimbraMailHost attribute with all possible values</t:objective>
 
 
@@ -1227,7 +1227,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource7.id}</id>					
+					<id>${resource7.id}</id>
 					<a n="zimbraMailHost">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1240,7 +1240,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource7.id}</id>					
+					<id>${resource7.id}</id>
 					<a n="zimbraMailHost">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1251,13 +1251,13 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCalendarResource15B" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource15B" type="regression" >
     <t:objective>Modify the zimbraMailHost attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailHost">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1270,7 +1270,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailHost">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1283,7 +1283,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailHost">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1296,7 +1296,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailHost">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1307,13 +1307,13 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCalendarResource16" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource16" type="regression" >
     <t:objective>Modify the zimbraCalResSite attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResSite">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1325,7 +1325,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResSite">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1337,7 +1337,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResSite">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1349,7 +1349,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResSite">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1361,7 +1361,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResSite">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1373,7 +1373,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResSite">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1384,13 +1384,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource17" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource17" type="regression" >
     <t:objective>Modify the zimbraCalResRoom attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResRoom">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1402,7 +1402,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResRoom">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1414,7 +1414,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResRoom">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1426,7 +1426,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResRoom">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1438,7 +1438,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResRoom">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1450,7 +1450,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResRoom">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1462,13 +1462,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource18" type="sanity" >
+<t:test_case testcaseid="ModifyCalendarResource18" type="functional" >
     <t:objective>Modify the zimbraMailStatus attribute with valid values(enabled/disabled)</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">enabled</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1480,7 +1480,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">disabled</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1492,13 +1492,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource19" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource19" type="regression" >
     <t:objective>Modify the zimbraMailStatus attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1510,7 +1510,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1522,7 +1522,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1534,7 +1534,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1546,7 +1546,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1558,7 +1558,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1570,13 +1570,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource20" type="sanity" >
+<t:test_case testcaseid="ModifyCalendarResource20" type="functional" >
     <t:objective>Modify the zimbraMailDeliveryAddress attribute with valid Non Existing Address and invalid address</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailDeliveryAddress">${zimbraMailDeliveryNonExistAddress}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1589,7 +1589,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailDeliveryAddress">${zimbraMailDeliveryInvalidAddress}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1602,13 +1602,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource21" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource21" type="regression" >
     <t:objective>Modify the zimbraMailDeliveryAddress attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailDeliveryAddress">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1621,7 +1621,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailDeliveryAddress">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1634,7 +1634,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailDeliveryAddress">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1647,7 +1647,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailDeliveryAddress">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1660,7 +1660,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailDeliveryAddress">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1673,7 +1673,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailDeliveryAddress">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1686,13 +1686,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource22" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource22" type="regression" >
     <t:objective>Modify the zimbraCalResFloor attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResFloor">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1704,7 +1704,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResFloor">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1716,7 +1716,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResFloor">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1728,7 +1728,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResFloor">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1740,7 +1740,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResFloor">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1752,7 +1752,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResFloor">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1763,13 +1763,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource23" type="sanity" >
+<t:test_case testcaseid="ModifyCalendarResource23" type="functional" >
     <t:objective>Modify the zimbraAccountStatus attribute with valid values (active /maintenance /locked/ closed) </t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraAccountStatus">maintenance</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1781,7 +1781,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraAccountStatus">locked</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1793,7 +1793,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraAccountStatus">closed</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1805,7 +1805,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraAccountStatus">active</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1817,25 +1817,25 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource24" type="functional" bugids="7575">
+<t:test_case testcaseid="ModifyCalendarResource24" type="regression" bugids="7575">
     <t:objective>Modify the zimbraAccountStatus attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraAccountStatus">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
 		<t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1847,7 +1847,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1859,7 +1859,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1871,7 +1871,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1883,7 +1883,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailStatus">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1895,14 +1895,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource25" type="sanity" >
+<t:test_case testcaseid="ModifyCalendarResource25" type="functional" >
 
     <t:objective>Modify the zimbraCalResLocationDisplayName attribute with valid Non Existing Address and invalid address</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResLocationDisplayName">${zimbraCalResLocationDisplayName.valid}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1914,7 +1914,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResLocationDisplayName">${zimbraCalResLocationDisplayName.invalid}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1926,13 +1926,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource26" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource26" type="regression" >
     <t:objective>Modify the zimbraCalResLocationDisplayName attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResLocationDisplayName">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1944,7 +1944,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResLocationDisplayName">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1957,7 +1957,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResLocationDisplayName">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1969,7 +1969,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResLocationDisplayName">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1981,7 +1981,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResLocationDisplayName">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -1993,7 +1993,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResLocationDisplayName">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2005,13 +2005,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource27" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource27" type="regression" >
     <t:objective>Modify the uid attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="uid">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2024,7 +2024,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="uid">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2037,7 +2037,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="uid">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2050,7 +2050,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="uid">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2063,7 +2063,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="uid">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2076,7 +2076,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="uid">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2088,13 +2088,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyCalendarResource28" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource28" type="regression" >
     <t:objective>Modify the st(Newstate) attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="st">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2106,7 +2106,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="st">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2118,7 +2118,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="st">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2130,7 +2130,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="st">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2142,7 +2142,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="st">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2154,7 +2154,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="st">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2165,13 +2165,13 @@
 </t:test_case>
 
 <!-- Modifying the test cases as objectClass is no longer immutable -->
-<t:test_case testcaseid="ModifyCalendarResource29" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource29" type="regression" >
     <t:objective>Modify the Object Class attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="objectClass">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2184,7 +2184,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="objectClass">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2197,7 +2197,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="objectClass">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2209,7 +2209,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="objectClass">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2221,7 +2221,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="objectClass">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2233,7 +2233,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="objectClass">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2245,13 +2245,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource30" type="sanity" >
+<t:test_case testcaseid="ModifyCalendarResource30" type="functional" >
     <t:objective>Modify the zimbraCalResAutoAcceptDecline attribute with valid values (False/ True) </t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResAutoAcceptDecline">${globals.false}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2263,7 +2263,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2275,13 +2275,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource31" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource31" type="regression" >
     <t:objective>Modify the zimbraCalResAutoAcceptDecline attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResAutoAcceptDecline">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2293,7 +2293,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResAutoAcceptDecline">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2305,7 +2305,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResAutoAcceptDecline">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2317,7 +2317,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResAutoAcceptDecline">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2329,7 +2329,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResAutoAcceptDecline">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2341,7 +2341,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResAutoAcceptDecline">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2353,13 +2353,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource32" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource32" type="regression" >
     <t:objective>Modify the zimbraMailTransport attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailTransport">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2371,7 +2371,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailTransport">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2383,7 +2383,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailTransport">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2395,7 +2395,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailTransport">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2407,7 +2407,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailTransport">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2419,7 +2419,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraMailTransport">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2430,13 +2430,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource33" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource33" type="regression" >
     <t:objective>Modify the zimbraCalResBuilding attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResBuilding">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2448,7 +2448,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResBuilding">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2460,7 +2460,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResBuilding">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2472,7 +2472,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResBuilding">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2484,7 +2484,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResBuilding">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2496,7 +2496,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="zimbraCalResBuilding">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2508,13 +2508,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource34" type="functional" bugids="7575" >
+<t:test_case testcaseid="ModifyCalendarResource34" type="regression" bugids="7575" >
     <t:objective>Modify the cn (Resource) attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="cn">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2527,7 +2527,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="cn">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2540,7 +2540,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="cn">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2552,7 +2552,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="cn">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2564,7 +2564,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="cn">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2576,7 +2576,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="cn">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2588,13 +2588,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyCalendarResource35" type="functional" >
+<t:test_case testcaseid="ModifyCalendarResource35" type="regression" >
     <t:objective>Modify the co (Country) attribute with all possible values</t:objective>
 
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="co">${blank}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2606,7 +2606,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="co">${space}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2618,7 +2618,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="co">${sometext}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2630,7 +2630,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="co">${spchar}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2642,7 +2642,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="co">${negative}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2654,7 +2654,7 @@
   	<t:test>
 		<t:request>
 			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
-					<id>${resource6.id}</id>					
+					<id>${resource6.id}</id>
 					<a n="co">${zero}</a>
 			</ModifyCalendarResourceRequest>
 		</t:request>
@@ -2706,7 +2706,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="create_test_account2" required="false" depends="admin_login">
         <t:request>
@@ -2719,7 +2719,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
     <t:test>
@@ -2734,15 +2734,15 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${MailDelAddress.id}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${account2.name}" t="t"/>

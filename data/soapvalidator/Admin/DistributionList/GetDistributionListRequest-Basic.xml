@@ -21,7 +21,7 @@
 <t:test_case testcaseid="accountsetup_GetDistributionListRequest" type="always" >
 
  <t:objective>login as the admin and create test accounts </t:objective>
- 
+
 	<t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -46,8 +46,8 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
 	<t:test required="true">
 		<t:request>
@@ -64,13 +64,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetDistributionListRequest_basic01" type="bhr" bugids="68956" >
-    <t:objective>Check isOwner/isMember flags is available in the dl element of GetDistributionListResponse </t:objective>    
+<t:test_case testcaseid="GetDistributionListRequest_basic01" type="sanity" bugids="68956" >
+    <t:objective>Check isOwner/isMember flags is available in the dl element of GetDistributionListResponse </t:objective>
 
 	<t:steps>
 			1. Login into account1.
 			2. Create a DL .
-			3. Add account1 as a member of the DL created in step 2.			
+			3. Add account1 as a member of the DL created in step 2.
 			4. Issue GetDistributionListRequest and check isOwner/isMember flags is available in the dl element.
     </t:steps>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -85,7 +85,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -97,7 +97,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
     		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
+    </t:test>
 
    <t:test >
         <t:request >
@@ -111,8 +111,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-   
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListRequest xmlns="urn:zimbraAccount" >
@@ -123,7 +123,7 @@
         	<t:select path="//acct:GetDistributionListResponse/acct:dl" attr="isOwner" match="1"/>
         	<t:select path="//acct:GetDistributionListResponse/acct:dl" attr="isMember" match="1"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

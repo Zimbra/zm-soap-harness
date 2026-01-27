@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
-    
+
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>
+
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
@@ -46,7 +46,7 @@
 
 
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -62,7 +62,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="CalendarSharing_CalendarsDelegated_Summaries_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -166,7 +166,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CalendarSharing_CalendarsDelegated_Summaries_01" type="bhr">
+<t:test_case testcaseid="CalendarSharing_CalendarsDelegated_Summaries_01" type="sanity">
     <t:objective>Verify GetApointmentRequest against an appointment in a shared calendar</t:objective>
     <t:steps>
         1. Login as account1.  Share calendar with account2.  Create an appointment.
@@ -219,7 +219,7 @@
             <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt.apptId"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -257,9 +257,9 @@
 
     <t:test >
         <t:request>
-            <GetApptSummariesRequest xmlns="urn:zimbraMail" 
+            <GetApptSummariesRequest xmlns="urn:zimbraMail"
             	l="${account2.delegated.id}"
-            	s="${TIME(-1d)[${appt.start.gmt}]}" 
+            	s="${TIME(-1d)[${appt.start.gmt}]}"
             	e="${TIME(+1d)(+1h)[${appt.start.gmt}]}"/>
         </t:request>
         <t:response>
@@ -268,6 +268,6 @@
     </t:test>
 
 </t:test_case>
-    
+
 
 </t:tests>

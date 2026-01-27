@@ -24,7 +24,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -38,11 +38,11 @@
 
 <t:test_case testcaseid="acct_setup_cos_count" type="always" >
     <t:objective>Create a test account</t:objective>
-    <steps> 
+    <steps>
     1. Login to admin account
-    2. Create a domains domain1, domain2 
+    2. Create a domains domain1, domain2
 	3. Create COSs : cos1,cos2,cos3
-	4. Create accounts with combinations of COS and Domains.  
+	4. Create accounts with combinations of COS and Domains.
     </steps>
     <t:test id="admin_login" required="true" depends="ping">
         	<t:request>
@@ -58,7 +58,7 @@
      <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos1.name}</name>        
+                <name xmlns="">${cos1.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -68,7 +68,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos2.name}</name>        
+                <name xmlns="">${cos2.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -78,7 +78,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos3.name}</name>        
+                <name xmlns="">${cos3.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -272,12 +272,12 @@
         </t:response>
     </t:test>
 </t:test_case>
-<t:test_case testcaseid="CountAccountRequest01" type="bhr">
+<t:test_case testcaseid="CountAccountRequest01" type="sanity">
     <t:objective>Count Accounts for domain</t:objective>
-    <steps> 
+    <steps>
         	1. Login to admin account
         	2. Fire count account request.
-        	3. Verify response gives number of account categorized by COS. 
+        	3. Verify response gives number of account categorized by COS.
     </steps>
    <t:test>
         	<t:request>
@@ -303,7 +303,7 @@
           <t:select path="//admin:CountAccountResponse/admin:cos[@name='default']" match="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
        <t:request>
 		<CountAccountRequest xmlns="urn:zimbraAdmin">

@@ -9,7 +9,7 @@
 <t:test_case testcaseid="Briefcase_Account_Setup" type="always" >
     <t:objective>basic system check</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -42,8 +42,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -55,7 +55,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -80,12 +80,12 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
 		</t:response>
 	</t:test>
-	
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Briefcase_SharePublic_01" type="bhr" bugids="44557" >
+<t:test_case testcaseid="Briefcase_SharePublic_01" type="sanity" bugids="44557" >
     <t:objective>Create a briefcase folder. Share it to public. </t:objective>
     <t:steps>
     1. Login to account1
@@ -108,9 +108,9 @@
         </t:response>
     </t:test>
 
-	
+
 	<t:property name="account1.briefcase1.folder.name" value="briefcase1.${TIME}.${COUNTER}"/>
-	
+
 	<t:test >
 		<t:request>
 			<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -137,11 +137,11 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
-                <action id="${account1.briefcase1.folder.id}" op="grant">                    
+                <action id="${account1.briefcase1.folder.id}" op="grant">
 					<grant gt="${perm.pub}" perm="r" inh="1" pw=""/>
                 </action>
             </FolderActionRequest>
@@ -150,7 +150,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -168,10 +168,10 @@
 	<t:resttest>
 		<t:restServletRequest>
 			<user>${account1.name}</user>
-			<folder>${globals.briefcase}/${account1.briefcase1.folder.name}</folder>			
+			<folder>${globals.briefcase}/${account1.briefcase1.folder.name}</folder>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="200"/>		
+			<t:select attr="StatusCode" match="200"/>
 		</t:restServletResponse>
 	</t:resttest>
 </t:test_case>

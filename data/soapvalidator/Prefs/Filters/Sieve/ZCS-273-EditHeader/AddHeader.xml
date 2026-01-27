@@ -54,7 +54,7 @@
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	    
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -63,13 +63,13 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
-	    
+
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
-    
+
     <t:test id="CreateCosRequest1">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -95,7 +95,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -124,7 +124,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -138,7 +138,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account4.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -152,7 +152,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account5.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -180,7 +180,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account7.server"/>
         </t:response>
     </t:test>
-        
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -194,10 +194,10 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="outgoing.server"/>
         </t:response>
     </t:test>
-                        
+
 </t:test_case>
 
-<t:test_case testcaseid="AddHeader_before1" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="AddHeader_before1" type="sanity" bugids="zcs-273">
     <t:objective>Addheader rule for admin before script</t:objective>
     <t:steps>
     	1. Create before rule for admin for addheader with last=true
@@ -222,7 +222,7 @@
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             <account by="name">${account1.name}</account>
                 <filterRules>
-					<filterRule name="filter${TIME}${COUNTER}" active="1">                         
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
                             <filterActions xmlns="urn:zimbraMail">
 				            <actionAddheader last="true">
 				              <headerName>X-Sieve-Header1</headerName>
@@ -237,7 +237,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -267,7 +267,7 @@
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -275,23 +275,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -299,10 +299,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-Sieve-Header1" match="Value1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="AddHeader_after1" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="AddHeader_after1" type="sanity" bugids="zcs-273">
     <t:objective>Addheader rule for admin after script</t:objective>
     <t:steps>
     	1. Create after rule for admin after for addheader with last=false
@@ -327,7 +327,7 @@
             <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
             <account by="name">${outgoing.name}</account>
                 <filterRules>
-					<filterRule name="filter${TIME}${COUNTER}" active="1">                         
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
                             <filterActions xmlns="urn:zimbraMail">
 				            <actionAddheader last="false">
 				              <headerName>X-Sieve-Header1</headerName>
@@ -342,7 +342,7 @@
 	            <t:select path="//admin:ModifyOutgoingFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -362,11 +362,11 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	    <t:test >
 	 		<t:request>
 	    		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -383,7 +383,7 @@
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -391,23 +391,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -415,10 +415,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-Sieve-Header1" match="Value1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="AddHeader_multiple_before" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="AddHeader_multiple_before" type="sanity" bugids="zcs-273">
     <t:objective>Addheader rule for admin before script to add multiple headers</t:objective>
     <t:steps>
     	1. Create before rule for admin to add multiple headers
@@ -443,7 +443,7 @@
             <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             <account by="name">${outgoing.name}</account>
                 <filterRules>
-					<filterRule name="filter${TIME}${COUNTER}" active="1">                         
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
                             <filterActions xmlns="urn:zimbraMail">
 				            <actionAddheader last="false">
 				              <headerName>X-Sieve-Header1</headerName>
@@ -456,7 +456,7 @@
 				            <actionAddheader>
 				              <headerName>X-Sieve-Header3</headerName>
 				              <headerValue>Value3</headerValue>
-				            </actionAddheader>				            				            
+				            </actionAddheader>
 				          </filterActions>
                     </filterRule>
                  </filterRules>
@@ -466,7 +466,7 @@
 	            <t:select path="//admin:ModifyOutgoingFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -480,7 +480,7 @@
 	    	<t:select path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Value2" />
 	    	<t:select path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerName" match="X-Sieve-Header3" />
 	    	<t:select path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Value3" />
-	    	<t:select path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="last" match="true" />	    		    	
+	    	<t:select path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="last" match="true" />
 	   	</t:response>
 	  </t:test>
 
@@ -491,11 +491,11 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	    <t:test >
 	 		<t:request>
 	    		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -512,7 +512,7 @@
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -520,23 +520,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -544,12 +544,12 @@
 			<t:restServletResponse>
 				<t:select attr="X-Sieve-Header1" match="Value1"/>
 				<t:select attr="X-Sieve-Header2" match="Value2"/>
-				<t:select attr="X-Sieve-Header3" match="Value3"/>				
+				<t:select attr="X-Sieve-Header3" match="Value3"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="AddHeader_after_last_invalid1" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="AddHeader_after_last_invalid1" type="sanity" bugids="zcs-273">
     <t:objective>Addheader rule for admin after script with invalid value for last</t:objective>
     <t:steps>
     	1. Create after rule for admin for addheader with last=invalid
@@ -574,7 +574,7 @@
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
             <account by="name">${account4.name}</account>
                 <filterRules>
-					<filterRule name="filter${TIME}${COUNTER}" active="1">                         
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
                             <filterActions xmlns="urn:zimbraMail">
 				            <actionAddheader last="invalid">
 				              <headerName>X-Sieve-Header1</headerName>
@@ -589,7 +589,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -618,7 +618,7 @@
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -626,23 +626,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -650,10 +650,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-Sieve-Header1" match="Value1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="AddHeader_before_missing_hname" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="AddHeader_before_missing_hname" type="sanity" bugids="zcs-273">
     <t:objective>Addheader rule for admin after script without HeaderName param</t:objective>
     <t:steps>
     	1. Create before rule for admin for addheader without HeaderName param
@@ -678,7 +678,7 @@
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
             <account by="name">${account5.name}</account>
                 <filterRules>
-					<filterRule name="filter${TIME}${COUNTER}" active="1">                         
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
                             <filterActions xmlns="urn:zimbraMail">
 				            <actionAddheader>
 				              <headerValue>Value1</headerValue>
@@ -693,7 +693,7 @@
 	            <t:select path="//soap:Text" match="parse error: Invalid addheader action: Missing headerName or headerValue"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -721,7 +721,7 @@
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -729,23 +729,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -753,10 +753,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-Sieve-Header1" emptyset="1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="AddHeader_before_multiple_error" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="AddHeader_before_multiple_error" type="sanity" bugids="zcs-273">
     <t:objective>Addheader rule for admin before script without params missing in multiple rule</t:objective>
     <t:steps>
     	1. Create before rule for admin for addheader without params missing in multiple rule
@@ -781,7 +781,7 @@
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             <account by="name">${account6.name}</account>
                 <filterRules>
-					<filterRule name="filter${TIME}${COUNTER}" active="1">                         
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
                             <filterActions xmlns="urn:zimbraMail">
 				            <actionAddheader last="false">
 				              <headerValue>Value1</headerValue>
@@ -796,7 +796,7 @@
 				            <actionAddheader last="invalid">
 				              <headerName>X-Sieve-Header4</headerName>
 				              <headerValue>Value1</headerValue>
-				            </actionAddheader>				            
+				            </actionAddheader>
 				          </filterActions>
                     </filterRule>
                  </filterRules>
@@ -807,7 +807,7 @@
 	            <t:select path="//soap:Text" match="parse error: Invalid addheader action: Missing headerName or headerValue"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -815,8 +815,8 @@
 	    	</GetFilterRulesRequest>
 	   	</t:request>
 	   	<t:response>
-	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerName" emptyset="1" />	    	
-	    </t:response>	
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerName" emptyset="1" />
+	    </t:response>
 	  </t:test>
 
 	    <t:test >
@@ -835,7 +835,7 @@
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -843,23 +843,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -870,10 +870,10 @@
 				<t:select attr="X-Sieve-Header3" emptyset="1"/>
 				<t:select attr="X-Sieve-Header4" emptyset="1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="AddHeader_before1_json" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="AddHeader_before1_json" type="sanity" bugids="zcs-273">
     <t:objective>Addheader rule for admin before script</t:objective>
     <t:steps>
     	1. Create before rule for admin for addheader with last=true
@@ -898,11 +898,11 @@
 	    	<authToken>${authToken}</authToken>
             <format type="js"/>
         </t:requestContext>
-        <t:request>        
+        <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             <account by="name">${account7.name}</account>
                 <filterRules>
-					<filterRule name="filter${TIME}${COUNTER}" active="1">                         
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
                             <filterActions xmlns="urn:zimbraMail">
 				            <actionAddheader last="true">
 				              <headerName>X-Sieve-Header1</headerName>
@@ -917,12 +917,12 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	    <t:requestContext>
 	    	<authToken>${authToken}</authToken>
             <format type="js"/>
-        </t:requestContext>   	  
+        </t:requestContext>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
 	    		<account by="name">${account7.name}</account>
@@ -951,7 +951,7 @@
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -959,23 +959,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -983,12 +983,12 @@
 			<t:restServletResponse>
 				<t:select attr="X-Sieve-Header1" match="Value1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1009,9 +1009,9 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
-		
+
     </t:finally>-->
 </t:tests>

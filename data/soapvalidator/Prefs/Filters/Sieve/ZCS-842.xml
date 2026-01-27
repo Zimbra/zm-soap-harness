@@ -23,7 +23,7 @@
 	<t:property name="reciever_account10.name"
 		value="reciever10${TIME}${COUNTER}@${defaultdomain.name}" />
         <t:property name="cos.name" value="cos842${TIME}${COUNTER}" />
-	
+
 	<t:property name="subject" value="sample abc test 123 test ABC test" />
 	<t:property name="0" value="$\{0}" />
 	<t:property name="1" value="$\{1}" />
@@ -38,56 +38,56 @@
 		value='require ["variables"];
 if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*" {
 tag "${1}";
-} 
+}
 ' />
 
 	<t:property name="sieve_test2"
 		value='require ["variables"];
 if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test" {
 tag "${1}";
-} 
+}
 ' />
 
 	<t:property name="sieve_test3"
 		value='require ["variables"];
  if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*test" {
 tag "${1}-${2}";
-} 
+}
 ' />
 
 	<t:property name="sieve_test4"
 		value='require ["variables"];
  if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*test" {
 tag "${1}-${2}";
-} 
+}
 ' />
 
 	<t:property name="sieve_test4"
 		value='require ["variables"];
 if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test" {
 tag "${0}";
-} 
+}
 ' />
 
 	<t:property name="sieve_test5"
 		value='require ["variables"];
 if header :matches :comparator "i;ascii-casemap" "Subject" "sample*" {
 tag "${1}";
-}  
+}
 ' />
 
 	<t:property name="sieve_test6"
 		value='require ["variables"];
 if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*" {
 tag "space.${1}.tag.${2}";
-} 
+}
 ' />
 
 	<t:property name="sieve_test7"
 		value='require ["variables"];
 if address :matches :comparator "i;ascii-casemap" "From" "*@${defaultdomain.name}" {
 tag "${000}-${0001}@${defaultdomain.name}";
-} 
+}
 ' />
 
 	<t:property name="sieve_test8"
@@ -100,7 +100,7 @@ replaceheader :newvalue "[Spam] ${1},${2}" :comparator "i;ascii-casemap" :matche
 addheader "X-New-Header1" "This is a new header1";
 addheader "X-New-Header2" "This is a new header2";
 if header :matches "X-New-Header1" "This*"
-{ 
+{
 deleteheader :comparator "i;ascii-casemap" :matches "X-New-Header1" "${0}";
 }
 ' />
@@ -142,7 +142,7 @@ tag "${1}";
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -151,7 +151,7 @@ tag "${1}";
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -167,7 +167,7 @@ tag "${1}";
                     <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
                 </t:response>
             </t:test>
-	    
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -387,13 +387,13 @@ tag "${1}";
 			</t:response>
 		</t:test>
 	</t:test_case>
- 
-	<t:test_case testcaseid="ZCS-842_Filter1" type="functional"
+
+	<t:test_case testcaseid="ZCS-842_Filter1" type="regression"
 		bugids="ZCS-842">
 		<t:objective> First wildcard non-greedy example
 			Send a mail with subject as 'sample abc test 123 test ABC test'.
 			${1}should contain 'abc'.
-			
+
 			Sieve test:
 			if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*" {
 			    tag "${1}";
@@ -430,7 +430,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -459,12 +459,12 @@ tag "${1}";
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-842_Filter2" type="functional"
+	<t:test_case testcaseid="ZCS-842_Filter2" type="regression"
 		bugids="ZCS-842">
 		<t:objective> Only one wildcard greedy example
 			Send a mail with subject as 'sample abc test 123 test ABC test'.
 			${1}should contain 'abc test 123 test ABC'.
-			
+
 			Sieve test:
 			if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test" {
 			    tag "${1}";
@@ -501,7 +501,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -532,12 +532,12 @@ tag "${1}";
 
 
 
-	<t:test_case testcaseid="ZCS-842_Filter3" type="functional"
+	<t:test_case testcaseid="ZCS-842_Filter3" type="regression"
 		bugids="ZCS-842">
 		<t:objective> Multiple wildcards last greedy example
 			Send a mail with subject as 'sample abc test 123 test ABC test'.
 			${1}should contain 'abc', ${2} should contain '123 test ABC' and not just '123'.
-			
+
 			Sieve test:
 			if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*test" {
 			    tag "${1}-${2}";
@@ -574,7 +574,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -604,12 +604,12 @@ tag "${1}";
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-842_Filter4" type="functional"
+	<t:test_case testcaseid="ZCS-842_Filter4" type="regression"
 		bugids="ZCS-842">
 		<t:objective> wildcard first variable example
 		    Send a mail with subject as 'sample abc test 123 test ABC test'.
 			${0} should contain 'sample abc test 123 test ABC test'.
-			
+
 			Sieve test:
 			if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test" {
 			    tag "${0}";
@@ -646,7 +646,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -676,12 +676,12 @@ tag "${1}";
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-842_Filter5" type="functional"
+	<t:test_case testcaseid="ZCS-842_Filter5" type="regression"
 		bugids="ZCS-842">
 		<t:objective> wildcard last greedy example
 			Send a mail with subject as 'sample abc test 123 test ABC test'.
 			${1} should contain 'abc test 123 test ABC test'
-			
+
 			Sieve test:
 			if header :matches :comparator "i;ascii-casemap" "Subject" "sample*" {
 			    tag "${1}";
@@ -718,7 +718,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -747,13 +747,13 @@ tag "${1}";
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-842_Filter6" type="functional"
+	<t:test_case testcaseid="ZCS-842_Filter6" type="regression"
 		bugids="ZCS-842">
 		<t:objective> wildcard first non-greedy example
-			Send a mail with subject as 'sample test 123 test ABC test'. 
+			Send a mail with subject as 'sample test 123 test ABC test'.
 			${1} should contain ' '.
 			${2} should contain '123 test ABC test'.
-			
+
 			Sieve test:
 			if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*" {
 			    tag "space.${1}.tag.${2}";
@@ -790,7 +790,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -818,8 +818,8 @@ tag "${1}";
 			</t:response>
 		</t:test>
 	</t:test_case>
-  
-	<t:test_case testcaseid="ZCS-842_Filter7" type="functional"
+
+	<t:test_case testcaseid="ZCS-842_Filter7" type="regression"
 		bugids="ZCS-842">
 		<t:objective> address test - wildcard greedy example
 			Send a mail with From as 'sender123@domain.com'. ${0001} should contain 'sender123',
@@ -861,7 +861,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -890,7 +890,7 @@ tag "${1}";
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-842_Filter8" type="functional"
+	<t:test_case testcaseid="ZCS-842_Filter8" type="regression"
 		bugids="ZCS-842">
 		<t:objective> replaceheader test - multiple wildcard example
 			Send a mail with subject as 'sample abc test 123 test ABC test' .
@@ -931,7 +931,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -969,11 +969,11 @@ tag "${1}";
 		</t:resttest>
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-842_Filter9" type="functional"
+	<t:test_case testcaseid="ZCS-842_Filter9" type="regression"
 		bugids="ZCS-842">
 		<t:objective> deleteheader test - wildcard greedy example
 			Delete header if the value matches with variable value of header test
-			
+
 			Sieve test:
 			addheader "X-New-Header1" "This is a new header1";
 			addheader "X-New-Header2" "This is a new header2";
@@ -1013,7 +1013,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1052,10 +1052,10 @@ tag "${1}";
 		</t:resttest>
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-842_Filter10" type="functional"
+	<t:test_case testcaseid="ZCS-842_Filter10" type="regression"
 		bugids="ZCS-842">
 		<t:objective> header test - wildcard greedy example
-			Send a message with subject as 'sieve_test new zimbra test sample sample'. 
+			Send a message with subject as 'sieve_test new zimbra test sample sample'.
 			result: tag 'zimbra test sample'
 
 			Sieve test:
@@ -1096,7 +1096,7 @@ tag "${1}";
 					set="message0.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1127,7 +1127,7 @@ tag "${1}";
 
     <t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">

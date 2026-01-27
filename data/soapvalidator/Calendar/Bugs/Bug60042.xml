@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
-    
+
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>
+
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
@@ -42,7 +42,7 @@
 <t:property name="view.appointment" value="appointment"/>
 <t:property name="view.note" value="note"/>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -58,7 +58,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="Bug60042_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -123,7 +123,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Bug60042_01" type="bhr" bugids="60042">
+<t:test_case testcaseid="Bug60042_01" type="sanity" bugids="60042">
     <t:objective>Verify that the cif attribute cif="{X-Zimbra-Calendar-Intended-For header} is present in the forwarded invite.</t:objective>
     <t:steps>
        	1. User A shares calendar with manager right to user B.
@@ -157,7 +157,7 @@
 	<t:test>
         <t:request>
 			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
-				<pref name="zimbraPrefCalendarForwardInvitesTo">${account2.name}</pref>				
+				<pref name="zimbraPrefCalendarForwardInvitesTo">${account2.name}</pref>
 			</ModifyPrefsRequest>
         </t:request>
         <t:response>
@@ -271,7 +271,7 @@
             <t:select path="//mail:CreateAppointmentResponse">
             	<t:select attr="calItemId" set="appt1.calItemId"/>
             	<t:select attr="invId" set="appt1.invId"/>
-            	
+
             </t:select>
         </t:response>
     </t:test>
@@ -292,7 +292,7 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:waitforpostfixqueue/>
 
 	<t:test>
@@ -319,6 +319,6 @@
         </t:response>
     </t:test>
 
-	
+
 </t:test_case>
 </t:tests>

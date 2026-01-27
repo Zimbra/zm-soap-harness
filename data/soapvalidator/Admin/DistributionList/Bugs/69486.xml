@@ -66,8 +66,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug69486_01" type="bhr" bugids="69486" >
-    <t:objective>Verify addAlias op is removed from DistributionListActionRequest. </t:objective>    
+<t:test_case testcaseid="bug69486_01" type="sanity" bugids="69486" >
+    <t:objective>Verify addAlias op is removed from DistributionListActionRequest. </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -81,7 +81,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -93,7 +93,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -107,13 +107,13 @@
         	<t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         	<t:select path= "//soap:Text" match=".*invalid request: unknown operation: addAlias.*"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug69486_02" type="bhr" bugids="69486" >
-    <t:objective>Verify removeAlias op is removed from DistributionListActionRequest. </t:objective>    
+<t:test_case testcaseid="bug69486_02" type="sanity" bugids="69486" >
+    <t:objective>Verify removeAlias op is removed from DistributionListActionRequest. </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -127,9 +127,9 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-	
+
 	<t:test >
         <t:request >
             <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
@@ -140,9 +140,9 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl2.id" />
     		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -155,7 +155,7 @@
         	<t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         	<t:select path= "//soap:Text" match=".*invalid request: unknown operation: removeAlias.*"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

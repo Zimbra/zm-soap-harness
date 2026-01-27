@@ -73,7 +73,7 @@
     </t:test>
 
 </t:test_case>
- 
+
 
 <t:test_case testcaseid = "acctSetup1_hideaccounts_gal" type="always">
     <t:objective>Account Setup </t:objective>
@@ -83,7 +83,7 @@
 			3. Create test account with zimbraHideInGal=true.
 			4. Create test account with zimbraHideInGal=false.
 			5. Create aliases on domain and domain1.
-			6. Create DL with zimbraHideInGal=false. 
+			6. Create DL with zimbraHideInGal=false.
 			7. Create DL with zimbraHideInGal=true.
 			8. Create Resource(Location and Equipment) with zimbraHideInGal=false.
 			9. Create Resource(Location and Equipment) with zimbraHideInGal=true.
@@ -137,7 +137,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateAccount1b" required="true" depends="adminlogin">
         <t:request>
@@ -151,7 +151,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateAccount7a" required="true" depends="adminlogin">
         <t:request>
@@ -165,7 +165,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account7.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateAccount1c" required="true" depends="adminlogin">
         <t:request>
@@ -179,7 +179,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias1a" required="true" depends="CreateAccount1c">
         <t:request>
@@ -191,7 +191,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias1b" required="true" depends="CreateAccount1c">
         <t:request>
@@ -203,7 +203,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateAccount1d" required="true" depends="adminlogin">
         <t:request>
@@ -217,7 +217,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="accounthide.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct_hide.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias1e" required="true" depends="CreateAccount1d">
         <t:request>
@@ -229,7 +229,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias1f" required="true" depends="CreateAccount1d">
         <t:request>
@@ -241,7 +241,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 
     <t:test id="CreateDistributionList1a" required="true" depends="adminlogin">
@@ -386,7 +386,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal02" type="functional">
+<t:test_case testcaseid = "autocomplate_gal02" type="regression">
     <t:objective>Verify that autocomple gal doesnot returns accounts having zimbraHideInGal= true </t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -423,7 +423,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal03" type="bhr">
+<t:test_case testcaseid = "autocomplate_gal03" type="sanity">
     <t:objective>Verify that autocomple gal returns correct aliases created on same domain and different domain  (having zimbraHideInGal=false).</t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -461,7 +461,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal04" type="functional">
+<t:test_case testcaseid = "autocomplate_gal04" type="regression">
     <t:objective>Verify that autocomple gal doesnot return aliases (created on same domain and different domain) of account having zimbraHideInGal=true.</t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -499,7 +499,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal05" type="bhr">
+<t:test_case testcaseid = "autocomplate_gal05" type="sanity">
     <t:objective>Verify that autocomple gal returns correct DL ( having zimbraHideInGal=false).</t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -535,7 +535,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal06" type="functional">
+<t:test_case testcaseid = "autocomplate_gal06" type="regression">
     <t:objective>Verify that autocomple gal doesnot returns DL having zimbraHideInGal= true.</t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -571,7 +571,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal07" type="bhr">
+<t:test_case testcaseid = "autocomplate_gal07" type="sanity">
     <t:objective>Verify that autocomple gal returns correct items having zimbraHideInGal=false.</t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -611,7 +611,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal08" type="functional">
+<t:test_case testcaseid = "autocomplate_gal08" type="regression">
     <t:objective>Verify that autocomple gal doesnot return items having zimbraHideInGal=true.</t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -651,13 +651,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal09" type="functional">
+<t:test_case testcaseid = "autocomplate_gal09" type="regression">
     <t:objective>Verify that after modifying zimbraHideInGal=true, autocomple gal doesnot return account, alias and distrubution list.</t:objective>
 	<t:steps>
 			1. Login into admin.
 			2. Create an account, alias and distribution list zimbraHideInGal= false.
 			3. Verify that autocomplete returns all.
-			4. Login into admin and Modify the account having alias with zimbraHideInGal=true 
+			4. Login into admin and Modify the account having alias with zimbraHideInGal=true
 			5. Login into test account.
 			6. Search for all items by giving common value.
 	</t:steps>
@@ -686,8 +686,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
 		</t:response>
-    </t:test>  
-	
+    </t:test>
+
 	<t:test id="AddAlias9a" required="true" depends="CreateAccount9a">
         <t:request>
 			<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -698,7 +698,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="CreateDistributionList1a" required="true" depends="adminlogin">
         <t:request>
@@ -764,7 +764,7 @@
         <t:response>
             <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" set="account8.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="ModifyDistributionList9a" required="true" depends="adminlogin" >
         <t:request>
@@ -774,7 +774,7 @@
             </ModifyDistributionListRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyDistributionListResponse"/> 
+            <t:select path="//admin:ModifyDistributionListResponse"/>
         </t:response>
     </t:test>
 
@@ -809,9 +809,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal10" type="functional">
+<t:test_case testcaseid = "autocomplate_gal10" type="regression">
     <t:objective>Verify autocomplete GAL with spchar/sometext/number/zero/negative/decimal/blank/space. </t:objective>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
     <t:test>
@@ -917,9 +917,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "autocomplate_gal11" type="functional">
+<t:test_case testcaseid = "autocomplate_gal11" type="regression">
     <t:objective>Verify autocomplete GAL when more than 1 name tags are used. </t:objective>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
     <t:test>
@@ -950,9 +950,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal12" type="functional" bugids="46035">
+<t:test_case testcaseid = "autocomplate_gal12" type="regression" bugids="46035">
     <t:objective>Verify autocomplete GAL returns only one 'cn' tag when limit=1. </t:objective>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
     <t:test>
@@ -983,9 +983,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal13" type="functional" bugids="46035">
+<t:test_case testcaseid = "autocomplate_gal13" type="regression" bugids="46035">
     <t:objective>Verify autocomplete GAL returns more=1 when response is truncated. </t:objective>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
     <t:test>
@@ -1014,7 +1014,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "autocomplate_gal14" type="functional" bugids="46035">
+<t:test_case testcaseid = "autocomplate_gal14" type="regression" bugids="46035">
     <t:objective>Verify that autocomple gal returns correct accounts (having zimbraHideInGal=false) when type and limit attributes are not given.	</t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -1049,7 +1049,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "autocomplate_gal14A" type="functional" bugids="46035">
+<t:test_case testcaseid = "autocomplate_gal14A" type="regression" bugids="46035">
     <t:objective>Verify that autocomple gal returns correct accounts when zimbraContactAutocompleteMaxResults=2	</t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -1086,7 +1086,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal15" type="functional">
+<t:test_case testcaseid = "autocomplate_gal15" type="regression">
     <t:objective>Verify that autocomple gal returns account (zimbraHideInGal=true) when account is added in the personal contact book using SerachRequest with type='Contact' and not using AutoCompleteGalRequest.</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -1121,7 +1121,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="accounthide1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct_del.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -1189,7 +1189,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal16" type="bhr">
+<t:test_case testcaseid = "autocomplate_gal16" type="sanity">
     <t:objective>Verify that autocomplete gal returns resource(Location) with type='resource' when its zimbraHideInGal=false.</t:objective>
 	<t:steps>
 			1. Resource with zimbraHideInGal=false, created in acctSetup1_hideaccounts_gal.
@@ -1224,7 +1224,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "autocomplate_gal17" type="bhr">
+<t:test_case testcaseid = "autocomplate_gal17" type="sanity">
     <t:objective>Verify that autocomplete gal returns resource(Equipment) with type='resource' when its zimbraHideInGal=false.</t:objective>
 	<t:steps>
 			1. Resource with zimbraHideInGal=false, created in acctSetup1_hideaccounts_gal.
@@ -1256,10 +1256,10 @@
 	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${resourceeqmail1}" />
 		</t:response>
     </t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid = "autocomplate_gal18" type="functional">
+<t:test_case testcaseid = "autocomplate_gal18" type="regression">
     <t:objective>Verify that autocomplete gal doesnot returns resource(Location) with type='resource' when its zimbraHideInGal=true.</t:objective>
 	<t:steps>
 			1. Resource with zimbraHideInGal=true, created in acctSetup1_hideaccounts_gal.
@@ -1295,7 +1295,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal19" type="functional">
+<t:test_case testcaseid = "autocomplate_gal19" type="regression">
     <t:objective>Verify that autocomplete gal doesnot returns resource(Equipment) with type='resource' when its zimbraHideInGal=true.</t:objective>
 	<t:steps>
 			1. Resource with zimbraHideInGal=true, created in acctSetup1_hideaccounts_gal.
@@ -1327,11 +1327,11 @@
 	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${resourcehideeqmail}" emptyset="1"/>
 		</t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal20" type="functional">
+<t:test_case testcaseid = "autocomplate_gal20" type="regression">
     <t:objective>Verify that autocomplete gal returns resource(Location) with type='resource' when its zimbraHideInGal=true is modified to false.</t:objective>
 	<t:steps>
 			1. Resource with zimbraHideInGal=true, created in acctSetup1_hideaccounts_gal.
@@ -1396,7 +1396,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal21" type="functional">
+<t:test_case testcaseid = "autocomplate_gal21" type="regression">
     <t:objective>Verify that autocomplete gal returns resource(Equipment) with type='resource' when its zimbraHideInGal=true is modified to false.</t:objective>
 	<t:steps>
 			1. Resource with zimbraHideInGal=true, created in acctSetup1_hideaccounts_gal.
@@ -1461,10 +1461,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal22" type="functional" bugids="15777">
+<t:test_case testcaseid = "autocomplate_gal22" type="regression" bugids="15777">
 	<t:objective>To disable zimbraFeatureGalEnabled and verify that permission denied error is returned for AutoCompleteGalRequest</t:objective>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>     
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test  id="autocomplate_gal22a">
         <t:request>
@@ -1519,11 +1519,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal23" type="functional" bugids="15777">
+<t:test_case testcaseid = "autocomplate_gal23" type="regression" bugids="15777">
 	<t:objective>To disable zimbraFeatureGalAutoCompleteEnabled and verify that permission denied error is returned for
 AutoCompleteGalRequest</t:objective>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>     
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test  id="autocomplate_gal23a">
         <t:request>
@@ -1579,10 +1579,10 @@ AutoCompleteGalRequest</t:objective>
 </t:test_case>
 
 
-<t:test_case testcaseid = "autocomplate_gal24" type="functional" bugids="15777">
+<t:test_case testcaseid = "autocomplate_gal24" type="regression" bugids="15777">
 	<t:objective>To enable zimbraFeatureGalEnabled and zimbraFeatureGalAutoCompleteEnabled and verify that permission denied error is returned for AutoCompleteGalRequest</t:objective>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>     
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test  id="autocomplate_gal24a">
         <t:request>
@@ -1638,7 +1638,7 @@ AutoCompleteGalRequest</t:objective>
 
 </t:test_case>
 
-<t:test_case testcaseid="autocomplate_gal25" type="sanity" bugids="36913">
+<t:test_case testcaseid="autocomplate_gal25" type="functional" bugids="36913">
 	<t:objective>Verify first name plus last initial matches GAL</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -1666,8 +1666,8 @@ AutoCompleteGalRequest</t:objective>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
 		</t:response>
-    </t:test>  
-	
+    </t:test>
+
 	<t:test id="CreateAccount9a" required="true" depends="adminlogin">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1682,8 +1682,8 @@ AutoCompleteGalRequest</t:objective>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account6.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
 		</t:response>
-    </t:test>  
-	
+    </t:test>
+
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
 
 	<t:test >

@@ -67,7 +67,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
     <t:test required="true">
@@ -83,8 +83,8 @@
 
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test >
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -102,12 +102,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug11058_1" type="bhr" bugids="11058">
+<t:test_case testcaseid="bug11058_1" type="sanity" bugids="11058">
     <t:objective>Searchresponse,GetMsgResponse should have tn attribute with tag name</t:objective>
-    <t:steps> 
-                1. Add an email.  
+    <t:steps>
+                1. Add an email.
                 2. Create a new tag;
-                3. Tag the email; 
+                3. Tag the email;
                 4. Search for the tag
 
     </t:steps>
@@ -127,7 +127,7 @@
 
         </t:response>
     </t:test>
-  
+
     <t:test id="getFolderRequest">
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -136,15 +136,15 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
 	        <AddMsgRequest xmlns="urn:zimbraMail">
-		        <m l="${folder.inbox}">   
+		        <m l="${folder.inbox}">
 		        <content>Subject: hello1
 do it
     		    </content></m>
@@ -167,18 +167,18 @@ do it
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
                 <query>hello1</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="tn" match="${tag1.name}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 	 <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -189,15 +189,15 @@ do it
             <t:select path="//mail:GetMsgResponse/mail:m" attr="tn" match="${tag1.name}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug11058_2" type="bhr" bugids="11058">
+<t:test_case testcaseid="bug11058_2" type="sanity" bugids="11058">
     <t:objective>SearchConvRequest,GetConvRequest should have tn attribute with tag name</t:objective>
-    <t:steps> 
-                1. Add an email.  
+    <t:steps>
+                1. Add an email.
                 2. Create a new tag;
-                3. Tag the email; 
+                3. Tag the email;
                 4. Search for the tag
 
     </t:steps>
@@ -213,8 +213,8 @@ do it
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -226,7 +226,7 @@ do it
             <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="strict"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <foldername>${msg.foldername}</foldername>
@@ -235,7 +235,7 @@ do it
                         <server>${test_acct.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
     <t:test>
@@ -251,7 +251,7 @@ do it
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation" >
@@ -264,19 +264,19 @@ do it
             <t:select path="//mail:SearchResponse/mail:c/mail:m[2]" attr="id" set="message2.id"/>
         </t:response>
     </t:test>
-    
+
        <t:test>
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
                 <action id="${conv.id}" op="${op.tag}" tag="${tag.id}"/>
-            </ConvActionRequest>        
+            </ConvActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="op" set="op.tag"/>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" set="conv.id"/>
         </t:response>
     </t:test>
-    
+
       <t:test >
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv.id}">
@@ -287,7 +287,7 @@ do it
             <t:select path="//mail:SearchConvResponse/mail:m" attr="tn" match="${tag1.name}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
 	 <t:request>
 	   <GetConvRequest xmlns="urn:zimbraMail">
@@ -298,12 +298,12 @@ do it
 		<t:select path="//mail:GetConvResponse/mail:c" attr="tn" match="${tag1.name}"/>
 	 </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="bug11058_3" type="bhr" bugids="11058">
+<t:test_case testcaseid="bug11058_3" type="sanity" bugids="11058">
     <t:objective>GetContactsRequest should have tn attribute with tag name</t:objective>
-        
+
     <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
     <t:test>
@@ -319,7 +319,7 @@ do it
 
         </t:response>
     </t:test>
-    
+
       <t:test>
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -327,16 +327,16 @@ do it
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
            </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact.id1"/>          
-           </t:select>    
+            <t:select attr="id" set="contact.id1"/>
+           </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -347,18 +347,18 @@ do it
             <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="tag"/>
         </t:response>
     </t:test>
-    
+
        <t:test>
         <t:request>
             <GetContactsRequest xmlns = "urn:zimbraMail">
                 <cn id="${contact.id1}" />
             </GetContactsRequest>
         </t:request>
-        <t:response>  
+        <t:response>
             <t:select path = "//mail:GetContactsResponse/mail:cn" attr="tn" match = "${tag1.name}" />
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

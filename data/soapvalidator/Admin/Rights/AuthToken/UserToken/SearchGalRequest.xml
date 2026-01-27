@@ -69,7 +69,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -82,7 +82,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -95,7 +95,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -108,14 +108,14 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="destination.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="destination.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AuthToken_User_SearchGalRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AuthToken_User_SearchGalRequest_Basic01" type="sanity">
     <t:objective>Use a user token to SearchGalRequest</t:objective>
     <t:steps>
     1. Login as standard user
@@ -123,7 +123,7 @@
 	3. Use standard user authtoken to SearchGalRequest out of domain - PERM_DENIED
 	</t:steps>
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
 	<t:test >
@@ -148,7 +148,7 @@
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -159,7 +159,7 @@
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

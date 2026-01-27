@@ -48,7 +48,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug75006" type="bhr" bugids="75006" >
+<t:test_case testcaseid="bug75006" type="sanity" bugids="75006" >
     <t:objective>Subject is decoded wrongly when default Charset is unset or set to utf-8 for a Japanese message.</t:objective>
     <t:steps>
     1. Login as user1
@@ -57,10 +57,10 @@
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:property name="msg01.subject" value="静岡市防災メール　登録・変更のご案内" />
 
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -82,8 +82,8 @@
 			<from>test@testmime.com</from>
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
-    
+    </t:mailinjecttest>
+
     <t:test>
 		 <t:request>
 		   <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -94,20 +94,20 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
 		 </t:response>
 	</t:test>
-	
+
 	<t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
                 <m id="${msg01.id}"/>
             </GetMsgRequest>
         </t:request>
-        <t:response>  
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${msg01.subject}"/>         	
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${msg01.subject}"/>
 
         </t:response>
 	</t:test>
 
- 
+
 </t:test_case>
 
 </t:tests>

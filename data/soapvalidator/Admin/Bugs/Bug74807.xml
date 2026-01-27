@@ -65,13 +65,13 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="bug74807_1" type="bhr" bugids="74807">
+<t:test_case testcaseid="bug74807_1" type="sanity" bugids="74807">
     <t:objective>Verify support for resource in CountObjectsRequest.</t:objective>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -83,7 +83,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -111,20 +111,20 @@
             <t:select path="//admin:CreateCalendarResourceResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="calresource" xmlns="urn:zimbraAdmin">
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//admin:CountObjectsResponse" attr="num" emptyset="0" />  	
+        	<t:select path="//admin:CountObjectsResponse" attr="num" emptyset="0" />
         </t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="bug74807_2" type="bhr">
+<t:test_case testcaseid="bug74807_2" type="sanity">
     <t:objective>Verify support for resource in CountObjectsRequest.</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -138,7 +138,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -166,7 +166,7 @@
             <t:select path="//admin:CreateCalendarResourceResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -194,7 +194,7 @@
             <t:select path="//admin:CreateCalendarResourceResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="calresource" xmlns="urn:zimbraAdmin">
@@ -202,10 +202,10 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//admin:CountObjectsResponse" attr="num" match="2" />  	
+        	<t:select path="//admin:CountObjectsResponse" attr="num" match="2" />
         </t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="calresource" xmlns="urn:zimbraAdmin">
@@ -213,14 +213,14 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//admin:CountObjectsResponse" attr="num" match="2" />  	
+        	<t:select path="//admin:CountObjectsResponse" attr="num" match="2" />
         </t:response>
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="bug74807_3"  type="bhr">
+<t:test_case testcaseid="bug74807_3"  type="sanity">
 <t:objective>Blank type in CountObjectsRequest reponds with error.</t:objective>
-     
+
      <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -232,7 +232,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
      <t:test required="true">
         <t:request>
             <CountObjectsRequest type="" xmlns="urn:zimbraAdmin">
@@ -242,12 +242,12 @@
         	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="bug74807_4"  type="bhr">
+<t:test_case testcaseid="bug74807_4"  type="sanity">
 <t:objective>invalid type in CountObjectsRequest reponds with error.</t:objective>
-     
+
      <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -259,7 +259,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
      <t:test required="true">
         <t:request>
             <CountObjectsRequest type="invalid_type" xmlns="urn:zimbraAdmin">
@@ -269,10 +269,10 @@
         	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="bug74807_5"  type="bhr">
+<t:test_case testcaseid="bug74807_5"  type="sanity">
 <t:objective>Verify SearchDirectory to support a "countOnly" option</t:objective>
 <t:steps>Send SearchDirectoryRequest with type = resources</t:steps>
      <t:test id="admin_login" required="true" >
@@ -286,7 +286,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-		
+
 	<t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="resources" countOnly="1">
@@ -294,13 +294,13 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>    
+            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="bug74807_6"  type="bhr">
+<t:test_case testcaseid="bug74807_6"  type="sanity">
 <t:objective>Verify SearchDirectory to support a "countOnly" option</t:objective>
 <t:steps>Send SearchDirectoryRequest with type = domain</t:steps>
      <t:test id="admin_login" required="true" >
@@ -314,7 +314,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-		
+
 	<t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="domains" countOnly="1">
@@ -322,10 +322,10 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>    
+            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="domains" countOnly="0">
@@ -333,10 +333,10 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse"/>    
+            <t:select path="//admin:SearchDirectoryResponse"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="accounts" countOnly="1">
@@ -344,13 +344,13 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0" />    
+            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
 
-<!--<t:test_case testcaseid="bug74807_7"  type="bhr">
+<!--<t:test_case testcaseid="bug74807_7"  type="sanity">
 <t:objective>Verify SearchDirectory to support a "countOnly" option</t:objective>
 <t:steps>Send SearchDirectoryRequest with type = accounts</t:steps>
      <t:test id="admin_login" required="true" >
@@ -364,7 +364,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-		
+
 	<t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="accounts" countOnly="1">
@@ -372,10 +372,10 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>    
+            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="accounts" countOnly="0">
@@ -383,14 +383,14 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse"/>    
+            <t:select path="//admin:SearchDirectoryResponse"/>
         </t:response>
-    </t:test> 
-    
-	
+    </t:test>
+
+
 </t:test_case>
 
---><t:test_case testcaseid="bug74807_8"  type="bhr">
+--><t:test_case testcaseid="bug74807_8"  type="sanity">
 <t:objective>Verify SearchDirectory to support a "countOnly" option</t:objective>
 <t:steps>Send SearchDirectoryRequest with type = coses</t:steps>
      <t:test id="admin_login" required="true" >
@@ -404,7 +404,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-		
+
 	<t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="coses" countOnly="1">
@@ -412,10 +412,10 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>    
+            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="coses" countOnly="0">
@@ -423,14 +423,14 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse"/>    
+            <t:select path="//admin:SearchDirectoryResponse"/>
         </t:response>
-    </t:test> 
-    
-	
+    </t:test>
+
+
 </t:test_case>
 
-<t:test_case testcaseid="bug74807_9"  type="bhr">
+<t:test_case testcaseid="bug74807_9"  type="sanity">
 <t:objective>Verify SearchDirectory to support a "countOnly" option</t:objective>
 <t:steps>Send SearchDirectoryRequest with type = distributionlists</t:steps>
      <t:test id="admin_login" required="true" >
@@ -444,7 +444,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-		
+
 	<t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="distributionlists" countOnly="1">
@@ -452,10 +452,10 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>    
+            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="distributionlists" countOnly="0">
@@ -463,14 +463,14 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse"/>    
+            <t:select path="//admin:SearchDirectoryResponse"/>
         </t:response>
-    </t:test> 
-    
-	
+    </t:test>
+
+
 </t:test_case>
 
-<t:test_case testcaseid="bug74807_10"  type="bhr">
+<t:test_case testcaseid="bug74807_10"  type="sanity">
 <t:objective>Verify SearchDirectory to support a "countOnly" option</t:objective>
 <t:steps>Send SearchDirectoryRequest with type = aliases</t:steps>
      <t:test id="admin_login" required="true" >
@@ -484,7 +484,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-		
+
 	<t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="aliases" countOnly="1">
@@ -492,10 +492,10 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>    
+            <t:select path="//admin:SearchDirectoryResponse" attr="num" emptyset="0"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="aliases" countOnly="0">
@@ -503,10 +503,10 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse"/>    
+            <t:select path="//admin:SearchDirectoryResponse"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

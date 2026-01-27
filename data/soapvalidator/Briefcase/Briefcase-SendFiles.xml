@@ -15,7 +15,7 @@
 <t:test_case testcaseid="Briefcase_SendFile_Setup" type="always" >
     <t:objective>basic system check</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -48,8 +48,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -69,9 +69,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Briefcase_SendFile_AsAttachment_01" type="bhr">
+<t:test_case testcaseid="Briefcase_SendFile_AsAttachment_01" type="sanity">
     <t:objective>Send a briefcase file as attachment and verify the attachment </t:objective>
-    
+
     <t:steps>
 	    1. Login to account1
 	    2. Upload a text file in the briefcase folder
@@ -102,7 +102,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.attachfile1}</filename>
@@ -111,7 +111,7 @@
 			<t:select attr="id" set="document.attachfile.id"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -124,11 +124,11 @@
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document1.attachfile.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<SaveDraftRequest xmlns="urn:zimbraMail">
-			 <m> 			 
+			 <m>
 			    <attach>
 			    <doc id="${document1.attachfile.id}" />
 			    </attach>
@@ -140,17 +140,17 @@
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="account1.document.attach.id"/>
         </t:response>
     </t:test>
-  
+
 	<t:test >
 		<t:request>
-			<SendMsgRequest xmlns="urn:zimbraMail">			
+			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1.document.attach.id}">
 					<e t="t" a='${account2.name}'/>
-					<su> "Send with attachment" </su>					
-					<mp ct="text/plain" />				
+					<su> "Send with attachment" </su>
+					<mp ct="text/plain" />
 					 <attach>
 							<mp mid="${account1.document.attach.id}" part="1" />
-					</attach>				
+					</attach>
 				</m>
 			</SendMsgRequest>
 		</t:request>
@@ -158,7 +158,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sentmsg1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetMsgRequest xmlns="urn:zimbraMail">
@@ -178,7 +178,7 @@
 			<t:select attr="StatusCode" match="200"/>
 		</t:restServletResponse>
 	</t:resttest>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -194,9 +194,9 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="Briefcase_SendFile_AsLink_02" type="bhr">
+<t:test_case testcaseid="Briefcase_SendFile_AsLink_02" type="sanity">
     <t:objective>Send a briefcase file as link and verify the link </t:objective>
-    
+
     <t:steps>
 	    1. Login to account1
 	    2. Upload a text file in the briefcase folder
@@ -227,7 +227,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -236,7 +236,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -248,8 +248,8 @@
         <t:response>
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.textfile.id"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test required="true">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -262,9 +262,9 @@
             <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
         </t:response>
     </t:test>
-    
-  <t:property name="link.url" value="${account1.name}/Briefcase/contact1.txt"/>  
-  
+
+  <t:property name="link.url" value="${account1.name}/Briefcase/contact1.txt"/>
+
   <t:test >
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
@@ -283,7 +283,7 @@
 			 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sentmsg1.id"/>
 		</t:response>
 	</t:test>
-  	
+
 	<t:test>
 		<t:request>
 			<GetMsgRequest xmlns="urn:zimbraMail">
@@ -293,9 +293,9 @@
 		<t:response>
 			<t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${sentmsg1.id}"/>
 		</t:response>
-	</t:test>	
-   
-	
+	</t:test>
+
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -309,7 +309,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:resttest>
 		<t:restServletRequest>
 			<url>${link.url}</url>
@@ -318,7 +318,7 @@
 			<t:select attr="StatusCode" match="200"/>
 		</t:restServletResponse>
 	</t:resttest>
-    
+
 </t:test_case>
 
 

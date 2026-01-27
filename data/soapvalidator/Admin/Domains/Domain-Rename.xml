@@ -31,7 +31,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
 	<t:objective>basic system check</t:objective>
-    
+
 	<t:test id="ping" required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -40,10 +40,10 @@
 			<t:select path="//admin:PingResponse"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="DomainRename_01" type="bhr" bugids="35180" areas="noncluster">
+<t:test_case testcaseid="DomainRename_01" type="sanity" bugids="35180" areas="noncluster">
 	<t:objective>Basic rename domain check </t:objective>
     <t:steps>
 		1. Create a domain.
@@ -77,7 +77,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:staftask >
@@ -112,13 +112,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="DomainRename_02" type="bhr" areas="noncluster">
+<t:test_case testcaseid="DomainRename_02" type="sanity" areas="noncluster">
 	<t:objective>Rename domain with accounts provisioned in it </t:objective>
     <t:steps>
 		1. Create a domain.
 		2. Add account to the domain.
 		3. rename domain
-		4. Verify account cannot login with old domain. 
+		4. Verify account cannot login with old domain.
 		5. Verify account can login with new domain
 	</t:steps>
 
@@ -128,7 +128,7 @@
 
 	<t:property name="account2.name" value="account2@${domain2.name}"/>
 	<t:property name="account2.new.name" value="account2@${domain2.new.name}"/>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test  id="admin_login" required="true" depends="ping">
@@ -152,14 +152,14 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain2.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
     <t:test >
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -167,7 +167,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:staftask >
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -175,7 +175,7 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov -l rd ${domain2.name} ${domain2.new.name}\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
 	</t:staftask>
-	
+
 	<t:staftask >
         <t:request>
             <server>${zimbraServer.name}</server>
@@ -183,7 +183,7 @@
             <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
         </t:request>
     </t:staftask>
-   
+
     <t:staftask >
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -191,7 +191,7 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc domain\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
 	</t:staftask>
-	
+
 	<t:staftask >
 		<t:request>
 			<server>${account2.server}</server>
@@ -199,7 +199,7 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc domain\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
 	</t:staftask>
-    	
+
 	<t:test>
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin">
@@ -215,8 +215,8 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
-	
+
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -244,7 +244,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="DomainRename_03" type="bhr" bugids="37832" areas="noncluster">
+<t:test_case testcaseid="DomainRename_03" type="sanity" bugids="37832" areas="noncluster">
 	<t:objective> Create test senerio before renaming domain and test rename domain works </t:objective>
 
     <t:steps>
@@ -284,7 +284,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
     <t:test required="true">
@@ -576,7 +576,7 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov -l rd ${domain3.name} ${domain3.new.name}\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
 	</t:staftask>
-		
+
 	<t:staftask >
         <t:request>
             <server>${zimbraServer.name}</server>
@@ -592,7 +592,7 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc domain\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
 	</t:staftask>
-	
+
 	<t:staftask >
 		<t:request>
 			<server>${account3b.server}</server>
@@ -615,13 +615,13 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-  
+
 
     <t:test>
         <t:request>
-            <GetApptSummariesRequest xmlns="urn:zimbraMail" 
+            <GetApptSummariesRequest xmlns="urn:zimbraMail"
             	l="${delegated.calendar.id}"
-            	s="${TIME(-1d)[${time.20180101120000.gmt}]}" 
+            	s="${TIME(-1d)[${time.20180101120000.gmt}]}"
             	e="${TIME(+1d)(+1h)[${time.20180101120000.gmt}]}"/>
         </t:request>
         <t:response>
@@ -645,7 +645,7 @@
         </t:response>
     </t:test-->
 
-<!-- Add verification for briefcase --> 
+<!-- Add verification for briefcase -->
 
 	<t:test>
 		<t:request>

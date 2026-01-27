@@ -40,7 +40,7 @@
 
 
 
-<t:test_case testcaseid="bug_42134" type="bhr" bugids="42134">
+<t:test_case testcaseid="bug_42134" type="sanity" bugids="42134">
     <t:objective>Create a filter with value contains backslash </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -73,7 +73,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -81,21 +81,21 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
 		<t:request>
 			<GetFilterRulesRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetFilterRulesResponse"> 
-            	<t:select path="//mail:filterRule[@name='${filter1.name}']"/>       	
+            <t:select path="//mail:GetFilterRulesResponse">
+            	<t:select path="//mail:filterRule[@name='${filter1.name}']"/>
             </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter2.subject" value="\\filter\\${TIME}${COUNTER}\\"/>	
-	
+	<t:property name="filter2.subject" value="\\filter\\${TIME}${COUNTER}\\"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -108,7 +108,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -116,21 +116,21 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFilterRulesRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetFilterRulesResponse"> 
-            <t:select path="//mail:filterRule[@name='${filter2.name}']"/>              	
+            <t:select path="//mail:GetFilterRulesResponse">
+            <t:select path="//mail:filterRule[@name='${filter2.name}']"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter3.subject" value="\\"/>	
-	
+	<t:property name="filter3.subject" value="\\"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -143,7 +143,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -151,18 +151,18 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFilterRulesRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
             <t:select path="//mail:GetFilterRulesResponse">
-            	<t:select path="//mail:filterRule[@name='${filter3.name}']"/>           	
+            	<t:select path="//mail:filterRule[@name='${filter3.name}']"/>
             </t:select>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
 

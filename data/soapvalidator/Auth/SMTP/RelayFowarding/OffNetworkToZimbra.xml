@@ -13,7 +13,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -25,12 +25,12 @@
 
 </t:test_case>
 
-	
+
 
 <t:test_case testcaseid="smtp_RelayForwarding_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a account1 
+            2. Create a account1
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -44,7 +44,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-       
+
     <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -55,8 +55,8 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
 		</t:response>
     </t:test>
-    
-    
+
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -69,7 +69,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-        	
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -82,7 +82,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -93,8 +93,8 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account2.mta.server"/>
 		</t:response>
     </t:test>
-    
-        	
+
+
 	<!-- find the IP address of the zimbra server>
 	<t:staftask required="true">
 		<t:request>
@@ -106,14 +106,14 @@
 			<t:select file="stdout" regex="(?s).*inet addr:(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b).*" group="1" set="server.ip"/>
 		</t:response>
 	</t:staftask-->
-	
+
 </t:test_case>
 
 
 <t:finally areas="noncluster">
 
     <!-- After all tests have run, reset the mynetworks setting to the default -->
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -125,7 +125,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -139,8 +139,8 @@
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
 	<t:staftask >
 		<t:request>
 			<server>${mta.server}</server>
@@ -159,16 +159,16 @@
         </t:response>
     </t:test>
 
-	
+
 </t:finally>
 
 
 
-<t:test_case testcaseid="smtp_RelayForwarding_Network_01" type="bhr"  areas="smtp, noncluster" >
+<t:test_case testcaseid="smtp_RelayForwarding_Network_01" type="sanity"  areas="smtp, noncluster" >
     <t:objective>Verify zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=TRUE settings</t:objective>
     <t:steps>
     1. Login as the admin
-	2. Set zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=TRUE 
+	2. Set zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=TRUE
 	3. Restart the MTA (zmmtactl reload)
 	4. Send message from offnet to onnet using SMTP with SSL and TLS
     5. Verify message is accepted (2.0.0 ok)
@@ -207,9 +207,9 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT 600000</params>
 		</t:request>
 	</t:staftask>
- 
+
    <t:delay msec="5000" />
-         
+
    <!--
    < <t:smtpinjecttest>
         <t:smtpInjectRequest>
@@ -226,7 +226,7 @@
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
 	-->
-   
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account2.mta.server}</address>
@@ -240,7 +240,7 @@
         	<t:select match="${smtpServer.response.ok}"/>
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
-   
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account2.mta.server}</address>
@@ -251,15 +251,15 @@
         	<t:select match="${smtpServer.response.ok}"/>
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
-   
+
 
 </t:test_case>
 
-<t:test_case testcaseid="smtp_RelayForwarding_Network_02" type="bhr"  areas="smtp, noncluster" >
+<t:test_case testcaseid="smtp_RelayForwarding_Network_02" type="sanity"  areas="smtp, noncluster" >
     <t:objective>Verify zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=FALSE settings</t:objective>
     <t:steps>
     1. Login as the admin
-	2. Set zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=FALSE 
+	2. Set zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=FALSE
 	3. Restart the MTA (zmmtactl reload)
 	4. Send message from offnet to onnet using SMTP with SSL and TLS
     5. Verify message is accepted (2.0.0 ok)
@@ -300,7 +300,7 @@
 	</t:staftask>
 
    <t:delay msec="5000" />
-   
+
    <!--
 
    <t:smtpinjecttest>
@@ -318,7 +318,7 @@
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
 	-->
-   
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account2.mta.server}</address>
@@ -332,7 +332,7 @@
         	<t:select match="${smtpServer.response.ok}"/>
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
-   
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account2.mta.server}</address>
@@ -343,15 +343,15 @@
         	<t:select match="${smtpServer.response.ok}"/>
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
-   
+
 
 </t:test_case>
 
-<t:test_case testcaseid="smtp_RelayForwarding_Network_03" type="bhr"  areas="smtp, noncluster" >
+<t:test_case testcaseid="smtp_RelayForwarding_Network_03" type="sanity"  areas="smtp, noncluster" >
     <t:objective>Verify zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE settings</t:objective>
     <t:steps>
     1. Login as the admin
-	2. Set zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE 
+	2. Set zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE
 	3. Restart the MTA (zmmtactl reload)
 	4. Send message from offnet to onnet using SMTP with SSL and TLS
     5. Verify message is accepted (2.0.0 ok)
@@ -393,7 +393,7 @@
 
     <t:delay msec="5000" />
 
-   
+
 <!--   <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account2.mta.server}</address>
@@ -409,7 +409,7 @@
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
 	-->
-   
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account2.mta.server}</address>
@@ -423,7 +423,7 @@
         	<t:select match="${smtpServer.response.ok}"/>
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
-   
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account2.mta.server}</address>
@@ -434,15 +434,15 @@
         	<t:select match="${smtpServer.response.ok}"/>
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
-   
+
 
 </t:test_case>
 
-<t:test_case testcaseid="smtp_RelayForwarding_Network_04" type="bhr"  areas="smtp, noncluster" >
+<t:test_case testcaseid="smtp_RelayForwarding_Network_04" type="sanity"  areas="smtp, noncluster" >
     <t:objective>Verify zimbraMtaTlsSecurityLevel=none/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE settings</t:objective>
     <t:steps>
     1. Login as the admin
-	2. Set zimbraMtaTlsSecurityLevel=none/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE 
+	2. Set zimbraMtaTlsSecurityLevel=none/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE
 	3. Restart the MTA (zmmtactl reload)
 	4. Send message from offnet to onnet using SMTP with SSL and TLS
     5. Verify message is accepted (2.0.0 ok)
@@ -498,7 +498,7 @@
         	<t:select match="${smtpServer.response.ok}"/>
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
-   
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account2.mta.server}</address>
@@ -512,7 +512,7 @@
         	<t:select match="${smtpServer.response.ok}"/>
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
-   
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account2.mta.server}</address>
@@ -523,7 +523,7 @@
         	<t:select match="${smtpServer.response.ok}"/>
         </t:smtpInjectResponse>
     </t:smtpinjecttest>
-   
+
 
 </t:test_case>
 

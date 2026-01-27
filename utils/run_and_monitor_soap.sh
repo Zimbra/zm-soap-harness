@@ -1,12 +1,12 @@
 #!/bin/bash
-# 
+#
 # This Script can trigger the soap run and monitor it until completion.
-# This script also takes care for editing the conf/global.properties file 
+# This script also takes care for editing the conf/global.properties file
 # to set properties according to the current installation of zimbra
 # ######################################################################################
 function print_options {
     cat << HELP_EOF
-	"$0" 
+	"$0"
         options:
             --help			        Help
             -u, --admin-user        Admin user name (Default: Admin)
@@ -28,7 +28,7 @@ function main {
     NOTIFY_EMAIL="ganesh.anarse@syancor.com"
     HOSTNAME="$(hostname -f)"
     TEST_PATH="$dir_qa/soapvalidator/data/soapvalidator/Admin/Auth/AdminAuth-Basic.xml"
-    TEST_SUITE="BHR"
+    TEST_SUITE="Sanity"
     ZCS_VERSION="$(sudo su - zimbra -c 'zmcontrol -v')"
     ADMIN_USER="admin"
     TODAY="$(date +"%F")"
@@ -85,7 +85,7 @@ function main {
     if [[ -z "$NOTIFY_EMAIL" ]]; then
         echo "Warning: --notify-email is not set, No one will be notified upon completion.";
     fi
-    
+
     check_staf
     set_staf
     run_tests
@@ -135,9 +135,9 @@ function check_staf {
         run_staf "staf local service remove service SOAP;"
         run_staf "staf local service remove service LOG;"
         run_staf "staf local service remove service INJECT;"
-    else 
+    else
         echo -e "STAF not installed.\nInstalling & starting STAF on the server..."
-        update_dependencies && start_staf 
+        update_dependencies && start_staf
     fi
 }
 
@@ -289,7 +289,7 @@ function monitor_soap_run {
 }
 
 function send_email {
-    # NOTE: Env variables -> ENV_MAIL_FROM, ENV_MAIL_PASSWORD and ENV_SMTP_SERVER Must be set for 
+    # NOTE: Env variables -> ENV_MAIL_FROM, ENV_MAIL_PASSWORD and ENV_SMTP_SERVER Must be set for
     # Email to be sent out.
     email_file="$dir_bin/email.txt"
     attach_logs="$HOME/$TODAY-staf_cmd_logs.txt"

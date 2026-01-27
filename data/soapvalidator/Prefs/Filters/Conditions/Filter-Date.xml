@@ -64,15 +64,15 @@
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="FilterDate_01" type="bhr">
+<t:test_case testcaseid="FilterDate_01" type="sanity">
     <t:objective>Verify messages that match Date: are filtered</t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "Date before 20050607"
 			  3. Inject a message from with very old date
 			  4. Verify the message is filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -85,18 +85,18 @@
 
         </t:response>
     </t:test>
-	   
+
 	 <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                        	 <dateTest dateComparison="before" d="1120630458"/>              	     
+                        	 <dateTest dateComparison="before" d="1120630458"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -106,7 +106,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -139,15 +139,15 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="FilterDate_02" type="bhr">
+<t:test_case testcaseid="FilterDate_02" type="sanity">
     <t:objective>Verify messages that do not match Date: are not filtered</t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "Date10/12/2006:"
 			  3. Send a message to itself
 			  4. Verify the message is not filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -160,19 +160,19 @@
 
         </t:response>
     </t:test>
-	   
-	   
+
+
 	 <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                            <dateTest dateComparison="before" d="1165904114"/>                          
+                            <dateTest dateComparison="before" d="1165904114"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -182,7 +182,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>

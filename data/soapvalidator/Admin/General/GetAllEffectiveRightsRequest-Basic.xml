@@ -30,7 +30,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test required="true">
         <t:request>
             <GetAllEffectiveRightsRequest xmlns="urn:zimbraAdmin">
@@ -66,10 +66,10 @@
            	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='global']/admin:all/admin:setAttrs" />
            	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='dl']/admin:all/admin:setAttrs" />
            	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='xmppcomponent']/admin:all/admin:setAttrs" />
-           	
+
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
@@ -86,7 +86,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
       <t:test id="create_account1"  depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -100,8 +100,8 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
-    
+
+
      <t:test required="true">
         <t:request>
             <GetAllEffectiveRightsRequest xmlns="urn:zimbraAdmin">
@@ -119,10 +119,10 @@
            	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='dl']" />
            	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='xmppcomponent']" />
       </t:response>
-      </t:test>  
+      </t:test>
  </t:test_case>
 
-<t:test_case testcaseid="GetAllEffectiveRightsRequest03" type="bhr">
+<t:test_case testcaseid="GetAllEffectiveRightsRequest03" type="sanity">
 <t:objective>GetAllEffectiveRightsRequest on non- admin user account</t:objective>
   <t:test required="true">
         <t:request>
@@ -135,7 +135,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
       <t:test id="create_account2"  depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -148,8 +148,8 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
-    
+
+
      <t:test required="true">
         <t:request>
             <GetAllEffectiveRightsRequest xmlns="urn:zimbraAdmin">
@@ -159,12 +159,12 @@
         <t:response>
           <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
       </t:response>
-      </t:test>  
-      
+      </t:test>
+
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAllEffectiveRightsRequest04" type="bhr">
+<t:test_case testcaseid="GetAllEffectiveRightsRequest04" type="sanity">
 <t:objective>GetAllEffectiveRightsRequest on non existing account</t:objective>
 
  <t:test required="true">
@@ -178,9 +178,9 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
-    
+
+
+
      <t:test required="true">
         <t:request>
             <GetAllEffectiveRightsRequest xmlns="urn:zimbraAdmin">
@@ -190,8 +190,8 @@
         <t:response>
           <t:select path="//zimbra:Code" match="service.PERM_DENIED" />
       </t:response>
-      </t:test>  
-      
+      </t:test>
+
 </t:test_case>
 
 </t:tests>

@@ -11,16 +11,16 @@
 <t:property name="msg03.file" value="${root}/lmtp-to-null.txt"/>
 <t:property name="msg04.file" value="${root}/bug15598.txt"/>
 
-<t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>    
+<t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject2.valid" value="Subject${TIME}${COUNTER}"/>
-<t:property name="subject3.valid" value="Subject${TIME}${COUNTER}"/>    
+<t:property name="subject3.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject4a.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject4b.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject4c.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject4d.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject4e.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject4f.valid" value="Subject${TIME}${COUNTER}"/>
-<t:property name="subject4g.valid" value="Subject${TIME}${COUNTER}"/>    
+<t:property name="subject4g.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject5a.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject5b.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject5c.valid" value="Subject${TIME}${COUNTER}"/>
@@ -36,11 +36,11 @@
 <t:property name="addr4.invalid" value="foo@  ${defaultdomain.name}"/>
 <t:property name="addr5.invalid" value="foo${defaultdomain.name}"/>
 <t:property name="addr6.invalid" value="@${defaultdomain.name}"/>
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
-    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -49,16 +49,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acct1Setup_lmtp_InvalidMime" type="always">
     <t:objective>create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create a test account        
+             2. Create a test account
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -70,7 +70,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -83,7 +83,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
@@ -91,7 +91,7 @@
 <t:test_case testcaseid="acctSetup2_lmtp_InvalidMime" type="always">
     <t:objective>create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create a test account        
+             2. Create a test account
     </t:steps>
 
     <t:test required="true">
@@ -107,18 +107,18 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="lmtp_invalid_MIME1" type="sanity">
+
+
+<t:test_case testcaseid="lmtp_invalid_MIME1" type="functional">
     <t:objective>Verify a message with blank subject</t:objective>
-    <t:steps>1. Upload a message 
+    <t:steps>1. Upload a message
              2. Login to account
-             3. Search the message  
+             3. Search the message
              3. Get message
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -156,12 +156,12 @@
     </t:test>
 
 </t:test_case>
-    
-    
-<t:test_case testcaseid="lmtp_invalid_MIME2" type="sanity" bugids="59">
+
+
+<t:test_case testcaseid="lmtp_invalid_MIME2" type="functional" bugids="59">
     <t:objective>Verify a message with blank from</t:objective>
-    <t:steps>1. Upload a message              
-             2. Search the message       
+    <t:steps>1. Upload a message
+             2. Search the message
              3. Get message
     </t:steps>
 
@@ -220,11 +220,11 @@
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="lmtp_invalid_MIME3" type="sanity">
+
+<t:test_case testcaseid="lmtp_invalid_MIME3" type="functional">
     <t:objective>Verify a message with blank to field </t:objective>
     <t:steps>1. Upload a message with blank to field
-             2. Search the message 
+             2. Search the message
              3. Get message
     </t:steps>
 
@@ -234,8 +234,8 @@
             <to>${account1.name}</to>
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
-            <modify>                
-                <header a="From">First Last ${nonZimbraUser.name}</header>            
+            <modify>
+                <header a="From">First Last ${nonZimbraUser.name}</header>
                 <header a="subject">${subject3.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
@@ -264,13 +264,13 @@
         </t:response>
     </t:test>
 
-</t:test_case>   
+</t:test_case>
 
-    
-<t:test_case testcaseid="lmtp_invalid_MIME4" type="sanity">
+
+<t:test_case testcaseid="lmtp_invalid_MIME4" type="functional">
     <t:objective>Verify a message with invalid from field </t:objective>
     <t:steps>1. Upload a message with invalid values of from field
-             2. Search the message 
+             2. Search the message
              3. Get message
     </t:steps>
 
@@ -283,12 +283,12 @@
             <server>${test_acct1.server}</server>
             <modify>
                 <header a="To">${account1.name}</header>
-                <header a="From">${addr1.invalid}</header>            
+                <header a="From">${addr1.invalid}</header>
                 <header a="subject">${subject4a.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-   
+
     <t:test id="lmtp_missingAttribute_MIME4a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -490,7 +490,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg4f.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_missingAttribute_MIME4e">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -502,13 +502,13 @@
         </t:response>
     </t:test>
 
-</t:test_case>   
- 
-        
-<t:test_case testcaseid="lmtp_invalid_MIME5" type="sanity">
+</t:test_case>
+
+
+<t:test_case testcaseid="lmtp_invalid_MIME5" type="functional">
     <t:objective>Verify a message with invalid to field </t:objective>
     <t:steps>1. Upload a message with invalid values of To field
-             2. Search the message  
+             2. Search the message
              3. Get message
     </t:steps>
 
@@ -520,8 +520,8 @@
             <to>${account1.name}</to>
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
-            <modify>                
-                <header a="To">${addr1.invalid}</header>            
+            <modify>
+                <header a="To">${addr1.invalid}</header>
                 <header a="subject">${subject5a.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
@@ -548,7 +548,7 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg5a.id}"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <!-- foo -->
     <t:mailinjecttest>
@@ -622,7 +622,7 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg5c.id}"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <!-- foo@ defaultdomain.com -->
     <t:mailinjecttest>
@@ -697,7 +697,7 @@
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg5e.id}"/>
         </t:response>
     </t:test>
-    
+
 
     <!-- @defaultdomain.com -->
     <t:mailinjecttest>
@@ -736,9 +736,9 @@
         </t:response>
     </t:test>
 
-</t:test_case>  
-     
-<t:test_case testcaseid="lmtp_invalid_MIME6" type="bhr" bugids="15598">
+</t:test_case>
+
+<t:test_case testcaseid="lmtp_invalid_MIME6" type="sanity" bugids="15598">
     <t:objective>Verify a message with invalid parts</t:objective>
 
 
@@ -771,10 +771,10 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 
-</t:test_case>  
-     
-        
+</t:test_case>
+
+
 </t:tests>

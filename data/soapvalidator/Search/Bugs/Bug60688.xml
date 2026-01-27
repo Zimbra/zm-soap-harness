@@ -37,14 +37,14 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account01.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 <!-- find out which folder ID is the inbox -->
     <t:test id="getFolderRequest">
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
         </t:response>
     </t:test>
@@ -57,19 +57,19 @@
 		<server>${test_acct.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${account01.id}</id>
-                <a n = "zimbraBatchedIndexingSize">1</a>             
+                <a n = "zimbraBatchedIndexingSize">1</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
 	<t:test required="true">
@@ -89,12 +89,12 @@
 
 
 
-<t:test_case testcaseid="mdate_SearchRequest1" type="bhr" bugids="60888" >
+<t:test_case testcaseid="mdate_SearchRequest1" type="sanity" bugids="60888" >
  <t:objective>
 	Verify that a search for mdate:cuurentdate returns the correct email message, which is injected just now.
  </t:objective>
  <t:steps>
-	An old email(5/15/2005) is injected that will current date as  mdate to the message 
+	An old email(5/15/2005) is injected that will current date as  mdate to the message
 	Search for date:currentdate
 	Search for mdate:currentdate
 	check that the correct message is returned by checking the subject
@@ -113,7 +113,7 @@
 		</t:select>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test id="searchRequest1">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -130,7 +130,7 @@
 
 	<t:test>
 	 <t:request>
-	   <SearchRequest xmlns="urn:zimbraMail" types="message">  
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
 		   <query>mdate:"${GENDATESTAMP}" is:anywhere</query>
 	   </SearchRequest>
 	 </t:request>
@@ -140,20 +140,20 @@
 		</t:select>
 	 </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="mdate_SearchRequest2" type="bhr" bugids="60888" >
+<t:test_case testcaseid="mdate_SearchRequest2" type="sanity" bugids="60888" >
  <t:objective>
 	Verify that a search for mdate:cuurentdate returns no message because there is no message newer than current date.
  </t:objective>
  <t:steps>
-	An old email(5/15/2005) is injected that will current date as  mdate to the message 	
+	An old email(5/15/2005) is injected that will current date as  mdate to the message
 	Search for mdate:before current-date
 	check that no message returned for this search
  </t:steps>
-	
+
 	<t:test id="searchRequest1">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -170,7 +170,7 @@
 
 	<t:test>
 	 <t:request>
-	   <SearchRequest xmlns="urn:zimbraMail" types="message">  
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
 		   <query>mdate:>${GENDATESTAMP}</query>
 	   </SearchRequest>
 	 </t:request>
@@ -179,19 +179,19 @@
 		</t:select>
 	 </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="mdate_SearchRequest3" type="bhr" bugids="60888" >
+<t:test_case testcaseid="mdate_SearchRequest3" type="sanity" bugids="60888" >
  <t:objective>
 	Verify that a search for mdate:cuurentdate - 1week returns no message becuase there is no message with mdate 1 week old for the user.
  </t:objective>
  <t:steps>
-	An old email(5/15/2005) is injected that will current date as  mdate to the message 
+	An old email(5/15/2005) is injected that will current date as  mdate to the message
 	Search for mdate: currentdate -1week
 	check that no message returned for this search
  </t:steps>
-	
+
 	<t:test id="searchRequest1">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -205,10 +205,10 @@
             </t:select>
         </t:response>
     </t:test>
-	
+
 	<t:test>
 	 <t:request>
-	   <SearchRequest xmlns="urn:zimbraMail" types="message">  
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
 		   <query>mdate:-1week</query>
 	   </SearchRequest>
 	 </t:request>
@@ -217,19 +217,19 @@
 		</t:select>
 	 </t:response>
 	</t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="mdate_SearchRequest4" type="bhr" bugids="60888" >
+<t:test_case testcaseid="mdate_SearchRequest4" type="sanity" bugids="60888" >
  <t:objective>
 	Verify that a search for mdate:cuurentdate + 1week returns no message becuase there is no message with mdate: 1 week after for the user.
  </t:objective>
  <t:steps>
-	An old email(5/15/2005) is injected that will current date as  mdate to the message 
+	An old email(5/15/2005) is injected that will current date as  mdate to the message
 	Search for mdate: currentdate +1week
 	check that no message returned for this search
  </t:steps>
-	
+
 	<t:test id="searchRequest1">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -246,7 +246,7 @@
 
 	<t:test>
 	 <t:request>
-	   <SearchRequest xmlns="urn:zimbraMail" types="message">  
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
 		   <query>mdate:+1week</query>
 	   </SearchRequest>
 	 </t:request>
@@ -254,11 +254,11 @@
 		<t:select path="//mail:SearchResponse/mail:m" emptyset="1">
 		</t:select>
 	 </t:response>
-	</t:test>	
+	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="mdate_SearchRequest5" type="bhr" bugids="60888" >
+<t:test_case testcaseid="mdate_SearchRequest5" type="sanity" bugids="60888" >
  <t:objective>
 	Verify that a search for date:5/15/2005 returns the correct email message. Moved that message to the trash and and search based on mdate
  </t:objective>
@@ -280,8 +280,8 @@
             <t:select attr="id" set="message.id1"/>
             </t:select>
         </t:response>
-    </t:test>          
-    	
+    </t:test>
+
     <t:test >
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -292,10 +292,10 @@
             <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="^${message.id1}$"/>
         </t:response>
     </t:test>
-        
+
 	<t:test>
 	 <t:request>
-	   <SearchRequest xmlns="urn:zimbraMail" types="message">  
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
 		   <query>mdate:"${GENDATESTAMP}" is:anywhere</query>
 	   </SearchRequest>
 	 </t:request>
@@ -304,11 +304,11 @@
 			<t:select attr="su" match="^email02A$"/>
 		</t:select>
 	 </t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:test>
 	 <t:request>
-	   <SearchRequest xmlns="urn:zimbraMail" types="message">  
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
 		   <query>date:(05/15/2005) is:anywhere</query>
 	   </SearchRequest>
 	 </t:request>
@@ -317,8 +317,8 @@
 			<t:select attr="su" match="^email02A$"/>
 		</t:select>
 	 </t:response>
-	</t:test>	
-	
+	</t:test>
+
 </t:test_case>
 
 </t:tests>

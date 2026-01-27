@@ -24,7 +24,7 @@
     </t:test>
 
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
@@ -39,7 +39,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -76,7 +76,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -94,7 +94,7 @@
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="domain1.resource1.id"/>
 			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='zimbraMailHost']" set="domain1.resource1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -106,7 +106,7 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -132,7 +132,7 @@
         <t:response>
             <t:select path="//admin:SyncGalAccountResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${domain1.galaccount.server}"/>
 
@@ -152,7 +152,7 @@
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>${domain1.resource1.name}</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn" attr="id" set="domain1.galaccount.resource1.id"/>
@@ -160,9 +160,9 @@
     </t:test>
 
 </t:test_case>
- 
 
-<t:test_case testcaseid="GalAccount_Resources_SearchGalRequest_01" type="bhr"  bugids="41000">
+
+<t:test_case testcaseid="GalAccount_Resources_SearchGalRequest_01" type="sanity"  bugids="41000">
     <t:objective>Verify basic SyncGalResponse returns calendar resources</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -191,7 +191,7 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn"/>                        
+            <t:select path="//acct:SearchGalResponse/acct:cn"/>
         </t:response>
     </t:test>
 

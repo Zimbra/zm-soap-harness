@@ -35,7 +35,7 @@
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account.name}</name>
                 <password>${test_account.password}</password>
-                
+
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -43,13 +43,13 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account.server"/>
         </t:response>
 	 </t:test>
- </t:test_case>   
-    
-    <t:test_case testcaseid="bug83780" type="bhr" bugids="83780">
+ </t:test_case>
+
+    <t:test_case testcaseid="bug83780" type="sanity" bugids="83780">
     <t:objective>Test that zimbraAttachmentsViewInHtmlOnly is returned in GetInfoResponse</t:objective>
     <t:steps>1. Login to test_account
              2. Send GetInfoRequest.
-             3. Check zimbraAttachmentsViewInHtmlOnly is returned in GetInfoResponse.                    
+             3. Check zimbraAttachmentsViewInHtmlOnly is returned in GetInfoResponse.
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${test_account.server}"/>
@@ -69,7 +69,7 @@
 
     <t:test >
         <t:request>
-			<GetInfoRequest xmlns="urn:zimbraAccount" sections="attrs" />		
+			<GetInfoRequest xmlns="urn:zimbraAccount" sections="attrs" />
         </t:request>
         <t:response>
 			<t:select path="//acct:GetInfoResponse/acct:attrs/acct:attr[@name='zimbraAttachmentsViewInHtmlOnly']" />

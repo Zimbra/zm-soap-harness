@@ -99,7 +99,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetInfoRequest1" type="bhr" bugids="26254">
+<t:test_case testcaseid="GetInfoRequest1" type="sanity" bugids="26254">
 	<t:objective>Get info of account </t:objective>
 
 	<t:test>
@@ -107,14 +107,14 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:name"/> 
-			<t:select path="//acct:GetInfoResponse/acct:cos" attr="name" match="default"/> 
+			<t:select path="//acct:GetInfoResponse/acct:name"/>
+			<t:select path="//acct:GetInfoResponse/acct:cos" attr="name" match="default"/>
 		</t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="GetInfoRequest2" type="sanity" >
+<t:test_case testcaseid="GetInfoRequest2" type="functional" >
 	<t:objective> get info of account and verify the attributes </t:objective>
 
 	<t:test>
@@ -122,7 +122,7 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:name" match="${test_account1.name}"/> 
+			<t:select path="//acct:GetInfoResponse/acct:name" match="${test_account1.name}"/>
 		</t:response>
 	</t:test>
 
@@ -131,7 +131,7 @@
 
 
 
-<t:test_case testcaseid="GetInfoRequest3" type="sanity" >
+<t:test_case testcaseid="GetInfoRequest3" type="functional" >
 	<t:objective> Verify that the used field of GetInfoRequest is the same after reloging in </t:objective>
 
 	<t:test required="true">
@@ -152,7 +152,7 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:used" set="test_account1.used"/> 
+			<t:select path="//acct:GetInfoResponse/acct:used" set="test_account1.used"/>
 		</t:response>
 	</t:test>
 
@@ -175,13 +175,13 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:used" match="${test_account1.used}"/> 
+			<t:select path="//acct:GetInfoResponse/acct:used" match="${test_account1.used}"/>
 		</t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="GetInfoRequest4" type="sanity" >
+<t:test_case testcaseid="GetInfoRequest4" type="functional" >
 	<t:objective> Verify that the used field of GetInfoRequest is increased by the size of the message </t:objective>
 
 	<t:test required="true">
@@ -202,8 +202,8 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:name" match="${test_account1.name}"/> 
-			<t:select path="//acct:GetInfoResponse/acct:used" match="^0$"/> 
+			<t:select path="//acct:GetInfoResponse/acct:name" match="${test_account1.name}"/>
+			<t:select path="//acct:GetInfoResponse/acct:used" match="^0$"/>
 		</t:response>
 	</t:test>
 
@@ -228,13 +228,13 @@ Content Text
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:used" match="^3[\d]$"/> 
+			<t:select path="//acct:GetInfoResponse/acct:used" match="^3[\d]$"/>
 		</t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="GetInfoRequest5" type="sanity" bugids="4970">
+<t:test_case testcaseid="GetInfoRequest5" type="functional" bugids="4970">
 	<t:objective> Verify that the server should export version information </t:objective>
 	<t:steps>
 	1. Send GetInfoRequest
@@ -263,12 +263,12 @@ Content Text
 		</t:request>
 		<t:response>
 			<t:select path="//acct:GetInfoResponse">
-				<t:select path="//acct:version" match=".*\d+\.\d+\.\d+.*"/> 
-				<t:select path="//acct:version" match=".*[FOSS|NETWORK]"/> 
+				<t:select path="//acct:version" match=".*\d+\.\d+\.\d+.*"/>
+				<t:select path="//acct:version" match=".*[FOSS|NETWORK]"/>
 				<!-- As per bug #27129, we don't need to test below attributes. -->
-				<!--t:select path="//acct:version" attr="major" match="\d+"/> 
-				<t:select path="//acct:version" attr="minor" match="\d+"/> 
-				<t:select path="//acct:version" attr="macro" match="\d+"/--> 
+				<!--t:select path="//acct:version" attr="major" match="\d+"/>
+				<t:select path="//acct:version" attr="minor" match="\d+"/>
+				<t:select path="//acct:version" attr="macro" match="\d+"/-->
 			</t:select>
 		</t:response>
 	</t:test>
@@ -279,7 +279,7 @@ Content Text
 <t:property name="COS.name" value="cos${TIME}${COUNTER}"/>
 <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account2.password" value="${defaultpassword.value}"/>
-<t:test_case testcaseid="validateCOSattributes" bugids="zcs-8474" type="bhr">
+<t:test_case testcaseid="validateCOSattributes" bugids="zcs-8474" type="sanity">
 <t:objective>Validating cos attributes in getinfo</t:objective>
     <t:test id="admin_login" required="true" >
         <t:request>

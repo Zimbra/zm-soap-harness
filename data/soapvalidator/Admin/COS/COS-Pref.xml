@@ -68,22 +68,22 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="cos_pref01" type="bhr">
-    <t:objective> Create a COS with all valid input parameters </t:objective>   
-    <t:steps> 
+<t:test_case testcaseid="cos_pref01" type="sanity">
+    <t:objective> Create a COS with all valid input parameters </t:objective>
+    <t:steps>
               1. Create a COS with valid parameters
               2. Create an account in that COS
               3. Get account Information
               4. Verify that the preferences set in the cos is reflected in the account created in same cos
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name>${COS.name}</name>
                 <a n="cn">${COS.name}</a>
                 <a n="zimbraNotes">For test purpose</a>
-                <a n="description">New Cos</a>                            
+                <a n="description">New Cos</a>
                 <a n="zimbraPrefMailPollingInterval">5m</a>
                 <a n="zimbraPrefGroupMailBy">conversation</a>
                 <a n="zimbraPrefMailInitialSearch">in:inbox</a>
@@ -120,9 +120,9 @@
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>        
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -137,14 +137,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAdmin">
               <account by="name">${test_account1.name}</account>
         </GetAccountInfoRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//admin:GetAccountInfoResponse/admin:name" match="${test_account1.name}"/>
             <t:select path="//admin:GetAccountInfoResponse/admin:a[@n='zimbraId']" match="${test_accountid.id}"/>
         </t:response>
@@ -169,59 +169,59 @@
 
      <t:test >
         <t:request>
-            <GetPrefsRequest xmlns="urn:zimbraAccount">                
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
             </GetPrefsRequest>
         </t:request>
-        <t:response>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailPollingInterval']" match="5m"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefGroupMailBy']" match="conversation"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailInitialSearch']" match="in:inbox"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMessageViewHtmlPreferred']" match="${globals.true}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseTimeZoneListInCalendar']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarUseQuickAdd']" match="${globals.true}"/>           
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefImapSearchFoldersEnabled']" match="${globals.true}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefShowFragments']" match="${globals.true}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontSize']" match="12pt"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefIncludeSpamInSearch']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardIncludeOriginalText']" match="includeBody"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseKeyboardShortcuts']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarAlwaysShowMiniCal']" match="${globals.true}"/>                       
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailItemsPerPage']" match="25"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyInOriginalFormat']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontColor']" match="#000000"/>           
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontFamily']" match="Times New Roman"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefSentMailFolder']" match="sent"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailSignatureStyle']" match="outlook"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeInNewWindow']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefSaveToSent']" match="${globals.true}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefIncludeTrashInSearch']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeFormat']" match="text"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefAutoAddAddressEnabled']" match="${globals.false}"/>            
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailPollingInterval']" match="5m"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefGroupMailBy']" match="conversation"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailInitialSearch']" match="in:inbox"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMessageViewHtmlPreferred']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseTimeZoneListInCalendar']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarUseQuickAdd']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefImapSearchFoldersEnabled']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefShowFragments']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontSize']" match="12pt"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefIncludeSpamInSearch']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardIncludeOriginalText']" match="includeBody"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseKeyboardShortcuts']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarAlwaysShowMiniCal']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailItemsPerPage']" match="25"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyInOriginalFormat']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontColor']" match="#000000"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontFamily']" match="Times New Roman"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefSentMailFolder']" match="sent"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailSignatureStyle']" match="outlook"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeInNewWindow']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefSaveToSent']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefIncludeTrashInSearch']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeFormat']" match="text"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefAutoAddAddressEnabled']" match="${globals.false}"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarFirstDayOfWeek']" match="0"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyPrefixChar']" match="&gt;"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefShowSearchString']" match="${globals.false}"/>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefReplyIncludeOriginalText']" match="includeBody"/> 
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefReplyIncludeOriginalText']" match="includeBody"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarNotifyDelegatedChanges']" match="${globals.false}"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarInitialView']" match="workWeek"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefTimeZoneId']" match=".*(GMT-08.00).* Pacific Time .*(US &amp; Canada).* /Tijuana"/>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefDedupeMessagesSentToSelf']" match="dedupeNone"/>       
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefDedupeMessagesSentToSelf']" match="dedupeNone"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
- 
+
  <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
- <t:test_case testcaseid="cos_pref02" type="sanity" >
+
+ <t:test_case testcaseid="cos_pref02" type="functional" >
     <t:objective> Create a COS with all valid input parameters for calendar</t:objective>
-    <t:steps> 
+    <t:steps>
               1. Create a COS with valid parameters of preferences for calendar
               2. Create an account in that COS
               3. Get account Information
               4. Verify that the preferences set in the cos is reflected in the account created in same cos
     </t:steps>
-   
-<t:property name="authToken" value="${admin.authtoken}"/>    
+
+<t:property name="authToken" value="${admin.authtoken}"/>
 
     <t:test>
         <t:request>
@@ -229,19 +229,19 @@
                 <name>${COScal.name}</name>
                 <a n="cn">${COScal.name}</a>
                 <a n="zimbraNotes">For test purpose of calendar</a>
-                <a n="description">New Cos for calendar</a>                            
+                <a n="description">New Cos for calendar</a>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${globals.true}</a>
                 <a n="zimbraPrefCalendarUseQuickAdd">${globals.false}</a>
                 <a n="zimbraPrefCalendarAlwaysShowMiniCal">${globals.false}</a>
                 <a n="zimbraPrefCalendarFirstDayOfWeek">1</a>
                 <a n="zimbraPrefCalendarNotifyDelegatedChanges">${globals.true}</a>
-                <a n="zimbraPrefCalendarInitialView">month</a> 
+                <a n="zimbraPrefCalendarInitialView">month</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="coscal.id"/>        
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="coscal.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -256,14 +256,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAccount">
               <account by="name">${test_account2.name}</account>
         </GetAccountInfoRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account2.name}"/>
             <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account2.id}"/>
         </t:response>
@@ -287,53 +287,53 @@
 
      <t:test >
         <t:request>
-            <GetPrefsRequest xmlns="urn:zimbraAccount">                
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
             </GetPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseTimeZoneListInCalendar']" match="${globals.true}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarUseQuickAdd']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarAlwaysShowMiniCal']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarFirstDayOfWeek']" match="1"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarNotifyDelegatedChanges']" match="${globals.true}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarInitialView']" match="month"/>          
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseTimeZoneListInCalendar']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarUseQuickAdd']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarAlwaysShowMiniCal']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarFirstDayOfWeek']" match="1"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarNotifyDelegatedChanges']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarInitialView']" match="month"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
- <t:test_case testcaseid="cos_pref03" type="sanity" >
+
+ <t:test_case testcaseid="cos_pref03" type="functional" >
     <t:objective> Create a COS with all valid input parameters for preferences for mail</t:objective>
-    <t:steps> 
+    <t:steps>
               1. Create a COS with valid parameters of preferences for mail
               2. Create an account in that COS
               3. Get account Information
               4. Verify that the preferences set in the cos is reflected in the account created in same cos
     </t:steps>
-    
+
     <t:property name="authToken" value="${admin.authtoken}"/>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name>${COSmail.name}</name>
                 <a n="cn">${COSmail.name}</a>
                 <a n="zimbraNotes">For test purpose of mail</a>
-                <a n="description">New Cos for mail</a>                            
+                <a n="description">New Cos for mail</a>
                 <a n="zimbraPrefMailPollingInterval">10m</a>
                 <a n="zimbraPrefGroupMailBy">message</a>
                 <a n="zimbraPrefShowFragments">${globals.false}</a>
                 <a n="zimbraPrefMailItemsPerPage">10</a>
                 <a n="zimbraPrefSentMailFolder">drafts</a>
-                <a n="zimbraPrefComposeInNewWindow">${globals.true}</a> 
+                <a n="zimbraPrefComposeInNewWindow">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosmail.id"/>        
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosmail.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -348,14 +348,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAccount">
               <account by="name">${test_account3.name}</account>
         </GetAccountInfoRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account3.name}"/>
             <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account3.id}"/>
         </t:response>
@@ -379,52 +379,52 @@
 
      <t:test >
         <t:request>
-            <GetPrefsRequest xmlns="urn:zimbraAccount">                
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
             </GetPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailPollingInterval']" match="10m"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefGroupMailBy']" match="message"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefShowFragments']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailItemsPerPage']" match="10"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefSentMailFolder']" match="drafts"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeInNewWindow']" match="${globals.true}"/>          
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailPollingInterval']" match="10m"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefGroupMailBy']" match="message"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefShowFragments']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailItemsPerPage']" match="10"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefSentMailFolder']" match="drafts"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeInNewWindow']" match="${globals.true}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
-<t:test_case testcaseid="cos_pref04" type="sanity" >
+
+<t:test_case testcaseid="cos_pref04" type="functional" >
     <t:objective> Create a COS with all valid input parameters for preferences for search</t:objective>
-    <t:steps> 
+    <t:steps>
               1. Create a COS with valid parameters of preferences for search
               2. Create an account in that COS
               3. Get account Information
               4. Verify that the preferences set in the cos is reflected in the account created in same cos
     </t:steps>
-    
+
 <t:property name="authToken" value="${admin.authtoken}"/>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name>${COSsearch.name}</name>
                 <a n="cn">${COSsearch.name}</a>
                 <a n="zimbraNotes">For test purpose of search</a>
-                <a n="description">New Cos for search</a>                            
+                <a n="description">New Cos for search</a>
                 <a n="zimbraPrefMailInitialSearch">in:sent</a>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${globals.false}</a>
                 <a n="zimbraPrefIncludeSpamInSearch">${globals.true}</a>
                 <a n="zimbraPrefIncludeTrashInSearch">${globals.true}</a>
-                <a n="zimbraPrefShowSearchString">${globals.true}</a>                
+                <a n="zimbraPrefShowSearchString">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cossearch.id"/>        
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cossearch.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -439,14 +439,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAccount">
               <account by="name">${test_account4.name}</account>
         </GetAccountInfoRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account4.name}"/>
             <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account4.id}"/>
         </t:response>
@@ -469,48 +469,48 @@
 
      <t:test >
         <t:request>
-            <GetPrefsRequest xmlns="urn:zimbraAccount">                
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
             </GetPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailInitialSearch']" match="in:sent"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefImapSearchFoldersEnabled']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefIncludeSpamInSearch']" match="${globals.true}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefIncludeTrashInSearch']" match="${globals.true}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefShowSearchString']" match="${globals.true}"/>                      
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailInitialSearch']" match="in:sent"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefImapSearchFoldersEnabled']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefIncludeSpamInSearch']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefIncludeTrashInSearch']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefShowSearchString']" match="${globals.true}"/>
         </t:response>
     </t:test>
-    
-</t:test_case> 
+
+</t:test_case>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
-<t:test_case testcaseid="cos_pref05" type="sanity" >
+
+<t:test_case testcaseid="cos_pref05" type="functional" >
     <t:objective> Create a COS with all valid input parameters for preferences for contacts</t:objective>
-    <t:steps> 
+    <t:steps>
               1. Create a COS with valid parameters of preferences for contacts
               2. Create an account in that COS
               3. Get account Information
               4. Verify that the preferences set in the cos is reflected in the account created in same cos
     </t:steps>
-    
+
 <t:property name="authToken" value="${admin.authtoken}"/>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name>${COScontact.name}</name>
                 <a n="cn">${COScontact.name}</a>
                 <a n="zimbraNotes">For test purpose of contact</a>
-                <a n="description">New Cos for contact</a>                            
+                <a n="description">New Cos for contact</a>
                 <a n="zimbraPrefContactsPerPage">10</a>
-                <a n="zimbraPrefAutoAddAddressEnabled">${globals.true}</a>                          
+                <a n="zimbraPrefAutoAddAddressEnabled">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="coscontact.id"/>        
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="coscontact.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -525,14 +525,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAccount">
               <account by="name">${test_account5.name}</account>
         </GetAccountInfoRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account5.name}"/>
             <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account5.id}"/>
         </t:response>
@@ -555,48 +555,48 @@
 
      <t:test >
         <t:request>
-            <GetPrefsRequest xmlns="urn:zimbraAccount">                
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
             </GetPrefsRequest>
         </t:request>
-        <t:response>          
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefContactsPerPage']" match="10"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefAutoAddAddressEnabled']" match="${globals.true}"/>            
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefContactsPerPage']" match="10"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefAutoAddAddressEnabled']" match="${globals.true}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
-<t:test_case testcaseid="cos_pref06" type="sanity" >
+
+<t:test_case testcaseid="cos_pref06" type="functional" >
     <t:objective> Create a COS with all valid input parameters for preferences for format of the message</t:objective>
-    <t:steps> 
+    <t:steps>
               1. Create a COS with valid parameters of preferences for format of message
               2. Create an account in that COS
               3. Get account Information
               4. Verify that the preferences set in the cos is reflected in the account created in same cos
     </t:steps>
-    
-<t:property name="authToken" value="${admin.authtoken}"/>    
-    
+
+<t:property name="authToken" value="${admin.authtoken}"/>
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name>${COSformat.name}</name>
                 <a n="cn">${COSformat.name}</a>
                 <a n="zimbraNotes">For test purpose of format of the message</a>
-                <a n="description">New Cos for format of the message</a>                            
+                <a n="description">New Cos for format of the message</a>
                 <a n="zimbraPrefMessageViewHtmlPreferred">${globals.false}</a>
                 <a n="zimbraPrefHtmlEditorDefaultFontSize">14pt</a>
-                <a n="zimbraPrefHtmlEditorDefaultFontColor">1234</a> 
-                <a n="zimbraPrefHtmlEditorDefaultFontFamily">Arial</a>   
-                <a n="zimbraPrefComposeFormat">html</a>                            
+                <a n="zimbraPrefHtmlEditorDefaultFontColor">1234</a>
+                <a n="zimbraPrefHtmlEditorDefaultFontFamily">Arial</a>
+                <a n="zimbraPrefComposeFormat">html</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosformat.id"/>        
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosformat.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -611,14 +611,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAccount">
               <account by="name">${test_account6.name}</account>
         </GetAccountInfoRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account6.name}"/>
             <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account6.id}"/>
         </t:response>
@@ -641,50 +641,50 @@
 
      <t:test >
         <t:request>
-            <GetPrefsRequest xmlns="urn:zimbraAccount">                
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
             </GetPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMessageViewHtmlPreferred']" match="${globals.false}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontSize']" match="14pt"/>            
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMessageViewHtmlPreferred']" match="${globals.false}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontSize']" match="14pt"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontColor']" match="1234"/>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontFamily']" match="Arial"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeFormat']" match="html"/>                        
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefHtmlEditorDefaultFontFamily']" match="Arial"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeFormat']" match="html"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
-<t:test_case testcaseid="cos_pref07" type="sanity" >
+
+<t:test_case testcaseid="cos_pref07" type="functional" >
     <t:objective> Create a COS with all valid input parameters for preferences for reply and forward</t:objective>
-    <t:steps> 
+    <t:steps>
               1. Create a COS with valid parameters of preferences for reply and forward
               2. Create an account in that COS
               3. Get account Information
               4. Verify that the preferences set in the cos is reflected in the account created in same cos
     </t:steps>
-    
+
 <t:property name="authToken" value="${admin.authtoken}"/>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name>${COSrep.name}</name>
                 <a n="cn">${COSrep.name}</a>
                 <a n="zimbraNotes">For test purpose of forward and reply</a>
-                <a n="description">New Cos for forward and reply</a>                            
+                <a n="description">New Cos for forward and reply</a>
                 <a n="zimbraPrefForwardIncludeOriginalText">includeAsAttachment</a>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${globals.true}</a>
-                <a n="zimbraPrefForwardReplyPrefixChar">|</a> 
-                <a n="zimbraPrefReplyIncludeOriginalText">includeAsAttachment</a>                                         
+                <a n="zimbraPrefForwardReplyPrefixChar">|</a>
+                <a n="zimbraPrefReplyIncludeOriginalText">includeAsAttachment</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosrep.id"/>        
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosrep.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -699,14 +699,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAccount">
               <account by="name">${test_account7.name}</account>
         </GetAccountInfoRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account7.name}"/>
             <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account7.id}"/>
         </t:response>
@@ -729,50 +729,50 @@
 
      <t:test >
         <t:request>
-            <GetPrefsRequest xmlns="urn:zimbraAccount">                
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
             </GetPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardIncludeOriginalText']" match="includeAsAttachment"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyInOriginalFormat']" match="${globals.true}"/>            
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardIncludeOriginalText']" match="includeAsAttachment"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyInOriginalFormat']" match="${globals.true}"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyPrefixChar']" match="[|]"/>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefReplyIncludeOriginalText']" match="includeAsAttachment"/>                                    
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefReplyIncludeOriginalText']" match="includeAsAttachment"/>
         </t:response>
     </t:test>
-    
-</t:test_case>   
+
+</t:test_case>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
-<t:test_case testcaseid="cos_pref08" type="sanity" >
+
+<t:test_case testcaseid="cos_pref08" type="functional" >
     <t:objective>Create a COS with all valid input parameters for miscellaneous preferences</t:objective>
-    <t:steps> 
-              1. Create a COS with valid parameters of miscellaneous preferences 
+    <t:steps>
+              1. Create a COS with valid parameters of miscellaneous preferences
               2. Create an account in that COS
               3. Get account Information
               4. Verify that the preferences set in the cos is reflected in the account created in same cos
     </t:steps>
-    
+
 <t:property name="authToken" value="${admin.authtoken}"/>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name>${COSmisc.name}</name>
                 <a n="cn">${COSmisc.name}</a>
                 <a n="zimbraNotes">For test purpose of miscellaneous</a>
-                <a n="description">New Cos for miscellaneous</a>                            
+                <a n="description">New Cos for miscellaneous</a>
                 <a n="zimbraPrefUseKeyboardShortcuts">${globals.true}</a>
                 <a n="zimbraPrefMailSignatureStyle">internet</a>
-                <a n="zimbraPrefSaveToSent">${globals.false}</a> 
+                <a n="zimbraPrefSaveToSent">${globals.false}</a>
                 <a n="zimbraPrefTimeZoneId">Tijuana</a>
-                <a n="zimbraPrefDedupeMessagesSentToSelf">secondCopyifOnToOrCC</a>                                          
+                <a n="zimbraPrefDedupeMessagesSentToSelf">secondCopyifOnToOrCC</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosmisc.id"/>        
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosmisc.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test >
         <t:request>
@@ -787,14 +787,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct8.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAccount">
               <account by="name">${test_account8.name}</account>
         </GetAccountInfoRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account8.name}"/>
             <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account8.id}"/>
         </t:response>
@@ -817,19 +817,19 @@
 
      <t:test >
         <t:request>
-            <GetPrefsRequest xmlns="urn:zimbraAccount">                
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
             </GetPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseKeyboardShortcuts']" match="${globals.true}"/>            
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailSignatureStyle']" match="internet"/>            
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseKeyboardShortcuts']" match="${globals.true}"/>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefMailSignatureStyle']" match="internet"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefSaveToSent']" match="${globals.false}"/>
             <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefTimeZoneId']" match="Tijuana"/>
-            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefDedupeMessagesSentToSelf']" match="secondCopyifOnToOrCC"/>                                    
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefDedupeMessagesSentToSelf']" match="secondCopyifOnToOrCC"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-             
+
 </t:tests>

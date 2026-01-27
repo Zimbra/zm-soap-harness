@@ -49,13 +49,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest1" type="bhr" areas="dev_sanity">
+<t:test_case testcaseid="CreateCosRequest1" type="sanity" areas="dev_sanity">
     <t:objective> Create a COS with valid name </t:objective>
 
     <t:test id = "CreateCosRequest1a">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name}</name>        
+                <name xmlns="">${COS.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -67,13 +67,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest2" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest2" type="functional" >
     <t:objective> Create a COS with duplicate name</t:objective>
 
     <t:test depends="CreateCosRequest1a">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name}</name>        
+                <name xmlns="">${COS.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -133,20 +133,20 @@
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name2}"/>        
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name2}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest4" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest4" type="functional" >
     <t:objective>Create a COS with  blank name </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.blank}</name>        
+                <name xmlns="">${COS.blank}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -157,13 +157,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest5" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest5" type="functional" >
     <t:objective>Create a COS with  All space in name </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.space}</name>        
+                <name xmlns="">${COS.space}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -174,61 +174,61 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest6" type="functional" bugids="32512">
+<t:test_case testcaseid="CreateCosRequest6" type="regression" bugids="32512">
     <t:objective> Create a COS with  special char in name </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.spchar}${TIME}</name>        
+                <name xmlns="">${COS.spchar}${TIME}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse"/>        
+            <t:select path="//admin:CreateCosResponse"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">special"[-\\.]+",${TIME}</name>        
+                <name xmlns="">special"[-\\.]+",${TIME}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse"/>        
+            <t:select path="//admin:CreateCosResponse"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest7" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest7" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and invalid value for zimbraMailHostPool </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailHostPool" c="1">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
             <!-- Getting account.INVALID_ATTR_VALUE in place of proper response : build:20050609164754,
 			getting service.INVALID_REQUEST in build 5.0.6_GA_2300.RHEL4_20080514183540-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>           
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest8" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest8" type="functional" >
     <t:objective>Create a COS with valid name and blank value for zimbraMailHostPool </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailHostPool" c="1">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -240,13 +240,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest9" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest9" type="functional" >
     <t:objective>Create a COS with valid name and blank value for zimbraMailTrashLifetime </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailTrashLifetime">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -258,50 +258,50 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest10" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest10" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and text value for zimbraMailTrashLifetime </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailTrashLifetime">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
              <!-- Getting account.INVALID_ATTR_VALUE in place of proper response : build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/> 
-        </t:response>
-    </t:test> 
-
-</t:test_case>
-
-
-<t:test_case testcaseid="CreateCosRequest11" bugids="1502" type="functional" >
-    <t:objective>Create a COS with valid name and negative value for zimbraMailTrashLifetime </t:objective>
-    <t:test>
-        <t:request>
-            <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
-                <a n="zimbraMailTrashLifetime">-1d</a>
-            </CreateCosRequest>
-        </t:request>
-        <t:response>
-             <!-- Getting account.INVALID_ATTR_VALUE in place of proper response : build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/> 
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest12" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest11" bugids="1502" type="regression" >
+    <t:objective>Create a COS with valid name and negative value for zimbraMailTrashLifetime </t:objective>
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos${TIME}${COUNTER}</name>
+                <a n="zimbraMailTrashLifetime">-1d</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+             <!-- Getting account.INVALID_ATTR_VALUE in place of proper response : build:20050609164754-->
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCosRequest12" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and negative value for zimbraMailQuota </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailQuota">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -313,13 +313,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest13" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest13" type="functional" >
     <t:objective>Create a COS with valid name and blank value for zimbraMailQuota </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailQuota">${COS.blank}</a>
                 </CreateCosRequest>
         </t:request>
@@ -331,13 +331,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest14" bugids="1502" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest14" bugids="1502" type="functional" >
     <t:objective>Create a COS with valid name and some text for zimbraMailQuota </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailQuota">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -349,14 +349,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest15" bugids="1506" type="sanity" >
-    <t:objective>Create a COS with valid name and zimbraPasswordMinAge is greater than zimbraPasswordMaxAge 
+<t:test_case testcaseid="CreateCosRequest15" bugids="1506" type="functional" >
+    <t:objective>Create a COS with valid name and zimbraPasswordMinAge is greater than zimbraPasswordMaxAge
                  and negative values of zimbraPasswordMinAge and zimbraPasswordMaxAge</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordMaxAge">1</a>
                 <a n="zimbraPasswordMinAge">2</a>
             </CreateCosRequest>
@@ -369,7 +369,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordMaxAge">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -381,7 +381,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordMinAge">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -392,32 +392,32 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateCosRequest16" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest16" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and  negative value for zimbraContactMaxNumEntries </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraContactMaxNumEntries">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
              <!-- Getting account.INVALID_ATTR_VALUE in place of proper response : build:20050609164754-->
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/> 
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest17" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest17" type="functional" >
     <t:objective>Create a COS with valid name and  blank value for zimbraContactMaxNumEntries </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraContactMaxNumEntries">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -429,13 +429,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest18" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest18" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and  text value for zimbraContactMaxNumEntries </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraContactMaxNumEntries">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -443,18 +443,18 @@
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest19" bugids="1506" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest19" bugids="1506" type="functional" >
     <t:objective>Create a COS with valid name and zimbraPasswordMinLength is greater than zimbraPasswordMaxLength
                  and negative values of zimbraPasswordMinLength and zimbraPasswordMaxLength</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordMaxLength">1</a>
                 <a n="zimbraPasswordMinLength">2</a>
             </CreateCosRequest>
@@ -467,7 +467,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordMaxLength">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -479,7 +479,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordMinLength">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -491,13 +491,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest20" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest20" type="functional" >
     <t:objective>Create a COS with valid name and zimbraPasswordLocked = blank </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordLocked">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -509,31 +509,31 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest21" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest21" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and zimbraPasswordLocked = some text </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordLocked">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
-    </t:test>    
-        
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest22" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest22" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and zimbraMailMessageLifetime = negative value </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMessageLifetime">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -541,18 +541,18 @@
             <!-- Getting account.INVALID_ATTR_VALUE in place of proper response : build:20050609164754-->
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
-    </t:test>                        
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest23" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest23" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and zimbraMailMessageLifetime = invalid value as K doesn't exist </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMessageLifetime">23K</a>
             </CreateCosRequest>
         </t:request>
@@ -560,18 +560,18 @@
             <!-- Getting account.INVALID_ATTR_VALUE in place of proper response : build:20050609164754-->
             <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
         </t:response>
-    </t:test>                        
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest24" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest24" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraMailMessageLifetime = sometext </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMessageLifetime">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -584,17 +584,17 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest25" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest25" type="functional" >
     <t:objective>Create a COS with valid name and zimbraAttachmentsBlocked = blank  </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsBlocked">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
-        <t:response>                
+        <t:response>
             <t:select path="//admin:CreateCosResponse/admin:cos"/>
         </t:response>
     </t:test>
@@ -602,13 +602,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest26" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest26" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraAttachmentsBlocked = Some text  </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsBlocked">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -620,12 +620,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest27" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest27" type="functional" >
     <t:objective>Create a COS with valid name and zimbraAttachmentsViewInHtmlOnly = blank  </t:objective>
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsViewInHtmlOnly">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -637,31 +637,31 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest28" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest28" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraAttachmentsViewInHtmlOnly = Some text  </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsViewInHtmlOnly">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest29" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest29" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraAuthTokenLifetime = blank </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAuthTokenLifetime">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -673,12 +673,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest30" bugids="1502" type="functional">
+<t:test_case testcaseid="CreateCosRequest30" bugids="1502" type="regression">
     <t:objective>Create a COS with valid name and zimbraAuthTokenLifetime = negative </t:objective>
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAuthTokenLifetime">-1d</a>
             </CreateCosRequest>
         </t:request>
@@ -691,13 +691,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest31" bugids="1502" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest31" bugids="1502" type="functional" >
     <t:objective>Create a COS with valid name and zimbraAuthTokenLifetime = Some text  </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAuthTokenLifetime">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -710,12 +710,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest32" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest32" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraAdminAuthTokenLifetime = blank </t:objective>
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAuthTokenLifetime">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -723,17 +723,17 @@
             <t:select path="//admin:CreateCosResponse/admin:cos"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest33" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest33" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and zimbraAdminAuthTokenLifetime = negative  </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAdminAuthTokenLifetime">-1d</a>
             </CreateCosRequest>
         </t:request>
@@ -746,13 +746,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest34" bugids="1502" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest34" bugids="1502" type="functional" >
     <t:objective>Create a COS with valid name and zimbraAdminAuthTokenLifetime = Some text  </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAdminAuthTokenLifetime">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -765,13 +765,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest35" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest35" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraPrefContactsPerPage = blank </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsPerPage">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -783,13 +783,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest36" bugids="1502" type="functional" >
+<t:test_case testcaseid="CreateCosRequest36" bugids="1502" type="regression" >
     <t:objective>Create a COS with valid name and zimbraPrefContactsPerPage = negative  </t:objective>
 
-    <t:test>    
+    <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsPerPage">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -801,13 +801,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest37" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest37" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraPrefContactsPerPage = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsPerPage">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -819,13 +819,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest38" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest38" type="functional" >
     <t:objective>Create a COS with valid name and zimbraPrefSaveToSent = blank   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSaveToSent">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -837,13 +837,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest39" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest39" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraPrefSaveToSent = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSaveToSent">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -855,13 +855,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest40" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest40" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureContactsEnabled = Blank  </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureContactsEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -873,13 +873,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest41" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest41" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureContactsEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureContactsEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -891,13 +891,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest42" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest42" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureTaggingEnabled = blank   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureTaggingEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -909,13 +909,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest43" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest43" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureTaggingEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureTaggingEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -927,13 +927,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest44" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest44" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureAdvancedSearchEnabled = blank   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureAdvancedSearchEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -950,13 +950,13 @@
 
      Obsolete Testcase since zimbraFeatureAdvancedSearchEnabled is deprecated
 
-<t:test_case testcaseid="CreateCosRequest45" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest45" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureAdvancedSearchEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureAdvancedSearchEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -968,13 +968,13 @@
 </t:test_case>
 -->
 
-<t:test_case testcaseid="CreateCosRequest46" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest46" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureSavedSearchesEnabled = blank   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureSavedSearchesEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -986,13 +986,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest47" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest47" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureSavedSearchesEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureSavedSearchesEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1003,13 +1003,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateCosRequest48" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest48" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureConversationsEnabled = blank   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureConversationsEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1021,13 +1021,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest49" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest49" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureConversationsEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureConversationsEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1039,13 +1039,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest50" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest50" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureChangePasswordEnabled = blank   </t:objective>
 
     <t:test>
          <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureChangePasswordEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1057,13 +1057,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest51" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest51" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureChangePasswordEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureChangePasswordEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1075,13 +1075,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest52" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest52" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureInitialSearchPreferenceEnabled = blank   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1093,13 +1093,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest53" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest53" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureInitialSearchPreferenceEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1111,13 +1111,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest54" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest54" type="functional" >
      <t:objective>Create a COS with valid name and zimbraFeatureFiltersEnabled = blank   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureFiltersEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1129,13 +1129,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest55" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest55" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureFiltersEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureFiltersEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1147,13 +1147,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest56" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest56" type="functional" >
      <t:objective>Create a COS with valid name and zimbraFeatureGalEnabled = blank   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureGalEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1165,13 +1165,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest57" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest57" bugids="1503" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureGalEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureGalEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1183,13 +1183,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest58" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest58" type="functional" >
     <t:objective>Create a COS with valid name and zimbraFeatureCalendarEnabled = blank   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureCalendarEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1201,13 +1201,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest59" bugids="1503" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest59" bugids="1503" type="functional" >
     <t:objective> Create a COS with valid name and zimbraFeatureCalendarEnabled = Some text   </t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureCalendarEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1219,37 +1219,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest60" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest60" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefDedupeMessagesSentToSelf</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefDedupeMessagesSentToSelf">dedupeNone</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefDedupeMessagesSentToSelf">secondCopyifOnToOrCC</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefDedupeMessagesSentToSelf">dedupeAll</a>
             </CreateCosRequest>
         </t:request>
@@ -1257,17 +1257,17 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest61" type="functional" >
+<t:test_case testcaseid="CreateCosRequest61" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefDedupeMessagesSentToSelf</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefDedupeMessagesSentToSelf">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1279,7 +1279,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefDedupeMessagesSentToSelf">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -1291,7 +1291,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefDedupeMessagesSentToSelf">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1303,7 +1303,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefDedupeMessagesSentToSelf">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -1315,7 +1315,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefDedupeMessagesSentToSelf">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -1327,7 +1327,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefDedupeMessagesSentToSelf">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -1339,37 +1339,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest62" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest62" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefCalendarInitialView</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">day</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">week</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">workWeek</a>
             </CreateCosRequest>
         </t:request>
@@ -1381,7 +1381,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">month</a>
             </CreateCosRequest>
         </t:request>
@@ -1389,17 +1389,17 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest63" type="functional" >
+<t:test_case testcaseid="CreateCosRequest63" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefCalendarInitialView</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1411,7 +1411,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -1423,7 +1423,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1435,7 +1435,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -1447,7 +1447,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -1459,7 +1459,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefCalendarInitialView">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -1471,37 +1471,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest64" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest64" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraMailMinPollingInterval</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">2m</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">2h</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">2s</a>
             </CreateCosRequest>
         </t:request>
@@ -1513,7 +1513,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">2d</a>
             </CreateCosRequest>
         </t:request>
@@ -1525,13 +1525,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest65" type="functional" >
+<t:test_case testcaseid="CreateCosRequest65" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraMailMinPollingInterval</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1543,7 +1543,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -1555,7 +1555,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1567,7 +1567,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -1579,7 +1579,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -1591,7 +1591,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailMinPollingInterval">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -1603,43 +1603,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest66" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest66" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefShowFragments</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowFragments">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowFragments">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest67" type="functional" >
+<t:test_case testcaseid="CreateCosRequest67" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefShowFragments</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowFragments">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1651,7 +1651,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowFragments">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -1663,7 +1663,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowFragments">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1675,7 +1675,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowFragments">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -1687,7 +1687,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowFragments">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -1699,7 +1699,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowFragments">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -1711,97 +1711,97 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest68" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest68" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraNewMailNotificationSubject</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraNewMailNotificationSubject">New message received at RECIPIENT_ADDRESS</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest69" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest69" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraNewMailNotificationBody</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraNewMailNotificationBody">New message received at RECIPIENT_ADDRESS</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest70" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest70" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraNewMailNotificationFrom</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraNewMailNotificationFrom">postmaster@ RECIPIENT_DOMAIN</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest71" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest71" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefMessageViewHtmlPreferred</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMessageViewHtmlPreferred">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMessageViewHtmlPreferred">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest72" type="functional" >
+<t:test_case testcaseid="CreateCosRequest72" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefMessageViewHtmlPreferred</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMessageViewHtmlPreferred">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1813,7 +1813,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMessageViewHtmlPreferred">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -1825,7 +1825,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMessageViewHtmlPreferred">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1837,7 +1837,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMessageViewHtmlPreferred">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -1849,7 +1849,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMessageViewHtmlPreferred">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -1861,7 +1861,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMessageViewHtmlPreferred">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -1873,37 +1873,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest73" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest73" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefMailPollingInterval</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">2m</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">2h</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">2s</a>
             </CreateCosRequest>
         </t:request>
@@ -1915,7 +1915,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">2d</a>
             </CreateCosRequest>
         </t:request>
@@ -1927,13 +1927,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest74" type="functional" >
+<t:test_case testcaseid="CreateCosRequest74" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefMailPollingInterval</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -1945,7 +1945,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -1957,7 +1957,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -1969,7 +1969,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -1981,7 +1981,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -1993,7 +1993,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailPollingInterval">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -2005,37 +2005,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest75" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest75" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefTimeZoneId</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">2m</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">2h</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">2s</a>
             </CreateCosRequest>
         </t:request>
@@ -2047,7 +2047,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">2d</a>
             </CreateCosRequest>
         </t:request>
@@ -2059,13 +2059,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest76" type="functional" >
+<t:test_case testcaseid="CreateCosRequest76" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefTimeZoneId</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -2077,7 +2077,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -2089,7 +2089,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -2101,7 +2101,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -2113,7 +2113,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -2125,7 +2125,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefTimeZoneId">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -2137,43 +2137,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest77" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest77" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefShowSearchString</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowSearchString">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowSearchString">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest78" type="functional" >
+<t:test_case testcaseid="CreateCosRequest78" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefShowSearchString</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowSearchString">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -2185,7 +2185,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowSearchString">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -2197,7 +2197,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowSearchString">${COS.sometext}</a>
             </CreateCosRequest>
             </t:request>
@@ -2209,7 +2209,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowSearchString">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -2221,7 +2221,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowSearchString">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -2233,7 +2233,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefShowSearchString">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -2245,43 +2245,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest79" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest79" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraFeatureInitialSearchPreferenceEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest80" type="functional" >
+<t:test_case testcaseid="CreateCosRequest80" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraFeatureInitialSearchPreferenceEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -2293,7 +2293,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -2305,7 +2305,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -2317,7 +2317,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -2329,7 +2329,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -2341,7 +2341,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureInitialSearchPreferenceEnabled">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -2353,43 +2353,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest81" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest81" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefComposeFormat</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeFormat">text</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeFormat">html</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest82" type="functional" >
+<t:test_case testcaseid="CreateCosRequest82" type="regression" >
 <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefComposeFormat</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeFormat">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -2401,7 +2401,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeFormat">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -2413,7 +2413,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeFormat">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -2425,7 +2425,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeFormat">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -2437,7 +2437,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeFormat">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -2449,7 +2449,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeFormat">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -2461,43 +2461,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest83" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest83" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraImapEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraImapEnabled">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraImapEnabled">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest84" type="functional" >
+<t:test_case testcaseid="CreateCosRequest84" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraImapEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraImapEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -2509,7 +2509,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraImapEnabled">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -2521,7 +2521,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraImapEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -2533,7 +2533,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraImapEnabled">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -2545,7 +2545,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraImapEnabled">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -2557,7 +2557,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraImapEnabled">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -2569,43 +2569,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest85" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest85" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefGroupMailBy</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefGroupMailBy">conversation</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefGroupMailBy">message</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest86" type="functional" >
+<t:test_case testcaseid="CreateCosRequest86" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefGroupMailBy</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefGroupMailBy">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -2617,7 +2617,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefGroupMailBy">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -2629,7 +2629,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefGroupMailBy">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -2641,7 +2641,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefGroupMailBy">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -2653,7 +2653,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefGroupMailBy">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -2665,7 +2665,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefGroupMailBy">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -2677,55 +2677,55 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest87" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest87" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefForwardIncludeOriginalText</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardIncludeOriginalText">includeAsAttachment</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardIncludeOriginalText">includeBody</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardIncludeOriginalText">includeBodyWithPrefix</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest88" type="functional" >
+<t:test_case testcaseid="CreateCosRequest88" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefForwardIncludeOriginalText</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardIncludeOriginalText">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -2737,7 +2737,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardIncludeOriginalText">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -2749,7 +2749,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardIncludeOriginalText">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -2761,7 +2761,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardIncludeOriginalText">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -2773,7 +2773,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardIncludeOriginalText">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -2785,7 +2785,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardIncludeOriginalText">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -2797,43 +2797,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest89" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest89" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefUseKeyboardShortcuts</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseKeyboardShortcuts">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseKeyboardShortcuts">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest90" type="functional" >
+<t:test_case testcaseid="CreateCosRequest90" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefUseKeyboardShortcuts</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseKeyboardShortcuts">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -2845,7 +2845,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseKeyboardShortcuts">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -2857,7 +2857,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseKeyboardShortcuts">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -2869,7 +2869,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseKeyboardShortcuts">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -2881,7 +2881,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseKeyboardShortcuts">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -2893,7 +2893,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseKeyboardShortcuts">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -2905,67 +2905,67 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest91" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest91" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraMailIdleSessionTimeout</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">2h</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">2s</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">2m</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">2d</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest92" type="functional" >
+<t:test_case testcaseid="CreateCosRequest92" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraMailIdleSessionTimeout</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -2977,7 +2977,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -2989,7 +2989,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3001,7 +3001,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -3013,7 +3013,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -3025,7 +3025,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailIdleSessionTimeout">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -3037,43 +3037,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest93" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest93" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefMailItemsPerPage</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailItemsPerPage">25</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailItemsPerPage">10000</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest94" type="functional" >
+<t:test_case testcaseid="CreateCosRequest94" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefMailItemsPerPage</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailItemsPerPage">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -3085,7 +3085,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailItemsPerPage">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -3097,7 +3097,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailItemsPerPage">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3109,7 +3109,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailItemsPerPage">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -3121,7 +3121,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailItemsPerPage">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -3133,7 +3133,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailItemsPerPage">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -3151,24 +3151,24 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
@@ -3181,7 +3181,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -3193,7 +3193,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -3205,7 +3205,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3217,7 +3217,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -3229,7 +3229,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -3241,7 +3241,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyInOriginalFormat">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -3253,43 +3253,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest97" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest97" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefMailSignatureStyle</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailSignatureStyle">outlook</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailSignatureStyle">internet</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest98" type="functional" >
+<t:test_case testcaseid="CreateCosRequest98" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefMailSignatureStyle</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailSignatureStyle">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -3301,7 +3301,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailSignatureStyle">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -3313,7 +3313,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailSignatureStyle">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3325,7 +3325,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailSignatureStyle">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -3337,7 +3337,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailSignatureStyle">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -3349,7 +3349,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailSignatureStyle">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -3361,43 +3361,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest99" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest99" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefComposeInNewWindow</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeInNewWindow">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeInNewWindow">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest100" type="functional" >
+<t:test_case testcaseid="CreateCosRequest100" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefComposeInNewWindow</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeInNewWindow">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -3409,7 +3409,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeInNewWindow">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -3421,7 +3421,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeInNewWindow">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3433,7 +3433,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeInNewWindow">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -3445,7 +3445,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeInNewWindow">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -3457,7 +3457,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefComposeInNewWindow">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -3469,43 +3469,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest101" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest101" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefAutoAddAddressEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefAutoAddAddressEnabled">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefAutoAddAddressEnabled">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest102" type="functional" >
+<t:test_case testcaseid="CreateCosRequest102" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefAutoAddAddressEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefAutoAddAddressEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -3517,7 +3517,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefAutoAddAddressEnabled">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -3529,7 +3529,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefAutoAddAddressEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3541,7 +3541,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefAutoAddAddressEnabled">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -3553,7 +3553,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefAutoAddAddressEnabled">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -3565,7 +3565,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefAutoAddAddressEnabled">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -3577,31 +3577,31 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest103" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest103" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefForwardReplyPrefixChar</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyPrefixChar">></a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest104" type="functional" >
+<t:test_case testcaseid="CreateCosRequest104" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefForwardReplyPrefixChar</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyPrefixChar">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -3613,7 +3613,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyPrefixChar">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -3627,7 +3627,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyPrefixChar">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3639,7 +3639,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyPrefixChar">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -3651,7 +3651,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyPrefixChar">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -3663,7 +3663,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefForwardReplyPrefixChar">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -3675,79 +3675,79 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest105" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest105" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefReplyIncludeOriginalText</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">includeAsAttachment</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">includeBody</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">includeBodyWithPrefix</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">includeNone</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">includeSmart</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest106" type="functional" >
+<t:test_case testcaseid="CreateCosRequest106" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefReplyIncludeOriginalText</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -3759,7 +3759,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -3771,7 +3771,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3783,7 +3783,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -3795,7 +3795,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -3807,7 +3807,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefReplyIncludeOriginalText">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -3819,43 +3819,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest107" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest107" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefMailInitialSearch</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailInitialSearch">in:${globals.inbox}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailInitialSearch">in:${globals.sent}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest108" type="functional" >
+<t:test_case testcaseid="CreateCosRequest108" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefMailInitialSearch</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailInitialSearch">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -3867,7 +3867,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailInitialSearch">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -3879,7 +3879,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailInitialSearch">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3891,7 +3891,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailInitialSearch">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -3903,7 +3903,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailInitialSearch">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -3915,7 +3915,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefMailInitialSearch">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -3927,43 +3927,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest109" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest109" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefUseTimeZoneListInCalendar</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest110" type="functional" >
+<t:test_case testcaseid="CreateCosRequest110" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefUseTimeZoneListInCalendar</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -3975,7 +3975,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -3987,7 +3987,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -3999,7 +3999,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -4011,7 +4011,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -4023,7 +4023,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefUseTimeZoneListInCalendar">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -4035,43 +4035,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest111" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest111" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefImapSearchFoldersEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest112" type="functional" >
+<t:test_case testcaseid="CreateCosRequest112" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefImapSearchFoldersEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -4083,7 +4083,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -4095,7 +4095,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -4107,7 +4107,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -4119,7 +4119,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -4131,7 +4131,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefImapSearchFoldersEnabled">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -4143,43 +4143,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest113" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest113" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraFeatureHtmlComposeEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureHtmlComposeEnabled">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureHtmlComposeEnabled">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest114" type="functional" >
+<t:test_case testcaseid="CreateCosRequest114" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraFeatureHtmlComposeEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -4191,7 +4191,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -4203,7 +4203,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -4215,7 +4215,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -4227,7 +4227,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -4239,7 +4239,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraFeatureHtmlComposeEnabled">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -4251,67 +4251,67 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest115" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest115" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraMailSpamLifetime</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">2d</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">2h</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">2m</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">2s</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest116" type="functional" >
+<t:test_case testcaseid="CreateCosRequest116" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraMailSpamLifetime</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -4323,7 +4323,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -4335,7 +4335,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -4347,7 +4347,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -4359,7 +4359,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -4371,7 +4371,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraMailSpamLifetime">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -4383,43 +4383,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest117" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest117" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefIncludeSpamInSearch</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeSpamInSearch">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeSpamInSearch">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest118" type="functional" >
+<t:test_case testcaseid="CreateCosRequest118" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefIncludeSpamInSearch</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeSpamInSearch">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -4431,7 +4431,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeSpamInSearch">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -4443,7 +4443,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeSpamInSearch">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -4455,7 +4455,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeSpamInSearch">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -4467,7 +4467,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeSpamInSearch">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -4479,7 +4479,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeSpamInSearch">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -4491,43 +4491,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest119" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest119" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraAttachmentsIndexingEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsIndexingEnabled">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsIndexingEnabled">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest120" type="functional" >
+<t:test_case testcaseid="CreateCosRequest120" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraAttachmentsIndexingEnabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -4539,7 +4539,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -4551,7 +4551,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -4563,7 +4563,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -4575,7 +4575,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -4587,7 +4587,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraAttachmentsIndexingEnabled">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -4599,43 +4599,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest121" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest121" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPasswordEnforceHistory</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordEnforceHistory">5</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordEnforceHistory">10000</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest122" type="functional" >
+<t:test_case testcaseid="CreateCosRequest122" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPasswordEnforceHistory</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordEnforceHistory">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -4647,7 +4647,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordEnforceHistory">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -4659,7 +4659,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordEnforceHistory">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -4671,7 +4671,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordEnforceHistory">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -4683,7 +4683,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordEnforceHistory">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -4695,12 +4695,12 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPasswordEnforceHistory">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/> 
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
@@ -4713,24 +4713,24 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsInitialView">cards</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsInitialView">list</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
@@ -4743,7 +4743,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsInitialView">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -4755,7 +4755,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsInitialView">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -4767,7 +4767,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsInitialView">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -4779,7 +4779,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsInitialView">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -4791,7 +4791,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsInitialView">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -4803,7 +4803,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefContactsInitialView">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -4815,43 +4815,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest125" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest125" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefSentMailFolder</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSentMailFolder">sent</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSentMailFolder">received</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest126" type="functional" >
+<t:test_case testcaseid="CreateCosRequest126" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefSentMailFolder</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSentMailFolder">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -4863,7 +4863,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSentMailFolder">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -4875,7 +4875,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSentMailFolder">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -4887,7 +4887,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSentMailFolder">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -4899,7 +4899,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSentMailFolder">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -4911,7 +4911,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefSentMailFolder">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -4923,43 +4923,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest127" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest127" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPop3Enabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPop3Enabled">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPop3Enabled">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest128" type="functional" >
+<t:test_case testcaseid="CreateCosRequest128" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPop3Enabled</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPop3Enabled">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -4971,7 +4971,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPop3Enabled">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -4983,7 +4983,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPop3Enabled">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -4995,7 +4995,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPop3Enabled">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -5007,7 +5007,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPop3Enabled">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -5019,7 +5019,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPop3Enabled">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -5031,43 +5031,43 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest129" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest129" type="functional" >
     <t:objective>Create a COS with valid name and valid value for zimbraPrefIncludeTrashInSearch</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeTrashInSearch">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeTrashInSearch">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest130" type="functional" >
+<t:test_case testcaseid="CreateCosRequest130" type="regression" >
     <t:objective>Create a COS with valid name and invalid(blank/space/spchar/negative number/zero/sometext) value for zimbraPrefIncludeTrashInSearch</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeTrashInSearch">${COS.blank}</a>
             </CreateCosRequest>
         </t:request>
@@ -5079,7 +5079,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeTrashInSearch">${COS.space}</a>
             </CreateCosRequest>
         </t:request>
@@ -5091,7 +5091,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeTrashInSearch">${COS.sometext}</a>
             </CreateCosRequest>
         </t:request>
@@ -5103,7 +5103,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeTrashInSearch">${COS.spchar}</a>
             </CreateCosRequest>
         </t:request>
@@ -5115,7 +5115,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeTrashInSearch">${COS.negative}</a>
             </CreateCosRequest>
         </t:request>
@@ -5127,7 +5127,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraPrefIncludeTrashInSearch">${COS.zero}</a>
             </CreateCosRequest>
         </t:request>
@@ -5139,37 +5139,37 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest131" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest131" type="functional" >
     <t:objective>Create a COS with valid name and match zimbraCOS in response</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateCosResponse/admin:cos/admin:a[@c='1']" match="zimbraCOS"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateCosRequest132" type="sanity" >
+<t:test_case testcaseid="CreateCosRequest132" type="functional" >
     <t:objective>Create a COS with valid name and match name of cos in response</t:objective>
 
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name4}</name>        
+                <name xmlns="">${COS.name4}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name4}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

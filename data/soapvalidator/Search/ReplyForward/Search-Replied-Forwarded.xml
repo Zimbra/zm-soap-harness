@@ -21,11 +21,11 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -35,7 +35,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -59,8 +59,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account11.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
 		    <foldername>${account11.dir}</foldername>
@@ -73,11 +73,11 @@
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" bugids="2459">
+<t:test_case testcaseid="SearchAuthRequest" type="functional" bugids="2459">
     <t:objective> Create setup for the Search </t:objective>
     <t:steps>1. Login to the account.
              2. Search a mail to get the message-id.
-             3. Reply and Forward some of the mails.             
+             3. Reply and Forward some of the mails.
     </t:steps>
 
     <t:test id="login" required="true">
@@ -92,7 +92,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="searchRequest1">
         <t:request>
@@ -172,8 +172,8 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id6"/>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${mail.subject6}$"/>            
-            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender6"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${mail.subject6}$"/>
+            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender6"/>
             <t:select path="//mail:SearchResponse/mail:m/mail:fr" set="message.fragment6"/>
         </t:response>
     </t:test>
@@ -186,11 +186,11 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id7"/>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${mail.subject7}$"/>            
-            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender7"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${mail.subject7}$"/>
+            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender7"/>
             <t:select path="//mail:SearchResponse/mail:m/mail:fr" set="message.fragment7"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="searchRequest8">
         <t:request>
@@ -200,8 +200,8 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id8"/>
-            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${mail.subject8}$"/>            
-            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender8"/>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${mail.subject8}$"/>
+            <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" set="message.sender8"/>
             <t:select path="//mail:SearchResponse/mail:m/mail:fr" set="message.fragment8"/>
         </t:response>
     </t:test>
@@ -219,9 +219,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="${message.id8}"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="${message.id8}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest2" depends="searchRequest7">
         <t:request>
@@ -236,9 +236,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="${message.id8}"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="${message.id8}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="sendMsgRequest3" depends="searchRequest8">
         <t:request>
@@ -253,7 +253,7 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="${message.id8}"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="${message.id8}"/>
         </t:response>
     </t:test>
 
@@ -270,14 +270,14 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="${message.id8}"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="${message.id8}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest1" type="sanity" bugids="3345">
+<t:test_case testcaseid="replied_forwarded_SearchRequest1" type="functional" bugids="3345">
     <t:objective> Verify that a search for query is:forwarded is successful </t:objective>
 
     <t:test>
@@ -286,16 +286,16 @@
                 <query> is:forwarded </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest2" type="functional" >
     <t:objective> Verify that a search for query is:replied is successful </t:objective>
 
     <t:test>
@@ -304,16 +304,16 @@
                 <query> is:replied </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id7}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest3" type="sanity" bugids="3345">
+<t:test_case testcaseid="replied_forwarded_SearchRequest3" type="functional" bugids="3345">
     <t:objective> Verify that a search for query (is:replied OR is:forwarded) and vice-versa is successful </t:objective>
 
     <t:test>
@@ -322,7 +322,7 @@
                 <query> is:replied OR is:forwarded </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id7}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id8}']"/>
@@ -335,17 +335,17 @@
                 <query> is:forwarded OR is:replied </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id7}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest4" type="sanity" bugids="3345">
+<t:test_case testcaseid="replied_forwarded_SearchRequest4" type="functional" bugids="3345">
     <t:objective> Verify that a search for query is:replied AND is:forwarded and vice-versa is successful </t:objective>
 
     <t:test>
@@ -354,7 +354,7 @@
                 <query> is:replied AND is:forwarded </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
@@ -365,15 +365,15 @@
                 <query> is:forwarded AND is:replied </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest5" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest5" type="functional" >
     <t:objective> Verify that a search for query NOT is:replied is successful </t:objective>
 
     <t:test>
@@ -382,7 +382,7 @@
                 <query> NOT is:replied </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
@@ -391,11 +391,11 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest6" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest6" type="functional" >
     <t:objective> Verify that a search for query NOT is:forwarded is successful </t:objective>
 
     <t:test>
@@ -404,7 +404,7 @@
                 <query> NOT is:forwarded </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
@@ -413,11 +413,11 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id7}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest6" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest6" type="functional" >
     <t:objective> Verify that a search for query NOT (is:replied OR is:forwarded) is successful </t:objective>
 
     <t:test>
@@ -426,34 +426,34 @@
                 <query> NOT (is:replied OR is:forwarded) </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>            
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
                 <query> NOT (is:forwarded OR is:replied) </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>            
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest7" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest7" type="functional" >
     <t:objective> Verify that a search for query NOT (is:replied AND is:forwarded) is successful </t:objective>
 
     <t:test>
@@ -462,7 +462,7 @@
                 <query> NOT (is:replied AND is:forwarded) </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
@@ -472,19 +472,19 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id7}']"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
                 <query> NOT (is:forwarded AND is:replied) </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>            
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id7}']"/>
         </t:response>
@@ -493,7 +493,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest8" type="sanity" bugids="3345">
+<t:test_case testcaseid="replied_forwarded_SearchRequest8" type="functional" bugids="3345">
     <t:objective> Verify that a search for conversation with query is:forwarded is successful </t:objective>
 
     <t:test>
@@ -502,16 +502,16 @@
                 <query> is:forwarded </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest9" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest9" type="functional" >
     <t:objective> Verify that a search for conversation with query is:replied is successful </t:objective>
 
     <t:test>
@@ -520,16 +520,16 @@
                 <query> is:replied </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id7}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest10" type="sanity" bugids="3345">
+<t:test_case testcaseid="replied_forwarded_SearchRequest10" type="functional" bugids="3345">
     <t:objective> Verify that a search for conversation with query (is:replied OR is:forwarded) and vice-versa is successful </t:objective>
 
     <t:test>
@@ -538,7 +538,7 @@
                 <query> is:replied OR is:forwarded </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id7}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id8}']"/>
@@ -551,17 +551,17 @@
                 <query> is:forwarded OR is:replied </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id7}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest11" type="sanity" bugids="3345">
+<t:test_case testcaseid="replied_forwarded_SearchRequest11" type="functional" bugids="3345">
     <t:objective> Verify that a search for conversation with query is:replied AND is:forwarded and vice-versa is successful </t:objective>
 
     <t:test>
@@ -570,7 +570,7 @@
                 <query> is:replied AND is:forwarded </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
@@ -581,14 +581,14 @@
                 <query> is:forwarded AND is:replied </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest12" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest12" type="functional" >
     <t:objective> Verify that a search for conversation with query NOT is:replied is successful </t:objective>
 
     <t:test>
@@ -597,7 +597,7 @@
                 <query> NOT is:replied </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
@@ -605,11 +605,11 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest13" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest13" type="functional" >
     <t:objective> Verify that a search for conversation with query NOT is:forwarded is successful </t:objective>
 
     <t:test>
@@ -618,7 +618,7 @@
                 <query> NOT is:forwarded </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
@@ -627,11 +627,11 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id7}']"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest14" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest14" type="functional" >
     <t:objective> Verify that a search for conversation with query NOT (is:replied OR is:forwarded) is successful </t:objective>
 
     <t:test>
@@ -640,34 +640,34 @@
                 <query> NOT (is:replied OR is:forwarded) </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>            
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
                 <query> NOT (is:forwarded OR is:replied) </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>            
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="replied_forwarded_SearchRequest15" type="sanity" >
+<t:test_case testcaseid="replied_forwarded_SearchRequest15" type="functional" >
     <t:objective> Verify that a search for conversation with query NOT (is:replied AND is:forwarded) is successful </t:objective>
 
     <t:test>
@@ -676,7 +676,7 @@
                 <query> NOT (is:replied AND is:forwarded) </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
@@ -685,19 +685,19 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id7}']"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
                 <query> NOT (is:forwarded AND is:replied) </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>            
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id7}']"/>
         </t:response>
     </t:test>

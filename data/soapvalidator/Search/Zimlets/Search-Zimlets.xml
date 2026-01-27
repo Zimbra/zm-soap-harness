@@ -44,13 +44,13 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraZimletAvailableZimlets">com_zimbra_phone</a>
                 <a n="zimbraZimletAvailableZimlets">com_zimbra_url</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos01.id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos01.id"/>
         </t:response>
     </t:test>
 
@@ -66,7 +66,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account01.id"/>
              <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
        </t:response>
-    </t:test>  
+    </t:test>
 
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -82,7 +82,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="ZimletSearchRequest" type="sanity" >
+<t:test_case testcaseid="ZimletSearchRequest" type="functional" >
     <t:objective> Login as the appropriate test account and search for message.</t:objective>
     <t:steps> 1. Login to test account1.
                    2. Search for messages to get their message id.
@@ -130,7 +130,7 @@
             </t:select>
         </t:response>
     </t:test>
-   
+
     <t:test id="SearchMessageRequest3">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -156,7 +156,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="Zimlet_url_SearchRequest">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">

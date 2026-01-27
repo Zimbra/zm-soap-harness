@@ -114,7 +114,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${destination.name}</name>
-                <password>${defaultpassword.value}</password>               
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -129,13 +129,13 @@
 
 
 
-<t:test_case testcaseid="mailbox_limit1" type="sanity" >
+<t:test_case testcaseid="mailbox_limit1" type="functional" >
 	<t:objective>Verify that the mailbox usage is returned by GetInfoRequest correctly</t:objective>
 	<t:steps>
 		1. Login as the end user
 		2. verify that the set amount of used mailbox is returned
 	</t:steps>
-	
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -155,7 +155,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${account1.password}</password>               
+                <password>${account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -173,9 +173,9 @@
 			<server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-	
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -204,7 +204,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="mailbox_limit2" type="sanity" bugids="31345">
+<t:test_case testcaseid="mailbox_limit2" type="functional" bugids="31345">
 	<t:objective>
 		Verify that a message cannot be added to the mailbox, if his mailbox is over his limit. Additionally verify full quota doesn't allow saving anything </t:objective>
 	<t:steps>
@@ -219,7 +219,7 @@
 		9. Try uploading documents to briefcase (should fail)
 		10. Try creating appointment (should fail)
 	</t:steps>
-	
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -239,7 +239,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${account2.password}</password>               
+                <password>${account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -256,7 +256,7 @@
 			<server>${test_acct2.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:test >
 		<t:request>
 			<ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -268,7 +268,7 @@
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
 	<t:test >
@@ -324,7 +324,7 @@ do it
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -397,15 +397,15 @@ do it
 			<t:select path="//zimbra:Code" match="^mail.QUOTA_EXCEEDED$"/>
 		</t:response>
     </t:test>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -423,7 +423,7 @@ do it
 
 </t:test_case>
 
-<t:test_case testcaseid="mailbox_limit3" type="sanity" >
+<t:test_case testcaseid="mailbox_limit3" type="functional" >
 	<t:objective>
 		Verify that the account cannot send a message if his mailbox is over his limit
 	</t:objective>
@@ -433,7 +433,7 @@ do it
 		3. Login as the user
 		4. Issue SendMsg to send a message from the mailbox
 	</t:steps>
-	
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -453,7 +453,7 @@ do it
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account3.name}</name>
-                <password>${account3.password}</password>               
+                <password>${account3.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -470,7 +470,7 @@ do it
 			<server>${test_acct3.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:test >
 		<t:request>
 			<ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -482,7 +482,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 	<t:test>
 		<t:request>
@@ -517,7 +517,7 @@ do it
 
 </t:test_case>
 
-<t:test_case testcaseid="mailbox_limit4" type="sanity" >
+<t:test_case testcaseid="mailbox_limit4" type="functional" >
 	<t:objective>
 		Verify that the account cannot receive a message if his mailbox is over his limit
 	</t:objective>
@@ -526,7 +526,7 @@ do it
 		2. modify the account to have a limit lower than current usage
 		3. Execute an lmtpinject request to add a message to the mailbox (Should FAIL)
 	</t:steps>
-	
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -546,7 +546,7 @@ do it
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account4.name}</name>
-                <password>${account4.password}</password>               
+                <password>${account4.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -563,7 +563,7 @@ do it
 			<server>${test_acct4.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:test >
 		<t:request>
 			<ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -575,7 +575,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${testMailRaw.root}/limit01/limit01e.txt</filename>
@@ -587,12 +587,12 @@ do it
         	<code>452</code>
         </t:lmtpInjectResponse>
     </t:mailinjecttest>
-    
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="mailbox_limit5" type="sanity" >
+<t:test_case testcaseid="mailbox_limit5" type="functional" >
 	<t:objective>Verify that the account can receive a message if his mailbox is under his limit</t:objective>
 	<t:steps>
 		1. Login as the admin
@@ -600,7 +600,7 @@ do it
 		3. Login as the user
 		4. Issue AddMsg to receive a message from the mailbox
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true" >
@@ -619,7 +619,7 @@ do it
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account6.name}</name>
-                <password>${account6.password}</password>               
+                <password>${account6.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -636,7 +636,7 @@ do it
 			<server>${test_acct6.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
 	<t:test >
 		<t:request>
@@ -649,7 +649,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
 	<t:test>
 		<t:request>
@@ -683,7 +683,7 @@ do it
 </t:test_case>
 
 
-<t:test_case testcaseid="mailbox_limit6" type="sanity" >
+<t:test_case testcaseid="mailbox_limit6" type="functional" >
 	<t:objective>Verify that the account can send a message if his mailbox is under his limit</t:objective>
 	<t:steps>
 		1. Login as the admin
@@ -691,7 +691,7 @@ do it
 		3. Login as the user
 		4. Issue SendMsg to send a message from the mailbox
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true" >
@@ -710,7 +710,7 @@ do it
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account5.name}</name>
-                <password>${account5.password}</password>               
+                <password>${account5.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -727,7 +727,7 @@ do it
 			<server>${test_acct5.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
 	<t:test >
 		<t:request>
@@ -740,7 +740,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
 	<t:test>
 		<t:request>
@@ -776,7 +776,7 @@ do it
 </t:test_case>
 
 
-<t:test_case testcaseid="mailbox_limit7" type="sanity" >
+<t:test_case testcaseid="mailbox_limit7" type="functional" >
 	<t:objective>Verify that the account can send a message if his mailbox is under his limit</t:objective>
 	<t:steps>
 		1. Login as the admin
@@ -784,7 +784,7 @@ do it
 		3. Login as the user
 		4. Issue lmtpinject to simulate receiving a message into the mailbox
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true" >
@@ -803,7 +803,7 @@ do it
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account7.name}</name>
-                <password>${account7.password}</password>               
+                <password>${account7.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -820,7 +820,7 @@ do it
 			<server>${test_acct7.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
 	<t:test >
 		<t:request>
@@ -833,7 +833,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <foldername>${testMailRaw.root}/limit01</foldername>
@@ -842,13 +842,13 @@ do it
 			<server>${test_acct7.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
 </t:test_case>
 
 
 
-<t:test_case testcaseid="mailbox_limit8" type="sanity" bugids="5728">
+<t:test_case testcaseid="mailbox_limit8" type="functional" bugids="5728">
 	<t:objective>
 		Verify that an account can continue to receive mails until the quota is reached
 	</t:objective>
@@ -859,7 +859,7 @@ do it
 		4. Use lmtpinject to add the same message a 4th time (inject is unsuccessful)
 		4. Use SendMsgRequest to add the same message a 4th time (QUOTA_EXCEEDED should be returned)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true" >
@@ -878,7 +878,7 @@ do it
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account8.name}</name>
-                <password>${account8.password}</password>               
+                <password>${account8.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -899,7 +899,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <foldername>${testMailRaw.root}/limit01</foldername>
@@ -908,7 +908,7 @@ do it
 			<server>${test_acct8.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <foldername>${testMailRaw.root}/limit01</foldername>
@@ -917,7 +917,7 @@ do it
 			<server>${test_acct8.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <foldername>${testMailRaw.root}/limit01</foldername>
@@ -926,8 +926,8 @@ do it
 			<server>${test_acct8.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
-    
+
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <foldername>${testMailRaw.root}/limit01</foldername>
@@ -939,7 +939,7 @@ do it
         	<code>452</code>
         </t:lmtpInjectResponse>
     </t:mailinjecttest>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct8.server}"/>
 	<t:test>
 		<t:request>
@@ -955,7 +955,7 @@ do it
 		</t:response>
 	</t:test>
 
-    
+
 	<t:property name="uploadServletServer" value="${test_acct8.server}"/>
 	<t:property name="uploadFile.name" value="${testMailRaw.root}/limit01/limit01e.txt"/>
 
@@ -989,7 +989,7 @@ do it
 
 </t:test_case>
 
-<t:test_case testcaseid="mailbox_limit9" type="sanity" bugids="6579">
+<t:test_case testcaseid="mailbox_limit9" type="functional" bugids="6579">
 	<t:objective>
 		Verify that an account can continue to send (SendMsgRequest) mails until the quota is reached
 	</t:objective>
@@ -1000,7 +1000,7 @@ do it
 		4. Use SendMsgRequest to send the same message a 4th time (QUOTA_EXCEEDED should occur)
 		5. Use zmLmtpInject to send the same message a 4th time (inject is unsuccessful)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true" >
@@ -1019,7 +1019,7 @@ do it
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account9.name}</name>
-                <password>${account9.password}</password>               
+                <password>${account9.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -1039,7 +1039,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct9.server}"/>
 	<t:test delay="${postfixdelay.msec}">
 		<t:request>
@@ -1055,7 +1055,7 @@ do it
 		</t:response>
 	</t:test>
 
-    
+
 	<t:property name="uploadServletServer" value="${test_acct9.server}"/>
 	<t:property name="uploadFile.name" value="${testMailRaw.root}/limit01/limit01e.txt"/>
 
@@ -1181,7 +1181,7 @@ do it
 </t:test_case>
 
 
-<t:test_case testcaseid="mailbox_limit10" type="sanity" bugids="6579">
+<t:test_case testcaseid="mailbox_limit10" type="functional" bugids="6579">
 	<t:objective>
 		Verify that an account can delete mails to free up mailbox limit space
 	</t:objective>
@@ -1192,9 +1192,9 @@ do it
 		4. Use SendMsgRequest to send the same message a 4th time (QUOTA_EXCEEDED should occur)
 		5. Delete a message
 		6. Use SendMsgRequest to send the same message (send is succesful)
-		
+
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true" >
@@ -1213,7 +1213,7 @@ do it
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account10.name}</name>
-                <password>${account10.password}</password>               
+                <password>${account10.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -1234,7 +1234,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct10.server}"/>
 	<t:test delay="${postfixdelay.msec}">
 		<t:request>
@@ -1258,7 +1258,7 @@ do it
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.trash}']" attr="id" set="account10.trash.id"/>
 		</t:response>
 	</t:test>
-    
+
 	<t:property name="uploadServletServer" value="${test_acct10.server}"/>
 	<t:property name="uploadFile.name" value="${testMailRaw.root}/limit01/limit01e.txt"/>
 
@@ -1363,17 +1363,17 @@ do it
         </t:request>
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
-            <t:select attr="op" match="empty"/>        
+            <t:select attr="op" match="empty"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:name"/> 
+			<t:select path="//acct:GetInfoResponse/acct:name"/>
 		</t:response>
 	</t:test>
 
@@ -1407,7 +1407,7 @@ do it
 
 </t:test_case>
 
-<t:test_case testcaseid="mailbox_limit11" type="sanity" >
+<t:test_case testcaseid="mailbox_limit11" type="functional" >
 	<t:objective>
 		Verify that an account can delete mails to free up mailbox limit space (incoming messages)
 	</t:objective>
@@ -1418,9 +1418,9 @@ do it
 		4. Use zmLmtpInject to send the same message a 4th time (QUOTA_EXCEEDED should occur)
 		5. Delete a message
 		6. Use zmLmtpInject to send the same message (send is succesful)
-		
+
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -1439,7 +1439,7 @@ do it
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account11.name}</name>
-                <password>${account11.password}</password>               
+                <password>${account11.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -1459,7 +1459,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${testMailRaw.root}/limit01/limit01e.txt</filename>
@@ -1468,7 +1468,7 @@ do it
 			<server>${test_acct11.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${testMailRaw.root}/limit01/limit01e.txt</filename>
@@ -1477,7 +1477,7 @@ do it
 			<server>${test_acct11.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${testMailRaw.root}/limit01/limit01e.txt</filename>
@@ -1486,7 +1486,7 @@ do it
 			<server>${test_acct11.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${testMailRaw.root}/limit01/limit01e.txt</filename>
@@ -1513,13 +1513,13 @@ do it
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:name"/> 
+			<t:select path="//acct:GetInfoResponse/acct:name"/>
 		</t:response>
 	</t:test>
 
@@ -1564,7 +1564,7 @@ do it
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse/acct:name"/> 
+			<t:select path="//acct:GetInfoResponse/acct:name"/>
 		</t:response>
 	</t:test>
 
@@ -1577,12 +1577,12 @@ do it
 			<server>${test_acct11.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
-     
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="mailbox_limit12" type="sanity">
+<t:test_case testcaseid="mailbox_limit12" type="functional">
 	<t:objective>
 		Verify that contacts/folders can be added to the mailbox, even if his mailbox is over his limit</t:objective>
 	<t:steps>
@@ -1612,7 +1612,7 @@ do it
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account12.name}</name>
-				<password>${account12.password}</password>               
+				<password>${account12.password}</password>
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
@@ -1641,7 +1641,7 @@ do it
 			<t:select path = "//admin:ModifyAccountResponse/admin:account"/>
 		</t:response>
 	</t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct12.server}"/>
 	<t:test >
 		<t:request>
@@ -1664,13 +1664,13 @@ do it
 				<a n="firstName">First.${TIME}.${COUNTER}</a>
 				<a n="lastName">Last.${TIME}.${COUNTER}</a>
 				<a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-				</cn>     
+				</cn>
 			</CreateContactRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:CreateContactResponse/mail:cn">
 			<t:select attr="id" set="contact.id"/>
-			</t:select>	
+			</t:select>
 		</t:response>
 	</t:test>
 

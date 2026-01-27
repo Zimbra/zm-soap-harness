@@ -92,12 +92,12 @@
 
 
 
-<t:test_case testcaseid="FilterAction_CaseSensitive_01" type="bhr" bugids="27463" >
+<t:test_case testcaseid="FilterAction_CaseSensitive_01" type="sanity" bugids="27463" >
     <t:objective>Verify filter action=flag is done for case sesitive match</t:objective>
     <t:steps> 1. Create filter with Action Flag for case sensitive subject of incoming mail.
     2. verify message is flagged.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -115,8 +115,8 @@
 	<!-- case sensitive = cs -->
 	<t:property name="timecounter" value="${TIME}${COUNTER}"/>
 	<t:property name="filter1.subject" value="filter${timecounter}"/>
-	<t:property name="filter1.subject.cs" value="FILTER${timecounter}"/>	
-	
+	<t:property name="filter1.subject.cs" value="FILTER${timecounter}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -129,7 +129,7 @@
 							 <actionFlag flagName="flagged"/>
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -137,7 +137,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -152,7 +152,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -186,7 +186,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:test required="true">
@@ -200,7 +200,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
 
      <t:test>
 			<t:request>
@@ -215,12 +215,12 @@
     </t:test>
  </t:test_case>
 
-<t:test_case testcaseid="FilterAction_CaseSensitive_02" type="bhr" bugids="27463" >
+<t:test_case testcaseid="FilterAction_CaseSensitive_02" type="sanity" bugids="27463" >
     <t:objective>Verify filter action=fileintofolder is done for case sesitive match</t:objective>
     <t:steps> 1. Create filter with Action file into folder for case sensitive from field.
     2. verify message is in folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -239,21 +239,21 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder2.name}" l="1"/>                
+                	<folder name="${folder2.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
 	<!-- case sensitive = cs -->
 	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter3.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter3.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="sender.personal.name" value="firstname"/>
 	<t:property name="sender.personal.name.cs" value="FirstName"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -266,7 +266,7 @@
 							 <actionFileInto folderPath="${folder2.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -288,7 +288,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -324,7 +324,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:test required="true">
@@ -338,7 +338,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -353,12 +353,12 @@
  </t:test_case>
 
 
-<t:test_case testcaseid="FilterAction_CaseSensitive_03" type="bhr" bugids="27463" >
+<t:test_case testcaseid="FilterAction_CaseSensitive_03" type="sanity" bugids="27463" >
     <t:objective>Verify filter action=flag is done for case sesitive body match</t:objective>
     <t:steps> 1. Create filter with Action Flag for case sensitive body of incoming mail.
     2. verify message is flagged.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
     <t:test required="true">
         <t:request>
@@ -375,8 +375,8 @@
 	<t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
 	<!-- case sensitive = cs -->
 	<t:property name="filter3.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter3.body.cs" value="HelloWorld"/>	
-	<t:property name="filter3.body" value="helloworld"/>	
+	<t:property name="filter3.body.cs" value="HelloWorld"/>
+	<t:property name="filter3.body" value="helloworld"/>
 
 	<t:test>
 		<t:request>
@@ -390,7 +390,7 @@
 							 <actionFlag flagName="flagged"/>
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -398,7 +398,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test required="true">
@@ -412,7 +412,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -446,7 +446,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 	<t:test required="true">
@@ -460,7 +460,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -474,12 +474,12 @@
     </t:test>
  </t:test_case>
 
-<t:test_case testcaseid="FilterAction_CaseSensitive_04" type="bhr" bugids="27463" >
+<t:test_case testcaseid="FilterAction_CaseSensitive_04" type="sanity" bugids="27463" >
     <t:objective>Verify filter action=flag is done for read receipt mail match</t:objective>
     <t:steps> 1. Create filter with Action Flag for read receipt.
     2. verify message is flagged.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
     <t:test required="true">
         <t:request>
@@ -508,7 +508,7 @@
 							 <actionFlag flagName="flagged"/>
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -516,7 +516,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="message1.file" value="${testMailRaw.root}/27463/read-receipt.txt"/>
 
 	 <t:mailinjecttest >
@@ -527,7 +527,7 @@
 			<server>${account4.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
      <t:test>
 			<t:request>
@@ -538,18 +538,18 @@
 	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m" attr="f" match="fu"/>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^Read-Receipt:.*"/>
-				
+
 			</t:response>
     </t:test>
  </t:test_case>
 
 
-<t:test_case testcaseid="FilterAction_CaseSensitive_05" type="bhr" bugids="27463" >
+<t:test_case testcaseid="FilterAction_CaseSensitive_05" type="sanity" bugids="27463" >
     <t:objective>Verify filter action=flag is done for case sesitive = 0</t:objective>
     <t:steps> 1. Create filter with Action Flag for case sensitive=0 subject of incoming mail.
     2. verify both message is unflagged.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
     <t:test required="true">
         <t:request>
@@ -567,8 +567,8 @@
 	<!-- case sensitive = cs -->
 	<t:property name="timecounter" value="${TIME}${COUNTER}"/>
 	<t:property name="filter5.subject" value="filter${timecounter}"/>
-	<t:property name="filter5.subject.cs" value="FILTER${timecounter}"/>	
-	
+	<t:property name="filter5.subject.cs" value="FILTER${timecounter}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -581,7 +581,7 @@
 							 <actionFlag flagName="flagged"/>
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -589,7 +589,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
@@ -604,7 +604,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -638,7 +638,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 	<t:test required="true">
@@ -652,7 +652,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
 
      <t:test>
 			<t:request>

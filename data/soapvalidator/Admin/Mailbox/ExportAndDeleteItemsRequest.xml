@@ -33,42 +33,42 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account6.name}</name>
-                <password>${account.password}</password>         
+                <password>${account.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>   
-            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>        
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${account.password}</password>         
+                <password>${account.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>     
-            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${account.password}</password>         
+                <password>${account.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>     
-            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
- 
+
+
 	<t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -82,11 +82,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_01" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_01" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest with valid mbox id.</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
-	
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -99,8 +99,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -113,9 +113,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -125,9 +125,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -138,27 +138,27 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox6.id"/>
         </t:response>
     </t:test>
-  
+
 	<t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
-                <mbox id="${mailbox6.id}"/>                 
+                <mbox id="${mailbox6.id}"/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ExportAndDeleteItemsResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_02" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_02" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest with valid mbox id and item id.</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
-	
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -171,7 +171,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -184,9 +184,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -196,9 +196,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -209,27 +209,27 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox1.id"/>
         </t:response>
     </t:test>
-  
-  
+
+
     <t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
                 <mbox id="${mailbox1.id}"/>
-                <item id="${message.id}"/>                 
+                <item id="${message.id}"/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ExportAndDeleteItemsResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_03" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_03" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest with invalid item id. </t:objective>
 
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-   
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -242,7 +242,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -255,9 +255,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -267,9 +267,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -280,26 +280,26 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox2.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
                 <mbox id="${mailbox2.id}"/>
-                <item id="invalid.item"/>                 
+                <item id="invalid.item"/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ExportAndDeleteItemsResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_04" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_04" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest with item id as alphabets. - service.INVALID_REQUEST </t:objective>
 
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-   
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -312,7 +312,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -325,9 +325,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -337,9 +337,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -350,25 +350,25 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox2.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
-                <mbox id="aaaaa"/>       
+                <mbox id="aaaaa"/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
              <t:select path="//zimbra:Code" match="^service.FAILURE$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_05" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_05" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest with invalid mbox id. - mail.NO_SUCH_MBOX </t:objective>
 
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-   
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -381,7 +381,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -394,9 +394,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -406,9 +406,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -419,25 +419,25 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox2.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
-                <mbox id="-111111111111111"/>       
+                <mbox id="-111111111111111"/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
              <t:select path="//zimbra:Code" match="^mail.NO_SUCH_MBOX"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_06" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_06" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest leading space in mbox id - service.INVALID_REQUEST </t:objective>
 
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-   
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -450,7 +450,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -463,9 +463,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -475,9 +475,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -488,25 +488,25 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox2.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
-                <mbox id="                   ${account2.id}"/>    
+                <mbox id="                   ${account2.id}"/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
              <t:select path="//zimbra:Code" match="^service.FAILURE$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_07" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_07" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest trailing Spaces in mbox id - service.INVALID_REQUEST</t:objective>
 
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-   
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -519,7 +519,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -532,9 +532,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -544,9 +544,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -557,25 +557,25 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox2.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
-                <mbox id="${account2.id}              "/>    
+                <mbox id="${account2.id}              "/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
              <t:select path="//zimbra:Code" match="^service.FAILURE$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_08" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_08" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest with space before and after mbox id - service.FAILURE </t:objective>
 
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-   
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -588,7 +588,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -601,9 +601,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -613,9 +613,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -626,25 +626,25 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox2.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
-                <mbox id="             ${account2.id}              "/>    
+                <mbox id="             ${account2.id}              "/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
              <t:select path="//zimbra:Code" match="^service.FAILURE$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_9" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_9" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest with blank mbox id - service.FAILURE </t:objective>
 
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-   
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -657,7 +657,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -670,9 +670,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -682,9 +682,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -695,25 +695,25 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox2.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
-                <mbox id=" "/>    
+                <mbox id=" "/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
              <t:select path="//zimbra:Code" match="^mail.NO_SUCH_MBOX$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ExportAndDeleteItemsRequest_10" type="bhr">
+<t:test_case testcaseid="ExportAndDeleteItemsRequest_10" type="sanity">
     <t:objective>Send ExportAndDeleteItemsRequest without mbox id - service.INVALID_REQUEST  </t:objective>
 
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-   
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -726,7 +726,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -739,9 +739,9 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -751,9 +751,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -764,18 +764,18 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox2.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
-            
+
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
              <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

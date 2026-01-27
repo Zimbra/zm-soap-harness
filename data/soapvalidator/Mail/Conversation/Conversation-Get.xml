@@ -15,7 +15,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
 	<t:objective>basic system check</t:objective>
-    
+
 	<t:test id="ping">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -48,10 +48,10 @@
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1.name}</name>
 				<password>${defaultpassword.value}</password>
-				<!-- 
-                <a n="zimbraMailHost">${LOCALHOST}</a> 
+				<!--
+                <a n="zimbraMailHost">${LOCALHOST}</a>
 				<a n="zimbraMailStatus">enabled</a>
-		        <a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+		        <a n="zimbraMailDeliveryAddress">${test_account1.name}</a>
 				<a n="zimbraPasswordMinAge">7</a>
                 -->
 			</CreateAccountRequest>
@@ -67,11 +67,11 @@
 
 <t:test_case testcaseid="acct_setup2" type="always" >
 	<t:objective>login as the test account</t:objective>
-	<t:steps> 
-        1. Login to account1 
-        2. Send a mail to account1        
+	<t:steps>
+        1. Login to account1
+        2. Send a mail to account1
 	</t:steps>
-    
+
 	<t:test id="auth1" required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -89,11 +89,11 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.inboxFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.trashFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account1.sentFolder.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account1.spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account1.spamFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account1.draftsFolder.id"/>
         </t:response>
     </t:test>
@@ -162,7 +162,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetConvRequest2" type="bhr">
+<t:test_case testcaseid="GetConvRequest2" type="sanity">
 	<t:objective> get conversation by invalid ID </t:objective>
 	<t:test>
 		<t:request>
@@ -178,7 +178,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetConvRequest3" type="bhr">
+<t:test_case testcaseid="GetConvRequest3" type="sanity">
 	<t:objective> get conversation with ID as text </t:objective>
 	<t:test>
 		<t:request>
@@ -194,7 +194,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetConvRequest4" type="bhr">
+<t:test_case testcaseid="GetConvRequest4" type="sanity">
 	<t:objective> get conversation with ID as negative number </t:objective>
 	<t:test>
 		<t:request>
@@ -210,7 +210,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetConvRequest5" type="bhr">
+<t:test_case testcaseid="GetConvRequest5" type="sanity">
 	<t:objective> get conversation request with invalid number </t:objective>
 	<t:test>
 		<t:request>
@@ -226,7 +226,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetConvRequest6" type="bhr">
+<t:test_case testcaseid="GetConvRequest6" type="sanity">
 	<t:objective> get conversation request with spchar in ID </t:objective>
 	<t:test>
 		<t:request>
@@ -242,7 +242,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetConvRequest7" type="bhr">
+<t:test_case testcaseid="GetConvRequest7" type="sanity">
 	<t:objective> get conversation request with ID as decimal number </t:objective>
 	<t:test>
 		<t:request>
@@ -258,7 +258,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetConvRequest8" type="bhr">
+<t:test_case testcaseid="GetConvRequest8" type="sanity">
 	<t:objective> get conversation request with blank ID </t:objective>
 	<t:test>
 		<t:request>
@@ -274,7 +274,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetConvRequest9" type="sanity" bugids="13436">
+<t:test_case testcaseid="GetConvRequest9" type="functional" bugids="13436">
 	<t:objective> TC to verify GetConvRequest can access specific headers </t:objective>
 	<t:test>
 		<t:request>
@@ -294,9 +294,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchConvRequest_max_01" type="bhr">
+<t:test_case testcaseid="SearchConvRequest_max_01" type="sanity">
 	<t:objective>Verify SearchConvRequest with max=10 only returns the first 10 bytes of data (text)</t:objective>
-	<t:steps>1. Login to account2 
+	<t:steps>1. Login to account2
 	         2. Send a mail to account1
 	         3. Login to account 1 for test purpose
 	</t:steps>
@@ -317,7 +317,7 @@ The last two weeks have been tough for the No. 18 Cal football team. After sitti
 
 Cal will even be an underdog for the first time Saturday when it travels to Sun Devil Stadium to play No. 7 Arizona State at 7 p.m.
 
-But even against the No. 4 team in the BCS, the Bears' goals have not changed one bit. 
+But even against the No. 4 team in the BCS, the Bears' goals have not changed one bit.
 
 "Even though you say, all the pressure should be on Arizona State because they're highly ranked and all that kind of stuff, there's still always the expectation to win for us," Cal coach Jeff Tedford said.
 
@@ -348,10 +348,10 @@ But even against the No. 4 team in the BCS, the Bears' goals have not changed on
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="SearchConvRequest_max_02" type="bhr">
+<t:test_case testcaseid="SearchConvRequest_max_02" type="sanity">
     <t:objective>Verify that max will truncate the message body (html)</t:objective>
 
     <!-- Add a mail to the inbox-->
@@ -364,7 +364,7 @@ From: foo@example.com
 To: bar@example.com
 Subject: the fourth quarter has belonged to anyone but Cal
 MIME-Version: 1.0
-Content-Type: multipart/alternative; 
+Content-Type: multipart/alternative;
 	boundary="----=_Part_233_76654086.1193440742742"
 X-Originating-IP: [10.10.131.107]
 
@@ -372,11 +372,11 @@ X-Originating-IP: [10.10.131.107]
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-As soon as the whistle sounds at the end of the third quarter, Cal fans lift up four fingers and chant "Fourth Quarter's Ours!" And with an offense that scores 35.1 points per game, why shouldn't it be? The Bears have outscored opponents 70-55 in the final stanza this season, including out-scoring No. 5 Oregon 21-7 in Eugene, Ore. 
+As soon as the whistle sounds at the end of the third quarter, Cal fans lift up four fingers and chant "Fourth Quarter's Ours!" And with an offense that scores 35.1 points per game, why shouldn't it be? The Bears have outscored opponents 70-55 in the final stanza this season, including out-scoring No. 5 Oregon 21-7 in Eugene, Ore.
 
-But lately, the fourth quarter has belonged to anyone but Cal. In the Bears' back-to-back losses, they have been outscored down the stretch 21-14. Take away its last win over the Ducks, and Cal has been outscored 31-21 during the fourth quarter in Pac-10 play. 
+But lately, the fourth quarter has belonged to anyone but Cal. In the Bears' back-to-back losses, they have been outscored down the stretch 21-14. Take away its last win over the Ducks, and Cal has been outscored 31-21 during the fourth quarter in Pac-10 play.
 
-For the third-highest scoring team in the conference, a team with some of the fastest receivers in the nation and a stable full of top-tier running backs, there is no reason that the Bears should be taking their feet off the gas when the points matter most. 
+For the third-highest scoring team in the conference, a team with some of the fastest receivers in the nation and a stable full of top-tier running backs, there is no reason that the Bears should be taking their feet off the gas when the points matter most.
 
 
 

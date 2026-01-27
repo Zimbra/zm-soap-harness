@@ -68,8 +68,8 @@ if anyof (header :matches ["X-Test-Header"] "*"){
             </t:response>
         </t:test>
     </t:test_case>
-    
-    <t:test_case testcaseid="AcctSetup1_create_account" type="functional">
+
+    <t:test_case testcaseid="AcctSetup1_create_account" type="regression">
         <t:objective>create test accounts</t:objective>
         <t:test required="true">
             <t:request>
@@ -94,7 +94,7 @@ if anyof (header :matches ["X-Test-Header"] "*"){
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -103,7 +103,7 @@ if anyof (header :matches ["X-Test-Header"] "*"){
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -119,7 +119,7 @@ if anyof (header :matches ["X-Test-Header"] "*"){
                 <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
             </t:response>
         </t:test>
-	    
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -149,7 +149,7 @@ if anyof (header :matches ["X-Test-Header"] "*"){
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107355_rule1" type="functional" bugids="107355">
+    <t:test_case testcaseid="bug107355_rule1" type="regression" bugids="107355">
         <t:objective>Match Variables should have a value in matched order - replaceheader</t:objective>
         <t:test id="modifyaccountrequest1">
             <t:request>
@@ -220,7 +220,7 @@ if anyof (header :matches ["X-Test-Header"] "*"){
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107355_rule2" type="functional" bugids="107355">
+    <t:test_case testcaseid="bug107355_rule2" type="regression" bugids="107355">
         <t:objective>Match Variables should have a value in matched order - header test</t:objective>
         <t:test required="true">
             <t:request>
@@ -304,7 +304,7 @@ if anyof (header :matches ["X-Test-Header"] "*"){
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -325,9 +325,9 @@ if anyof (header :matches ["X-Test-Header"] "*"){
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 
-    </t:finally>-->  
+    </t:finally>-->
 </t:tests>

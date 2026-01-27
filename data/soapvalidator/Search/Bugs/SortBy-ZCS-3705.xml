@@ -12,7 +12,7 @@
 	<t:property name="test_account1.password" value="${defaultpassword.value}" />
 	<t:property name="op.read" value="read" />
 	<t:property name="op.unread" value="!read" />
-	<t:test_case testcaseid="Ping" type="bhr">
+	<t:test_case testcaseid="Ping" type="sanity">
 		<t:objective>basic system check</t:objective>
 		<t:test id="ping">
 			<t:request>
@@ -232,7 +232,7 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="Verify_Scrolldown_Error" type="bhr-temp"
+	<t:test_case testcaseid="Verify_Scrolldown_Error" type="sanity-temp"
 		bugids="ZBUG-425, ZBUG-563, ZCS-7936">
 		<t:objective>To verify no exception is thrown on scrolling to the end
 			of the search results when results are sorted by read/unread
@@ -242,7 +242,7 @@
 			2. Search first 2 messages and get id of the last message.
 			3. Search next 2 messages and pass cursor element with id of the last message.
 			4. Verify exception is not thrown in the search response.
-	
+
 		</t:steps>
 		<t:test id="auth" required="true">
 			<t:request>
@@ -377,7 +377,7 @@
 		</t:test>
 	</t:test_case>
 	<t:test_case testcaseid="Verify_IsUnreadWithoutSortBy"
-		type="bhr" bugids="ZCS-5871">
+		type="sanity" bugids="ZCS-5871">
 		<t:objective>To verify no exception is thrown when
 			query=is:unread/read and no sortBy option is provided.
 		</t:objective>

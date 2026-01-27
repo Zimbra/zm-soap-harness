@@ -9,7 +9,7 @@
 
 <t:test_case testcaseid="ping" type="always" >
 	<t:objective>basic system check</t:objective>
-	
+
 	<t:test id="ping" required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -98,24 +98,24 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetMsgRequest_ReadReceipt_01" type="bhr">
+<t:test_case testcaseid="GetMsgRequest_ReadReceipt_01" type="sanity">
 	<t:objective>Verify email elment on GetMsgRequest</t:objective>
 
 <!--
 
 		http://bugzilla.zimbra.com/show_bug.cgi?id=7257#c167
 
-        When a message is retrieved via GetMsg or composed via 
-        SendMsg/SaveDraft, read receipt addresses are specified as a 
-        standard <e> email element with type "n": <e t="n" .../>.  "Read 
-        receipt requested" is indicated by the presence of such <e> elements 
+        When a message is retrieved via GetMsg or composed via
+        SendMsg/SaveDraft, read receipt addresses are specified as a
+        standard <e> email element with type "n": <e t="n" .../>.  "Read
+        receipt requested" is indicated by the presence of such <e> elements
         in the GetMsg response.
 
 -->
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">

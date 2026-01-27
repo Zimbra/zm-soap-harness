@@ -18,8 +18,8 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
-    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -28,13 +28,13 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acct1_setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -46,7 +46,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -59,7 +59,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -72,7 +72,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -96,7 +96,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest1a">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -108,7 +108,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -132,7 +132,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -144,7 +144,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -155,14 +155,14 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
 		</t:response>
    	</t:test>
-    
-    
+
+
 </t:test_case>
 
 
 <t:test_case testcaseid="SMTP_MessageID_DL_01" type="smoke">
     <t:objective>Verify a is received once (no message id)</t:objective>
-    
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${mta.server}</address>
@@ -171,7 +171,7 @@
             <recipient>${list2.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -238,13 +238,13 @@
 		 	</t:response>
 		</t:test>
 	</t:for>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="SMTP_MessageID_DL_02" type="bhr">
+<t:test_case testcaseid="SMTP_MessageID_DL_02" type="sanity">
     <t:objective>Verify a is received once (with message id)</t:objective>
-	
-	
+
+
 	 <t:staftask>
         <t:request>
             <server>${zimbraServer.name}</server>
@@ -265,7 +265,7 @@
             </params>
         </t:request>
     </t:staftask>
-    
+
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${mta.server}</address>
@@ -274,7 +274,7 @@
             <recipient>${list2.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -328,7 +328,7 @@
         </t:response>
     </t:test>
 
-	
+
 	<t:for start="1" end="5" break="response1">
 		<t:delay msec="2000"/>
 		<t:test required="true" >

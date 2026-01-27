@@ -16,7 +16,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -33,7 +33,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -46,7 +46,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -62,7 +62,7 @@
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -86,14 +86,14 @@
 			</t:select>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_01" type="smoke" areas="Calendar">
     <t:objective>Create a single occurence appointment.  Verify the data saved on the server.</t:objective>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.name" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
@@ -108,8 +108,8 @@
                 <m>
                     <inv>
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.name}">
-	                        <s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+2h)[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(+2h)[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -161,7 +161,7 @@
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt1.invId}']"/>
             </t:select>
@@ -172,10 +172,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_02" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_02" type="sanity" areas="Calendar">
     <t:objective>Create an appointment for longer than a day (30 hours).  Verify the data saved on the server.</t:objective>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.name" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
@@ -190,8 +190,8 @@
                 <m>
                     <inv>
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.name}">
-	                        <s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+30h)[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(+30h)[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -235,7 +235,7 @@
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt1.invId}']"/>
             </t:select>
@@ -248,20 +248,20 @@
 
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_03" type="sanity" bugids="2551" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_03" type="functional" bugids="2551" areas="Calendar">
     <t:objective>Create an appointment which starts and end at the same time.</t:objective>
-    
+
 	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
 	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv>
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -301,20 +301,20 @@
 
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_04" type="sanity" bugids="2551" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_04" type="functional" bugids="2551" areas="Calendar">
     <t:objective>Create an appointment which ends before the start time.</t:objective>
-    
+
 	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
 	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv>
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(-2h)[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(-2h)[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -353,10 +353,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_05" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_05" type="sanity" areas="Calendar">
     <t:objective>Create an appointment in the past.  Verify the data saved on the server.</t:objective>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.name" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
@@ -371,8 +371,8 @@
                 <m>
                     <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.name}">
-	                        <s d="${ICALTIME[${time.20060101120000.pst}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+2h)[${time.20060101120000.pst}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20060101120000.pst}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(+2h)[${time.20060101120000.pst}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -416,7 +416,7 @@
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt1.invId}']"/>
             </t:select>
@@ -427,7 +427,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_06" type="sanity" bugids="5778">
+<t:test_case testcaseid="CreateAppointmentRequest_SingleOccurence_06" type="functional" bugids="5778">
 	<t:objective> Create an appointment on 29 feb of the leap year </t:objective>
        <t:steps> 1. Create the appontment through CreateAppointmentRequest
                  2. to verify the appointment et created
@@ -460,7 +460,7 @@
 	</t:test>
 
 	<t:test>
-		<t:request> 
+		<t:request>
 			<GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.id}"/>
 		</t:request>
 		<t:response>

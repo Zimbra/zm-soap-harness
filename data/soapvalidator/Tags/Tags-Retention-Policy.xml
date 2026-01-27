@@ -90,7 +90,7 @@
 			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy1.interval" />
         </t:response>
     </t:test>
-		
+
 	<t:test>
         <t:request>
             <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
@@ -104,18 +104,18 @@
 			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy2.interval" />
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="Tag_Retention_Policy_01" type="bhr">
+<t:test_case testcaseid="Tag_Retention_Policy_01" type="sanity">
 	<t:objective>Set tag retention policy on a tag </t:objective>
 
     <t:steps>1. Create a tag.
              2. Set retention keep policy.
     </t:steps>
-	
+
     <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -159,7 +159,7 @@
         <t:response>
             <t:select path="//mail:TagActionResponse/mail:action">
             <t:select attr="id" match="${tag.id}"/>
-            <t:select attr="op" match="retentionpolicy"/>        
+            <t:select attr="op" match="retentionpolicy"/>
             </t:select>
         </t:response>
     </t:test>
@@ -176,7 +176,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Tag_Retention_Policy_02" type="bhr">
+<t:test_case testcaseid="Tag_Retention_Policy_02" type="sanity">
 	<t:objective>Set tag retention purge policy on a tag and check if message is purged </t:objective>
 
     <t:steps>1. Create a tag.
@@ -184,7 +184,7 @@
 			 3. Verify that message is purged
     </t:steps>
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-	
+
     <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -241,7 +241,7 @@
         <t:response>
             <t:select path="//mail:TagActionResponse/mail:action">
             <t:select attr="id" match="${tag1.id}"/>
-            <t:select attr="op" match="retentionpolicy"/>        
+            <t:select attr="op" match="retentionpolicy"/>
             </t:select>
         </t:response>
     </t:test>
@@ -250,11 +250,11 @@
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${folder.inbox}" t="${tag1.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: email01A
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
@@ -265,7 +265,7 @@ simple text string in the body
         <t:response>
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
-    </t:test>	 
+    </t:test>
 
 	<t:delay msec="5000"/>
 
@@ -292,7 +292,7 @@ simple text string in the body
         <t:response>
             <t:select path="//admin:PurgeMessagesResponse/admin:mbox"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
@@ -309,7 +309,7 @@ simple text string in the body
         </t:response>
     </t:test>
 
-	
+
 	<t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -319,7 +319,7 @@ simple text string in the body
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         <t:response/>
 	</t:test>
-		
+
 </t:test_case>
 
 </t:tests>

@@ -30,7 +30,7 @@
 <t:test_case testcaseid="account_setup_conversation" type="always" >
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a mail account 
+            2. Create a mail account
     </steps>
 
     <t:test id="admin_login" required="true" >
@@ -44,7 +44,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1"  required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -85,7 +85,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -102,7 +102,7 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
         </t:response>
     </t:test>
@@ -110,12 +110,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notifications_Conversations_MailingLists01" type="sanity" bugids="37024" >
+<t:test_case testcaseid="Notifications_Conversations_MailingLists01" type="functional" bugids="37024" >
 	<t:objective>exclude mailing list prefixes during subject normalization</t:objective>
 	<t:steps>
 		1. Enable notifications
 		2. AddMsgRequest to account1 with subject: RE: [mailing-list] subject1 (simulates mailing list message)
-		3. AddMsgRequest to account1 with subject: RE: [mailing-list] subject1 
+		3. AddMsgRequest to account1 with subject: RE: [mailing-list] subject1
 		4. Verify the notifcation block includes conversation creation with the subject = RE: [mailing-list] subject1
 	</t:steps>
 
@@ -125,7 +125,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -155,11 +155,11 @@
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: mailinglist@example.com 
+                    <content>From: foo@example.com
+To: mailinglist@example.com
 Subject: RE: [mailing-list] ${message.subject}
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message1.content}
@@ -172,16 +172,16 @@ ${message1.content}
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: mailinglist@example.com 
+                    <content>From: foo@example.com
+To: mailinglist@example.com
 Subject: RE: [mailing-list] ${message.subject}
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message2.content}
@@ -201,7 +201,7 @@ ${message2.content}
 			</t:header>
         </t:response>
     </t:test>
-	
+
 
 </t:test_case>
 

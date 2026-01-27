@@ -45,7 +45,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -66,7 +66,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test>
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -113,7 +113,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -126,7 +126,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -139,7 +139,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
     <t:test required="true">
@@ -154,19 +154,19 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account0.folder.root.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account0.folder.root.id"/>
         </t:response>
     </t:test>
-    
-</t:test_case>  
 
- 
+</t:test_case>
+
+
 
 <t:test_case testcaseid="Sharing_GranteeDomain_01" type="smoke">
     <t:objective>Share a folder to a domain.  Verify that all users in that domain have access.</t:objective>
@@ -193,7 +193,7 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -219,7 +219,7 @@ Content-Transfer-Encoding: 7bit
 
 In The Matrix, the hero Neo could dodge bullets because
 time moved in slow motion for him during battles. Indeed,
-in the real world, people in danger often feel as if 
+in the real world, people in danger often feel as if
 time slowed down for them.
 
                     </content>
@@ -272,7 +272,7 @@ time slowed down for them.
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -298,10 +298,10 @@ time slowed down for them.
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Sharing_GranteeDomain_02" type="bhr">
+<t:test_case testcaseid="Sharing_GranteeDomain_02" type="sanity">
     <t:objective>Unshare a folder to all.  Verify that all users have access.</t:objective>
     <t:steps>
             1. Login to account0
@@ -327,7 +327,7 @@ time slowed down for them.
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -353,7 +353,7 @@ Content-Transfer-Encoding: 7bit
 
 In The Matrix, the hero Neo could dodge bullets because
 time moved in slow motion for him during battles. Indeed,
-in the real world, people in danger often feel as if 
+in the real world, people in danger often feel as if
 time slowed down for them.
 
                     </content>
@@ -415,7 +415,7 @@ time slowed down for them.
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -441,7 +441,7 @@ time slowed down for them.
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

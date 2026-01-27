@@ -61,7 +61,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -79,12 +79,12 @@
 
 
 
-<t:test_case testcaseid="Bug45851_01" type="bhr" bugids="45851" >
+<t:test_case testcaseid="Bug45851_01" type="sanity" bugids="45851" >
     <t:objective>Apply filter rule to same folder as "file into".  Verify no duplicates.</t:objective>
     <t:steps>
     1. Login as user1
     2. Create a forward to address filter to user2
-    3. add a message to the inbox 
+    3. add a message to the inbox
     4. send mail to user1 from user3
     6. in user2 verify mail is received and from shows user3
     </t:steps>
@@ -104,8 +104,8 @@
     </t:test>
 
 	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -118,7 +118,7 @@
 							<actionRedirect a="${account2.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -128,7 +128,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-	
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -158,7 +158,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
 		</t:response>
 	</t:test>
-    
+
 	<t:delay msec="5000"/>
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 	<t:test>
@@ -189,12 +189,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug45851_02" type="bhr" bugids="45851" >
+<t:test_case testcaseid="Bug45851_02" type="sanity" bugids="45851" >
     <t:objective>Apply filter rule to same folder as "file into".  Verify no duplicates.</t:objective>
     <t:steps>
     1. Login as user1
     2. Create a forward to address filter to user2
-    3. add a message to the inbox 
+    3. add a message to the inbox
     4. send mail to user1 from user3
     6. in user2 verify mail is received and from shows user3
     </t:steps>
@@ -214,8 +214,8 @@
     </t:test>
 
 	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -228,7 +228,7 @@
 							<actionRedirect a="${account2.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -238,7 +238,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-	
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -268,7 +268,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
 		</t:response>
 	</t:test>
-    
+
 	<t:delay msec="5000"/>
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 	<t:test>

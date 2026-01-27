@@ -10,7 +10,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    	
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -25,7 +25,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Bug8132_01" type="sanity" bugids="8132">
+<t:test_case testcaseid="Bug8132_01" type="functional" bugids="8132">
     <t:objective>Verify bug #8132 - Malformed messages should not throw error.  Server should try its best to display</t:objective>
 
 
@@ -50,7 +50,7 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
 	</t:test>
@@ -67,7 +67,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test >
 	 <t:request>
 	  <AuthRequest xmlns="urn:zimbraAccount">

@@ -109,11 +109,11 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Acct_Maintenane_Forward_OOO_Enabled" type="sanity" bugids="57007">
+<t:test_case testcaseid="Acct_Maintenane_Forward_OOO_Enabled" type="functional" bugids="57007">
     <t:objective>Verify that an out of office setting send automatic response, when account is inactive</t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -124,7 +124,7 @@
     </t:steps>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-	<!-- Login as Account1 to change its settings  --> 
+	<!-- Login as Account1 to change its settings  -->
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -137,20 +137,20 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <!-- Set Forwarding rule -->
      <t:test id="modifyprefsrequest1">
         <t:request>
 			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
-				<pref name="zimbraPrefMailForwardingAddress">${account3.name}</pref>	
-				<pref name="zimbraPrefMailLocalDeliveryDisabled">TRUE</pref>  			
+				<pref name="zimbraPrefMailForwardingAddress">${account3.name}</pref>
+				<pref name="zimbraPrefMailLocalDeliveryDisabled">TRUE</pref>
 			</ModifyPrefsRequest>
         </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Set Out of Office rule -->
     <t:test >
         <t:request>
@@ -166,7 +166,7 @@
 
 	<!-- As admin set the account1 to maintenance mode -->
 	<t:property name="server.zimbraAdmin" value="${test_acct1.server}"/>
-	
+
 	<t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -178,7 +178,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -190,7 +190,7 @@
             <t:select path="//admin:ModifyAccountResponse/admin:account/admin:a[@n='zimbraAccountStatus']" match="maintenance"/>
         </t:response>
     </t:test>
-	
+
 
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 	<t:property name="msg01.file" value="${testMailRaw.root}/email28/msg01.txt"/>
@@ -208,7 +208,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<!-- Send message to account1 -->
 	<t:test >
 	  <t:request>
@@ -228,7 +228,7 @@
 	</t:test>
 
    <t:delay sec="60"/>
-      
+
 	<!-- Login to account2 to check for ooo responses -->
  	<t:test >
         <t:request>
@@ -242,7 +242,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
            <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -250,10 +250,10 @@
            </SearchRequest>
          </t:request>
           <t:response>
-                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.inbox"/> 
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.inbox"/>
          </t:response>
-     </t:test>    
-	
+     </t:test>
+
 	<!-- Doing a getmsgrequest of that message -->
     <t:test >
         <t:request>
@@ -267,9 +267,9 @@
 		</t:select>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
-    <!-- To check if the messages have got forwarded to Account3 from account1 --> 
+    <!-- To check if the messages have got forwarded to Account3 from account1 -->
     <!-- Login as Account3 -->
     <t:test >
         <t:request>
@@ -283,8 +283,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-        
-    <!-- Search for the sendmsg search text which would have got forwarded from Account1-->    
+
+    <!-- Search for the sendmsg search text which would have got forwarded from Account1-->
     <t:test>
         <t:request>
            <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -292,10 +292,10 @@
            </SearchRequest>
          </t:request>
           <t:response>
-                <t:select path="//mail:SearchResponse/mail:m[@l='2']" attr="id" set="message1.inbox"/> 
+                <t:select path="//mail:SearchResponse/mail:m[@l='2']" attr="id" set="message1.inbox"/>
          </t:response>
      </t:test>
-         
+
      <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -303,11 +303,11 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp">	 		
+		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp">
 		</t:select>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 

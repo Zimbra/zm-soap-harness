@@ -32,7 +32,7 @@
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
 
-  
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -46,7 +46,7 @@
         </t:response>
     </t:test>
 
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -81,7 +81,7 @@
 
 
 
-<t:test_case testcaseid="Appointment_Organizer_Rename_01" type="sanity" bugids="11379, 16733">
+<t:test_case testcaseid="Appointment_Organizer_Rename_01" type="functional" bugids="11379, 16733">
     <t:objective>Verify that an account that is renamed can still edit his appointments</t:objective>
 	<t:steps>
 	1. Login as original account
@@ -91,9 +91,9 @@
 	5. Login as the renamed account
 	6. Modify the appointment - should be successful
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
 
     <t:test id="auth1" required="true">
         <t:request>
@@ -116,8 +116,8 @@
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
-                        <s d="${ICALTIME[${appointment1.start}]}"/>  
-                        <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>  
+                        <s d="${ICALTIME[${appointment1.start}]}"/>
+                        <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>
                         <or a="${account1.old.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -135,7 +135,7 @@
     </t:test>
 
     <t:test depends="GetAppointmentRequest1a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.invId}"/>
         </t:request>
         <t:response>
@@ -181,7 +181,7 @@
     </t:test>
 
     <t:test depends="GetAppointmentRequest1a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.invId}"/>
         </t:request>
         <t:response>
@@ -198,8 +198,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.invId}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
-                        <s d="${ICALTIME[${appointment1.new.start}]}"/>  
-                        <e d="${ICALTIME(+1h)[${appointment1.new.start}]}"/>  
+                        <s d="${ICALTIME[${appointment1.new.start}]}"/>
+                        <e d="${ICALTIME(+1h)[${appointment1.new.start}]}"/>
                         <or a="${account1.new.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -215,7 +215,7 @@
     </t:test>
 
     <t:test depends="GetAppointmentRequest1a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.invId}"/>
         </t:request>
         <t:response>

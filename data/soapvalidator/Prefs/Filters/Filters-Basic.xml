@@ -79,7 +79,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="filters_basic01" type="bhr">
+<t:test_case testcaseid="filters_basic01" type="sanity">
     <t:objective>Create a basic rule to flag a message</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
@@ -104,11 +104,11 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${msg01.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${msg01.subject}"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                                         
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -118,7 +118,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
    <!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -128,7 +128,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -137,7 +137,7 @@
 			<server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
@@ -150,7 +150,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

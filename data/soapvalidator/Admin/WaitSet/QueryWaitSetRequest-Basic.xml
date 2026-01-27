@@ -8,9 +8,9 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="QueryWaitSetRequest_01" type="bhr">
+<t:test_case testcaseid="QueryWaitSetRequest_01" type="sanity">
     <t:objective>Verify that QueryWaitSetRequest returns valid account id of the waitset </t:objective>
-   
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -22,7 +22,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -34,7 +34,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -46,14 +46,14 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<AdminCreateWaitSetRequest xmlns="urn:zimbraAdmin" defTypes="${interest.all}" >
 				<add>
 					<a id="${account1.id}" />
 					<a id="${account2.id}" />
-				</add>				
+				</add>
 			</AdminCreateWaitSetRequest>
         </t:request>
         <t:response>
@@ -70,10 +70,10 @@
             <t:select path="//admin:QueryWaitSetResponse/admin:waitSet" attr="id" match="${admin.waitset.waitSet}" />
             <t:select path="//admin:QueryWaitSetResponse/admin:waitSet/admin:session" attr="account" match="${account1.id}" />
             <t:select path="//admin:QueryWaitSetResponse/admin:waitSet/admin:session" attr="account" match="${account2.id}" />
-            
+
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet}" seq="${admin.waitset.seq}"  >
@@ -87,8 +87,8 @@
             	<t:select path="//admin:a" attr="id" match="${account2.id}" emptyset="1"/>
             </t:select>
         </t:response>
-    </t:test>    
-   
+    </t:test>
+
     <t:test >
         <t:request>
 			<QueryWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet}"/>
@@ -96,15 +96,15 @@
         <t:response>
            <t:select path="//admin:QueryWaitSetResponse/admin:waitSet" attr="id" match="${admin.waitset.waitSet}" />
            <t:select path="//admin:QueryWaitSetResponse/admin:waitSet/admin:session" attr="account" match="${account1.id}" />
-           <t:select path="//admin:QueryWaitSetResponse/admin:waitSet/admin:session" attr="account" match="${account2.id}" emptyset="1"/>      
+           <t:select path="//admin:QueryWaitSetResponse/admin:waitSet/admin:session" attr="account" match="${account2.id}" emptyset="1"/>
         </t:response>
-    </t:test>            
-           
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="QueryWaitSetRequest_02" type="functional">
+<t:test_case testcaseid="QueryWaitSetRequest_02" type="regression">
     <t:objective>Verify QueryWaitSetRequest for invalid waitset id return error code</t:objective>
-   
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -116,7 +116,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
         <t:request>
 			<QueryWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="#"/>
@@ -124,8 +124,8 @@
         <t:response>
             <t:select path="//zimbra:Code" match="admin.NO_SUCH_WAITSET"/>
         </t:response>
-    </t:test>                 
-           
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

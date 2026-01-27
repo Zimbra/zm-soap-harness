@@ -21,7 +21,7 @@
     </t:test>
 
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="SyncGalRequest_AccountSetup_01" type="always">
     <t:objective>Account Setup </t:objective>
@@ -67,7 +67,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateAccount1a" required="true" depends="adminlogin">
         <t:request>
@@ -80,7 +80,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
@@ -109,16 +109,16 @@
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="SyncGalRequest_Basic_02" type="bhr">
+<t:test_case testcaseid="SyncGalRequest_Basic_02" type="sanity">
     <t:objective>Verify basic SyncGalResponse contains valid CN entries</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -143,18 +143,18 @@
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse/acct:cn[contains(@id,'${account1}')]">
  				<t:select path="//acct:a[@n='email']" match="${account1}@${domain}"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="SyncGalRequest_Basic_03" type="bhr" bugids="23956, 36679">
+<t:test_case testcaseid="SyncGalRequest_Basic_03" type="sanity" bugids="23956, 36679">
     <t:objective>Verify that using the token results in no further updates</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -179,32 +179,32 @@
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
  			<t:select path="//acct:SyncGalResponse/acct:cn" emptyset="1"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
  			<t:select path="//acct:SyncGalResponse/acct:cn" emptyset="1"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

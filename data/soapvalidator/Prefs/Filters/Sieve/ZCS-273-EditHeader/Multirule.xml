@@ -66,10 +66,10 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
-	        
+
     <t:test id="CreateCosRequest1">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -110,7 +110,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -124,7 +124,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -139,11 +139,11 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account4.server"/>
         </t:response>
     </t:test>
-                         
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Add_Replace_Delete_test1" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="Add_Replace_Delete_test1" type="sanity" bugids="zcs-273">
     <t:objective>Rule which has all 3 actions</t:objective>
     <t:steps>
     	1. Create before rule for admin before to add/replace/deleteheader.
@@ -173,21 +173,21 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 				            <actionAddheader>
 				              <headerName>X-Sieve-Header1</headerName>
 				              <headerValue>Val1</headerValue>
-				            </actionAddheader>                              
+				            </actionAddheader>
 				            <actionReplaceheader>
 				              <newName>X-New-Sieve-Header1</newName>
 				              <newValue>NewVal1</newValue>
 				              <test matchType="is" comparator="i;ascii-casemap">
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Val1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				              <actionDeleteheader>
 				              <test matchType="is" comparator="i;ascii-casemap" >
 								<headerName>X-New-Sieve-Header1</headerName>
 								<headerValue>NewVal1</headerValue>
-							  </test>					              
-				            </actionDeleteheader>				            
+							  </test>
+				            </actionDeleteheader>
 				          </filterActions>
                     </filterRule>
                  </filterRules>
@@ -197,7 +197,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -206,11 +206,11 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	   	</t:request>
 	   	<t:response>
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerName" match="X-Sieve-Header1" />
-	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Val1" />	   	
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Val1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newName" match="X-New-Sieve-Header1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newValue" match="NewVal1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionDeleteheader//mail:test/mail:headerName" match="X-New-Sieve-Header1" />
-	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionDeleteheader//mail:test/mail:headerValue" match="NewVal1" />	    	
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionDeleteheader//mail:test/mail:headerValue" match="NewVal1" />
 	   	</t:response>
 	  </t:test>
 
@@ -230,7 +230,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -238,23 +238,23 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -263,10 +263,10 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 				<t:select attr="X-New-Sieve-Header1" emptyset="1"/>
 				<t:select attr="X-Sieve-Header1" emptyset="1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="Add_Replace_Delete_test2" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="Add_Replace_Delete_test2" type="sanity" bugids="zcs-273">
     <t:objective>Rule which has all 3 multiple actions</t:objective>
     <t:steps>
     	1. Create after rule for admin to add/replace/deleteheader. Add multiple actions for add
@@ -296,25 +296,25 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 				            <actionAddheader>
 				              <headerName>X-Sieve-Header1</headerName>
 				              <headerValue>Val1</headerValue>
-				            </actionAddheader>                              
+				            </actionAddheader>
 				            <actionReplaceheader>
 				              <newName>X-New-Sieve-Header1</newName>
 				              <newValue>NewVal1</newValue>
 				              <test matchType="is" comparator="i;ascii-casemap">
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Val1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				            <actionAddheader>
 				              <headerName>X-Sieve-Header2</headerName>
 				              <headerValue>Val2</headerValue>
-				            </actionAddheader>				            
+				            </actionAddheader>
 				              <actionDeleteheader>
 				              <test matchType="is" comparator="i;ascii-casemap" >
 								<headerName>X-New-Sieve-Header1</headerName>
 								<headerValue>NewVal1</headerValue>
-							  </test>					              
-				            </actionDeleteheader>				            
+							  </test>
+				            </actionDeleteheader>
 				          </filterActions>
                     </filterRule>
                  </filterRules>
@@ -324,7 +324,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -335,11 +335,11 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerName" match="X-Sieve-Header1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Val1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerName" match="X-Sieve-Header2" />
-	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Val2" />	    		   	
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Val2" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newName" match="X-New-Sieve-Header1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newValue" match="NewVal1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionDeleteheader//mail:test" attr="headerName" match="X-New-Sieve-Header1" />
-	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionDeleteheader//mail:test" attr="headerValue" match="NewVal1" />	    	
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionDeleteheader//mail:test" attr="headerValue" match="NewVal1" />
 	   	</t:response>
 	  </t:test>
 
@@ -359,7 +359,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -367,23 +367,23 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -393,10 +393,10 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 				<t:select attr="X-Sieve-Header1" emptyset="1"/>
 				<t:select attr="X-Sieve-Header2" match="Val2"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="Add_Replace_Delete_test3" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="Add_Replace_Delete_test3" type="sanity" bugids="zcs-273">
     <t:objective>Rule which has all 3 multiple actions with index</t:objective>
     <t:steps>
     	1. Create after rule for admin before to add/replace/deleteheader. Add multiple actions for add/replace and specify index for all actions.
@@ -426,36 +426,36 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 				            <actionAddheader index="0">
 				              <headerName>X-Sieve-Header1</headerName>
 				              <headerValue>Val1</headerValue>
-				            </actionAddheader>                              
+				            </actionAddheader>
 				            <actionReplaceheader index="2">
 				              <newName>X-New-Sieve-Header1</newName>
 				              <newValue>NewVal1</newValue>
 				              <test matchType="is" comparator="i;ascii-casemap">
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Val1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				            <actionReplaceheader index="3">
 				              <newValue>NewVal2</newValue>
 				              <test matchType="is" comparator="i;ascii-casemap">
 								<headerName>X-Sieve-Header2</headerName>
 								<headerValue>Val2</headerValue>
-							  </test>					              
-				            </actionReplaceheader>				            
+							  </test>
+				            </actionReplaceheader>
 				            <actionAddheader index="1">
 				              <headerName>X-Sieve-Header2</headerName>
 				              <headerValue>Val2</headerValue>
-				            </actionAddheader>				            
+				            </actionAddheader>
 				              <actionDeleteheader index="5">
 				              <test matchType="is" comparator="i;ascii-casemap" >
 								<headerName>X-New-Sieve-Header1</headerName>
 								<headerValue>NewVal1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionDeleteheader>
 				            <actionAddheader index="4">
 				              <headerName>X-Sieve-Header3</headerName>
 				              <headerValue>Val3</headerValue>
-				            </actionAddheader> 				            				            
+				            </actionAddheader>
 				          </filterActions>
                     </filterRule>
                  </filterRules>
@@ -465,7 +465,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -478,12 +478,12 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerName" match="X-Sieve-Header2" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Val2" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerName" match="X-Sieve-Header3" />
-	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Val3" />	    		    		   	
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionAddheader" attr="headerValue" match="Val3" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newName" match="X-New-Sieve-Header1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newValue" match="NewVal1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newValue" match="NewVal2" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionDeleteheader//mail:test" attr="headerName" match="X-New-Sieve-Header1" />
-	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionDeleteheader//mail:test" attr="headerValue" match="NewVal1" />	    	
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionDeleteheader//mail:test" attr="headerValue" match="NewVal1" />
 	   	</t:response>
 	  </t:test>
 
@@ -503,7 +503,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	        	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
 	   		</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -511,23 +511,23 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -537,10 +537,10 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 				<t:select attr="X-Sieve-Header1" emptyset="1"/>
 				<t:select attr="X-Sieve-Header2" match="NewVal2"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="GetFilter_LDAPSieve" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="GetFilter_LDAPSieve" type="sanity" bugids="zcs-273">
     <t:objective>Execute GetFilter on sieve rule set in LDAP</t:objective>
     <t:steps>
     	1. Create after rule for Admin script in LDAP
@@ -558,7 +558,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -569,14 +569,14 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	   		<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:headerName" match="X-MultiVal-Header" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:headerValue" match="Val1" />
 	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newName" match="X-New-Sieve-Header1" />
-	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newValue" match="NewVal1" />	    	
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions//mail:actionReplaceheader//mail:newValue" match="NewVal1" />
 	   	</t:response>
 	  </t:test>
 </t:test_case>
-	  
+
     <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -597,9 +597,9 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
-		
+
     </t:finally>-->
 </t:tests>

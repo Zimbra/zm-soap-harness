@@ -41,7 +41,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
 	<t:objective>basic system check</t:objective>
-    
+
 	<t:test id="ping">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -81,7 +81,7 @@
         	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test>
         <t:request>
@@ -95,21 +95,21 @@
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="bug85358" type="bhr" bugids="85358" >
+<t:test_case testcaseid="bug85358" type="sanity" bugids="85358" >
 	<t:objective>login as the test account</t:objective>
-	<t:steps> 
-        1. Login to account1 
+	<t:steps>
+        1. Login to account1
         2. Send a mail to account1
         3. Share inbox with account2
         4. Accept and create the share for account2
-        5. View the email in the shared folder and verify the folder id returned        
+        5. View the email in the shared folder and verify the folder id returned
 	</t:steps>
-    
+
 	<t:test id="auth1" required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -126,11 +126,11 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.inboxFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.trashFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account1.sentFolder.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account1.spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account1.spamFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account1.draftsFolder.id"/>
         </t:response>
     </t:test>
@@ -151,7 +151,7 @@
 			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -164,7 +164,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -185,7 +185,7 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -197,7 +197,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="zid" set="mounted_folder.id"/>
         </t:response>
     </t:test>
-        	
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -205,7 +205,7 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="l" match="${mounted_folder.id}.*"/> 
+            <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="l" match="${mounted_folder.id}.*"/>
         </t:response>
     </t:test>
 
