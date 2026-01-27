@@ -26,21 +26,21 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 
 
 
-<t:test_case testcaseid="AdminDestroyWaitSetRequest01" type="bhr">
+<t:test_case testcaseid="AdminDestroyWaitSetRequest01" type="sanity">
     <t:objective>AdminDestroyWaitSetRequest </t:objective>
     <t:steps>
     1. Login to admin
     2. Send the AdminCreateWaitSetRequest to create a wait set (allaccounts="1")
     3. Send AdminDestroyWaitSetRequest
     </t:steps>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true">
@@ -54,7 +54,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -67,7 +67,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<AdminCreateWaitSetRequest xmlns="urn:zimbraAdmin" defTypes="${interest.all}" allaccounts="1">
@@ -85,7 +85,7 @@
 			</AdminDestroyWaitSetRequest>
 		</t:request>
 	</t:test>
-    
+
     <t:test concurrent="true">
         <t:request>
 			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" block="1" waitSet="${admin.waitset.waitSet}" seq="${admin.waitset.seq}" defTypes="${interest.all}" >
@@ -99,15 +99,15 @@
 
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="AdminDestroyWaitSetRequest02" type="bhr">
+<t:test_case testcaseid="AdminDestroyWaitSetRequest02" type="sanity">
     <t:objective>AdminDestroyWaitSetRequest non existing waitset</t:objective>
     <t:steps>
     1. Login to admin
     2. Send AdminDestroyWaitSetRequest
     </t:steps>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true">
@@ -122,16 +122,16 @@
         </t:response>
     </t:test>
     <t:property name="admin.waitset.waitSet" value="sdfsdf" />
-  
+
 	<t:test>
        <t:request>
 			<AdminDestroyWaitSetRequest waitSet="${admin.waitset.waitSet}" xmlns="urn:zimbraAdmin" >
 			</AdminDestroyWaitSetRequest>
 		</t:request>
 	</t:test>
-    
 
-</t:test_case> 
+
+</t:test_case>
 
 
 

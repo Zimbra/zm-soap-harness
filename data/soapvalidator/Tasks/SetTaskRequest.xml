@@ -7,7 +7,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-	
+
 		<t:test id="ping">
 			<t:request>
 				<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -16,7 +16,7 @@
 				<t:select path="//admin:PingResponse"/>
 			</t:response>
 		</t:test>
-		
+
 </t:test_case>
 
 
@@ -76,7 +76,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SetTaskRequest_01" type="bhr">
+<t:test_case testcaseid="SetTaskRequest_01" type="sanity">
 	<t:objective>Use SetTaskRequest to create a simple task</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -98,11 +98,11 @@
 
 	<t:property name="tz" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
 
-	<t:property name="appt1.uid" value="${TIME}${COUNTER}"/>	
-	<t:property name="appt1.content" value="${TIME}${COUNTER}"/>	
-	<t:property name="appt1.subject" value="${TIME}${COUNTER}"/>	
-	<t:property name="appt1.location" value="${TIME}${COUNTER}"/>	
-	
+	<t:property name="appt1.uid" value="${TIME}${COUNTER}"/>
+	<t:property name="appt1.content" value="${TIME}${COUNTER}"/>
+	<t:property name="appt1.subject" value="${TIME}${COUNTER}"/>
+	<t:property name="appt1.location" value="${TIME}${COUNTER}"/>
+
 	<!-- PST is -8 hours from GMT time -->
 	<t:property name="appt1.start.gmt" value="1263830400000"/>
 	<t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>
@@ -113,8 +113,8 @@
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt1.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" loc="${appt1.location}">
-                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${tz}"/>
                             <or a="${account1.name}"/>
                         </inv>
                         <mp content-type="text/plain">

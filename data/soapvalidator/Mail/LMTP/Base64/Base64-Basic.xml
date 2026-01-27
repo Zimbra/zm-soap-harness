@@ -15,7 +15,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -24,16 +24,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="Base64_Basic_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-                  2. Create a test account.       
+                  2. Create a test account.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -45,7 +45,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -82,12 +82,12 @@
             <from>${nonZimbraUser.name}</from>
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="Base64_Basic_01" type="bhr">
+
+<t:test_case testcaseid="Base64_Basic_01" type="sanity">
     <t:objective>Verify a Base64 message is decoded correctly (Fragment and content)</t:objective>
     <t:steps>
         1. Upload a message
@@ -107,7 +107,7 @@
              <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_Gmail_MIMEBasic1a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -117,16 +117,16 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${message1.id}']">
 				<t:select path="//mail:fr" match="(?s)Please switch your email settings to HTML mode.*"/>
-				<t:select path="//mail:mp[@ct='text/plain']/mail:content" match="(?s)Please switch your email settings to HTML mode.*"/> 
+				<t:select path="//mail:mp[@ct='text/plain']/mail:content" match="(?s)Please switch your email settings to HTML mode.*"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Base64_Basic_02" type="sanity">
+<t:test_case testcaseid="Base64_Basic_02" type="functional">
     <t:objective>Verify a Base64 message is searchable </t:objective>
     <t:steps>
         1. Upload a message
@@ -145,7 +145,7 @@
              <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="lmtp_Gmail_MIMEBasic1a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -156,7 +156,7 @@
              <t:select path="//mail:SearchResponse/mail:m" attr="id" match="${message1.id}"/>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 

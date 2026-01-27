@@ -17,7 +17,7 @@
 <t:test_case testcaseid="acctSetup" type="always">
 		<t:objective>Create test accounts</t:objective>
 		<t:steps>	1. Login to admin account
-					2. Create account        
+					2. Create account
 	    </t:steps>
 
 		<t:test required="true">
@@ -46,19 +46,19 @@
 		</t:test>
 	</t:test_case>
 
-	
 
-<t:test_case testcaseid="bug73032" type="bhr" bugids="73032">
+
+<t:test_case testcaseid="bug73032" type="sanity" bugids="73032">
 	<t:objective>HTTP Error 500 due to native formatter failure, java.lang.ArrayIndexOutOfBoundsException when downloading attachment </t:objective>
 	<t:steps>
 	1. Injected mime message
 	2. Use the rest servlet to verify for response code 200.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}" />
 	<t:property name="msg01.file" value="${testMailRaw.root}/bugs/73032/bug-73032.txt" />
-		
-		
+
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -66,8 +66,8 @@
 			<from>${account1.name}</from>
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>  
-		 
+    </t:mailinjecttest>
+
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
@@ -91,30 +91,30 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su"  />
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"  />
 			</t:response>
-		</t:test> 
-		
+		</t:test>
+
 	<t:property name="attachment.filename" value="Takarada - Confidencialidade e não concorrência.docx" />
 
-    
+
       <t:test>
     	<t:request>
     	 	<GetMsgRequest xmlns="urn:zimbraMail">
                 <m id="${message1.id}"/>
             </GetMsgRequest>
     	</t:request>
-    	<t:response>    		
-    		<t:select path="//mail:GetMsgResponse/mail:m[@id='${message1.id}']">    		
-    			<t:select path="//mail:mp/mail:mp[@part='2']" >    				
-            		<t:select attr="ct" match="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>	
-            		<t:select attr="filename" match="${attachment.filename}"/>    				    			
+    	<t:response>
+    		<t:select path="//mail:GetMsgResponse/mail:m[@id='${message1.id}']">
+    			<t:select path="//mail:mp/mail:mp[@part='2']" >
+            		<t:select attr="ct" match="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+            		<t:select attr="filename" match="${attachment.filename}"/>
     			</t:select>
     		</t:select>
-    	</t:response>    
+    	</t:response>
     </t:test>
-    
+
     <t:property name="server.restServlet" value="${account1.server}"/>
     <t:property name="part2.id" value="2"/>
-    
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${message1.id}</id>
@@ -124,7 +124,7 @@
 			<t:select attr="StatusCode" match="200"/>
 		</t:restServletResponse>
 	</t:resttest>
-	
+
  </t:test_case>
- 	
+
 </t:tests>

@@ -56,7 +56,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" />
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acctA.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -70,15 +70,15 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" />
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acctB.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgLmptInjectMultinode01" hostCount="2" type="bhr">
+<t:test_case testcaseid="MsgLmptInjectMultinode01" hostCount="2" type="sanity">
 	<t:objective>Run lmtpinject to Host A for Account A1, verify that A1 receives the message successfully. </t:objective>
     <t:steps>1. login as A1.
-             2. Run lmtpinject to inject a Message into account A1. 
+             2. Run lmtpinject to inject a Message into account A1.
 			 3. Verfiy message is injected properly.
     </t:steps>
 
@@ -109,7 +109,7 @@
                 <header a="Subject">${msg01.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>  
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${test_acctA.server}"/>
 
@@ -141,10 +141,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgLmptInjectMultinode02" hostCount="2" type="bhr">
+<t:test_case testcaseid="MsgLmptInjectMultinode02" hostCount="2" type="sanity">
 	<t:objective>Run lmtpinject to Host B for Account B1, verify that B1 receives the message successfully. </t:objective>
     <t:steps>1. login as B1.
-             2. Run lmtpinject to inject a Message into account B1. 
+             2. Run lmtpinject to inject a Message into account B1.
 			 3. Verfiy message is injected properly.
     </t:steps>
 
@@ -176,7 +176,7 @@
                 <header a="Subject">${msg01.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>  
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${test_acctB.server}"/>
 

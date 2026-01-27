@@ -4,7 +4,7 @@
 
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always" >
 	<t:objective>basic system check</t:objective>
@@ -24,7 +24,7 @@
 <t:test_case testcaseid="AccountSetup" type="always">
 	<t:objective>Create Test Accounts</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true" >
 		<t:request>
@@ -53,32 +53,20 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account">
-				<t:select path="//admin:a[@n='zimbraPasswordLockoutEnabled']" match="${globals.true}"/>			
-				<t:select path="//admin:a[@n='zimbraPasswordLockoutMaxFailures']" match="^2$"/>			
-				<t:select path="//admin:a[@n='zimbraPasswordLockoutFailureLifetime']" match="^60s$"/>			
-				<t:select path="//admin:a[@n='zimbraPasswordLockoutDuration']" match="^60s$"/>			
+				<t:select path="//admin:a[@n='zimbraPasswordLockoutEnabled']" match="${globals.true}"/>
+				<t:select path="//admin:a[@n='zimbraPasswordLockoutMaxFailures']" match="^2$"/>
+				<t:select path="//admin:a[@n='zimbraPasswordLockoutFailureLifetime']" match="^60s$"/>
+				<t:select path="//admin:a[@n='zimbraPasswordLockoutDuration']" match="^60s$"/>
 			</t:select>
 		</t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="Lockout_test1" type="bhr" bugids="zcs-126">
+<t:test_case testcaseid="Lockout_test1" type="sanity" bugids="zcs-126">
 	<t:objective>Verify that zimbraPasswordLockoutFailureTime is not updated once the account is locked</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
-	<t:test >
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAccount">
-				<account by="name">${account1.name}</account>
-				<password>${password.invalid}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//zimbra:Code" match="account.AUTH_FAILED"/>
-		</t:response>
-	</t:test>
 
 	<t:test >
 		<t:request>
@@ -92,7 +80,19 @@
 		</t:response>
 	</t:test>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${password.invalid}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="account.AUTH_FAILED"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true" >
 		<t:request>
@@ -115,7 +115,7 @@
 		<t:response>
 			<t:select path="//admin:GetAccountResponse">
 				<t:select path="//admin:a[@n='zimbraAccountStatus']" match="lockout"/>
-				<t:select path="//admin:a[@n='zimbraPasswordLockoutFailureTime']" set="lockoutfailuretime"/>				
+				<t:select path="//admin:a[@n='zimbraPasswordLockoutFailureTime']" set="lockoutfailuretime"/>
 			</t:select>
 		</t:response>
 	</t:test>
@@ -131,7 +131,7 @@
 			<t:select path="//zimbra:Code" match="account.AUTH_FAILED"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -153,18 +153,18 @@
 		<t:response>
 			<t:select path="//admin:GetAccountResponse">
 				<t:select path="//admin:a[@n='zimbraAccountStatus']" match="lockout"/>
-				<t:select path="//admin:a[@n='zimbraPasswordLockoutFailureTime']" match="${lockoutfailuretime}"/>				
+				<t:select path="//admin:a[@n='zimbraPasswordLockoutFailureTime']" match="${lockoutfailuretime}"/>
 			</t:select>
 		</t:response>
-	</t:test>	
+	</t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="Lockout_test2" type="bhr" bugids="zcs-126">
+<t:test_case testcaseid="Lockout_test2" type="sanity" bugids="zcs-126">
 	<t:objective>Verify lockout attributes on the account are cleaned after account is unlocked</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -178,7 +178,7 @@
 	</t:test>
 
 	<t:delay sec="90"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -191,7 +191,7 @@
 		</t:response>
 	</t:test>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true" >
 		<t:request>
@@ -214,7 +214,7 @@
 		<t:response>
 			<t:select path="//admin:GetAccountResponse">
 				<t:select path="//admin:a[@n='zimbraAccountStatus']" match="active"/>
-				<t:select path="//admin:a[@n='zimbraPasswordLockoutFailureTime']" emptyset="1"/>			
+				<t:select path="//admin:a[@n='zimbraPasswordLockoutFailureTime']" emptyset="1"/>
 			</t:select>
 		</t:response>
 	</t:test>

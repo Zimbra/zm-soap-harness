@@ -22,7 +22,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -31,7 +31,7 @@
     <t:steps>1. Login to admin
              2. Create a test account
     </t:steps>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -43,7 +43,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -83,7 +83,7 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="contactsFolder.id"/>
         </t:response>
     </t:test>
@@ -95,16 +95,16 @@
                     <a n="firstName">firstName1</a>
                     <a n="lastName">lastName1</a>
                     <a n="email">firstname01_lastname01@testsearch.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id1"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="createContactRequest2">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -112,16 +112,16 @@
                     <a n="firstName">firstName2</a>
                     <a n="lastName">lastName2</a>
                     <a n="email">firstname02_lastname02@testsearch.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id2"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="createContactRequest3">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -129,16 +129,16 @@
                     <a n="firstName">firstName3</a>
                     <a n="lastName">lastName3</a>
                     <a n="email">firstName03_lastName03@testsearch.co.in</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
          </t:request>
          <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id3"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
 
     <t:test id="createContactGroupRequest1">
         <t:request>
@@ -203,88 +203,88 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="search_contactgroup1" type="bhr">
+<t:test_case testcaseid="search_contactgroup1" type="sanity">
     <t:objective>Search for a contact group by group name (empty group)</t:objective>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:${contact.group1.name}</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.group1.id}']"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="search_contactgroup2" type="deprecated">
     <t:objective>Search for a contact group by group member</t:objective>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>firstname01_lastname01@testsearch.com</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.group2.id}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="search_contactgroup3" type="deprecated" >
     <t:objective>Search for a contact group by group member that was added to the group</t:objective>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>firstname02_lastname02@testsearch.com</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.group3.id}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="search_contactgroup4" type="deprecated" bugids="13520">
     <t:objective>Search for a contact group by group member - using query "contact:email"</t:objective>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:firstname01_lastname01@testsearch.com</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.group2.id}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="search_contactgroup5" type="deprecated" bugids="13520">
     <t:objective>Search for a contact group by group member that was added to the group - using query "contact:email"</t:objective>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:firstname02_lastname02@testsearch.com</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.group3.id}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

@@ -41,7 +41,7 @@
     </t:test>
 
     <t:test required="true">
-        <t:request> 
+        <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
                 <password>${defaultpassword.value}</password>
@@ -51,7 +51,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -60,8 +60,8 @@
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/> 
-        </t:response>        
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+        </t:response>
     </t:test>
 
     <t:test required="true">
@@ -73,9 +73,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -85,9 +85,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -115,7 +115,7 @@
             </SendMsgRequest>
         </t:request>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -127,7 +127,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -137,10 +137,10 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
-            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>        
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -152,7 +152,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -162,10 +162,10 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
-            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>        
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -177,7 +177,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -187,7 +187,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
-            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>        
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>
         </t:response>
     </t:test>
 
@@ -210,7 +210,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ManageIndexRequest xmlns="urn:zimbraAdmin" action="disableIndexing">
@@ -221,7 +221,7 @@
             <t:select path="//admin:ManageIndexResponse" attr="status" match="started"/>
         </t:response>
     </t:test>
-   
+
     <t:test>
     	<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -233,7 +233,7 @@
 		<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraDelayedIndexStatus']" match="suppressed" />
 		</t:response>
 	</t:test>
-        
+
 	<t:test>
         <t:request>
             <ManageIndexRequest xmlns="urn:zimbraAdmin" action="disableIndexing">
@@ -244,7 +244,7 @@
             <t:select path="//admin:ManageIndexResponse" attr="status" match="started"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -256,7 +256,7 @@
 		<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraDelayedIndexStatus']" match="suppressed" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <ManageIndexRequest xmlns="urn:zimbraAdmin" action="disableIndexing">
@@ -267,7 +267,7 @@
             <t:select path="//admin:ManageIndexResponse" attr="status" match="started"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -279,7 +279,7 @@
 		<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraDelayedIndexStatus']" match="suppressed" />
 		</t:response>
 	</t:test>
-	
+
 	<t:delay sec="5" />
 
 	<t:test>
@@ -293,7 +293,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -303,10 +303,10 @@
         <t:response>
             <t:select path="//mail:SearchResponse">
 				<t:select path="//mail:m" emptyset="1"/>
-			</t:select>         
+			</t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -318,7 +318,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -328,10 +328,10 @@
         <t:response>
             <t:select path="//mail:SearchResponse">
 				<t:select path="//mail:m" emptyset="1"/>
-			</t:select>         
+			</t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -343,7 +343,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -353,7 +353,7 @@
         <t:response>
             <t:select path="//mail:SearchResponse">
 				<t:select path="//mail:m" emptyset="1"/>
-			</t:select>         
+			</t:select>
         </t:response>
     </t:test>
 
@@ -376,7 +376,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ManageIndexRequest xmlns="urn:zimbraAdmin" action="enableIndexing">
@@ -399,7 +399,7 @@
 		<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraDelayedIndexStatus']" match="indexing" />
 		</t:response>
 	</t:test>
-	
+
 	<t:delay sec="4" />
 
 	<t:test>
@@ -413,7 +413,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -423,7 +423,7 @@
         <t:response>
 			<t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
-            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>           
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>
         </t:response>
     </t:test>
 
@@ -450,10 +450,10 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:delay sec="4" />
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -463,10 +463,10 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
-            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>          
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -478,7 +478,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -490,15 +490,15 @@
 		<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraDelayedIndexStatus']" match="indexing" />
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="re-enable_indexing_delegated_admin" type="functional" bugids="ZCS-8517">
+<t:test_case testcaseid="re-enable_indexing_delegated_admin" type="regression" bugids="ZCS-8517">
     <t:objective>Delegate auth by admin to account with disabled indexing should re-enable indexing on search</t:objective>
     <t:steps>1. As admin, do delegate auth for account4 (view email from Admin console) - verify zimbraDelayedIndexStatus=waitingForSearch
              2. Perform search on account4 - verify account4 is re-enabled for indexing i.e. zimbraDelayedIndexStatus=indexing
              3. Perform search on account4 - verify email can be searched
-    </t:steps> 
+    </t:steps>
 
 	<t:test required="true">
         <t:request>
@@ -511,7 +511,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
         <t:requestContext>
             <userAgent name="ZimbraWebClient"/>
@@ -526,8 +526,8 @@
             <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken1"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:delay sec="4" />
 
 	<t:test>
@@ -541,7 +541,7 @@
 		<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraDelayedIndexStatus']" match="waitingForSearch" />
 		</t:response>
 	</t:test>
-	
+
     <t:test>
 		<t:requestContext xmlns="urn:zimbra">
             <nosession/>
@@ -559,7 +559,7 @@
         	<t:select path="//mail:SearchResponse/mail:m" emptyset="1" />
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -571,9 +571,9 @@
 		<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraDelayedIndexStatus']" match="indexing" />
 		</t:response>
 	</t:test>
-	
+
 	<t:delay sec="5" />
-	
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -585,7 +585,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -595,10 +595,10 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
-            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>        
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

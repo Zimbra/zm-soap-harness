@@ -56,7 +56,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="gal1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="gal1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -72,7 +72,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="gal2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="gal2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -88,7 +88,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="contact1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="contact1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -103,7 +103,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -118,7 +118,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -133,11 +133,11 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="AutoCompleteRequest_GAL_Ranking_01" type="smoke">
     <t:objective>Verify ranking in AutoCompleteResponse based on email frequency</t:objective>
@@ -216,7 +216,7 @@
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -226,11 +226,11 @@
  				<t:select path="//mail:match[2]" attr="email" match=".*${gal1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="AutoCompleteRequest_GAL_Ranking_02" type="bhr" bugids="46476" >
+<t:test_case testcaseid="AutoCompleteRequest_GAL_Ranking_02" type="sanity" bugids="46476" >
     <t:objective>Verify contact appears higher than local contacts if more messages sent to contact</t:objective>
 	<t:steps>
 	1. Login as account2
@@ -261,11 +261,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
@@ -322,7 +322,7 @@
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -332,11 +332,11 @@
  				<t:select path="//mail:match[2]" attr="email" match=".*${gal1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="AutoCompleteRequest_GAL_Ranking_03" type="bhr" bugids="46476">
+<t:test_case testcaseid="AutoCompleteRequest_GAL_Ranking_03" type="sanity" bugids="46476">
     <t:objective>Verify GAL appears higher than local contacts if more messages sent to GAL</t:objective>
 	<t:steps>
 	1. Login as account3
@@ -367,11 +367,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
@@ -428,7 +428,7 @@
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -438,7 +438,7 @@
  				<t:select path="//mail:match[2]" attr="email" match=".*${contact1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

@@ -62,7 +62,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>   
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -75,7 +75,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
-                <password>${test_account2.password}</password>   
+                <password>${test_account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -88,7 +88,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
-                <password>${test_account3.password}</password>   
+                <password>${test_account3.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -117,7 +117,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:staftask >
 		<t:request>
 			<server>${zimbraLDAPServer.name}</server>
@@ -126,9 +126,9 @@
 		</t:request>
 		<t:response>
         	<t:select regex="(?s)(RC.*)(Data.*:\sldap_root_password\s=\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="ldap.password"/>
-        </t:response> 
+        </t:response>
     </t:staftask>
-    
+
    <t:staftask>
     <t:request>
         <server>${zimbraLDAPServer.name}</server>
@@ -140,7 +140,7 @@
         <t:select regex="(?s)(RC.*)(Data\s+:\s)(dc=[a-zA-Z0-9\-\.,=]+)(.*)" group="3" set="acct2.ldap.base"/>
     </t:response>
 	</t:staftask>
-    
+
      <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -148,13 +148,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_ref.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -167,19 +167,19 @@
                     <m type="G" value="${acct2.ldap.base}"/>
 					<m type="C" value="${contact_ref.id}"/>
                     <m type="I" value="${contact2.mailid}"/>
-               </cn>     
+               </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
-            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/> 
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>
+            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/>
+            </t:select>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 <t:test_case testcaseid="ModifyContacts_Group_Reference_01" type="smoke">
@@ -197,29 +197,29 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns="urn:zimbraMail">
                <cn id="${contact_group.id}">
                     <a n="type">group</a>
                     <m op="-" type="I" value="${contact2.mailid}"/>
-               </cn>     
+               </cn>
             </ModifyContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ModifyContactResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
-            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/> 
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>
+            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/>
+            </t:select>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyContacts_Group_Reference_02" type="bhr">
+<t:test_case testcaseid="ModifyContacts_Group_Reference_02" type="sanity">
     <t:objective>Modify contact group reference, add a type of member to group</t:objective>
 
     <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
@@ -236,7 +236,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -244,17 +244,17 @@
                     <a n="firstName">First2.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last2.${TIME}.${COUNTER}</a>
                     <a n="email">email2.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_ref1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns="urn:zimbraMail">
@@ -262,7 +262,7 @@
                     <a n="type">group</a>
                     <m op="+" type="C" value="${contact_ref1.id}"/>
                     <m op="-" type="I" value="${contact2.mailid}"/>
-               </cn>     
+               </cn>
             </ModifyContactRequest>
         </t:request>
         <t:response>
@@ -270,15 +270,15 @@
             <t:select attr="id" set="contact_group.id"/>
 			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>
             <t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref1.id}"/>
-            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/> 
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/> 
-            </t:select>    
+            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/>
+            </t:select>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyContacts_Group_Reference_03" type="bhr">
+<t:test_case testcaseid="ModifyContacts_Group_Reference_03" type="sanity">
     <t:objective>Modify contact group reference, check if op and replace give invalid request</t:objective>
 
     <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
@@ -295,14 +295,14 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
                <cn id="${contact_group.id}">
                     <a n="type">group</a>
                     <m op="-" type="C" value="${contact_ref1.id}"/>
-               </cn>     
+               </cn>
             </ModifyContactRequest>
         </t:request>
         <t:response>

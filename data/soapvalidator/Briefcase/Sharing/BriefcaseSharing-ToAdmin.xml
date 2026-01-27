@@ -29,8 +29,8 @@
 <t:test_case testcaseid="SharingFoldersToAdmin_AccountSetup" type="always" >
     <t:objective>Create test accounts</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
-   
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
 
     <t:test  id="admin_login" required="true" depends="ping">
         <t:request>
@@ -90,7 +90,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="BriefcaseSharingFoldersToAdmin_01" type="bhr">
+<t:test_case testcaseid="BriefcaseSharingFoldersToAdmin_01" type="sanity">
     <t:objective>Verify an admin user only has user rights, if logged into the user interface</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -102,10 +102,10 @@
 		7. Try add a document.  PERM_DENIED.
 		8. ItemActionRequest (op=read).  PERM_DENIED.
 		9. IemActionRequest (op=delete).  PERM_DENIED.
-		10. FolderActionRequest(grant).  PERM_DENIED.	
+		10. FolderActionRequest(grant).  PERM_DENIED.
 		11. Create a subfolder in the folder.  PERM_DENIED.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="account1.folder1.name" value="folder${TIME}${COUNTER}"/>
@@ -142,7 +142,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -151,7 +151,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -160,11 +160,11 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -236,7 +236,7 @@
 			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account1.file.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetItemRequest xmlns="urn:zimbraMail">
@@ -244,7 +244,7 @@
             </GetItemRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetItemResponse/mail:doc" attr="id" match="${account1.file.id}"/>            
+            <t:select path="//mail:GetItemResponse/mail:doc" attr="id" match="${account1.file.id}"/>
         </t:response>
     </t:test>
 
@@ -256,7 +256,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -265,11 +265,11 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>      
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-   
+
     <t:test >
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -280,7 +280,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -292,7 +292,7 @@
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -304,10 +304,10 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test >
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="BriefcaseSharingFoldersToAdmin_02" type="bhr">
+<t:test_case testcaseid="BriefcaseSharingFoldersToAdmin_02" type="sanity">
     <t:objective>Verify an admin user has admin rights, if logged into the admin interface</t:objective>
 	<t:steps>
 		1. Login as account1
@@ -315,14 +315,14 @@
 		3. Login as admin1 to the account interface (not the admin interface)
 		4. Mount the drive, success.
 		5. Run a  search.  Success.
-		6. GetItemRequest.  Success.		
+		6. GetItemRequest.  Success.
 		7. ItemActionRequest (op=read).  Success.
 		8. ItemActionRequest (op=delete).  Success.
 		9. Try to add a document.  Success.
-		10. FolderActionRequest(grant).  Success.	
+		10. FolderActionRequest(grant).  Success.
 		12. Create a subfolder in the folder.  Success.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="account1.folder1.name" value="folder${TIME}${COUNTER}"/>
@@ -359,7 +359,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -368,7 +368,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -377,11 +377,11 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document2.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -452,7 +452,7 @@
 			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="admin1.document.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetItemRequest xmlns="urn:zimbraMail">
@@ -460,10 +460,10 @@
             </GetItemRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetItemResponse/mail:doc" attr="id" match="${admin1.document.id}"/>          
+            <t:select path="//mail:GetItemResponse/mail:doc" attr="id" match="${admin1.document.id}"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -474,7 +474,7 @@
             <t:select path="//mail:ItemActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
      <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -483,7 +483,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -492,8 +492,8 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="admin1.document1.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="admin1.document1.id"/>
         </t:response>
     </t:test>
     <t:test >
@@ -507,7 +507,7 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -519,7 +519,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
     </t:test >
-    
+
 </t:test_case>
 
 

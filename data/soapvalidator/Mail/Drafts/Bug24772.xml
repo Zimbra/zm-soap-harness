@@ -67,7 +67,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account2" required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -81,21 +81,21 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="OutMsgQuotaCheck" type="sanity">
+<t:test_case testcaseid="OutMsgQuotaCheck" type="functional">
     <t:objective>To Send a draft mail</t:objective>
     <t:steps>
         1. Compose a message and save it as Draft
         2. Upload the attachment
-        2. Reopen the draft and attach the attachment uploaded 
+        2. Reopen the draft and attach the attachment uploaded
     </t:steps>
-  
+
   	<!-- Login to the user account -->
   	<t:test id="auth" required="true">
         <t:request>
@@ -110,10 +110,10 @@
 
         </t:response>
     </t:test>
-    
-  
+
+
 	<!-- upload the attachment -->
-	
+
 	<t:property name="uploadServletServer" value="${test_acct.server}"/>
 
     <t:uploadservlettest id="SaveDraftRequest11a">
@@ -124,8 +124,8 @@
             <t:select attr="id" set="message1.aid"/>
         </t:uploadServletResponse>
     </t:uploadservlettest>
-			
-	
+
+
 	<t:test id="saveDraftRequest7a">
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -162,9 +162,9 @@
         <t:response>
             <t:select path="//mail:SendMsgResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-	
+
     <t:test depends="saveDraftRequest7a">
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -174,8 +174,8 @@
         <t:response>
             <t:select path="//mail:MsgActionResponse"/>
         </t:response>
-    </t:test>  
-	
+    </t:test>
+
 	<!-- Login to account2 -->
 	<t:test id="auth" required="true">
         <t:request>
@@ -189,8 +189,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
-	
+
+
 	<!-- Search for the message -->
 	<t:test>
 		<t:request>
@@ -202,8 +202,8 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<!-- GetMsg Request and check for the size -->
     <t:test >
         <t:request>
@@ -212,14 +212,14 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@part='2']"> 
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@part='2']">
             	<t:select attr="s" match="^56.*"/>
             	<t:select attr="ct" match="image/jpeg"/>
-          	 	<t:select attr="filename" match="attachment1.jpg"/>  
+          	 	<t:select attr="filename" match="attachment1.jpg"/>
             </t:select>
         </t:response>
     </t:test>
-		
+
 </t:test_case>
 
 </t:tests>

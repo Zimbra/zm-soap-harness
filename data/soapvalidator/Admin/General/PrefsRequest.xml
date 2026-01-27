@@ -9,9 +9,9 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="PrefsRequest-01" type="bhr" >
+<t:test_case testcaseid="PrefsRequest-01" type="sanity" >
     <t:objective>Sanity test for ModifyPrefsRequest, GetPrefsRequest</t:objective>
-	
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -36,14 +36,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${test_account1.name}</account>
-                <password>${test_account1.password}</password>           
+                <password>${test_account1.password}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -52,7 +52,7 @@
 
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -63,7 +63,7 @@
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetPrefsRequest xmlns="urn:zimbraAccount">
@@ -78,7 +78,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

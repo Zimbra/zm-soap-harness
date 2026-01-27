@@ -66,7 +66,7 @@
 <!-- Create accounts for testing -->
 <t:test_case testcaseid="ModifyCOS" type="always">
 	<t:objective>Modify COS</t:objective>
-		
+
 	<t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
 	</t:test>
-		
+
 	<t:test>
 		<t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
@@ -99,12 +99,12 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccounts" type="functional">
+<t:test_case testcaseid="CreateAccounts" type="regression">
         <t:objective>create accounts</t:objective>
                 <t:steps>
                         1. Auth with admin
@@ -126,7 +126,7 @@
 					set="account.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -142,7 +142,7 @@
 					set="account.dl1.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -154,7 +154,7 @@
 			<t:response>
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -171,7 +171,7 @@
 					set="account1.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -187,7 +187,7 @@
 					set="account2.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -203,7 +203,7 @@
 					set="account3.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -219,7 +219,7 @@
 					set="account4.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -236,7 +236,7 @@
 					set="account5.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -252,7 +252,7 @@
 					set="account6.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -268,7 +268,7 @@
 					set="account7.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -284,7 +284,7 @@
 					set="account8.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -301,7 +301,7 @@
 					set="account9.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -317,7 +317,7 @@
 					set="account10.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -333,7 +333,7 @@
 					set="account11.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -351,14 +351,14 @@
 		</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateDistributionList" type="functional">
+<t:test_case testcaseid="CreateDistributionList" type="regression">
 	<t:objective>create distribution list</t:objective>
 		<t:steps>
 			1. Auth with account.dl1
 			2. create distribution list
 			3. add members to distribution list
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -371,7 +371,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test >
 			<t:request >
 				<CreateDistributionListRequest xmlns="urn:zimbraAccount" >
@@ -382,7 +382,7 @@
 				<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="dl1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test >
 			<t:request >
 				<DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -399,7 +399,7 @@
 				<t:select path="//acct:DistributionListActionResponse" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test >
 			<t:request >
 				<GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -413,15 +413,15 @@
 				<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" match="${account12.name}"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test >
 			<t:request >
 				<DistributionListActionRequest xmlns="urn:zimbraAccount">
 					<dl by="id">${dl1.id}</dl>
-					<action op="setRights">                  	
+					<action op="setRights">
 						<right right="sendToDistList">
 							<grantee type="email" by="name">${account.name}</grantee>
-						</right>          
+						</right>
 					</action>
 				</DistributionListActionRequest>
 			</t:request>
@@ -429,7 +429,7 @@
 				<t:select path="//acct:DistributionListActionResponse" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test >
 			<t:request >
 				<GetDistributionListRequest xmlns="urn:zimbraAccount"  needRights="sendToDistList">
@@ -456,15 +456,15 @@
 </t:test_case>
 
 <!-- Run testcase -->
-<t:test_case testcaseid="ZCS-1842_rule1" type="functional" bugids="ZCS-1842,ZCS-3263">
+<t:test_case testcaseid="ZCS-1842_rule1" type="regression" bugids="ZCS-1842,ZCS-3263">
 		<t:objective>Verify editheader action should be applied only to recipients who has the rule configured, not to other recipents</t:objective>
-		<t:steps>	
+		<t:steps>
 			1. auth with account
 			2. send message to multiple accounts
 			3. auth with recipients
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -477,7 +477,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test >
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -497,7 +497,7 @@
 				<t:select path="//mail:SendMsgResponse"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -510,7 +510,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -521,7 +521,7 @@
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account1.msg.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${account1.msg.id}</id>
@@ -531,7 +531,7 @@
 				<t:select attr="X-Rule1-Header" match="Rule1" />
 			</t:restServletResponse>
 		</t:resttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -544,7 +544,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -555,7 +555,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" set="${compose.subject}" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -568,7 +568,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -579,7 +579,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" set="${compose.subject}" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -592,7 +592,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -617,16 +617,16 @@
 		</t:staftask>
 
 </t:test_case>
- 
-<t:test_case testcaseid="ZCS-1842_rule2" type="functional" bugids="ZCS-1842, ZCS-3263">
+
+<t:test_case testcaseid="ZCS-1842_rule2" type="regression" bugids="ZCS-1842, ZCS-3263">
 		<t:objective>Verify editheader action should be applied only to recipients who has the rule configured, not to Cc and Bcc</t:objective>
-		<t:steps>	
+		<t:steps>
 			1. auth with account
 			2. send message to account5-6, Cc and Bcc to the remaining accounts
 			3. auth with recipients
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -639,7 +639,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test >
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -659,7 +659,7 @@
 				<t:select path="//mail:SendMsgResponse"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -672,7 +672,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -683,7 +683,7 @@
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account5.msg.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${account5.msg.id}</id>
@@ -693,7 +693,7 @@
 				<t:select attr="X-Rule2-Header" match="Rule2" />
 			</t:restServletResponse>
 		</t:resttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -706,7 +706,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -717,7 +717,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" set="${compose.subject}" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -730,7 +730,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -741,7 +741,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" set="${compose.subject}" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -754,7 +754,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -780,15 +780,15 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-1842_rule3" type="functional" bugids="ZCS-1842,ZCS-3263">
+<t:test_case testcaseid="ZCS-1842_rule3" type="regression" bugids="ZCS-1842,ZCS-3263">
 		<t:objective>Verify editheader action should be applied only to a member of distribution list who has the rule configured, not to other members</t:objective>
-		<t:steps>	
+		<t:steps>
 			1. auth with account
 			2. send message to distribution list
 			3. auth with recipients
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -801,7 +801,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test >
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -818,7 +818,7 @@
 				<t:select path="//mail:SendMsgResponse"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -831,7 +831,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -842,7 +842,7 @@
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account9.msg.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${account9.msg.id}</id>
@@ -852,7 +852,7 @@
 				<t:select attr="X-Rule2-Header" match="Rule2" />
 			</t:restServletResponse>
 		</t:resttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -865,7 +865,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -876,7 +876,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" set="${compose.subject}" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -889,7 +889,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -900,7 +900,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" set="${compose.subject}" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -913,7 +913,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -937,17 +937,17 @@
 			</t:response>
 		</t:staftask>
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="ZCS-1842_rule4" type="functional" bugids="ZCS-1842,ZCS-3263">
+<t:test_case testcaseid="ZCS-1842_rule4" type="regression" bugids="ZCS-1842,ZCS-3263">
 		<t:objective>Verify editheader action should be applied only to recipients who has the rule configured, not to other recipents</t:objective>
-		<t:steps>	
+		<t:steps>
 			1. auth with account
 			2. send message to multiple accounts who has different sieve rule set
 			3. auth with recipients
 			4. find and verify email headers are added correctly
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -960,7 +960,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test >
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -979,7 +979,7 @@
 				<t:select path="//mail:SendMsgResponse"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -992,7 +992,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -1003,7 +1003,7 @@
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account1.msg.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${account1.msg.id}</id>
@@ -1014,7 +1014,7 @@
 				<t:select attr="X-Rule2-Header" emptyset="1" />
 			</t:restServletResponse>
 		</t:resttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1027,7 +1027,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -1050,7 +1050,7 @@
 				<t:select attr="X-Rule2-Header" emptyset="1" />
 			</t:restServletResponse>
 		</t:resttest>
-				
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1063,7 +1063,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
@@ -1075,7 +1075,7 @@
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account5.msg.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${account5.msg.id}</id>
@@ -1101,7 +1101,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-3263" type="functional" bugids="ZCS-3263">
+<t:test_case testcaseid="ZCS-3263" type="regression" bugids="ZCS-3263">
 		<t:objective>Verify no interim blob files are remained</t:objective>
 		<t:steps>
 			1. auth with account
@@ -1191,7 +1191,7 @@
 </t:test_case>
     <t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1212,7 +1212,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 

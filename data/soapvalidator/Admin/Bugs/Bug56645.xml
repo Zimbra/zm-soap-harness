@@ -37,13 +37,13 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
                 <password>${defaultpassword.value}</password>
-              
+
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -51,13 +51,13 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account3.name}</name>
                 <password>${defaultpassword.value}</password>
-               
+
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -65,7 +65,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
       <t:test >
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -76,7 +76,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -87,7 +87,7 @@
                  <a n="zimbraPrefChildVisibleAccount">${account2.id}</a>
                  <a n="zimbraPrefChildVisibleAccount">${account3.id}</a>
                  <a n="zimbraPrefMailTrustedSenderList">${domain1.name}</a>
-              
+
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -95,10 +95,10 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug56645" type="bhr" bugids="56645">
+<t:test_case testcaseid="bug56645" type="sanity" bugids="56645">
     <t:objective>cannot add/remove child account if another account deleted.</t:objective>
     <t:steps>
     1. Login to ZWC
@@ -107,7 +107,7 @@
 	4. Modify account and remove attribute zimbraChildAccount.
     </t:steps>
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -119,7 +119,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test>
         <t:request>
             <DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -130,7 +130,7 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -145,7 +145,7 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
         <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -157,10 +157,10 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug75010" type="bhr" bugids="75010">
+<t:test_case testcaseid="bug75010" type="sanity" bugids="75010">
     <t:objective>Test case to verify bug 75010</t:objective>
     <t:steps>
     1. Login to ZWC
@@ -169,7 +169,7 @@
 	4. Verify in response entry for zimbraPrefMailTrustedSenderList is Domain1.com not domain1.com.
     </t:steps>
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -181,7 +181,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	    
+
      <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -193,7 +193,7 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 			<t:request>
 				<GetAccountRequest xmlns="urn:zimbraAdmin" req-attrs="zimbraPrefMailTrustedSenderList">
@@ -206,12 +206,12 @@
 				<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraPrefMailTrustedSenderList']" match="${domain1_test.name}" emptyset="1"/>
 			</t:response>
 	</t:test>
-	
-	
-    
+
+
+
 </t:test_case>
 
-<t:test_case testcaseid="bug78539" type="bhr" bugids="75010">
+<t:test_case testcaseid="bug78539" type="sanity" bugids="75010">
     <t:objective>Out of Office message made all lower case</t:objective>
     <t:steps>
     1. Login to ZWC
@@ -219,7 +219,7 @@
 	3. Send GetAccountRequest and verify response
     </t:steps>
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -231,19 +231,19 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	    
+
      <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                 <id>${account1.id}</id>
-                 <a n="zimbraPrefOutOfOfficeReply">TESTING OF BUG 75010</a>  
+                 <a n="zimbraPrefOutOfOfficeReply">TESTING OF BUG 75010</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 			<t:request>
 				<GetAccountRequest xmlns="urn:zimbraAdmin" req-attrs="zimbraPrefMailTrustedSenderList">
@@ -256,7 +256,7 @@
 				<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraPrefOutOfOfficeReply']" match="testing of bug 75010" emptyset="1"/>
 			</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 </t:tests>

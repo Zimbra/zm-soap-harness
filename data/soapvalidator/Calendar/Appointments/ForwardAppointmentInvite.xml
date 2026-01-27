@@ -10,7 +10,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -25,7 +25,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -38,7 +38,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -82,7 +82,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForwardMsgSendOnBehalf_01" type="bhr"  bugids="66629">
+<t:test_case testcaseid="ForwardMsgSendOnBehalf_01" type="sanity"  bugids="66629">
     <t:objective>Verify that a user cannot forward message to other user as sendOnBehalfOf when sendOnBehalfOf right is not granted</t:objective>
     <t:steps>
 		1. Login to account1
@@ -91,7 +91,7 @@
 		4. Find the message
 		5. Forward the message to account3 sendOnBehalfOf of account1.
 		6. Login to account3
-		7. Verify the forwarded message.		
+		7. Verify the forwarded message.
 		8. Verify message has no sender name.
 	</t:steps>
 
@@ -108,15 +108,15 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="message.subject" value="subject${TIME}${COUNTER} test email forwarding"/>
-	<t:property name="message.content" value=".content${TIME}${COUNTER}"/>	
-   
+	<t:property name="message.content" value=".content${TIME}${COUNTER}"/>
+
    <t:test>
 	 <t:request>
 	    <SendMsgRequest xmlns="urn:zimbraMail">
 		<m>
-		  <e t="t" a='${account2.name}'/>	        
+		  <e t="t" a='${account2.name}'/>
 	         <su>${message.subject}</su>
 	          <mp ct="text/plain">
 	         	 <content> ${message.content} </content>
@@ -128,9 +128,9 @@
 	       <t:select path="//mail:SendMsgResponse/mail:m"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -141,29 +141,29 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
-	
+
     <t:test required="true" >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail"  types="message">
 				<query>subject:${message.subject}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m">
-            	<t:select attr="id" set="account2.messageId"/>            	
-            	<t:select attr="su" match="${message.subject}"/>             	             	
-            </t:select> 
+            	<t:select attr="id" set="account2.messageId"/>
+            	<t:select attr="su" match="${message.subject}"/>
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:resttest>
 		<t:restServletRequest>
 			<id>${account2.messageId}</id>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="200"/>			
+			<t:select attr="StatusCode" match="200"/>
 			<t:select attr="Content-Type" match=".*method=.*" emptyset="1"/>
 		</t:restServletResponse>
 	</t:resttest>
@@ -182,14 +182,14 @@
 					<su>Fwd: ${forward.subject}</su>
 					<mp ct="text/plain">
 						<content>----- Forwarded Message -----</content>
-					</mp>					
+					</mp>
 				</m>
 			</SendMsgRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="mail01.forward.id"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
@@ -211,7 +211,7 @@
 				<query>subject:(${forward.subject})</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message.id"/>
             </t:select>
@@ -224,16 +224,16 @@
                 <m id="${message.id}" />
             </GetMsgRequest>
         </t:request>
-        <t:response>             
-             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${message.id}"/>            
+        <t:response>
+             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${message.id}"/>
              <t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="f"]' attr="a" match="${account2.name}"/>
-             <t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="s"]'  emptyset="1"/> 
+             <t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="s"]'  emptyset="1"/>
         </t:response>
-    </t:test>	
-	
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="ForwardApptMsgSendOnBehalf_01" type="bhr"  bugids="66629">
+<t:test_case testcaseid="ForwardApptMsgSendOnBehalf_01" type="sanity"  bugids="66629">
     <t:objective>Verify that a user can forward calendar invite message to other user as sendOnBehalfOf when sendOnBehalfOf right is not granted</t:objective>
     <t:steps>
 		1. Login to account1
@@ -242,7 +242,7 @@
 		4. Find the calendar invite message
 		5. Forward the appointment invite message to account3 sendOnBehalfOf of account1.
 		6. Login to account3
-		7. Verify it get forwarded message.		
+		7. Verify it get forwarded message.
 		8. Verify message has sender name as account2 and from name account1.
 	</t:steps>
 
@@ -259,20 +259,20 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER} test calendar invite email forwarding"/>
 	<t:property name="appointment.content" value=".content${TIME}${COUNTER}"/>
 	<t:property name="time.20110630000000.gmt" value="1309392000000"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
                     		<at a="${account2.name}" role="REQ" ptst="NE" rsvp="1"/>
-	                        <s d="${ICALTIME[${time.20110630000000.gmt}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20110630000000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20110630000000.gmt}]}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20110630000000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -291,9 +291,9 @@
             </t:select>
        </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -305,7 +305,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
             <t:select path="//acct:AuthResponse/acct:authToken" set="account2.authToken"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 
 	<t:test>
@@ -326,27 +326,27 @@
 				<query>subject:${appointment.subject}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m">
-            	<t:select attr="id" set="account2.appt1.messageId"/>            	
-            	<t:select attr="su" match="${appointment.subject}"/>             	             	
-            </t:select> 
+            	<t:select attr="id" set="account2.appt1.messageId"/>
+            	<t:select attr="su" match="${appointment.subject}"/>
+            </t:select>
             <t:select path="//mail:SearchResponse/mail:m/mail:inv/mail:comp" attr="apptId" set="account2.appt1.invtId" />
         </t:response>
     </t:test>
-    
-    
+
+
     <t:resttest>
 		<t:restServletRequest>
 			<id>${account2.appt1.messageId}</id>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="200"/>			
+			<t:select attr="StatusCode" match="200"/>
 			<t:select attr="Content-Type" match=".*method=.*"/>
 		</t:restServletResponse>
 	</t:resttest>
-	
-	<t:test>		
+
+	<t:test>
         <t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m origid="${account2.appt1.messageId}" rt="w">
@@ -356,7 +356,7 @@
 					<su>Fwd: ${forward.subject}</su>
 					<mp ct="text/plain">
 						<content>----- Forwarded Message -----</content>
-					</mp>					
+					</mp>
 				</m>
 			</SendMsgRequest>
         </t:request>
@@ -406,7 +406,7 @@
 				<query>subject:(${forward.subject})</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:m" attr="id" set="message.id"/>
             </t:select>
@@ -422,12 +422,12 @@
         <t:response>
              <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp" attr="compNum" set="account3.compNum"/>
              <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp" attr="apptId" set="account3.apptId" />
-             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${message.id}"/>            
+             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${message.id}"/>
              <t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="f"]' attr="a" match="${account1.name}"/>
-             <t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="s"]' attr="a" match="${account2.name}"/>  
+             <t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="s"]' attr="a" match="${account2.name}"/>
         </t:response>
-    </t:test>	
-	
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

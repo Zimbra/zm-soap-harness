@@ -19,7 +19,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -31,7 +31,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ApptAdminRights01" type="bhr" bugids="28753">
+<t:test_case testcaseid="ApptAdminRights01" type="sanity" bugids="28753">
     <t:objective>Verify delegatee can see private appts</t:objective>
 
 	<t:steps>
@@ -89,10 +89,10 @@
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt.subject1}" class="PRI" >
-	                        <s d="${ICALTIME[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -170,7 +170,7 @@
 				<query>inid:${delegatee1.folder.shared.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appt.subject1}"/>
             <t:select path="//mail:SearchResponse/mail:appt" attr="class" match="PRI"/>
             <t:select path="//mail:SearchResponse/mail:appt/mail:or" attr="a" match="${account1.name}"/>
@@ -181,7 +181,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ApptAdminRights02" type="bhr" bugids="28753">
+<t:test_case testcaseid="ApptAdminRights02" type="sanity" bugids="28753">
     <t:objective>Verify delegatee can modify the above private appt </t:objective>
 
 	<t:steps>
@@ -196,8 +196,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appt1.id}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="T" transp="O" status="CONF" allDay="0" name="${appt.subject1}" loc="${appt.loc}">
-                        <s d="${ICALTIME(-1h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
-                        <e d="${ICALTIME(+3h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
+                        <s d="${ICALTIME(-1h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
+                        <e d="${ICALTIME(+3h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -213,7 +213,7 @@
     </t:test>
 
     <t:test>
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt.modify.id}"/>
         </t:request>
         <t:response>
@@ -228,7 +228,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ApptAdminRights03" type="bhr" bugids="28753">
+<t:test_case testcaseid="ApptAdminRights03" type="sanity" bugids="28753">
     <t:objective>Verify delegatee can delete the above private appt (try delete above modified appt only) </t:objective>
 
     <t:test>
@@ -267,7 +267,7 @@
 				<query>inid:${account1.folder.calendar}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appt.subject1}" emptyset="1"/>
 		</t:response>
     </t:test>
@@ -275,7 +275,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ApptAdminRights04" type="bhr" bugids="28753">
+<t:test_case testcaseid="ApptAdminRights04" type="sanity" bugids="28753">
     <t:objective>Verify delegatee can mark private appt as public </t:objective>
 
 	<t:steps>
@@ -303,10 +303,10 @@
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt.subject2}" class="PRI" >
-	                        <s d="${ICALTIME(+4h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+6h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME(+4h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(+6h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -343,7 +343,7 @@
 				<query>inid:${delegatee1.folder.shared.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appt.subject2}"/>
             <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appt2.id"/>
 		</t:response>
@@ -354,8 +354,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appt2.id}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" transp="O" status="CONF" allDay="0" name="${appt.subject2}" class="PUB">
-                        <s d="${ICALTIME(+4h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
-                        <e d="${ICALTIME(+6h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
+                        <s d="${ICALTIME(+4h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
+                        <e d="${ICALTIME(+6h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -390,7 +390,7 @@
 				<query>inid:${account1.folder.calendar}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appt.subject2}"/>
             <t:select path="//mail:SearchResponse/mail:appt" attr="class" match="PUB"/>
 		</t:response>

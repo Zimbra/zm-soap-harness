@@ -43,10 +43,10 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="resource_getall_01" type="bhr"  areas="dev_sanity">
+<t:test_case testcaseid="resource_getall_01" type="sanity"  areas="dev_sanity">
     <t:objective> Test for GetAllCalendarResourcesRequest. </t:objective>
-   
-    <t:test>       
+
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
@@ -58,10 +58,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="resource_getall_02" type="bhr">
+<t:test_case testcaseid="resource_getall_02" type="sanity">
 <t:objective> Verify the Get AllCalendarResource Request with domain name. </t:objective>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="name"> ${defaultdomain.name} </domain>
@@ -75,79 +75,79 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="resource_getall_03" type="functional" >
+<t:test_case testcaseid="resource_getall_03" type="regression" >
 <t:objective> Verify the Get AllCalendarResource Request with invalid domain name. </t:objective>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="name"> ${blank} </domain>
             </GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="name"> ${space} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="name"> ${spchar} </domain>
 			</GetAllCalendarResourcesRequest>
 		</t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="name"> ${sometext} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="name"> ${negative} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="name"> ${zero} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="resource_getall_04" type="bhr">
+<t:test_case testcaseid="resource_getall_04" type="sanity">
 	<t:objective> Verify the Get AllCalendarResource Request with valid domain id. </t:objective>
 	<t:steps>
 			1. Create a domain.
@@ -165,7 +165,7 @@
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="id"> ${domain1.id} </domain>
@@ -179,72 +179,72 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="resource_getall_05" type="functional" >
+<t:test_case testcaseid="resource_getall_05" type="regression" >
 	<t:objective> Verify the Get AllCalendarResource Request with invalid values. </t:objective>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="id"> ${blank} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="id"> ${space} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="id"> ${spchar} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="id"> ${sometext} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="id"> ${negative} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test>       
+    <t:test>
         <t:request>
             <GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
 				<domain by="id"> ${zero} </domain>
 			</GetAllCalendarResourcesRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>     
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 

@@ -33,9 +33,9 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -48,32 +48,32 @@
         </t:response>
     </t:test>
 
-	            
+
 </t:test_case>
 
-<t:test_case testcaseid="importanceTest_01" type="bhr" bugids="56446" >
+<t:test_case testcaseid="importanceTest_01" type="sanity" bugids="56446" >
     <t:objective>Verify that message of high importance is filtered for importanceTest filter </t:objective>
-    
+
     <t:steps> 1. Create filter for importanceTest imp="high" for account1 to flag
 			  2. Message of high importance is injected in account1 inbox
 			  3. Verify that message got flagged in account1 inbox
-    </t:steps>    
-	
-   <t:property name="filter_imp_high.name" value="filterImpHigh${TIME}${COUNTER}"/>	
-	
+    </t:steps>
+
+   <t:property name="filter_imp_high.name" value="filterImpHigh${TIME}${COUNTER}"/>
+
    <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_imp_high.name}" active="1">
 						<filterTests condition="allof">
-						<importanceTest imp="high"/>						
+						<importanceTest imp="high"/>
 						</filterTests>
 						<filterActions>
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -81,10 +81,10 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="priority_msg01.file" value="${testMailRaw.root}/bug56446/imp-high-x-priority.txt" />
 	<t:property name="filter_imp_high1.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${priority_msg01.file}</filename>
@@ -93,10 +93,10 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-                <header a="Subject">${filter_imp_high1.subject}</header>               
+                <header a="Subject">${filter_imp_high1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -106,13 +106,13 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_high1.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
     </t:test>
-    
+
     <t:property name="priority_msg02.file" value="${testMailRaw.root}/bug56446/imp-high.txt" />
 	<t:property name="filter_imp_high2.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${priority_msg02.file}</filename>
@@ -121,10 +121,10 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-                <header a="Subject">${filter_imp_high2.subject}</header>               
+                <header a="Subject">${filter_imp_high2.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -134,13 +134,13 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_high2.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
-    </t:test>  
-        
+    </t:test>
+
     <t:property name="priority_msg03.file" value="${testMailRaw.root}/bug56446/imp-high-both.txt" />
 	<t:property name="filter_imp_high3.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${priority_msg03.file}</filename>
@@ -149,10 +149,10 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-                <header a="Subject">${filter_imp_high3.subject}</header>               
+                <header a="Subject">${filter_imp_high3.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -162,35 +162,35 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_high3.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
-    </t:test> 
-     
-</t:test_case> 
+    </t:test>
 
-<t:test_case testcaseid="importanceTest_02" type="bhr" bugids="56446" >
+</t:test_case>
+
+<t:test_case testcaseid="importanceTest_02" type="sanity" bugids="56446" >
     <t:objective>Verify that message of low importance is filtered for importanceTest filter </t:objective>
-    
+
     <t:steps> 1. Create filter for importanceTest imp="low" for account1 to flag
 			  2. Message of low importance is injected in account1 inbox
 			  3. Verify that message got flagged in account1 inbox
-    </t:steps>    
-	
-    <t:property name="filter_imp_low.name" value="filterImpLow${TIME}${COUNTER}"/>	
-	
+    </t:steps>
+
+    <t:property name="filter_imp_low.name" value="filterImpLow${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_imp_low.name}" active="1">
 						<filterTests condition="allof">
-						<importanceTest imp="low"/>						
+						<importanceTest imp="low"/>
 						</filterTests>
 						<filterActions>
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -198,10 +198,10 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="priority_msg04.file" value="${testMailRaw.root}/bug56446/imp-low-x-priority.txt" />
 	<t:property name="filter_imp_low1.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${priority_msg04.file}</filename>
@@ -210,10 +210,10 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-                <header a="Subject">${filter_imp_low1.subject}</header>               
+                <header a="Subject">${filter_imp_low1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -223,13 +223,13 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_low1.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
     </t:test>
-    
+
     <t:property name="priority_msg05.file" value="${testMailRaw.root}/bug56446/imp-low.txt" />
 	<t:property name="filter_imp_low2.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${priority_msg05.file}</filename>
@@ -238,10 +238,10 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-                <header a="Subject">${filter_imp_low2.subject}</header>               
+                <header a="Subject">${filter_imp_low2.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -251,13 +251,13 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_low2.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
-    </t:test>  
-        
+    </t:test>
+
     <t:property name="priority_msg06.file" value="${testMailRaw.root}/bug56446/imp-low-both.txt" />
 	<t:property name="filter_imp_low3.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${priority_msg06.file}</filename>
@@ -266,10 +266,10 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-                <header a="Subject">${filter_imp_low3.subject}</header>               
+                <header a="Subject">${filter_imp_low3.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -279,35 +279,35 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_low3.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
-    </t:test> 
-     
-</t:test_case> 
+    </t:test>
 
-<t:test_case testcaseid="importanceTest_03" type="bhr" bugids="56446" >
+</t:test_case>
+
+<t:test_case testcaseid="importanceTest_03" type="sanity" bugids="56446" >
     <t:objective>Verify that message of normal importance is filtered for importanceTest filter </t:objective>
-    
+
     <t:steps> 1. Create filter for importanceTest imp="normal" for account1 to flag
 			  2. Message of normal importance is injected in account1 inbox
 			  3. Verify that message got flagged in account1 inbox
-    </t:steps>    
-	
-    <t:property name="filter_imp_normal.name" value="filterImpNormal${TIME}${COUNTER}"/>	
-	
+    </t:steps>
+
+    <t:property name="filter_imp_normal.name" value="filterImpNormal${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_imp_low.name}" active="1">
 						<filterTests condition="allof">
-						<importanceTest imp="normal"/>						
+						<importanceTest imp="normal"/>
 						</filterTests>
 						<filterActions>
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -315,10 +315,10 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="priority_msg07.file" value="${testMailRaw.root}/bug56446/imp-normal-x-priority.txt" />
 	<t:property name="filter_imp_normal1.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${priority_msg07.file}</filename>
@@ -327,10 +327,10 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-                <header a="Subject">${filter_imp_normal1.subject}</header>               
+                <header a="Subject">${filter_imp_normal1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -340,13 +340,13 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_normal1.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
     </t:test>
-    
+
     <t:property name="priority_msg08.file" value="${testMailRaw.root}/bug56446/imp-normal.txt" />
 	<t:property name="filter_imp_normal2.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${priority_msg08.file}</filename>
@@ -355,10 +355,10 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-                <header a="Subject">${filter_imp_normal2.subject}</header>               
+                <header a="Subject">${filter_imp_normal2.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -368,13 +368,13 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_normal2.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
-    </t:test>  
-        
+    </t:test>
+
     <t:property name="priority_msg09.file" value="${testMailRaw.root}/bug56446/imp-normal-both.txt" />
 	<t:property name="filter_imp_normal3.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${priority_msg09.file}</filename>
@@ -383,10 +383,10 @@
 			<server>${account1.server}</server>
 			<modify>
 				<header a="To">${account1.name}</header>
-                <header a="Subject">${filter_imp_normal3.subject}</header>               
+                <header a="Subject">${filter_imp_normal3.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test>
         <t:request>
@@ -396,10 +396,10 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_normal3.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
-    </t:test> 
-     
-</t:test_case> 
-	
+    </t:test>
+
+</t:test_case>
+
 </t:tests>

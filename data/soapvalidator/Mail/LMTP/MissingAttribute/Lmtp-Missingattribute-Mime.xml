@@ -13,18 +13,18 @@
 <t:property name="msg04.file" value="${root}/lmtp-mimeversion-missing.txt"/>
 <t:property name="msg05.file" value="${root}/lmtp-encoding-missing.txt"/>
 <t:property name="msg06.file" value="${root}/lmtp-contentType-missing.txt"/>
-<t:property name="nonZimbraUser.name" value="foo@liquidadmin.persistent.co.in"/>    
-<t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>    
+<t:property name="nonZimbraUser.name" value="foo@liquidadmin.persistent.co.in"/>
+<t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject2.valid" value="Subject${TIME}${COUNTER}"/>
-<t:property name="subject3.valid" value="Subject${TIME}${COUNTER}"/>    
+<t:property name="subject3.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject4.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject5.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject6.valid" value="Subject${TIME}${COUNTER}"/>
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
-    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -33,16 +33,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_lmtp_missingAttribute" type="always">
     <t:objective>create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create a test account        
+             2. Create a test account
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -54,7 +54,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -67,9 +67,9 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 <t:test_case testcaseid="acctSetup2_lmtp_missingAttribute" type="always">
@@ -88,17 +88,17 @@
 
         </t:response>
     </t:test>
-    
-</t:test_case>    
-    
-    
-<t:test_case testcaseid="lmtp_missingAttribute_MIME1" type="functional">
+
+</t:test_case>
+
+
+<t:test_case testcaseid="lmtp_missingAttribute_MIME1" type="regression">
     <t:objective>Verify a message with missing 'to' field </t:objective>
-    <t:steps>1. Upload a message              
-             2. Search the message  
+    <t:steps>1. Upload a message
+             2. Search the message
              3. Get the message - verify no 'to' info
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -110,7 +110,7 @@
                 <header a="Subject">${subject1.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_missingAttribute_MIME1a">
         <t:request>
@@ -138,7 +138,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_missingAttribute_MIME2" type="functional">
+<t:test_case testcaseid="lmtp_missingAttribute_MIME2" type="regression">
     <t:objective>Verify a message with missing 'from' field </t:objective>
     <t:steps>
         1. Upload a message
@@ -185,7 +185,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_missingAttribute_MIME3" type="functional">
+<t:test_case testcaseid="lmtp_missingAttribute_MIME3" type="regression">
     <t:objective>Verify a message with missing 'subject' field </t:objective>
     <t:steps>
         1. Upload a message
@@ -229,9 +229,9 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="lmtp_missingAttribute_MIME4" type="functional">
+
+<t:test_case testcaseid="lmtp_missingAttribute_MIME4" type="regression">
     <t:objective>Verify a message with missing 'MIME-Version' field </t:objective>
     <t:steps>
         1. Upload a message
@@ -275,10 +275,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>    
-    
-    
-<t:test_case testcaseid="lmtp_missingAttribute_MIME5" type="functional">
+</t:test_case>
+
+
+<t:test_case testcaseid="lmtp_missingAttribute_MIME5" type="regression">
     <t:objective>Verify a message with missing 'Content-Transfer-Encoding' field </t:objective>
     <t:steps>
         1. Upload a message
@@ -322,10 +322,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>   
-    
-    
-<t:test_case testcaseid="lmtp_missingAttribute_MIME6" type="functional">
+</t:test_case>
+
+
+<t:test_case testcaseid="lmtp_missingAttribute_MIME6" type="regression">
     <t:objective>Verify a message with missing 'Content-Type' field </t:objective>
     <t:steps>
         1. Upload a message
@@ -369,7 +369,7 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
-   
-    
+</t:test_case>
+
+
 </t:tests>

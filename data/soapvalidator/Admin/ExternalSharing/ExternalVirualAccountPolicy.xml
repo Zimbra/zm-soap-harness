@@ -66,7 +66,7 @@
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1.name}</name>
 				<password>${defaultpassword.value}</password>
-				
+
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
@@ -75,7 +75,7 @@
 		</t:response>
 	</t:test>
 
-	
+
 	 <t:test id="CreateDomainRequest0a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -86,7 +86,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
         </t:response>
     </t:test>
-    
+
 
 	 <t:test id="CreateDomainRequest0a">
         <t:request>
@@ -127,8 +127,8 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="otherdomain.zimbra.account.server"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -141,13 +141,13 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="subdomain.internal.account.server"/>
 		</t:response>
 	</t:test>
-	
-		
+
+
  </t:test_case>
 
 <t:test_case testcaseid="zimbraExternalSharingEnabled01" type="smoke">
     <t:objective>Verify zimbraExternalSharingEnabled by default on any account that has default COS.  </t:objective>
-    
+
     	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -161,7 +161,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -172,12 +172,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -188,7 +188,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -233,14 +233,14 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
-    </t:test>      
+    </t:test>
 </t:test_case>
 
 
 
-<t:test_case testcaseid="zimbraExternalSharingEnabled02" type="bhr">
+<t:test_case testcaseid="zimbraExternalSharingEnabled02" type="sanity">
     <t:objective>Verify zimbraExternalSharingEnabled=FALSE on cos inherited by account </t:objective>
-    
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -258,7 +258,7 @@
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name xmlns="">${cos1.name}</name>
-                <a n="zimbraExternalSharingEnabled">FALSE</a>       
+                <a n="zimbraExternalSharingEnabled">FALSE</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -266,7 +266,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -295,7 +295,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -306,12 +306,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -322,7 +322,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -368,12 +368,12 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
-    </t:test>      
+    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="zimbraExternalSharingEnabled03" type="bhr">
+<t:test_case testcaseid="zimbraExternalSharingEnabled03" type="sanity">
     <t:objective>Verify zimbraExternalSharingEnabled=FALSE on account override COS value. </t:objective>
-    
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -390,7 +390,7 @@
 	<t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos2.name}</name>        
+                <name xmlns="">${cos2.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -398,7 +398,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos2.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -427,7 +427,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -438,12 +438,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -454,7 +454,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -499,18 +499,18 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
-    </t:test>  
+    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="zimbraExternalSharingEnabled04" type="bhr">
+<t:test_case testcaseid="zimbraExternalSharingEnabled04" type="sanity">
     <t:objective>Verify disabling zimbraExternalSharingEnabled on COS take effect on existing share. </t:objective>
-	<t:steps>1. Create  COS (zimbraExternalSharingEnabled=TRUE) 
-		2. create account having the COS create 
+	<t:steps>1. Create  COS (zimbraExternalSharingEnabled=TRUE)
+		2. create account having the COS create
 		3. share with internal and external account
 		4. Modify COS (zimbraExternalSharingEnabled=FALSE)
-		5.  Verify no further external share possible..  
-	</t:steps>	
-    
+		5.  Verify no further external share possible..
+	</t:steps>
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -527,7 +527,7 @@
 	<t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos3.name}</name>        
+                <name xmlns="">${cos3.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -535,7 +535,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos3.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -563,7 +563,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -574,12 +574,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -590,7 +590,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -648,7 +648,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-   
+
    <t:test >
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -656,7 +656,7 @@
                 <a n="zimbraExternalSharingEnabled">FALSE</a>
             </ModifyCosRequest>
         </t:request>
-        <t:response>   
+        <t:response>
 			<select path="//admin:ModifyCosResponse" />
 		</t:response>
 	</t:test>
@@ -673,7 +673,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -684,7 +684,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -731,19 +731,19 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="zimbraExternalSharingEnabled05" type="bhr">
+<t:test_case testcaseid="zimbraExternalSharingEnabled05" type="sanity">
     <t:objective>Verify disabling zimbraExternalSharingEnabled on Account take effect on existing share. </t:objective>
-	<t:steps>1. Create  COS (zimbraExternalSharingEnabled=TRUE) 
-		2. create account having the COS create 
+	<t:steps>1. Create  COS (zimbraExternalSharingEnabled=TRUE)
+		2. create account having the COS create
 		3. share with internal and external account
 		4. Modify Account(zimbraExternalSharingEnabled=FALSE)
-		5. Verify no further external share possible.. 
-	</t:steps>	
-    
+		5. Verify no further external share possible..
+	</t:steps>
+
     <t:objective>login as the admin</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -760,7 +760,7 @@
 	<t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos4.name}</name>        
+                <name xmlns="">${cos4.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -768,7 +768,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos4.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -796,7 +796,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
        <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -807,12 +807,12 @@
             <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -823,7 +823,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -870,8 +870,8 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:property name="server.zimbraAccount" value="${subdomain.internal.account.server}"/>
 
     <t:test >
@@ -885,7 +885,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
     	<t:request>
     			<GetFolderRequest xmlns="urn:zimbraMail" >
@@ -904,8 +904,8 @@
     			<t:select path="//acct:GetShareInfoResponse" />
     	</t:response>
     </t:test>
-    
-    
+
+
 	<t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -917,7 +917,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-   
+
    <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -925,7 +925,7 @@
                 <a n="zimbraExternalSharingEnabled">FALSE</a>
             </ModifyAccountRequest>
         </t:request>
-        <t:response>   
+        <t:response>
 			<select path="//admin:ModifyAccountResponse" />
 		</t:response>
 	</t:test>
@@ -942,7 +942,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    	
+
 	<t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -953,7 +953,7 @@
     			<t:select path="//mail:FolderActionResponse" />
     	</t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
     			<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
@@ -1001,8 +1001,8 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:property name="server.zimbraAccount" value="${subdomain.internal.account.server}"/>
 
     <t:test >
@@ -1016,7 +1016,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-        	
+
 	<t:test>
     	<t:request>
     			<GetFolderRequest xmlns="urn:zimbraMail" >
@@ -1026,7 +1026,7 @@
     			<t:select path="//mail:GetFolderResponse" />
     	</t:response>
     </t:test>
-    	
+
 	<t:test>
     	<t:request>
     			<GetShareInfoRequest xmlns="urn:zimbraAccount" >

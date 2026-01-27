@@ -88,15 +88,15 @@
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="FilterHeader_01" type="bhr">
+<t:test_case testcaseid="FilterHeader_01" type="sanity">
     <t:objective>Verify messages that match Header: are filtered</t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "Header:" on "X-Spam-Score"
 			  3. Inject a message to account1
 			  4. Verify the message is filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -109,18 +109,18 @@
 
         </t:response>
     </t:test>
-	   
+
 	  <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="X-Spam-Score" stringComparison="contains" value="0"/>                    	     
+                         <headerTest header="X-Spam-Score" stringComparison="contains" value="0"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -130,8 +130,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -141,7 +141,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -169,15 +169,15 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="FilterHeader_02" type="bhr">
+<t:test_case testcaseid="FilterHeader_02" type="sanity">
     <t:objective>Verify messages that do not match Header: are not filtered</t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "Header:" as "X-Spam-Score"
 			  3. Inject a message to account1
 			  4. Verify the message is not filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -190,18 +190,18 @@
 
         </t:response>
     </t:test>
-	   
+
     <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter2.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="X-Spam-Score" stringComparison="contains" value="0"/>                    	     
+                         <headerTest header="X-Spam-Score" stringComparison="contains" value="0"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -211,7 +211,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
@@ -222,7 +222,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 
 <t:property name="subject" value="filter header test"/>
 
@@ -253,15 +253,15 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="FilterHeader_03" type="bhr" bugids="21287" >
+<t:test_case testcaseid="FilterHeader_03" type="sanity" bugids="21287" >
     <t:objective>Verify header named Received</t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a filter based on "Header:" named "Recieved" contains "yahoo.com"
 			  3. Inject a message to account1
 			  4. Verify the message is  filtered
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -274,18 +274,18 @@
 
         </t:response>
     </t:test>
-	   
+
     <t:test>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter3.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="Received" stringComparison="contains" value="yahoo.com"/>                    	     
+                         <headerTest header="Received" stringComparison="contains" value="yahoo.com"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -295,7 +295,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -305,7 +305,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 
 	<t:property name="subject" value="bug21287"/>
 

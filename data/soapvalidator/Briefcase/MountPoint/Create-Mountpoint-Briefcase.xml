@@ -31,7 +31,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
     <t:test id="admin_login" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -43,9 +43,9 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
-    <t:property name="admin.authToken" value="${authToken}"/>  
-    
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -58,7 +58,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="create_test_account2" required="true" depends="admin_login" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,7 +71,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-     
+
     <t:test  >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -84,7 +84,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-     
+
     <t:test  >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -97,7 +97,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-     
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
     <t:test depends="create_test_account1" required="true">
@@ -115,10 +115,10 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-     
-    <t:property name="account1.authToken" value="${authToken}"/>  
 
-    
+    <t:property name="account1.authToken" value="${authToken}"/>
+
+
     <t:test depends="create_test_account2" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -132,10 +132,10 @@
 
         </t:response>
     </t:test>
- 
-    <t:property name="account2.authToken" value="${authToken}"/>  
 
- 
+    <t:property name="account2.authToken" value="${authToken}"/>
+
+
     <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -143,14 +143,14 @@
         <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
-            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>            
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/> 
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-  
+
 
 <t:test_case testcaseid="AcctSetup2_CreateMountpoint" type="always">
     <t:objective>Create a folder, give read permissions.</t:objective>
@@ -159,12 +159,12 @@
             2. Create a folder.
             3. Give permissions.
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-    <t:property name="authToken" value="${account1.authToken}"/>  
+    <t:property name="authToken" value="${account1.authToken}"/>
 
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -188,9 +188,9 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-  
+
 
 <t:test_case testcaseid="Briefcase_CreateMountpointRequest1" type="smoke">
     <t:objective>Mount a delegated folder with all valid values.</t:objective>
@@ -201,9 +201,9 @@
 
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -214,15 +214,15 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="mount1a.id"/>
         </t:response>
     </t:test>
-    
-</t:test_case>
-  
-  
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest2" type="functional">
+</t:test_case>
+
+
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest2" type="regression">
     <t:objective>Mount a delegated folder with invalid values of view(blank,space,spchar,sometext,negative,zero,largenumber,decimal).
     </t:objective>
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -233,7 +233,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" emptyset="1"/>
         </t:response>
     </t:test>
-          
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -244,7 +244,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" emptyset="1"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -255,7 +255,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" emptyset="1"/>
         </t:response>
     </t:test>
-              
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -266,7 +266,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" emptyset="1"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -277,7 +277,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" emptyset="1"/>
         </t:response>
     </t:test>
-                  
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -288,7 +288,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" emptyset="1"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -299,7 +299,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" emptyset="1"/>
         </t:response>
     </t:test>
-             
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -310,13 +310,13 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" emptyset="1"/>
         </t:response>
     </t:test>
-      
-</t:test_case> 
+
+</t:test_case>
 
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest3" type="functional">
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest3" type="regression">
     <t:objective>Verify that with invalid(blank,space,spchar,sometext,negative,zero,largenumber,decimal)
-                 values of rid, a delegated folder cannot be mounted.</t:objective>   
+                 values of rid, a delegated folder cannot be mounted.</t:objective>
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -327,7 +327,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-         
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -338,7 +338,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -349,7 +349,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-              
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -360,7 +360,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -371,7 +371,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-                  
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -382,7 +382,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-             
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -394,13 +394,13 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
-  
+</t:test_case>
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest4" type="functional">
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest4" type="regression">
     <t:objective>Mount a delegated folder with invalid values of zid(blank,space,spchar,sometext,negative,zero,largenumber,decimal).
     </t:objective>
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -411,7 +411,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -422,7 +422,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -433,7 +433,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-              
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -444,7 +444,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -455,7 +455,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-                  
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -466,7 +466,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -477,7 +477,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-             
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -489,13 +489,13 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
-  
+</t:test_case>
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest5" type="functional">
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest5" type="regression">
     <t:objective>Mount a delegated briefcase folder with invalid values of l(blank,space,spchar,sometext,negative,zero,largenumber,decimal).
     </t:objective>
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -506,7 +506,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -517,7 +517,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -528,7 +528,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-              
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -539,7 +539,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -550,7 +550,7 @@
             <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_FOLDER"/>
         </t:response>
     </t:test>
-                  
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -558,10 +558,10 @@
             </CreateMountpointRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_ITEM"/> 
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_ITEM"/>
         </t:response>
     </t:test>
-           
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -569,10 +569,10 @@
             </CreateMountpointRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_ITEM"/> 
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_ITEM"/>
         </t:response>
     </t:test>
-             
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -585,9 +585,9 @@
     </t:test>
 
 </t:test_case>
-  
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest6" type="sanity">
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest6" type="functional">
     <t:objective>Create two mountpoints to the same shared briefcase folder.</t:objective>
     <t:steps>
             1. Login to first account.
@@ -597,12 +597,12 @@
             5. Mount the folder as mountpoint1. (success)
             6. Mount the folder as mountpoint2. (success - two different local id's should be used)
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-    <t:property name="authToken" value="${account1.authToken}"/>  
+    <t:property name="authToken" value="${account1.authToken}"/>
 
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -626,14 +626,14 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-    
-    <t:property name="mountpoint1.name" value="mount${COUNTER}"/>  
-    <t:property name="mountpoint2.name" value="mount${COUNTER}"/>  
+
+    <t:property name="mountpoint1.name" value="mount${COUNTER}"/>
+    <t:property name="mountpoint2.name" value="mount${COUNTER}"/>
 
     <t:test>
         <t:request>
@@ -645,7 +645,7 @@
  			<t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="mountpoint1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -667,11 +667,11 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder/mail:link[@name='${mountpoint2.name}']" attr="id" match="${mountpoint2.id}"/>
 		</t:response>
 	</t:test>
-    
-</t:test_case> 
+
+</t:test_case>
 
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest7" type="functional">
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest7" type="regression">
     <t:objective>Mount more than one delegated briefcase folders at once.</t:objective>
     <t:steps>
             1. Login to first account.
@@ -680,12 +680,12 @@
             4. Login to second account.
             5. Mount two folders at a time.
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-    <t:property name="authToken" value="${account1.authToken}"/>  
+    <t:property name="authToken" value="${account1.authToken}"/>
 
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -709,12 +709,12 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-    
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -725,18 +725,18 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
-</t:test_case> 
-  
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest8" type="functional" >
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest8" type="regression" >
     <t:objective>Verify that CreateMountpointRequest with missing attribute gives service.INVALID_REQUEST.</t:objective>
-   
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-   
+
    <!--CreateMountpointRequest without l attribute-->
     <t:test>
         <t:request>
@@ -748,7 +748,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-   
+
    <!--CreateMountpointRequest without name attribute-->
     <t:test>
         <t:request>
@@ -760,7 +760,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-       
+
    <!--CreateMountpointRequest without view (optional) attribute-->
     <t:test>
         <t:request>
@@ -772,7 +772,7 @@
                         <t:select path="//mail:CreateMountpointResponse/mail:link"/>
         </t:response>
     </t:test>
-   
+
    <!--CreateMountpointRequest without rid attribute-->
     <t:test>
         <t:request>
@@ -784,7 +784,7 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-       
+
     <!--CreateMountpointRequest without zid attribute-->
     <t:test>
         <t:request>
@@ -795,19 +795,19 @@
         <t:response>
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>  
-       
-</t:test_case>
-    
+    </t:test>
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest9" type="functional">
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest9" type="regression">
     <t:objective>Give CreateMountpointRequest without link tag.</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -817,18 +817,18 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
-</t:test_case>
-    
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest10" type="functional">
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest10" type="regression">
     <t:objective>Check if CreateMountpointRequest is given with two link tags, then second one is ignored.</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -841,18 +841,18 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" match="link2" emptyset="1"/>
         </t:response>
     </t:test>
-    
-</t:test_case>
-    
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest11" type="functional">
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest11" type="regression">
     <t:objective>Give CreateMountpointRequest without any attribute.</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -863,21 +863,21 @@
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
-</t:test_case>
-  
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest12" type="sanity">
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest12" type="functional">
     <t:objective>CreateMountPointRequest with parent-folder id is id of a custom folder</t:objective>
     <t:steps>1. Create a briefcase folder.
              2. Give CreateMountpointRequest with l = id of newly created folder.
     </t:steps>
-      
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-   
+
     <t:test id="CreateMountpointRequest13a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -888,7 +888,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder13.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="CreateMountpointRequest13a">
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -899,11 +899,11 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link"/>
         </t:response>
     </t:test>
-               
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest13" type="sanity">
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest13" type="functional">
     <t:objective>CreateMountPointRequest mount name equal to 1) an existing mount name and 2) an existing briefcase folder name</t:objective>
     <t:steps>
 			1. Create a briefcase folder with name folder1.
@@ -911,14 +911,14 @@
 			3. Create a mountpoint with name mount1 (ALREADY_EXISTS)
 			4. Create a mountpoint with name folder1 (ALREADY_EXISTS)
     </t:steps>
-      
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-   
-    <t:property name="folder1.name" value="folder.${COUNTER}"/>  
-    <t:property name="mount1.name" value="mount.${COUNTER}"/>  
+
+    <t:property name="folder1.name" value="folder.${COUNTER}"/>
+    <t:property name="mount1.name" value="mount.${COUNTER}"/>
 
     <t:test >
         <t:request>
@@ -930,7 +930,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder13.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -941,7 +941,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -952,7 +952,7 @@
             <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS$"/>
         </t:response>
     </t:test>
-               
+
     <t:test >
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -963,10 +963,10 @@
             <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS$"/>
         </t:response>
     </t:test>
-               
+
 </t:test_case>
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest14" type="sanity">
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest14" type="functional">
     <t:objective> Verify color and flag (as checked) can be set while creating mountpoints </t:objective>
     <t:steps>
             1. Login to first account.
@@ -975,12 +975,12 @@
             4. Login to second account.
             5. Mount folder by specifying color and flag.
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-    <t:property name="authToken" value="${account1.authToken}"/>  
+    <t:property name="authToken" value="${account1.authToken}"/>
 
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1004,12 +1004,12 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
+    <t:property name="authToken" value="${account2.authToken}"/>
 
-    
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -1020,11 +1020,11 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="color" match="3"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
- 
-  
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest15" type="sanity">
+
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest15" type="functional">
     <t:objective>CreateMountpointRequest should use shared briefcase folder's view by default</t:objective>
     <t:steps>
             1. Login to first account.
@@ -1034,12 +1034,12 @@
             5. Mount folder without specifying the view.  Verify view is appointment.
             6. Repeat with view=contact
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-    <t:property name="authToken" value="${account1.authToken}"/>  
+    <t:property name="authToken" value="${account1.authToken}"/>
 
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1063,56 +1063,12 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
-	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-    <t:property name="authToken" value="${account2.authToken}"/>  
-
-    
-    <t:test>
-        <t:request>
-            <CreateMountpointRequest xmlns="urn:zimbraMail">
-                <link l="${folder.briefcase}" name="account1's briefcase ${COUNTER}" rid="${folder4.id}" zid="${account1.id}" />
-            </CreateMountpointRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" match="document"/>
-        </t:response>
-    </t:test>
-    
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-
-    <t:property name="authToken" value="${account1.authToken}"/>  
-
-    
-    <t:test>
-        <t:request>
-            <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="${folder.briefcase}" name="folder${COUNTER}" view="document"/>
-            </CreateFolderRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
-        </t:response>
-    </t:test>
-
-    <t:test>
-        <t:request>
-            <FolderActionRequest xmlns="urn:zimbraMail">
-                <action id="${folder4.id}" op="grant">
-                    <grant d="${account2.name}" gt="usr" perm="rw"/>
-                </action>
-            </FolderActionRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action"/>
-        </t:response>
-    </t:test>
-    
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:property name="authToken" value="${account2.authToken}"/>
-    
+
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -1123,18 +1079,62 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" match="document"/>
         </t:response>
     </t:test>
-    
-</t:test_case>
-   
 
-<t:test_case testcaseid="Briefcase_CreateMountpointRequest16" type="bhr">
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:property name="authToken" value="${account1.authToken}"/>
+
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${folder.briefcase}" name="folder${COUNTER}" view="document"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder4.id}" op="grant">
+                    <grant d="${account2.name}" gt="usr" perm="rw"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:property name="authToken" value="${account2.authToken}"/>
+
+    <t:test>
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${folder.briefcase}" name="account1's briefcase ${COUNTER}" rid="${folder4.id}" zid="${account1.id}" />
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="view" match="document"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_CreateMountpointRequest16" type="sanity">
     <t:objective>CreateMountpointRequest to a briefcase folder that is not shared</t:objective>
     <t:steps>
             1. Account3 does not share folders with Account4
             2. Account4 sends CreateMountpointRequest to Account3:1 (USER_ROOT)
             3. Verify PERM_DENIED
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
     <t:test >
         <t:request>
@@ -1162,7 +1162,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -1172,9 +1172,9 @@
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test>    
-    
-</t:test_case> 
-   
+    </t:test>
+
+</t:test_case>
+
 
 </t:tests>

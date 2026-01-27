@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
 <t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>    
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account4.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
@@ -90,9 +90,9 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -123,20 +123,20 @@
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>            
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveToSentBasic01" type="bhr">
+<t:test_case testcaseid="SaveToSentBasic01" type="sanity">
     <t:objective>Verify that save to sent setting saves the sent mails in sent folder </t:objective>
-    <t:steps>        
+    <t:steps>
         1. Send mail from Account1 to Account2 and Account3.
         2. Verify that same mail is saved at the sent folder
-    </t:steps>    
-    
+    </t:steps>
+
     <t:test id="SaveToSentBasic01a">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -169,9 +169,9 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="SaveToSentBasic02" type="sanity">
+
+<t:test_case testcaseid="SaveToSentBasic02" type="functional">
     <t:objective>Verify that mail sent to self is also saved in the sent folder </t:objective>
     <t:steps>
         1. Send mail from Account1 to self
@@ -182,7 +182,7 @@
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
                 <m>
-                    <e t="t" a='${account1.name}'/>                    
+                    <e t="t" a='${account1.name}'/>
                     <su>${message2.subject}</su>
                     <mp ct="text/plain">
                         <content>${message2.content}</content>
@@ -208,17 +208,17 @@
         </t:response>
     </t:test>
 
-</t:test_case>    
+</t:test_case>
 
-    
-<t:test_case testcaseid="SaveToSentBasic03" type="bhr">
+
+<t:test_case testcaseid="SaveToSentBasic03" type="sanity">
     <t:objective>Verify that if save to sent setting is turned off then the mails are not stored in sent folder </t:objective>
-    <t:steps>        
+    <t:steps>
         1. Turn off SaveToSent settings
         2. Send mail from Account1 to Account2.
         3. Verify mail is not saved in the sent folder
     </t:steps>
-    
+
     <t:test id="SaveToSentBasic03a">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -264,11 +264,11 @@
                 <query>is:(anywhere)</query>
             </SearchRequest>
         </t:request>
-        <t:response>            
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message3.subject}" emptyset="1"/>
         </t:response>
     </t:test>
-    
-</t:test_case> 
+
+</t:test_case>
 
 </t:tests>

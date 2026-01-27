@@ -34,11 +34,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name}</name>        
+                <name xmlns="">${COS.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -46,7 +46,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="Cos.id"/>
         </t:response>
     </t:test>
-    
+
     <t:uploadservlettest>
 		<t:uploadServletRequest>
 		    <filename>${uploadFile.name}</filename>
@@ -62,18 +62,18 @@
                 <content aid="${message.aid}"/>
             </DeployZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:DeployZimletResponse' match=""/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
 
 <t:test_case testcaseid="ModifyZimletRequest_01" type="smoke">
     <t:objective>Sanity test for ModifyZimletRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -86,11 +86,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
  		<t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS1.name}</name>        
+                <name xmlns="">${COS1.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -98,25 +98,25 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="Cos1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[position()=1]' attr="name" set="zimletmodify.name"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="${zimletmodify.name}"]' attr="priority" set="zimletmodify.priority"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="Grant" depends="Setup">
         <t:request>
             <ModifyZimletRequest xmlns="urn:zimbraAdmin">
@@ -127,16 +127,16 @@
                 </zimlet>
             </ModifyZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:ModifyZimletResponse' match=""/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
-<t:test_case testcaseid="GetZimletRequest_01" type="bhr">
+<t:test_case testcaseid="GetZimletRequest_01" type="sanity">
     <t:objective>Sanity test for GetZimletRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -149,32 +149,32 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[position()=1]' attr="name" set="zimletget.name"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetZimletRequest xmlns="urn:zimbraAdmin">
             	<zimlet name="${zimletget.name}" />
             </GetZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:GetZimletResponse/admin:zimlet[@name="${zimletget.name}"]' />
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
-<t:test_case testcaseid="GetZimletStatusRequest_01" type="bhr">
+<t:test_case testcaseid="GetZimletStatusRequest_01" type="sanity">
     <t:objective>Sanity test for GetZimletStatusRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -187,7 +187,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateZimletRequest xmlns="urn:zimbraAdmin">
@@ -201,25 +201,25 @@
 		        <a n="zimbraZimletEnabled">TRUE</a>
             </CreateZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:CreateZimletResponse/admin:zimlet' attr="name" set="zimlet2.newname" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
             <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@name="${zimlet.name}"]' attr="status" match="enabled"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
-<t:test_case testcaseid="ModifyZimletPrefsRequest_01" type="bhr">
+<t:test_case testcaseid="ModifyZimletPrefsRequest_01" type="sanity">
     <t:objective>Sanity test for ModifyZimletPrefsRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -232,7 +232,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateZimletRequest xmlns="urn:zimbraAdmin">
@@ -246,26 +246,26 @@
 		        <a n="zimbraZimletEnabled">TRUE</a>
             </CreateZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:CreateZimletResponse/admin:zimlet' attr="name" set="zimlet2.newname" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account.name}</name>
-                 <password>${defaultpassword.value}</password>         
+                 <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id"/>
-            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server"/>        
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server"/>
         </t:response>
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account.server}"/>
-	
+
  	<t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -278,23 +278,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <ModifyZimletPrefsRequest xmlns="urn:zimbraAccount">
             	<zimlet name="${zimlet2.newname}" presence="enabled"/>
             </ModifyZimletPrefsRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//acct:ModifyZimletPrefsResponse/acct:zimlet[@name="${zimlet2.newname}"]' />
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
-<t:test_case testcaseid="CreateZimletRequest_01" type="bhr">
+<t:test_case testcaseid="CreateZimletRequest_01" type="sanity">
     <t:objective>Sanity test for CreateZimletRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -306,8 +306,8 @@
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-        
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateZimletRequest xmlns="urn:zimbraAdmin">
@@ -317,17 +317,17 @@
             	 <a n="zimbraZimletEnabled">TRUE</a>
             </CreateZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:CreateZimletResponse/admin:zimlet[@name="${zimlet1.name}"]' />
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAllZimletsRequest_01" type="bhr">
+<t:test_case testcaseid="GetAllZimletsRequest_01" type="sanity">
     <t:objective>Sanity test for GetAllZimletsRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -340,21 +340,21 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
-            <GetAllZimletsRequest xmlns="urn:zimbraAdmin" />          
+            <GetAllZimletsRequest xmlns="urn:zimbraAdmin" />
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:GetAllZimletsResponse/admin:zimlet' />
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
-<t:test_case testcaseid="GetAdminExtensionZimletsRequest_01" type="bhr">
+<t:test_case testcaseid="GetAdminExtensionZimletsRequest_01" type="sanity">
     <t:objective>Sanity test for GetAdminExtensionZimletsRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -367,21 +367,21 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
-            <GetAdminExtensionZimletsRequest xmlns="urn:zimbraAdmin" />          
+            <GetAdminExtensionZimletsRequest xmlns="urn:zimbraAdmin" />
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:GetAdminExtensionZimletsResponse/admin:zimlets/admin:zimlet' />
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
 <t:test_case testcaseid="UndeployZimletRequest_01" type="smoke">
     <t:objective>Sanity test for UndeployZimletRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -394,7 +394,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateZimletRequest xmlns="urn:zimbraAdmin">
@@ -404,25 +404,25 @@
             	 <a n="zimbraZimletEnabled">TRUE</a>
             </CreateZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:CreateZimletResponse/admin:zimlet[@name="${zimlet3.name}"]' />
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
-            <UndeployZimletRequest xmlns="urn:zimbraAdmin" name="${zimlet3.name}"/>            	
+            <UndeployZimletRequest xmlns="urn:zimbraAdmin" name="${zimlet3.name}"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:UndeployZimletResponse' />
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
 <t:test_case testcaseid="DeleteZimletRequest_01" type="smoke">
     <t:objective>Sanity test for DeleteZimletRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -435,7 +435,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
    <t:test >
         <t:request>
             <CreateZimletRequest xmlns="urn:zimbraAdmin">
@@ -445,27 +445,27 @@
             	 <a n="zimbraZimletEnabled">TRUE</a>
             </CreateZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:CreateZimletResponse/admin:zimlet[@name="${zimlet4.name}"]' />
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <DeleteZimletRequest xmlns="urn:zimbraAdmin">
             	<zimlet name="${zimlet4.name}" />
             </DeleteZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:DeleteZimletResponse' />
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
-<t:test_case testcaseid="ConfigureZimletRequest_01" type="bhr">
+<t:test_case testcaseid="ConfigureZimletRequest_01" type="sanity">
     <t:objective>Sanity test for ConfigureZimletRequest </t:objective>
-    
+
      <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -478,7 +478,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -486,8 +486,8 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase.id"/>
 		</t:response>
-	</t:test>	
-	
+	</t:test>
+
     <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile1.name}</filename>
@@ -496,18 +496,18 @@
 			<t:select attr="id" set="document.attachfile.id"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-            
+
     <t:test >
         <t:request>
             <ConfigureZimletRequest xmlns="urn:zimbraAdmin">
             	<content aid="${document.attachfile.id}"/>
             </ConfigureZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:ConfigureZimletResponse' />
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
 </t:tests>

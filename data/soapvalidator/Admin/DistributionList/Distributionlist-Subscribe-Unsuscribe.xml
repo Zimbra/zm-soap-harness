@@ -84,8 +84,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SubscribeDistributionListRequest01" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVE and login to user2 and subscribe to the list. </t:objective>    
+<t:test_case testcaseid="SubscribeDistributionListRequest01" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVE and login to user2 and subscribe to the list. </t:objective>
     <t:steps>
     </t:steps>
 
@@ -101,7 +101,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -116,7 +116,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -131,8 +131,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="subscribe">
@@ -142,8 +142,8 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="subscribed" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -152,10 +152,10 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl1.name}"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl1.id}"/>
        </t:response>
-    </t:test> 
- 
+    </t:test>
+
  	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
         <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -166,8 +166,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -181,8 +181,8 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SubscribeDistributionListRequest02" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVE and login to user2 and subscribe to the list by DL name. </t:objective>    
+<t:test_case testcaseid="SubscribeDistributionListRequest02" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVE and login to user2 and subscribe to the list by DL name. </t:objective>
     <t:steps>
     </t:steps>
 
@@ -198,7 +198,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -213,7 +213,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl2.id" />
     		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -228,8 +228,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="subscribe">
@@ -239,12 +239,12 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="subscribed" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
 
 
 
-    
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -253,8 +253,8 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl2.name}"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl2.id}"/>
        </t:response>
-    </t:test> 
-    
+    </t:test>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
         <t:test >
@@ -267,8 +267,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -283,8 +283,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SubscribeDistributionListRequest03" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = REJECT and login to user2 and subscribe to the list by DL name should give Perm denied. </t:objective>    
+<t:test_case testcaseid="SubscribeDistributionListRequest03" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = REJECT and login to user2 and subscribe to the list by DL name should give Perm denied. </t:objective>
     <t:steps>
     </t:steps>
 
@@ -300,7 +300,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -315,7 +315,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl3.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -330,8 +330,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="subscribe">
@@ -341,11 +341,11 @@
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
 
 
-    
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -354,10 +354,10 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl3.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl3.id}"  emptyset="1"/>
        </t:response>
-    </t:test> 
-   
+    </t:test>
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
    <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -368,8 +368,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -382,8 +382,8 @@
 </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="SubscribeDistributionListRequest04" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVAL and login to user2 and subscribe to the DL user1 approve the subscription  </t:objective>    
+<t:test_case testcaseid="SubscribeDistributionListRequest04" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVAL and login to user2 and subscribe to the DL user1 approve the subscription  </t:objective>
     <t:steps>
     </t:steps>
 
@@ -399,7 +399,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -414,7 +414,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl4.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -429,8 +429,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="subscribe">
@@ -440,9 +440,9 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="awaiting_approval" />
         </t:response>
-    </t:test> 
-    
-    
+    </t:test>
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -451,10 +451,10 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl4.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl4.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
-   
+    </t:test>
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
      <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -465,8 +465,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -478,7 +478,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 <!--	<t:property name="subscription.message.part"  value='&lt;dlSubs xmlns="urn:zimbraDLSubscription" version="0.1" action="subscribe"&gt; &lt;dl id="${account1.dl4.id}" email="${account1.dl4.name}" name=""//&gt; &lt;user id="${account2.id}" email="${account2.name}" name=""//&gt; &lt;/dlSubs&gt;' />-->
 <!--	  -->
 <!--     <t:test>-->
@@ -505,7 +505,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
       <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -516,7 +516,7 @@
 			<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" match="${account2.name}"/>
         </t:response>
         </t:test>
-    
+
     	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -529,7 +529,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test >
@@ -540,14 +540,14 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl4.name}"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl4.id}"/>
        </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
 
-<t:test_case testcaseid="SubscribeDistributionListRequest05" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVAL and zimbraDistributionListUnSubscriptionPolicy = APPROVAL and login to user2 and subscribe to the DL user1 approve the subscription  user2 send request Unsubscribe DL to user1   </t:objective>    
+<t:test_case testcaseid="SubscribeDistributionListRequest05" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVAL and zimbraDistributionListUnSubscriptionPolicy = APPROVAL and login to user2 and subscribe to the DL user1 approve the subscription  user2 send request Unsubscribe DL to user1   </t:objective>
     <t:steps>
     </t:steps>
 
@@ -563,7 +563,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -579,7 +579,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl5.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -594,8 +594,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="subscribe">
@@ -605,9 +605,9 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="awaiting_approval" />
         </t:response>
-    </t:test> 
-    
-    
+    </t:test>
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -616,10 +616,10 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl5.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl5.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
-   
+    </t:test>
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
      <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -630,8 +630,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -643,9 +643,9 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="subscription.message.part"  value='&lt;dlSubs xmlns="urn:zimbraDLSubscription" version="0.1" action="subscribe"&gt; &lt;dl id="${account1.dl5.id}" email="${account1.dl5.name}" name=""//&gt; &lt;user id="${account2.id}" email="${account2.name}" name=""//&gt; &lt;/dlSubs&gt;' />
-	  
+
 <!--     <t:test>-->
 <!--        <t:request>-->
 <!--    	<GetMsgRequest  xmlns="urn:zimbraMail">-->
@@ -670,7 +670,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
       <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -681,7 +681,7 @@
 			<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" match="${account2.name}"/>
         </t:response>
         </t:test>
-    
+
     	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -694,8 +694,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -704,8 +704,8 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl5.name}"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl5.id}"/>
        </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="unsubscribe">
@@ -715,11 +715,11 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="awaiting_approval" />
         </t:response>
-    </t:test> 
-    
-    
+    </t:test>
+
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
      <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -730,8 +730,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -743,9 +743,9 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="subscription.message.part"  value='&lt;dlSubs xmlns="urn:zimbraDLSubscription" version="0.1" action="subscribe"&gt; &lt;dl id="${account1.dl5.id}" email="${account1.dl5.name}" name=""//&gt; &lt;user id="${account2.id}" email="${account2.name}" name=""//&gt; &lt;/dlSubs&gt;' />
-	  
+
 <!--     <t:test>-->
 <!--        <t:request>-->
 <!--    	<GetMsgRequest  xmlns="urn:zimbraMail">-->
@@ -771,7 +771,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
       <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -782,7 +782,7 @@
 			<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" match="${account2.name}" emptyset="1"/>
         </t:response>
         </t:test>
-    
+
     	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -795,8 +795,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -805,11 +805,11 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl5.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl5.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
+    </t:test>
  </t:test_case>
- 
- <t:test_case testcaseid="SubscribeDistributionListRequest06" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVAL and zimbraDistributionListUnsubscriptionPolicy = REJECT and login to user2 and subscribe to the DL user1 approve the subscription  user2 send request Unsubscribe DL to user1 should ger PERM Denied  </t:objective>    
+
+ <t:test_case testcaseid="SubscribeDistributionListRequest06" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVAL and zimbraDistributionListUnsubscriptionPolicy = REJECT and login to user2 and subscribe to the DL user1 approve the subscription  user2 send request Unsubscribe DL to user1 should ger PERM Denied  </t:objective>
     <t:steps>
     </t:steps>
 
@@ -825,7 +825,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -841,7 +841,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl6.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -856,8 +856,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="subscribe">
@@ -867,9 +867,9 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="awaiting_approval" />
         </t:response>
-    </t:test> 
-    
-    
+    </t:test>
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -878,10 +878,10 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl6.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl6.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
-   
+    </t:test>
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
      <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -892,8 +892,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -905,9 +905,9 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="subscription.message.part"  value='&lt;dlSubs xmlns="urn:zimbraDLSubscription" version="0.1" action="subscribe"&gt; &lt;dl id="${account1.dl6.id}" email="${account1.dl6.name}" name=""//&gt; &lt;user id="${account2.id}" email="${account2.name}" name=""//&gt; &lt;/dlSubs&gt;' />
-	  
+
 <!--     <t:test>-->
 <!--        <t:request>-->
 <!--    	<GetMsgRequest  xmlns="urn:zimbraMail">-->
@@ -932,7 +932,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
       <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -943,7 +943,7 @@
 			<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" match="${account2.name}"/>
         </t:response>
         </t:test>
-    
+
     	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -956,8 +956,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -966,8 +966,8 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl6.name}"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl6.id}"/>
        </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="unsubscribe">
@@ -977,14 +977,14 @@
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED" />
         </t:response>
-    </t:test> 
- 
- 
+    </t:test>
+
+
  </t:test_case>
- 
- 
-<t:test_case testcaseid="SubscribeDistributionListRequest07" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVAL and zimbraDistributionListUnSubscriptionPolicy = ACCEPT and login to user2 and subscribe to the DL user1 approve the subscription  user2 Unsubscribe DL get effected    </t:objective>    
+
+
+<t:test_case testcaseid="SubscribeDistributionListRequest07" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = APPROVAL and zimbraDistributionListUnSubscriptionPolicy = ACCEPT and login to user2 and subscribe to the DL user1 approve the subscription  user2 Unsubscribe DL get effected    </t:objective>
     <t:steps>
     </t:steps>
 
@@ -1000,7 +1000,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -1016,7 +1016,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl7.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -1031,8 +1031,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="subscribe">
@@ -1042,9 +1042,9 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="awaiting_approval" />
         </t:response>
-    </t:test> 
-    
-    
+    </t:test>
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -1053,10 +1053,10 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl7.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl7.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
-   
+    </t:test>
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
      <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1067,8 +1067,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1080,9 +1080,9 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="subscription.message.part"  value='&lt;dlSubs xmlns="urn:zimbraDLSubscription" version="0.1" action="subscribe"&gt; &lt;dl id="${account1.dl7.id}" email="${account1.dl7.name}" name=""//&gt; &lt;user id="${account2.id}" email="${account2.name}" name=""//&gt; &lt;/dlSubs&gt;' />
-	  
+
 <!--     <t:test>-->
 <!--        <t:request>-->
 <!--    	<GetMsgRequest  xmlns="urn:zimbraMail">-->
@@ -1107,7 +1107,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
       <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -1118,7 +1118,7 @@
 			<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" match="${account2.name}"/>
         </t:response>
         </t:test>
-    
+
     	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -1131,8 +1131,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -1141,8 +1141,8 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl7.name}"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl7.id}"/>
        </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="unsubscribe">
@@ -1152,10 +1152,10 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="unsubscribed" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
 
-    
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -1164,10 +1164,10 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl7.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl7.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
-    
+    </t:test>
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
      <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1178,9 +1178,9 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
- 
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -1191,14 +1191,14 @@
 			<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" match="${account2.name}" emptyset="1"/>
         </t:response>
         </t:test>
-    
+
 
 
  </t:test_case>
- 
- 
- <t:test_case testcaseid="SubscribeDistributionListRequest08" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListUnSubscriptionPolicy = ACCEPT and user2 add member and  user2 unsubscribe to the DL verify get effected    </t:objective>    
+
+
+ <t:test_case testcaseid="SubscribeDistributionListRequest08" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListUnSubscriptionPolicy = ACCEPT and user2 add member and  user2 unsubscribe to the DL verify get effected    </t:objective>
     <t:steps>
     </t:steps>
 
@@ -1214,7 +1214,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -1229,7 +1229,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl8.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -1243,7 +1243,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -1257,8 +1257,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -1267,8 +1267,8 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl8.name}"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl8.id}"/>
        </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="unsubscribe">
@@ -1278,10 +1278,10 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="unsubscribed" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
 
-    
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -1290,10 +1290,10 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl8.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl8.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
-    
+    </t:test>
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
      <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1304,9 +1304,9 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
- 
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -1317,11 +1317,11 @@
 			<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" match="${account2.name}" emptyset="1"/>
         </t:response>
         </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="SubscribeDistributionListRequest09" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListUnSubscriptionPolicy = ACCEPT and user1 unsubscribe to the DL verify should not get effected    </t:objective>    
+
+ <t:test_case testcaseid="SubscribeDistributionListRequest09" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListUnSubscriptionPolicy = ACCEPT and user1 unsubscribe to the DL verify should not get effected    </t:objective>
     <t:steps>
     </t:steps>
 
@@ -1337,7 +1337,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -1352,7 +1352,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl9.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -1362,8 +1362,8 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl9.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl9.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="unsubscribe">
@@ -1373,10 +1373,10 @@
         <t:response>
             <t:select path="//zimbra:Code" match="account.NO_SUCH_MEMBER" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
 
-    
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -1385,9 +1385,9 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl9.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl9.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
-    
- 
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >
@@ -1398,11 +1398,11 @@
 			<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" match="${account1.name}" emptyset="1"/>
         </t:response>
         </t:test>
-  
+
  </t:test_case>
- 
- <t:test_case testcaseid="SubscribeDistributionListRequest10" type="bhr" bugids="" >
-    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = ACCEPT and user1 subscribe itself to the DL verify should get effected    </t:objective>    
+
+ <t:test_case testcaseid="SubscribeDistributionListRequest10" type="sanity" bugids="" >
+    <t:objective>Create Distribution in user1 zimbraDistributionListSubscriptionPolicy = ACCEPT and user1 subscribe itself to the DL verify should get effected    </t:objective>
     <t:steps>
     </t:steps>
 
@@ -1418,7 +1418,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -1434,7 +1434,7 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl10.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -1448,9 +1448,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -1459,8 +1459,8 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl10.name}" emptyset="1"/>
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl10.id}" emptyset="1"/>
        </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <SubscribeDistributionListRequest  xmlns="urn:zimbraAccount" op="subscribe">
@@ -1470,10 +1470,10 @@
         <t:response>
             <t:select path="//SubscribeDistributionListResponse" attr="status" match="subscribed" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
 
-    
+
+
     <t:test >
         <t:request >
             <GetAccountDistributionListsRequest xmlns="urn:zimbraAccount" />
@@ -1482,9 +1482,9 @@
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="name" match="${account1.dl10.name}" />
         	<t:select path="//acct:GetAccountDistributionListsResponse/acct:dl" attr="id" match="${account1.dl10.id}" />
        </t:response>
-    </t:test> 
-    
- 
+    </t:test>
+
+
       <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount" >

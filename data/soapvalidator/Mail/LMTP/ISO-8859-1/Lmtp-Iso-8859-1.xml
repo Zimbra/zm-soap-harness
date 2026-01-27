@@ -3,14 +3,14 @@
 
 <t:property name="account1.name" value="lmtp${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
-<t:property name="root" value="${soapxml.root}/Mail/LMTP/ISO-8859-1"/> 
-    
+<t:property name="root" value="${soapxml.root}/Mail/LMTP/ISO-8859-1"/>
+
 <t:property name="msg01.file" value="${root}/iso88591a.txt"/>
 <t:property name="msg01.subject" value="Ordre du jour"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -19,13 +19,13 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
+
 
 <t:test_case testcaseid="lmtp_iso_8859_1_account_setup" type="always">
     <t:objective>Create test account</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -37,7 +37,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -52,9 +52,9 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="LMTP_ISO_8859_1_01" type="sanity" >
+
+<t:test_case testcaseid="LMTP_ISO_8859_1_01" type="functional" >
     <t:objective>Verify bug 15089 - ISO-8859-1 message content should be correctly displayed</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -66,7 +66,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test >
         <t:request>
@@ -92,7 +92,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -104,7 +104,7 @@
 
             	<!-- Check the subject -->
             	<t:select path="//mail:su" contains="Ordre du jour de notre"/>
-            	
+
             	<!-- I think that the second part should be the body -->
             	<t:select path="//mail:mp[@part='2']">
 	            	<!-- Do some spot checking of the message content -->
@@ -116,11 +116,11 @@
 
             </t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-    
 
-    
+
+
 </t:tests>
 

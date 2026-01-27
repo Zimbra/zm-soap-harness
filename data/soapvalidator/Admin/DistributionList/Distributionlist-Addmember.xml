@@ -59,9 +59,9 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
- 
+
 
 <t:test_case testcaseid = "acctSetup1_distributionlist_addmember" type="always">
     <t:objective>Create test Distribution List </t:objective>
@@ -118,7 +118,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest1" type="bhr">
+<t:test_case testcaseid = "AddDistributionListMemberRequest1" type="sanity">
     <t:objective> Add an already existing account to the distribution list </t:objective>
     <t:steps> 1. Create an account
               2. Add account to the distribution list
@@ -134,8 +134,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
     <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest1a">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -147,11 +147,11 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest2" type="functional" bugids="3564,7785">
+<t:test_case testcaseid = "AddDistributionListMemberRequest2" type="regression" bugids="3564,7785">
     <t:objective> Try to again add same member(account) to the DL  </t:objective>
 
     <t:test>
@@ -169,7 +169,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest3" type="bhr">
+<t:test_case testcaseid = "AddDistributionListMemberRequest3" type="sanity">
     <t:objective> Add an alias to the distribution list with its account already added to the DL </t:objective>
     <t:steps> 1. Add an alias to the account
               2. Add alias to the distribution list
@@ -185,8 +185,8 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
-       
+    </t:test>
+
     <t:test id="addDistributionListMemberRequest3a" depends="addDistributionListMemberRequest1a">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -198,11 +198,11 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest4" type="functional" bugids="3564,7785">
+<t:test_case testcaseid = "AddDistributionListMemberRequest4" type="regression" bugids="3564,7785">
     <t:objective> Try to again add same member(alias) to the DL </t:objective>
 
     <t:test depends="addDistributionListMemberRequest3a">
@@ -220,7 +220,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest5" type="functional">
+<t:test_case testcaseid = "AddDistributionListMemberRequest5" type="regression">
     <t:objective> Add an alias to the distribution list with its account not added to the DL </t:objective>
     <t:steps> 1. Create an account
               2. Add alias to the account
@@ -237,8 +237,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id"/>
         </t:response>
-    </t:test>  
-     
+    </t:test>
+
     <t:test id="addDistributionListMemberRequest5b" depends="addDistributionListMemberRequest5a">
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -249,8 +249,8 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
-      
+    </t:test>
+
     <t:test depends="addDistributionListMemberRequest5b">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -266,7 +266,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest6" type="functional">
+<t:test_case testcaseid = "AddDistributionListMemberRequest6" type="regression">
     <t:objective> AddDistributionListMemberRequest with attribute "id" as (sometext/spchar/number/negative/decimal/blank/zero) </t:objective>
 
     <t:test>
@@ -356,7 +356,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest7" type="functional">
+<t:test_case testcaseid = "AddDistributionListMemberRequest7" type="regression">
     <t:objective> Try to add member with dlm as (sometext/spchar/number/negative/decimal/blank/zero)
  </t:objective>
 
@@ -447,7 +447,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest8" type="functional">
+<t:test_case testcaseid = "AddDistributionListMemberRequest8" type="regression">
     <t:objective> AddDistributionListMemberRequest without "id" attribute  </t:objective>
 
     <t:test>
@@ -464,7 +464,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest9" type="functional" bugids="7848">
+<t:test_case testcaseid = "AddDistributionListMemberRequest9" type="regression" bugids="7848">
     <t:objective> AddDistributionListMemberRequest without "dlm" attribute  </t:objective>
 
     <t:test>
@@ -481,7 +481,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest10" type="functional">
+<t:test_case testcaseid = "AddDistributionListMemberRequest10" type="regression">
     <t:objective> AddDistributionListMemberRequest to add an account which is not yet created  </t:objective>
 
     <t:test>
@@ -499,10 +499,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest11" type="functional" bugids="7785">
+<t:test_case testcaseid = "AddDistributionListMemberRequest11" type="regression" bugids="7785">
     <t:objective> Add multiple users to the distribution list </t:objective>
     <t:steps> 1. Create a DL.
-              2. Add users to the DL. 
+              2. Add users to the DL.
     </t:steps>
 
     <t:test >
@@ -534,11 +534,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest12" type="functional" bugids="7889">
+<t:test_case testcaseid = "AddDistributionListMemberRequest12" type="regression" bugids="7889">
     <t:objective>AddDistributionListMemberRequest should check for loops on DL member addition</t:objective>
     <t:steps> 1. Create two DLs.
               2. Add DL1 to DL2
-              3. Add DL2 to DL1 - error response should occur. 
+              3. Add DL2 to DL1 - error response should occur.
     </t:steps>
 
     <t:test >
@@ -592,11 +592,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest13" type="functional" bugids="11398">
+<t:test_case testcaseid = "AddDistributionListMemberRequest13" type="regression" bugids="11398">
     <t:objective>Verify that on sending mail /calendar appt to a dl having all types of Accounts(Active, Closed, Maintenance and Locked ) doesnot return a bounce mail.</t:objective>
     <t:steps> 1. Create a DL.
 				   2. Create Accounts whose zimbraAccountStatus is Active, Closed, Maintenance and Locked.
-				   3. Add users to the DL. 
+				   3. Add users to the DL.
 				   4. Login into userA.
 				   5. Send a mail  to the dl and check for bounce mail. <!-- Should not appear -->
 				   6. Login into userA2.
@@ -627,7 +627,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account7.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="userA.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -640,7 +640,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account8.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -654,7 +654,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account12.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="userA2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	 <t:test>
         <t:request>
@@ -667,7 +667,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account9.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -680,7 +680,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account10.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -693,7 +693,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account11.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
    <t:test>
         <t:request>
@@ -764,7 +764,7 @@
 		<t:restServletResponse>
 			<t:select attr="StatusCode" match="200"/>
 			<t:select attr="To" match="${list6}"/>
-			<t:select attr="Subject" match="${compose.subject}"/> 
+			<t:select attr="Subject" match="${compose.subject}"/>
 		</t:restServletResponse>
 	</t:resttest>
 
@@ -790,8 +790,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${list6}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${userA2}"/>
                     </inv>
                     <e a="${list6}" t="t"/>
@@ -828,7 +828,7 @@
 		<t:restServletResponse>
 			<t:select attr="StatusCode" match="200"/>
 			<t:select attr="To" match="${list6}"/>
-			<t:select attr="Subject" match="${appointment.subject}"/> 
+			<t:select attr="Subject" match="${appointment.subject}"/>
 		</t:restServletResponse>
 	</t:resttest>
 

@@ -43,7 +43,7 @@
                 <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
             </t:response>
         </t:test>
-        
+
         <t:test>
             <t:request>
                 <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -55,7 +55,7 @@
                 <t:select path="//admin:ModifyCosResponse/admin:cos"/>
             </t:response>
         </t:test>
-        
+
     <!-- Remember these values for later -->
     <t:property name="authToken.admin" value="${authToken}"/>
 
@@ -69,7 +69,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -84,7 +84,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="AddHeader_Test" type="functional" bugids="zcs-2388">
+<t:test_case testcaseid="AddHeader_Test" type="regression" bugids="zcs-2388">
     <t:objective>Verify positive and negative addheader action</t:objective>
     <t:steps>
         1. auth with admin user
@@ -305,7 +305,7 @@
       </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="DeleteHeader_Test" type="functional" bugids="zcs-2388">
+<t:test_case testcaseid="DeleteHeader_Test" type="regression" bugids="zcs-2388">
     <t:objective>Verify positive and negative deleteheader action</t:objective>
     <t:steps>
         1. auth with admin user
@@ -455,7 +455,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_Test" type="functional" bugids="zcs-2388">
+<t:test_case testcaseid="ReplaceHeader_Test" type="regression" bugids="zcs-2388">
     <t:objective>Verify positive and negative replaceheader action</t:objective>
     <t:steps>
         1. auth with admin user
@@ -613,7 +613,7 @@
 
     <t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -637,6 +637,6 @@
                 <t:select path="//admin:ModifyCosResponse/admin:cos"/>
             </t:response>
         </t:test>
-        
+
     </t:finally>
-</t:tests>          
+</t:tests>

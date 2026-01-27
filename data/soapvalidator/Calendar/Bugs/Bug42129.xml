@@ -16,7 +16,7 @@
 <t:property name="signature3.name" value="signature3"/>
 <t:property name="signature3.type" value="text/plain"/>
 <t:property name="signature3.content" value="signature3${TIME}${COUNTER}"/>
-<t:property name="calendar.verb2" value="DECLINE"/>	
+<t:property name="calendar.verb2" value="DECLINE"/>
 
 <t:property name="timezone5" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
 
@@ -35,7 +35,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -50,7 +50,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -63,7 +63,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -104,7 +104,7 @@
             <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource1.server"/>
         </t:response>
     </t:test>
-    
+
         <t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -120,7 +120,7 @@
             <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource2.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -135,18 +135,18 @@
             <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource3.server"/>
         </t:response>
     </t:test>
-   	
+
 </t:test_case>
 
-<t:test_case testcaseid="Resources_AutoAcceptSignature01" type="bhr" bugids="42129">
+<t:test_case testcaseid="Resources_AutoAcceptSignature01" type="sanity" bugids="42129">
     <t:objective>Customizable accept message for auto-accepting on resources.</t:objective>
     <t:steps>
-    	1. Login as resource1. Create a signature in plain text and assign it for 
+    	1. Login as resource1. Create a signature in plain text and assign it for
     	2. Set the zimbraPrefCalendarAutoAcceptSignatureId of user to the signature id
     	3. Login as user2 and send meeting to resource1
     	4. From user2 verify the meeting response
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${resource1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -176,10 +176,10 @@
             </t:select>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	    <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -192,7 +192,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
       <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -204,7 +204,7 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -219,15 +219,15 @@
 
         </t:response>
     </t:test>
-	
-   
+
+
     <t:property name="appt1.timezone" value="${timezone5}"/>
     <t:property name="appt1.startTime" value="${ICALTIME(+1h)}"/>
     <t:property name="appt1.endTime" value="${ICALTIME(+2h)}"/>
     <t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
     <t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
-    
-    
+
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -254,9 +254,9 @@
             </t:select>
         </t:response>
     </t:test>
-	
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt1.invId}"/>
         </t:request>
         <t:response>
@@ -266,10 +266,10 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!-- delay for the response -->
 	<t:delay sec="15"/>
-	
+
    	<t:test depends="sendInviteReplyRequesta">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -286,15 +286,15 @@
 
 
 
-<t:test_case testcaseid="Resources_AutoDeclineSignature02" type="bhr" bugids="42129">
+<t:test_case testcaseid="Resources_AutoDeclineSignature02" type="sanity" bugids="42129">
     <t:objective>Customizable reject message for auto-rejecting on resources.</t:objective>
     <t:steps>
-    	1. Login as resource1. Create a signature in plain text and assign it for 
+    	1. Login as resource1. Create a signature in plain text and assign it for
     	2. Set the zimbraPrefCalendarAutoDeclineSignatureId of user to the signature id
     	3. Login as user2 and send meeting to resource1
     	4. From user2 verify the meeting response
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${resource2.server}"/>
 
     <t:test id="auth2" required="true">
@@ -309,7 +309,7 @@
 
         </t:response>
     </t:test>
-	
+
 		  <t:test >
         <t:request>
 			<CreateSignatureRequest xmlns="urn:zimbraAccount">
@@ -324,9 +324,9 @@
             </t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	    <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -339,7 +339,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
       <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -351,7 +351,7 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -367,14 +367,14 @@
         </t:response>
     </t:test>
 
-   
+
     <t:property name="appt2.timezone" value="${timezone5}"/>
     <t:property name="appt2.startTime" value="${ICALTIME(+1h)}"/>
     <t:property name="appt2.endTime" value="${ICALTIME(+2h)}"/>
     <t:property name="appt2.subject" value="subject.${TIME}.${COUNTER}"/>
     <t:property name="appt2.content" value="content.${TIME}.${COUNTER}"/>
-    
-    
+
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -417,7 +417,7 @@
         </t:response>
     </t:test>
 
-       
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -444,9 +444,9 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt2.invId}"/>
         </t:request>
         <t:response>
@@ -456,10 +456,10 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
       <!-- delay for the response -->
 	<t:delay sec="15"/>
-	
+
    	<t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -470,7 +470,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:inv/mail:comp/mail:desc" contains="${signature2.content}"/>
         </t:response>
     </t:test>
-   
+
     	<t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -481,16 +481,16 @@
          	<t:select path="//mail:SearchResponse/mail:m/mail:su"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Resources_AutoAcceptSignature03" type="bhr" bugids="42129">
+<t:test_case testcaseid="Resources_AutoAcceptSignature03" type="sanity" bugids="42129">
     <t:objective>Create an appointment with a resource</t:objective>
     <t:steps>
-		1. Login as resource1. Create a signature in html text and assign it for 
+		1. Login as resource1. Create a signature in html text and assign it for
     	2. Set the zimbraPrefCalendarAutoAcceptSignatureId of user to the signature id > verify error.
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${resource1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -520,10 +520,10 @@
             </t:select>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	    <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -536,7 +536,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
       <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -549,7 +549,7 @@
              <t:select path="//soap:Text" match=".*.must have plain text content" />
         </t:response>
     </t:test>
-    
+
        <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -562,7 +562,7 @@
              <t:select path="//soap:Text" match=".*must have plain text content" />
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

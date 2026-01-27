@@ -13,7 +13,7 @@
 
 <t:test_case testcaseid="AccountSetup" type="always" >
     <t:objective>Account setup</t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -25,7 +25,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -39,7 +39,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -120,17 +120,17 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-             
+
 </t:test_case>
 
 <t:test_case testcaseid="configure_reminder_device_01" type="smoke">
-<t:objective>Configure calendar reminder device</t:objective>    
+<t:objective>Configure calendar reminder device</t:objective>
 <t:steps>
 1. Login to account1.
 2. Send VerifyCodeRequest with some invalid code.
 3. verify email address not set as zimbraCalendarReminderDeviceEmail
 </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -151,8 +151,8 @@
         <t:response>
               <t:select path="//mail:VerifyCodeResponse" attr="success" match="0"/>
         </t:response>
-    </t:test>	
- 
+    </t:test>
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -164,7 +164,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -178,8 +178,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="configure_reminder_device_02" type="bhr">
-<t:objective>Configure calendar reminder device</t:objective>    
+<t:test_case testcaseid="configure_reminder_device_02" type="sanity">
+<t:objective>Configure calendar reminder device</t:objective>
 <t:steps>
 1. Login to account1.
 2. Send calendar reminder verification code to account2.
@@ -187,7 +187,7 @@
 4. login to account1 verify the code.
 5. verify the zimbraCalendarReminderDeviceEmail is set as account2.
 </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -201,7 +201,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <SendVerificationCodeRequest  xmlns="urn:zimbraMail">
@@ -212,10 +212,10 @@
             <t:select path="//mail:SendVerificationCodeResponse"/>
         </t:response>
     </t:test>
-         
+
    <t:waitforpostfixqueue />
-   
-   
+
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -229,8 +229,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -240,9 +240,9 @@
         <t:response>
               <t:select path="//mail:SearchResponse/mail:m" attr="fr" set="message" />
         </t:response>
-    </t:test>	
-          
-     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="code"/>      
+    </t:test>
+
+     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="code"/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -265,8 +265,8 @@
         <t:response>
               <t:select path="//mail:VerifyCodeResponse" attr="success" match="1"/>
         </t:response>
-    </t:test>	
- 
+    </t:test>
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -278,7 +278,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -291,8 +291,8 @@
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="configure_reminder_device_03" type="bhr">
-<t:objective>Invalidate the Configured calendar reminder device</t:objective>    
+<t:test_case testcaseid="configure_reminder_device_03" type="sanity">
+<t:objective>Invalidate the Configured calendar reminder device</t:objective>
 <t:steps>
 1. Login to account3.
 2. Send calendar reminder verification code to account4.
@@ -303,7 +303,7 @@
 7. verify the zimbraCalendarReminderDeviceEmail is not set as account4.
 
 </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test required="true">
@@ -317,7 +317,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <SendVerificationCodeRequest  xmlns="urn:zimbraMail">
@@ -328,10 +328,10 @@
             <t:select path="//mail:SendVerificationCodeResponse"/>
         </t:response>
     </t:test>
-         
+
    <t:waitforpostfixqueue />
-   
-   
+
+
    	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test required="true">
@@ -345,8 +345,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -356,9 +356,9 @@
         <t:response>
               <t:select path="//mail:SearchResponse/mail:m" attr="fr" set="message" />
         </t:response>
-    </t:test>	
-          
-     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="code"/>      
+    </t:test>
+
+     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="code"/>
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test required="true">
@@ -381,8 +381,8 @@
         <t:response>
               <t:select path="//mail:VerifyCodeResponse" attr="success" match="1"/>
         </t:response>
-    </t:test>	
- 
+    </t:test>
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -394,7 +394,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -405,7 +405,7 @@
         <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraCalendarReminderDeviceEmail']" match="${account2.name}"/>
         </t:response>
 	</t:test>
-	
+
 		<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test required="true">
@@ -428,8 +428,8 @@
         <t:response>
               <t:select path="//mail:InvalidateReminderDeviceResponse"/>
         </t:response>
-    </t:test>	
- 
+    </t:test>
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -441,7 +441,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -452,18 +452,18 @@
         <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraCalendarReminderDeviceEmail']" emptyset="1"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="configure_reminder_device_04" type="bhr">
-<t:objective>Invalidate the Configured calendar reminder device</t:objective>    
+<t:test_case testcaseid="configure_reminder_device_04" type="sanity">
+<t:objective>Invalidate the Configured calendar reminder device</t:objective>
 <t:steps>
 1. Login to account4.
 2. invalidate the device non configurred device say account3.
 4. verify the zimbraCalendarReminderDeviceEmail is not set as account3.
 
 </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test required="true">
@@ -477,7 +477,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
- 
+
    <t:test>
         <t:request>
             <InvalidateReminderDeviceRequest  xmlns="urn:zimbraMail" a="${account3.name}"/>
@@ -485,8 +485,8 @@
         <t:response>
               <t:select path="//zimbra:Code" match="^service.*" />
         </t:response>
-    </t:test>	   
- 
+    </t:test>
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -498,7 +498,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -509,10 +509,10 @@
         <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraCalendarReminderDeviceEmail']" emptyset="1"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
-<t:test_case testcaseid="configure_reminder_device_05" type="bhr">
-<t:objective>Invalidate the Configured calendar reminder device</t:objective>    
+<t:test_case testcaseid="configure_reminder_device_05" type="sanity">
+<t:objective>Invalidate the Configured calendar reminder device</t:objective>
 <t:steps>
 1. Login to account5.
 2. Send calendar reminder verification code to account6.
@@ -521,7 +521,7 @@
 5. verify the zimbraCalendarReminderDeviceEmail is Not set as account6 or account7.
 
 </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
 
     <t:test required="true">
@@ -535,7 +535,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <SendVerificationCodeRequest  xmlns="urn:zimbraMail">
@@ -546,10 +546,10 @@
             <t:select path="//mail:SendVerificationCodeResponse"/>
         </t:response>
     </t:test>
-         
+
    <t:waitforpostfixqueue />
-   
-   
+
+
    	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 
     <t:test required="true">
@@ -563,8 +563,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -574,9 +574,9 @@
         <t:response>
               <t:select path="//mail:SearchResponse/mail:m" attr="fr" set="message" />
         </t:response>
-    </t:test>	
-          
-     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="code"/>      
+    </t:test>
+
+     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="code"/>
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
 
     <t:test required="true">
@@ -599,8 +599,8 @@
         <t:response>
               <t:select path="//mail:VerifyCodeResponse" attr="success" match="0"/>
         </t:response>
-    </t:test>	
- 
+    </t:test>
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -612,7 +612,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -623,11 +623,11 @@
         <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraCalendarReminderDeviceEmail']" emptyset="1"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="configure_reminder_device_06" type="bhr">
-<t:objective>Configure multiple calendar reminder device</t:objective>    
+<t:test_case testcaseid="configure_reminder_device_06" type="sanity">
+<t:objective>Configure multiple calendar reminder device</t:objective>
 <t:steps>
 1. Login to account6.
 2. Send calendar reminder verification code to account4 and account5.
@@ -636,7 +636,7 @@
 4. login to account5 verify the code for account4 and then account5..
 5. verify the zimbraCalendarReminderDeviceEmail is set as  account5.
 </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 
     <t:test required="true">
@@ -650,7 +650,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <SendVerificationCodeRequest  xmlns="urn:zimbraMail">
@@ -674,7 +674,7 @@
     </t:test>
 
    <t:waitforpostfixqueue />
-   
+
    	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test required="true">
@@ -688,8 +688,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -699,10 +699,10 @@
         <t:response>
               <t:select path="//mail:SearchResponse/mail:m" attr="fr" set="message" />
         </t:response>
-    </t:test>	
-          
-     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="account4.code"/>      
-   
+    </t:test>
+
+     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="account4.code"/>
+
 <t:property name="server.zimbraAccount" value="${account5.server}"/>
 
     <t:test required="true">
@@ -716,8 +716,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -727,10 +727,10 @@
         <t:response>
               <t:select path="//mail:SearchResponse/mail:m" attr="fr" set="message" />
         </t:response>
-    </t:test>	
-          
-     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="account5.code"/>      
-	
+    </t:test>
+
+     <t:regex input="${message}" regex="^Your device verification code for receiving reminders is (.*)$" group="1" set="account5.code"/>
+
 <t:property name="server.zimbraAccount" value="${account6.server}"/>
 
     <t:test required="true">
@@ -753,8 +753,8 @@
         <t:response>
               <t:select path="//mail:VerifyCodeResponse" attr="success" match="1"/>
         </t:response>
-    </t:test>	
- 
+    </t:test>
+
   <t:test>
         <t:request>
             <VerifyCodeRequest xmlns="urn:zimbraMail" a="${account5.name}" code="${account5.code}"/>
@@ -762,8 +762,8 @@
         <t:response>
               <t:select path="//mail:VerifyCodeResponse" attr="success" match="1"/>
         </t:response>
-    </t:test>	
- 
+    </t:test>
+
      <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -775,7 +775,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -789,13 +789,13 @@
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="configure_reminder_device_07" type="bhr">
-<t:objective>SendVerificationCodeRequest with comma saparated device email addresses</t:objective>    
+<t:test_case testcaseid="configure_reminder_device_07" type="sanity">
+<t:objective>SendVerificationCodeRequest with comma saparated device email addresses</t:objective>
 <t:steps>
 1. Login to account6.
 2. Send SendVerificationCodeRequest with comma saparated email addresses.
 </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 
     <t:test required="true">
@@ -809,7 +809,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <SendVerificationCodeRequest  xmlns="urn:zimbraMail">
@@ -821,6 +821,6 @@
         </t:response>
     </t:test>
 
-  
+
 </t:test_case>
 </t:tests>

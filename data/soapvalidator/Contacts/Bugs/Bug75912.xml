@@ -58,7 +58,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>   
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -71,7 +71,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
-                <password>${test_account2.password}</password>   
+                <password>${test_account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -84,7 +84,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
-                <password>${test_account3.password}</password>   
+                <password>${test_account3.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -96,7 +96,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyContacts1" type="bhr" bugids="75912" >
+<t:test_case testcaseid="ModifyContacts1" type="sanity" bugids="75912" >
     <t:objective>ModifyContactRequest(ReplaceMode=0) needs way to remove all m nodes.</t:objective>
     <t:steps>
     1. login as a account1
@@ -117,7 +117,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -125,13 +125,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_ref.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -141,42 +141,42 @@
                <cn fileAsStr="${contact.mailid}">
                    <a n="filesAs">${contact.mailid}</a>
                    <a n="type">group</a>
-               
+
 					<m type="C" value="${contact_ref.id}"/>
                     <m type="I" value="${contact2.mailid}"/>
-               </cn>     
+               </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/>
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
                <cn id="${contact_group.id}">
                     <a n="type">group</a>
                     <m op="reset"/>
-              </cn>     
+              </cn>
             </ModifyContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ModifyContactResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}" emptyset="1"/>   
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}" emptyset="1"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/>
+            </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ModifyContacts2" type="bhr" bugids="75912" >
+<t:test_case testcaseid="ModifyContacts2" type="sanity" bugids="75912" >
     <t:objective>ModifyContactRequest(ReplaceMode=0) needs way to remove all m nodes.</t:objective>
     <t:steps>
     1. login as a account1
@@ -184,7 +184,7 @@
     3. Send ModifyContactRequest(ReplaceMode=0) and m op="reset", this will result in all the original members in a contact group being dropped.
     4. Again send ModifyContactRequest, add members in group and verify members will be added successfully.
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 
     <t:test required="true">
@@ -199,7 +199,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -207,13 +207,13 @@
                     <a n="firstName">First1.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last1.${TIME}.${COUNTER}</a>
                     <a n="email">email1.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_ref.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -225,36 +225,36 @@
                    <a n="type">group</a>
 					<m type="C" value="${contact_ref.id}"/>
                     <m type="I" value="${contact2.mailid}"/>
-               </cn>     
+               </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/>
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
                <cn id="${contact_group.id}">
                     <a n="type">group</a>
                     <m op="reset"/>
-               </cn>     
+               </cn>
             </ModifyContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ModifyContactResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}" emptyset="1"/>   
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}" emptyset="1"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/>
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
@@ -263,29 +263,29 @@
                    <a n="type">group</a>
 					<m op="+" type="C" value="${contact_ref.id}"/>
                     <m op="+" type="I" value="${contact3.mailid}"/>
-               </cn>     
+               </cn>
             </ModifyContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ModifyContactResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}" />   
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact3.mailid}" /> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}" />
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact3.mailid}" />
+            </t:select>
         </t:response>
     </t:test>
-    
-    
+
+
 </t:test_case>
 
-<t:test_case testcaseid="ModifyContacts3" type="bhr" bugids="75912" >
+<t:test_case testcaseid="ModifyContacts3" type="sanity" bugids="75912" >
     <t:objective>Send ModifyContactRequest(ReplaceMode=1) and m op="reset".</t:objective>
     <t:steps>
     1. login as a account1
     2. Create contact group > add members in the contacts.
     3. Send ModifyContactRequest(ReplaceMode=1) and m op="reset". > service.INVALID_REQUEST
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 
     <t:test required="true">
@@ -300,7 +300,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -308,13 +308,13 @@
                     <a n="firstName">First2.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last2.${TIME}.${COUNTER}</a>
                     <a n="email">email2.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_ref.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -326,32 +326,32 @@
                    <a n="type">group</a>
 					<m type="C" value="${contact_ref.id}"/>
                     <m type="I" value="${contact3.mailid}"/>
-               </cn>     
+               </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact3.mailid}"/> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact3.mailid}"/>
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
                <cn id="${contact_group.id}">
                     <a n="type">group</a>
                     <m op="reset"/>
-               </cn>     
+               </cn>
             </ModifyContactRequest>
         </t:request>
         <t:response>
-           <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>  
+           <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 </t:tests>

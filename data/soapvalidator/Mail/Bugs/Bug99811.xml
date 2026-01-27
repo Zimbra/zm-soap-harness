@@ -8,7 +8,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -42,7 +42,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:staftask >
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -51,10 +51,10 @@
 		</t:request>
 	</t:staftask>
 
-	<t:delay sec="10"/>		
+	<t:delay sec="10"/>
 </t:test_case>
 
-<t:test_case testcaseid="Bug99811" type="bhr" bugids="99811">
+<t:test_case testcaseid="Bug99811" type="sanity" bugids="99811">
 	<t:objective>ModifyPropertiesRequest allows user to write any number of properties into the directory</t:objective>
 	<t:steps>
 		1. Create test1 user
@@ -89,7 +89,7 @@
             <t:select path="//zimbra:Code" match="account.TOO_MANY_ZIMLETUSERPROPERTIES"/>
         </t:response>
     </t:test>
-    		
+
 </t:test_case>
 
 </t:tests>

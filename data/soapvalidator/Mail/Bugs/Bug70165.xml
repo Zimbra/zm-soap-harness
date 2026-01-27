@@ -8,10 +8,10 @@
 <t:property name="check.word1" value="hello"/>
 <t:property name="check.word2" value="helli"/>
 
-    
+
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -26,7 +26,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Login to admin </t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -37,13 +37,13 @@
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -67,10 +67,10 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="bug70165_1" type="bhr" bugids="56685">
+<t:test_case testcaseid="bug70165_1" type="sanity" bugids="56685">
     <t:objective>Verify CheckSpellingRequest is working with existing word</t:objective>
     <t:steps>1. Log as user say user1
     		 2. Send CheckSpelling of any word and verify error not returned in CheckSpellingResponse
@@ -90,12 +90,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug70165_2" type="functional">
+<t:test_case testcaseid="bug70165_2" type="regression">
     <t:objective>Verify CheckSpellingRequest is working with a non existing word</t:objective>
     <t:steps>1. Log as user say user1
     		 2. Send CheckSpelling of any word and verify error not returned in CheckSpellingResponse
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word2}</CheckSpellingRequest>
@@ -109,5 +109,5 @@
     </t:test>
 
 </t:test_case>
-    
+
 </t:tests>

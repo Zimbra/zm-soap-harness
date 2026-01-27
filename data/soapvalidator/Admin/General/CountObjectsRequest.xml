@@ -25,7 +25,7 @@
 <t:property name="postalcode" value="Test Name"/>
 
 <t:property name="alias.name" value="Alias1.${TIME}.${COUNTER}@${domain.name1}"/>
-<t:property name="alias1.name" value="Alias2.${TIME}.${COUNTER}@${domain.name1}"/> 
+<t:property name="alias1.name" value="Alias2.${TIME}.${COUNTER}@${domain.name1}"/>
 <t:property name="list1" value="list1@${domain.name1}"/>
 <t:property name="cos.name" value="testcos${TIME}${COUNTER}"/>
 <t:property name="invalid.domain" value="invalid_domain"/>
@@ -77,7 +77,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -90,7 +90,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -103,7 +103,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-    
+
     <t:test id="CreateDomainRequest2">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -114,11 +114,11 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain2.id"/>
         </t:response>
     </t:test>
-    
+
  </t:test_case>
 
 
-<t:test_case testcaseid="CountObjectsRequest1" type="bhr">
+<t:test_case testcaseid="CountObjectsRequest1" type="sanity">
   <t:objective>Verify CountObjectsRequest for account in particular domain.</t:objective>
     <t:test id="admin_login" required="true" >
         <t:request>
@@ -131,7 +131,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="account" xmlns="urn:zimbraAdmin">
@@ -139,14 +139,14 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//admin:CountObjectsResponse" attr="num" match="2" />  	
+        	<t:select path="//admin:CountObjectsResponse" attr="num" match="2" />
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CountObjectsRequest2" type="bhr">
+<t:test_case testcaseid="CountObjectsRequest2" type="sanity">
     <t:objective>Verify CountObjectsRequest no account created in particular domain.</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -160,7 +160,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="account" xmlns="urn:zimbraAdmin">
@@ -168,13 +168,13 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//admin:CountObjectsResponse" attr="num" match="0" />  	
+        	<t:select path="//admin:CountObjectsResponse" attr="num" match="0" />
         </t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="CountObjectsRequest3" type="bhr">
+<t:test_case testcaseid="CountObjectsRequest3" type="sanity">
     <t:objective>Verify CountObjectsRequest no alias created in particular domain.</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -188,7 +188,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="alias" xmlns="urn:zimbraAdmin">
@@ -196,14 +196,14 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//admin:CountObjectsResponse" attr="num" match="0" />  	
+        	<t:select path="//admin:CountObjectsResponse" attr="num" match="0" />
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CountObjectsRequest4" type="bhr">
+<t:test_case testcaseid="CountObjectsRequest4" type="sanity">
     <t:objective>Verify CountObjectsRequest for alias in particular domain.</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -217,7 +217,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -228,8 +228,8 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -240,8 +240,8 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
-	
+    </t:test>
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="alias" xmlns="urn:zimbraAdmin">
@@ -249,13 +249,13 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//admin:CountObjectsResponse" attr="num" match="2" />  	
+        	<t:select path="//admin:CountObjectsResponse" attr="num" match="2" />
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="CountObjectsRequest5" type="bhr">
+<t:test_case testcaseid="CountObjectsRequest5" type="sanity">
     <t:objective>Verify CountObjectsRequest for  distribution list in particular domain.</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -269,7 +269,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -281,7 +281,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="dl" xmlns="urn:zimbraAdmin">
@@ -289,13 +289,13 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//admin:CountObjectsResponse" attr="num" match="1" />  	
+        	<t:select path="//admin:CountObjectsResponse" attr="num" match="1" />
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="CountObjectsRequest6" type="bhr">
+<t:test_case testcaseid="CountObjectsRequest6" type="sanity">
     <t:objective>Verify CountObjectsRequest with cos. error: invalid request: domain cannot be specified for type: cos</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -309,7 +309,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="cos" xmlns="urn:zimbraAdmin">
@@ -317,13 +317,13 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>	
+        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="CountObjectsRequest7" type="bhr">
+<t:test_case testcaseid="CountObjectsRequest7" type="sanity">
     <t:objective>Verify CountObjectsRequest with blank domain.</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -337,7 +337,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="cos" xmlns="urn:zimbraAdmin">
@@ -345,7 +345,7 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>	
+        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
 	</t:test>
 
@@ -356,14 +356,14 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>	
+        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CountObjectsRequest8" type="bhr">
+<t:test_case testcaseid="CountObjectsRequest8" type="sanity">
     <t:objective>Verify CountObjectsRequest with invalid and blank by attribute.</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -377,7 +377,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="cos" xmlns="urn:zimbraAdmin">
@@ -385,10 +385,10 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>	
+        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CountObjectsRequest type="cos" xmlns="urn:zimbraAdmin">
@@ -396,13 +396,13 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>	
+        	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="CountObjectsRequest8" type="bhr">
+<t:test_case testcaseid="CountObjectsRequest8" type="sanity">
     <t:objective>Verify CountObjectsRequest with invalid object type.</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -416,17 +416,17 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CountObjectsRequest type="calresource1" xmlns="urn:zimbraAdmin">
             </CountObjectsRequest>
            </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>   
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CountObjectsRequest type="calresource1" xmlns="urn:zimbraAdmin">
@@ -434,9 +434,9 @@
             </CountObjectsRequest>
            </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>   
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 </t:tests>

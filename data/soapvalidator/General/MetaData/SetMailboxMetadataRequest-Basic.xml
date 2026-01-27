@@ -9,7 +9,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -26,7 +26,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -39,7 +39,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,10 +71,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetMailboxMetadata01" type="bhr">
+<t:test_case testcaseid="SetMailboxMetadata01" type="sanity">
     <t:objective>Verify basic SetMailboxMetadataRequest works </t:objective>
 
-  
+
 
 	<t:property name="metadata.section.key" value="zwc:${TIME}${COUNTER}"/>
 	<t:property name="meta.key" value="key${TIME}${COUNTER}"/>
@@ -85,13 +85,13 @@
 				<meta section="${metadata.section.key}">
 					<a n="${meta.key}">${meta.value}</a>
 				</meta>
-			</SetMailboxMetadataRequest>   
+			</SetMailboxMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SetMailboxMetadataResponse"/>
 		</t:response>
 	</t:test>
-  
+
 	<t:test>
 		<t:request>
 			<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
@@ -106,11 +106,11 @@
             </t:select>
         </t:response>
     </t:test>
- 
+
 
 </t:test_case>
 
-<t:test_case testcaseid="SetMailboxMetadata04" type="bhr">
+<t:test_case testcaseid="SetMailboxMetadata04" type="sanity">
     <t:objective>Verify basic SetMailboxMetadataRequest works (with multiple metadata)</t:objective>
 
 
@@ -126,13 +126,13 @@
 					<a n="${meta1.key}">${meta1.value}</a>
 					<a n="${meta2.key}">${meta2.value}</a>
 				</meta>
-			</SetMailboxMetadataRequest>   
+			</SetMailboxMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SetMailboxMetadataResponse"/>
 		</t:response>
 	</t:test>
-  
+
 	<t:test>
 		<t:request>
 			<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
@@ -148,11 +148,11 @@
             </t:select>
         </t:response>
     </t:test>
- 
+
 
 </t:test_case>
 
-<t:test_case testcaseid="SetMailboxMetadata05" type="bhr">
+<t:test_case testcaseid="SetMailboxMetadata05" type="sanity">
     <t:objective>Verify basic SetMailboxMetadataRequest works to clear multiple metadata</t:objective>
 
 
@@ -168,14 +168,14 @@
 					<a n="${meta1.key}">${meta1.value}</a>
 					<a n="${meta2.key}">${meta2.value}</a>
 				</meta>
-			</SetMailboxMetadataRequest>   
+			</SetMailboxMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SetMailboxMetadataResponse">
 			</t:select>
 		</t:response>
 	</t:test>
-  
+
 	<t:test>
 		<t:request>
 			<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
@@ -191,18 +191,18 @@
             </t:select>
         </t:response>
     </t:test>
- 
+
 	<t:test>
 		<t:request>
 			<SetMailboxMetadataRequest xmlns="urn:zimbraMail">
 				<meta section="${metadata.section.key}"/>
-			</SetMailboxMetadataRequest>   
+			</SetMailboxMetadataRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SetMailboxMetadataResponse"/>
 		</t:response>
 	</t:test>
-  
+
 	<t:test>
 		<t:request>
 			<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
@@ -213,14 +213,14 @@
             <t:select path="//mail:GetMailboxMetadataResponse">
 	            <t:select path="//mail:meta[@section='${metadata.section.key}']">
 	            	<t:select path="//mail:a" emptyset="1"/>
-	            </t:select>	            
+	            </t:select>
             </t:select>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="SetMailboxMetadata06" type="bhr" bugids="46225">
+<t:test_case testcaseid="SetMailboxMetadata06" type="sanity" bugids="46225">
     <t:objective>SetMailboxMetadataRequest to set empty string to sub-sections</t:objective>
 
 
@@ -236,13 +236,13 @@
 					<a n="${meta1.key}">${meta1.value}</a>
 					<a n="${meta2.key}"></a>
 				</meta>
-			</SetMailboxMetadataRequest>   
+			</SetMailboxMetadataRequest>
 		</t:request>
 		<t:response>
             <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-  
+
 	<t:test>
 		<t:request>
 			<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
@@ -258,7 +258,7 @@
             </t:select>
         </t:response>
     </t:test>
- 
+
 
 </t:test_case>
 </t:tests>

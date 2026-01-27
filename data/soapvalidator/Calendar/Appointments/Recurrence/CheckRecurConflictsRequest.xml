@@ -22,7 +22,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -36,7 +36,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -49,7 +49,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -75,18 +75,18 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
 
 <t:test_case testcaseid="CheckRecurConflictsRequest1" type="smoke" areas="Calendar">
     <t:objective>Verify user can check conflicts in recurrence against list of users.</t:objective>
-    <t:steps>1. Login as user 
+    <t:steps>1. Login as user
              2. Send CheckRecurConflictsRequest to check conflicts in recurrence against list of users.
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<!-- Login as account2 -->
     <t:test id="login account2">
       <t:request>
@@ -100,7 +100,7 @@
         	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
       </t:response>
     </t:test>
-    
+
     <t:test id="test 1">
       <t:request>
         <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000">
@@ -136,19 +136,19 @@
         <t:select path="//mail:CheckRecurConflictsResponse"/>
       </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckRecurConflictsRequest2" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CheckRecurConflictsRequest2" type="sanity" areas="Calendar">
     <t:objective>Verify user can check conflicts in recurrence against list of users.</t:objective>
-    <t:steps>1. Login as user 
+    <t:steps>1. Login as user
              2. Send CheckRecurConflictsRequest with all="1" to get all instances, even those without conflicts.
-             
+
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<!-- Login as account2 -->
     <t:test id="login account2">
       <t:request>
@@ -162,7 +162,7 @@
         	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
       </t:response>
     </t:test>
-    
+
     <t:test id="test 2">
       <t:request>
         <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000" all="1">
@@ -198,20 +198,20 @@
         <t:select path="//mail:CheckRecurConflictsResponse"/>
       </t:response>
     </t:test>
-	
-	
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckRecurConflictsRequest3" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CheckRecurConflictsRequest3" type="sanity" areas="Calendar">
     <t:objective>Verify user can check conflicts in recurrence against list of users.</t:objective>
-    <t:steps>1. Login as user 
-             2. Send CheckRecurConflictsRequest with tz="Asia/Colombo". 
+    <t:steps>1. Login as user
+             2. Send CheckRecurConflictsRequest with tz="Asia/Colombo".
     </t:steps>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<!-- Login as account2 -->
     <t:test id="login account2">
       <t:request>
@@ -225,7 +225,7 @@
         	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
       </t:response>
     </t:test>
-    
+
     <t:test id="test 3">
       <t:request>
         <CheckRecurConflictsRequest xmlns="urn:zimbraMail" all="1">
@@ -256,19 +256,19 @@
         <t:select path="//mail:CheckRecurConflictsResponse"/>
       </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CheckRecurConflictsRequest4" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CheckRecurConflictsRequest4" type="sanity" areas="Calendar">
     <t:objective>Verify user can check conflicts in recurrence against list of users.</t:objective>
-    <t:steps>1. Login as user 
-             2. Send CheckRecurConflictsRequest exceptId d="20090112". 
+    <t:steps>1. Login as user
+             2. Send CheckRecurConflictsRequest exceptId d="20090112".
     </t:steps>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<!-- Login as account2 -->
     <t:test id="login account2">
       <t:request>
@@ -282,7 +282,7 @@
         	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
       </t:response>
     </t:test>
-    
+
     <t:test id="test 4">
       <t:request>
         <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000" all="1">
@@ -314,18 +314,18 @@
         <t:select path="//mail:CheckRecurConflictsResponse"/>
       </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckRecurConflictsRequest5" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CheckRecurConflictsRequest5" type="sanity" areas="Calendar">
     <t:objective>Send CheckRecurConflictsRequest with invalid start and end time.</t:objective>
-    <t:steps>1. Login as user 
-             2. Send CheckRecurConflictsRequest s="aaa" e="bbb" 
+    <t:steps>1. Login as user
+             2. Send CheckRecurConflictsRequest s="aaa" e="bbb"
     </t:steps>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<!-- Login as account2 -->
     <t:test id="login account2">
       <t:request>
@@ -339,7 +339,7 @@
         	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
       </t:response>
     </t:test>
-    
+
     <t:test id="test 4">
       <t:request>
         <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="aaa" e="bbb" all="1">
@@ -371,18 +371,18 @@
         <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
       </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckRecurConflictsRequest6" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CheckRecurConflictsRequest6" type="sanity" areas="Calendar">
     <t:objective>Send CheckRecurConflictsRequest with start and end time as alphabets.</t:objective>
-    <t:steps>1. Login as user 
-             2. Send CheckRecurConflictsRequest s="aaa" e="bbb" 
+    <t:steps>1. Login as user
+             2. Send CheckRecurConflictsRequest s="aaa" e="bbb"
     </t:steps>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<!-- Login as account2 -->
     <t:test id="login account2">
       <t:request>
@@ -396,7 +396,7 @@
         	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
       </t:response>
     </t:test>
-    
+
     <t:test id="test 4">
       <t:request>
         <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000" all="1">
@@ -428,18 +428,18 @@
         <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
       </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckRecurConflictsRequest7" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CheckRecurConflictsRequest7" type="sanity" areas="Calendar">
     <t:objective>Send CheckRecurConflictsRequest with blank start and end time.</t:objective>
-    <t:steps>1. Login as user 
+    <t:steps>1. Login as user
              2. Send CheckRecurConflictsRequest with blank start and end time. - service.INVALID_REQUEST
     </t:steps>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<!-- Login as account2 -->
     <t:test id="login account2">
       <t:request>
@@ -453,7 +453,7 @@
         	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
       </t:response>
     </t:test>
-    
+
     <t:test id="test 4">
       <t:request>
         <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000" all="1">
@@ -485,18 +485,18 @@
         <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
       </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckRecurConflictsRequest8" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CheckRecurConflictsRequest8" type="sanity" areas="Calendar">
     <t:objective>Send CheckRecurConflictsRequest with blank exceptId</t:objective>
-    <t:steps>1. Login as user 
+    <t:steps>1. Login as user
              2. Send CheckRecurConflictsRequest with blank exceptId - service.INVALID_REQUEST
     </t:steps>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<!-- Login as account2 -->
     <t:test id="login account2">
       <t:request>
@@ -510,7 +510,7 @@
         	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
       </t:response>
     </t:test>
-    
+
     <t:test id="test 4">
       <t:request>
         <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000" all="1">
@@ -542,18 +542,18 @@
          <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
       </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckRecurConflictsRequest9" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CheckRecurConflictsRequest9" type="sanity" areas="Calendar">
     <t:objective>Send CheckRecurConflictsRequest with invalid value for exceptId</t:objective>
-    <t:steps>1. Login as user 
+    <t:steps>1. Login as user
              2. Send CheckRecurConflictsRequest with invalid value for exceptId - service.INVALID_REQUEST
     </t:steps>
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<!-- Login as account2 -->
     <t:test id="login account2">
       <t:request>
@@ -567,7 +567,7 @@
         	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
       </t:response>
     </t:test>
-    
+
     <t:test id="test 4">
       <t:request>
         <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000" all="1">
@@ -599,7 +599,7 @@
          <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
       </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

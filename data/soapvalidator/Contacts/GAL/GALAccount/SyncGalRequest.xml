@@ -45,7 +45,7 @@
     </t:test>
 
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
@@ -60,7 +60,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -97,7 +97,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -110,7 +110,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -122,7 +122,7 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -148,10 +148,10 @@
         <t:response>
             <t:select path="//admin:SyncGalAccountResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="GalAccount_SyncGalRequest_01" type="smoke">
     <t:objective>Verify basic SyncGalResponse</t:objective>
@@ -178,18 +178,18 @@
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest idOnly="${globals.true}" xmlns="urn:zimbraAccount"/> 
+			<SyncGalRequest idOnly="${globals.true}" xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GALAccount_SyncGalRequest_02" type="bhr" bugids="54418">
+<t:test_case testcaseid="GALAccount_SyncGalRequest_02" type="sanity" bugids="54418">
     <t:objective>Verify a new account is returned in GalSyncResponse</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -214,19 +214,19 @@
         </t:response>
     </t:test>
 
-   <t:delay msec="5000" /> 
+   <t:delay msec="5000" />
 	<t:test>
 		<t:request>
-			<SyncGalRequest  idOnly="${globals.true}" xmlns="urn:zimbraAccount"/> 
+			<SyncGalRequest  idOnly="${globals.true}" xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -249,8 +249,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse"/>
 		</t:response>
-    </t:test>  
-   <t:delay msec="5000" /> 
+    </t:test>
+   <t:delay msec="5000" />
     <t:test >
         <t:request>
 			<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
@@ -264,7 +264,7 @@
         </t:response>
     </t:test>
 
-   <t:delay msec="5000" /> 
+   <t:delay msec="5000" />
 	<t:property name="server.zimbraAccount" value="${domain1.galaccount.server}"/>
 
     <t:test>
@@ -283,14 +283,14 @@
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>${domain1.account3.name}</query>
-			</SearchRequest> 
+			</SearchRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//mail:SearchResponse">
  				<t:select path="//mail:cn" attr="id" set="contact.id"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${domain1.account1.server}"/>
 
@@ -306,26 +306,26 @@
         </t:response>
     </t:test>
 
-   <t:delay msec="5000" /> 
+   <t:delay msec="5000" />
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"  idOnly="${globals.true}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"  idOnly="${globals.true}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse">
  				<t:select path="//acct:cn[@id='${domain1.galaccount.id}:${contact.id}']"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="GALAccount_SyncGalRequest_03" type="bhr">
+<t:test_case testcaseid="GALAccount_SyncGalRequest_03" type="sanity">
     <t:objective>Verify a modified account is returned in GalSyncResponse</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -349,9 +349,9 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account4.id"/>
 		</t:response>
-    </t:test>  
-    
-   <t:delay msec="5000" /> 
+    </t:test>
+
+   <t:delay msec="5000" />
     <t:test >
         <t:request>
 			<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
@@ -381,16 +381,16 @@
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" idOnly="${globals.true}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" idOnly="${globals.true}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -413,9 +413,9 @@
         <t:response>
             <t:select path="//admin:ModifyAccountResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
-   <t:delay msec="5000" /> 
+   <t:delay msec="5000" />
     <t:test >
         <t:request>
 			<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
@@ -447,14 +447,14 @@
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>${domain1.account4.name}</query>
-			</SearchRequest> 
+			</SearchRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//mail:SearchResponse">
  				<t:select path="//mail:cn" attr="id" set="contact.id"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${domain1.account1.server}"/>
 
@@ -472,23 +472,23 @@
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}" idOnly="${globals.true}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}" idOnly="${globals.true}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse">
  				<t:select path="//acct:cn[@id='${domain1.galaccount.id}:${contact.id}']"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="GALAccount_SyncGalRequest_04" type="bhr">
+<t:test_case testcaseid="GALAccount_SyncGalRequest_04" type="sanity">
     <t:objective>Verify a deleted account is not returned in GalSyncResponse</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -511,8 +511,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account5.id"/>
 		</t:response>
-    </t:test>  
-    
+    </t:test>
+
 	<t:property name="server.zimbraAccount" value="${domain1.account1.server}"/>
 
     <t:test>
@@ -529,16 +529,16 @@
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" idOnly="${globals.true}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" idOnly="${globals.true}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -560,7 +560,7 @@
         <t:response>
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -591,23 +591,23 @@
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}" idOnly="${globals.true}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}" idOnly="${globals.true}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse/acct:cn[contains(@id,'${domain1.account5.user}')]" emptyset="1">
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SyncGalRequest xmlns="urn:zimbraAccount"  idOnly="${globals.true}"/> 
+			<SyncGalRequest xmlns="urn:zimbraAccount"  idOnly="${globals.true}"/>
 		</t:request>
 		<t:response>
  			<t:select path="//acct:SyncGalResponse/acct:cn[contains(@id,'${domain1.account5.user}')]" emptyset="1">
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>

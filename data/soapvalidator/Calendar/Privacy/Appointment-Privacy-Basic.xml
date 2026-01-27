@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -42,7 +42,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -101,7 +101,7 @@
 
 
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_01" type="bhr" bugids="18316">
+<t:test_case testcaseid="Appointment_Privacy_Basic_01" type="sanity" bugids="18316">
     <t:objective>Create a private appointment</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -130,8 +130,8 @@
                     <su>${appt1.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt1.subject}" >
-	                        <s d="${ICALTIME[${appt1.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt1.start}]}"/>  
+	                        <s d="${ICALTIME[${appt1.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt1.start}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -151,7 +151,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_02" type="functional"  bugsids="zcs-10652">
+<t:test_case testcaseid="Appointment_Privacy_Basic_02" type="regression"  bugsids="zcs-10652">
     <t:objective>Get a private appointment</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -180,8 +180,8 @@
                     <su>${appt2.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt2.subject}" >
-	                        <s d="${ICALTIME[${appt2.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt2.start}]}"/>  
+	                        <s d="${ICALTIME[${appt2.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt2.start}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -215,7 +215,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_03" type="bhr">
+<t:test_case testcaseid="Appointment_Privacy_Basic_03" type="sanity">
     <t:objective>Modify a public appointment - mark it private</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -244,8 +244,8 @@
                     <su>${appt3.subject}</su>
                     <inv >
                     	<comp class="PUB" method="REQUEST" type="event" fb="B" name="${appt3.subject}" >
-	                        <s d="${ICALTIME[${appt3.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt3.start}]}"/>  
+	                        <s d="${ICALTIME[${appt3.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt3.start}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -273,8 +273,8 @@
                     <su>${appt3.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt3.subject}" >
-	                        <s d="${ICALTIME[${appt3.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt3.start}]}"/>  
+	                        <s d="${ICALTIME[${appt3.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt3.start}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -306,7 +306,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_04" type="bhr">
+<t:test_case testcaseid="Appointment_Privacy_Basic_04" type="sanity">
     <t:objective>Cancel a private appointment</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -335,8 +335,8 @@
                     <su>${appt4.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt4.subject}" >
-	                        <s d="${ICALTIME[${appt4.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt4.start}]}"/>  
+	                        <s d="${ICALTIME[${appt4.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt4.start}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -389,7 +389,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_05" type="bhr">
+<t:test_case testcaseid="Appointment_Privacy_Basic_05" type="sanity">
     <t:objective>Search for a private appointment</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -418,8 +418,8 @@
                     <su>${appt5.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt5.subject}" >
-	                        <s d="${ICALTIME[${appt5.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt5.start}]}"/>  
+	                        <s d="${ICALTIME[${appt5.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt5.start}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -449,7 +449,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_06" type="functional" bugsids="zcs-10652">
+<t:test_case testcaseid="Appointment_Privacy_Basic_06" type="regression" bugsids="zcs-10652">
     <t:objective>Invite someone to a private appointment</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -480,8 +480,8 @@
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt6.subject}" >
               				<at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-          	                <s d="${ICALTIME[${appt6.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt6.start}]}"/>  
+          	                <s d="${ICALTIME[${appt6.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt6.start}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -552,7 +552,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_07" type="bhr">
+<t:test_case testcaseid="Appointment_Privacy_Basic_07" type="sanity">
     <t:objective>Verify any other user can see F/B status of private appt </t:objective>
 	<t:steps> 1. Login to account1 and create an appt
 			  2. Login to other user(account4) and chk the F/B status of account
@@ -584,8 +584,8 @@
                     <su>${appt7.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt7.subject}" >
-	                        <s d="${ICALTIME[${appt7.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt7.start}]}"/>  
+	                        <s d="${ICALTIME[${appt7.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt7.start}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -616,15 +616,15 @@
 
         </t:response>
     </t:test>
-   
+
     <t:test >
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${appt7.start}]}" e="${TIME(+1d)[${appt7.start}]}"  uid="${account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr">
-            	<t:select path="//mail:b" attr="s" match="^\d+$"/>        			
-            	<t:select path="//mail:b" attr="e" match="^\d+$"/>        			
+            	<t:select path="//mail:b" attr="s" match="^\d+$"/>
+            	<t:select path="//mail:b" attr="e" match="^\d+$"/>
             </t:select>
 		</t:response>
     </t:test>
@@ -632,11 +632,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_08" type="bhr" bugids="18604">
+<t:test_case testcaseid="Appointment_Privacy_Basic_08" type="sanity" bugids="18604">
     <t:objective> Organizer shares calendar with a delagatee. Can the delagatee see the private appointment </t:objective>
-	
+
 	<t:steps> 1. Login to account3 and create an appointment and share the calendar to account4 with manager rights
-			  2. Login to account4 and create mountpoint 
+			  2. Login to account4 and create mountpoint
 			  3. Search for the appointment using appt's subject
 	</t:steps>
    	<t:property name="server.zimbraAccount" value="${account3.server}"/>
@@ -665,8 +665,8 @@
                     <su>${appt8.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt8.subject}" >
-	                        <s d="${ICALTIME[${appt8.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt8.start}]}"/>  
+	                        <s d="${ICALTIME[${appt8.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt8.start}]}"/>
 	                        <or a="${account3.name}"/>
                         </comp>
                     </inv>
@@ -760,13 +760,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_09" type="bhr">
+<t:test_case testcaseid="Appointment_Privacy_Basic_09" type="sanity">
     <t:objective> Verify Delagatee (non-administrator) cann't modifies a private appointment (accept/tentative/cancel) </t:objective>
 
 <t:steps> 1. Authenticate with the Delagatee account created in the above TC
 		  2. Try to modify that private appt. by ModifyAppointmentRequest
 		  3. Try to mark it as Tentative
-  		  4. Try to mark it as Accept 
+  		  4. Try to mark it as Accept
   		  5. Try to mark it as Cancel
 
 </t:steps>
@@ -794,8 +794,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appt.ID}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appt8.subject}" >
-                        <s d="${ICALTIME[${appt8.start}]}"/>  
-                        <e d="${ICALTIME(+1h)[${appt8.start}]}"/>  
+                        <s d="${ICALTIME[${appt8.start}]}"/>
+                        <e d="${ICALTIME(+1h)[${appt8.start}]}"/>
                         <or a="${account3.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -864,7 +864,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_10" type="bhr">
+<t:test_case testcaseid="Appointment_Privacy_Basic_10" type="sanity">
     <t:objective> Organizer creates a private appointment with a) a resource and b) a location. The resource and location should auto-accept </t:objective>
 <t:steps> 1. Authenticate to admin and create a Cos
 		  2. Create a location and Equipment
@@ -888,7 +888,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name >TestCos${TIME}${COUNTER}</name>        
+                <name >TestCos${TIME}${COUNTER}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -958,8 +958,8 @@
                     <su>${appt10.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt10.subject}" loc="${Location.name}">
-	                        <s d="${ICALTIME[${appt10.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt10.start}]}"/>  
+	                        <s d="${ICALTIME[${appt10.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt10.start}]}"/>
 	                        <or a="${account4.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${Location.name}" d="${Location.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${Equipment.name}" d="${Equipment.name}"/>
@@ -1027,7 +1027,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Appointment_Privacy_Basic_11" type="bhr">
+<t:test_case testcaseid="Appointment_Privacy_Basic_11" type="sanity">
     <t:objective> Verify Resource can Edit (Accept/Decline) the private appt. </t:objective>
 	<t:steps> 1. Authenticate to admin and create a Cos
 			  2. Create a location and Equipment
@@ -1051,7 +1051,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name >TestCos${TIME}${COUNTER}</name>        
+                <name >TestCos${TIME}${COUNTER}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -1122,8 +1122,8 @@
                     <su>${appt10.subject}</su>
                     <inv >
                     	<comp class="PRI" method="REQUEST" type="event" fb="B" name="${appt11.subject}" loc="${Location.name}">
-	                        <s d="${ICALTIME[${appt11.start}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${appt11.start}]}"/>  
+	                        <s d="${ICALTIME[${appt11.start}]}"/>
+	                        <e d="${ICALTIME(+1h)[${appt11.start}]}"/>
 	                        <or a="${account4.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${Location.name}" d="${Location.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${Equipment.name}" d="${Equipment.name}"/>

@@ -37,8 +37,8 @@
 				</t:response>
 			</t:test>
 			<!-- Create Internal Domain -->
-			<t:steps> 
-            1. Create a new Domain 
+			<t:steps>
+            1. Create a new Domain
         </t:steps>
 			<t:test id="CreateDomainRequest0a">
 				<t:request>
@@ -95,7 +95,7 @@
 			</t:test>
 		</t:test_case>
 		<!-- Set OOO message for Account 1 -->
-		<t:test_case testcaseid="SetOOO" type="bhr" depends="AdminSetup">
+		<t:test_case testcaseid="SetOOO" type="sanity" depends="AdminSetup">
 			<t:objective>Account 1 sets Out Of Office message</t:objective>
 			<t:property name="server.zimbraAccount" value="${account1.server}"/>
 			<t:test id="auth_account1" required="true">
@@ -155,7 +155,7 @@
 				</t:response>
 			</t:test>
 		</t:test_case>
-		<t:test_case testcaseid="Set_OOO_Future_2025" type="bhr" depends="AdminSetup">
+		<t:test_case testcaseid="Set_OOO_Future_2025" type="sanity" depends="AdminSetup">
 			<t:objective>
         Verify Out Of Office preference is enabled and set for a future date
     </t:objective>
@@ -211,7 +211,7 @@
 				</t:response>
 			</t:test>
 		</t:test_case>
-		<t:test_case testcaseid="VerifyOOO_ExternalDomain" type="bhr" depends="Set_OOO_Future_2025">
+		<t:test_case testcaseid="VerifyOOO_ExternalDomain" type="sanity" depends="Set_OOO_Future_2025">
 			<t:objective>
         Verify Out Of Office preference is account scoped and not applicable to external domain
     </t:objective>
@@ -242,7 +242,7 @@
 				</t:response>
 			</t:test>
 		</t:test_case>
-		<t:test_case testcaseid="VerifyOOO_DistributionList" type="bhr" depends="Set_OOO_Future_2025">
+		<t:test_case testcaseid="VerifyOOO_DistributionList" type="sanity" depends="Set_OOO_Future_2025">
 			<t:objective>
         Verify Out Of Office preference does not apply to distribution lists
     </t:objective>
@@ -274,7 +274,7 @@
 				</t:response>
 			</t:test>
 		</t:test_case>
-		<t:test_case testcaseid="Set LC True" type="bhr">
+		<t:test_case testcaseid="Set LC True" type="sanity">
 			<t:objective>Set LC get_out_of_office_cross_domains to TRUE </t:objective>
 			<t:staftask>
 				<t:request>
@@ -296,7 +296,7 @@
 			<t:delay sec="30"/>
 		</t:test_case>
 		<!-- Set zimbraPrefOutOfOfficeSuppressExternalReply True for Account 1 -->
-		<t:test_case testcaseid="Set zimbraPrefOutOfOfficeSuppressExternalReply True" type="bhr">
+		<t:test_case testcaseid="Set zimbraPrefOutOfOfficeSuppressExternalReply True" type="sanity">
 			<t:objective>Set zimbraPrefOutOfOfficeSuppressExternalReply to TRUE </t:objective>
 			<!-- Admin Auth for Modify Account -->
 			<t:test id="admin_login" required="true" depends="ping">
@@ -330,7 +330,7 @@
 		<!-- Custom Domain OOO with External Suppression -->
 		<!-- ========================================================= -->
 		<t:test_case testcaseid="OOO_CustomDomain_SuppressExternal"
-             type="bhr"
+             type="sanity"
              depends="AdminSetup">
 			<t:objective>
         Verify Custom Domain account has OOO enabled and

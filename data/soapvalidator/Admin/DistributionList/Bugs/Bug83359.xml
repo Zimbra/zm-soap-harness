@@ -25,9 +25,9 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
- 
+
 
 <t:test_case testcaseid = "acctSetup1_bug83359" type="always">
     <t:objective>Create Distribution List and create test accounts </t:objective>
@@ -72,7 +72,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -84,8 +84,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -98,7 +98,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -110,24 +110,24 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
    <t:test id="addDistributionListMemberRequest" depends="addDistributionListMemberRequest1a">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
                 <id>${list1.id}</id>
                 <dlm>${user1}</dlm>
-                <dlm>${user2}</dlm>                       
+                <dlm>${user2}</dlm>
             </AddDistributionListMemberRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <!-- Enable Milter Service -->
-    
+
     <t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -138,7 +138,7 @@
         <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:staftask>
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -146,8 +146,8 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmilterctl start \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
 		</t:request>
 	</t:staftask>
-     
-    
+
+
     <t:staftask>
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -155,14 +155,14 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
 		</t:request>
 	</t:staftask>
-	 
- </t:test_case>  
- 
- 
+
+ </t:test_case>
+
+
  <t:finally >
 
     <!-- After all tests have run, Disable milter service -->
-    
+
     <t:test  id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -185,7 +185,7 @@
         <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>
-    
+
         <t:staftask>
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -193,8 +193,8 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
 		</t:request>
 	</t:staftask>
-    
-    
+
+
     <t:staftask>
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -204,9 +204,9 @@
 	</t:staftask>
 
 </t:finally>
- 
-   
-  <t:test_case testcaseid="bug83359" type="bhr" bugids="83359" >
+
+
+  <t:test_case testcaseid="bug83359" type="sanity" bugids="83359" >
 	<t:objective>User3 sends a message to list</t:objective>
 	<t:steps>
 		1. User3 executes SendMsgRequest to list1
@@ -214,8 +214,8 @@
 	</t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	<t:property name="message.subject" value="Subject${TIME}${COUNTER}"/>	
-	
+	<t:property name="message.subject" value="Subject${TIME}${COUNTER}"/>
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -228,13 +228,13 @@
 		</t:response>
 	</t:test>
 
-    <t:test >		
+    <t:test >
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
 					<e t="t" a="${list1}"/>
 					<e t="f" a="${user3}"/>
-					<e t="r" a='${list1}'/>            			
+					<e t="r" a='${list1}'/>
 					<su>${message.subject}</su>
 					<mp ct="text/plain">
 						<content>Content ${TIME} ${COUNTER}</content>
@@ -274,11 +274,11 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SearchResponse">
-				<t:select path="//mail:m" attr="id" set="user1.message.id"/>				
+				<t:select path="//mail:m" attr="id" set="user1.message.id"/>
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -286,7 +286,7 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-            	<t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="r"]' attr="a" match="${list1}"/>                        
+            	<t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="r"]' attr="a" match="${list1}"/>
         </t:response>
     </t:test>
 

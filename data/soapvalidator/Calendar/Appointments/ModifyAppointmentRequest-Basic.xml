@@ -15,7 +15,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -32,7 +32,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -45,7 +45,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -74,7 +74,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -89,20 +89,20 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="436574" type="bhr" areas="Calendar">
+<t:test_case testcaseid="436574" type="sanity" areas="Calendar">
     <t:objective>Update singleton inline event - Event Name and verify name get updated correctly.</t:objective>
 
 
 	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
-	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -123,8 +123,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.newsubject}" >
-	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -160,7 +160,7 @@
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt1.invId}']"/>
             </t:select>
@@ -170,22 +170,22 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="436575" type="bhr" areas="Calendar">
+<t:test_case testcaseid="436575" type="sanity" areas="Calendar">
     <t:objective>updating a singleton inline event - update Calendar.</t:objective>
 
 
 	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
 	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
 
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" >
-	                        <s d="${ICALTIME[${time.20180101120000.gmt}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20180101120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20180101120000.gmt}]}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20180101120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -206,8 +206,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment2.newsubject}" >
-	                        <s d="${ICALTIME[${time.20180101120000.pst}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20180101120000.pst}]}"/>  
+	                        <s d="${ICALTIME[${time.20180101120000.pst}]}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20180101120000.pst}]}"/>
 	                        <or a="${account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -244,7 +244,7 @@
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt2.invId}']"/>
             	<t:select path="//mail:appt[@name='${appointment2.newsubject}']"/>

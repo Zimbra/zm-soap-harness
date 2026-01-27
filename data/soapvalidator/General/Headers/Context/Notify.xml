@@ -77,7 +77,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
 	<!--  t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin" />
@@ -86,13 +86,13 @@
 			<t:select path="//admin:PingResponse" />
 		</t:response>
 	</t:test-->
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_notification" type="always">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -104,7 +104,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>
@@ -113,7 +113,7 @@
                     ${staf.process.timeout.zmmtactl}</params>
             </t:request>
     </t:staftask>
-    
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>
@@ -122,7 +122,7 @@
                     ${staf.process.timeout.zmmtactl}</params>
             </t:request>
     </t:staftask>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -161,7 +161,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
-	
+
 	 <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -174,7 +174,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
     </t:test>
-	
+
 	 <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -187,7 +187,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -200,7 +200,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -220,7 +220,7 @@
 
 <t:test_case testcaseid="acctlogin1_notification" type="always">
     <t:objective>login as the test account.  send NoOpRequest to establish session</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -249,9 +249,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification1" type="bhr">
+<t:test_case testcaseid="Notification1" type="sanity">
     <t:objective> Create a new folder and verify the notify block </t:objective>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -273,14 +273,14 @@
 			</CreateFolderRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>  
+			<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:folder" attr="name" match="${folder1.name}"/>
 		</t:response>
 	</t:test>
 
 	<t:property name="folder1a.name" value="folder.${TIME}.${COUNTER}"/>
 	<t:property name="url.rss" value="${feed.rss}/Basic/basic.xml"/>
-	
+
 	<!-- RSS Data Issue
 	<t:test>
 		<t:request>
@@ -289,7 +289,7 @@
 			</CreateFolderRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//mail:CreateFolderResponse"/>  
+			<t:select path="//mail:CreateFolderResponse"/>
 			<t:header path="//zimbra:context">
 				<t:select path="//zimbra:folder[@name='${folder1a.name}']" attr="url" match="${url.rss}"/>
 			</t:header>
@@ -299,7 +299,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification2" type="bhr">
+<t:test_case testcaseid="Notification2" type="sanity">
     <t:objective> Delete a folder and verify the notify block </t:objective>
 
 	<t:test>
@@ -309,11 +309,11 @@
 			</CreateFolderRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>  
+			<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:folder" attr="name" match="${folder2.name}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:delay sec="10"/>
 
 	<t:test>
@@ -331,7 +331,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification3" type="bhr">
+<t:test_case testcaseid="Notification3" type="sanity">
     <t:objective> Create a new Tag and verify the notify block </t:objective>
 
 	<t:test>
@@ -350,7 +350,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification4" type="bhr">
+<t:test_case testcaseid="Notification4" type="sanity">
     <t:objective> delete a tag and verify notification block contains only valid information </t:objective>
 
 	<t:test id="Notification2a">
@@ -381,7 +381,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification5" type="bhr">
+<t:test_case testcaseid="Notification5" type="sanity">
     <t:objective> Send a mail to verify the notification block </t:objective>
 
 	<t:test >
@@ -396,16 +396,16 @@
 				</m>
 			</SendMsgRequest>
 		</t:request>
-		<t:response>	
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>		
-            <t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:su" match="${compose.subject}"/>    
+		<t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+            <t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:su" match="${compose.subject}"/>
 			</t:response>
 	</t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification6" type="bhr">
+<t:test_case testcaseid="Notification6" type="sanity">
     <t:objective> Verify the notification block for search request before LMTP inject</t:objective>
 
 	<t:test>
@@ -423,7 +423,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification7" type="bhr">
+<t:test_case testcaseid="Notification7" type="sanity">
     <t:objective> Search for a message after LMTP inject to verify the notification block </t:objective>
 
     <t:mailinjecttest >
@@ -431,7 +431,7 @@
             <filename>${msg01.file}</filename>
 			<to>${test_account1.name}</to>
 			<from>${nonZimbraUser.name}</from>
-			<server>${test_acct1.server}</server>            
+			<server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
 
@@ -466,7 +466,7 @@
 
 
 
-<t:test_case testcaseid="Notification8" type="bhr">
+<t:test_case testcaseid="Notification8" type="sanity">
     <t:objective> Search for an appointment after LMTP inject to verify the notification block </t:objective>
 
 	<t:mailinjecttest>
@@ -474,7 +474,7 @@
 			<filename>${msg02.file}</filename>
 			<to>${test_account2.name}</to>
 			<from>${test_account1.name}</from>
-			<server>${test_acct2.server}</server>			
+			<server>${test_acct2.server}</server>
 		</t:lmtpInjectRequest>
 	</t:mailinjecttest>
 
@@ -491,8 +491,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
 	<t:repeat count="5" delay="2000">
     <t:test>
         <t:request>
@@ -530,16 +530,16 @@
 
 
 
-<t:test_case testcaseid="Notification9" type="bhr">
+<t:test_case testcaseid="Notification9" type="sanity">
     <t:objective> Add a mail to verify the notification block </t:objective>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${folder.inbox}">
                     <content>Subject:this is subject of the message
 
-				${message.content1}</content>                             
+				${message.content1}</content>
                 </m>
             </AddMsgRequest>
         </t:request>
@@ -547,7 +547,7 @@
             <t:select path="//mail:AddMsgResponse/mail:m"/>
         </t:response>
     </t:test>
-	
+
 	    <t:test>
         <t:request>
             <NoOpRequest xmlns="urn:zimbraMail"/>
@@ -571,7 +571,7 @@
 
 
 
-<t:test_case testcaseid="Notification10" type="bhr">
+<t:test_case testcaseid="Notification10" type="sanity">
     <t:objective> Create an appointment to verify the notification block </t:objective>
 
 
@@ -608,8 +608,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -638,7 +638,7 @@
 <t:property name="appointment2.id" value=""/>
 <t:property name="appointment.id" value=""/>
 <t:property name="time.20251201120000.gmt" value="1764590400000"/>
-<t:test_case testcaseid="Notification12" type="bhr" bugids="33533">
+<t:test_case testcaseid="Notification12" type="sanity" bugids="33533">
     <t:objective> Cancel an appointment to verify the notification block </t:objective>
 
     <!-- ================= AUTH ================= -->
@@ -654,7 +654,7 @@
                       set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:requestContext>
             <authToken>${authToken}</authToken>
@@ -747,7 +747,7 @@
 
 <t:property name="appointment6.id" value=""/>
 <t:property name="appointment_main.id" value=""/>
-<t:test_case testcaseid="Notification11" type="bhr">
+<t:test_case testcaseid="Notification11" type="sanity">
     <t:objective> Modify an appointment to verify the notification block </t:objective>
 
     <!-- ================= AUTH ================= -->
@@ -875,9 +875,9 @@
 
 
 
-<t:test_case testcaseid="Notification13" type="bhr">
+<t:test_case testcaseid="Notification13" type="sanity">
     <t:objective>Flag an item to verify the notification block </t:objective>
-    
+
   <t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -902,7 +902,7 @@
             <t:select path="//mail:NoOpResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<ItemActionRequest xmlns="urn:zimbraMail">
@@ -916,13 +916,13 @@
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:modified/zimbra:m" attr="f" match="sf"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification14" type="bhr">
+<t:test_case testcaseid="Notification14" type="sanity">
     <t:objective> Unflag an item to verify the notification block </t:objective>
-	
+
 	<t:test>
 		<t:request>
 			<ItemActionRequest xmlns="urn:zimbraMail">
@@ -935,14 +935,14 @@
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:modified/zimbra:m" attr="id" match="${message1.id}"/>
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:modified/zimbra:m" attr="f" match="s"/>
 		</t:response>
-	</t:test>   
+	</t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification15" type="bhr">
+<t:test_case testcaseid="Notification15" type="sanity">
     <t:objective> Mark a message as read to verify the notification block </t:objective>
-    
+
 	<t:test id = "Send_mail">
 		<t:request>
 			<SendMsgRequest xmlns = "urn:zimbraMail">
@@ -960,9 +960,9 @@
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:c" attr="id" set="convmsg.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:delay sec="30"/>
-    
+
 	<t:test depends = "Send_mail">
 		<t:request>
 			<MsgActionRequest xmlns = "urn:zimbraMail">
@@ -974,13 +974,13 @@
 			<t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification16" type="bhr">
+<t:test_case testcaseid="Notification16" type="sanity">
     <t:objective> Mark a message as read (ItemActionRequest)to verify the notification block </t:objective>
-    
+
 	<t:test id = "Send_mail">
 		<t:request>
 			<SendMsgRequest xmlns = "urn:zimbraMail">
@@ -997,7 +997,7 @@
 			<t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "message.id2"/>
 		</t:response>
 	</t:test>
-    
+
 	<t:test>
 		<t:request>
 			<ItemActionRequest xmlns="urn:zimbraMail">
@@ -1009,13 +1009,13 @@
 			<t:select path="//mail:ItemActionResponse/mail:action" attr="id" match="${message.id2}"/>
 		</t:response>
 	</t:test>
-        
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Notification17" type="bhr">
-	<t:objective> Mark a message as unread to verify the notification block </t:objective>    
-    
+
+
+<t:test_case testcaseid="Notification17" type="sanity">
+	<t:objective> Mark a message as unread to verify the notification block </t:objective>
+
 	<t:test depends = "Send_mail">
 		<t:request>
 			<MsgActionRequest xmlns = "urn:zimbraMail">
@@ -1027,13 +1027,13 @@
 			<t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id2}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
-	
-	
-<t:test_case testcaseid="Notification18" type="bhr">
+
+
+<t:test_case testcaseid="Notification18" type="sanity">
 	<t:objective> Tag an item to verify the notification block </t:objective>
-    
+
 	<t:test>
 		<t:request>
 			<CreateTagRequest xmlns="urn:zimbraMail">
@@ -1049,20 +1049,20 @@
 		<t:request>
 			<ItemActionRequest xmlns="urn:zimbraMail">
 				<action id="${message.id1}" op="${op.tag}" tag="${tag.id1}"/>
-			</ItemActionRequest>        
+			</ItemActionRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:ItemActionResponse/mail:action" attr="op" match="${op.tag}"/>
 			<t:select path="//mail:ItemActionResponse/mail:action" attr="id" match="${message.id1}"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Notification19" type="bhr">
+
+
+<t:test_case testcaseid="Notification19" type="sanity">
 	<t:objective> Untag an item to verify the notification block </t:objective>
-		
+
 	<t:test>
 		<t:request>
 			<ItemActionRequest xmlns="urn:zimbraMail">
@@ -1074,13 +1074,13 @@
 			<t:select path="//mail:ItemActionResponse/mail:action" attr="id" match="${message.id1}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification20" type="bhr">
+<t:test_case testcaseid="Notification20" type="sanity">
 	<t:objective> Move a mail to a custom folder to verify the notification block </t:objective>
-		
+
 	<t:test>
 		<t:request>
 			<CreateFolderRequest xmlns = "urn:zimbraMail">
@@ -1091,7 +1091,7 @@
 			<t:select path = "//mail:CreateFolderResponse/mail:folder" attr = "id" set = "folder.id1"/>
 		</t:response>
 	</t:test>
-    
+
 	<t:test>
 		<t:request>
 			<MsgActionRequest xmlns = "urn:zimbraMail">
@@ -1103,13 +1103,13 @@
 			<t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification21" type="bhr">
+<t:test_case testcaseid="Notification21" type="sanity">
 	<t:objective> Delete a message to verify the notification block </t:objective>
-		
+
 	<t:test>
 		<t:request>
 			<MsgActionRequest xmlns = "urn:zimbraMail">
@@ -1121,11 +1121,11 @@
 			<t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification22" type="bhr">
+<t:test_case testcaseid="Notification22" type="sanity">
     <t:objective> Mark a mail as spam to verify the notification block </t:objective>
     <t:steps>1. GetFolderRequest to set folder's id
                 2. Add a message to inbox
@@ -1137,7 +1137,7 @@
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/>
         </t:response>
@@ -1154,7 +1154,7 @@
         <t:response>
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="notification22c" depends="notification22b">
         <t:request>
@@ -1167,7 +1167,7 @@
         </t:response>
     </t:test>
 
-    <t:test depends="notification22c"> 
+    <t:test depends="notification22c">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
                 <action id = "${message2.id}" op = "${op.spam}"/>
@@ -1178,13 +1178,13 @@
             <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message2.id}"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification23" type="bhr">
+<t:test_case testcaseid="Notification23" type="sanity">
 	<t:objective> Reply to a message to verify the notification block </t:objective>
-    
+
 	<t:test>
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1197,12 +1197,12 @@
 				</m>
 			</SendMsgRequest>
 		</t:request>
-		<t:response>	
-			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>		
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:su" match="${compose1.subject}"/>                     
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
+			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:su" match="${compose1.subject}"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
 	<t:test required="true">
@@ -1242,7 +1242,7 @@
 			<t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder1.sent"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1260,16 +1260,16 @@
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:e[@t='t']" attr="a" value="${test_account1.name}"/>
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:e[@t='f']" attr="a" value="${test_account2.name}"/>
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:su" match="Re: ${compose1.subject}"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:modified/zimbra:folder" attr="id" match="${folder1.sent}"/>         
+			<t:header path="//zimbra:context/zimbra:notify/zimbra:modified/zimbra:folder" attr="id" match="${folder1.sent}"/>
 		</t:response>
 	</t:test>
-    
-</t:test_case> 
+
+</t:test_case>
 
 
-<t:test_case testcaseid="Notification24" type="bhr">
+<t:test_case testcaseid="Notification24" type="sanity">
 	<t:objective> Forward a message to verify the notification block </t:objective>
-	
+
 	<t:test>
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1287,10 +1287,10 @@
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:e[@t='t']" attr="a" value="${test_account1.name}"/>
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:e[@t='f']" attr="a" value="${test_account2.name}"/>
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:su" match="Fwd: ${compose1.subject}"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:modified/zimbra:folder" attr="id" match="${folder1.sent}"/>            
+			<t:header path="//zimbra:context/zimbra:notify/zimbra:modified/zimbra:folder" attr="id" match="${folder1.sent}"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 <t:finally>
@@ -1305,7 +1305,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>
@@ -1314,7 +1314,7 @@
                     ${staf.process.timeout.zmmtactl}</params>
             </t:request>
     </t:staftask>
-    
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>

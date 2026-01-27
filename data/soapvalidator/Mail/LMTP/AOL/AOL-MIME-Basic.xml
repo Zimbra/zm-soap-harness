@@ -23,11 +23,11 @@
 <t:property name="attachment2.type" value="text/html"/>
 <t:property name="attachment2.name" value="index.html"/>
 
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -36,16 +36,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_AOL_MIMEBasic" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-                  2. Create a test account.       
+                  2. Create a test account.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -57,7 +57,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -72,7 +72,7 @@
     </t:test>
 
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 <t:test_case testcaseid="acctSetup2_AOL_MIMEBasic" type="always">
@@ -95,7 +95,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_AOL_MIMEBasic1" type="bhr">
+<t:test_case testcaseid="lmtp_AOL_MIMEBasic1" type="sanity">
     <t:objective>Verify a MIME message in text format from a AOL Account</t:objective>
     <t:steps>
         1. Upload a message
@@ -111,7 +111,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_AOL_MIMEBasic1a">
         <t:request>
@@ -123,7 +123,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_AOL_MIMEBasic1a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -133,12 +133,12 @@
         <t:response>
 		   <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg1.id}']">
             <t:select attr="sd" match="1164285510000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="testestuser@aol.com"/> 
+			<t:select path="//mail:e[@t='f']" attr="a" match="testestuser@aol.com"/>
            	<t:select path="//mail:e[@t='t']" attr="a" match="mime@zimbra.com"/>
  <!--        	<t:select path="//mail:mp[@ct='text/plain']" attr="content" match="(?s)This is a basic test mail from AOL and timezone \(\+4:30\)Kabul dated 23rd November 2006\...*"/>
  -->		   </t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test depends="lmtp_AOL_MIMEBasic1a">
         <t:request>
@@ -151,12 +151,12 @@
           	<t:select path="//mail:mp[@ct='text/html']" attr="content" contains="This is a basic test mail from AOL and timezone"/>
 		   </t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_AOL_MIMEBasic2" type="bhr">
+<t:test_case testcaseid="lmtp_AOL_MIMEBasic2" type="sanity">
     <t:objective>Verify a MIME message with Word Document Attached from a AOL Account</t:objective>
     <t:steps>
         1. Upload a message
@@ -172,7 +172,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_AOL_MIMEBasic2a">
         <t:request>
@@ -184,7 +184,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_AOL_MIMEBasic2a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -194,13 +194,13 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg2.id}']">
             <t:select attr="sd" match="1164285775000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="testestuser@aol.com"/> 
+			<t:select path="//mail:e[@t='f']" attr="a" match="testestuser@aol.com"/>
            	<t:select path="//mail:e[@t='t']" attr="a" match="mime@zimbra.com"/>
-            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/mixed"/>            
+            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/mixed"/>
 <!--           	<t:select path="//mail:mp[@ct='text/plain']" attr="content" match="(?s)This is a test message with attached Word Document from AOL and timezone \(\+10:00\) Brisbane dated 23rd November 2006.*"/>
- -->            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>  </t:select>   
+ -->            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>  </t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test depends="lmtp_AOL_MIMEBasic2a">
         <t:request>
@@ -211,14 +211,14 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg2.id}']">
 <!--          	<t:select path="//mail:mp[@ct='text/html']" attr="content" match="(?s).*This is a test message with attached Word Document&nbsp;from AOL and timezone (+10:00) Brisbane dated 23rd November 2006.*"/>
- --> 		    </t:select>   
+ --> 		    </t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_AOL_MIMEBasic3" type="bhr">
+<t:test_case testcaseid="lmtp_AOL_MIMEBasic3" type="sanity">
     <t:objective>Verify a MIME message with HTML Document Attached from a AOL Account</t:objective>
     <t:steps>
         1. Upload a message
@@ -234,7 +234,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_AOL_MIMEBasic3a">
         <t:request>
@@ -246,7 +246,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_AOL_MIMEBasic3a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -256,14 +256,14 @@
         <t:response>
 			<t:select path="//mail:GetMsgResponse/mail:m[@id='${msg3.id}']">
             <t:select attr="sd" match="1164286437000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="testestuser@aol.com"/> 
+			<t:select path="//mail:e[@t='f']" attr="a" match="testestuser@aol.com"/>
            	<t:select path="//mail:e[@t='t']" attr="a" match="mime@zimbra.com"/>
-            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/mixed"/>            
+            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/mixed"/>
 <!--           	<t:select path="//mail:mp[@ct='text/plain']" attr="content" match="(?s)This is a test message with HTML attachment from AOL and timezone \(\+8:00\) Perth dated 23rd November 2006\..*"/>
- -->            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>     
+ -->            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test depends="lmtp_AOL_MIMEBasic3a">
         <t:request>
@@ -276,7 +276,7 @@
           	<t:select path="//mail:mp[@ct='text/html']" attr="content" contains="This is a test message with HTML attachment from AOL and timezone"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 </t:test_case>

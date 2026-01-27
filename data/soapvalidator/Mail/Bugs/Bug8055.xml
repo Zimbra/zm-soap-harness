@@ -12,7 +12,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    	
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -28,7 +28,7 @@
 </t:test_case>
 
 <!-- Since this bug crashes the server, make it smoke -->
-<t:test_case testcaseid="Bug_8055" type="bhr" bugids="8055, 8212">
+<t:test_case testcaseid="Bug_8055" type="sanity" bugids="8055, 8212">
     <t:objective>Verify bug #8055 (and 8212)</t:objective>
     <t:steps>
 	1. Inject mail with TNEF attachment
@@ -57,7 +57,7 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
                  <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
 	</t:test>
@@ -74,7 +74,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test >
 	 <t:request>
 	  <AuthRequest xmlns="urn:zimbraAccount">
@@ -115,7 +115,7 @@
     </t:test>
 
 	<t:property name="server.restServlet" value="${account1.server}"/>
-	
+
 	<!-- Binary checking of attachment fails which unnecessary failing the test case. Hence commenting the check>
 	<t:resttest>
 		<t:restServletRequest>

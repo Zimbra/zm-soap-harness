@@ -15,7 +15,7 @@
 
 <t:test_case testcaseid = "Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id = "ping">
         <t:request>
             <PingRequest xmlns = "urn:zimbraAdmin"/>
@@ -24,13 +24,13 @@
             <t:select path = "//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid = "acct1_setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test id = "admin_login" required = "true" depends = "ping">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAdmin">
@@ -54,14 +54,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid = "lmtpBasic01" type="bhr">
+<t:test_case testcaseid = "lmtpBasic01" type="sanity">
     <t:objective>inject a basic mime message using LMTP</t:objective>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -75,7 +75,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAccount">
@@ -103,9 +103,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "lmtpBasic02" type="bhr">
+<t:test_case testcaseid = "lmtpBasic02" type="sanity">
     <t:objective>Verify the "display name" that is built from the mime message</t:objective>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -119,7 +119,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAccount">

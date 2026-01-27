@@ -58,7 +58,7 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -71,7 +71,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -84,12 +84,12 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
- 
 
-<t:test_case testcaseid="AutoCompleteRequest_01" type="bhr" bugids="ZBUG-4317">
+
+<t:test_case testcaseid="AutoCompleteRequest_01" type="sanity" bugids="ZBUG-4317">
     <t:objective>Verify AutoCompleteRequest for account matching with contact with a firstname containing an email address and no email address in the email field</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -121,18 +121,18 @@
 		<t:response>
  			<t:select path="//acct:ModifyPrefsResponse"/>
 		</t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test >
         <t:request>
         	<CreateContactRequest xmlns="urn:zimbraMail">
                 <cn >
                     <a n="firstName">${contact1.firstname}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
@@ -148,11 +148,11 @@
  					<t:select attr="email" match=".*${domain1.account1.name}.*"/>
  				</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="AutoCompleteRequest_02" type="bhr" bugids="ZBUG-4317">
+<t:test_case testcaseid="AutoCompleteRequest_02" type="sanity" bugids="ZBUG-4317">
     <t:objective>Verify AutoCompleteRequest for account matching with contact with a firstname and lastname and no email address in the email field.</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -184,8 +184,8 @@
 		<t:response>
  			<t:select path="//acct:ModifyPrefsResponse"/>
 		</t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test >
         <t:request>
         	<CreateContactRequest xmlns="urn:zimbraMail">
@@ -193,11 +193,11 @@
                     <a n="firstName">${contact2.firstname}</a>
                     <a n="lastName">${contact2.lastname}</a>
                     <a n="fullName">${contact2.firstname} ${contact2.lastname}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>
         </t:response>
     </t:test>
 
@@ -213,7 +213,7 @@
  					<t:select attr="email" match=".*${domain1.account1.name}.*"/>
  				</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

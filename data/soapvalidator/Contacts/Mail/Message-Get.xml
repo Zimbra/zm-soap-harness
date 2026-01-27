@@ -37,7 +37,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,9 +71,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Contacts_Mail_GetMessage_01" type="bhr">
+<t:test_case testcaseid="Contacts_Mail_GetMessage_01" type="sanity">
     <t:objective>View the contact display information on a received message (onnet)</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 
@@ -106,7 +106,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -132,7 +132,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
 		</t:response>
 	</t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -142,18 +142,18 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse">
             	<t:select path="//mail:m[@id='${message1.id}']">
-					<t:select path="//mail:e[@t='f']" attr="p" match="First M. Last"/>           		
+					<t:select path="//mail:e[@t='f']" attr="p" match="First M. Last"/>
             	</t:select>
             </t:select>
-            
+
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="Contacts_Mail_GetMessage_02" type="sanity">
+<t:test_case testcaseid="Contacts_Mail_GetMessage_02" type="functional">
     <t:objective>View the contact display information on a received message (lmtp)</t:objective>
-    
+
 	<t:property name="message1.file" value="${testMailRaw.root}/email38/message1.txt"/>
 	<t:property name="message1.subject" value="subject11976746183754"/>
 
@@ -193,7 +193,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
 		</t:response>
 	</t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -203,18 +203,18 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse">
             	<t:select path="//mail:m[@id='${message1.id}']">
-					<t:select path="//mail:e[@t='f']" attr="p" match="First M. Last"/>           		
+					<t:select path="//mail:e[@t='f']" attr="p" match="First M. Last"/>
             	</t:select>
             </t:select>
-            
+
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="Contacts_Mail_GetMessage_03" type="sanity">
+<t:test_case testcaseid="Contacts_Mail_GetMessage_03" type="functional">
     <t:objective>View the contact display information on a received message (lmtp)</t:objective>
-    
+
 	<t:property name="message2.file" value="${testMailRaw.root}/email38/message2.txt"/>
 	<t:property name="message2.subject" value="subject11976123453754"/>
 
@@ -254,7 +254,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message2.id"/>
 		</t:response>
 	</t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -264,10 +264,10 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse">
             	<t:select path="//mail:m[@id='${message2.id}']">
-					<t:select path="//mail:e[@t='f']" attr="p" match="First Middle Last"/>           		
+					<t:select path="//mail:e[@t='f']" attr="p" match="First Middle Last"/>
             	</t:select>
             </t:select>
-            
+
         </t:response>
     </t:test>
 

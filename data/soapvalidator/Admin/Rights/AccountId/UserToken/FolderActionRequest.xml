@@ -51,7 +51,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -64,7 +64,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- account2 creates a folder -->
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -83,7 +83,7 @@
 	</t:test>
 
 	<t:test required="true">
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
@@ -124,12 +124,12 @@
 
 	<t:property name="authToken.account1" value="${authToken}"/>
 
-	
-	
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountId_User_FolderActionRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountId_User_FolderActionRequest_Basic01" type="sanity">
     <t:objective>Use an domain admin token to FolderActionRequest</t:objective>
     <t:steps>
     1. Login as a normal user
@@ -142,7 +142,7 @@
 	<t:property name="server.zimbraMail" value="${account1.server}"/>
 
 	<t:test>
-        <t:request> 
+        <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="rename" id="${account2.id}:${account2.folder1.id}" name="Folder${TIME}${COUNTER}"/>
             </FolderActionRequest>

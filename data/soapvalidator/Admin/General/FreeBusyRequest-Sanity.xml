@@ -17,9 +17,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAllFreeBusyProvidersRequest_01" type="bhr">
+<t:test_case testcaseid="GetAllFreeBusyProvidersRequest_01" type="sanity">
     <t:objective> Test GetAllFreeBusyProvidersRequest </t:objective>
-    
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -31,10 +31,10 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
-            <GetAllFreeBusyProvidersRequest xmlns="urn:zimbraAdmin" />   
+            <GetAllFreeBusyProvidersRequest xmlns="urn:zimbraAdmin" />
         </t:request>
         <t:response>
             <t:select path="//admin:GetAllFreeBusyProvidersResponse" />
@@ -43,9 +43,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFreeBusyQueueInfoRequest_01" type="bhr">
+<t:test_case testcaseid="GetFreeBusyQueueInfoRequest_01" type="sanity">
     <t:objective> Test GetFreeBusyQueueInfoRequest </t:objective>
-    
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -57,21 +57,21 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
-            <GetAllFreeBusyProvidersRequest xmlns="urn:zimbraAdmin" />   
+            <GetAllFreeBusyProvidersRequest xmlns="urn:zimbraAdmin" />
         </t:request>
         <t:response>
             <t:select path="//admin:GetAllFreeBusyProvidersResponse/admin:provider" attr="name" set="provider.name" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
-            <GetFreeBusyQueueInfoRequest xmlns="urn:zimbraAdmin"> 
+            <GetFreeBusyQueueInfoRequest xmlns="urn:zimbraAdmin">
             	<provider name="${provider.name}" />
-            </GetFreeBusyQueueInfoRequest> 
+            </GetFreeBusyQueueInfoRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:GetFreeBusyQueueInfoResponse/admin:provider" />
@@ -80,9 +80,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="PurgeFreeBusyQueueRequest_01" type="bhr">
+<t:test_case testcaseid="PurgeFreeBusyQueueRequest_01" type="sanity">
     <t:objective> Test PurgeFreeBusyQueueRequest </t:objective>
-    
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -94,21 +94,21 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
-            <GetAllFreeBusyProvidersRequest xmlns="urn:zimbraAdmin" />   
+            <GetAllFreeBusyProvidersRequest xmlns="urn:zimbraAdmin" />
         </t:request>
         <t:response>
             <t:select path="//admin:GetAllFreeBusyProvidersResponse/admin:provider" attr="name" set="provider.name" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
-            <PurgeFreeBusyQueueRequest xmlns="urn:zimbraAdmin"> 
+            <PurgeFreeBusyQueueRequest xmlns="urn:zimbraAdmin">
             	<provider name="${provider.name}" />
-            </PurgeFreeBusyQueueRequest> 
+            </PurgeFreeBusyQueueRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:PurgeFreeBusyQueueResponse" />
@@ -117,9 +117,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="PushFreeBusyRequest_01" type="bhr">
+<t:test_case testcaseid="PushFreeBusyRequest_01" type="sanity">
     <t:objective> Test PushFreeBusyRequest </t:objective>
-    
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -131,12 +131,12 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
- 
+
     <t:test>
         <t:request>
-            <PushFreeBusyRequest xmlns="urn:zimbraAdmin"> 
+            <PushFreeBusyRequest xmlns="urn:zimbraAdmin">
             	<domain name="${defaultdomain.name}" />
-            </PushFreeBusyRequest> 
+            </PushFreeBusyRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:PushFreeBusyResponse" />

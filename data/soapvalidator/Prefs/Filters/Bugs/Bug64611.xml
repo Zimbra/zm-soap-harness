@@ -40,7 +40,7 @@
                 <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
-	    <t:response>               
+	    <t:response>
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
     </t:test>
@@ -50,16 +50,16 @@
 
 <t:property name="folder1.name" value="Activity Streams"/>
 
-<t:test_case testcaseid="Bug64611_priorityFlag" type="bhr" bugids="64611" >
+<t:test_case testcaseid="Bug64611_priorityFlag" type="sanity" bugids="64611" >
     <t:objective>Check Activity Stream filter don't process a message if the message has priority flag.</t:objective>
     <t:steps>
 	    1. Login as user1
 	    2. Create Activity Streams filter for massage send not to me
-	    3. inject mime having socialcast  broadcase message 
+	    3. inject mime having socialcast  broadcase message
 	    4. verify message was moved to Activity stream folder.
 	    5. Create priority filter for soacial cast
-	    6. inject mime having socialcast  broadcase message 
-	    7. verify message stays in inbox folder instead of Activity streams folder and has priority flag.    
+	    6. inject mime having socialcast  broadcase message
+	    7. verify message stays in inbox folder instead of Activity streams folder and has priority flag.
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -75,23 +75,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder1.name}"/>  	 
+                <folder l="1" name="${folder1.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
     </t:test>
-    
+
 
 	<t:property name="filter1.name" value="Activity Streams"/>
 	<t:property name="filter1.subject" value="subject${TIME}${COUNTER}"/>
-	
-	
+
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -103,8 +103,8 @@
 						<filterActions>
 							<actionFileInto folderPath="${folder1.name}" />
 							<actionStop />
-						</filterActions> 
-						</filterRule>                           
+						</filterActions>
+						</filterRule>
 					</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -112,8 +112,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
     <t:property name="msg01.file" value="${testMailRaw.root}/bug42185/socialcast-broadcast-message.txt" />
 
 	<t:mailinjecttest >
@@ -126,7 +126,7 @@
                 <header a="Subject">${filter1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test >
         <t:request>
@@ -135,15 +135,15 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter1.subject}"/>            
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter1.subject}"/>
         </t:response>
-    </t:test>	   
-    
-    
+    </t:test>
+
+
     <t:property name="filter2.name" value="Mark as Priority"/>
 	<t:property name="filter2.subject" value="subject${TIME}${COUNTER}"/>
-	
-	
+
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -155,15 +155,15 @@
 						<filterActions>
 							 <actionFlag flagName="priority" />
 							<actionStop />
-						</filterActions> 
-						</filterRule>                           
+						</filterActions>
+						</filterRule>
 					</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:property name="msg02.file" value="${testMailRaw.root}/bug64611/socialcast-broadcast-message1.txt" />
 
@@ -177,7 +177,7 @@
                 <header a="Subject">${filter2.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
     <t:test >
         <t:request>
@@ -186,10 +186,10 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter2.subject}"/> 
-            <t:select path="//mail:SearchResponse/mail:m" attr="f" match="u\+" />             
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter2.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match="u\+" />
         </t:response>
-    </t:test>	   
+    </t:test>
 </t:test_case>
 
 </t:tests>

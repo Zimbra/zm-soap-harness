@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
-    
+
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>
+
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account3.name" value="acct3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
@@ -44,7 +44,7 @@
 <t:property name="view.contact" value="contact"/>
 <t:property name="view.appointment" value="appointment"/>
 <t:property name="view.note" value="note"/>
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -60,7 +60,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Basic_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -80,7 +80,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>
@@ -89,7 +89,7 @@
                     ${staf.process.timeout.zmmtactl}</params>
             </t:request>
     </t:staftask>
-    
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>
@@ -166,7 +166,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Basic_01" type="bhr">
+<t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Basic_01" type="sanity">
     <t:objective>Verify a shared calendar can be mounted</t:objective>
     <t:steps>
         1. Login as account1.  Share calendar with account2.
@@ -213,7 +213,7 @@
         </t:response>
     </t:test>
 
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -251,11 +251,11 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="CreateMountpointRequest_Basic_01" type="bhr" bugids="25644">
+
+<t:test_case testcaseid="CreateMountpointRequest_Basic_01" type="sanity" bugids="25644">
     <t:objective>Verify CreateMountpointRequest for non-existing account gives perm-denied</t:objective>
-   
+
    <t:steps> 1. Send CreateFolderRequest to link a non-existing account's calendar
              2. Send CreateFolderRequest to link a non-existing account's contacts
              2. Send CreateMountpointRequest to link to non-exsisting account's calendar
@@ -272,7 +272,7 @@
             <t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account2.folder.contact"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="error.text" value="resource unreachable: HTTP/1.1 401"/>
 
     <t:test>
@@ -328,14 +328,14 @@
 				<account by="name">${nonexisting.account}</account>
 			</GetAccountInfoRequest>
 		</t:request>
-		<t:response> 
+		<t:response>
             <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
 		</t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="bug26227" type="sanity" bugids="26227">
+<t:test_case testcaseid="bug26227" type="functional" bugids="26227">
     <t:objective> Verify GetMiniCalRequest for a shared calendar works after deleting the account who share the calendar  </t:objective>
 
    <t:steps> 1. acct3 share the calendar with manager rights
@@ -382,7 +382,7 @@
         </t:response>
     </t:test>
 
-    
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test required="true">
@@ -483,7 +483,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>
@@ -492,7 +492,7 @@
                     ${staf.process.timeout.zmmtactl}</params>
             </t:request>
     </t:staftask>
-        
+
     <t:staftask>
             <t:request>
                 <server>${zimbraServer.name}</server>

@@ -21,7 +21,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -35,7 +35,7 @@
 
 <t:test_case testcaseid="SnoozeAlarm_acctSetup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -48,7 +48,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account2" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -80,7 +80,7 @@
 
 <t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_01" type="smoke">
     <t:objective>Create Single event with reminder and snooze it.</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -95,7 +95,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -111,10 +111,10 @@
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME(+15m)}"/>  
-	                        <e d="${ICALTIME(+1h)}"/>  
+	                        <s d="${ICALTIME(+15m)}"/>
+	                        <e d="${ICALTIME(+1h)}"/>
 	                        <or a="${account1.name}"/>
 						<alarm action="DISPLAY">
 							<trigger>
@@ -149,14 +149,14 @@
 			<t:select path="//mail:SnoozeCalendarItemAlarmResponse/mail:appt/mail:alarmData" attr="name" match="${appointment.subject}"/>
 		</t:response>
 	</t:test>
-	
-   
+
+
 </t:test_case>
 
 
 <t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_02" type="smoke">
     <t:objective>Create Single task with reminder and snooze it.</t:objective>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -174,7 +174,7 @@
 				<m l="${account1.folder.task.id}">
 					<inv method="REQUEST">
 						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
-							<s d="${ICALTIME(+15m)}"/>  
+							<s d="${ICALTIME(+15m)}"/>
 	                        <e d="${ICALTIME(+1h)}"/>
 							<or a="${account1.name}"/>
 							<alarm action="DISPLAY">
@@ -209,13 +209,13 @@
 			<t:select path="//mail:SnoozeCalendarItemAlarmResponse/mail:task/mail:alarmData/mail:alarm/mail:trigger/mail:abs"/>
 		</t:response>
 	</t:test>
-	
-   
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_03" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_03" type="sanity">
     <t:objective>Send SnoozeCalendarItemAlarmRequest with snooze until time as alphabets</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -230,7 +230,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -246,10 +246,10 @@
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME(+15m)}"/>  
-	                        <e d="${ICALTIME(+1h)}"/>  
+	                        <s d="${ICALTIME(+15m)}"/>
+	                        <e d="${ICALTIME(+1h)}"/>
 	                        <or a="${account1.name}"/>
 						<alarm action="DISPLAY">
 							<trigger>
@@ -284,13 +284,13 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-	
-   
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_04" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_04" type="sanity">
     <t:objective>Send SnoozeCalendarItemAlarmRequest with snooze until time as "invalid time"</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -305,7 +305,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -321,10 +321,10 @@
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME(+15m)}"/>  
-	                        <e d="${ICALTIME(+1h)}"/>  
+	                        <s d="${ICALTIME(+15m)}"/>
+	                        <e d="${ICALTIME(+1h)}"/>
 	                        <or a="${account1.name}"/>
 						<alarm action="DISPLAY">
 							<trigger>
@@ -359,13 +359,13 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-	
-   
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_05" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_05" type="sanity">
     <t:objective>Send SnoozeCalendarItemAlarmRequest with snooze until time as blank</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -380,7 +380,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -396,10 +396,10 @@
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME(+15m)}"/>  
-	                        <e d="${ICALTIME(+1h)}"/>  
+	                        <s d="${ICALTIME(+15m)}"/>
+	                        <e d="${ICALTIME(+1h)}"/>
 	                        <or a="${account1.name}"/>
 						<alarm action="DISPLAY">
 							<trigger>
@@ -434,13 +434,13 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-	
-   
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_06" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_06" type="sanity">
     <t:objective>Send SnoozeCalendarItemAlarmRequest with snooze until time as alphabets</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -455,7 +455,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -473,7 +473,7 @@
 				<m l="${account1.folder.task.id}">
 					<inv method="REQUEST">
 						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
-							<s d="${ICALTIME(+15m)}"/>  
+							<s d="${ICALTIME(+15m)}"/>
 	                        <e d="${ICALTIME(+1h)}"/>
 							<or a="${account1.name}"/>
 							<alarm action="DISPLAY">
@@ -507,13 +507,13 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-	
-   
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_07" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_07" type="sanity">
     <t:objective>Send SnoozeCalendarItemAlarmRequest with snooze until time as "invalid time"</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -528,7 +528,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -546,7 +546,7 @@
 				<m l="${account1.folder.task.id}">
 					<inv method="REQUEST">
 						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
-							<s d="${ICALTIME(+15m)}"/>  
+							<s d="${ICALTIME(+15m)}"/>
 	                        <e d="${ICALTIME(+1h)}"/>
 							<or a="${account1.name}"/>
 							<alarm action="DISPLAY">
@@ -580,13 +580,13 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-	
-   
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_08" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_08" type="sanity">
     <t:objective>Send SnoozeCalendarItemAlarmRequest with snooze until time as blank</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -601,7 +601,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -612,14 +612,14 @@
 			</t:select>
 		</t:response>
 	</t:test>
-    
+
 	<t:test>
         <t:request>
             <CreateTaskRequest xmlns="urn:zimbraMail">
 				<m l="${account1.folder.task.id}">
 					<inv method="REQUEST">
 						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
-							<s d="${ICALTIME(+15m)}"/>  
+							<s d="${ICALTIME(+15m)}"/>
 	                        <e d="${ICALTIME(+1h)}"/>
 							<or a="${account1.name}"/>
 							<alarm action="DISPLAY">
@@ -653,13 +653,13 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_09" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_09" type="sanity">
     <t:objective>Send SnoozeCalendarItemAlarmRequest : snooze until time with trailing Spaces.</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -674,7 +674,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -685,14 +685,14 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateTaskRequest xmlns="urn:zimbraMail">
 				<m l="${account1.folder.task.id}">
 					<inv method="REQUEST">
 						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
-							<s d="${ICALTIME(+15m)}"/>  
+							<s d="${ICALTIME(+15m)}"/>
 	                        <e d="${ICALTIME(+1h)}"/>
 							<or a="${account1.name}"/>
 							<alarm action="DISPLAY">
@@ -726,13 +726,13 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_10" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_10" type="sanity">
     <t:objective>Send SnoozeCalendarItemAlarmRequest : snooze until time with leading spaces.</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -747,7 +747,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -758,14 +758,14 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateTaskRequest xmlns="urn:zimbraMail">
 				<m l="${account1.folder.task.id}">
 					<inv method="REQUEST">
 						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
-							<s d="${ICALTIME(+15m)}"/>  
+							<s d="${ICALTIME(+15m)}"/>
 	                        <e d="${ICALTIME(+1h)}"/>
 							<or a="${account1.name}"/>
 							<alarm action="DISPLAY">
@@ -799,13 +799,13 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 </t:test_case>
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_11" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Smoke_11" type="sanity">
     <t:objective>Send SnoozeCalendarItemAlarmRequest with space before and after the until time ="   1603125000000  "</t:objective>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -820,7 +820,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -831,14 +831,14 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateTaskRequest xmlns="urn:zimbraMail">
 				<m l="${account1.folder.task.id}">
 					<inv method="REQUEST">
 						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
-							<s d="${ICALTIME(+15m)}"/>  
+							<s d="${ICALTIME(+15m)}"/>
 	                        <e d="${ICALTIME(+1h)}"/>
 							<or a="${account1.name}"/>
 							<alarm action="DISPLAY">
@@ -872,8 +872,8 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 </t:test_case>
 
 </t:tests>

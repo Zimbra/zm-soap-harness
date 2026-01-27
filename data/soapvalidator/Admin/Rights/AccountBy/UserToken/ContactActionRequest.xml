@@ -49,7 +49,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -62,7 +62,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 	<!-- Create a contact -->
@@ -88,13 +88,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account1.contact1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
 	</t:test>
 
@@ -117,7 +117,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_User_ContactActionRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountBy_User_ContactActionRequest_Basic01" type="sanity">
     <t:objective>Use a user token with accountby to ContactActionRequest</t:objective>
     <t:steps>
     1. Use user0 authtoken with accountby=user1 to ContactActionRequest - PERM_DENIED

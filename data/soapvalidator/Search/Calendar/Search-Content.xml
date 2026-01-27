@@ -94,7 +94,7 @@
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraPrefTimeZoneId']" set="account2.timezone"/>
-                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>                    
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
 		</t:response>
 	</t:test>
 
@@ -102,7 +102,7 @@
 
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-<t:test_case testcaseid="appointment_SearchRequestAuth" type="sanity" >
+<t:test_case testcaseid="appointment_SearchRequestAuth" type="functional" >
 	<t:objective> Login as the appropriate test account
 	</t:objective>
 
@@ -115,7 +115,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime" 
+		<t:select path="//acct:AuthResponse/acct:lifetime"
 						match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken"
 						set="authToken"/>
@@ -130,8 +130,8 @@
                 <m>
                     <inv method="REQUEST" type="event" allday="0" name="${appt.subject}" loc="${appt.location}">
                         <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${Time1}" tz="${account1.timezone}"/>  
-                        <e d="${Time2}" tz="${account1.timezone}"/>  
+                        <s d="${Time1}" tz="${account1.timezone}"/>
+                        <e d="${Time2}" tz="${account1.timezone}"/>
                         <or a="${account1.user}"/>
                     </inv>
                     <e a="${account2.user}" t="t"/>
@@ -154,8 +154,8 @@
                 <m>
                     <inv method="REQUEST" type="event" allday="0" name="${appt1.subject}" loc="${appt1.location}">
                         <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${Time1}" tz="${account1.timezone}"/>  
-                        <e d="${Time2}" tz="${account1.timezone}"/>  
+                        <s d="${Time1}" tz="${account1.timezone}"/>
+                        <e d="${Time2}" tz="${account1.timezone}"/>
                         <or a="${account1.user}"/>
                     </inv>
                     <e a="${account2.user}" t="t"/>
@@ -177,8 +177,8 @@
                 <m>
                     <inv method="REQUEST" type="event" allday="0" name="${appt2.subject}" loc="${appt2.location}">
                         <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${Time1}" tz="${account1.timezone}"/>  
-                        <e d="${Time2}" tz="${account1.timezone}"/>  
+                        <s d="${Time1}" tz="${account1.timezone}"/>
+                        <e d="${Time2}" tz="${account1.timezone}"/>
                         <or a="${account1.user}"/>
                     </inv>
                     <e a="${account2.user}" t="t"/>
@@ -200,8 +200,8 @@
                 <m>
                     <inv method="REQUEST" type="event" allday="0" name="${appt3.subject}" loc="${appt3.location}">
                         <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${Time1}" tz="${account1.timezone}"/>  
-                        <e d="${Time2}" tz="${account1.timezone}"/>  
+                        <s d="${Time1}" tz="${account1.timezone}"/>
+                        <e d="${Time2}" tz="${account1.timezone}"/>
                         <or a="${account1.user}"/>
                     </inv>
                     <e a="${account2.user}" t="t"/>
@@ -223,8 +223,8 @@
                 <m>
                     <inv method="REQUEST" type="event" allday="0" name="${appt4.subject}" loc="${appt4.location}">
                         <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${appt4.time1}"/>  
-                        <e d="${appt4.time2}"/>  
+                        <s d="${appt4.time1}"/>
+                        <e d="${appt4.time2}"/>
                         <or a="${account1.user}"/>
                     </inv>
                     <e a="${account2.user}" t="t"/>
@@ -243,7 +243,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="appointment_SearchRequest1" type="sanity" bugids="3141, 5176">
+<t:test_case testcaseid="appointment_SearchRequest1" type="functional" bugids="3141, 5176">
 	<t:objective> Search for an appointment based on subject
 	</t:objective>
 
@@ -255,7 +255,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime" 
+		<t:select path="//acct:AuthResponse/acct:lifetime"
 						match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken"
 						set="authToken"/>
@@ -281,7 +281,7 @@
 
 
 
-<t:test_case testcaseid="appointment_SearchRequest2" type="sanity"  bugids="3141, 5176">
+<t:test_case testcaseid="appointment_SearchRequest2" type="functional"  bugids="3141, 5176">
 	<t:objective> Search for an appointment based on location
 	</t:objective>
 
@@ -300,7 +300,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="appointment_SearchRequest3" type="sanity"  bugids="3141, 5176">
+<t:test_case testcaseid="appointment_SearchRequest3" type="functional"  bugids="3141, 5176">
 	<t:objective> Search for an appointment based on content
 	</t:objective>
 
@@ -319,7 +319,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="appointment_SearchRequest4" type="sanity" bugids="2753, 5176">
+<t:test_case testcaseid="appointment_SearchRequest4" type="functional" bugids="2753, 5176">
 	<t:objective> Search for an appointment based on date
 	</t:objective>
 

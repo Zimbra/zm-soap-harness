@@ -5,7 +5,7 @@
 <t:property name="account1.user" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account1.password" value="${defaultpassword.value}"/>
 
-<t:test_case testcaseid="GetAllLocalesRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAllLocalesRequest_01" type="sanity" >
 	<t:objective>Sanity test for GetAllLocalesRequest</t:objective>
 
 	<t:test required="true" >
@@ -28,10 +28,10 @@
 	        <t:select path="//admin:GetAllLocalesResponse/admin:locale" />
 	    </t:response>
 	 </t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="GetAvailableLocalesRequest_01" type="bhr" >
+<t:test_case testcaseid="GetAvailableLocalesRequest_01" type="sanity" >
 	<t:objective>Sanity test for GetAvailableLocalesRequest</t:objective>
 
 	<t:test required="true" >
@@ -57,7 +57,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test required="true">
         <t:request>
@@ -71,7 +71,7 @@
                 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
             </t:response>
      </t:test>
-        
+
 	 <t:test>
         <t:request>
             <GetAvailableLocalesRequest xmlns="urn:zimbraAccount" />
@@ -80,7 +80,7 @@
 	        <t:select path="//acct:GetAvailableLocalesResponse/acct:locale" />
 	    </t:response>
 	 </t:test>
-	
+
 </t:test_case>
 
 </t:tests>

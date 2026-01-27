@@ -18,7 +18,7 @@
 	<t:test_case testcaseid="acctSetup" type="always">
 		<t:objective>Create test accounts</t:objective>
 		<t:steps>	1. Login to admin account
-					2. Create accounts        
+					2. Create accounts
 	    </t:steps>
 
 		<t:test required="true">
@@ -45,7 +45,7 @@
 				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'	set="account1.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="bug62605" type="bhr" bugids="62605">
+	<t:test_case testcaseid="bug62605" type="sanity" bugids="62605">
 		<t:objective>Verify no CPU spike </t:objective>
 
 
@@ -70,7 +70,7 @@
 		<t:property name="msg01.subject" value="Test embedded image" />
 		<t:property name="msg02.subject" value="Inline Images" />
 
-		
+
     	<t:mailinjecttest >
         	<t:lmtpInjectRequest>
             	<filename>${msg01.file}</filename>
@@ -78,8 +78,8 @@
 				<from>${account2.name}</from>
 				<server>${account1.server}</server>
         	</t:lmtpInjectRequest>
-    	</t:mailinjecttest> 
-    	
+    	</t:mailinjecttest>
+
     	<t:mailinjecttest >
         	<t:lmtpInjectRequest>
             	<filename>${msg02.file}</filename>
@@ -87,9 +87,9 @@
 				<from>${account2.name}</from>
 				<server>${account1.server}</server>
         	</t:lmtpInjectRequest>
-    	</t:mailinjecttest> 
-		
-		<t:delay sec="30"/>	
+    	</t:mailinjecttest>
+
+		<t:delay sec="30"/>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
@@ -113,7 +113,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${msg01.subject}" />
 						<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id" />
 			</t:response>
-		</t:test> 
+		</t:test>
 
 		<t:test  timeframeMax="10000">
 			<t:request>
@@ -125,9 +125,9 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${msg02.subject}" />
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg02.id" />
 			</t:response>
-		</t:test> 
- 
- 	
+		</t:test>
+
+
 	 	<t:test  timeframeMax="10000">
 			<t:request>
 				<GetMsgRequest xmlns="urn:zimbraMail">
@@ -137,8 +137,8 @@
 		     <t:response>
 					<t:select path="//mail:GetMsgResponse" />
 				</t:response>
-		</t:test> 
-		
+		</t:test>
+
 			 	<t:test  timeframeMax="10000">
 			<t:request>
 				<GetMsgRequest xmlns="urn:zimbraMail">
@@ -148,6 +148,6 @@
 		     <t:response>
 					<t:select path="//mail:GetMsgResponse" />
 				</t:response>
-		</t:test> 
+		</t:test>
  	</t:test_case>
 </t:tests>

@@ -60,7 +60,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="contact1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="contact1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -76,7 +76,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="contact2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="contact2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<t:test >
@@ -90,7 +90,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -104,7 +104,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -118,8 +118,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 		</t:response>
-    </t:test>  
-    
+    </t:test>
+
     	<t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -131,8 +131,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3shared.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3shared.server"/>
 		</t:response>
-    </t:test>  
-    
+    </t:test>
+
     	<t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -144,14 +144,14 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
- 
+
 <t:test_case testcaseid="RankingActionRequest_delete_01" type="smoke">
     <t:objective>Reset Contact ranking of contact2 in local contacts.</t:objective>
 	<t:steps>
-	1. Login as account1 
+	1. Login as account1
 	2. create contact contact1,contact2,contact3
 	3. Send 1 mail to contact1
 	4. Send 2 mails to contact2
@@ -180,11 +180,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
@@ -195,11 +195,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact2.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>
         </t:response>
     </t:test>
 
@@ -210,11 +210,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact3.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>
         </t:response>
     </t:test>
 
@@ -271,7 +271,7 @@
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -287,7 +287,7 @@
 		<t:request>
 			<RankingActionRequest xmlns="urn:zimbraMail">
 			  <action op="delete" email="${contact2.name}"/>
-			</RankingActionRequest>		
+			</RankingActionRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//mail:RankingActionResponse" />
@@ -295,7 +295,7 @@
     </t:test>
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -310,13 +310,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RankingActionRequest_delete_02" type="bhr">
+<t:test_case testcaseid="RankingActionRequest_delete_02" type="sanity">
     <t:objective>Reset Contact rating of contact2 of Internal Gal contacts.</t:objective>
 	<t:steps>
-	1. Login as account2 
+	1. Login as account2
 	2. Send 1 mail to contact1 (account in gal)
 	3. Send 2 mails to contact2 (account in gal)
-	4. Send AutoCompleteRequest verify ranking of contact2=2 contact1=1 
+	4. Send AutoCompleteRequest verify ranking of contact2=2 contact1=1
 	5. Send RankingActionRequest delete the ranking of contact2
 	6. Verify ranking of contact2=0 contact1=1
 	</t:steps>
@@ -388,7 +388,7 @@
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -403,7 +403,7 @@
 		<t:request>
 			<RankingActionRequest xmlns="urn:zimbraMail">
 			  <action op="delete" email="${contact2.name}"/>
-			</RankingActionRequest>		
+			</RankingActionRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//mail:RankingActionResponse" />
@@ -411,7 +411,7 @@
     </t:test>
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -425,12 +425,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RankingActionRequest_delete_03" type="bhr">
+<t:test_case testcaseid="RankingActionRequest_delete_03" type="sanity">
     <t:objective>Reset Contact rating of contact2 in shared contacts.</t:objective>
 	<t:steps>
-	1. Login as account3shared 
+	1. Login as account3shared
 	2. create contact contact1,contact2,contact3
-	3. Share the address book with account3 
+	3. Share the address book with account3
 	4. Login to account3
 	5. Send 1 mail to contact1
 	6. Send 2 mails to contact2
@@ -494,11 +494,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
@@ -509,11 +509,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact2.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>
         </t:response>
     </t:test>
 
@@ -524,11 +524,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact3.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>
         </t:response>
     </t:test>
 
@@ -551,7 +551,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse">
 				<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account3.folder.contacts.id"/>
-			</t:select>			
+			</t:select>
 		</t:response>
 	</t:test>
 
@@ -619,7 +619,7 @@
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -635,7 +635,7 @@
 		<t:request>
 			<RankingActionRequest xmlns="urn:zimbraMail">
 			  <action op="delete" email="${contact2.name}"/>
-			</RankingActionRequest>		
+			</RankingActionRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//mail:RankingActionResponse" />
@@ -643,7 +643,7 @@
     </t:test>
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -656,10 +656,10 @@
 		</t:response>
     </t:test>
 </t:test_case>
-<t:test_case testcaseid="RankingActionRequest_delete_04" type="bhr">
+<t:test_case testcaseid="RankingActionRequest_delete_04" type="sanity">
     <t:objective>Send RankingActionRequest with delete option and without email.</t:objective>
 	<t:steps>
-	1. Login as account1 
+	1. Login as account1
 	2. Send RankingActionRequest with delete option without email address.
 	3. verify it gives error.
 	</t:steps>
@@ -681,19 +681,19 @@
 		<t:request>
 			<RankingActionRequest xmlns="urn:zimbraMail">
 			  <action op="delete"/>
-			</RankingActionRequest>		
+			</RankingActionRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//zimbra:Code" match="service.INVALID_REQUEST" />
 		</t:response>
     </t:test>
-  
+
 </t:test_case>
 
-<t:test_case testcaseid="RankingActionRequest_delete_05" type="bhr">
+<t:test_case testcaseid="RankingActionRequest_delete_05" type="sanity">
     <t:objective>Send RankingActionRequest with delete option and non existing contact</t:objective>
 	<t:steps>
-	1. Login as account1 
+	1. Login as account1
 	2. Send RankingActionRequest with delete option and non existing contact.
 	3. verify it gives error.
 	</t:steps>
@@ -715,19 +715,19 @@
 		<t:request>
 			<RankingActionRequest xmlns="urn:zimbraMail">
 			  <action op="delete" email="${contactnx.name}"/>
-			</RankingActionRequest>		
+			</RankingActionRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//mail:RankingActionResponse" />
 		</t:response>
     </t:test>
-  
+
 </t:test_case>
 
-<t:test_case testcaseid="RankingActionRequest_delete_06" type="bhr">
+<t:test_case testcaseid="RankingActionRequest_delete_06" type="sanity">
     <t:objective>Reset Contact ranking of contact having rating 0.</t:objective>
 	<t:steps>
-	1. Login as account4 
+	1. Login as account4
 	2. create contacts contact1,contact2,contact3
 	3. Send 1 mail to contact1
 	4. Send 2 mails to contact2
@@ -756,11 +756,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
@@ -771,11 +771,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact2.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>
         </t:response>
     </t:test>
 
@@ -786,11 +786,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact3.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>
         </t:response>
     </t:test>
 
@@ -847,7 +847,7 @@
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -863,7 +863,7 @@
 		<t:request>
 			<RankingActionRequest xmlns="urn:zimbraMail">
 			  <action op="delete" email="${contact3.name}"/>
-			</RankingActionRequest>		
+			</RankingActionRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//mail:RankingActionResponse" />
@@ -871,7 +871,7 @@
     </t:test>
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>

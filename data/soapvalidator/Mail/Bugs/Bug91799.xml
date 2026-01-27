@@ -73,7 +73,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 	<t:test required="true">
@@ -92,19 +92,19 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug91799" type="bhr" bugids="91799">
+<t:test_case testcaseid="bug91799" type="sanity" bugids="91799">
 		<t:objective>provide conversation unread count in SearchResponse</t:objective>
 		<t:steps>
-			1. create account 
+			1. create account
 			2. inject mime attached
-			3. login to account1 
+			3. login to account1
 			4. verify conversation unread count in SearchResponse.
 		</t:steps>
 
 		<t:property name="msg01.file" value="${testMailRaw.root}/bug91799/mime.txt" />
 		<t:property name="msg01.subject" value="test" />
 		<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-		
+
 		<t:mailinjecttest>
 		<t:lmtpInjectRequest>
 			<filename>${msg01.file}</filename>
@@ -113,7 +113,7 @@
 			<server>${test_acct1.server}</server>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -138,8 +138,8 @@
 	 	</t:response>
 	</t:test>
 
-   
-    
+
+
 </t:test_case>
 </t:tests>
 

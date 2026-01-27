@@ -8,9 +8,9 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="PurgeRevisionRequest_01" type="bhr" >
+<t:test_case testcaseid="PurgeRevisionRequest_01" type="sanity" >
 	<t:objective>Sanity test for PurgeRevisionRequest</t:objective>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true" >
@@ -36,7 +36,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="server.restServlet" value="${account1.server}"/>
@@ -53,7 +53,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -77,7 +77,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -86,7 +86,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -98,8 +98,8 @@
         <t:response>
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.textfile.id"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
   	<t:test >
 		<t:request>
 			<PurgeRevisionRequest xmlns="urn:zimbraMail">

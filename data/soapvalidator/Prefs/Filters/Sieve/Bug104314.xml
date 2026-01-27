@@ -53,7 +53,7 @@ replaceheader :newname "X-Sieve-Header2" :matches "X-Sieve-Header" "HeaderVal";
 log "done";'/>
 
 <t:property name="sieve_rule7" value='require ["editheader", "log"];
-replaceheader :newname "X-Sieve-Header2" :newvalue "[NEWVAL] HeaderVal" :matches "X-Sieve-Header" "*"; 
+replaceheader :newname "X-Sieve-Header2" :newvalue "[NEWVAL] HeaderVal" :matches "X-Sieve-Header" "*";
 log "done";'/>
 
 <t:property name="sieve_rule8" value='require ["editheader", "log"];
@@ -61,7 +61,7 @@ replaceheader :newname "X-Sieve-Header2" :newvalue "[NEWVAL] ${mail_subject}" :m
 log "done";'/>
 
 <t:property name="sieve_rule9" value='require ["editheader", "log"];
-replaceheader :index 2 :newname "X-Sieve-Header2" :newvalue "[NEWVAL] ${mail_subject}" :matches "X-Sieve-Header1" "Oldval2"; 
+replaceheader :index 2 :newname "X-Sieve-Header2" :newvalue "[NEWVAL] ${mail_subject}" :matches "X-Sieve-Header1" "Oldval2";
 log "done";'/>
 
 <t:property name="sieve_rule10" value='require ["editheader", "log"];
@@ -86,7 +86,7 @@ log "done";'/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin" />
@@ -95,13 +95,13 @@ log "done";'/>
 			<t:select path="//admin:PingResponse" />
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="Variables setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -113,8 +113,8 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
-	
+
+
 	    <!-- STAF: Whitelist ALL Custom Headers and Disable Login Filter -->
     <t:staftask >
         <t:request>
@@ -157,7 +157,7 @@ log "done";'/>
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -167,7 +167,7 @@ log "done";'/>
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -187,8 +187,8 @@ log "done";'/>
 
 </t:test_case>
 
-<t:test_case testcaseid="Accounts setup" type="bhr">  
-<t:objective>create test account</t:objective>          
+<t:test_case testcaseid="Accounts setup" type="sanity">
+<t:objective>create test account</t:objective>
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -215,7 +215,7 @@ log "done";'/>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -229,7 +229,7 @@ log "done";'/>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -243,7 +243,7 @@ log "done";'/>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account4.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -271,7 +271,7 @@ log "done";'/>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account6.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -285,21 +285,21 @@ log "done";'/>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account7.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account8.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraCOSId">${cos.id}</a>              
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account8.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct8.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -313,7 +313,7 @@ log "done";'/>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account9.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct9.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -328,7 +328,7 @@ log "done";'/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct10.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -370,7 +370,7 @@ log "done";'/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct13.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -384,7 +384,7 @@ log "done";'/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct14.server"/>
         </t:response>
     </t:test>
-                                
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -397,7 +397,7 @@ log "done";'/>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="dl_member1.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="dl_member1.server"/>
         </t:response>
-    </t:test>     
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -411,17 +411,17 @@ log "done";'/>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="dl_member2.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="dl_member2.server"/>
         </t:response>
-    </t:test> 
-              
+    </t:test>
+
 </t:test_case>
 
-    
-<t:test_case testcaseid="bug104314_newval1" type="bhr" bugids="104314">
+
+<t:test_case testcaseid="bug104314_newval1" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user :newvalue "[SPAM] $\{1}"
 		2. Send email to that user. Verify SPAM is appended at the start of the subject
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -434,12 +434,12 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account2.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule1}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -447,7 +447,7 @@ log "done";'/>
         </t:response>
     </t:test>
 	<t:delay sec="10"/>
-    
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -455,7 +455,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -484,31 +484,31 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" contains="[Spam] ${mail_subject}"/>
 			</t:response>
     </t:test>
-     
-</t:test_case>   
+
+</t:test_case>
 
 
-<t:test_case testcaseid="bug104314_newval2" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_newval2" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user :newvalue "$\{1} [SPAM]"
 		2. Send email to that user. Verify SPAM is appended at the end of the subject
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -521,19 +521,19 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account3.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule2}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	<t:delay sec="10"/>	
+    </t:test>
+	<t:delay sec="10"/>
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -541,7 +541,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -570,30 +570,30 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" contains="${mail_subject} [Spam]"/>
 			</t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval3" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_newval3" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user :newvalue "$\{1} [SPAM]" matching the subject
 		2. Send email to that user. Verify SPAM is appended at the end of the subject
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -606,21 +606,21 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account4.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule3}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:delay sec="10"/>
-	
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -628,7 +628,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -657,30 +657,30 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" contains="${mail_subject} [Spam]"/>
 			</t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval4" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_newval4" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user :newname "X-Header2" :matches "X-Header" "*";
 		2. Send email to that user. Verify X-Header is replaced with X-Header2 and has new value
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -704,19 +704,19 @@ log "done";'/>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>-->
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account5.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule4}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test>
             <t:request>
                 <FlushCacheRequest xmlns="urn:zimbraAdmin">
@@ -729,7 +729,7 @@ log "done";'/>
                 <t:select path="//admin:FlushCacheResponse"/>
             </t:response>
         </t:test>
-	
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -737,11 +737,11 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 
     <t:test >
  		<t:request>
@@ -768,18 +768,18 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
@@ -793,12 +793,12 @@ log "done";'/>
 			<t:select attr="X-Sieve-Header2" match="Oldval"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval5" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_newval5" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user :index 1 :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "*";
 		2. Verify if there are multiple X-Headers in mime, the 1st one should be matched and replaced with newvalue -- X-Header: [NEWVAL] My header
     </steps>
@@ -814,19 +814,19 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account6.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule5}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule5}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-<t:delay sec="10"/>	
+<t:delay sec="10"/>
 <t:test>
             <t:request>
                 <FlushCacheRequest xmlns="urn:zimbraAdmin">
@@ -839,7 +839,7 @@ log "done";'/>
                 <t:select path="//admin:FlushCacheResponse"/>
             </t:response>
         </t:test>
-	
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -847,7 +847,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -874,23 +874,23 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -901,15 +901,15 @@ log "done";'/>
 			<t:select attr="X-Sieve-Header1" match="Oldval1"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval6" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_newval6" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user :newname "X-Header2" :matches "X-Header" "HeaderVal";
 		2. Verify X-Header is replaced with X-Header2 only if its value is matched. -- X-Header2 : HeaderVal
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -933,20 +933,20 @@ log "done";'/>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>-->
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account7.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule6}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule6}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 	<t:delay sec="10"/>
-		
+
 	<t:test>
             <t:request>
                 <FlushCacheRequest xmlns="urn:zimbraAdmin">
@@ -959,7 +959,7 @@ log "done";'/>
                 <t:select path="//admin:FlushCacheResponse"/>
             </t:response>
         </t:test>
-	
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -967,7 +967,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -997,18 +997,18 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
@@ -1022,15 +1022,15 @@ log "done";'/>
 			<t:select attr="X-Sieve-Header2" match="HeaderVal"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval7" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_newval7" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user :newname "X-Header2" :matches "X-Header" "HeaderVal";
 		2. Verify X-Header is replaced with X-Header2 only if its value is matched. -- X-Header2 : HeaderVal
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -1054,20 +1054,20 @@ log "done";'/>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>-->
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account8.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule7}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule7}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 	<t:delay sec="10"/>
-	
+
 	<t:test>
             <t:request>
                 <FlushCacheRequest xmlns="urn:zimbraAdmin">
@@ -1080,7 +1080,7 @@ log "done";'/>
                 <t:select path="//admin:FlushCacheResponse"/>
             </t:response>
         </t:test>
-	
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1088,7 +1088,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1118,19 +1118,19 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
 	<t:delay sec="10"/>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
@@ -1144,15 +1144,15 @@ log "done";'/>
 			<t:select attr="X-Sieve-Header2" contains="[NEWVAL] HeaderVal"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval8" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_newval8" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL </t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user :newname "X-Sieve-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Sieve-Header" "HeaderVal";
 		2. Verify X-Header is replaced with X-Header2 only if its value is matched. -- X-Header2 :[NEWVAL] HeaderVal
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -1176,18 +1176,18 @@ log "done";'/>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>-->
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account9.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule8}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule8}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 	<t:delay sec="10"/>
 	<t:test>
             <t:request>
@@ -1201,7 +1201,7 @@ log "done";'/>
                 <t:select path="//admin:FlushCacheResponse"/>
             </t:response>
         </t:test>
-	
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1209,7 +1209,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1240,18 +1240,18 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
@@ -1265,15 +1265,15 @@ log "done";'/>
 			<t:select attr="X-Sieve-Header2" contains="[NEWVAL] HeaderVal"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval9" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_newval9" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
-        1. Add sieve rule for the user :index 2 :newname "X-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "HeaderVal"; 
+    <steps>
+        1. Add sieve rule for the user :index 2 :newname "X-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "HeaderVal";
 		2. Verify X-Header is replaced with X-Header2 only if its value in the 2nd index is matched. -- X-Header2 :[NEWVAL] HeaderVal
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -1286,18 +1286,18 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account10.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule9}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule9}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 	<t:delay sec="10"/>
 	<t:test>
             <t:request>
@@ -1311,7 +1311,7 @@ log "done";'/>
                 <t:select path="//admin:FlushCacheResponse"/>
             </t:response>
         </t:test>
-	
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1319,7 +1319,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1345,23 +1345,23 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -1372,15 +1372,15 @@ log "done";'/>
 			<t:select attr="X-Sieve-Header1" match="Oldval3"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval10" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_newval10" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
-        1. Add sieve rule for the user :index 2 :newname "X-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "HeaderVal"; 
+    <steps>
+        1. Add sieve rule for the user :index 2 :newname "X-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "HeaderVal";
 		2. Verify X-Header is replaced with X-Header2 only if its value in the 2nd index is matched. -- X-Header2 :[NEWVAL] HeaderVal
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -1393,18 +1393,18 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account11.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule10}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule10}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 	<t:delay sec="10"/>
 	<t:test>
             <t:request>
@@ -1418,7 +1418,7 @@ log "done";'/>
                 <t:select path="//admin:FlushCacheResponse"/>
             </t:response>
         </t:test>
-	
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1426,7 +1426,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1452,23 +1452,23 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -1479,15 +1479,15 @@ log "done";'/>
 			<t:select attr="X-Sieve-Header1" match="Oldval3"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_outgoing1" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_outgoing1" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add outgoing sieve rule for the user :newvalue "[SPAM] $\{1}"
 		2. Send email to that user. Verify SPAM is appended at the start of the subject
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -1500,12 +1500,12 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraAdminOutgoingSieveScriptBefore">${sieve_rule1}</a>             
+                <a n = "zimbraAdminOutgoingSieveScriptBefore">${sieve_rule1}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1513,7 +1513,7 @@ log "done";'/>
         </t:response>
     </t:test>
 	 <t:delay sec="10"/>
-    
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1521,7 +1521,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1551,30 +1551,30 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" contains="[Spam] ${mail_subject}"/>
 			</t:response>
     </t:test>
-     
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_comparator1" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_comparator1" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule 11 for user
         2. Verify expected results are seen as per sieve rule
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -1587,19 +1587,19 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account13.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule11}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule11}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test>
             <t:request>
                 <FlushCacheRequest xmlns="urn:zimbraAdmin">
@@ -1612,8 +1612,8 @@ log "done";'/>
                 <t:select path="//admin:FlushCacheResponse"/>
             </t:response>
         </t:test>
-	
-	
+
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1621,7 +1621,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1647,23 +1647,23 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -1674,15 +1674,15 @@ log "done";'/>
 			<t:select attr="X-Numeric-Header" contains="4"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_comparator2" type="bhr" bugids="104314">
+<t:test_case testcaseid="bug104314_comparator2" type="sanity" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule 12 for user
         2. Verify expected results are seen as per sieve rule
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -1695,19 +1695,19 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account14.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule12}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule12}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1715,7 +1715,7 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1741,23 +1741,23 @@ log "done";'/>
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 			</t:response>
     </t:test>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg1.id}</id>
@@ -1768,16 +1768,16 @@ log "done";'/>
 			<t:select attr="X-Numeric2-Header" contains="4"/>
 		</t:restServletResponse>
 	</t:resttest>
-	    
-</t:test_case>   
+
+</t:test_case>
 
 
-<t:test_case testcaseid="bug1ZCS-859" type="bhr" bugids="ZCS-859">
+<t:test_case testcaseid="bug1ZCS-859" type="sanity" bugids="ZCS-859">
    <t:objective>Rewrite the "subject" header of all messages received</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user :newvalue "[SPAM] + {original subject}"
     2. Send email to that user. Verify SPAM is appended at the start of the subject
-    </steps>  
+    </steps>
 
   <t:test required="true">
     <t:request>
@@ -1790,12 +1790,12 @@ log "done";'/>
       <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
     </t:response>
   </t:test>
-  
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account2.id}</id>
-                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule12}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule12}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1803,7 +1803,7 @@ log "done";'/>
         </t:response>
     </t:test>
 	        <t:delay sec="10"/>
-    
+
 <t:test required="true">
   <t:request>
     <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1811,7 +1811,7 @@ log "done";'/>
       <password>${defaultpassword.value}</password>
     </AuthRequest>
     </t:request>
-    <t:response>       
+    <t:response>
        <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
     </t:response>
   </t:test>
@@ -1840,27 +1840,27 @@ log "done";'/>
       <password>${defaultpassword.value}</password>
     </AuthRequest>
     </t:request>
-    <t:response>       
+    <t:response>
        <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
     </t:response>
   </t:test>
-  
+
      <t:test>
       <t:request>
-        <SearchRequest xmlns="urn:zimbraMail" types="message">          
+        <SearchRequest xmlns="urn:zimbraMail" types="message">
           <query>subject:${mail_subject}</query>
         </SearchRequest>
       </t:request>
-          <t:response>      
+          <t:response>
         <t:select path="//mail:SearchResponse/mail:m/mail:su" contains="[Spam] ${mail_subject}"/>
       </t:response>
     </t:test>
-     
+
 </t:test_case>
 <!--
     <t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1883,7 +1883,7 @@ log "done";'/>
 				<t:select path="//admin:ModifyConfigResponse" />
 			</t:response>
 		</t:test>
-		
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -1893,7 +1893,7 @@ log "done";'/>
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 

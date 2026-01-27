@@ -27,7 +27,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -36,7 +36,7 @@
     <t:steps>1. Login to admin
              2. Create a test accounts
     </t:steps>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -48,7 +48,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -132,7 +132,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="share_contact01" type="sanity" bugid="8506" >
+<t:test_case testcaseid="share_contact01" type="functional" bugid="8506" >
     <t:objective>Setup for testing bug(8506) </t:objective>
 	<t:steps>
 	1. Login to mailclient as test_account
@@ -158,7 +158,7 @@
 
         </t:response>
     </t:test>
-	
+
     <t:test id="createContactRequest1">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -168,16 +168,16 @@
                     <a n="middleName">middleName1</a>
                     <a n="email">firstname01_lastname01@testsearch.com</a>
                     <a n="jobTitle">jobTitle1</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact1.id"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="createContactRequest2">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -187,16 +187,16 @@
                     <a n="middleName">middleName2</a>
                     <a n="email">firstname02_lastname02@testsearch.com</a>
                     <a n="jobTitle">jobTitle2</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact2.id"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
    	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -277,7 +277,7 @@
             <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="firstname01_lastname01@testsearch.com"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateSearchFolderRequest xmlns="urn:zimbraMail">
@@ -286,7 +286,7 @@
 		</t:request>
 		<t:response>
             <t:select path="//mail:CreateSearchFolderResponse"/>
-        </t:response>		
+        </t:response>
 	</t:test>
 
 	<t:test>
@@ -315,7 +315,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="share_contact02" type="sanity" bugids="7745,10442" >
+<t:test_case testcaseid="share_contact02" type="functional" bugids="7745,10442" >
     <t:objective>Setup for testing bug(7745) </t:objective>
 	<t:steps>
 	1. Login to mailclient as test_account2
@@ -344,7 +344,7 @@
 
         </t:response>
     </t:test>
-	
+
     <t:test id="createContactRequest1">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -353,16 +353,16 @@
                     <a n="lastName">lastName3</a>
                     <a n="middleName">middleName3</a>
                     <a n="email">firstname03_lastname03@testsearch.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact3.id"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
    	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -469,7 +469,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -496,7 +496,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="share_contact_03" type="sanity" bugid="15069" >
+<t:test_case testcaseid="share_contact_03" type="functional" bugid="15069" >
     <t:objective>Verify that no NPE occurs when searching contacts in a mountpoint to a deleted account</t:objective>
 	<t:steps>
 	1. Login to account4.
@@ -525,7 +525,7 @@
 
         </t:response>
     </t:test>
-	
+
     <t:test id="createContactRequest1">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -533,14 +533,14 @@
                     <a n="firstName">firstName1</a>
                     <a n="lastName">lastName1</a>
                     <a n="email">firstname01_lastname01@testsearch.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateContactResponse/mail:cn"/>    
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-    
+
    	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -620,7 +620,7 @@
             <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="firstname01_lastname01@testsearch.com"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true" >
@@ -634,7 +634,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="deleteAccountRequest1a">
         <t:request>
             <DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -673,7 +673,7 @@
             </t:select>
 		</t:response>
 	</t:test>
-	
+
 
 </t:test_case>
 

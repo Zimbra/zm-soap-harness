@@ -105,11 +105,11 @@
 			<t:select path="//mail:ImportAppointmentsResponse" />
 		</t:response>
 	</t:test>
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ImportAppointmentsRequest02" type="bhr" bugids="21288">
+<t:test_case testcaseid="ImportAppointmentsRequest02" type="sanity" bugids="21288">
 	<t:objective> Import an appointment using uploadservlet to a resouce account </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -147,7 +147,7 @@
     </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_resource.server1}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -197,7 +197,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ImportAppointmentsRequest03" type="bhr">
+<t:test_case testcaseid="ImportAppointmentsRequest03" type="sanity">
 	<t:objective> Import an appointment using uploadservlet to a equipment </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -235,7 +235,7 @@
     </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_resource.server2}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -291,7 +291,7 @@
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 	<t:property name="server.restServlet" value="${account1.server}"/>
 
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -343,9 +343,9 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${message3.ids}"/>
         </t:request>
         <t:response>

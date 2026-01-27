@@ -52,7 +52,7 @@
         <t:response>
             <t:select path="//admin:GetServerResponse/admin:server" attr="id" set="server1.id"/>
         </t:response>
-    </t:test>	
+    </t:test>
 
 	<t:test>
         <t:request>
@@ -65,7 +65,7 @@
             <t:select path="//admin:ModifyServerResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -105,7 +105,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -131,9 +131,9 @@
 </t:finally>
 
 
-<t:test_case testcaseid="zimbraSoapExposeVersion01" type="bhr" bugids="30010" areas="noncluster">
+<t:test_case testcaseid="zimbraSoapExposeVersion01" type="sanity" bugids="30010" areas="noncluster">
     <t:objective>Verify when "zimbraSoapExposeVersion" is FALSE, GetVersionInfoRequest on port 80 gives "service.PERM_DENIED" </t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test  required="true">
@@ -155,12 +155,12 @@
         <t:response>
             <t:select path="//zimbra:Code" match="^service.PERM_DENIED"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="zimbraSoapExposeVersion02" type="bhr" bugids="30010" areas="noncluster">
+<t:test_case testcaseid="zimbraSoapExposeVersion02" type="sanity" bugids="30010" areas="noncluster">
     <t:objective> Verify after setting "zimbraSoapExposeVersion" to TRUE, GetVersionInfoRequest can be sent on port 80 </t:objective>
 
     <t:test>
@@ -187,7 +187,7 @@
         </t:response>
     </t:test>
 	<t:delay msec="3000"/>
-	
+
 	<t:test>
         <t:request>
             <GetConfigRequest xmlns="urn:zimbraAdmin">
@@ -218,12 +218,12 @@
             <GetVersionInfoRequest xmlns="urn:zimbraAccount"/>
         </t:request>
         <t:response>
-            <t:select path="//acct:GetVersionInfoResponse/acct:info" attr="version"/>            
+            <t:select path="//acct:GetVersionInfoResponse/acct:info" attr="version"/>
             <t:select path="//acct:GetVersionInfoResponse/acct:info" attr="release" match="^\d+$"/>
             <t:select path="//acct:GetVersionInfoResponse/acct:info" attr="buildDate" match="[0-9\-]*"/>
             <t:select path="//acct:GetVersionInfoResponse/acct:info" attr="host"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

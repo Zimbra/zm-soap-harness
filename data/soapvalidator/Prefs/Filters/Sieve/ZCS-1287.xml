@@ -1,9 +1,9 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
 	<t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
-	<t:property name="notify1.name" value="notify1.${TIME}.${COUNTER}@${defaultdomain.name}" />		
+	<t:property name="notify1.name" value="notify1.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
-	<t:property name="notify2.name" value="notify2.${TIME}.${COUNTER}@${defaultdomain.name}" />		
+	<t:property name="notify2.name" value="notify2.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="notify3.name" value="notify3.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -14,19 +14,19 @@
 	<t:property name="test_account8.name" value="test8.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account9.name" value="test9.${TIME}.${COUNTER}@${defaultdomain.name}" />
         <t:property name="cos.name" value="cos1287${TIME}${COUNTER}" />
-	
+
 	<t:property name="variable_from" value="$\{from}"></t:property>
 	<t:property name="variable_subject" value="$\{subject}"></t:property>
 	<t:property name="variable_body_text" value="$\{body}"></t:property>
 	<t:property name="variable_tag" value="$\{tag}"></t:property>
 	<t:property name="variable_name_dollar_one" value="$\{1}"></t:property>
-	
+
 	<t:property name="mail_subject_1" value="mail_subject"></t:property>
 	<t:property name="mail_content" value="Hi,\\rYou have got a mail!\\r."></t:property>
 	<t:property name="msg01.file" value="${testMailRaw.root}/zcs-1287/mime1.txt" />
 	<t:property name="msg02.file" value="${testMailRaw.root}/zcs-1287/blank-mime.txt" />
 	<t:property name="msg03.file" value="${testMailRaw.root}/zcs-1287/tag-mime.txt" />
-	
+
 	<t:property name="sieve_rule1" value='require ["enotify", "variables"];
 		set "from" "abc@abc.com";
 		set "subject" "Notify subject";
@@ -51,7 +51,7 @@
 		{
 			tag "${variable_tag}";
 		}'></t:property>
-	
+
 	<t:property name="sieve_rule6"
 		value='require ["tag", "variables"];
 		if header :contains "subject" "mail_subject"
@@ -65,7 +65,7 @@
 		{
 			tag "${variable_name_dollar_one}test";
 		}'></t:property>
-			    
+
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
         <t:test required="true">
@@ -104,7 +104,7 @@
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -113,7 +113,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -128,8 +128,8 @@
                     <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
                     <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
                 </t:response>
-                </t:test> 
-	    
+                </t:test>
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -157,7 +157,7 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -188,7 +188,7 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-				
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -206,7 +206,7 @@
 					set="test_acct3.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -219,7 +219,7 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -234,7 +234,7 @@
 					attr="id" set="test_account4.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -262,7 +262,7 @@
 					attr="id" set="test_account5.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -280,7 +280,7 @@
 					set="test_acct6.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -297,7 +297,7 @@
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
 					set="test_acct7.server" />
 			</t:response>
-		</t:test> 
+		</t:test>
 
 		<t:test required="true">
 			<t:request>
@@ -334,16 +334,16 @@
 					set="test_acct9.server" />
 			</t:response>
 		</t:test>
-																		
+
 	</t:test_case>
- 
- 	<t:test_case testcaseid="zcs-1287_rule1" type="functional" bugids="zcs-1287">
+
+ 	<t:test_case testcaseid="zcs-1287_rule1" type="regression" bugids="zcs-1287">
 		<t:objective>Verify variables are replaced from the sieve rule in notification email </t:objective>
 		<t:steps>
             1. Set sieve rule1
             2. Send email to the user and verify variables are replaced with the values defined in sieve rule
-    	</t:steps>		
-    	
+    	</t:steps>
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -400,15 +400,15 @@
 			</t:response>
 		</t:test>
 
-	</t:test_case> 
+	</t:test_case>
 
- 	<t:test_case testcaseid="zcs-1287_rule2" type="functional" bugids="zcs-1287">
+ 	<t:test_case testcaseid="zcs-1287_rule2" type="regression" bugids="zcs-1287">
 		<t:objective>Verify variables are replaced from the mime in notification email</t:objective>
 		<t:steps>
             1. Set sieve rule2
             2. Send email to the user and verify variables are replaced with mime values
-    	</t:steps>	
-    	
+    	</t:steps>
+
 		<t:objective>Test notify action with variable
 		</t:objective>
 		<t:test required="true">
@@ -460,13 +460,13 @@
 
 	</t:test_case>
 
- 	<t:test_case testcaseid="zcs-1287_rule3" type="functional" bugids="zcs-1287">
+ 	<t:test_case testcaseid="zcs-1287_rule3" type="regression" bugids="zcs-1287">
 		<t:objective>Verify variables are set as blank if value not present in rule and mime in notification email</t:objective>
 		<t:steps>
             1. Set sieve rule3
             2. Inject email to the user and verify variables are set as blank
     	</t:steps>
-    	
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -512,17 +512,17 @@
 				<t:select path="//mail:SearchResponse/mail:m" attr="fr" emptyset="1" />
 				<t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${test_account3.name}" />
 			</t:response>
-		</t:test> 
+		</t:test>
 
 	</t:test_case>
-	
- 	<t:test_case testcaseid="zcs-1287_rule4" type="functional" bugids="zcs-1287">
+
+ 	<t:test_case testcaseid="zcs-1287_rule4" type="regression" bugids="zcs-1287">
 		<t:objective>Verify notify email id is set to the recipient if invalid :from is set in rule</t:objective>
 		<t:steps>
             1. Set sieve rule4
             2. Send email to the user and verify from is set to the recipient id.
     	</t:steps>
-    	
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -579,15 +579,15 @@
 			</t:response>
 		</t:test>
 
-	</t:test_case>  
+	</t:test_case>
 
- 	<t:test_case testcaseid="zcs-1287_rule5_1" type="functional" bugids="zcs-1287">
+ 	<t:test_case testcaseid="zcs-1287_rule5_1" type="regression" bugids="zcs-1287">
 		<t:objective>Verify tag is set using the variable value</t:objective>
 		<t:steps>
             1. Set sieve rule5
             2. Send email to the user and verify tag is set using variable value.
     	</t:steps>
-    	
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -645,14 +645,14 @@
 		</t:test>
 
 	</t:test_case>
-	
- 	<t:test_case testcaseid="zcs-1287_rule5_2" type="functional" bugids="zcs-1287">
+
+ 	<t:test_case testcaseid="zcs-1287_rule5_2" type="regression" bugids="zcs-1287">
 		<t:objective>Verify precedence is given to sieve variable value for tag</t:objective>
 		<t:steps>
             1. Set sieve rule5
             2. Inject mime to the user which has tag header in it and verify tag is set using variable value.
     	</t:steps>
-    	
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -699,15 +699,15 @@
 			</t:response>
 		</t:test>
 
-	</t:test_case>	
+	</t:test_case>
 
- 	<t:test_case testcaseid="zcs-1287_rule6_1" type="functional" bugids="zcs-1287">
+ 	<t:test_case testcaseid="zcs-1287_rule6_1" type="regression" bugids="zcs-1287">
 		<t:objective>Verify mime value is used for tag</t:objective>
 		<t:steps>
             1. Set sieve rule6
             2. Inject mime to the user which has tag header in it and verify tag is set using mime value.
     	</t:steps>
-    	
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -754,15 +754,15 @@
 			</t:response>
 		</t:test>
 
-	</t:test_case>	
+	</t:test_case>
 
-	<t:test_case testcaseid="zcs-1287_rule6_2" type="functional" bugids="zcs-1287">
+	<t:test_case testcaseid="zcs-1287_rule6_2" type="regression" bugids="zcs-1287">
 		<t:objective>Verify message is not tagged if tag header is not present in rule and mime</t:objective>
 		<t:steps>
             1. Set sieve rule6
             2. Inject mime to the user which has no tag header in it and verify tag is not set.
     	</t:steps>
-    	
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -811,13 +811,13 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="zcs-1287_rule7" type="functional" bugids="zcs-1287">
+	<t:test_case testcaseid="zcs-1287_rule7" type="regression" bugids="zcs-1287">
 		<t:objective>Verify message is tagged with :matches value only</t:objective>
 		<t:steps>
             1. Set sieve rule7
             2. Send email to the user and verify * does not assign any value to $1.
     	</t:steps>
-    	
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -874,10 +874,10 @@
 		</t:test>
 
 	</t:test_case>
-				 		
+
      <!--<t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -898,10 +898,10 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 
     </t:finally>-->
-    		
+
 </t:tests>

@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -46,7 +46,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -59,7 +59,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -220,7 +220,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest_01" type="bhr" areas="Calendar">
+<t:test_case testcaseid="SendInviteReplyRequest_01" type="sanity" areas="Calendar">
     <t:objective>Verify all status responses are available to the organizer</t:objective>
     <t:steps>
     1. Login as organizer
@@ -248,7 +248,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -260,8 +260,8 @@
 		</t:response>
 	</t:test>
 
-    
-   
+
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -300,7 +300,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${invitee1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -331,19 +331,19 @@
 				<query>inid:${invitee1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subject}']">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
             	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
             	<t:select attr="name" set="invitee1.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="verb.response" value="ACCEPT"/>
 	<t:property name="verb.expected" value="AC"/>
-	
+
 	<t:test>
         <t:request>
 			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${invitee1.appt1.invId}" compNum="${invitee1.appt1.compNum}" updateOrganizer="TRUE">
@@ -375,7 +375,7 @@
 
         </t:response>
     </t:test>
-   
+
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -391,7 +391,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${invitee1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -439,7 +439,7 @@
 
         </t:response>
     </t:test>
-   
+
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -455,7 +455,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${invitee1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -503,7 +503,7 @@
 
         </t:response>
     </t:test>
-   
+
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -523,7 +523,7 @@
 
 
 
-<t:test_case testcaseid="SendInviteReplyRequest_02" type="bhr" areas="Calendar" bugids="38152">
+<t:test_case testcaseid="SendInviteReplyRequest_02" type="sanity" areas="Calendar" bugids="38152">
     <t:objective>Verify responses are reconciled if personal name does not match on invitation/reply</t:objective>
     <t:steps>
     1. Login as organizer
@@ -549,9 +549,9 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
-   
-   
+
+
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -590,7 +590,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${invitee6.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -621,19 +621,19 @@
 				<query>inid:${invitee6.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subject}']">
             	<t:select attr="invId" set="invitee6.appt1.invId"/>
             	<t:select attr="compNum" set="invitee6.appt1.compNum"/>
             	<t:select attr="name" set="invitee6.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee6.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="verb.response" value="ACCEPT"/>
 	<t:property name="verb.expected" value="AC"/>
-	
+
 	<t:test>
         <t:request>
 			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${invitee6.appt1.invId}" compNum="${invitee6.appt1.compNum}" updateOrganizer="TRUE">
@@ -666,7 +666,7 @@
 
         </t:response>
     </t:test>
-   
+
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">

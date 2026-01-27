@@ -16,7 +16,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -97,14 +97,14 @@
     <t:property name="appointment.start" value="${TIME}"/>
 	<t:property name="message.subject" value="MessageSubject.${TIME}.${COUNTER}"/>
 	<t:property name="appointment.subject" value="AppointmentSubject.${TIME}.${COUNTER}"/>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="AppoitnmentLocation">
-                        <s d="${ICALTIME[${appointment.start}]}"/>  
-                        <e d="${ICALTIME(+2h)[${appointment.start}]}"/>  
+                        <s d="${ICALTIME[${appointment.start}]}"/>
+                        <e d="${ICALTIME(+2h)[${appointment.start}]}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -134,7 +134,7 @@
 
 
 
-<t:test_case testcaseid="RestServlet_fmt_appointment_02" type="bhr" bugids="8655">
+<t:test_case testcaseid="RestServlet_fmt_appointment_02" type="sanity" bugids="8655">
 	<t:objective>Verification of Rest Servlet - ask for fmt=sync for an appointment</t:objective>
 	<t:steps>
 	1. Use the rest servlet with fmt=sync on an appointment
@@ -160,14 +160,14 @@
 
     <t:property name="appointment.start" value="${TIME}"/>
 	<t:property name="appointment.subject" value="AppointmentSubject.${TIME}.${COUNTER}"/>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="AppoitnmentLocation">
-                        <s d="${ICALTIME[${appointment.start}]}"/>  
-                        <e d="${ICALTIME(+2h)[${appointment.start}]}"/>  
+                        <s d="${ICALTIME[${appointment.start}]}"/>
+                        <e d="${ICALTIME(+2h)[${appointment.start}]}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -196,7 +196,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_fmt_appointment_03" type="sanity" bugids="8655">
+<t:test_case testcaseid="RestServlet_fmt_appointment_03" type="functional" bugids="8655">
 	<t:objective>Verification of Rest Servlet - ask for fmt=sync for an appointment with TNEF attachment</t:objective>
 	<t:steps>
 	1. Use the rest servlet with fmt=syncon an appointment
@@ -224,7 +224,7 @@
     <t:property name="appointment.filename" value="${testMailRaw.root}/bug8655/msg01.txt"/>
     <t:property name="appointment.start" value="${TIME}"/>
 	<t:property name="appointment.subject" value="AppointmentSubject.${TIME}.${COUNTER}"/>
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${appointment.filename}</filename>
@@ -248,7 +248,7 @@
     </t:test>
 
     <t:test depends="GetAppointmentRequest1a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.apptId}"/>
         </t:request>
         <t:response>

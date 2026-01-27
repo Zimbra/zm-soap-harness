@@ -19,7 +19,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -33,7 +33,7 @@
 
 <t:test_case testcaseid="SnoozeAlarm_acctSetup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -46,7 +46,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -75,13 +75,13 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Sanity_01" type="smoke">
     <t:objective>Create Single event with reminder ans snooze it.</t:objective>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -97,10 +97,10 @@
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME(+15m)}"/>  
-	                        <e d="${ICALTIME(+1h)}"/>  
+	                        <s d="${ICALTIME(+15m)}"/>
+	                        <e d="${ICALTIME(+1h)}"/>
 	                        <or a="${account1.name}"/>
 						<alarm action="DISPLAY">
 							<trigger>
@@ -135,14 +135,14 @@
 			<t:select path="//mail:SnoozeCalendarItemAlarmResponse/mail:appt/mail:alarmData" attr="name" match="${appointment.subject}"/>
 		</t:response>
 	</t:test>
-	
-   
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Sanity_02" type="bhr">
+<t:test_case testcaseid="SnoozeCalendarItemAlarmRequest_Sanity_02" type="sanity">
     <t:objective>Create Single task with reminder and snooze it.</t:objective>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -160,7 +160,7 @@
 				<m l="${account1.folder.task.id}">
 					<inv method="REQUEST">
 						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
-							<s d="${ICALTIME(+15m)}"/>  
+							<s d="${ICALTIME(+15m)}"/>
 	                        <e d="${ICALTIME(+1h)}"/>
 							<or a="${account1.name}"/>
 							<alarm action="DISPLAY">
@@ -195,8 +195,8 @@
 			<t:select path="//mail:SnoozeCalendarItemAlarmResponse/mail:task/mail:alarmData/mail:alarm/mail:trigger/mail:abs"/>
 		</t:response>
 	</t:test>
-	
-   
+
+
 </t:test_case>
 
 

@@ -8,7 +8,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -23,7 +23,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Login to admin </t:objective>
-    <steps> 1. Login to admin account 
+    <steps> 1. Login to admin account
             2. Create a test account
     </steps>
 
@@ -43,7 +43,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>              
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -66,18 +66,18 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="GS_zimbraFeatureAntispamEnabled" type="bhr" bugids="56020">
-    <t:objective>Verify that GetInfoResponse has zimbraFeatureAntispamEnabled parameter</t:objective> 
+<t:test_case testcaseid="GS_zimbraFeatureAntispamEnabled" type="sanity" bugids="56020">
+    <t:objective>Verify that GetInfoResponse has zimbraFeatureAntispamEnabled parameter</t:objective>
 
     <t:steps>
     		1. Login into test_account1
             2. Send GetInfoRequest for attrs section
     </t:steps>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -94,10 +94,10 @@
 
     <t:test >
         <t:request>
-			<GetInfoRequest xmlns="urn:zimbraAccount" sections="attrs" />		
+			<GetInfoRequest xmlns="urn:zimbraAccount" sections="attrs" />
         </t:request>
         <t:response>
-			<t:select path="//acct:GetInfoResponse/acct:attrs/acct:attr[@name='zimbraFeatureAntispamEnabled']" />			
+			<t:select path="//acct:GetInfoResponse/acct:attrs/acct:attr[@name='zimbraFeatureAntispamEnabled']" />
         </t:response>
     </t:test>
 

@@ -15,7 +15,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -30,7 +30,7 @@
 
 <t:test_case testcaseid="acctSetup1_appointment_search" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -43,7 +43,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -56,7 +56,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
@@ -81,15 +81,15 @@
 
         </t:response>
     </t:test>
-    
+
  <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject1}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account1.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account1.name}" t="t"/>
@@ -129,7 +129,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "Appointment_Search02" type="functional" areas="Calendar">
+<t:test_case testcaseid = "Appointment_Search02" type="regression" areas="Calendar">
     <t:objective> Create a search folder for appointment search </t:objective>
 
 	<t:test>
@@ -153,11 +153,11 @@
 			<t:select path="//mail:GetSearchFolderResponse/mail:search" attr="query" match="${appointment.subject1}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid = "Appointment_Search03" type="functional" areas="Calendar">
+<t:test_case testcaseid = "Appointment_Search03" type="regression" areas="Calendar">
     <t:objective> Delete the appointment search folder </t:objective>
 
 	 <t:test>

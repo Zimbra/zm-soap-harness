@@ -54,7 +54,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
 
         </t:response>
-    </t:test>  
+    </t:test>
 
 
     <t:mailinjecttest >
@@ -71,7 +71,7 @@
 
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
 	<t:objective> Login as the appropriate test account
 	</t:objective>
 
@@ -84,7 +84,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime" 
+		<t:select path="//acct:AuthResponse/acct:lifetime"
 						match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken"
 						set="authToken"/>

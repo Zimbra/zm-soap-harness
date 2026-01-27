@@ -4,12 +4,12 @@
 
 <t:property name="account1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -24,7 +24,7 @@
 
 <t:test_case testcaseid="acctSetup1_account_search" type="always" >
     <t:objective>Prepare the account for tests</t:objective>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -40,9 +40,9 @@
 
 </t:test_case>
 
-    
 
-<t:test_case testcaseid="SearchDirectoryRequest_Bug_39389" type="sanity">
+
+<t:test_case testcaseid="SearchDirectoryRequest_Bug_39389" type="functional">
     <t:objective>Verify searching for COS attributes as per bug 39389</t:objective>
     <t:steps>
     1. Create a new COS with zimbraFeatureIMEnabled=TRUE (for example)
@@ -55,7 +55,7 @@
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name>cos${TIME}${COUNTER}</name>
-                <a n="zimbraFeatureIMEnabled">${globals.true}</a>        
+                <a n="zimbraFeatureIMEnabled">${globals.true}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -82,7 +82,7 @@
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureIMEnabled">${globals.true}</a>        
+                <a n="zimbraFeatureIMEnabled">${globals.true}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -103,9 +103,9 @@
             	<t:select path="//admin:account[@id='${account2.id}']"/>
             </t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case>     
+</t:test_case>
 
 
 

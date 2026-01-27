@@ -26,16 +26,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="ItemActionRequest_Appointment_AccountSetup" type="always">
     <t:objective>create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create an account.    
+             2. Create an account.
     </t:steps>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -47,7 +47,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -60,7 +60,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -91,12 +91,12 @@
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="ItemActionRequest_Appointment_01" type="sanity">
+<t:test_case testcaseid="ItemActionRequest_Appointment_01" type="functional">
     <t:objective>Delete an Item (appointment)</t:objective>
     <t:steps>1. Create a appointment
              2. Delete the item (appointment)
     </t:steps>
-    
+
 	<t:property name="appt.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appt.timezone" value="(GMT-05.00) Eastern Time (US &amp; Canada)"/>
 	<t:property name="appt.start.gmt" value="1263902400000"/> <!-- 01/19/2010 12:00:00 UTC time -->
@@ -125,7 +125,7 @@
             <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt.apptId"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="itemActionRequest1b" depends="itemActionRequest1a">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -139,18 +139,18 @@
                 </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest_Appointment_02" type="functional" bugids="11018">
-    <t:objective>Delete an non-existing item (appointment)</t:objective>    
+<t:test_case testcaseid="ItemActionRequest_Appointment_02" type="regression" bugids="11018">
+    <t:objective>Delete an non-existing item (appointment)</t:objective>
     <t:steps>
         1. Create a appointment
         2. Delete the appointment
         3. Again delete the deleted appointment
     </t:steps>
-    
+
 	<t:property name="appt.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appt.timezone" value="(GMT-05.00) Eastern Time (US &amp; Canada)"/>
 	<t:property name="appt.start.gmt" value="1263902400000"/> <!-- 01/19/2010 12:00:00 UTC time -->
@@ -179,7 +179,7 @@
             <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt.apptId"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="itemActionRequest2b" depends="itemActionRequest2a">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -190,7 +190,7 @@
                 <t:select path="//mail:ItemActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="itemActionRequest2b">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -201,17 +201,17 @@
                 <t:select path="//mail:ItemActionResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest_Appointment_03" type="sanity" >
+<t:test_case testcaseid="ItemActionRequest_Appointment_03" type="functional" >
     <t:objective>Move an item (appointment) to a Calendar folder </t:objective>
     <t:steps>1. Create a new Calendar
              2. Create a appointment
              3. Move appointment to the created Calendar
     </t:steps>
-    
+
     <t:test id="itemActionRequest3a">
         <t:request>
 			<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -269,12 +269,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest_Appointment_04" type="functional" >
+<t:test_case testcaseid="ItemActionRequest_Appointment_04" type="regression" >
     <t:objective>Move an item (appointment) in nonexisting folder </t:objective>
     <t:steps>1. Create a appointment
              2. Move the contact within the nonexisting folder
     </t:steps>
-    
+
 	<t:property name="appt.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appt.timezone" value="(GMT-05.00) Eastern Time (US &amp; Canada)"/>
 	<t:property name="appt.start.gmt" value="1263902400000"/> <!-- 01/19/2010 12:00:00 UTC time -->
@@ -304,7 +304,7 @@
         </t:response>
     </t:test>
 
-    
+
     <t:test  depends="itemActionRequest4a">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -319,7 +319,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest_Appointment_05" type="sanity" >
+<t:test_case testcaseid="ItemActionRequest_Appointment_05" type="functional" >
     <t:objective>Mark an item (appointment) as read </t:objective>
     <t:steps>1. Create a appointment
              2. Mark as read
@@ -354,7 +354,7 @@
         </t:response>
     </t:test>
 
-    
+
     <t:test  depends="itemActionRequest5a">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -372,7 +372,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest_Appointment_06" type="sanity" >
+<t:test_case testcaseid="ItemActionRequest_Appointment_06" type="functional" >
     <t:objective>Tag an item (appointment) </t:objective>
     <t:steps>1. Create a tag
              2. Create a contact
@@ -392,7 +392,7 @@
                 </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="appt.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appt.timezone" value="(GMT-05.00) Eastern Time (US &amp; Canada)"/>
 	<t:property name="appt.start.gmt" value="1263902400000"/> <!-- 01/19/2010 12:00:00 UTC time -->
@@ -422,7 +422,7 @@
         </t:response>
     </t:test>
 
-    
+
     <t:test  depends="itemActionRequest6a,itemActionRequest6b">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -440,12 +440,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest_Appointment_07" type="sanity" >
+<t:test_case testcaseid="ItemActionRequest_Appointment_07" type="functional" >
     <t:objective>Update an item (appointment)</t:objective>
     <t:steps>1. Create a appointment
              2. Create a tag
              3. Create a folder
-             4. Update it 
+             4. Update it
     </t:steps>
 
 	<t:property name="appt.subject" value="subject.${TIME}.${COUNTER}"/>
@@ -477,7 +477,7 @@
         </t:response>
     </t:test>
 
-    
+
      <t:test id="itemActionRequest7b">
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -518,7 +518,7 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
 

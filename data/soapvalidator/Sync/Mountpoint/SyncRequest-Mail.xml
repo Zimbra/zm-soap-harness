@@ -11,7 +11,7 @@
 <t:property name="op.move" value="move"/>
 <t:property name="op.delete" value="delete"/>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
@@ -33,7 +33,7 @@
     <t:steps> 1. Login to Admin
               2. Create test accounts
     </t:steps>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -56,7 +56,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
     <t:test required="true">
@@ -69,7 +69,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -96,7 +96,7 @@
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -129,15 +129,15 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Mail_01" type="bhr">
+<t:test_case testcaseid="SyncRequest_Sharing_Mail_01" type="sanity">
     <t:objective>Verify that a new message in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -202,7 +202,7 @@ Now is the time for all good men to come to the aid of their country
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:m" attr="id" match="${account1.id}:${account1.message1.id}"/>
@@ -224,7 +224,7 @@ Now is the time for all good men to come to the aid of their country
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Mail_02" type="sanity" bugids="16710">
+<t:test_case testcaseid="SyncRequest_Sharing_Mail_02" type="functional" bugids="16710">
     <t:objective>Verify that a deleted message in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -291,8 +291,8 @@ Now is the time for all good men to come to the aid of their country
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -341,7 +341,7 @@ Now is the time for all good men to come to the aid of their country
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:deleted" attr="ids" match="${account1.id}:${account1.message2.id}"/>
@@ -352,7 +352,7 @@ Now is the time for all good men to come to the aid of their country
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Mail_03" type="sanity" >
+<t:test_case testcaseid="SyncRequest_Sharing_Mail_03" type="functional" >
     <t:objective>Verify that a new message (moved) in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -419,8 +419,8 @@ Now is the time for all good men to come to the aid of their country
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -469,7 +469,7 @@ Now is the time for all good men to come to the aid of their country
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:m" attr="id" match="${account1.id}:${account1.message3.id}"/>
@@ -492,7 +492,7 @@ Now is the time for all good men to come to the aid of their country
 
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Mail_04" type="sanity" >
+<t:test_case testcaseid="SyncRequest_Sharing_Mail_04" type="functional" >
     <t:objective>Verify that a 'marked read' message in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -570,8 +570,8 @@ Now is the time for all good men to come to the aid of their country
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -620,7 +620,7 @@ Now is the time for all good men to come to the aid of their country
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:m[@id='${account1.id}:${account1.message1.id}']" attr="f" match="u" emptyset="1"/>
@@ -643,5 +643,5 @@ Now is the time for all good men to come to the aid of their country
 </t:test_case>
 
 
-    
+
 </t:tests>

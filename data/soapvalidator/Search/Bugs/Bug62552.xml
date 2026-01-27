@@ -11,7 +11,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -48,7 +48,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug62552" type="bhr"  bugids="62552">
+<t:test_case testcaseid="bug62552" type="sanity"  bugids="62552">
 	<t:objective>Imported search folder.</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -99,7 +99,7 @@
 	</t:test>
 
 
- 
+
  <t:test>
  	<t:request>
  	<FolderActionRequest xmlns="urn:zimbraMail">
@@ -134,8 +134,8 @@
 				<t:select path="//mail:search[@name='${searchfolder1.NewName}']" attr="id" match="${searchfolder1.id}"/>
 				<t:select path="//mail:folder[@name='${globals.trash}']/mail:search[@name='${searchfolder2}']" attr="id" match="${searchfolder2.id}"/>
 			</t:select>
-	    </t:response>	
-				
+	    </t:response>
+
 	</t:test>
 
 </t:test_case>

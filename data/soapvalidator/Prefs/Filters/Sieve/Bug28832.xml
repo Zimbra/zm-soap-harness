@@ -68,7 +68,7 @@ if anyof (
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin" />
@@ -77,13 +77,13 @@ if anyof (
 			<t:select path="//admin:PingResponse" />
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1" type="always">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -107,7 +107,7 @@ if anyof (
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	                        
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -132,7 +132,7 @@ if anyof (
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -145,7 +145,7 @@ if anyof (
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -158,7 +158,7 @@ if anyof (
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -185,7 +185,7 @@ if anyof (
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account6.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -199,20 +199,20 @@ if anyof (
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account7.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account8.name}</name>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account8.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct8.server"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -225,8 +225,8 @@ if anyof (
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account9.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct9.server"/>
         </t:response>
-    </t:test> 
-            
+    </t:test>
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -238,7 +238,7 @@ if anyof (
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="dl_member1.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="dl_member1.server"/>
         </t:response>
-    </t:test>     
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -252,28 +252,28 @@ if anyof (
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="dl_member2.server"/>
         </t:response>
     </t:test>
-        
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-              
+    </t:test>
+
 </t:test_case>
 
-    
-<t:test_case testcaseid="bug28832_reject1" type="functional" bugids="28832">
+
+<t:test_case testcaseid="bug28832_reject1" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
-    </steps>	
+    </steps>
 
 <t:test required="true">
 	<t:request>
@@ -282,7 +282,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -306,11 +306,11 @@ if anyof (
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${reject_mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${reject_mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m/mail:fr" contains="${reject_mail_content}"/>
 			</t:response>
@@ -325,15 +325,15 @@ if anyof (
         <t:response>
             <t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="t"]' attr="a" match="${test_account1.name}"/>
         </t:response>
-    </t:test>     
-</t:test_case>   
+    </t:test>
+</t:test_case>
 
-<t:test_case testcaseid="bug28832_ereject1" type="functional" bugids="28832">
+<t:test_case testcaseid="bug28832_ereject1" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -346,19 +346,19 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule2}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule2}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -366,7 +366,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -390,23 +390,23 @@ if anyof (
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${ereject_mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${ereject_mail_subject}"/>
 			</t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug28832_reject2" type="functional" bugids="28832">
+<t:test_case testcaseid="bug28832_reject2" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -419,19 +419,19 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule3}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule3}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -439,7 +439,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -463,11 +463,11 @@ if anyof (
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${reject_mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${reject_mail_subject}"/>
 			</t:response>
     </t:test>
@@ -481,16 +481,16 @@ if anyof (
         <t:response>
             <t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="t"]' attr="a" match="${test_account1.name}"/>
         </t:response>
-    </t:test>     
-</t:test_case>  
+    </t:test>
+</t:test_case>
 
- 
-<t:test_case testcaseid="bug28832_ereject2" type="functional" bugids="28832">
+
+<t:test_case testcaseid="bug28832_ereject2" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -503,19 +503,19 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule4}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule4}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -523,7 +523,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -547,23 +547,23 @@ if anyof (
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${ereject_mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${ereject_mail_subject}"/>
 			</t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug28832_reject3" type="functional" bugids="28832">
+<t:test_case testcaseid="bug28832_reject3" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -576,19 +576,19 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule3}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule3}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -596,7 +596,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -617,19 +617,19 @@ if anyof (
         	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
    		</t:response>
 	</t:test>
-  
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject2}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject2}"/>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id"/>
 			</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -639,15 +639,15 @@ if anyof (
         <t:response>
             <t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="t"]' attr="a" match="${test_account1.name}"/>
         </t:response>
-    </t:test>    
+    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="bug28832_ereject3" type="functional" bugids="28832">
+<t:test_case testcaseid="bug28832_ereject3" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -660,19 +660,19 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule4}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule4}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -680,7 +680,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -704,24 +704,24 @@ if anyof (
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${ereject_mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${ereject_mail_subject}"/>
 			</t:response>
-    </t:test> 
-        
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="bug28832_dltest" type="functional" bugids="28832">
+<t:test_case testcaseid="bug28832_dltest" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user
 		2. Create dl. Add users. Enable sieve for one of the user.
 		3. Send email to dl. Verify sieve enabled user dont get the email. Others get it.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -734,18 +734,18 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -756,9 +756,9 @@ if anyof (
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
         </t:response>
-    </t:test> 
+    </t:test>
 
-   
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -773,8 +773,8 @@ if anyof (
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    	
+    </t:test>
+
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -782,7 +782,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -806,14 +806,14 @@ if anyof (
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${reject_mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${reject_mail_subject}"/>
 			</t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test required="true">
 	<t:request>
@@ -822,30 +822,30 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 			</t:response>
-    </t:test>	        
-</t:test_case> 
+    </t:test>
+</t:test_case>
 
-<t:test_case testcaseid="bug28832_multiple_usertest" type="functional" bugids="28832">
+<t:test_case testcaseid="bug28832_multiple_usertest" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user
 		2. Send email to multiple users.
 		3. Verify only email for user with sieve rule is rejected.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -858,18 +858,18 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test required="true">
 	<t:request>
@@ -878,7 +878,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -903,14 +903,14 @@ if anyof (
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${reject_mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${reject_mail_subject}"/>
 			</t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test required="true">
 	<t:request>
@@ -919,30 +919,30 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 			</t:response>
-    </t:test>	        
-</t:test_case> 
+    </t:test>
+</t:test_case>
 
-<t:test_case testcaseid="bug28832_japanese_local" type="functional" bugids="28832">
+<t:test_case testcaseid="bug28832_japanese_local" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user and set locale to JP
 		2. Send email to the user.
 		3. Verify rejected email is according the local of sender and is received correctly.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -955,18 +955,18 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account6.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test required="true">
 	<t:request>
@@ -975,7 +975,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -999,24 +999,24 @@ if anyof (
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${reject_mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${reject_mail_subject}"/>
 			</t:response>
-    </t:test> 
-	        
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="bug28832_disable_sieve" type="functional" bugids="28832">
+<t:test_case testcaseid="bug28832_disable_sieve" type="regression" bugids="28832">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve rule for the user
 		2. Disabled sieve reject on cos level
 		3. Verify emails are not rejected.
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -1029,19 +1029,19 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
     <t:test id = "modifyaccountrequest01">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account8.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>             
+                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -1050,10 +1050,10 @@ if anyof (
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
-	            
+
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1061,7 +1061,7 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
@@ -1085,14 +1085,14 @@ if anyof (
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}" emptyset="0"/>
 			</t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test required="true">
 	<t:request>
@@ -1101,22 +1101,22 @@ if anyof (
 			<password>${defaultpassword.value}</password>
 		</AuthRequest>
 		</t:request>
-		<t:response>		   
+		<t:response>
 			 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 		</t:response>
 	</t:test>
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>in:inbox subject:${mail_subject}</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="Good Morning"/>
 			</t:response>
-    </t:test>		        
+    </t:test>
 </t:test_case>
 
 <!--<t:finally>
@@ -1132,7 +1132,7 @@ if anyof (
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -1141,9 +1141,9 @@ if anyof (
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
-	    </t:test>        
+	    </t:test>
 </t:finally>-->
 
 </t:tests>

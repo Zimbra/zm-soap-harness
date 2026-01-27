@@ -47,7 +47,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -60,7 +60,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -73,7 +73,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- account1 creates an appointment -->
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -100,8 +100,8 @@
                 <m >
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-                        <s d="${ICALTIME[${appointment1.start}]}"/>  
-                        <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>  
+                        <s d="${ICALTIME[${appointment1.start}]}"/>
+                        <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${account2.name}" t="t"/>
@@ -160,7 +160,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_User_SendInviteReplyRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountBy_User_SendInviteReplyRequest_Basic01" type="sanity">
     <t:objective>Use a user token with accountby to SendInviteReplyRequest</t:objective>
     <t:steps>
     1. Use user0 authtoken with accountby=user2 to SendInviteReplyRequest - PERM_DENIED

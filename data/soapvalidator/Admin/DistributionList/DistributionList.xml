@@ -39,11 +39,11 @@
 <t:property name="rights.read" value="r"/>
 
 
-<t:test_case testcaseid="CreateDistributionListRequest_01" type="bhr">
-    <t:objective>Sanity test for CreateDistributionListRequest </t:objective>   
-    
+<t:test_case testcaseid="CreateDistributionListRequest_01" type="sanity">
+    <t:objective>Sanity test for CreateDistributionListRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -54,8 +54,8 @@
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-      
+    </t:test>
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -67,14 +67,14 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" />
 		</t:response>
 	</t:test>
-           
+
 </t:test_case>
 
 <t:test_case testcaseid="GetDistributionListRequest_01" type="smoke">
-    <t:objective>Sanity test for GetDistributionListRequest </t:objective>   
-    
+    <t:objective>Sanity test for GetDistributionListRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -86,7 +86,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -98,7 +98,7 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL1.id" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetDistributionListRequest xmlns="urn:zimbraAdmin" limit="25" offset="0">
@@ -110,43 +110,14 @@
             <t:select path="//admin:GetDistributionListResponse/admin:dl" attr="id" match="${DL1.id}"/>
         </t:response>
 	</t:test>
-           
+
 </t:test_case>
 
 <t:test_case testcaseid="GetAllDistributionListsRequest_01" type="smoke">
-    <t:objective>Sanity test for GetAllDistributionListsRequest </t:objective>   
-    
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
-    <t:test>
-        <t:request>
-            <AuthRequest xmlns="urn:zimbraAdmin">
-                <name>${admin.user}</name>
-                <password>${admin.password}</password>
-            </AuthRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>
-    </t:test>    
-    
-	<t:test>
-		<t:request>
-			<GetAllDistributionListsRequest xmlns="urn:zimbraAdmin" />		
-		</t:request>
-        <t:response>
-            <t:select path="//admin:GetAllDistributionListsResponse/admin:dl" attr="id" match="${DL1.id}"/>
-        </t:response>
-	</t:test>
-           
-</t:test_case>
+    <t:objective>Sanity test for GetAllDistributionListsRequest </t:objective>
 
-
-<t:test_case testcaseid="AddDistributionListMemberRequest_01" type="smoke">
-    <t:objective>Sanity test for AddDistributionListMemberRequest </t:objective>   
-    
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -158,7 +129,36 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-        
+
+	<t:test>
+		<t:request>
+			<GetAllDistributionListsRequest xmlns="urn:zimbraAdmin" />
+		</t:request>
+        <t:response>
+            <t:select path="//admin:GetAllDistributionListsResponse/admin:dl" attr="id" match="${DL1.id}"/>
+        </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListMemberRequest_01" type="smoke">
+    <t:objective>Sanity test for AddDistributionListMemberRequest </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -170,19 +170,19 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL2.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${user1}</name>
-                <password>${defaultpassword.value}</password>             
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -194,14 +194,14 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
-<t:test_case testcaseid="RemoveDistributionListMemberRequest_01" type="sanity">
-    <t:objective>Sanity test for RemoveDistributionListMemberRequest </t:objective>   
-    
+<t:test_case testcaseid="RemoveDistributionListMemberRequest_01" type="functional">
+    <t:objective>Sanity test for RemoveDistributionListMemberRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -213,7 +213,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-        
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -225,19 +225,19 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL3.id"/>
 		</t:response>
 	</t:test>
-	
+
 	 <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${user2}</name>
-                <password>${defaultpassword.value}</password>             
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -249,7 +249,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -261,14 +261,14 @@
             <t:select path="//admin:RemoveDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 <t:test_case testcaseid="ModifyDistributionListRequest_01" type="smoke">
-    <t:objective>Sanity test for ModifyDistributionListRequest </t:objective>   
-    
+    <t:objective>Sanity test for ModifyDistributionListRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -280,7 +280,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -292,7 +292,7 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL4.id"/>
 		</t:response>
 	</t:test>
-           
+
     <t:test>
         <t:request>
             <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -301,18 +301,18 @@
             </ModifyDistributionListRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyDistributionListResponse/admin:dl" attr="id" match="${DL4.id}"/> 
+            <t:select path="//admin:ModifyDistributionListResponse/admin:dl" attr="id" match="${DL4.id}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteDistributionListRequest_01" type="sanity">
-    <t:objective>Sanity test for DeleteDistributionListRequest </t:objective>   
-    
+<t:test_case testcaseid="DeleteDistributionListRequest_01" type="functional">
+    <t:objective>Sanity test for DeleteDistributionListRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -324,7 +324,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -336,7 +336,7 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL5.id"/>
 		</t:response>
 	</t:test>
-           
+
     <t:test>
         <t:request>
             <DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -345,18 +345,18 @@
             </DeleteDistributionListRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:DeleteDistributionListResponse"/> 
+            <t:select path="//admin:DeleteDistributionListResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="AddDistributionListAliasRequest_01" type="smoke">
-    <t:objective>Sanity test for AddDistributionListAliasRequest </t:objective>   
-    
+    <t:objective>Sanity test for AddDistributionListAliasRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -368,7 +368,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -380,7 +380,7 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL6.id"/>
 		</t:response>
 	</t:test>
-	
+
 	 <t:test>
         <t:request>
             <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
@@ -391,15 +391,15 @@
         <t:response>
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="RemoveDistributionListAliasRequest_01" type="sanity">
-    <t:objective>Sanity test for RemoveDistributionListAliasRequest </t:objective>   
-    
+<t:test_case testcaseid="RemoveDistributionListAliasRequest_01" type="functional">
+    <t:objective>Sanity test for RemoveDistributionListAliasRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -411,7 +411,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -423,7 +423,7 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL7.id"/>
 		</t:response>
 	</t:test>
-	
+
 	 <t:test>
         <t:request>
             <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
@@ -435,7 +435,7 @@
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <RemoveDistributionListAliasRequest xmlns="urn:zimbraAdmin">
@@ -446,15 +446,15 @@
         <t:response>
             <t:select path="//admin:RemoveDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="RenameDistributionListRequest_01" type="sanity">
-    <t:objective>Sanity test for RenameDistributionListRequest </t:objective>   
-    
+<t:test_case testcaseid="RenameDistributionListRequest_01" type="functional">
+    <t:objective>Sanity test for RenameDistributionListRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -466,7 +466,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -478,7 +478,7 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL8.id"/>
 		</t:response>
 	</t:test>
-	
+
 	 <t:test>
         <t:request>
             <RenameDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -490,14 +490,14 @@
             <t:select path="//admin:RenameDistributionListResponse/admin:dl"/>
         </t:response>
     </t:test>
-              
+
 </t:test_case>
 
-<t:test_case testcaseid="GetDistributionListMembershipRequest_01" type="sanity">
-    <t:objective>Sanity test for GetDistributionListMembershipRequest </t:objective>   
-    
+<t:test_case testcaseid="GetDistributionListMembershipRequest_01" type="functional">
+    <t:objective>Sanity test for GetDistributionListMembershipRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -509,7 +509,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -522,7 +522,7 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="DL9.name"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -534,19 +534,19 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL10.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${user3}</name>
-                <password>${defaultpassword.value}</password>             
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -558,7 +558,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -570,7 +570,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
 	 <t:test>
         <t:request>
             <GetDistributionListMembershipRequest xmlns="urn:zimbraAdmin">
@@ -581,14 +581,14 @@
             <t:select path="//admin:GetDistributionListMembershipResponse/admin:dl" />
         </t:response>
     </t:test>
-               
+
 </t:test_case>
 
-<t:test_case testcaseid="GetAccountMembershipRequest_01" type="sanity">
-    <t:objective>Sanity test for GetAccountMembershipRequest </t:objective>   
-    
+<t:test_case testcaseid="GetAccountMembershipRequest_01" type="functional">
+    <t:objective>Sanity test for GetAccountMembershipRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -600,7 +600,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -612,19 +612,19 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL11.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${user4}</name>
-                <password>${defaultpassword.value}</password>             
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -636,7 +636,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
 	 <t:test>
         <t:request>
             <GetAccountMembershipRequest  xmlns="urn:zimbraAdmin">
@@ -647,17 +647,17 @@
             <t:select path="//admin:GetAccountMembershipResponse/admin:dl" />
         </t:response>
     </t:test>
-               
+
 </t:test_case>
 
 
 
 
 <t:test_case testcaseid="GetDistributionListMembersRequest_01" type="smoke">
-    <t:objective>Sanity test for GetDistributionListMembersRequest </t:objective>   
-    
+    <t:objective>Sanity test for GetDistributionListMembersRequest </t:objective>
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -669,7 +669,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
 	<t:test>
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -681,20 +681,20 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="DL15.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${user8}</name>
-                <password>${defaultpassword.value}</password>             
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account8.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account8.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="server.zimbraAccount"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -706,7 +706,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${server.zimbraAccount}"/>
 
     <t:test >
@@ -719,8 +719,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 	 <t:test>
         <t:request>
             <GetDistributionListMembersRequest  xmlns="urn:zimbraAccount">
@@ -730,8 +730,8 @@
         <t:response>
             <t:select path="//acct:GetDistributionListMembersResponse/acct:dlm" />
         </t:response>
-    </t:test> 
-               
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

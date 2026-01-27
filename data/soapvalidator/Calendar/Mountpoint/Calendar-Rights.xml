@@ -1,18 +1,18 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
- 
-<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
-    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>
+
 <t:property name="account1.user" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.user" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account3.user" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account4.user" value="test.${TIME}.${COUNTER}@${testdomain.name}"/>
-    
+
 <t:property name="appointment1.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment2.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
-<t:property name="appointment3.subject" value="Subject of meeting${TIME}.${COUNTER}"/>    
-<t:property name="appointment4.subject" value="Subject of meeting${TIME}.${COUNTER}"/>    
-<t:property name="appointment5.subject" value="Subject of meeting${TIME}.${COUNTER}"/>        
+<t:property name="appointment3.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment4.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment5.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment6.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment7.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment8.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
@@ -25,15 +25,15 @@
 <t:property name="appointment14.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment15a.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment15b.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
-<t:property name="appointment15c.subject" value="Subject of meeting${TIME}.${COUNTER}"/>    
-<t:property name="appointment15d.subject" value="Subject of meeting${TIME}.${COUNTER}"/>        
+<t:property name="appointment15c.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment15d.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment16.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment17.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 
 <t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
-    
-    
+
+
 <t:property name="Time1" value="1167048000000"/> <!-- 12/25/2006 12:00:00 -->
 <t:property name="Time2" value="1167051600000"/> <!-- 12/25/2006 13:00:00 -->
 <t:property name="Time3" value="1167058800000"/> <!-- 12/25/2006 15:00:00 -->
@@ -64,7 +64,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="acctSetup1_calendar_delegated" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -198,7 +198,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test required="true">
@@ -228,8 +228,8 @@
     </t:test>
 
 </t:test_case>
-    
-    
+
+
 <t:test_case testcaseid="calendar_delegated1" type="smoke">
     <t:objective>Verify that an appointment can be seen if the shared calender has "r" permissions (Viewer Permission)</t:objective>
     <t:steps>
@@ -270,7 +270,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-	
+
     <t:test id="calendar_delegated1b" depends="calendar_delegated1a">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -283,7 +283,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -350,7 +350,7 @@
                         <s d="${ICALTIME[${Time3}]}"/>
                         <e d="${ICALTIME[${Time4}]}"/>
                         <or a="${account3.user}"/>
-                    </inv>                    
+                    </inv>
                 </m>
             </ModifyAppointmentRequest>
         </t:request>
@@ -362,12 +362,12 @@
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
-<t:test_case testcaseid="calendar_delegated2" type="bhr">
+
+<t:test_case testcaseid="calendar_delegated2" type="sanity">
     <t:objective>Verify that an appointment can be created if the shared calender has "ri" permissions.</t:objective>
     <t:steps>
         1. Login to account1
-        2. Give permission to account2 for insertion 
+        2. Give permission to account2 for insertion
         3. Login to the account2.
         4. Create an appointment in the shared folder
         5. Login to account1.
@@ -400,7 +400,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated2c">
@@ -474,13 +474,13 @@
         </t:response>
     </t:test>
 
-</t:test_case>    
-    
-    
-<t:test_case testcaseid="calendar_delegated3" type="bhr">
+</t:test_case>
+
+
+<t:test_case testcaseid="calendar_delegated3" type="sanity">
     <t:objective>Verify that an appointment can be deleted if the shared calender has "rwd" permissions.</t:objective>
     <t:steps>
-        1. Login to first account 
+        1. Login to first account
         2. Give permission to account for deletion (rwd)
         3. Create an appointment
         4. Login to the second account.
@@ -539,7 +539,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated3d">
@@ -567,7 +567,7 @@
 
     <t:test depends="calendar_delegated3e">
         <t:request>
-            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment3.id}" comp="0">                
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment3.id}" comp="0">
             </CancelAppointmentRequest>
         </t:request>
         <t:response>
@@ -575,8 +575,8 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
-    
+</t:test_case>
+
 
 <t:test_case testcaseid="calendar_delegated4" type="smoke">
     <t:objective>Verify that an appointment can be modified if the shared calender has "rwd" permissions</t:objective>
@@ -629,7 +629,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="calendar_delegated4c" depends="calendar_delegated4a">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -652,7 +652,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated4d">
@@ -687,7 +687,7 @@
                         <s d="${ICALTIME[${Time3}]}"/>
                         <e d="${ICALTIME[${Time4}]}"/>
                         <or a="${account1.user}"/>
-                    </inv>                    
+                    </inv>
                 </m>
             </ModifyAppointmentRequest>
         </t:request>
@@ -696,10 +696,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>    
- 
+</t:test_case>
 
-<t:test_case testcaseid="calendar_delegated5" type="bhr">
+
+<t:test_case testcaseid="calendar_delegated5" type="sanity">
     <t:objective>Verify that an exception can be created if the shared calender has "rwd" permissions</t:objective>
     <t:steps>
         1. Login to first account and grant proper permissions.
@@ -724,7 +724,7 @@
 
         </t:response>
     </t:test>
-    
+
     	<!-- Clearing ACL -->
 	<t:test>
         <t:request>
@@ -831,7 +831,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="calendar_delegated6" type="bhr">
+<t:test_case testcaseid="calendar_delegated6" type="sanity">
     <t:objective>Verify that an account2 can accept the appointment on a shared calendar with "rx" permissions</t:objective>
     <t:steps>
         1. Login to account1 and grant proper permissions to account2
@@ -870,7 +870,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
 
     <t:test id="calendar_delegated6a">
@@ -914,7 +914,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated6d">
@@ -958,10 +958,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>   
-    
+</t:test_case>
 
-<t:test_case testcaseid="calendar_delegated7" type="bhr">
+
+<t:test_case testcaseid="calendar_delegated7" type="sanity">
     <t:objective>Verify that an account2 can declined the appointment on a shared calendar with "rx" permissions</t:objective>
     <t:steps>
         1. Login to account1.
@@ -1014,7 +1014,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
 
     <t:test id="calendar_delegated7a">
@@ -1058,7 +1058,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated7d">
@@ -1102,10 +1102,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>    
-    
+</t:test_case>
 
-<t:test_case testcaseid="calendar_delegated8" type="bhr">
+
+<t:test_case testcaseid="calendar_delegated8" type="sanity">
     <t:objective>Verify that an account2 can tentative the appointment on a shared calendar with "rx" permissions</t:objective>
     <t:steps>
         1. Login to account1.
@@ -1132,7 +1132,7 @@
 
         </t:response>
     </t:test>
-    
+
     	<!-- Clearing ACL -->
 	<t:test>
         <t:request>
@@ -1159,7 +1159,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
 
     <t:test id="calendar_delegated8a">
@@ -1203,7 +1203,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated8d">
@@ -1247,10 +1247,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>    
-        
+</t:test_case>
 
-<t:test_case testcaseid="calendar_delegated9" type="sanity">
+
+<t:test_case testcaseid="calendar_delegated9" type="functional">
     <t:objective>Verify that a cancelled appointment can not be accessed in the shared calender if it has been deleted</t:objective>
     <t:steps>
         1. Login to first account.
@@ -1293,7 +1293,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="calendar_delegated9c">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -1377,7 +1377,7 @@
             <t:select path = "//mail:CancelAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated9h">
@@ -1406,7 +1406,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="calendar_delegated10" type="sanity">
+<t:test_case testcaseid="calendar_delegated10" type="functional">
     <t:objective>Verify that if an appointment is modified then it is reflected in the shared calender folder </t:objective>
     <t:steps>
         1. Login to first account.
@@ -1462,7 +1462,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="calendar_delegated10c">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
@@ -1554,7 +1554,7 @@
             <t:select path="//mail:ModifyAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated10h">
@@ -1590,9 +1590,9 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="calendar_delegated11" type="bhr" bugids="4332">
+
+<t:test_case testcaseid="calendar_delegated11" type="sanity" bugids="4332">
     <t:objective>Verify that an account2 can accept the appointment created by 3rd party on a shared calendar with "rx" permissions </t:objective>
     <t:steps>
         1. Login to first account.
@@ -1659,13 +1659,13 @@
 
         </t:response>
     </t:test>
-    
+
 
     <t:test id="calendar_delegated11d" depends="calendar_delegated11c">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment11.subject}" loc="${appointment.location}">                        
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment11.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account1.user}"/>
                         <s d="${ICALTIME[${Time1}]}"/>
                         <e d="${ICALTIME[${Time2}]}"/>
@@ -1688,7 +1688,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated11e">
@@ -1731,10 +1731,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>        
+</t:test_case>
 
 
-<t:test_case testcaseid="calendar_delegated12" type="bhr" bugids="4332">
+<t:test_case testcaseid="calendar_delegated12" type="sanity" bugids="4332">
     <t:objective>Verify that an account2 can decline the appointment created by 3rd party on a shared calendar with "rx" permissions </t:objective>
     <t:steps>
         1. Login to first account.
@@ -1803,12 +1803,12 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="calendar_delegated12d" depends="calendar_delegated12c">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment12.subject}" loc="${appointment.location}">                        
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment12.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account1.user}"/>
                         <s d="${ICALTIME[${Time2}]}"/>
                         <e d="${ICALTIME[${Time3}]}"/>
@@ -1831,7 +1831,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated12e" >
@@ -1877,8 +1877,8 @@
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="calendar_delegated13" type="bhr" bugids="4332">
+
+<t:test_case testcaseid="calendar_delegated13" type="sanity" bugids="4332">
     <t:objective>Verify that an account2 can mark tentative the appointment created by 3rd party on a shared calendar with "rx" permissions </t:objective>
     <t:steps>
         1. Login to first account.
@@ -1947,12 +1947,12 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="calendar_delegated13d" depends="calendar_delegated13c">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment13.subject}" loc="${appointment.location}">                        
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment13.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account1.user}"/>
                         <s d="${ICALTIME[${Time3}]}"/>
                         <e d="${ICALTIME[${Time4}]}"/>
@@ -1975,7 +1975,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated13e">
@@ -2019,10 +2019,10 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
-    
+</t:test_case>
 
-<t:test_case testcaseid="calendar_delegated14" type="sanity">
+
+<t:test_case testcaseid="calendar_delegated14" type="functional">
     <t:objective>Verify that an account2 can view the appointment but cannot accept it on a shared calendar with "r" permissions (None permission) </t:objective>
     <t:steps>
         1. Login to first account.
@@ -2078,12 +2078,12 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="calendar_delegated14d" depends="calendar_delegated14c">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment14.subject}" loc="${appointment.location}">                        
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment14.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account1.user}"/>
                         <s d="${ICALTIME[${Time1}]}"/>
                         <e d="${ICALTIME[${Time2}]}"/>
@@ -2149,10 +2149,10 @@
         </t:response>
     </t:test>
 
-</t:test_case>    
-  
+</t:test_case>
 
-<t:test_case testcaseid="calendar_delegated15" type="bhr">
+
+<t:test_case testcaseid="calendar_delegated15" type="sanity">
     <t:objective>Verify that an account2 can perform proper operation when he is a Manager of shared calendar (permissions= "rwidx") </t:objective>
     <t:steps>
         1. Login to first account.
@@ -2166,8 +2166,8 @@
         9. Modify the appointment created by account1
         10. Get the id of modified appointment.
         11. Delete the appointment created by account1
-        12. Create a New appointment in Shared folder        
-        13. Login to account1 
+        12. Create a New appointment in Shared folder
+        13. Login to account1
         14. Get the appointment created by account2 in shared calendar
     </t:steps>
 
@@ -2238,12 +2238,12 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="calendar_delegated15e" depends="calendar_delegated15d">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment15b.subject}" loc="${appointment.location}">                        
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment15b.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account1.user}"/>
                         <s d="${ICALTIME[${Time3}]}"/>
                         <e d="${ICALTIME[${Time4}]}"/>
@@ -2266,7 +2266,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated15f">
@@ -2335,7 +2335,7 @@
             <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}" l="${delegated.id}"/>
         </t:request>
         <t:response>
-            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment15d.subject}']" attr="invId" set="appointment15d.id"/>            
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment15d.subject}']" attr="invId" set="appointment15d.id"/>
         </t:response>
     </t:test>
 
@@ -2399,20 +2399,20 @@
             <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
         </t:request>
         <t:response>
-            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment15c.subject}']" attr="invId"/>           
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment15c.subject}']" attr="invId"/>
         </t:response>
     </t:test>
 
-</t:test_case>  
+</t:test_case>
 
 
-<t:test_case testcaseid="calendar_delegated16" type="bhr">
+<t:test_case testcaseid="calendar_delegated16" type="sanity">
     <t:objective>Verify that an account2 cannot access shared calendar if the permission is revoked  </t:objective>
     <t:steps>
         1. Login to first account.
-        2. Revoke the permissions of shared Calendar folder from account2       
+        2. Revoke the permissions of shared Calendar folder from account2
         3. Login to the account2.
-        4. Try to access the shared calendar folder        
+        4. Try to access the shared calendar folder
     </t:steps>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
@@ -2443,7 +2443,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test id="calendar_delegated16c">
@@ -2467,9 +2467,9 @@
         <t:response>
             <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
-</t:test_case>    
-    
+</t:test_case>
+
 
 </t:tests>

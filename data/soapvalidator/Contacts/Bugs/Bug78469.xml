@@ -90,9 +90,9 @@
 
 
 
- 
 
-<t:test_case testcaseid="CreateContactWithNotes" type="bhr" bugids="78469">
+
+<t:test_case testcaseid="CreateContactWithNotes" type="sanity" bugids="78469">
     <t:objective>Create a Contact with all the fields</t:objective>
     <t:steps>
      1. Creating New contact:
@@ -133,16 +133,16 @@
                     <a n="workCountry">tt</a>
                     <a n="workURL">tt</a>
                     <a n="notes">${notes}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact.id"/> 	  
-            </t:select>	
+            <t:select attr="id" set="contact.id"/>
+            </t:select>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -151,38 +151,38 @@
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
                     <a n="notes">ああああああああ</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact1.id"/> 	  
-            </t:select>	
+            <t:select attr="id" set="contact1.id"/>
+            </t:select>
         </t:response>
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid = "ModifyContactRequest1" bugids="78469" type="bhr">
+<t:test_case testcaseid = "ModifyContactRequest1" bugids="78469" type="sanity">
     <t:objective>Modify a contact: change the notes</t:objective>
     <t:steps>
        1. Select the contact created above Press Edit button
        2. Enter full-width characters "あ" to Note field more than 367 characters
        3. Press Save or Cancel button
     </t:steps>
-         
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
                 <cn id = "${contact1.id}">
                     <a n="notes">${notes}</a>
-                </cn>     
+                </cn>
             </ModifyContactRequest>
         </t:request>
         <t:response>
             <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetContactsRequest xmlns = "urn:zimbraMail">
@@ -193,7 +193,7 @@
             <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='notes']"  match ="${notes}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

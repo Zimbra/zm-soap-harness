@@ -23,7 +23,7 @@
 <t:property name="op.update" value="update"/>
 
 <t:property name="folder.inbox" value="2"/>
-<t:property name="folder.pname" value="1"/> 
+<t:property name="folder.pname" value="1"/>
 <t:property name="folder.trash" value="3"/>
 
 <t:property name="folder.name1a" value="folder.${TIME}.${COUNTER}"/>
@@ -41,7 +41,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -57,7 +57,7 @@
 <t:test_case testcaseid="acct_setup1" type="always" >
     <t:objective>Create two test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a test_account1 
+            2. Create a test_account1
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -76,7 +76,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -90,7 +90,7 @@
 
 <t:test_case testcaseid="acct_setup2" type="always" >
     <t:objective>Login as the test account</t:objective>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -104,7 +104,7 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -112,12 +112,12 @@
     <t:objective>Move an item (folder) within some existing folder </t:objective>
     <t:steps>1. Create folderA, Create folderB
              2. Move folderB under folderA </t:steps>
-             
+
     <t:test  id="itemActionRequest1a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name1a}" l="${folder.pname}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id1a"/>
@@ -128,7 +128,7 @@
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name1b}" l="${folder.pname}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id1b"/>
@@ -150,17 +150,17 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest2" type="sanity" >
+<t:test_case testcaseid="ItemActionRequest2" type="functional" >
     <t:objective>Move an item (folder) within itself </t:objective>
     <t:steps>1. Create a folder
              2. Move the folder within itself.
     </t:steps>
-    
+
     <t:test  id="itemActionRequest2a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name2}" l="${folder.pname}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id2"/>
@@ -181,7 +181,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest3" type="bhr">
+<t:test_case testcaseid="ItemActionRequest3" type="sanity">
     <t:objective>Delete an item (folder),i.e move it to trash </t:objective>
     <t:steps>1. Create a folder.
              2. Soft delete it.
@@ -190,7 +190,7 @@
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name3}" l="${folder.trash}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id3"/>
@@ -213,7 +213,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest4" type="functional" >
+<t:test_case testcaseid="ItemActionRequest4" type="regression" >
     <t:objective>Move an item (folder) within a non existing folder </t:objective>
     <t:steps>1. Create a folder
              2. Move the item to nonexisting folder.
@@ -223,7 +223,7 @@
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name4}" l="${folder.pname}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id4"/>
@@ -244,7 +244,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest5" type="bhr">
+<t:test_case testcaseid="ItemActionRequest5" type="sanity">
     <t:objective>Delete an item (folder) </t:objective>
     <t:steps>1. Create a folder
              2. Delete the item.
@@ -254,7 +254,7 @@
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name5}" l="${folder.pname}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id5"/>
@@ -274,12 +274,12 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ItemActionRequest6" type="functional" >
+<t:test_case testcaseid="ItemActionRequest6" type="regression" >
     <t:objective>Move an item (folder) within a deleted folder </t:objective>
     <t:steps>1. Create a item (folder)
              2. Move it to deleted folder
     </t:steps>
-    
+
     <t:test  id="itemActionRequest6a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -305,9 +305,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest7" type="functional"  bugids="11018" >
+<t:test_case testcaseid="ItemActionRequest7" type="regression"  bugids="11018" >
     <t:objective>Delete a deleted item (folder) </t:objective>
-    
+
      <t:test depends="itemActionRequest5b">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -322,18 +322,18 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest8" type="functional" bugids="3764">
+<t:test_case testcaseid="ItemActionRequest8" type="regression" bugids="3764">
     <t:objective>Tag an item (folder) </t:objective>
     <t:steps>1. Create a folder
              2. Create a tag
              3. Tag it
     </t:steps>
-    
+
     <t:test  id="itemActionRequest8a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name8}" l="${folder.pname}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id8"/>
@@ -355,7 +355,7 @@
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
                 <action id="${folder.id8}" op="${op.tag}" tag="${tag.id1}"/>
-            </ItemActionRequest>        
+            </ItemActionRequest>
         </t:request>
         <t:response>
                 <t:select path="//zimbra:Code" match="^mail.CANNOT_TAG"/>
@@ -365,17 +365,17 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest9" type="bhr">
+<t:test_case testcaseid="ItemActionRequest9" type="sanity">
     <t:objective>Mark the item (folder) as read </t:objective>
     <t:steps>1. Create a folder
              2. Mark it as read.
     </t:steps>
-    
+
     <t:test  id="itemActionRequest9a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name9}" l="${folder.pname}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id9"/>
@@ -386,7 +386,7 @@
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
                 <action id="${folder.id9}" op="${op.read}"/>
-            </ItemActionRequest>        
+            </ItemActionRequest>
         </t:request>
         <t:response>
                 <t:select path="//mail:ItemActionResponse/mail:action" attr="op" match="${op.read}"/>
@@ -397,14 +397,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest10" type="bhr">
+<t:test_case testcaseid="ItemActionRequest10" type="sanity">
     <t:objective>Mark the item (folder) as unread </t:objective>
 
        <t:test depends="itemActionRequest9a">
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
                 <action id="${folder.id9}" op="${op.unread}"/>
-            </ItemActionRequest>        
+            </ItemActionRequest>
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
@@ -414,7 +414,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ItemActionRequest11" type="bhr">
+<t:test_case testcaseid="ItemActionRequest11" type="sanity">
     <t:objective>Update the item (folder) </t:objective>
     <t:steps>1. Create two folder folders.
              2. Update it.
@@ -424,18 +424,18 @@
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name11a}" l="${folder.pname}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id11a"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="itemActionRequest11b">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name="${folder.name11b}" l="${folder.pname}"/>
-            </CreateFolderRequest>    
+            </CreateFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id11b"/>
@@ -447,7 +447,7 @@
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
                 <action id="${folder.id11a}" op="${op.update}" l="${folder.id11b}"/>
-            </ItemActionRequest>        
+            </ItemActionRequest>
         </t:request>
         <t:response>
                 <t:select path="//mail:ItemActionResponse/mail:action" attr="op" match="${op.update}"/>

@@ -21,7 +21,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -37,7 +37,7 @@
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a test_account1 
+            2. Create a test_account1
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -51,7 +51,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -77,13 +77,13 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="MsgActionRequest_NotSpam_01" type="bhr" areas="spam, smtp" excludes="MACOSXx86,MACOSX" >
+<t:test_case testcaseid="MsgActionRequest_NotSpam_01" type="sanity" areas="spam, smtp" excludes="MACOSXx86,MACOSX" >
     <t:objective>Verify that marking a message as not spam moves the message into the inbox</t:objective>
     <t:steps>
-        1. SMTP inject a spam message to account2 
+        1. SMTP inject a spam message to account2
     	2. Login to account2
     	3. Search for the message
     	4. Mark the message as !spam
@@ -97,7 +97,7 @@
             <from>${defaultdestination.email}</from>
             <server>${account2.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 
     <!--t:smtpinjecttest>
@@ -107,7 +107,7 @@
             <recipient>${account2.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest-->
-   
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -127,7 +127,7 @@
         <t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox.id"/>
             <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam.id"/>
         </t:response>
@@ -157,7 +157,7 @@
         </t:response>
     </t:test>
 
-    <t:test> 
+    <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
                 <action id="${spam2.id}" op="${op.notspam}"/>
@@ -191,7 +191,7 @@
 <t:test_case testcaseid="acct_setup2" type="always" areas="spam" >
     <t:objective>login as the test account</t:objective>
     <t:steps>1. Login to test_account1.
-        2. Add a mail to inbox. 
+        2. Add a mail to inbox.
     </t:steps>
 
     <!--Login to test_account1 -->
@@ -207,25 +207,25 @@
 
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgActionRequest29" type="sanity" areas="spam, smtp" >
+<t:test_case testcaseid="MsgActionRequest29" type="functional" areas="spam, smtp" >
     <t:objective> Marking a mail as spam </t:objective>
     <t:steps>1. Create a message in test_account1
             2. Search the message in inbox. (should exist in inbox)
             3. Mark it as Spam
             4. Search the message again in spam folder (Should exist there)
-            5. Search the message in inbox(Should not exist there)       
+            5. Search the message in inbox(Should not exist there)
     </t:steps>
-       
+
     <!-- find out which folder ID is the inbox -->
     <t:test id="getFolderRequest">
         <t:request>
                <GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
         </t:response>
     </t:test>
@@ -242,9 +242,9 @@
         <t:response>
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-    <!-- Search the mail in inbox.--> 
+    <!-- Search the mail in inbox.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
@@ -257,7 +257,7 @@
     </t:test>
 
     <!--Mark the mail as spam-->
-    <t:test> 
+    <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
                 <action id = "${message2.id}" op = "${op.spam}"/>
@@ -269,7 +269,7 @@
         </t:response>
     </t:test>
 
-    <!-- Search the mail in spam folder.--> 
+    <!-- Search the mail in spam folder.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
@@ -281,7 +281,7 @@
         </t:response>
     </t:test>
 
-    <!-- Search the mail in inbox.--> 
+    <!-- Search the mail in inbox.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
@@ -296,20 +296,20 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgActionRequest30" type="bhr" areas="spam" >
+<t:test_case testcaseid="MsgActionRequest30" type="sanity" areas="spam" >
     <t:objective>Marking a mail as not a spam </t:objective>
     <t:steps>1.Add a mail to the inbox.
             2.Mark mail in inbox as spam
             3.Mark the mail as not a spam.
             4.Search the mail in inbox.
     </t:steps>
-    
+
     <!-- find out which ID is the Inbox -->
     <t:test id="getFolderRequest">
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
         </t:response>
     </t:test>
@@ -328,7 +328,7 @@
         </t:response>
     </t:test>
 
-    <!-- Mark mail in inbox as spam--> 
+    <!-- Mark mail in inbox as spam-->
     <t:test>
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -341,7 +341,7 @@
         </t:response>
     </t:test>
 
-    <!-- Search the mail in spam folder.--> 
+    <!-- Search the mail in spam folder.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
@@ -353,7 +353,7 @@
         </t:response>
     </t:test>
 
-    <!-- Mark the mail as not a spam.--> 
+    <!-- Mark the mail as not a spam.-->
     <t:test>
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -366,7 +366,7 @@
         </t:response>
     </t:test>
 
-    <!-- Search the mail in inbox.--> 
+    <!-- Search the mail in inbox.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
@@ -381,7 +381,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgActionRequest31" type="sanity" bugids="2530" areas="spam" >
+<t:test_case testcaseid="MsgActionRequest31" type="functional" bugids="2530" areas="spam" >
     <t:objective>Mark a mail in a custom folder as spam </t:objective>
     <t:steps>1.Add a mail to the inbox.
             2. Create a folder.
@@ -395,7 +395,7 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
         </t:response>
     </t:test>
@@ -413,7 +413,7 @@
                 <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message31.id"/>
         </t:response>
     </t:test>
-    
+
     <!-- Create a folder.-->
     <t:test>
         <t:request>
@@ -439,7 +439,7 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message31.id"/>
         </t:response>
     </t:test>
-        
+
     <!-- Mark the mail as spam.-->
     <t:test>
         <t:request>
@@ -453,7 +453,7 @@
         </t:response>
     </t:test>
 
-    <!-- Mark the mail as not a spam.--> 
+    <!-- Mark the mail as not a spam.-->
     <t:test>
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -466,7 +466,7 @@
         </t:response>
     </t:test>
 
-    <!-- Search the mail in the folder created.--> 
+    <!-- Search the mail in the folder created.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
@@ -481,7 +481,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgActionRequest32" type="bhr" areas="spam" >
+<t:test_case testcaseid="MsgActionRequest32" type="sanity" areas="spam" >
     <t:objective>Marking multiple mails as not a spam </t:objective>
     <t:steps>1.Add multiple mails to the inbox.
             2.Mark mails in inbox as spam
@@ -489,13 +489,13 @@
             4.Search the mails in inbox.
             5.Search the mails in spam.
     </t:steps>
-    
+
     <!-- find out which ID is the Inbox -->
     <t:test id="getFolderRequest">
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
         </t:response>
     </t:test>
@@ -527,7 +527,7 @@
         </t:response>
     </t:test>
 
-    <!-- Mark mails in inbox as spam--> 
+    <!-- Mark mails in inbox as spam-->
     <t:test>
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -540,7 +540,7 @@
         </t:response>
     </t:test>
 
-    <!-- Search the mails in spam folder.--> 
+    <!-- Search the mails in spam folder.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
@@ -553,7 +553,7 @@
         </t:response>
     </t:test>
 
-    <!-- Mark the multiple mails as not a spam.--> 
+    <!-- Mark the multiple mails as not a spam.-->
     <t:test>
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -566,7 +566,7 @@
         </t:response>
     </t:test>
 
-    <!-- Search the mails in inbox.--> 
+    <!-- Search the mails in inbox.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
@@ -590,11 +590,11 @@
             <t:select path="//mail:SearchResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgActionRequest33" type="sanity" bugids="2530,2334" areas="spam" >
+<t:test_case testcaseid="MsgActionRequest33" type="functional" bugids="2530,2334" areas="spam" >
     <t:objective>Mark mails in a custom folder as spam </t:objective>
     <t:steps>1.Add a mail to the inbox.
             2. Create a folder.
@@ -608,7 +608,7 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
         </t:response>
     </t:test>
@@ -626,7 +626,7 @@
                 <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message33.id"/>
         </t:response>
     </t:test>
-    
+
     <!-- Create a folder.-->
     <t:test>
         <t:request>
@@ -652,7 +652,7 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message33.id"/>
         </t:response>
     </t:test>
-     
+
     <t:test >
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -664,7 +664,7 @@
         <t:response>
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message33a.id"/>
         </t:response>
-    </t:test>   
+    </t:test>
     <!-- Mark the mails as spam.-->
     <t:test>
         <t:request>
@@ -678,7 +678,7 @@
         </t:response>
     </t:test>
 
-    <!-- Mark the mails as not spam.--> 
+    <!-- Mark the mails as not spam.-->
     <t:test>
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -687,11 +687,11 @@
         </t:request>
         <t:response>
             <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.notspam}"/>
-            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message33.id},${message33a.id}"/>            
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message33.id},${message33a.id}"/>
         </t:response>
     </t:test>
 
-    <!-- Search the mails in the folder created.--> 
+    <!-- Search the mails in the folder created.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
@@ -707,7 +707,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgActionRequest34" type="sanity" bugids="2530">
+<t:test_case testcaseid="MsgActionRequest34" type="functional" bugids="2530">
     <t:objective>Mark a mail as not sapm to a specified folder </t:objective>
     <t:steps>1.Add a mail to the inbox.
             2. Create a folder.
@@ -721,7 +721,7 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
         </t:response>
     </t:test>
@@ -739,7 +739,7 @@
                 <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message34.id"/>
         </t:response>
     </t:test>
-    
+
     <!-- Create a folder.-->
     <t:test>
         <t:request>
@@ -765,7 +765,7 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message34.id"/>
         </t:response>
     </t:test>
-        
+
     <!-- Mark the mail as spam.-->
     <t:test>
         <t:request>
@@ -779,7 +779,7 @@
         </t:response>
     </t:test>
 
-    <!-- Mark the mail as not a spam.--> 
+    <!-- Mark the mail as not a spam.-->
     <t:test>
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -792,7 +792,7 @@
         </t:response>
     </t:test>
 
-    <!-- Search the mail in the folder created.--> 
+    <!-- Search the mail in the folder created.-->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">

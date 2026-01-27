@@ -42,7 +42,7 @@
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
 
-	
+
 
     <t:test required="true">
         <t:request>
@@ -55,7 +55,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -68,7 +68,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- account2 creates a conversation and gets the conversation ID -->
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -87,7 +87,7 @@
 	</t:test>
 
 	<t:test required="true">
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
@@ -98,7 +98,7 @@
 	</t:test>
 
 	<t:property name="conversation2.subject" value="Conversation ${TIME} ${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -171,7 +171,7 @@ Content ${TIME} ${COUNTER}
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_User_ConvActionRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountBy_User_ConvActionRequest_Basic01" type="sanity">
     <t:objective>Use a user token with accountby to ConvActionRequest</t:objective>
     <t:steps>
     1. Use user authtoken with accountby=account1 to ConvActionRequest - PERM_DENIED

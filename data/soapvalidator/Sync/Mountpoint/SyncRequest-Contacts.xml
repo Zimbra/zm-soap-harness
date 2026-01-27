@@ -15,7 +15,7 @@
 
 
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
@@ -37,7 +37,7 @@
     <t:steps> 1. Login to Admin
               2. Create test accounts
     </t:steps>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
     <t:test required="true">
@@ -74,7 +74,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
     <t:test required="true">
@@ -87,7 +87,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -116,7 +116,7 @@
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -162,8 +162,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -203,13 +203,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account1.contact1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -232,7 +232,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:cn" attr="id" match="${account1.id}:${account1.contact1.id}"/>
@@ -254,7 +254,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Contacts_02" type="sanity" bugids="16710">
+<t:test_case testcaseid="SyncRequest_Sharing_Contacts_02" type="functional" bugids="16710">
     <t:objective>Verify that a deleted contact in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -289,13 +289,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account1.contact2.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -319,8 +319,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -369,7 +369,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:deleted" attr="ids" match="${account1.id}:${account1.contact2.id}"/>
@@ -380,7 +380,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Contacts_03" type="sanity" >
+<t:test_case testcaseid="SyncRequest_Sharing_Contacts_03" type="functional" >
     <t:objective>Verify that a new contact (moved) in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -415,13 +415,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account1.contact3.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -445,8 +445,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -495,7 +495,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:cn" attr="id" match="${account1.id}:${account1.contact3.id}"/>
@@ -518,7 +518,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Contacts_04" type="sanity" >
+<t:test_case testcaseid="SyncRequest_Sharing_Contacts_04" type="functional" >
     <t:objective>Verify that a modified contact in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -553,13 +553,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account1.contact4.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -583,8 +583,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -615,7 +615,7 @@
             <t:select path="//mail:ModifyContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-    
+
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -636,7 +636,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:cn" attr="id" match="${account1.id}:${account1.contact4.id}"/>
@@ -660,7 +660,7 @@
 
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Contacts_05" type="sanity" >
+<t:test_case testcaseid="SyncRequest_Sharing_Contacts_05" type="functional" >
     <t:objective>Verify that a 'tagged' message in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -695,13 +695,13 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse">
             	<t:select path="//mail:cn" attr="id" set="account1.contact5.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -725,8 +725,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -787,7 +787,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.contacts.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:cn[@id='${account1.id}:${account1.contact5.id}']" attr="t" match="${account1.tag1.id}"/>
@@ -809,7 +809,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Contacts_06" type="bhr">
+<t:test_case testcaseid="SyncRequest_Sharing_Contacts_06" type="sanity">
     <t:objective>Verify that a 'emailed' contact in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -840,8 +840,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.emailed.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -881,7 +881,7 @@
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>EmailedFirst</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse">
@@ -909,7 +909,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.emailed.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:cn" attr="id" match="${account1.id}:${account1.contact6.id}"/>
@@ -930,5 +930,5 @@
 
 </t:test_case>
 
-    
+
 </t:tests>

@@ -49,7 +49,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -62,7 +62,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -75,7 +75,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -88,7 +88,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- Determine the account1 Calendar folder id -->
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -115,8 +115,8 @@
                 <m >
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
                         <at role="OPT" ptst="NE" rsvp="1" a="${account3.name}"/>
-                        <s d="${ICALTIME[${appointment1.start}]}"/>  
-                        <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>  
+                        <s d="${ICALTIME[${appointment1.start}]}"/>
+                        <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${account3.name}" t="t"/>
@@ -133,7 +133,7 @@
 	</t:test>
 
 	<t:test>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
@@ -162,7 +162,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AuthToken_User_GetApptSummariesRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AuthToken_User_GetApptSummariesRequest_Basic01" type="sanity">
     <t:objective>Use a user token to GetApptSummariesRequest</t:objective>
     <t:steps>
     1. Login as user0
@@ -171,11 +171,11 @@
 
 	<t:property name="authToken" value="${authToken.account0}"/>
 
-	
+
 	<t:property name="server.zimbraMail" value="${account0.server}"/>
 
 	<t:test>
-        <t:request> 
+        <t:request>
             <GetApptSummariesRequest xmlns="urn:zimbraMail" l="${account1.id}:${account1.calendar.folder.id}" s="${TIME(-2d)[${appointment1.start}]}" e="${TIME(+2d)[${appointment1.start}]}" />
         </t:request>
         <t:response>

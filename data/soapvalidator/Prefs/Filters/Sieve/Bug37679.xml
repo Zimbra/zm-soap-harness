@@ -20,16 +20,16 @@
 	<t:property name="folder2.name" value="folder${TIME}${COUNTER}" />
 
 	<t:property name="sieve_copy_test1"
-		value='require ["log","fileinto","copy"];	
+		value='require ["log","fileinto","copy"];
 if header :contains "Subject" "test"
    {
    		log "Copies of mail in Inbox and Junk folder";
        fileinto :copy "Junk";
-    }  
+    }
 ' />
 
 	<t:property name="sieve_copy_test2"
-		value='require ["log","fileinto","copy"];	
+		value='require ["log","fileinto","copy"];
 if address :is :all "From" "admin@${defaultdomain.name}"
    {
       redirect :copy "${account2.name}";
@@ -37,7 +37,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 ' />
 
  <t:property name="sieve_copy_test3"
-        value='require ["log","fileinto","copy"];   
+        value='require ["log","fileinto","copy"];
     fileinto :copy "${folder1.name}";
     if header :contains "Subject" "fail" {
     discard;
@@ -45,14 +45,14 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 ' />
     <t:property name="sieve_copy_test4"
         value='require ["log","fileinto","copy"];
-    redirect :copy "${account3.name}";   
+    redirect :copy "${account3.name}";
     if address :comparator "i;ascii-casemap" :contains "from" "admin@${defaultdomain.name}"
     {
     fileinto  "Junk";
     }' />
 
 	<t:test_case testcaseid="AcctSetup1_filters_actions_discard_basic"
-		type="functional" bugids="37679">
+		type="regression" bugids="37679">
 		<t:objective> Create test account and login to first account
 		</t:objective>
 
@@ -162,7 +162,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_1"
-		type="functional" bugids="37679">
+		type="regression" bugids="37679">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -191,9 +191,9 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<!-- Send a mail with admin as sender. Should go in Junk of account 1 user 
+		<!-- Send a mail with admin as sender. Should go in Junk of account 1 user
 			and in inbox too -->
-			
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -252,7 +252,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_2"
-		type="functional" bugids="37679">
+		type="regression" bugids="37679">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -281,7 +281,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<!-- Send a mail with admin as sender. Should go in Inbox of account 1 
+		<!-- Send a mail with admin as sender. Should go in Inbox of account 1
 			user and redirect to inbox of account 2 -->
 
 		<t:test>
@@ -355,7 +355,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_3"
-		type="functional" bugids="37679">
+		type="regression" bugids="37679">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -384,7 +384,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<!-- Send a mail with admin as sender and subject containing 'fail'. Should only remain in folder 1 on 
+		<!-- Send a mail with admin as sender and subject containing 'fail'. Should only remain in folder 1 on
 			account 1 user -->
 
 		<t:test>
@@ -454,9 +454,9 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<!-- Send a mail with admin as sender and non existence of 'fail' word in subject. Should remain in folder 1 and in 
+		<!-- Send a mail with admin as sender and non existence of 'fail' word in subject. Should remain in folder 1 and in
 			inbox on account 1 user -->
-			
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -515,7 +515,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_4"
-		type="functional" bugids="37679">
+		type="regression" bugids="37679">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
@@ -544,8 +544,8 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<!-- Send a mail with admin as sender. Should go in Junk of account 1 
-			user and redirect to inbox of account 3. Should not go in Inbox of account 
+		<!-- Send a mail with admin as sender. Should go in Junk of account 1
+			user and redirect to inbox of account 3. Should not go in Inbox of account
 			1 user -->
 
 		<t:test>
@@ -627,11 +627,11 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 					match="${subject6}" />
 			</t:response>
 		</t:test>
-				
-		<!-- Send a mail with non admin user as sender. Should go in Inbox of account 1 
-			user and redirect to inbox of account 3. Should not go in Junk of account 
+
+		<!-- Send a mail with non admin user as sender. Should go in Inbox of account 1
+			user and redirect to inbox of account 3. Should not go in Junk of account
 			1 user -->
-			
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -644,7 +644,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -662,7 +662,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 					set="Sent_message1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -699,7 +699,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 					match="${subject7}" emptyset="1" />
 			</t:response>
 		</t:test>
-		
+
 	</t:test_case>
 
 </t:tests>

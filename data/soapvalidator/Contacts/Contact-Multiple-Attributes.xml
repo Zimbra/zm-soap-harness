@@ -41,7 +41,7 @@
 
 <t:test_case testcaseid = "Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test required = "true">
         <t:request>
             <PingRequest xmlns = "urn:zimbraAdmin"/>
@@ -50,12 +50,12 @@
             <t:select path = "//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid = "Contact_Multiple_Atributes_acctsetup" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test required = "true">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAdmin">
@@ -67,7 +67,7 @@
             <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required = "true">
         <t:request>
             <CreateAccountRequest xmlns = "urn:zimbraAdmin">
@@ -80,14 +80,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
 <t:test_case testcaseid = "Contact_Multiple_Atributes_acctlogin" type="always">
     <t:objective>login as the test account</t:objective>
-    
+
     <t:test required = "true">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAccount">
@@ -101,15 +101,15 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid = "Contact_Multiple_Atributes_01" bugids="58606" type="bhr">
+<t:test_case testcaseid = "Contact_Multiple_Atributes_01" bugids="58606" type="sanity">
     <t:objective>Create contact with multiple same attributes</t:objective>
     <t:steps>1. create a new contact with multiple userSMIMECertificate, userCertiticate
 		2. Verify that multiple attributes are added
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -129,20 +129,20 @@
             	<t:select path='//mail:a[@n="userSMIMECertificate"]' match="${user.smime1}"/>
 				<t:select path='//mail:a[@n="userSMIMECertificate"]' match="${user.smime2}"/>
 				<t:select path='//mail:a[@n="userCertificate"]' match="${user.certificate1}"/>
-				<t:select path='//mail:a[@n="userCertificate"]' match="${user.certificate2}"/>       
+				<t:select path='//mail:a[@n="userCertificate"]' match="${user.certificate2}"/>
             </t:select>
         </t:response>
     </t:test>
-    
-   
+
+
 </t:test_case>
 
-<t:test_case testcaseid = "Contact_Multiple_Atributes_02" bugids="58606" type="bhr">
+<t:test_case testcaseid = "Contact_Multiple_Atributes_02" bugids="58606" type="sanity">
     <t:objective>Modify contact with multiple same attributes</t:objective>
     <t:steps>1. create a new contact with multiple userSMIMECertificate, userCertiticate
 		2. Verify that multiple attributes are added
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -155,7 +155,7 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            	<t:select attr = "id" set = "contact2.id"/>              
+            	<t:select attr = "id" set = "contact2.id"/>
             </t:select>
         </t:response>
     </t:test>
@@ -182,13 +182,13 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid = "Contact_Multiple_Atributes_03" bugids="58606" type="bhr">
+<t:test_case testcaseid = "Contact_Multiple_Atributes_03" bugids="58606" type="sanity">
     <t:objective>Modify contact with multiple same attributes using ContacActionRequest</t:objective>
-    <t:steps>1. create a new contact 
+    <t:steps>1. create a new contact
 		2. Using contactActionrequest update the contact with multiple attributes
 		2. Verify that multiple attributes are added
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -201,7 +201,7 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            	<t:select attr = "id" set = "contact3.id"/>              
+            	<t:select attr = "id" set = "contact3.id"/>
             </t:select>
         </t:response>
     </t:test>

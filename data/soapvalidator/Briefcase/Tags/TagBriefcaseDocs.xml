@@ -81,26 +81,26 @@
 
         </t:response>
     </t:test>
-  
+
     <t:test id="getFolderRequest">
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>          
-            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase.id"/> 
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase.id"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Tag_Briefcase_01" type="bhr">
+<t:test_case testcaseid="Tag_Briefcase_01" type="sanity">
     <t:objective>Search for a tagged briefcase documents</t:objective>
-    
-    <t:steps> 
-        1. Add  documents to the briefcase.  
+
+    <t:steps>
+        1. Add  documents to the briefcase.
         2. Create a new tag;
-        3. Tag the documents; 
+        3. Tag the documents;
         4. Search for the tag;
         5. Verify the tagged documents;
         6. Search documents in Briefcase and verify that documents has proper tag id.
@@ -115,7 +115,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -136,8 +136,8 @@
 		<t:uploadServletResponse>
 			<t:select attr="id" set="document.htmlfile.aid"/>
 		</t:uploadServletResponse>
-	</t:uploadservlettest>	
-	
+	</t:uploadservlettest>
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -149,8 +149,8 @@
         <t:response>
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document2.id"/>
         </t:response>
-    </t:test> 
-       
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -159,7 +159,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:CreateTagResponse/mail:tag">
-	        <t:select attr="id" set="tag.id"/>	       
+	        <t:select attr="id" set="tag.id"/>
             </t:select>
         </t:response>
     </t:test>
@@ -167,7 +167,7 @@
     <t:test >
         <t:request>
             <ItemActionRequest  xmlns="urn:zimbraMail">
-                <action id="${document1.id}" op="${op.tag}" tag="${tag.id}"/>            
+                <action id="${document1.id}" op="${op.tag}" tag="${tag.id}"/>
             </ItemActionRequest >
         </t:request>
         <t:response>
@@ -179,7 +179,7 @@
 	<t:test >
         <t:request>
             <ItemActionRequest  xmlns="urn:zimbraMail">
-                <action id="${document2.id}" op="${op.tag}" tag="${tag.id}"/>            
+                <action id="${document2.id}" op="${op.tag}" tag="${tag.id}"/>
             </ItemActionRequest >
         </t:request>
         <t:response>
@@ -187,54 +187,54 @@
             <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${document2.id}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="document"   >
                 <query>tag:"${tag1.name}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:doc" attr="id" match="${document1.id}" />
-            <t:select path="//mail:SearchResponse/mail:doc" attr="id" match="${document2.id}" />           
+            <t:select path="//mail:SearchResponse/mail:doc" attr="id" match="${document2.id}" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="document">
                 <query> in:"briefcase" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:doc[@id='${document1.id}']" attr="t" match="${tag.id}"/>
             <t:select path="//mail:SearchResponse/mail:doc[@id='${document2.id}']" attr="t" match="${tag.id}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <ItemActionRequest  xmlns="urn:zimbraMail">
-                <action id="${document2.id}" op="!${op.tag}" tag="${tag.id}"/>            
+                <action id="${document2.id}" op="!${op.tag}" tag="${tag.id}"/>
             </ItemActionRequest >
         </t:request>
         <t:response>
             <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "!${op.tag}"/>
             <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${document2.id}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="document">
                 <query> in:"briefcase" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:doc[@id='${document1.id}']" attr="t" match="${tag.id}"/>
             <t:select path="//mail:SearchResponse/mail:doc[@id='${document2.id}']" attr="t" match="${tag.id}" emptyset="1" />
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 

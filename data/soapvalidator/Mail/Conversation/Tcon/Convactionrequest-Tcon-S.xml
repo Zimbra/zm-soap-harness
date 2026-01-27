@@ -20,7 +20,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -35,7 +35,7 @@
 
 <t:test_case testcaseid="acctSetup1_conv_tcon" type="always">
     <t:objective>Create test account</t:objective>
-    <t:steps> 
+    <t:steps>
 		1. Login to admin account
         2. Create a test_account1
     </t:steps>
@@ -165,7 +165,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest1" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest1" type="functional" >
     <t:objective>Tag only messages in sent folder in a conversation </t:objective>
     <t:steps>
         1. Create a TAG
@@ -184,19 +184,19 @@
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="name" set="tag.name1"/>
         </t:response>
     </t:test>
-   
+
     <t:test depends="ConvActionRequest1a">
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
                 <action id="${conv.id1}" op="${op.tag}" tag="${tag.id1}" tcon="s"/>
-            </ConvActionRequest>        
+            </ConvActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.tag}"/>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -213,7 +213,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest2" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest2" type="functional" >
     <t:objective>Tag all messages except those in sent folder in a conversation </t:objective>
     <t:steps>
         1. Create a TAG
@@ -237,7 +237,7 @@
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
                 <action id="${conv.id1}" op="${op.tag}" tag="${tag.id2}" tcon="-s"/>
-            </ConvActionRequest>        
+            </ConvActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.tag}"/>
@@ -261,7 +261,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest3" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest3" type="functional" >
     <t:objective>Untag only messages in sent folder in a conversation </t:objective>
     <t:steps>
 		1. Create a tag
@@ -286,19 +286,19 @@
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
                 <action id="${conv.id1}" op="${op.tag}" tag="${tag.id3}"/>
-            </ConvActionRequest>        
+            </ConvActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.tag}"/>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="ConvActionRequest3b">
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
                 <action id="${conv.id1}" op="${op.untag}" tag="${tag.id3}" tcon="s"/>
-            </ConvActionRequest>        
+            </ConvActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.untag}"/>
@@ -322,7 +322,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest4" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest4" type="functional" >
     <t:objective>Untag all messages except those in sent folder in a conversation </t:objective>
     <t:steps>
 		1. Create a tag
@@ -347,19 +347,19 @@
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
                 <action id="${conv.id1}" op="${op.tag}" tag="${tag.id4}"/>
-            </ConvActionRequest>        
+            </ConvActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.tag}"/>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="ConvActionRequest4b">
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
                 <action id="${conv.id1}" op="${op.untag}" tag="${tag.id4}" tcon="-s"/>
-            </ConvActionRequest>        
+            </ConvActionRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.untag}"/>
@@ -383,7 +383,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest5" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest5" type="functional" >
     <t:objective>Flag all messages in sent folder in a conversation</t:objective>
     <t:steps>
 		1. Flag a conversation with sent constraint
@@ -418,7 +418,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest6" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest6" type="functional" >
     <t:objective>Flag all messages except those in sent folder in a conversation</t:objective>
     <t:steps>
 		1. Flag a conversation with Not sent constraint
@@ -453,7 +453,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest7" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest7" type="functional" >
     <t:objective>Unflag all messages in sent folder in a conversation</t:objective>
     <t:steps>
         1.Flag all messages in the conversation
@@ -472,7 +472,7 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="ConvActionRequest7a">
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -501,7 +501,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest8" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest8" type="functional" >
     <t:objective>Unflag all messages except those in sent folder in a conversation</t:objective>
     <t:steps>
         1.Flag all messages in the conversation
@@ -520,7 +520,7 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="ConvActionRequest8a">
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -549,7 +549,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest9" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest9" type="functional" >
     <t:objective>Mark all messages in sent folder in a conversation as Read </t:objective>
     <t:steps>
 		1. Mark all messages in sent folder in a conversation as Read
@@ -584,7 +584,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest10" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest10" type="functional" >
     <t:objective>Mark all messages in sent folder in a conversation as Unread </t:objective>
     <t:steps>
 		1. Mark all messages in sent folder in a conversation as Unread
@@ -619,7 +619,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest11" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest11" type="functional" >
     <t:objective>Mark all messages except those in sent folder in a conversation as Read</t:objective>
     <t:steps>
 		1. Mark all messages except those in sent folder in a conversation as Read
@@ -654,7 +654,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest12" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest12" type="functional" >
     <t:objective>Mark all messages except those in sent folder in a conversation as Unread</t:objective>
      <t:steps>
 		1. Mark all messages except those in sent folder in a conversation as Unread
@@ -689,7 +689,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest13" type="sanity">
+<t:test_case testcaseid="ConvActionRequest13" type="functional">
     <t:objective>Move all messages in sent folder in a conversation to sent folder</t:objective>
     <t:steps>
         1.Get id of sent folder
@@ -734,14 +734,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest14" type="sanity">
+<t:test_case testcaseid="ConvActionRequest14" type="functional">
     <t:objective>Move all messages not in sent folder in a conversation to a folder</t:objective>
     <t:steps>
         1. Create a folder
         2. Move all messages not in sent folder in a conversation to a folder
         3. Verify that messages not in sent are moved to the folder
     </t:steps>
-    
+
     <t:test id="ConvActionRequest14a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -782,14 +782,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest15" type="sanity">
+<t:test_case testcaseid="ConvActionRequest15" type="functional">
     <t:objective>Move all messages in sent folder in a conversation to a folder</t:objective>
     <t:steps>
         1. Create a folder
         2. Move all messages in sent folder in a conversation to the folder
         3. Verify that messages not in sent are moved to the folder
     </t:steps>
-    
+
     <t:test id="ConvActionRequest15a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -801,7 +801,7 @@
            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="name" set="folder.name2"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="ConvActionRequest15a">
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -828,11 +828,11 @@
     </t:test>
 
 </t:test_case>
-   
 
-<t:test_case testcaseid="ConvActionRequest16" type="sanity" >
+
+<t:test_case testcaseid="ConvActionRequest16" type="functional" >
     <t:objective>Mark all messages except those in Sent folder in a conversation as spam</t:objective>
-    
+
     <t:test>
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -861,7 +861,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest17" type="sanity" >
+<t:test_case testcaseid="ConvActionRequest17" type="functional" >
     <t:objective>Delete all messages in Sent folder in a conversation</t:objective>
     <t:steps>
         1. Move a message to Sent folder
@@ -907,6 +907,6 @@
 
 </t:test_case>
 
- 
+
 
 </t:tests>

@@ -19,7 +19,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -35,7 +35,7 @@
 <t:test_case testcaseid="virusBasic_Account_Setup" type="always">
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a account1 
+            2. Create a account1
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -49,8 +49,8 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
 		</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -74,7 +74,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -85,7 +85,7 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account1.mta.server"/>
 		</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -98,7 +98,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -109,7 +109,7 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account2.mta.server"/>
 		</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -122,7 +122,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -133,7 +133,7 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account3.mta.server"/>
 		</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -146,7 +146,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -157,7 +157,7 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account4.mta.server"/>
 		</t:response>
     </t:test>
-    
+
     <!-- Keep the old settings so they can be reset in the future -->
     <t:test required="true">
         <t:request>
@@ -180,7 +180,7 @@
 <t:finally areas="virus,noncluster" >
 
     <!-- After all tests have run, reset the GlobalSettings settings to the default -->
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -192,7 +192,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -229,7 +229,7 @@
             <t:select path="//admin:GetAllConfigResponse"/>
         </t:response>
     </t:test>
-	
+
 </t:finally>
 
 
@@ -247,7 +247,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <!-- Keep the old settings so they can be reset in the future -->
     <t:test>
         <t:request>
@@ -303,7 +303,7 @@
 
 
 
-<t:test_case testcaseid="virusBasic_ReceiveVirus_01" type="bhr" areas="virus, smtp, noncluster" >
+<t:test_case testcaseid="virusBasic_ReceiveVirus_01" type="sanity" areas="virus, smtp, noncluster" >
     <t:objective>Verify that a eicar message is not sent to the mailbox</t:objective>
     <t:steps>
     1. Send the sample virus message to account1
@@ -312,8 +312,8 @@
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
-	
+
+
 
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
@@ -322,7 +322,7 @@
             <recipient>${account1.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-   
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -346,11 +346,11 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid="virusBasic_ReceiveVirus_02" type="sanity" areas="virus, smtp, noncluster" >
+<t:test_case testcaseid="virusBasic_ReceiveVirus_02" type="functional" areas="virus, smtp, noncluster" >
     <t:objective>Verify that notification is sent to user's mailbox</t:objective>
     <t:steps>
     1. Send the sample virus message to account2
@@ -359,7 +359,7 @@
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
@@ -368,7 +368,7 @@
             <recipient>${account2.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-   
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -392,10 +392,10 @@
 			<t:select path="//mail:SearchResponse/mail:m" />
 		</t:response>
 	</t:test>
-   
+
 </t:test_case>
 
-<t:test_case testcaseid="virusBasic_ReceiveVirus_03" type="sanity" areas="virus, smtp, noncluster" >
+<t:test_case testcaseid="virusBasic_ReceiveVirus_03" type="functional" areas="virus, smtp, noncluster" >
     <t:objective>Verify that notification is sent to admin's mailbox</t:objective>
     <t:steps>
     1. Send the sample virus message to account3
@@ -405,7 +405,7 @@
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 	<t:property name="server.zimbraAdmin" value="${account3.server}"/>
-	
+
 
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
@@ -414,7 +414,7 @@
             <recipient>${account3.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-  
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -426,7 +426,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	 
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message" >
@@ -437,11 +437,11 @@
 			<t:select path="//mail:SearchResponse/mail:m" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="virusBasic_ReceiveVirus_04" type="sanity" areas="virus, smtp, noncluster" >
+<t:test_case testcaseid="virusBasic_ReceiveVirus_04" type="functional" areas="virus, smtp, noncluster" >
     <t:objective>Verify that attachments are scanned</t:objective>
     <t:steps>
     1. Send the sample virus message to account4
@@ -459,7 +459,7 @@
             <recipient>${account4.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-   
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
     <t:test id="auth1" required="true">
         <t:request>
@@ -484,7 +484,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-   
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message" >
@@ -495,7 +495,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" />
 		</t:response>
 	</t:test>
-   
+
 </t:test_case>
 
 

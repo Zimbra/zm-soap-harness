@@ -87,7 +87,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="admin.dl1.id"/>
         </t:response>
     </t:test>
-    
+
     	<t:test>
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -124,10 +124,10 @@
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="cal2.id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckRightsRequest_combo01" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckRightsRequest_combo01" type="sanity" bugids="" >
     <t:objective>CheckPermissionRequest Default  rights on Account DL and calresource in single request </t:objective>
 
 
@@ -143,7 +143,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -200,6 +200,6 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@key='${admin.dl2.id}']/acct:right[@allow='0']" match="sendAsDistList" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@key='${admin.dl2.id}']/acct:right[@allow='0']" match="sendOnBehalfOfDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
     </t:test_case>
  </t:tests>

@@ -12,7 +12,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -26,7 +26,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -39,7 +39,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1"  depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
         <t:test id="create_account4"  depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -91,7 +91,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-    
+
         <t:test id="create_account5"  depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -108,7 +108,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForwardAppointmentInviteRequest01" type="bhr">
+<t:test_case testcaseid="ForwardAppointmentInviteRequest01" type="sanity">
 <t:objective>Forward appointment Invitation from one attendee to third user   </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -124,19 +124,19 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="appointment1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment1.content" value=".content${TIME}${COUNTER}"/>
 	<t:property name="time.20141201120000.gmt" value="1417435200000"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
-	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" />  
-	                        <e d="${ICALTIME(+1h)[${time.20141201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" />
+	                        <e d="${ICALTIME(+1h)[${time.20141201120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
 	                        <at a="${account2.name}" role="REQ" ptst="NE" rsvp="1"/>
                         </comp>
@@ -168,8 +168,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -180,7 +180,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account2.appointment1.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 	<t:request>
 		<ForwardAppointmentInviteRequest  xmlns="urn:zimbraMail" id="${account2.appointment1.id}">
@@ -194,7 +194,7 @@
 			<t:select path="//mail:ForwardAppointmentInviteResponse" />
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
    <t:test>
         <t:request>
@@ -206,8 +206,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -218,7 +218,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account3.appointment1.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -238,7 +238,7 @@
 
 
 
-<t:test_case testcaseid="ForwardAppointmentInviteRequest02" type="bhr">
+<t:test_case testcaseid="ForwardAppointmentInviteRequest02" type="sanity">
 <t:objective>Forward appointment Invitation from one attendee to organizer   </t:objective>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -253,19 +253,19 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="appointment2.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment2.content" value=".content${TIME}${COUNTER}"/>
 	<t:property name="time.20141201120000.gmt" value="1417435200000"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" >
-	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" />  
-	                        <e d="${ICALTIME(+1h)[${time.20141201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" />
+	                        <e d="${ICALTIME(+1h)[${time.20141201120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
 	                        <at a="${account2.name}" role="REQ" ptst="NE" rsvp="1"/>
                         </comp>
@@ -297,8 +297,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -309,7 +309,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account2.appointment2.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 	<t:request>
 		<ForwardAppointmentInviteRequest  xmlns="urn:zimbraMail" id="${account2.appointment2.id}">
@@ -337,8 +337,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -349,7 +349,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account1.appointment2.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -365,11 +365,11 @@
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:e" attr="d" match="${ICALTIME(+1h)[${time.20141201120000.gmt}]}" />
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
-<t:test_case testcaseid="ForwardAppointmentInviteRequest03" type="bhr">
+<t:test_case testcaseid="ForwardAppointmentInviteRequest03" type="sanity">
 <t:objective>Forward appointment Invitation with attachment and change subject  </t:objective>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -384,11 +384,11 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 	<t:property name="server.restServlet" value="${account1.server}"/>
 	<t:property name="uploadFile.basic" value="${testMailRaw.root}/attachments1/pdfaccess.pdf"/>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.basic}</filename>
@@ -398,19 +398,19 @@
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
 
-	
+
 	<t:property name="appointment3.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment3.content" value=".content${TIME}${COUNTER}"/>
 	<t:property name="time.20141201120000.gmt" value="1417435200000"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment3.subject}" >
-	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" />  
-	                        <e d="${ICALTIME(+1h)[${time.20141201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" />
+	                        <e d="${ICALTIME(+1h)[${time.20141201120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
 	                        <at a="${account2.name}" role="REQ" ptst="NE" rsvp="1"/>
                         </comp>
@@ -443,8 +443,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -455,7 +455,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account2.appointment3.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 	<t:request>
 		<ForwardAppointmentInviteRequest  xmlns="urn:zimbraMail" id="${account2.appointment3.id}">
@@ -469,7 +469,7 @@
 			<t:select path="//mail:ForwardAppointmentInviteResponse" />
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
    <t:test>
         <t:request>
@@ -481,8 +481,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -493,7 +493,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account3.appointment3.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -514,7 +514,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForwardAppointmentInviteRequest04" type="bhr">
+<t:test_case testcaseid="ForwardAppointmentInviteRequest04" type="sanity">
 <t:objective>Forward appointment Invitation Add cc bcc etc. </t:objective>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -529,19 +529,19 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="appointment4.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment4.content" value=".content${TIME}${COUNTER}"/>
 	<t:property name="time.20141201120000.gmt" value="1417435200000"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment4.subject}" >
-	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" />  
-	                        <e d="${ICALTIME(+1h)[${time.20141201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" />
+	                        <e d="${ICALTIME(+1h)[${time.20141201120000.gmt}]}"/>
 	                        <or a="${account1.name}"/>
 	                        <at a="${account2.name}" role="REQ" ptst="NE" rsvp="1"/>
                         </comp>
@@ -573,8 +573,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -585,7 +585,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account2.appointment4.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 	<t:request>
 		<ForwardAppointmentInviteRequest  xmlns="urn:zimbraMail" id="${account2.appointment4.id}">
@@ -603,7 +603,7 @@
 			<t:select path="//mail:ForwardAppointmentInviteResponse" />
 		</t:response>
 	</t:test>
-	
+
 <t:property name="server.zimbraAccount" value="${account3.server}"/>
    <t:test>
         <t:request>
@@ -615,8 +615,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -627,7 +627,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account3.appointment4.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -644,7 +644,7 @@
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:e" attr="d" matches="${ICALTIME(+1h)[${time.20141201120000.gmt}]}*" />
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account4.server}"/>
    <t:test>
         <t:request>
@@ -656,8 +656,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -668,7 +668,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account4.appointment4.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -685,7 +685,7 @@
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:e" attr="d" matches="${ICALTIME(+1h)[${time.20141201120000.gmt}]}*" />
         </t:response>
     </t:test>
-    
+
       <t:property name="server.zimbraAccount" value="${account5.server}"/>
    <t:test>
         <t:request>
@@ -697,8 +697,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
@@ -709,7 +709,7 @@
           <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account5.appointment4.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -726,7 +726,7 @@
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:e" attr="d" matches="${ICALTIME(+1h)[${time.20141201120000.gmt}]}*" />
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

@@ -48,12 +48,12 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
-                <password>${test_account2.password}</password>   
+                <password>${test_account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -61,16 +61,16 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-<t:test_case testcaseid="ImportCustomCSV_Outlook" type="sanity">
+<t:test_case testcaseid="ImportCustomCSV_Outlook" type="functional">
     <t:objective> Import 170 different contacts to an account with changing the header field</t:objective>
-   
+
 	<t:property name="uploadServletServer" value="${test_acct2.server}"/>
-		
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -84,8 +84,8 @@
 
         </t:response>
     </t:test>
-	
-	
+
+
      <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -94,7 +94,7 @@
 			<t:select attr="id" set="message1.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
     <t:test>
         <t:request>
             <ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
@@ -102,21 +102,21 @@
             </ImportContactsRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:ImportContactsResponse"/> 
+            <t:select path="//mail:ImportContactsResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact" limit="100">
                 <query>in:contacts</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
-        <t:response>            
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:cn" attr="fileAsStr" match="Schoenfeld,  Jeff-FSAC" />
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
 </t:test_case>
 </t:tests>
 

@@ -41,7 +41,7 @@
     <t:steps>
     	Pinging the server
     </t:steps>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -58,9 +58,9 @@
     <t:steps>
     	Logging in as admin
     	Creating organizer
-		Creating resource    	 
+		Creating resource
     </t:steps>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -73,7 +73,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <!-- Create Organizer -->
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
@@ -105,7 +105,7 @@
             <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource1.server"/>
         </t:response>
     </t:test>
-    
+
     <!-- Create Organizer -->
     <t:test id="create_test_organizer2" required="false" depends="admin_login">
         <t:request>
@@ -119,19 +119,19 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="organizer2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ResSchOverlap_1" type="bhr" areas="Calendar">
+<t:test_case testcaseid="ResSchOverlap_1" type="sanity" areas="Calendar">
     <t:objective>Verify participant status is shown to the organizer for an exception to a basic weekly recurrent appointment</t:objective>
     <t:steps>
     1. Login as organizer1
-    2. Create a meeting request with booking a resource.  
+    2. Create a meeting request with booking a resource.
     3. The resource will auto accept the meeting.
     4. Login as organizer2 and create a meeting request with booking the resource
-    5. The resource will again auto accept even if the resource is shown as busy and the meeting is saved     
-    7. The resource should decline it since auto-decline is set to on.    
+    5. The resource will again auto accept even if the resource is shown as busy and the meeting is saved
+    7. The resource should decline it since auto-decline is set to on.
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${organizer1.server}"/>
@@ -147,7 +147,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test required="true" >
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -157,8 +157,8 @@
 				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.calendar.folder.id"/>
 			</t:select>
 		</t:response>
-	</t:test>    
-   
+	</t:test>
+
 
 	<!-- Create an Appointment with a resource-->
     <t:test required="true" >
@@ -167,13 +167,13 @@
 				<m >
 					<inv>
 						<comp status="CONF" fb="B" transp="O" class="PUB" allDay="0" name="${appointment.subject}">
-							<or a="${organizer1.name}"/>						
+							<or a="${organizer1.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
 							<s d="${ICALTIME[${time.20280101120000.pst}]}" tz="${timezone.pst}" />
-							<e d="${ICALTIME(+3h)[${time.20280101120000.pst}]}" tz="${timezone.pst}" />							
+							<e d="${ICALTIME(+3h)[${time.20280101120000.pst}]}" tz="${timezone.pst}" />
 						</comp>
-					</inv>					
-					<e a="${resource1.name}" t="t"/>					
+					</inv>
+					<e a="${resource1.name}" t="t"/>
 					<su>${appointment.subject}</su>
 					<mp ct="text/plain">
 						<content>${appointment.content}</content>
@@ -183,7 +183,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:CreateAppointmentResponse">
-            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>            	
+            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>
             	<t:select attr="invId" set="organizer1.appt1.invId"/>
             	<t:select attr="apptId" set="organizer1.appt1.apptId"/>
             </t:select>
@@ -192,7 +192,7 @@
 
 	<!-- Login as organizer2 -->
 	<t:property name="server.zimbraAccount" value="${organizer2.server}"/>
-	
+
 	<t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -204,7 +204,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
    <!-- Create an Appointment with a resource -->
 	<t:test required="true" >
         <t:request>
@@ -212,13 +212,13 @@
 				<m >
 					<inv>
 						<comp status="CONF" fb="B" transp="O" class="PUB" allDay="0" name="${appointment.subject}">
-							<or a="${organizer2.name}"/>						
+							<or a="${organizer2.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
 							<s d="${ICALTIME[${time.20280101120000.pst}]}" tz="${timezone.pst}" />
-							<e d="${ICALTIME(+3h)[${time.20280101120000.pst}]}" tz="${timezone.pst}" />							
+							<e d="${ICALTIME(+3h)[${time.20280101120000.pst}]}" tz="${timezone.pst}" />
 						</comp>
-					</inv>					
-					<e a="${resource1.name}" t="t"/>					
+					</inv>
+					<e a="${resource1.name}" t="t"/>
 					<su>${appointment.subject}</su>
 					<mp ct="text/plain">
 						<content>${appointment.content}</content>
@@ -228,14 +228,14 @@
         </t:request>
         <t:response>
             <t:select path="//mail:CreateAppointmentResponse">
-            	<t:select attr="calItemId" set="organizer2.appt1.calItemId"/>            	
+            	<t:select attr="calItemId" set="organizer2.appt1.calItemId"/>
             	<t:select attr="invId" set="organizer2.appt1.invId"/>
             	<t:select attr="apptId" set="organizer2.appt1.apptId"/>
             </t:select>
         </t:response>
     </t:test>
-    
-    
+
+
     <!--  Do a GetMsgRequest to know the status of the overlap appointment -->
     <t:test delay="15000">
         <t:request>
@@ -245,24 +245,24 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${organizer2.appt1.invId}']">
-            	 <t:select path="//mail:at[@a='${resource1.name}']" attr="ptst" match="${ptst.decline}"/>            	 
+            	 <t:select path="//mail:at[@a='${resource1.name}']" attr="ptst" match="${ptst.decline}"/>
             </t:select>
         </t:response>
     </t:test>
-          
-      
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ResSchOverlap_2" type="bhr" areas="Calendar">
+<t:test_case testcaseid="ResSchOverlap_2" type="sanity" areas="Calendar">
     <t:objective>Verify participant status is shown to the organizer for an exception to a basic weekly recurrent appointment</t:objective>
     <t:steps>
     1. Login as organizer1
-    2. Create a meeting request with booking a resource.  
+    2. Create a meeting request with booking a resource.
     3. The resource will auto accept the meeting.
     4. Login as organizer2 and create a meeting request with booking the resource
-    5. The resource will again auto accept even if the resource is shown as busy and the meeting is saved     
-    7. The resource should decline it since auto-decline is set to on.    
+    5. The resource will again auto accept even if the resource is shown as busy and the meeting is saved
+    7. The resource should decline it since auto-decline is set to on.
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${organizer1.server}"/>
@@ -278,7 +278,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test required="true" >
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -288,7 +288,7 @@
 				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.calendar.folder.id"/>
 			</t:select>
 		</t:response>
-	</t:test>       
+	</t:test>
 
 	<!-- Create an Appointment with a resource-->
     <t:test required="true" >
@@ -297,13 +297,13 @@
 				<m >
 					<inv>
 						<comp status="CONF" fb="B" transp="O" class="PUB" allDay="0" name="${appointment.subject}">
-							<or a="${organizer1.name}"/>						
+							<or a="${organizer1.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
 							<s d="${ICALTIME[${time.20290101120000.pst}]}" tz="${timezone.pst}" />
-							<e d="${ICALTIME(+3h)[${time.20290101120000.pst}]}" tz="${timezone.pst}" />							
+							<e d="${ICALTIME(+3h)[${time.20290101120000.pst}]}" tz="${timezone.pst}" />
 						</comp>
-					</inv>					
-					<e a="${resource1.name}" t="t"/>					
+					</inv>
+					<e a="${resource1.name}" t="t"/>
 					<su>${appointment.subject}</su>
 					<mp ct="text/plain">
 						<content>${appointment.content}</content>
@@ -313,7 +313,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:CreateAppointmentResponse">
-            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>            	
+            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>
             	<t:select attr="invId" set="organizer1.appt1.invId"/>
             	<t:select attr="apptId" set="organizer1.appt1.apptId"/>
             </t:select>
@@ -322,7 +322,7 @@
 
 	<!-- Login as organizer2 -->
 	<t:property name="server.zimbraAccount" value="${organizer2.server}"/>
-	
+
 	<t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -334,7 +334,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
    <!-- Create an Appointment with a resource -->
 	<t:test required="true" >
         <t:request>
@@ -342,13 +342,13 @@
 				<m >
 					<inv>
 						<comp status="CONF" fb="B" transp="O" class="PUB" allDay="0" name="${appointment.subject}">
-							<or a="${organizer2.name}"/>						
+							<or a="${organizer2.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
 							<s d="${ICALTIME[${time.20290101120000.pst}]}" tz="${timezone.pst}" />
-							<e d="${ICALTIME(+3h)[${time.20290101120000.pst}]}" tz="${timezone.pst}" />							
+							<e d="${ICALTIME(+3h)[${time.20290101120000.pst}]}" tz="${timezone.pst}" />
 						</comp>
-					</inv>					
-					<e a="${resource1.name}" t="t"/>					
+					</inv>
+					<e a="${resource1.name}" t="t"/>
 					<su>${appointment.subject}</su>
 					<mp ct="text/plain">
 						<content>${appointment.content}</content>
@@ -358,14 +358,14 @@
         </t:request>
         <t:response>
             <t:select path="//mail:CreateAppointmentResponse">
-            	<t:select attr="calItemId" set="organizer2.appt1.calItemId"/>            	
+            	<t:select attr="calItemId" set="organizer2.appt1.calItemId"/>
             	<t:select attr="invId" set="organizer2.appt1.invId"/>
             	<t:select attr="apptId" set="organizer2.appt1.apptId"/>
             </t:select>
         </t:response>
     </t:test>
-    
-    
+
+
     <!--  Do a GetMsgRequest to know the status of the overlap appointment -->
     <t:test delay="15000">
         <t:request>
@@ -375,12 +375,12 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${organizer2.appt1.invId}']">
-            	 <t:select path="//mail:at[@a='${resource1.name}']" attr="ptst" match="${ptst.decline}"/>            	 
+            	 <t:select path="//mail:at[@a='${resource1.name}']" attr="ptst" match="${ptst.decline}"/>
             </t:select>
         </t:response>
     </t:test>
-          
-      
+
+
 </t:test_case>
 
 

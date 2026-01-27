@@ -7,13 +7,13 @@
 <!--  A message with an encoded content -->
 <t:property name="message01.subject" value="נסיון"/>
 <t:property name="message01.content" value="אם זה עבר אז לך קיבינימט"/>
-	
+
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -22,16 +22,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-                  2. Create a test account.       
+                  2. Create a test account.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -43,7 +43,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -68,13 +68,13 @@
     </t:mailinjecttest>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="Charsets_iso_8859_8_i_01" type="bhr">
+
+<t:test_case testcaseid="Charsets_iso_8859_8_i_01" type="sanity">
     <t:objective>Verify account can receive iso 8859-8_i encoded content</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -101,7 +101,7 @@
     </t:test>
 
 	<t:test >
-        <t:request> 
+        <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${message01.id}"/>
 			</GetMsgRequest>
@@ -111,7 +111,7 @@
 				<t:select path="//mail:m">
 					<t:select path="//mail:content" match="(?s).*${message01.content}.*"/>
 				</t:select>
-			</t:select> 
+			</t:select>
         </t:response>
     </t:test>
 
@@ -128,11 +128,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Charsets_iso_8859_8_i_02" type="bhr">
+<t:test_case testcaseid="Charsets_iso_8859_8_i_02" type="sanity">
     <t:objective>Verify account can receive iso 8859-8_i encoded subject</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -159,7 +159,7 @@
     </t:test>
 
 	<t:test >
-        <t:request> 
+        <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${message02.id}"/>
 			</GetMsgRequest>
@@ -167,9 +167,9 @@
         <t:response>
 			<t:select path="//mail:GetMsgResponse">
 				<t:select path="//mail:m">
-					<t:select path="//mail:su" match=".*${message01.subject}"/>				
+					<t:select path="//mail:su" match=".*${message01.subject}"/>
 				</t:select>
-			</t:select> 
+			</t:select>
         </t:response>
     </t:test>
 
@@ -178,9 +178,9 @@
 			<id>${message02.id}</id>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="200"/>	
-			<!--  Should match =?iso-8859-8-i?B?8PHp5e8=?= -->		
-			<t:select attr="Subject" match="=\?iso-8859-8-i\?B\?8PHp5e8=\?="/>			
+			<t:select attr="StatusCode" match="200"/>
+			<!--  Should match =?iso-8859-8-i?B?8PHp5e8=?= -->
+			<t:select attr="Subject" match="=\?iso-8859-8-i\?B\?8PHp5e8=\?="/>
 		</t:restServletResponse>
 	</t:resttest>
 

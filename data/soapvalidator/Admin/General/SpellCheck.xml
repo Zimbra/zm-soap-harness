@@ -7,11 +7,11 @@
 
 <t:property name="check.word1" value="hello"/>
 <t:property name="check.word2" value="helli"/>
- 
 
-<t:test_case testcaseid="CheckSpellingRequest_01" type="bhr" >
+
+<t:test_case testcaseid="CheckSpellingRequest_01" type="sanity" >
     <t:objective>Sanity test for CheckSpellingRequest </t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -22,13 +22,13 @@
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -49,7 +49,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word2}</CheckSpellingRequest>
@@ -63,9 +63,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetSpellDictionariesRequest_01" type="bhr" >
+<t:test_case testcaseid="GetSpellDictionariesRequest_01" type="sanity" >
     <t:objective>Sanity test for GetSpellDictionariesRequest </t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -76,13 +76,13 @@
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -103,7 +103,7 @@
 
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <GetSpellDictionariesRequest xmlns="urn:zimbraMail" />
@@ -114,7 +114,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

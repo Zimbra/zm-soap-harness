@@ -49,13 +49,13 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct01.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
-	
+    </t:test>
+
 </t:test_case>
 
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
 	<t:objective> Login as the appropriate test account
 	</t:objective>
 
@@ -68,7 +68,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime" 
+		<t:select path="//acct:AuthResponse/acct:lifetime"
 						match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken"
 						set="authToken"/>
@@ -78,24 +78,24 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="htmlMimeFullIndexCheck" type="sanity" >
+<t:test_case testcaseid="htmlMimeFullIndexCheck" type="functional" >
 	<t:objective>
 		Verify that a search for simple text returns the correct email meessage
 	</t:objective>
 	<t:steps>
 	 	1.LmtpInject the files from multiple dirs
-	 	2.Search for the content "CST 2063530-5" in the body of the message. 
-	 	3.Check for response to be matching the subject "United" 
+	 	2.Search for the content "CST 2063530-5" in the body of the message.
+	 	3.Check for response to be matching the subject "United"
 		4.Search for content "simple text" in the body of the message
-		5.This should result in showing up a different email	
+		5.This should result in showing up a different email
 	 	6.Search for content "$325" - check for price
 		7.Check that the correct message is returned by checking the subject "United"
 		8.Search for content "bugzilla.zimbra.com/show_bug.cgi?id=8260"
-		9.Check that the correct message is returned by checking the subject "bug8260"	
-		10.Search for content "Orlando" check for cityname 
+		9.Check that the correct message is returned by checking the subject "bug8260"
+		10.Search for content "Orlando" check for cityname
 		11.check that the correct message is returned by checking the subject "United"
 	</t:steps>
-	
+
 
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -123,11 +123,11 @@
 	 	</t:request>
 	  	<t:response>
 			<t:select path="//mail:SearchResponse/mail:m">
-				<t:select attr="su" match="^United$"/>			
+				<t:select attr="su" match="^United$"/>
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 		    <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -135,10 +135,10 @@
  	  		</SearchRequest>
 	 	</t:request>
 	  <t:response>
-		<t:select path="//mail:SearchResponse/mail:m" attr="su" match="^email01A$"/>			
+		<t:select path="//mail:SearchResponse/mail:m" attr="su" match="^email01A$"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test>
 	 <t:request>
 	   <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -146,8 +146,8 @@
 	   </SearchRequest>
 	 </t:request>
 	  <t:response>
-		<t:select path="//mail:SearchResponse/mail:m">			
-			<t:select attr="su" match="^United$"/>		
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^United$"/>
 		</t:select>
 	 </t:response>
 	</t:test>
@@ -159,12 +159,12 @@
 		    </SearchRequest>
 		 </t:request>
 		 <t:response>
-			 <t:select path="//mail:SearchResponse/mail:m">			
+			 <t:select path="//mail:SearchResponse/mail:m">
 			 	<t:select attr="su" match="^bug8260$"/>
 			</t:select>
 	 	</t:response>
 	</t:test>
-	
+
 
 	<t:test>
 		<t:request>
@@ -173,7 +173,7 @@
 	 	    </SearchRequest>
 	 	</t:request>
 	  	<t:response>
-			<t:select path="//mail:SearchResponse/mail:m">			
+			<t:select path="//mail:SearchResponse/mail:m">
 				<t:select attr="su" match="^United$"/>
 			</t:select>
 	 	</t:response>

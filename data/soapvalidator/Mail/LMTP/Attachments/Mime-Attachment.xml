@@ -9,16 +9,16 @@
 <t:property name="msg02.file" value="${root}/attachmentzimbra.txt"/>
 <t:property name="msg03.file" value="${root}/attachmentzimbragif.txt"/>
 
-<t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>    
+<t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject2.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject3.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="attachment2.name" value="Sample.jpg"/>
 <t:property name="attachment3.name" value="screenShot.GIF"/>
 <t:property name="test_acct1.server" value="NOT_DEFINED"/>
-    
+
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -27,16 +27,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_lmtp_mimeAttachment" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create a test account        
+             2. Create a test account
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -48,7 +48,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
@@ -83,16 +83,16 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
-    
-    
+</t:test_case>
+
+
 <t:test_case testcaseid="lmtp_Attachment_MIME1" type="smoke">
     <t:objective>Verify a message without attachment can be injected.</t:objective>
-    <t:steps>1. Upload a message              
-             2. Search the message        
+    <t:steps>1. Upload a message
+             2. Search the message
              3. Get the message
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -131,15 +131,15 @@
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="lmtp_Attachment_MIME2" type="bhr">
+
+<t:test_case testcaseid="lmtp_Attachment_MIME2" type="sanity">
     <t:objective>Verify a message with attachment can be injected </t:objective>
-    <t:steps>1. Upload a message              
-             2. Search the message        
+    <t:steps>1. Upload a message
+             2. Search the message
              3. Get the message
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${msg02.file}</filename>
@@ -180,14 +180,14 @@
 
 </t:test_case>
 
-            
-<t:test_case testcaseid="lmtp_Attachment_MIME3" type="sanity">
+
+<t:test_case testcaseid="lmtp_Attachment_MIME3" type="functional">
     <t:objective>Verify a message with attachment (GIF) can be injected </t:objective>
-    <t:steps>1. Upload a message              
-             2. Search the message        
+    <t:steps>1. Upload a message
+             2. Search the message
              3. Get the message
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${msg03.file}</filename>
@@ -228,5 +228,5 @@
 
 </t:test_case>
 
-            
+
 </t:tests>

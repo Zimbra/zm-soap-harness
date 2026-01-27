@@ -41,7 +41,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -62,7 +62,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -75,7 +75,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -88,7 +88,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -101,7 +101,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -114,10 +114,10 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Bug39804" type="sanity" areas="noncluster">
+<t:test_case testcaseid="Bug39804" type="functional" areas="noncluster">
     <t:objective>Verify login after deleting shared-to account</t:objective>
     <t:steps>
 		1.  Create three test accounts, A, B and C.
@@ -140,18 +140,18 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>             
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
     </t:test>
-    
-    <t:test_loop count="2000">      
-        
+
+    <t:test_loop count="2000">
+
         <t:test>
             <t:request>
                 <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -161,8 +161,8 @@
             <t:response>
                 <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
 	    <t:test >
 	        <t:request>
 	            <FolderActionRequest xmlns="urn:zimbraMail">
@@ -190,9 +190,9 @@
 	    </t:test>
 
     </t:test_loop>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -215,7 +215,7 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-     
+
 	<t:staftask >
 		<t:request>
 			<server>${zimbraServer.name}</server>
@@ -237,7 +237,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
- 
+
     <t:test>
         <t:requestContext>
             <session/>
@@ -265,11 +265,11 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse"/> 
+			<t:select path="//acct:GetInfoResponse"/>
 		</t:response>
 	</t:test>
- 
+
 </t:test_case>
-  
+
 </t:tests>
-  
+

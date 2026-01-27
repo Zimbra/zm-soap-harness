@@ -6,7 +6,7 @@
 <t:property name="folder2.name" value="Namefolder2{COUNTER}"/>
 <t:property name="folder3.name" value="Namefolder3{COUNTER}"/>
 <t:property name="folder4.name" value="Namefolder4{COUNTER}"/>
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:property name="test_acct1.server" value="NOT_DEFINED"/>
 
@@ -28,7 +28,7 @@
 <t:test_case testcaseid="acctSetup1_folder_loop" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps> 1. Login to admin.
-              2. Create test account. 
+              2. Create test account.
     </t:steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -47,7 +47,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -79,12 +79,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_loop1" type="sanity" duration="long">
+<t:test_case testcaseid="folder_loop1" type="functional" duration="long">
     <t:objective>Creating 5000 folders at root level </t:objective>
     <t:steps> 1. Get the id of root folder
               2. Create folders
-              3. Send GetInfoRequest        
-    </t:steps>    
+              3. Send GetInfoRequest
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -95,8 +95,8 @@
         </t:response>
     </t:test>
 
-    <t:test_loop count="5000">      
-        
+    <t:test_loop count="5000">
+
         <t:test>
             <t:request>
                 <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -106,8 +106,8 @@
             <t:response>
                 <t:select path="//mail:CreateFolderResponse/mail:folder"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
     </t:test_loop>
 
     <t:test timeframeMax="3000">
@@ -121,11 +121,11 @@
 
 </t:test_case>
 
-<!--- Performing various operation in an account with huge folder list-->  
+<!--- Performing various operation in an account with huge folder list-->
 
-<t:test_case testcaseid="acctSetup3_folder_loop" type="sanity" duration="long">
+<t:test_case testcaseid="acctSetup3_folder_loop" type="functional" duration="long">
     <t:objective>Creating a folder to test various operation </t:objective>
-    
+
     <t:test required="true">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -135,12 +135,12 @@
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="folder_loop2" type="sanity" duration="long">
+
+
+<t:test_case testcaseid="folder_loop2" type="functional" duration="long">
     <t:objective>Basic test of GetFolderRequest</t:objective>
 
     <t:test timeframeMax="3000">
@@ -154,8 +154,8 @@
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="folder_loop3" type="sanity" duration="long">
+
+<t:test_case testcaseid="folder_loop3" type="functional" duration="long">
     <t:objective>Creating a duplicate folder</t:objective>
 
     <t:test  timeframeMax="3000">
@@ -167,32 +167,32 @@
         <t:response>
             <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="folder_loop4" type="sanity" duration="long">
+
+
+<t:test_case testcaseid="folder_loop4" type="functional" duration="long">
     <t:objective>Rename a folder</t:objective>
-    
+
     <t:test timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="rename" id="${folder.id}" name="${folder2.name}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="rename"/>                
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="rename"/>
         </t:response>
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="folder_loop5" type="sanity" duration="long">
+
+<t:test_case testcaseid="folder_loop5" type="functional" duration="long">
     <t:objective>Move a folder</t:objective>
     <t:steps>1. Create a folder
-             2. Move into some existing folder        
+             2. Move into some existing folder
     </t:steps>
 
     <t:test id="folder_loop5a">
@@ -205,30 +205,30 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="folder_loop5a" timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="move" id="${folder2.id}" l="${folder.id}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="move"/>             
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="move"/>
         </t:response>
     </t:test>
 
 </t:test_case>
-    
- 
-<t:test_case testcaseid="folder_loop6" type="sanity"  duration="long">
-    <t:objective>Empty a folder </t:objective>    
+
+
+<t:test_case testcaseid="folder_loop6" type="functional"  duration="long">
+    <t:objective>Empty a folder </t:objective>
     <t:steps>1.Add a mail to the newly created folder.
              2. Search the mail
              3.Empty the folder.
              4.Search the mail in the newly created folder (Should not exist).
              5. Search for the emptied folder (Should still exist).
     </t:steps>
-    
+
     <t:test id="folder_loop6a">
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -287,11 +287,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_loop7" type="sanity"  duration="long">
+<t:test_case testcaseid="folder_loop7" type="functional"  duration="long">
     <t:objective>Empty a folder having a sub folder in it. </t:objective>
     <t:steps>1.Create a sub folder in any existing folder.
              2.Empty the parent folder.
-             3.Check whether the sub folder exists (Should not exist).             
+             3.Check whether the sub folder exists (Should not exist).
     </t:steps>
 
     <t:test id="folder_loop7a">
@@ -321,29 +321,29 @@
             <GetFolderRequest xmlns="urn:zimbraMail" />
         </t:request>
         <t:response>
-            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder/mail:folder[@id='${subfolder.id}']" emptyset="1"/>                
-            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@id='${folder.id}']"/> 
+            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder/mail:folder[@id='${subfolder.id}']" emptyset="1"/>
+            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@id='${folder.id}']"/>
         </t:response>
-    </t:test>    
-        
-</t:test_case>   
-    
-    
-<t:test_case testcaseid="folder_loop8" type="sanity" duration="long">
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="folder_loop8" type="functional" duration="long">
     <t:objective>Delete a folder</t:objective>
-    
+
     <t:test timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="delete" id="${folder.id}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="delete"/>                
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="delete"/>
         </t:response>
     </t:test>
 
-</t:test_case>    
-    
-    
+</t:test_case>
+
+
 </t:tests>

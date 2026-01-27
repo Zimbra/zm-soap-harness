@@ -7,7 +7,7 @@
 <t:property name="folder1.name" value="Folder1"/>
 <t:property name="subfolder1.name" value="SubFolder1"/>
 <t:property name="folder2.name" value="Folder2"/>
-<t:property name="subfolder2.name" value="SubFolder2"/> 
+<t:property name="subfolder2.name" value="SubFolder2"/>
 
 <t:property name="op.grant" value="grant"/>
 <t:property name="op.ngrant" value="!grant"/>
@@ -34,7 +34,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
 	<t:objective>basic system check</t:objective>
-    
+
 	<t:test id="ping">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -74,7 +74,7 @@
         	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test>
         <t:request>
@@ -87,20 +87,20 @@
         	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid2.id"/>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account2.server"/>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="bug89307" type="bhr" bugids="89307" >
+<t:test_case testcaseid="bug89307" type="sanity" bugids="89307" >
 	<t:objective>Can't move subfolders in shared email folder</t:objective>
-	<t:steps> 
+	<t:steps>
         1. Create subfolders for user1 under Inbox Folder1 --> SubFold1, Folder2 --> SubFold2
         2. Share Inbox with user2
-        3. user2 moves SubfFold1 from Folder1 to Folder2    
+        3. user2 moves SubfFold1 from Folder1 to Folder2
 	</t:steps>
-    
+
 	<t:test id="auth1" required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -164,7 +164,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account1.folder.calendar.id"/>
-			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.Briefcase.id"/>			
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.Briefcase.id"/>
 		</t:response>
 	</t:test>
 
@@ -180,8 +180,8 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
-    </t:test>	
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <SendShareNotificationRequest xmlns="urn:zimbraMail">
@@ -193,15 +193,15 @@
             <t:select path="//mail:SendShareNotificationResponse"/>
         </t:response>
     </t:test>
-    
-     <t:delay sec="30"/>    
-     <t:property name="server.zimbraAccount" value="${account2.server}"/>   
+
+     <t:delay sec="30"/>
+     <t:property name="server.zimbraAccount" value="${account2.server}"/>
     <!-- Login to Account2 -->
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account2.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -209,7 +209,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -220,7 +220,7 @@
   				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Created: Inbox shared by ${account1.name}"/>
   				<t:select path="//mail:SearchResponse/mail:m/mail:fr" match=".+"/>
   				</t:response>
-	</t:test>	
+	</t:test>
 
 	<t:test>
 		<t:request>
@@ -230,15 +230,15 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<!--  Account1 accepts calendar share Account2 (Mounting it) -->
-	
-	<t:property name="account1.Sharedfolder.inbox.name" value="sharedfolder.${TIME}.${COUNTER}"/>   
+
+	<t:property name="account1.Sharedfolder.inbox.name" value="sharedfolder.${TIME}.${COUNTER}"/>
 
     <t:test >
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
-                 <link l="${account2.folder.inbox.id}" name="${account1.Sharedfolder.inbox.name}" zid="${test_accountid1.id}" rid="${account1.folder.inbox.id}" view="message"/>				
+                 <link l="${account2.folder.inbox.id}" name="${account1.Sharedfolder.inbox.name}" zid="${test_accountid1.id}" rid="${account1.folder.inbox.id}" view="message"/>
             </CreateMountpointRequest>
         </t:request>
         <t:response>
@@ -259,7 +259,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -279,7 +279,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:link/mail:folder/mail:folder[@id='${subfold1id}']" attr="absFolderPath" match="/Inbox/Folder2/SubFolder1"/>
 		</t:response>
 	</t:test>
-	         
-</t:test_case>	
+
+</t:test_case>
 
 </t:tests>

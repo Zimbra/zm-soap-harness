@@ -30,7 +30,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="CreateDomainRequest1a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -39,10 +39,10 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="CreateDomainRequest1b">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -51,7 +51,7 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id2"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id2"/>
         </t:response>
     </t:test>
 
@@ -80,7 +80,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -93,7 +93,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 	    </t:response>
     </t:test>
-    
+
 	 <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -106,7 +106,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
 	    </t:response>
     </t:test>
-    
+
      <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -119,7 +119,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
 	    </t:response>
     </t:test>
-    
+
      <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -136,16 +136,16 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filtering-addressTest_01" type="bhr" bugids="20317" >
+<t:test_case testcaseid="Filtering-addressTest_01" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=flag is done for case sensitive match for From field which contains "Display name" and email address </t:objective>
-    <t:steps> 
-    	1. Create filter with Action Flag for case sensitive From field 
-    	2. Inject a message with a From field in the form "Display name" with email address  
+    <t:steps>
+    	1. Create filter with Action Flag for case sensitive From field
+    	2. Inject a message with a From field in the form "Display name" with email address
     	3. Verify message is flagged.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -162,8 +162,8 @@
 	<!-- case sensitive = cs -->
 	<t:property name="timecounter" value="${TIME}${COUNTER}"/>
 	<t:property name="filter1.subject" value="filter${timecounter}"/>
-	<t:property name="filter1.subject.cs" value="FILTER${timecounter}"/>	
-	
+	<t:property name="filter1.subject.cs" value="FILTER${timecounter}"/>
+
 		<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -176,7 +176,7 @@
 							<actionFlag flagName="flagged"/>
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -184,7 +184,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-		
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -196,11 +196,11 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-	
+
 	<t:waitforpostfixqueue/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -211,7 +211,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test>
         <t:request>
@@ -223,19 +223,19 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
         </t:response>
     </t:test>
-    
+
  </t:test_case>
 
-<t:test_case testcaseid="Filtering-addressTest_02" type="bhr" bugids="20317" >
+<t:test_case testcaseid="Filtering-addressTest_02" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sesitive match for local part of From field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for case sensitive match for local part of From field.
-    	2. Receive two  messages from two users which contains same local part(uppercase and lowercase) 
+    	2. Receive two  messages from two users which contains same local part(uppercase and lowercase)
     	3. Verify one message is in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -253,21 +253,21 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder1.name}" l="1"/>                
+                	<folder name="${folder1.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
 	<!-- case sensitive = cs -->
 	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter3.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter3.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="sender.personal.name" value="firstname"/>
 	<t:property name="sender.personal.name.cs" value="FirstName"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -280,7 +280,7 @@
 							 <actionFileInto folderPath="${folder1.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -302,7 +302,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -320,7 +320,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -349,10 +349,10 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -364,7 +364,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -376,20 +376,20 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter3.subject}" emptyset="1"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
 
 
-<t:test_case testcaseid="Filtering-addressTest_03" type="bhr" bugids="20317" >
+<t:test_case testcaseid="Filtering-addressTest_03" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for non-case sesitive match for local part of From field </t:objective>
-    <t:steps> 
+    <t:steps>
     		1. Create filter with Action file into folder for non case-sensitive local part of from field.
-    		2. Receive two  messages from two users which contains same local part(uppercase and lowercase) 
+    		2. Receive two  messages from two users which contains same local part(uppercase and lowercase)
    			3. Verify both messages are in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -407,21 +407,21 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder2.name}" l="1"/>                
+                	<folder name="${folder2.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
 	<!-- case sensitive = cs -->
 	<t:property name="filter4.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter5.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter5.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="sender.personal.name" value="firstname"/>
 	<t:property name="sender.personal.name.cs" value="FirstName"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -434,7 +434,7 @@
 							 <actionFileInto folderPath="${folder2.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -456,7 +456,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -474,9 +474,9 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
-	<t:property name="server.zimbraAccount" value="${account3.server}"/>	
-	
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -505,10 +505,10 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -520,7 +520,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -532,19 +532,19 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter5.subject}" />
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_04" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_04" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for non-case sesitive match for local part of CC field</t:objective>
     <t:steps>
     	 1. Create filter with Action file into folder for non-case sensitive of localpart of CC field.
-    	 2. Receive two  messages with  two CC users which contains same local part(uppercase and lowercase) 
+    	 2. Receive two  messages with  two CC users which contains same local part(uppercase and lowercase)
     	 3. Verify messages are in folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -562,21 +562,21 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder3.name}" l="1"/>                
+                	<folder name="${folder3.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter4.name" value="filter${TIME}${COUNTER}"/>
 	<!-- case sensitive = cs -->
 	<t:property name="filter6.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter7.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter7.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="sender.personal.name" value="firstname"/>
 	<t:property name="sender.personal.name.cs" value="FirstName"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -589,7 +589,7 @@
 							 <actionFileInto folderPath="${folder3.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -611,7 +611,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -630,7 +630,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -642,7 +642,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
 	<t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -661,10 +661,10 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -676,7 +676,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -688,19 +688,19 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter7.subject}" />
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_05" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_05" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sesitive match for local part of CC field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for case sensitive localpart of CC field.
-    	2. Receive two  messages with  two CC users which contains same local part(uppercase and lowercase) 
+    	2. Receive two  messages with  two CC users which contains same local part(uppercase and lowercase)
     	3. Verify one message is in folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -718,20 +718,20 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder4.name}" l="1"/>                
+                	<folder name="${folder4.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter5.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter8.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter9.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter9.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="sender.personal.name" value="firstname"/>
 	<t:property name="sender.personal.name.cs" value="FirstName"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -744,7 +744,7 @@
 							 <actionFileInto folderPath="${folder4.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -766,7 +766,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -785,7 +785,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -815,10 +815,10 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -830,7 +830,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -842,19 +842,19 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter9.subject}" emptyset="1" />
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_06" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_06" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for non-case sesitive match for local part To field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for non-case sensitive(lower-case) local part of To field.
     	2. Receive a message with To field starting with Upper case letter
     	3. Verify message is in folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -872,17 +872,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder5.name}" l="1"/>                
+                	<folder name="${folder5.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter6.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter10.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter10.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -895,7 +895,7 @@
 							 <actionFileInto folderPath="${folder5.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -917,12 +917,12 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
       			<m>
-					<e t="t" a='${account4.name}'/>					
+					<e t="t" a='${account4.name}'/>
 					<e t="f" a='${account2.name}'/>
 					<su>${filter10.subject}</su>
 					<mp ct="text/plain">
@@ -934,11 +934,11 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -950,7 +950,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -958,20 +958,20 @@
 			</SearchRequest>
 		</t:request>
         <t:response>
-			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter10.subject}"/>				
+			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter10.subject}"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_07" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_07" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sesitive match for localpart of To field</t:objective>
     <t:steps>
     	 1. Create filter with Action file into folder for case sensitive(lowecase) of local part for To field.
     	 2. Receive a message with To field starting with Upper case letter
     	 3. Verify message is not in folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
     <t:test required="true">
         <t:request>
@@ -990,17 +990,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder7.name}" l="1"/>                
+                	<folder name="${folder7.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder7.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder7.id"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter7.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter11.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1013,7 +1013,7 @@
 							 <actionFileInto folderPath="${folder7.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1035,12 +1035,12 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
       			<m>
-					<e t="t" a='${account4.name}'/>					
+					<e t="t" a='${account4.name}'/>
 					<e t="f" a='${account2.name}'/>
 					<su>${filter11.subject}</su>
 					<mp ct="text/plain">
@@ -1052,11 +1052,11 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1068,7 +1068,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1076,21 +1076,21 @@
 			</SearchRequest>
 		</t:request>
         <t:response>
-			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter11.subject}" emptyset="1"/>				
+			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter11.subject}" emptyset="1"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- 
- <t:test_case testcaseid="Filtering-addressTest_08" type="bhr" bugids="20317" >
+
+
+ <t:test_case testcaseid="Filtering-addressTest_08" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sensitive match for whole From field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for case sensitive(lowercase) whole from field.
     	2. Receive a message with from field which contain(upper and lower case letter)
    		3. Verify message is not in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -1109,19 +1109,19 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder8.name}" l="1"/>                
+                	<folder name="${folder8.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter8.name" value="filter${TIME}${COUNTER}"/>
 	<!-- case sensitive = cs -->
 	<t:property name="filter12.subject" value="filter${TIME}${COUNTER}"/>
-	
-	
+
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1134,7 +1134,7 @@
 							 <actionFileInto folderPath="${folder8.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1156,7 +1156,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1173,11 +1173,11 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1189,7 +1189,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1200,18 +1200,18 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter12.subject}" emptyset="1"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
-  
- <t:test_case testcaseid="Filtering-addressTest_09" type="bhr" bugids="20317" >
+
+
+ <t:test_case testcaseid="Filtering-addressTest_09" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for non-case sensitive match for whole From field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for non-case sensitive(lowercase) whole from field.
     	2. Receive a message with from field which contain(upper and lower case letter).
     	3. Verify message is in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -1230,17 +1230,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder9.name}" l="1"/>                
+                	<folder name="${folder9.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter9.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter13.subject" value="filter${TIME}${COUNTER}"/>
-		
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1253,7 +1253,7 @@
 							 <actionFileInto folderPath="${folder9.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1275,7 +1275,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1293,10 +1293,10 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1308,7 +1308,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1319,18 +1319,18 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter13.subject}" />
 			</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
-  
- <t:test_case testcaseid="Filtering-addressTest_10" type="bhr" bugids="20317" >
+
+
+ <t:test_case testcaseid="Filtering-addressTest_10" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sensitive match of whole 'To' field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for case sensitive(lowercase) of whole 'To' field.
     	2. Receive a message with To field which contains upper and lower case letter.
     	3. Verify message is not in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -1349,17 +1349,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder10.name}" l="1"/>                
+                	<folder name="${folder10.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter10.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter14.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter14.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1372,7 +1372,7 @@
 							 <actionFileInto folderPath="${folder10.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1394,7 +1394,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1411,12 +1411,12 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1428,7 +1428,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1439,18 +1439,18 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter14.subject}" emptyset="1"/>
 		</t:response>
     </t:test>
-    
- </t:test_case> 
- 
-  
- <t:test_case testcaseid="Filtering-addressTest_11" type="bhr" bugids="20317" >
+
+ </t:test_case>
+
+
+ <t:test_case testcaseid="Filtering-addressTest_11" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for non-case sensitive match for whole To field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for noncase sensitive(lowercase) for the whole 'To' field.
     	2. Receive a message with To field which contains upper and lower case letter.
-    	3. Verify message is in the folder.   
+    	3. Verify message is in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -1469,17 +1469,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder11.name}" l="1"/>                
+                	<folder name="${folder11.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
-	<t:property name="filter11.name" value="filter${TIME}${COUNTER}"/>	
-	<t:property name="filter15.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter11.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter15.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1492,7 +1492,7 @@
 							 <actionFileInto folderPath="${folder11.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1514,7 +1514,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1531,12 +1531,12 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1548,7 +1548,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1559,17 +1559,17 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter15.subject}"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_12" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_12" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sensitive match of whole CC field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for case sensitive(lowercase) of whole CC field.
     	2. Receive a message with CC field which contains upper and lower case letter.
     	3. Verify message is not in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -1588,17 +1588,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder12.name}" l="1"/>                
+                	<folder name="${folder12.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter12.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter16.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter16.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1611,7 +1611,7 @@
 							 <actionFileInto folderPath="${folder12.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1633,7 +1633,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1651,12 +1651,12 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1668,7 +1668,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1679,18 +1679,18 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter16.subject}" emptyset="1"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- 
- <t:test_case testcaseid="Filtering-addressTest_13" type="bhr" bugids="20317" >
+
+
+ <t:test_case testcaseid="Filtering-addressTest_13" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for non-case sensitive match of whole 'CC' field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for non-case sensitive(lowercase) of whole 'CC' field.
     	2. Receive a message with CC field which contains upper and lower case letter.
     	3. Verify message is in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -1709,17 +1709,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder13.name}" l="1"/>                
+                	<folder name="${folder13.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
-	<t:property name="filter13.name" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter13.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter17.subject" value="filter${TIME}${COUNTER}"/>
-		
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1732,7 +1732,7 @@
 							 <actionFileInto folderPath="${folder13.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1754,7 +1754,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1772,12 +1772,12 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1789,7 +1789,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1800,17 +1800,17 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter17.subject}"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_14" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_14" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sensitive match doamin part of From field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for case sensitive domain part of From field.
     	2. Receive a message with From field which contains upper and lower case letter in domain part.
     	3. Verify message is not in the folder because domain part is not case sensitive.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -1829,17 +1829,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder14.name}" l="1"/>                
+                	<folder name="${folder14.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter14.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter18.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter18.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1852,7 +1852,7 @@
 							 <actionFileInto folderPath="${folder14.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1874,7 +1874,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1891,11 +1891,11 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1907,7 +1907,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1918,17 +1918,17 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter18.subject}"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_15" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_15" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for non-case sensitive doamin part match of From field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for non-case sensitive domain part of From field.
-    	2. Receive a message with From field which contains upper and lower case letter in domain part.    	
+    	2. Receive a message with From field which contains upper and lower case letter in domain part.
     	3. Verify message is in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -1947,17 +1947,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder15.name}" l="1"/>                
+                	<folder name="${folder15.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter15.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter19.subject" value="filter${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1970,7 +1970,7 @@
 							 <actionFileInto folderPath="${folder15.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1992,7 +1992,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -2009,11 +2009,11 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -2025,7 +2025,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2036,17 +2036,17 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter19.subject}"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_16" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_16" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sensitive doamin part match of CC field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for case sensitive domain part(lowercase) of CC field.
-    	2. Receive a message with CC field which contains upper and lower case letter in domain part. 
+    	2. Receive a message with CC field which contains upper and lower case letter in domain part.
     	3. Verify message is  in the folder because domain part is not case sensitive.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -2065,17 +2065,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder16.name}" l="1"/>                
+                	<folder name="${folder16.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter16.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter20.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter20.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -2088,7 +2088,7 @@
 							 <actionFileInto folderPath="${folder16.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -2110,7 +2110,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -2128,11 +2128,11 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -2144,7 +2144,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2155,19 +2155,19 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter20.subject}" />
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_17" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_17" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for non-case sensitive doamin part match of CC field</t:objective>
     <t:steps>
     	 1. Create filter with Action file into folder for non-case sensitive(lowercase) domain of CC field.
-    	 2. Receive a message with CC field which contains upper and lower case letter in domain part. 
+    	 2. Receive a message with CC field which contains upper and lower case letter in domain part.
     	 3. Verify message is in the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -2185,18 +2185,18 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder17.name}" l="1"/>                
+                	<folder name="${folder17.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter17.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter21.subject" value="filter${TIME}${COUNTER}"/>
-	
-	
+
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -2209,7 +2209,7 @@
 							 <actionFileInto folderPath="${folder17.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -2231,7 +2231,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -2249,11 +2249,11 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -2265,7 +2265,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2276,17 +2276,17 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter21.subject}"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_18" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_18" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sensitive doamin part match of To field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for case sensitive(lowercase) domain part of To field.
     	2. Receive a message with To field which contains upper and lower case letter in domain part.
     	3. Verify message is not in the folder because domain part is not case sensitive.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -2305,17 +2305,17 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder18.name}" l="1"/>                
+                	<folder name="${folder18.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter18.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter22.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter22.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -2328,7 +2328,7 @@
 							 <actionFileInto folderPath="${folder18.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -2350,7 +2350,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -2367,10 +2367,10 @@
   		<t:response>
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 	<t:waitforpostfixqueue/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 	<t:test required="true">
         <t:request>
@@ -2383,7 +2383,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2394,17 +2394,17 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter22.subject}"/>
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
- <t:test_case testcaseid="Filtering-addressTest_19" type="bhr" bugids="20317" >
+
+ <t:test_case testcaseid="Filtering-addressTest_19" type="sanity" bugids="20317" >
     <t:objective>Verify filter action=fileintofolder is done for case sensitive doamin part match of To field</t:objective>
-    <t:steps> 
+    <t:steps>
     	1. Create filter with Action file into folder for case sensitive domain of To field.
     	2. Receive a message with To field which contains upper and lower case letter in domain part.
     	3. Verify message is the folder.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -2423,18 +2423,18 @@
 	<t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                	<folder name="${folder19.name}" l="1"/>                
+                	<folder name="${folder19.name}" l="1"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
         </t:response>
 	</t:test>
 
 	<t:property name="filter19.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter23.subject" value="filter${TIME}${COUNTER}"/>
-	
-	
+
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -2447,7 +2447,7 @@
 							 <actionFileInto folderPath="${folder19.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -2469,7 +2469,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -2487,9 +2487,9 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-		
+
 	<t:waitforpostfixqueue/>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 	<t:test required="true">
         <t:request>
@@ -2502,7 +2502,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -2513,8 +2513,8 @@
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter23.subject}" />
 		</t:response>
     </t:test>
-    
+
  </t:test_case>
- 
+
 </t:tests>
 

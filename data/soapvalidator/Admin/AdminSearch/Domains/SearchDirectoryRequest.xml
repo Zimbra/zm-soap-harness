@@ -1,10 +1,10 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>  
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>
 
 
 <t:property name="account1.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
-<t:property name="account2.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>  
+<t:property name="account2.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
 <t:property name="account2.alias" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
 <t:property name="dl1.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
 <t:property name="resource1.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
@@ -15,12 +15,12 @@
 <t:property name="resource2.type" value="Equipment"/>
 
 
-<t:property name="domain1.query1" value="(|(uid=*${domain1.name}*)(cn=*${domain1.name}*)(sn=*${domain1.name}*)(gn=*${domain1.name}*)(displayName=*${domain1.name}*)(zimbraMailAlias=*${domain1.name}*)(zimbraId=vc)(zimbraMailAddress=*${domain1.name}*)(zimbraMailDeliveryAddress=*${domain1.name}*))"/>   
-    
+<t:property name="domain1.query1" value="(|(uid=*${domain1.name}*)(cn=*${domain1.name}*)(sn=*${domain1.name}*)(gn=*${domain1.name}*)(displayName=*${domain1.name}*)(zimbraMailAlias=*${domain1.name}*)(zimbraId=vc)(zimbraMailAddress=*${domain1.name}*)(zimbraMailDeliveryAddress=*${domain1.name}*))"/>
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -37,10 +37,10 @@
     <t:objective>Prepare the account for tests</t:objective>
     <t:steps> 1. Login to admin
               2. Create test-accounts
-              3. Create an alias 
-              4. Create a distribution list        
+              3. Create an alias
+              4. Create a distribution list
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -89,7 +89,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:test required="true">
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -142,10 +142,10 @@
 
 </t:test_case>
 
-    
 
-<t:test_case testcaseid="SearchDirectoryRequest_Domains_01" type="sanity">
-    <t:objective>Verify searching for types="domains" only. </t:objective>    
+
+<t:test_case testcaseid="SearchDirectoryRequest_Domains_01" type="functional">
+    <t:objective>Verify searching for types="domains" only. </t:objective>
 
     <t:test>
         <t:request>
@@ -154,17 +154,17 @@
             </SearchDirectoryRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:SearchDirectoryResponse/admin:domain" attr="id" match="${domain1.id}"/>    
+            <t:select path="//admin:SearchDirectoryResponse/admin:domain" attr="id" match="${domain1.id}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case> 
-
-
+</t:test_case>
 
 
-<t:test_case testcaseid="SearchDirectoryRequest_Domains_02" type="sanity">
-    <t:objective>Verify searching for types="accounts,aliases,distributionlists,resources" in a particular domain</t:objective>    
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_Domains_02" type="functional">
+    <t:objective>Verify searching for types="accounts,aliases,distributionlists,resources" in a particular domain</t:objective>
 
 
 	<t:test>
@@ -181,9 +181,9 @@
 			<t:select path="//admin:SearchDirectoryResponse/admin:calresource" attr="id" match="${resource1.id}"/>
 			<t:select path="//admin:SearchDirectoryResponse/admin:calresource" attr="id" match="${resource2.id}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
 

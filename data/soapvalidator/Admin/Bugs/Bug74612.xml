@@ -16,13 +16,13 @@
             <PingRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
         <t:response>
-            <t:select path="//admin:PingResponse"/>		
+            <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case >
 
-<t:test_case testcaseid="bug74612" type="bhr">
+<t:test_case testcaseid="bug74612" type="sanity">
     <t:objective>configureQuota right not working for domain administrator.</t:objective>
     <t:steps>
     1. Auth as a Admin
@@ -32,7 +32,7 @@
     5. Send ModifyAccountRequest to modify Quota> verify error message.
     </t:steps>
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
       <t:test  id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -44,7 +44,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -54,7 +54,7 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
         </t:response>
     </t:test>
 		<t:delay sec="5"/>
@@ -73,7 +73,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account1.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -84,15 +84,15 @@
 		</t:request>
 		<t:response>
 		</t:response>
-	</t:test>	
+	</t:test>
 		<t:delay sec="5"/>
 
-	
+
 		<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
 				<target type="global"/>
-				<grantee xmlns="" by="name" type="usr">${test_account1.name}</grantee>			
+				<grantee xmlns="" by="name" type="usr">${test_account1.name}</grantee>
 				<right xmlns="">domainAdminZimletRights</right>
 			</GrantRightRequest>
 		</t:request>
@@ -101,7 +101,7 @@
 	</t:test>
 		<t:delay sec="5"/>
 
-	
+
 		<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -112,10 +112,10 @@
 		</t:request>
 		<t:response>
 		</t:response>
-	</t:test>	
+	</t:test>
 		<t:delay sec="5"/>
 
-	
+
 		<t:test>
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -127,10 +127,10 @@
 		<t:response>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	   <t:property name="server.zimbraAccount" value="${test_account1.server}"/>
-    
+
       <t:test  id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -142,13 +142,13 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${test_account2.name}</name>
 				<password>${defaultpassword.value}</password>
-       
+
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
@@ -156,7 +156,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account2.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -169,8 +169,8 @@
             <t:select path= "//soap:Text" match="^permission denied: can not modify mail quota, domain admin can only modify quota if zimbraDomainAdminMaxMailQuota is set to 0 or set to a certain value and quota is less than that value..*"/>
         </t:response>
     </t:test>
-	
-	
+
+
 </t:test_case>
 
 </t:tests>

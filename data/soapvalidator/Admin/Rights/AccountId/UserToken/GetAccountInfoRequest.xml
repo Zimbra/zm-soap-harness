@@ -51,7 +51,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -64,7 +64,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 
@@ -88,12 +88,12 @@
 
 	<t:property name="authToken.account1" value="${authToken}"/>
 
-	
-	
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountId_User_GetAccountInfoRequest_Basic01" type="bhr" bugids="19155" >
+<t:test_case testcaseid="AccountId_User_GetAccountInfoRequest_Basic01" type="sanity" bugids="19155" >
     <t:objective>Use an domain admin token to GetAccountInfoRequest</t:objective>
     <t:steps>
     1. Login as a normal user
@@ -104,7 +104,7 @@
 
 
 	<t:property name="server.zimbraMail" value="${account1.server}"/>
-	
+
     <t:test >
         <t:request>
             <GetAccountInfoRequest xmlns="urn:zimbraAccount" >

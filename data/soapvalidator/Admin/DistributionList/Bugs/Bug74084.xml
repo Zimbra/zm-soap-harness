@@ -47,7 +47,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -60,7 +60,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
 	<t:test required="true">
 		<t:request>
@@ -77,8 +77,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ddl_externaluser01" type="bhr" bugids="74084" >
-    <t:objective>Test external members are supported in DL </t:objective>    
+<t:test_case testcaseid="ddl_externaluser01" type="sanity" bugids="74084" >
+    <t:objective>Test external members are supported in DL </t:objective>
 
 	<t:steps>
 		1. account1 login
@@ -98,7 +98,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -109,10 +109,10 @@
         <t:response>
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
         	<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="dynamic" match="1" />  -->
-    		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->	
+    		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
-   
+    </t:test>
+
    <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -125,8 +125,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -139,9 +139,9 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    
-         
+    </t:test>
+
+
     <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount">
@@ -152,11 +152,11 @@
         	<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm"  match="${POP3.Yahoo.username}" />
        		<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm"  match="${account2.name}" />
         </t:response>
-    </t:test> 
+    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ddl_externaluser02" type="bhr" bugids="74084" >
-    <t:objective>Test external members are supported in dynamic DL </t:objective>    
+<t:test_case testcaseid="ddl_externaluser02" type="sanity" bugids="74084" >
+    <t:objective>Test external members are supported in dynamic DL </t:objective>
 
 	<t:steps>
 		1. account1 login
@@ -176,7 +176,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -189,8 +189,8 @@
         	<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="dynamic" match="1" />  -->
     		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
-   
+    </t:test>
+
    <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -203,8 +203,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -217,8 +217,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-       
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount">
@@ -229,12 +229,12 @@
         	<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm"  match="${POP3.Yahoo.username}" />
        		<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm"  match="${account2.name}" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ddl_externaluser03" type="bhr" bugids="74084" >
-    <t:objective>Test external members are supported in static DL </t:objective>    
+<t:test_case testcaseid="ddl_externaluser03" type="sanity" bugids="74084" >
+    <t:objective>Test external members are supported in static DL </t:objective>
 
 	<t:steps>
 		1. account1 login
@@ -254,7 +254,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -267,8 +267,8 @@
         	<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="dynamic" match="0" />  -->
     		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
-   
+    </t:test>
+
    <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -281,8 +281,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -295,8 +295,8 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
-       
+    </t:test>
+
     <t:test >
         <t:request >
             <GetDistributionListMembersRequest xmlns="urn:zimbraAccount">
@@ -307,7 +307,7 @@
         	<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm"  match="${POP3.Yahoo.username}" />
        		<t:select path="//acct:GetDistributionListMembersResponse/acct:dlm"  match="${account2.name}" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

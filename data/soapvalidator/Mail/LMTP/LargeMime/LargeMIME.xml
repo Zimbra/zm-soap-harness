@@ -15,7 +15,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -24,13 +24,13 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="MIME_LargeMime_account_setup" type="always">
     <t:objective>Create test accounts</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -42,7 +42,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -57,10 +57,10 @@
     </t:test>
 
 </t:test_case>
-    
+
 <!-- Don't run these tests just yet, because the harness cannot handle the large size -->
 
-<t:test_case testcaseid="Mime_LargeMime_01" type="sanity">
+<t:test_case testcaseid="Mime_LargeMime_01" type="functional">
     <t:objective>Inject large test mime message</t:objective>
     <t:steps>
         1. Upload a message
@@ -76,7 +76,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -104,7 +104,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="email34a.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -114,16 +114,16 @@
         <t:response>
         	<t:select path="//mail:GetMsgResponse/mail:m[@id='${email34a.id}']">
 	            <t:select attr="sd" match="870383864000"/>
-				<t:select path="//mail:e[@t='f']" attr="a" match="MAILER-DAEMON@CAC.Washington.EDU"/> 
+				<t:select path="//mail:e[@t='f']" attr="a" match="MAILER-DAEMON@CAC.Washington.EDU"/>
 	           	<t:select path="//mail:su" match="${email34a.valid}"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Mime_LargeMime_02" type="sanity">
+<t:test_case testcaseid="Mime_LargeMime_02" type="functional">
     <t:objective>Inject large test mime message</t:objective>
     <t:steps>
         1. Upload a message
@@ -139,7 +139,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -167,7 +167,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="email34b.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -177,16 +177,16 @@
         <t:response>
         	<t:select path="//mail:GetMsgResponse/mail:m[@id='${email34b.id}']">
 	            <t:select attr="sd" match="870391407000"/>
-				<t:select path="//mail:e[@t='f']" attr="a" match="MAILER-DAEMON@Tomobiki-Cho.CAC.Washington.EDU"/> 
+				<t:select path="//mail:e[@t='f']" attr="a" match="MAILER-DAEMON@Tomobiki-Cho.CAC.Washington.EDU"/>
 	           	<t:select path="//mail:su" match="${email34b.valid}"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Mime_LargeMime_03" type="sanity">
+<t:test_case testcaseid="Mime_LargeMime_03" type="functional">
     <t:objective>Inject large test mime message</t:objective>
     <t:steps>
         1. Upload a message
@@ -202,7 +202,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -230,7 +230,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="email34c.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -240,11 +240,11 @@
         <t:response>
         	<t:select path="//mail:GetMsgResponse/mail:m[@id='${email34c.id}']">
 	            <t:select attr="sd" match="870391407000"/>
-				<t:select path="//mail:e[@t='f']" attr="a" match="MAILER-DAEMON@Tomobiki-Cho.CAC.Washington.EDU"/> 
+				<t:select path="//mail:e[@t='f']" attr="a" match="MAILER-DAEMON@Tomobiki-Cho.CAC.Washington.EDU"/>
 	           	<t:select path="//mail:su" match="${email34c.valid}"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

@@ -28,9 +28,9 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="DistributionList_Routing_Mail_AccountSetup" type="always">
     <t:objective>Create test Distribution List </t:objective>
@@ -61,13 +61,13 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DistributionList_Routing_Mail_01" type="bhr">
+<t:test_case testcaseid="DistributionList_Routing_Mail_01" type="sanity">
     <t:objective>Send a message to a DL without any members - verify a bounce message is returned</t:objective>
     <t:steps>
     1. Create a new DL - don't add any members
@@ -116,7 +116,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
 
 	<t:test >
@@ -142,7 +142,7 @@
 </t:response>
 	</t:test>
 
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -156,7 +156,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="DistributionList_Routing_Mail_02" type="bhr">
+<t:test_case testcaseid="DistributionList_Routing_Mail_02" type="sanity">
     <t:objective>Send a message to a DL with one member</t:objective>
     <t:steps>
     1. Create a new DL with one member
@@ -214,7 +214,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
 	<t:test required="true">
@@ -229,7 +229,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
 
 	<t:test >
@@ -266,7 +266,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -280,7 +280,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="DistributionList_Routing_Mail_03" type="bhr">
+<t:test_case testcaseid="DistributionList_Routing_Mail_03" type="sanity">
     <t:objective>Send a message to a DL with multiple members</t:objective>
     <t:steps>
     1. Create a new DL with three members
@@ -338,7 +338,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 	<t:test >
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -363,7 +363,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 	<t:test >
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -388,7 +388,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
 	<t:test required="true">
@@ -403,7 +403,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
 
 	<t:test >
@@ -440,7 +440,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -466,7 +466,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -492,7 +492,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -506,7 +506,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="DistributionList_Routing_Mail_04" type="bhr">
+<t:test_case testcaseid="DistributionList_Routing_Mail_04" type="sanity">
     <t:objective>Send a message to a DL with a DL as a member</t:objective>
     <t:steps>
     1. Create a new DL with one member
@@ -566,7 +566,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -603,7 +603,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -615,7 +615,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
 	<t:test required="true">
@@ -630,7 +630,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
 
 	<t:test >
@@ -667,7 +667,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -693,7 +693,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">

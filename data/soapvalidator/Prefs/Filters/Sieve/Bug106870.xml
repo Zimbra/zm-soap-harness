@@ -30,7 +30,7 @@
         value="test14.${TIME}.${COUNTER}@${defaultdomain.name}" />
   <t:property name="test_account15.name"
         value="test15.${TIME}.${COUNTER}@${defaultdomain.name}" />
-<t:property name="cos1.name" value="mycos1${TIME}${COUNTER}" />        
+<t:property name="cos1.name" value="mycos1${TIME}${COUNTER}" />
 	<t:property name="mail_subject" value="subject.${TIME}.${COUNTER}" />
 	<t:property name="mail_subject1" value="subject1.${TIME}.${COUNTER}" />
 	<t:property name="mail_subject2" value="subject2.${TIME}.${COUNTER}" />
@@ -57,7 +57,7 @@
 	<t:property name="sieve_rule1"
 		value='require ["editheader","log"];
   deleteheader "X-Test-Header";
-  log "Sieve rule 1"; 
+  log "Sieve rule 1";
  ' />
 
 	<t:property name="sieve_rule2"
@@ -141,13 +141,13 @@
      deleteheader :contains "X-Sieve-Header1" "Oldval3";
      log "Sieve rule 14";
  ' />
- 
+
   <t:property name="sieve_rule15"
     value='require ["editheader","log"];
       deleteheader  "X-Test-Header" ;
       log "Sieve rule 15";
  ' />
- 
+
  <t:property name="sieve_rule16"
     value='require ["editheader","log", "comparator-i;ascii-numeric", "relational"];
       deleteheader :count "ge" :comparator "i;ascii-numeric" "X-Test-Header" "";
@@ -207,10 +207,10 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
-	    
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -410,7 +410,7 @@
 					set="test_acct12.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -430,7 +430,7 @@
 			        set="defaultzimbraSieveImmutableHeaders" />
 			</t:response>
 		</t:test>
-  
+
     <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -463,7 +463,7 @@
                     set="test_acct15.server" />
             </t:response>
         </t:test>
-  
+
 
 	</t:test_case>
 
@@ -477,7 +477,7 @@
 			<t:request>
 				<ModifyConfigRequest xmlns="urn:zimbraAdmin">
 					<a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header</a>
-					<a n="zimbraCustomMimeHeaderNameAllowed">X-Numeric-Header</a>					
+					<a n="zimbraCustomMimeHeaderNameAllowed">X-Numeric-Header</a>
 				</ModifyConfigRequest>
 			</t:request>
 			<t:response>
@@ -515,9 +515,9 @@
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		   <t:delay msec="5000" />
-		   
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -528,7 +528,7 @@
 		</t:resttest>
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule2" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule2" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -558,9 +558,9 @@
 				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-	
+
 		   <t:delay msec="5000" />
-		   
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -599,7 +599,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule3" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule3" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -680,7 +680,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule4" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule4" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -761,7 +761,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule5" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule5" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -843,7 +843,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule6" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule6" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -925,7 +925,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule7" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule7" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1005,7 +1005,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule8" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule8" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1087,7 +1087,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule9" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule9" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1167,7 +1167,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule10" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule10" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1247,7 +1247,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule11" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule11" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1328,7 +1328,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule12" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule12" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1409,7 +1409,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule13" type="functional"
+	<t:test_case testcaseid="bug106870_SieveRule13" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1490,12 +1490,12 @@
 		</t:resttest>
 
 	</t:test_case>
-	
-	<t:test_case testcaseid="bug106870_SieveRule14" type="functional"
+
+	<t:test_case testcaseid="bug106870_SieveRule14" type="regression"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1507,7 +1507,7 @@
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	    <!--<t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -1516,10 +1516,10 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1593,7 +1593,7 @@
 				<t:select attr="X-Sieve-Header1" match="Oldval3" />
 			</t:restServletResponse>
 		</t:resttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1614,15 +1614,15 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
-		
+
 	</t:test_case>
- 
- 
+
+
   <!-- ZCS-859 -->
-  <t:test_case testcaseid="bugZCS-859" type="functional"
+  <t:test_case testcaseid="bugZCS-859" type="regression"
     bugids="ZCS-859">
     <t:objective>Add a sieve rule to delete custom header and verify the
       mime via rest servlet</t:objective>
@@ -1701,9 +1701,9 @@
     </t:resttest>
 
   </t:test_case>
-  
+
      <!-- ZCS-859 -->
-  <t:test_case testcaseid="bugZCS-859_15" type="functional"
+  <t:test_case testcaseid="bugZCS-859_15" type="regression"
     bugids="ZCS-859">
     <t:objective>Add a sieve rule to delete custom header and verify the
       mime via rest servlet</t:objective>
@@ -1757,9 +1757,9 @@
         <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
       </t:response>
     </t:test>
-    
+
   <t:delay msec="5000" />
-  
+
     <t:test>
       <t:request>
         <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1784,9 +1784,9 @@
     </t:resttest>
 
   </t:test_case>
-  
-  
-  <t:test_case testcaseid="bugZCS-859_16" type="functional"
+
+
+  <t:test_case testcaseid="bugZCS-859_16" type="regression"
     bugids="ZCS-859">
     <t:objective>Add a sieve rule to delete custom header and verify the
       mime via rest servlet</t:objective>
@@ -1840,9 +1840,9 @@
         <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
       </t:response>
     </t:test>
-    
+
   <t:delay msec="10000" />
-  
+
     <t:test>
       <t:request>
         <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1866,7 +1866,7 @@
       </t:restServletResponse>
     </t:resttest>
 
-  </t:test_case>  
-  
+  </t:test_case>
+
 </t:tests>
 

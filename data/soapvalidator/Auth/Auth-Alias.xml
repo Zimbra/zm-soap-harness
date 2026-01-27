@@ -51,7 +51,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -63,7 +63,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -76,7 +76,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -88,7 +88,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
@@ -100,7 +100,7 @@
 	<t:property name="authToken" value=""/>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -116,14 +116,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="AuthRequest_Alias_02" type="bhr" bugids="25641">
+<t:test_case testcaseid="AuthRequest_Alias_02" type="sanity" bugids="25641">
 	<t:objective>AuthRequest - verify failed login with alias name does not show real account name</t:objective>
 
 
 	<t:property name="authToken" value=""/>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -139,7 +139,7 @@
 	</t:test>
 
 </t:test_case>
-<t:test_case testcaseid="AuthRequest_Alias_Blocked" type="bhr" bugids="ZCS-7680">
+<t:test_case testcaseid="AuthRequest_Alias_Blocked" type="sanity" bugids="ZCS-7680">
 	<t:objective>
 	  Verify below points when "alias_login_enabled" local config value is set to false -
 		1. Alias login will blocked

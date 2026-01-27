@@ -66,8 +66,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyDistributionListRequest01" type="bhr" bugids="" >
-    <t:objective>Modify distribution list without any parameter. </t:objective>    
+<t:test_case testcaseid="ModifyDistributionListRequest01" type="sanity" bugids="" >
+    <t:objective>Modify distribution list without any parameter. </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -81,7 +81,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -95,9 +95,9 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />  -->
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -109,7 +109,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -120,12 +120,12 @@
         <t:response>
         	<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl1.name}']" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyDistributionListRequest02" type="bhr" bugids="" >
-    <t:objective>Modify distribution list change zimbraDistributionListSubscriptionPolicy. </t:objective>    
+<t:test_case testcaseid="ModifyDistributionListRequest02" type="sanity" bugids="" >
+    <t:objective>Modify distribution list change zimbraDistributionListSubscriptionPolicy. </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -139,7 +139,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -153,9 +153,9 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl2.id" />
     		<!--<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -168,7 +168,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -180,12 +180,12 @@
         	<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl2.name}']" />
         	      	<t:select path="//acct:dl/acct:a[@n='zimbraDistributionListSubscriptionPolicy']" match="ACCEPT"  />
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyDistributionListRequest03" type="bhr" bugids="" >
-    <t:objective>Modify distribution list change All many attributes at a time. </t:objective>    
+<t:test_case testcaseid="ModifyDistributionListRequest03" type="sanity" bugids="" >
+    <t:objective>Modify distribution list change All many attributes at a time. </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -199,7 +199,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
@@ -213,9 +213,9 @@
         	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl3.id" />
     		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
         </t:response>
-    </t:test> 
+    </t:test>
 
-    
+
     <t:test >
         <t:request >
             <DistributionListActionRequest xmlns="urn:zimbraAccount" >
@@ -230,7 +230,7 @@
         <t:response>
         	<t:select path="//acct:DistributionListActionResponse" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request >
@@ -244,7 +244,7 @@
         	<t:select path="//acct:dl/acct:a[@n='zimbraDistributionListUnsubscriptionPolicy']" match="ACCEPT"  />
         	<t:select path="//acct:dl/acct:a[@n='displayName']" match="Mew"  />
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

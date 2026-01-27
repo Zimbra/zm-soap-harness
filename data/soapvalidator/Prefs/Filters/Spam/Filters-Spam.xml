@@ -21,7 +21,7 @@
 
 <t:test_case testcaseid = "Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id = "ping">
         <t:request>
             <PingRequest xmlns = "urn:zimbraAdmin"/>
@@ -30,13 +30,13 @@
             <t:select path = "//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid = "acct1_setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test id = "admin_login" required = "true" depends = "ping">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAdmin">
@@ -61,13 +61,13 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid = "filtersAndSpam_Bug2181" type="functional" bugids="2181, 23886">
+<t:test_case testcaseid = "filtersAndSpam_Bug2181" type="regression" bugids="2181, 23886">
     <t:objective>Verify bug 2181 - verify that Filters take precedence over spam
 				 Bug 23886 says spam take precedence over spam
 	</t:objective>
@@ -78,7 +78,7 @@
 		4. Send in another Spam message (X-Spam-Flag is present and the subject does NOT match the filter)
 		5. Verify that the message is routed to the spam not the subfolder
 	</t:steps>
-    
+
 
     <t:test >
         <t:request>
@@ -140,7 +140,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -156,7 +156,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
 	<t:test>
 	 <t:request>

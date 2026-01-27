@@ -51,9 +51,9 @@
 
 
 </t:test_case>
- 
 
-<t:test_case testcaseid="CreateGalSyncAccountRequest_01" type="bhr">
+
+<t:test_case testcaseid="CreateGalSyncAccountRequest_01" type="sanity">
     <t:objective>Basic test: create a domain gal sync account</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -77,17 +77,17 @@
 	<t:test >
         <t:request>
             <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain1.name}">
-        		<account by="name">${domain1.galaccount.name}</account>   		
+        		<account by="name">${domain1.galaccount.name}</account>
     		</CreateGalSyncAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateGalSyncAccountRequest_02" type="bhr">
+<t:test_case testcaseid="CreateGalSyncAccountRequest_02" type="sanity">
     <t:objective>Make an existing account the domain gal sync account</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -119,7 +119,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain2.galaccount.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain2.galaccount.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -130,11 +130,11 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateGalSyncAccountRequest_03" type="sanity">
+<t:test_case testcaseid="CreateGalSyncAccountRequest_03" type="functional">
     <t:objective>Set the folder on the CreateGalSyncAccountRequest</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -164,11 +164,11 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain3.galaccount.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateGalSyncAccountRequest_04" type="sanity">
+<t:test_case testcaseid="CreateGalSyncAccountRequest_04" type="functional">
     <t:objective>Set a password on the CreateGalSyncAccountRequest</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -199,7 +199,7 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain4.galaccount.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -245,7 +245,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateGalSyncAccountRequest_05" type="sanity">
+<t:test_case testcaseid="CreateGalSyncAccountRequest_05" type="functional">
     <t:objective>Try to auth for gal account without a password</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -275,7 +275,7 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain5.galaccount.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -321,7 +321,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateGalSyncAccountRequest_06" type="sanity">
+<t:test_case testcaseid="CreateGalSyncAccountRequest_06" type="functional">
     <t:objective>Set attributes on the CreateGalSyncAccountRequest</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -352,12 +352,12 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain6.galaccount.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateGalSyncAccountRequest_07" type="sanity">
+<t:test_case testcaseid="CreateGalSyncAccountRequest_07" type="functional">
     <t:objective>Create gal account in one domain that manages gal in another domain</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -402,7 +402,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain7.galaccount.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain7.galaccount.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -413,7 +413,7 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 </t:tests>

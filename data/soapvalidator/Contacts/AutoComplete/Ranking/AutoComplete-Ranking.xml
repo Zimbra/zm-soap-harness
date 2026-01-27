@@ -52,7 +52,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="contact1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="contact1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -68,7 +68,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="contact2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="contact2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -81,7 +81,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -95,11 +95,11 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="AutoCompleteRequest_Ranking_01" type="smoke">
     <t:objective>Verify ranking in AutoCompleteResponse based on email frequency</t:objective>
@@ -132,11 +132,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact1.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
@@ -147,11 +147,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact2.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>
         </t:response>
     </t:test>
 
@@ -208,7 +208,7 @@
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -218,7 +218,7 @@
  				<t:select path="//mail:match[2]" attr="email" match=".*${contact1.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
@@ -226,7 +226,7 @@
 
 
 
-<t:test_case testcaseid="AutoCompleteRequest_Ranking_02" type="bhr" bugids="45886">
+<t:test_case testcaseid="AutoCompleteRequest_Ranking_02" type="sanity" bugids="45886">
     <t:objective>Verify ranking in AutoCompleteResponse based on email frequency with zimbraContactAutoCompleteMaxResults</t:objective>
 	<t:steps>
 	1. Login as account2, with zimbraContactAutoCompleteMaxResults=5
@@ -235,7 +235,7 @@
 	4. Send AutoCompleteRequest, verify the last contact has the highest ranking
 	</t:steps>
 
-    <t:test_loop count="6">      
+    <t:test_loop count="6">
 
 	    <t:test >
 	        <t:request>
@@ -250,7 +250,7 @@
 	    </t:test>
 
 		<t:property name="contact.name" value="contact${TIME}${COUNTER}@${defaultdomain.name}"/>
-		
+
 		<t:test >
 	        <t:request>
 	            <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -264,10 +264,10 @@
 	        <t:response>
 	            <t:select path="//admin:CreateAccountResponse"/>
 			</t:response>
-	    </t:test>  
+	    </t:test>
 
 		<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	    <t:test>
 	        <t:request>
 	            <AuthRequest xmlns="urn:zimbraAccount">
@@ -287,11 +287,11 @@
 	                    <a n="firstName">${firstname}</a>
 	                    <a n="lastName">${lastname}</a>
 	                    <a n="email">${contact.name}</a>
-	                </cn>     
+	                </cn>
 	        	</CreateContactRequest>
 	        </t:request>
 	        <t:response>
-	        	<t:select path="//mail:CreateContactResponse"/>          
+	        	<t:select path="//mail:CreateContactResponse"/>
 	        </t:response>
 	    </t:test>
 
@@ -311,7 +311,7 @@
     </t:test>
 
 	<t:property name="contact.name" value="contact${TIME}${COUNTER}@${defaultdomain.name}"/>
-	
+
 	<t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -325,7 +325,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -348,11 +348,11 @@
                     <a n="firstName">${firstname}</a>
                     <a n="lastName">${lastname}</a>
                     <a n="email">${contact.name}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id"/>
         </t:response>
     </t:test>
 
@@ -376,7 +376,7 @@
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${firstname}</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -385,7 +385,7 @@
  				<t:select path="//mail:match[1]" attr="email" match=".*${contact.name}.*"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

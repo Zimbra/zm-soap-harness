@@ -17,7 +17,7 @@
 	<t:test_case testcaseid="acctSetup_bug69148" type="always">
 		<t:objective>Create test accounts</t:objective>
 		<t:steps>	1. Login to admin account
-					2. Create account        
+					2. Create account
 	    </t:steps>
 
 		<t:test required="true">
@@ -44,18 +44,18 @@
 				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'	set="account1.server" />
 			</t:response>
 		</t:test>
-		
-		
+
+
 	</t:test_case>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}" />
 
-	<t:test_case testcaseid="bug69148" type="bhr" bugids="69148">
+	<t:test_case testcaseid="bug69148" type="sanity" bugids="69148">
 		<t:objective>Verify old contact could be imported successfully </t:objective>
 		 <t:steps>
 		 	 1. Login as Account1
              2. Import old metadat for contact named all
-             4. Check the contact all is imported successfully            
+             4. Check the contact all is imported successfully
     	</t:steps>
 
 		<t:property name="tgz.file" value="${testMailRaw.root}/bug69148/69148.tgz" />
@@ -74,7 +74,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest required="true">
 			<t:restServletRequest method="POST">
 				<filename>${tgz.file}</filename>
@@ -83,19 +83,19 @@
 			<t:restServletResponse>
 				<t:select attr="StatusCode" match="200"/>
 			</t:restServletResponse>
-		</t:resttest>	
-	
+		</t:resttest>
+
 		<t:test>
 	        <t:request>
 	            <SearchRequest xmlns="urn:zimbraMail" types="contact">
 	                <query>"all"</query>
-	            </SearchRequest>        
+	            </SearchRequest>
 	        </t:request>
 	        <t:response>
 	            <t:select path="//mail:SearchResponse/mail:cn" attr="fileAsStr" match="all"/>
 	        </t:response>
 	    </t:test>
-	
-	
+
+
  	</t:test_case>
 </t:tests>

@@ -63,7 +63,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="forward_accountid.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -75,11 +75,11 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="user_accountid.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="CalendarDeviceReminderCosEnabled_1" type="bhr">
+<t:test_case testcaseid="CalendarDeviceReminderCosEnabled_1" type="sanity">
     <t:objective>Create an account having cos with zimbraCalendarReminderDeviceEmail.</t:objective>
     <t:steps>
     	1. Create cos zimbraCalendarReminderDeviceEmail Enabled.
@@ -91,15 +91,15 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos1.name}</name>        
+                <name xmlns="">${cos1.name}</name>
                 <a n="zimbraFeatureCalendarReminderDeviceEmailEnabled">TRUE</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>     
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -113,8 +113,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraCalendarReminderDeviceEmail']"  match="${forward_account.name}"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
        <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -130,7 +130,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CalendarDeviceReminderCosEnabled_2" type="bhr">
+<t:test_case testcaseid="CalendarDeviceReminderCosEnabled_2" type="sanity">
     <t:objective>Create and modify an account with zimbraCalendarReminderDeviceEmail.</t:objective>
     <t:steps>
     	1. Create account  set zimbraCalendarReminderDeviceEmailEnabled TRUE and set zimbraCalendarReminderDeviceEmail
@@ -152,8 +152,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraCalendarReminderDeviceEmail']"  match="${forward_account.name}"/>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraFeatureCalendarReminderDeviceEmailEnabled']"  match="TRUE"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
        <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -168,7 +168,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CalendarDeviceReminderDisabled_3" type="bhr">
+<t:test_case testcaseid="CalendarDeviceReminderDisabled_3" type="sanity">
     <t:objective>Create an account having cos with zimbraCalendarReminderDeviceEmailEnabled false.</t:objective>
     <t:steps>
     	1. Create cos zimbraCalendarReminderDeviceEmailEnabled False.
@@ -180,15 +180,15 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos2.name}</name>        
+                <name xmlns="">${cos2.name}</name>
                 <a n="zimbraFeatureCalendarReminderDeviceEmailEnabled">FALSE</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos2.id"/>     
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -203,8 +203,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraCalendarReminderDeviceEmail']"  match="${forward_account.name}"/>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraFeatureCalendarReminderDeviceEmailEnabled']"  match="FALSE"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
        <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -218,7 +218,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CalendarDeviceReminderDisabled_4" type="bhr">
+<t:test_case testcaseid="CalendarDeviceReminderDisabled_4" type="sanity">
     <t:objective>Create and modify an account with zimbraCalendarReminderDeviceEmailEnabled FALSE.</t:objective>
     <t:steps>
     	1. Create account  set zimbraCalendarReminderDeviceEmailEnabled FALSE and set zimbraCalendarReminderDeviceEmail
@@ -240,8 +240,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraCalendarReminderDeviceEmail']"  match="${forward_account.name}"/>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraFeatureCalendarReminderDeviceEmailEnabled']"  match="FALSE"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
        <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -256,18 +256,18 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CalendarDeviceReminderDisabled_5" type="bhr" bugids="52201">
+<t:test_case testcaseid="CalendarDeviceReminderDisabled_5" type="sanity" bugids="52201">
     <t:objective>zimbraPrefCalendarReminderDeviceEmail should be on account only</t:objective>
     <t:steps>
     	1. Create account  set zimbraCalendarReminderDeviceEmailEnabled FALSE and set zimbraCalendarReminderDeviceEmail
     	2. Verify zimbraCalendarReminderDeviceEmail is set.
     	3. Modify account unset zimbraCalendarReminderDeviceEmail
     </t:steps>
-	
-	
+
+
 	<t:property name="domain1.name" value="domain.${TIME}.${COUNTER}.${defaultdomain.name}"/>
 	<t:property name="domain1.new.name" value="new.${domain1.name}"/>
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test  id="admin_login" required="true" depends="ping">
@@ -291,9 +291,9 @@
         </t:request>
         <t:response>
             <t:select path= "//zimbra:Code" match ="^ldap.OBJECT_CLASS_VIOLATION"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -303,33 +303,33 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
        <t:test>
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
                 <id>${domain1.id}</id>
-                <a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>              
+                <a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
             </ModifyDomainRequest>
         </t:request>
         <t:response>
- 				<t:select path= "//zimbra:Code" match ="service.FAILURE"/>       
+ 				<t:select path= "//zimbra:Code" match ="service.FAILURE"/>
         </t:response>
     </t:test>
-    
+
        <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos3.name}</name>        
+                <name xmlns="">${cos3.name}</name>
                 <a n="zimbraFeatureCalendarReminderDeviceEmailEnabled">TRUE</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>     
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -338,32 +338,32 @@
             </ModifyCosRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match ="^service.FAILURE"/> 
+            <t:select path= "//zimbra:Code" match ="^service.FAILURE"/>
         </t:response>
     </t:test>
-    
+
           <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">test_cos</name>        
+                <name xmlns="">test_cos</name>
                 <a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-             <t:select path= "//zimbra:Code" match ="^ldap.OBJECT_CLASS_VIOLATION"/> 
+             <t:select path= "//zimbra:Code" match ="^ldap.OBJECT_CLASS_VIOLATION"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<!--  t:test_case testcaseid="CalendarDeviceReminderCosEnabled_5" type="bhr">
+<!--  t:test_case testcaseid="CalendarDeviceReminderCosEnabled_5" type="sanity">
     <t:objective>Foraward notification to zimbraCalendarReminderDeviceEmail by enabling on account .</t:objective>
     <t:steps>
     	1. Create account  set zimbraCalendarReminderDeviceEmailEnabled TRUE and set zimbraCalendarReminderDeviceEmail as forwarding account.
-    	2. Login to user and create an appointment and invite account at step #1.  
+    	2. Login to user and create an appointment and invite account at step #1.
     	3. Login to forwarding account verify it get invitation.
     	4. Modify account unset zimbraCalendarReminderDeviceEmail
-    	5. Login to user and create an appointment and invite account at step #1.  
+    	5. Login to user and create an appointment and invite account at step #1.
     	6. Login to forwarding account verify it does not get invitation.
     </t:steps>
 
@@ -381,8 +381,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraCalendarReminderDeviceEmail']"  match="${forward_account.name}"/>
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraFeatureCalendarReminderDeviceEmailEnabled']"  match="TRUE"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
       <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -394,7 +394,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -407,8 +407,8 @@
 	</t:test>
 	<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
 	<t:property name="timezone.pst.regex" value="America\/Los_Angeles"/>
-    
-   
+
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -444,7 +444,7 @@
             </t:select>
         </t:response>
     </t:test>
-  
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -456,10 +456,10 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-  
-  
-  
-  
+
+
+
+
        <t:test >
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">

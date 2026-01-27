@@ -28,7 +28,7 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always">
    <t:objective>basic system check</t:objective>
-   
+
     <t:test required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin" />
@@ -37,7 +37,7 @@
             <t:select path="//admin:PingResponse" />
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -46,7 +46,7 @@
 	<t:steps> 1. Login as an admin
               2. create a test account
     </t:steps>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -58,7 +58,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -72,7 +72,7 @@
           	<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
@@ -88,13 +88,13 @@
 				<t:select path="//admin:GetAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-		
+
 </t:test_case>
 
 
 <t:test_case testcaseid="GetAccountRequest2" type="smoke">
 	<t:objective> GetAccountRequest with valid value of "name" </t:objective>
-		
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -105,13 +105,13 @@
 			<t:select path="//admin:GetAccountResponse/admin:account" />
 		</t:response>
 	</t:test>
-		
+
 </t:test_case>
-	
-	
-<t:test_case testcaseid="GetAccountRequest3" type="bhr">
+
+
+<t:test_case testcaseid="GetAccountRequest3" type="sanity">
 	<t:objective> GetAccountRequest by "id" and applyCos=1  </t:objective>
-	
+
 	<t:test>
 		<t:request>
 		    <GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="1">
@@ -122,13 +122,13 @@
 			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraFeatureGalEnabled']" match="TRUE|FALSE" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest4" type="bhr" areas="dev_sanity">
+<t:test_case testcaseid="GetAccountRequest4" type="sanity" areas="dev_sanity">
 	<t:objective> GetAccountRequest by "id" and applyCos=0 </t:objective>
- 
+
  	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="0">
@@ -139,11 +139,11 @@
 			<t:select path="//admin:GetAccountResponse/admin:account" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest5" bugids="2216" type="functional">
+<t:test_case testcaseid="GetAccountRequest5" bugids="2216" type="regression">
 	<t:objective> GetAccountRequest by "id" and with value of applyCos as invalid/negative/char/spchar/starting_with_zero </t:objective>
 
 	<t:test>
@@ -166,9 +166,9 @@
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
-		
+
 	</t:test>
-		
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="abcd">
@@ -179,7 +179,7 @@
 				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="${spchar}">
@@ -190,7 +190,7 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="${starting_with_zero}">
@@ -201,11 +201,11 @@
 				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 			</t:response>
 		</t:test>
-		
+
 </t:test_case>
-	
-	
-<t:test_case testcaseid="GetAccountRequest6" type="bhr">
+
+
+<t:test_case testcaseid="GetAccountRequest6" type="sanity">
 	<t:objective> GetAccountRequest by "name" and value of applyCos=1 </t:objective>
 
 	<t:test>
@@ -218,13 +218,13 @@
 			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraFeatureGalEnabled']" match="TRUE|FALSE" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-	
-<t:test_case testcaseid="GetAccountRequest7" type="bhr">
+
+<t:test_case testcaseid="GetAccountRequest7" type="sanity">
 	<t:objective> GetAccountRequest by "name" and value of applyCos=0 </t:objective>
-	
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="0">
@@ -235,11 +235,11 @@
 			<t:select path="//admin:GetAccountResponse/admin:account" />
 		</t:response>
 	</t:test>
-		
+
 </t:test_case>
 
-	
-<t:test_case testcaseid="GetAccountRequest8" bugids="2216" type="functional">
+
+<t:test_case testcaseid="GetAccountRequest8" bugids="2216" type="regression">
 	<t:objective> GetAccountRequest by "name" and value of cos as invalid/negative/char/spchar/starting_with_zero </t:objective>
 
 	<t:test>
@@ -252,7 +252,7 @@
 				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 			</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="-1">
@@ -263,7 +263,7 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="abcd">
@@ -296,11 +296,11 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest9" type="functional">
+<t:test_case testcaseid="GetAccountRequest9" type="regression">
 	<t:objective> GetAccountRequest by id/name and with leading spaces in id/name  </t:objective>
 
 	<t:test>
@@ -324,11 +324,11 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest10" type="functional">
+<t:test_case testcaseid="GetAccountRequest10" type="regression">
 	<t:objective> GetAccountRequest by id/name and with trailing spaces in id/name  </t:objective>
 
 	<t:test>
@@ -352,11 +352,11 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest11" type="functional">
+<t:test_case testcaseid="GetAccountRequest11" type="regression">
 	<t:objective> GetAccountRequest by id/name and with both leading and trailing spaces in id/name  </t:objective>
 
 	<t:test>
@@ -369,7 +369,7 @@
   			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -380,11 +380,11 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest12" type="functional">
+<t:test_case testcaseid="GetAccountRequest12" type="regression">
 	<t:objective> GetAccountRequest with value of atrribute "by" as sometext (i.e invalid)  </t:objective>
 
 	<t:test>
@@ -397,10 +397,10 @@
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="GetAccountRequest13" type="functional">
+<t:test_case testcaseid="GetAccountRequest13" type="regression">
 	<t:objective> GetAccountRequest by name of deleted account </t:objective>
 	<t:steps> 1. create an account
               2. delete it
@@ -419,7 +419,7 @@
                      <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAdmin" value="${test_acct.server}"/>
 	<t:test id="getaccountrequest13b" depends="getaccountrequest13a">
 		<t:request>
@@ -431,7 +431,7 @@
 			<t:select path="//admin:DeleteAccountResponse" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test id="getaccountrequest13c" depends="getaccountrequest13b">
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -442,17 +442,17 @@
 			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest14" type="functional" bugids="5171">
+<t:test_case testcaseid="GetAccountRequest14" type="regression" bugids="5171">
 	<t:objective> Get account by name of deleted account </t:objective>
 	<t:steps> 1. create an account
               2. delete it
               3. get account by name of deleted account
     </t:steps>
-	
+
 	<t:test id="getaccountrequest14a">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -466,9 +466,9 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
 		</t:response>
 	</t:test>
-	
+
     <t:property name="server.zimbraAdmin" value="${test_acct1.server}"/>
-	
+
 	<t:test id="getaccountrequest14b" depends="getaccountrequest14a">
 		<t:request>
 			<DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -479,7 +479,7 @@
 			<t:select path="//admin:DeleteAccountResponse" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test id="getaccountrequest14c" depends="getaccountrequest14b">
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -490,11 +490,11 @@
 			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest15" type="sanity">
+<t:test_case testcaseid="GetAccountRequest15" type="functional">
 	<t:objective> Get account by id of old account </t:objective>
 	<t:steps> 1. create an account.
               2. rename it.
@@ -537,11 +537,11 @@
 			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT$" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest16" type="sanity">
+<t:test_case testcaseid="GetAccountRequest16" type="functional">
 	<t:objective> Get account by giving the New name of the renamed account </t:objective>
 	<t:steps> 1. create an account.
               2. rename it.
@@ -561,7 +561,7 @@
 		</t:response>
 	</t:test>
 	    <t:property name="server.zimbraAdmin" value="${test_acct3.server}"/>
-	
+
 	<t:test id="getaccountrequest16b" depends="getaccountrequest16a">
 		<t:request>
 			<RenameAccountRequest xmlns="urn:zimbraAdmin">
@@ -574,7 +574,7 @@
 			<t:select path="//admin:RenameAccountResponse/admin:account" attr="id" set="test_account4.id" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test id="getaccountrequest16c" depends="getaccountrequest16b">
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -585,14 +585,14 @@
 			<t:select path="//admin:GetAccountResponse/admin:account" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest17" type="functional">
+<t:test_case testcaseid="GetAccountRequest17" type="regression">
 	<t:objective> GetAccountRequest by id of one account and name of the other account  </t:objective>
 	<t:property name="server.zimbraAdmin" value="${test_acct2.server}"/>
-	
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -604,11 +604,11 @@
 			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest18" type="functional">
+<t:test_case testcaseid="GetAccountRequest18" type="regression">
 	<t:objective> GetAccountRequest by multiple id's </t:objective>
 
 	<t:test>
@@ -619,16 +619,16 @@
 			</GetAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account.id}"/>			
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account.id}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAccountRequest19" type="functional">
+<t:test_case testcaseid="GetAccountRequest19" type="regression">
 	<t:objective> GetAccountRequest by multiple names </t:objective>
-	
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -637,10 +637,10 @@
 			</GetAccountRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account" attr="name" match="${account.name}"/>			
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="name" match="${account.name}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 

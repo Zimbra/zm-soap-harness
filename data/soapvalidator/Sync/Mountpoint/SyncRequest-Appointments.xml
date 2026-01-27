@@ -16,7 +16,7 @@
 <t:property name="tz" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
 
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
@@ -38,7 +38,7 @@
     <t:steps> 1. Login to Admin
               2. Create test accounts
     </t:steps>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
     <t:test required="true">
@@ -74,7 +74,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
     <t:test required="true">
@@ -87,7 +87,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -115,7 +115,7 @@
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -148,8 +148,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -186,15 +186,15 @@
 	<t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appt1.start.gmt" value="1263830400000"/>
 	<t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>
-	
+
     <t:test >
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail" >
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt1.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" >
-                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${tz}"/>
                             <or a="${account1.name}"/>
                         </inv>
 						<mp ct="multipart/alternative">
@@ -232,7 +232,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:appt" attr="id" match="${account1.id}:${account1.appt1.apptId}"/>
@@ -243,7 +243,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Appointments_02" type="sanity" bugids="16710">
+<t:test_case testcaseid="SyncRequest_Sharing_Appointments_02" type="functional" bugids="16710">
     <t:objective>Verify that a deleted calendar in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -275,15 +275,15 @@
 	<t:property name="appt2.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appt2.start.gmt" value="1266508800000"/> <!-- Thu, 18 Feb 2010 16:00:00 GMT -->
 	<t:property name="appt2.start.pst" value="${TIME(-8h)[${appt2.start.gmt}]}"/>
-	
+
     <t:test >
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail" >
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt2.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt2.subject}" >
-                            <s d="${ICALTIME[${appt2.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt2.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt2.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt2.start.pst}]}" tz="${tz}"/>
                             <or a="${account1.name}"/>
                         </inv>
 						<mp ct="multipart/alternative">
@@ -321,8 +321,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -369,7 +369,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:deleted" attr="ids" match="${account1.id}:${account1.appt2.id}"/>
@@ -380,7 +380,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Appointments_03" type="sanity" >
+<t:test_case testcaseid="SyncRequest_Sharing_Appointments_03" type="functional" >
     <t:objective>Verify that a new contact (moved) in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -412,15 +412,15 @@
 	<t:property name="appt3.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appt3.start.gmt" value="1268928000000"/> <!-- Thu, 18 Mar 2010 16:00:00 GMT -->
 	<t:property name="appt3.start.pst" value="${TIME(-7h)[${appt3.start.gmt}]}"/>
-	
+
     <t:test >
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail" l="${account1.folder.trash.id}">
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt3.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt3.subject}" >
-                            <s d="${ICALTIME[${appt3.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt3.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt3.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt3.start.pst}]}" tz="${tz}"/>
                             <or a="${account1.name}"/>
                         </inv>
 						<mp ct="multipart/alternative">
@@ -459,8 +459,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -489,7 +489,7 @@
                 <t:select path="//mail:ItemActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -509,7 +509,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:appt" attr="id" match="${account1.id}:${account1.appt3.apptId}"/>
@@ -521,7 +521,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sharing_Appointments_04" type="sanity" >
+<t:test_case testcaseid="SyncRequest_Sharing_Appointments_04" type="functional" >
     <t:objective>Verify that a modified appointments (start/end time) in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -553,15 +553,15 @@
 	<t:property name="appt4.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appt4.start.gmt" value="1271606400000"/> <!-- Sun, 18 Apr 2010 16:00:00 GMT -->
 	<t:property name="appt4.start.pst" value="${TIME(-7h)[${appt4.start.gmt}]}"/>
-	
+
     <t:test >
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail" >
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt4.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt4.subject}" >
-                            <s d="${ICALTIME[${appt4.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt4.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt4.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt4.start.pst}]}" tz="${tz}"/>
                             <or a="${account1.name}"/>
                         </inv>
 						<mp ct="multipart/alternative">
@@ -600,8 +600,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -622,15 +622,15 @@
 
 	<t:property name="appt4.start.gmt" value="1274198400000"/> <!-- New Date: Tue, 18 May 2010 16:00:00 GMT -->
 	<t:property name="appt4.start.pst" value="${TIME(-7h)[${appt4.start.gmt}]}"/>
-	
+
     <t:test >
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail" >
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt4.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt4.subject}" >
-                            <s d="${ICALTIME[${appt4.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt4.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt4.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt4.start.pst}]}" tz="${tz}"/>
                             <or a="${account1.name}"/>
                         </inv>
 						<mp ct="multipart/alternative">
@@ -648,7 +648,7 @@
         </t:response>
     </t:test>
 
-    
+
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -669,7 +669,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:appt" attr="id" match="${account1.id}:${account1.appt4.apptId}"/>
@@ -692,7 +692,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SyncRequest_Sharing_Appointments_05" type="sanity" >
+<t:test_case testcaseid="SyncRequest_Sharing_Appointments_05" type="functional" >
     <t:objective>Verify that a modified appointment (details) in a shared folder is listed in the SyncResponse</t:objective>
     <t:steps>
     1. Login to the delegator
@@ -725,15 +725,15 @@
 	<t:property name="appt5.content" value="content.${TIME}.${COUNTER}"/>
 	<t:property name="appt5.start.gmt" value="1276876800000"/> <!-- Sun, 18 Jun 2010 16:00:00 GMT -->
 	<t:property name="appt5.start.pst" value="${TIME(-7h)[${appt5.start.gmt}]}"/>
-	
+
     <t:test >
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail" >
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt5.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt5.subject}" >
-                            <s d="${ICALTIME[${appt5.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt5.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt5.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt5.start.pst}]}" tz="${tz}"/>
                             <or a="${account1.name}"/>
                         </inv>
 						<mp ct="multipart/alternative">
@@ -772,8 +772,8 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
-            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>
         </t:response>
     </t:test>
 
@@ -793,15 +793,15 @@
     </t:test>
 
 	<t:property name="appt5.content" value="content.${TIME}.${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail" >
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt5.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt5.subject}" >
-                            <s d="${ICALTIME[${appt5.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt5.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt5.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt5.start.pst}]}" tz="${tz}"/>
                             <or a="${account1.name}"/>
                         </inv>
 						<mp ct="multipart/alternative">
@@ -819,7 +819,7 @@
         </t:response>
     </t:test>
 
-    
+
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -840,7 +840,7 @@
         <t:request>
             <SyncRequest l="${account1.id}:${account1.folder.calendar.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
             <t:select path="//mail:SyncResponse">
             	<t:select path="//mail:appt" attr="id" match="${account1.id}:${account1.appt5.apptId}"/>

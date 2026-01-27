@@ -119,7 +119,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -145,7 +145,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -162,12 +162,12 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest2" type="sanity" >
+<t:test_case testcaseid="AddAccountAliasRequest2" type="functional" >
     <t:objective> Add an invalid Alias (without domain name) to an account </t:objective>
 
     <t:test>
@@ -180,12 +180,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest3" type="sanity" >
+<t:test_case testcaseid="AddAccountAliasRequest3" type="functional" >
     <t:objective> Add an Alias with non-existing domain name  </t:objective>
 
     <t:test>
@@ -198,12 +198,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_DOMAIN"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest4" bugids="2156" type="sanity" >
+<t:test_case testcaseid="AddAccountAliasRequest4" bugids="2156" type="functional" >
     <t:objective> Add an Alias with names as spchar/numbers/spaces </t:objective>
 
     <t:test>
@@ -216,7 +216,7 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -228,12 +228,12 @@
         <t:response>
                 <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest5" type="functional" >
+<t:test_case testcaseid="AddAccountAliasRequest5" type="regression" >
     <t:objective> Add an Alias with blank name </t:objective>
 
     <t:test>
@@ -246,12 +246,12 @@
         <t:response>
                 <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest6" type="sanity" >
+<t:test_case testcaseid="AddAccountAliasRequest6" type="functional" >
     <t:objective> Create duplicate alias for the same account </t:objective>
 
     <t:test>
@@ -264,12 +264,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^account.ACCOUNT_EXISTS"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest7" type="functional" >
+<t:test_case testcaseid="AddAccountAliasRequest7" type="regression" >
     <t:objective> Add an alias with deleted domain </t:objective>
     <t:steps> 1. Create a domain
               2. Delete it.
@@ -277,7 +277,7 @@
     </t:steps>
 
     <t:test id="addaccountaliasrequest7a">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>domain${domain2.name}</name>
             </CreateDomainRequest>
@@ -309,11 +309,11 @@
             <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest8" type="functional">
+<t:test_case testcaseid="AddAccountAliasRequest8" type="regression">
     <t:objective> Add an Alias to a non existing account </t:objective>
 
     <t:test>
@@ -326,12 +326,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest9" type="functional">
+<t:test_case testcaseid="AddAccountAliasRequest9" type="regression">
     <t:objective> Add an Alias with name same as account name.</t:objective>
 
     <t:test>
@@ -344,12 +344,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^account.ACCOUNT_EXISTS"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest10" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest10" type="functional">
     <t:objective> Add an Alias with name same as any other account name.</t:objective>
 
     <t:test>
@@ -362,12 +362,12 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^account.ACCOUNT_EXISTS"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest11" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest11" type="functional">
     <t:objective> Add an Alias to an account with name same as account name same as any other account name in other domain..</t:objective>
 
     <t:test>
@@ -380,7 +380,7 @@
         <t:response>
             <t:select path= "//zimbra:Code" match ="^account.ACCOUNT_EXISTS"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
@@ -395,7 +395,7 @@
             5. Login to alias of account1.
             6. Search the mail.
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
         <t:test>
         <t:request>
@@ -407,7 +407,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -437,9 +437,9 @@
             <t:select path="//mail:SendMsgResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -476,7 +476,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -487,7 +487,7 @@
             <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${compose.subject1}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -501,7 +501,7 @@
     </t:steps>
 
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -531,9 +531,9 @@
             <t:select path="//mail:SendMsgResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -546,7 +546,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -557,11 +557,11 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:e" attr="a" match="${test_account1.name}" />
         </t:response>
     </t:test>
-     
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest14" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest14" type="functional">
     <t:objective>Delete a mail from an account.The mail should also get deleted from the alias account.</t:objective>
     <t:steps>
             1. Login to an account.
@@ -570,9 +570,9 @@
             4. Login to alias of that account.
             5. The deleted mail should not be present.
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -585,7 +585,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -597,7 +597,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message.id1" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -609,7 +609,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -622,7 +622,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -637,7 +637,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest15" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest15" type="functional">
     <t:objective>Delete a mail from an alias.The mail should also get deleted from the account.</t:objective>
     <t:steps>
             1. Login to an account to an alias of account1.
@@ -648,9 +648,9 @@
             6. Login to account1.
             7. The deleted mail should not be present.
     </t:steps>
-       
+
     <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -681,7 +681,7 @@
         </t:response>
     </t:test>
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -694,7 +694,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -706,7 +706,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message.id2" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -718,7 +718,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id2}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -731,7 +731,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -746,7 +746,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest16" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest16" type="functional">
     <t:objective>Check if mail sent through an account is also present in sent folder of alias or not.</t:objective>
     <t:steps>
             1. Login to an account.
@@ -754,9 +754,9 @@
             3. Login to alias.
             4. Search that mail in sent folder.
     </t:steps>
-       
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -786,7 +786,7 @@
             <t:select path="//mail:SendMsgResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -799,7 +799,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -810,11 +810,11 @@
             <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${compose.subject4}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest17" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest17" type="functional">
     <t:objective>Check if mail sent through an alias is also present in sent folder of account or not.</t:objective>
     <t:steps>
             1. Login to an alias.
@@ -822,9 +822,9 @@
             3. Login to account.
             4. Search that mail in sent folder.
     </t:steps>
-       
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-   
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -854,7 +854,7 @@
             <t:select path="//mail:SendMsgResponse"/>
         </t:response>
     </t:test>
-       
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -867,7 +867,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -878,11 +878,11 @@
             <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${compose.subject5}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest18" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest18" type="functional">
     <t:objective>Tag a mail in an account. It should be seen tagged in alias too</t:objective>
     <t:steps>
             1. Login to an account.
@@ -891,9 +891,9 @@
             3. Login to alias of that account.
             4. Search the tagged mail.
     </t:steps>
-       
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -906,7 +906,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -918,7 +918,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message5.id" />
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -944,48 +944,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message5.id}"/>
         </t:response>
     </t:test>
-     
-    <t:test>
-        <t:request>
-            <AuthRequest xmlns="urn:zimbraAccount">
-                <account by="name">${alias.name}</account>
-                <password>${defaultpassword.value}</password>
-            </AuthRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
-        </t:response>
-    </t:test>   
-    
-    <t:test>
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>tag:"${tag1.name}"</query>
-            </SearchRequest>
-        </t:request>
-        <t:response>       
-            <t:select path="//mail:SearchResponse/mail:m">
-            <t:select attr="id" match="${message5.id}"/>
-            </t:select>
-        </t:response>
-    </t:test> 
-    
-</t:test_case>
-
-
-<t:test_case testcaseid="AddAccountAliasRequest19" type="sanity">
-    <t:objective>Tag a mail in an alias. It should be seen tagged in account too</t:objective>
-    <t:steps>
-            1. Login to an alias.
-            2. Create a tag.
-            3. Tag a mail.
-            3. Login to account.
-            4. Search the tagged mail.
-    </t:steps>
-       
-    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -998,7 +957,48 @@
 
         </t:response>
     </t:test>
-    
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>tag:"${tag1.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="id" match="${message5.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddAccountAliasRequest19" type="functional">
+    <t:objective>Tag a mail in an alias. It should be seen tagged in account too</t:objective>
+    <t:steps>
+            1. Login to an alias.
+            2. Create a tag.
+            3. Tag a mail.
+            3. Login to account.
+            4. Search the tagged mail.
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${alias.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1010,7 +1010,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message6.id" />
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -1036,47 +1036,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message6.id}"/>
         </t:response>
     </t:test>
-     
-    <t:test>
-        <t:request>
-            <AuthRequest xmlns="urn:zimbraAccount">
-                <account by="name">${test_account1.name}</account>
-                <password>${defaultpassword.value}</password>
-            </AuthRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
-        </t:response>
-    </t:test>   
-    
-    <t:test>
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>tag:"${tag2.name}"</query>
-            </SearchRequest>
-        </t:request>
-        <t:response>       
-            <t:select path="//mail:SearchResponse/mail:m">
-            <t:select attr="id" match="${message6.id}"/>
-            </t:select>
-        </t:response>
-    </t:test> 
-    
-</t:test_case>
-
-
-<t:test_case testcaseid="AddAccountAliasRequest20" type="sanity">
-    <t:objective>Flag a mail in an account. It should be seen flagged in alias too</t:objective>
-    <t:steps>
-            1. Login to an account.
-            2. Flag a mail.
-            3. Login to alias of that account.
-            4. Search the flagged mail.
-    </t:steps>
-       
-    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1089,7 +1049,47 @@
 
         </t:response>
     </t:test>
-    
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>tag:"${tag2.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="id" match="${message6.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddAccountAliasRequest20" type="functional">
+    <t:objective>Flag a mail in an account. It should be seen flagged in alias too</t:objective>
+    <t:steps>
+            1. Login to an account.
+            2. Flag a mail.
+            3. Login to alias of that account.
+            4. Search the flagged mail.
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1101,7 +1101,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message5.id" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -1113,7 +1113,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message5.id}"/>
         </t:response>
     </t:test>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1125,8 +1125,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test> 
-     
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1139,11 +1139,11 @@
             </t:select>
         </t:response>
      </t:test>
-     
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest21" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest21" type="functional">
     <t:objective>Flag a mail in an alias. It should be seen flagged in account too</t:objective>
     <t:steps>
             1. Login to an alias.
@@ -1151,9 +1151,9 @@
             3. Login to account.
             4. Search the flagged mail.
     </t:steps>
-              
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1166,7 +1166,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1178,7 +1178,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message4.id" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -1190,47 +1190,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message4.id}"/>
         </t:response>
     </t:test>
-     
-    <t:test>
-        <t:request>
-            <AuthRequest xmlns="urn:zimbraAccount">
-                <account by="name">${test_account1.name}</account>
-                <password>${defaultpassword.value}</password>
-            </AuthRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
-        </t:response>
-    </t:test>   
-     
-    <t:test>
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-                <query> is:${flagged}</query>
-            </SearchRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${compose.subject4}"/>
-        </t:response>
-     </t:test>
-    
-</t:test_case>
-
-
-<t:test_case testcaseid="AddAccountAliasRequest22" type="sanity">
-    <t:objective>Move a mail in an account to another folder. It should be moved in alias too</t:objective>
-    <t:steps>
-            1. Login to an account.
-            2. Create a custom folder.
-            3. Move a mail from sent folder to that custom folder.
-            4. Login to alias of that account.
-            5. Search the mail in custom folder. (mail should be present)
-            6. Search the sent folder. (mail should not be present)
-    </t:steps>
-       
-    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1243,7 +1203,47 @@
 
         </t:response>
     </t:test>
-    
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query> is:${flagged}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${compose.subject4}"/>
+        </t:response>
+     </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddAccountAliasRequest22" type="functional">
+    <t:objective>Move a mail in an account to another folder. It should be moved in alias too</t:objective>
+    <t:steps>
+            1. Login to an account.
+            2. Create a custom folder.
+            3. Move a mail from sent folder to that custom folder.
+            4. Login to alias of that account.
+            5. Search the mail in custom folder. (mail should be present)
+            6. Search the sent folder. (mail should not be present)
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1255,7 +1255,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message5.id" />
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns = "urn:zimbraMail">
@@ -1266,7 +1266,7 @@
             <t:select path = "//mail:CreateFolderResponse/mail:folder" attr = "id" set = "folder.id1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -1278,7 +1278,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message5.id}"/>
         </t:response>
     </t:test>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1290,8 +1290,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1302,7 +1302,7 @@
             <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${compose.subject5}"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1313,11 +1313,11 @@
             <t:select path="//mail:SearchResponse" attr="offset" match="0"/>
         </t:response>
     </t:test>
-     
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest23" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest23" type="functional">
     <t:objective>Move a mail in an alias to another folder. It should be moved in account too</t:objective>
     <t:steps>
             1. Login to an alias.
@@ -1326,9 +1326,9 @@
             4. Login to alias of that account.
             5. Search the mail in another custom folder folder.
     </t:steps>
-              
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1341,7 +1341,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1353,7 +1353,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message5.id" />
         </t:response>
     </t:test>
-                
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns = "urn:zimbraMail">
@@ -1364,7 +1364,7 @@
             <t:select path = "//mail:CreateFolderResponse/mail:folder" attr = "id" set = "folder.id2"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -1376,7 +1376,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message5.id}"/>
         </t:response>
     </t:test>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1388,8 +1388,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1400,11 +1400,11 @@
             <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${compose.subject5}"/>
         </t:response>
     </t:test>
-     
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest24" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest24" type="functional">
     <t:objective>Mark a mail in an account as read. It should be seen read in alias too</t:objective>
     <t:steps>
             1. Login to an account.
@@ -1412,9 +1412,9 @@
             3. Login to alias of that account.
             4. Search the read mail.
     </t:steps>
-       
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1427,7 +1427,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1439,7 +1439,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message5.id" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -1451,7 +1451,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message5.id}"/>
         </t:response>
     </t:test>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1463,8 +1463,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test> 
-     
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1477,11 +1477,11 @@
             </t:select>
         </t:response>
      </t:test>
-     
+
 </t:test_case>
 
 
-<t:test_case testcaseid="AddAccountAliasRequest25" type="sanity">
+<t:test_case testcaseid="AddAccountAliasRequest25" type="functional">
     <t:objective>Mark a mail in an alias as read. It should be seen read in account too</t:objective>
     <t:steps>
             1. Login to an alias.
@@ -1489,10 +1489,10 @@
             3. Login to account.
             4. Search the read mail.
     </t:steps>
-       
-           
+
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1505,7 +1505,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1517,7 +1517,7 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message4.id" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -1529,7 +1529,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message4.id}"/>
         </t:response>
     </t:test>
-     
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -1541,8 +1541,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test>   
-     
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -1555,10 +1555,10 @@
             </t:select>
         </t:response>
      </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="AddAccountAliasRequest26" type="sanity" >
+<t:test_case testcaseid="AddAccountAliasRequest26" type="functional" >
     <t:objective> Add an invalid Alias (without domain name) to an account </t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -1598,7 +1598,7 @@
         <t:response>
             <t:select path= "//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

@@ -27,7 +27,7 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="CreateIdentityRequest_01" type="bhr" >
+<t:test_case testcaseid="CreateIdentityRequest_01" type="sanity" >
     <t:objective>Sanity test for CreateIdentityRequest</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -53,7 +53,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server1"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
 
  	<t:test>
@@ -83,7 +83,7 @@
 			<t:select path="//acct:CreateIdentityResponse/acct:identity/acct:a[@ name='zimbraPrefFromAddress']" match="${account1.name}"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 <t:test_case testcaseid="GetIdentitiesRequest_01" type="smoke" >
@@ -112,7 +112,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server2"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct.server2}"/>
 
  	<t:test>
@@ -142,7 +142,7 @@
 			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="identity2.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
@@ -153,11 +153,11 @@
 			<t:select path="//acct:GetIdentitiesResponse/acct:identity[@id='${identity2.id}']" attr="name" match="${Identity2.name}"/>
 		</t:response>
 	</t:test>
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyIdentityRequest_01" type="bhr" >
+<t:test_case testcaseid="ModifyIdentityRequest_01" type="sanity" >
     <t:objective>Sanity test for ModifyIdentityRequest</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -183,7 +183,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server3"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct.server3}"/>
 
  	<t:test>
@@ -213,7 +213,7 @@
 			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="identity3.id"/>
         </t:response>
     </t:test>
-    
+
 	 <t:test>
         <t:request>
 			<ModifyIdentityRequest xmlns="urn:zimbraAccount">
@@ -226,10 +226,10 @@
 			<t:select path="//acct:ModifyIdentityResponse"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
-<t:test_case testcaseid="DeleteIdentityRequest_01" type="bhr" >
+<t:test_case testcaseid="DeleteIdentityRequest_01" type="sanity" >
     <t:objective>Sanity test for DeleteIdentityRequest</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -255,7 +255,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server4"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct.server4}"/>
 
  	<t:test>
@@ -285,7 +285,7 @@
 			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="identity4.id"/>
         </t:response>
     </t:test>
-    
+
 	 <t:test>
         <t:request>
 			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
@@ -296,10 +296,10 @@
 			<t:select path="//acct:DeleteIdentityResponse"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
-<t:test_case testcaseid="GetInfoRequest_01" type="bhr" >
+<t:test_case testcaseid="GetInfoRequest_01" type="sanity" >
     <t:objective>Sanity test for GetInfoRequest</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -325,7 +325,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server5"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct.server5}"/>
 
  	<t:test>
@@ -355,18 +355,18 @@
 			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="identity5.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<GetInfoRequest xmlns="urn:zimbraAccount" idents="identity5.id">
-			
+
 			</GetInfoRequest>
         </t:request>
         <t:response>
 			<t:select path="//acct:GetInfoResponse/acct:identities/acct:identity" />
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 </t:tests>

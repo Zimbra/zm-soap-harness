@@ -68,7 +68,7 @@
     <t:test depends="admin_login">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">TestCos${TIME}${COUNTER}</name>        
+                <name xmlns="">TestCos${TIME}${COUNTER}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -79,7 +79,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RenameCalendarResource01" type="bhr">
+<t:test_case testcaseid="RenameCalendarResource01" type="sanity">
     <t:objective>  Create a resource and rename it with a valid name  </t:objective>
 
     <t:test>
@@ -116,7 +116,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RenameCalendarResource02" type="sanity" >
+<t:test_case testcaseid="RenameCalendarResource02" type="functional" >
     <t:objective>  Create a resource and rename it with already existing name  </t:objective>
 
     <t:test>
@@ -144,14 +144,14 @@
 			</RenameCalendarResourceRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS"/> 
+            <t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="RenameCalendarResource03" type="functional" >
+<t:test_case testcaseid="RenameCalendarResource03" type="regression" >
     <t:objective>  Create a resource and rename it with name as bank/Spchar/Space/sometext/neagtive/zero  </t:objective>
 
     <t:test>
@@ -179,7 +179,7 @@
 			</RenameCalendarResourceRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
@@ -191,7 +191,7 @@
 			</RenameCalendarResourceRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
@@ -203,7 +203,7 @@
 			</RenameCalendarResourceRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
@@ -215,7 +215,7 @@
 			</RenameCalendarResourceRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
@@ -227,7 +227,7 @@
 			</RenameCalendarResourceRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
@@ -239,7 +239,7 @@
 			</RenameCalendarResourceRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
@@ -285,7 +285,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="create_test_account2" required="false" depends="admin_login">
         <t:request>
@@ -298,7 +298,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test>
@@ -313,15 +313,15 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${MailDelAddress.id}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${account2.name}" t="t"/>
@@ -416,13 +416,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RenameCalendarResource05" type="sanity" >
+<t:test_case testcaseid="RenameCalendarResource05" type="functional" >
     <t:objective> Verify that the user gets a notification message when he try's to use the original name of a renamed resource </t:objective>
 	<t:steps>
 		1. Create a Resource with type=location.
 		2. Create two accounts.
 		3. Rename the resource.
-		4. Create an appointment with the resource created above. 
+		4. Create an appointment with the resource created above.
 		5. Check that the notification message should be displayed.
 	</t:steps>
 
@@ -467,7 +467,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="create_test_account4" required="false" depends="admin_login">
         <t:request>
@@ -480,7 +480,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -529,8 +529,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${resource5.id}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account4.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${account3.name}"/>
                     </inv>
                     <e a="${account3.name}" t="t"/>

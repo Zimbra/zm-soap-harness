@@ -20,7 +20,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>  
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -161,8 +161,8 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-    <!-- Login to account account2--> 
-    
+    <!-- Login to account account2-->
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -193,7 +193,7 @@
 <t:finally areas="virus, mta, noncluster">
 
     <!-- After all tests have run, reset the zimbraMtaBlockedExtension setting to the default -->
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -205,7 +205,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -217,8 +217,8 @@
         </t:response>
     </t:test>
 
-	
-    
+
+
 	<t:staftask >
 		<t:request>
 			<server>${mta.server}</server>
@@ -244,12 +244,12 @@
         </t:response>
     </t:test>
 
-	
+
 </t:finally>
 
 
 
-<t:test_case testcaseid="server_setup_block_extension01" type="bhr" areas="virus,mta,noncluster">
+<t:test_case testcaseid="server_setup_block_extension01" type="sanity" areas="virus,mta,noncluster">
     <t:objective> Setup server with correct blocking settings. </t:objective>
     <t:steps/>
 
@@ -320,7 +320,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ZimbraMtaBlockedExtension1" type="bhr" bugids="5173"  areas="virus,mta,noncluster" >
+<t:test_case testcaseid="ZimbraMtaBlockedExtension1" type="sanity" bugids="5173"  areas="virus,mta,noncluster" >
     <t:objective> Send a mail with bmp attachment which is blocked. (contenttype=image/bmp)</t:objective>
     <t:steps>
 		1. Login as admin
@@ -331,8 +331,8 @@
     </t:steps>
 
 
-    <!-- Login to account account2--> 
-    
+    <!-- Login to account account2-->
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true" >
         <t:request>
@@ -379,9 +379,9 @@
 
 	<!-- wait for the subscribe request -->
 	<t:for start="1" end="60" break="response">
-	
+
 		<t:delay msec="1000"/>
-	
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -394,12 +394,12 @@
 				</t:select>
 			</t:response>
 		</t:test>
-		
+
 	</t:for>
 
 </t:test_case>
 
-<t:test_case testcaseid="ZimbraMtaBlockedExtension1a" type="bhr" bugids="5173"  areas="virus,mta,noncluster" >
+<t:test_case testcaseid="ZimbraMtaBlockedExtension1a" type="sanity" bugids="5173"  areas="virus,mta,noncluster" >
     <t:objective> Send a mail with bmp attachment which is blocked. (contenttype=octet-stream)</t:objective>
     <t:steps>
 		1. Login as admin
@@ -409,8 +409,8 @@
     </t:steps>
 
 
-    <!-- Login to account account2--> 
-    
+    <!-- Login to account account2-->
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true" >
         <t:request>
@@ -457,9 +457,9 @@
 
 	<!-- wait for the subscribe request -->
 	<t:for start="1" end="60" break="response">
-	
+
 		<t:delay msec="1000"/>
-	
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -472,12 +472,12 @@
 				</t:select>
 			</t:response>
 		</t:test>
-		
+
 	</t:for>
 
 </t:test_case>
 
-<t:test_case testcaseid="ZimbraMtaBlockedExtension2" type="bhr" bugids="5173"  areas="virus,mta,noncluster" >
+<t:test_case testcaseid="ZimbraMtaBlockedExtension2" type="sanity" bugids="5173"  areas="virus,mta,noncluster" >
     <t:objective> Send a mail with png attachment which is not blocked. </t:objective>
     <t:steps>
 		1. Login as admin
@@ -487,8 +487,8 @@
     </t:steps>
 
 
-    <!-- Login to account account2--> 
-    
+    <!-- Login to account account2-->
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true" >
         <t:request>
@@ -559,7 +559,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ZimbraMtaBlockedExtension3" type="sanity" bugids="5173" areas="virus,mta,noncluster" >
+<t:test_case testcaseid="ZimbraMtaBlockedExtension3" type="functional" bugids="5173" areas="virus,mta,noncluster" >
     <t:objective> Forward a mail with bmp attachment which is blocked. </t:objective>
     <t:steps>
 		1. Login as admin
@@ -569,7 +569,7 @@
     </t:steps>
 
 
-    <!-- Login to account account2--> 
+    <!-- Login to account account2-->
 	<t:mailinjecttest >
 		<t:lmtpInjectRequest>
 			<filename>${msg2.foldername}/email-bmp.txt</filename>
@@ -578,7 +578,7 @@
 			<server>${account2.server}</server>
 		</t:lmtpInjectRequest>
 	</t:mailinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true" >
         <t:request>
@@ -628,9 +628,9 @@
 
 	<!-- wait for the subscribe request -->
 	<t:for start="1" end="60" break="response">
-	
+
 		<t:delay msec="1000"/>
-	
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -643,12 +643,12 @@
 				</t:select>
 			</t:response>
 		</t:test>
-		
+
 	</t:for>
 
 </t:test_case>
 
-<t:test_case testcaseid="ZimbraMtaBlockedExtension5" type="bhr" areas="smtp,virus,mta,noncluster" >
+<t:test_case testcaseid="ZimbraMtaBlockedExtension5" type="sanity" areas="smtp,virus,mta,noncluster" >
     <t:objective> Receive a mail (SMTP) with bmp attachment which is blocked. </t:objective>
     <t:steps>
 		1. Login as admin
@@ -700,7 +700,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ZimbraMtaBlockedExtension6" type="bhr"  areas="smtp,virus,mta,noncluster" >
+<t:test_case testcaseid="ZimbraMtaBlockedExtension6" type="sanity"  areas="smtp,virus,mta,noncluster" >
     <t:objective> Verify 5 character extension is blocked </t:objective>
     <t:steps>
 		1. Login as admin
@@ -752,7 +752,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ZimbraMtaBlockedExtension7" type="bhr"  areas="smtp,virus,mta,noncluster" >
+<t:test_case testcaseid="ZimbraMtaBlockedExtension7" type="sanity"  areas="smtp,virus,mta,noncluster" >
     <t:objective> Verify uppercase and lowercase character extension is blocked </t:objective>
     <t:steps>
 		1. Login as admin
@@ -848,7 +848,7 @@
 
 
 
-<t:test_case testcaseid="ZimbraMtaBlockedExtension39" type="sanity"  areas="smtp,virus,mta,noncluster" bugids="35439">
+<t:test_case testcaseid="ZimbraMtaBlockedExtension39" type="functional"  areas="smtp,virus,mta,noncluster" bugids="35439">
     <t:objective>File extension blocking does not work on filenames with special characters</t:objective>
     <t:steps>
     1. Login to admin.

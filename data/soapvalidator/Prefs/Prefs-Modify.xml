@@ -153,7 +153,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest2" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest2" type="regression" >
     <t:objective>Set a pref not defined in the LDAP schema.  Should fail. </t:objective>
 
     <t:test >
@@ -170,7 +170,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest3" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest3" type="regression" >
     <t:objective>Set a pref starting with zimbraPref* not defined in the LDAP schema.  Should fail. </t:objective>
 
     <t:test>
@@ -180,14 +180,14 @@
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_NAME$"/>  
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_NAME$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest4" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest4" type="sanity">
     <t:objective> Set zimbraPrefIncludeSpamInSearch = TRUE/FALSE</t:objective>
 
     <t:test id="ModifyPrefsRequest4a">
@@ -215,7 +215,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest5" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest5" type="regression" >
     <t:objective> Set zimbraPrefIncludeSpamInSearch to various values</t:objective>
 
     <t:test id="ModifyPrefsRequest5a">
@@ -225,7 +225,7 @@
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
 
@@ -236,7 +236,7 @@
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
 
@@ -272,14 +272,14 @@
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest6" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest6" type="sanity">
     <t:objective> Set zimbraPrefIncludeTrashInSearch to TRUE/FALSE</t:objective>
 
     <!-- 10. Set zimbraPrefIncludeTrashInSearch = TRUE -->
@@ -309,7 +309,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest7" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest7" type="regression" >
     <t:objective> Set zimbraPrefIncludeTrashInSearch to various values    </t:objective>
 
     <!-- 12. Set zimbraPrefIncludeTrashInSearch. = False -->
@@ -320,7 +320,7 @@
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
 
@@ -356,14 +356,14 @@
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest8" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest8" type="sanity">
     <t:objective> Set zimbraPrefGroupMailBy = conversation/message    </t:objective>
 
     <!-- 16. Set zimbraPrefGroupMailBy = conversation -->
@@ -376,7 +376,7 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="ModifyPrefsRequest8b">
         <t:request>
@@ -387,12 +387,12 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest9" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest9" type="regression" >
     <t:objective> Set zimbraPrefGroupMailBy to various values    </t:objective>
 
     <!-- 18. Set zimbraPrefGroupMailBy = Some random text -->
@@ -406,12 +406,12 @@
                  <!-- Added account.INVALID_ATTR_VALUE in place of ModifyPrefsResponse -->
                 <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest10" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest10" type="sanity">
     <t:objective> Set zimbraPrefMailItemsPerPage = valid value (25) </t:objective>
 
     <t:test id="ModifyPrefsRequest10a">
@@ -423,12 +423,12 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest11" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest11" type="regression" >
     <t:objective> Set zimbraPrefMailItemsPerPage = 0 </t:objective>
 
     <t:test id="ModifyPrefsRequest11">
@@ -440,12 +440,12 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest12" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest12" type="regression" >
     <t:objective> Set zimbraPrefMailItemsPerPage various values</t:objective>
 
     <t:test id="ModifyPrefsRequest12a">
@@ -457,7 +457,7 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 22. Set zimbraPrefMailItemsPerPage = negative number -->
     <t:test id="ModifyPrefsRequest12b">
@@ -469,11 +469,11 @@
         <t:response>
             <!-- Decision is that the onus is on the client not to send
                 negative numbers
-                <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+                <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
            -->
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 23. Set zimbraPrefMailItemsPerPage = sometext-->
     <t:test id="ModifyPrefsRequest12c">
@@ -483,14 +483,14 @@
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest13" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest13" type="sanity">
     <t:objective> Set zimbraPrefMailInitialSearch = Valid inputs    </t:objective>
 
     <t:test id="ModifyPrefsRequest13a">
@@ -502,12 +502,12 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
- 
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest14" type="sanity" >
+<t:test_case testcaseid="ModifyPrefsRequest14" type="functional" >
     <t:objective> Set zimbraPrefMailInitialSearch = blank</t:objective>
 
     <t:test id="ModifyPrefsRequest14a">
@@ -519,12 +519,12 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
-     
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest15" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest15" type="sanity">
     <t:objective> Set zimbraPrefReplyToAddress = Email address</t:objective>
 
     <t:test id="ModifyPrefsRequest15a">
@@ -536,12 +536,12 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
- 
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest16" type="sanity" >
+<t:test_case testcaseid="ModifyPrefsRequest16" type="functional" >
     <t:objective> Set zimbraPrefReplyToAddress = blank </t:objective>
 
     <!-- 27. Set zimbraPrefReplyToAddress = blank -->
@@ -554,12 +554,12 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest17" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest17" type="sanity">
     <t:objective> Set zimbraPrefReplyIncludeOriginalText = includeNone/includeAsAttachment/includeBody/includeBodyWithPrefix    </t:objective>
     <t:test id="ModifyPrefsRequest17a">
         <t:request>
@@ -570,7 +570,7 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
@@ -581,7 +581,7 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
@@ -592,7 +592,7 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
@@ -603,12 +603,12 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest18" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest18" type="regression" >
     <t:objective> Set zimbraPrefReplyIncludeOriginalText to various values </t:objective>
 
     <t:test id="ModifyPrefsRequest18a">
@@ -620,7 +620,7 @@
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="ModifyPrefsRequest18b">
         <t:request>
@@ -631,12 +631,12 @@
         <t:response>
                 <!-- Added account.INVALID_ATTR_VALUE in place of ModifyPrefsResponse -->
                 <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>        </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest19" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest19" type="sanity">
     <t:objective> Set zimbraPrefForwardIncludeOriginalText = includeAsAttachment/includeBody/includeBodyWithPrefix </t:objective>
 
     <t:test id="ModifyPrefsRequest19a">
@@ -648,7 +648,7 @@
             <t:select path="//acct:ModifyPrefsResponse"/>
     <t:response>
          </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
@@ -659,7 +659,7 @@
             <t:select path="//acct:ModifyPrefsResponse"/>
          <t:response>
          </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 36. -->
     <t:test>
@@ -671,12 +671,12 @@
             <t:select path="//acct:ModifyPrefsResponse"/>
          <t:response>
          </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest20" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest20" type="regression" >
  <t:objective> Set zimbraPrefForwardIncludeOriginalText various values
  </t:objective>
 
@@ -689,7 +689,7 @@
             <t:select path="//acct:ModifyPrefsResponse"/>
          <t:response>
          </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 38. Set zimbraPrefForwardIncludeOriginalText = Some text that is not in list -->
     <t:test id="ModifyPrefsRequest20b">
@@ -697,16 +697,16 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefForwardIncludeOriginalText">Some text that is not in list</pref>
             </ModifyPrefsRequest>
-         </t:request>        
+         </t:request>
          <t:response>
                 <!-- Added account.INVALID_ATTR_VALUE in place of ModifyPrefsResponse -->
                 <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest21" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest21" type="sanity">
     <t:objective> Set zimbraPrefForwardReplyPrefixChar = any character or word </t:objective>
 
     <t:test id="ModifyPrefsRequest21a">
@@ -714,16 +714,16 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefForwardReplyPrefixChar">&lt;</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest22" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest22" type="sanity">
     <t:objective> Set  zimbraPrefMailSignatureEnabled = TRUE/FALSE </t:objective>
 
     <!-- 40. Set  zimbraPrefMailSignatureEnabled = TRUE -->
@@ -732,11 +732,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMailSignatureEnabled">TRUE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 41. Set  zimbraPrefMailSignatureEnabled = FALSE -->
     <t:test id="ModifyPrefsRequest22b">
@@ -744,16 +744,16 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMailSignatureEnabled">FALSE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest23" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest23" type="regression" >
     <t:objective> Set  zimbraPrefMailSignatureEnabled various values </t:objective>
 
     <!-- 42. Set  zimbraPrefMailSignatureEnabled = true(verify case sensitiveness) -->
@@ -762,11 +762,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMailSignatureEnabled">True</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 43. Set  zimbraPrefMailSignatureEnabled = Blank -->
     <t:test id="ModifyPrefsRequest23b">
@@ -774,11 +774,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMailSignatureEnabled">${prefs.blank}</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 44. Set  zimbraPrefMailSignatureEnabled = Some text -->
     <t:test id="ModifyPrefsRequest23c">
@@ -786,19 +786,19 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMailSignatureEnabled">Some text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
-     
+
     <!-- 45. Set  zimbraPrefMailSignature = Some Signature -->
     <t:test id="ModifyPrefsRequest23d">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMailSignature">Some text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
@@ -807,7 +807,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest24" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest24" type="sanity">
     <t:objective> Set  zimbraPrefNewMailNotificationEnabled = TRUE/FALSE </t:objective>
 
     <!-- 46. Set zimbraPrefNewMailNotificationEnabled = TRUE -->
@@ -816,11 +816,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">TRUE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 47. Set  zimbraPrefNewMailNotificationEnabled = FALSE -->
     <t:test id="ModifyPrefsRequest24b">
@@ -828,16 +828,16 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">FALSE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest25" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest25" type="regression" >
     <t:objective> Set  zimbraPrefNewMailNotificationEnabled to various values </t:objective>
 
     <!-- 48. Set  zimbraPrefNewMailNotificationEnabled = true(verify case sensitiveness) -->
@@ -846,11 +846,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">True</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 49. Set  zimbraPrefNewMailNotificationEnabled= Blank -->
     <t:test id="ModifyPrefsRequest25b">
@@ -858,11 +858,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">${prefs.blank}</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 50. Set zimbraPrefNewMailNotificationEnabled = Some text -->
     <t:test id="ModifyPrefsRequest25c">
@@ -870,19 +870,19 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">Some text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
-     
+
     <!-- 51. Set zimbraPrefNewMailNotification = Some text -->
     <t:test id="ModifyPrefsRequest25d">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">Some text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
             <t:select path="//acct:ModifyPrefsResponse"/>
         <t:response>
         </t:response>
@@ -891,7 +891,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest26" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest26" type="sanity">
     <t:objective> Set zimbraPrefOutOfOfficeReplyEnabled = TRUE/FALSE </t:objective>
 
     <!-- 52. Set  zimbraPrefOutOfOfficeReplyEnabled = TRUE -->
@@ -900,11 +900,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 53. Set  zimbraPrefOutOfOfficeReplyEnabled = FALSE -->
     <t:test id="ModifyPrefsRequest26b">
@@ -912,16 +912,16 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefOutOfOfficeReplyEnabled">FALSE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest27" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest27" type="regression" >
     <t:objective> Set zimbraPrefOutOfOfficeReplyEnabled various values    </t:objective>
 
     <!-- 54. Set  zimbraPrefOutOfOfficeReplyEnabled = true(verify case sensitiveness) -->
@@ -930,11 +930,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefOutOfOfficeReplyEnabled">True</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
                 <!-- Added account.INVALID_ATTR_VALUE in place of ModifyPrefsResponse -->
                 <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>        </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 55. Set  zimbraPrefOutOfOfficeReplyEnabled = Blank -->
     <t:test id="ModifyPrefsRequest27b">
@@ -942,11 +942,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefOutOfOfficeReplyEnabled">${prefs.blank}</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 56. Set  zimbraPrefOutOfOfficeReplyEnabled = Some text -->
     <t:test id="ModifyPrefsRequest27c">
@@ -954,7 +954,7 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefOutOfOfficeReplyEnabled">Some text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
                 <!-- Added account.INVALID_ATTR_VALUE in place of ModifyPrefsResponse -->
                 <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
@@ -964,7 +964,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest28" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest28" type="sanity">
     <t:objective> Set zimbraPrefOutOfOfficeReply = Some text </t:objective>
 
     <!-- 57. Set  zimbraPrefOutOfOfficeReply = Some text -->
@@ -973,7 +973,7 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefOutOfOfficeReply">Some text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
@@ -982,7 +982,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest29" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest29" type="sanity">
     <t:objective> Set zimbraPrefNewMailNotificationEnabled = TRUE/FALSE </t:objective>
 
     <!-- 58. Set  zimbraPrefNewMailNotificationEnabled = TRUE -->
@@ -991,11 +991,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">TRUE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 59. Set  zimbraPrefNewMailNotificationEnabled = FALSE -->
     <t:test id="ModifyPrefsRequest29b">
@@ -1003,16 +1003,16 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">FALSE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest30" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest30" type="regression" >
     <t:objective> Set zimbraPrefNewMailNotificationEnabled various values </t:objective>
 
     <!-- 60. Set  zimbraPrefNewMailNotificationEnabled = true(verify case sensitiveness) -->
@@ -1021,11 +1021,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">True</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
          </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 61. Set  zimbraPrefNewMailNotificationEnabled = Blank -->
     <t:test id="ModifyPrefsRequest30b">
@@ -1033,11 +1033,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">${prefs.blank}</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 62. Set  zimbraPrefNewMailNotificationEnabled = Some text -->
     <t:test id="ModifyPrefsRequest30c">
@@ -1045,33 +1045,33 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationEnabled">Some text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
-                <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+                <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest31" type="sanity" >
+<t:test_case testcaseid="ModifyPrefsRequest31" type="functional" >
     <t:objective> Set  zimbraPrefNewMailNotificationAddress = Some text </t:objective>
- 
+
     <t:test id="ModifyPrefsRequest31a">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefNewMailNotificationAddress">Some text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
-                <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+                <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest32" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest32" type="sanity">
     <t:objective> Set  zimbraPrefMessageViewHtmlPreferred = TRUE/FALSE </t:objective>
 
      <!-- 64. Set  zimbraPrefMessageViewHtmlPreferred = TRUE -->
@@ -1080,11 +1080,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMessageViewHtmlPreferred">TRUE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 65. Set  zimbraPrefMessageViewHtmlPreferred = FALSE -->
     <t:test id="ModifyPrefsRequest32b">
@@ -1092,16 +1092,16 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMessageViewHtmlPreferred">FALSE</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
          <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest33" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest33" type="regression" >
     <t:objective> Set zimbraPrefMessageViewHtmlPreferred to various values </t:objective>
 
     <!-- 66. Set zimbraPrefMessageViewHtmlPreferred = true(verify case sensitiveness) -->
@@ -1110,11 +1110,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMessageViewHtmlPreferred">True</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
-                <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+                <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 67. Set  zimbraPrefMessageViewHtmlPreferred = Blank -->
     <t:test id="ModifyPrefsRequest33b">
@@ -1122,11 +1122,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMessageViewHtmlPreferred">${prefs.blank}</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 68. Set  zimbraPrefMessageViewHtmlPreferred = Some text -->
     <t:test id="ModifyPrefsRequest33c">
@@ -1134,16 +1134,16 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefMessageViewHtmlPreferred">Some text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest34" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest34" type="sanity">
     <t:objective> Set  zimbraPrefDedupeMessagesSentToSelf = Valid Requests (dedupeNone/moveSentMessageToInbox/secondCopyifOnToOrCC) </t:objective>
 
     <!-- 69. Set  zimbraPrefDedupeMessagesSentToSelf = Valid Requests (dedupeNone/moveSentMessageToInbox/secondCopyifOnToOrCC)-->
@@ -1152,7 +1152,7 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefDedupeMessagesSentToSelf">dedupeNone</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
                 <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
@@ -1168,11 +1168,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefDedupeMessagesSentToSelf">moveSentMessageToInbox</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 -->
 
     <!-- 71.  -->
@@ -1181,11 +1181,11 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefDedupeMessagesSentToSelf">secondCopyifOnToOrCC</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
          <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
          </t:response>
-    </t:test> 
+    </t:test>
 
     <!-- 72.  -->
     <t:test>
@@ -1193,16 +1193,16 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefDedupeMessagesSentToSelf">dedupeAll</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest35" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest35" type="regression" >
     <t:objective> Set  zimbraPrefDedupeMessagesSentToSelf to various values </t:objective>
 
     <!-- 73. Set  zimbraPrefDedupeMessagesSentToSelf = blank -->
@@ -1211,7 +1211,7 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefDedupeMessagesSentToSelf">${prefs.blank}</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
@@ -1223,7 +1223,7 @@
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
                 <pref name="zimbraPrefDedupeMessagesSentToSelf">Some other text</pref>
             </ModifyPrefsRequest>
-        </t:request>        
+        </t:request>
         <t:response>
                 <!-- Added account.INVALID_ATTR_VALUE in place of ModifyPrefsResponse build:20050609164754-->
                 <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
@@ -1233,7 +1233,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest36" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest36" type="sanity">
     <t:objective> Set zimbraPrefAutoAddAddressEnabled = TRUE/FALSE</t:objective>
 
     <!-- 3. Set zimbraPrefAutoAddAddressEnabled = TRUE-->
@@ -1263,7 +1263,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest37" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest37" type="regression" >
     <t:objective> Set zimbraPrefAutoAddAddressEnabled to various values</t:objective>
 
     <!-- 5. Set zimbraPrefAutoAddAddressEnabled= true (Case insensitive)-->
@@ -1274,7 +1274,7 @@
             </ModifyPrefsRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
 
@@ -1310,14 +1310,14 @@
             </ModifyPrefsRequest>
          </t:request>
          <t:response>
-            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
          </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyPrefsRequest38" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest38" type="sanity">
     <t:objective> Set zimbraPrefContactsPerPage= valid value (from list)</t:objective>
 
     <!-- 9. Set zimbraPrefContactsPerPage= valid value (from list)  -->
@@ -1334,7 +1334,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyPrefsRequest39" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest39" type="regression" >
     <t:objective> Set zimbraPrefContactsPerPage= valid value (not in list)</t:objective>
 
     <!-- 10. Set zimbraPrefContactsPerPage= valid value (not in list)  -->
@@ -1391,7 +1391,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyPrefsRequest40" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest40" type="sanity">
     <t:objective> Verify creating a filter rule with valid parameters</t:objective>
 
     <!-- 14. Verify creating a filter rule with valid parameters -->
@@ -1401,10 +1401,10 @@
                 <filterRules>
 					<filterRule name="${prefs.filter1}" active="0">
                          <filterTests condition="anyof">
-                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>                    	     
+                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionKeep />                
+                        <filterActions>
+                        	<actionKeep />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -1416,7 +1416,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ModifyPrefsRequest41" type="bhr">
+<t:test_case testcaseid="ModifyPrefsRequest41" type="sanity">
     <t:objective> Verify creating a rule with duplicate name</t:objective>
 
     <!-- 15. Verify creating a rule with duplicate name -->
@@ -1426,10 +1426,10 @@
                 <filterRules>
 					<filterRule name="${prefs.filter1}" active="0">
                          <filterTests condition="anyof">
-                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>                    	     
+                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionKeep />                
+                        <filterActions>
+                        	<actionKeep />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -1442,7 +1442,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyPrefsRequest42" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest42" type="regression" >
     <t:objective> Verify Saving a valid rule with blank rules/blank op/etc.</t:objective>
 
      <!-- 16. Verify Saving a valid rule with blank rules -->
@@ -1458,38 +1458,17 @@
     </t:test>
 
     <!-- 17. Verify creating a rule with blank op  -->
-     
+
     <t:test id="ModifyPrefsRequest42b">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${prefs.filter1}" active="0">
                          <filterTests condition="${prefs.blank}">
-                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>                    	     
+                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionKeep />                
-                        </filterActions>
-                    </filterRule>
-                 </filterRules>
-            </ModifyFilterRulesRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//zimbra:Code" match="^service.PARSE_ERROR"/>            
-        </t:response>
-    </t:test>
-    
-    <!-- 18. Verify creating a rule with invalid op -->
-    <t:test id="ModifyPrefsRequest42c">
-        <t:request>
-            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
-                <filterRules>
-					<filterRule name="${prefs.filter1}" active="0">
-                         <filterTests condition="invalid op">
-                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>                    	     
-                        </filterTests>
-                        <filterActions> 
-                        	<actionKeep />                
+                        <filterActions>
+                        	<actionKeep />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -1499,8 +1478,29 @@
             <t:select path="//zimbra:Code" match="^service.PARSE_ERROR"/>
         </t:response>
     </t:test>
-    
-    
+
+    <!-- 18. Verify creating a rule with invalid op -->
+    <t:test id="ModifyPrefsRequest42c">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="${prefs.filter1}" active="0">
+                         <filterTests condition="invalid op">
+                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>
+                        </filterTests>
+                        <filterActions>
+                        	<actionKeep />
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+
+
    <!-- 19. Verify creating a rule without name attribute in action  -->
     <t:test id="ModifyPrefsRequest42d">
         <t:request>
@@ -1508,9 +1508,9 @@
                 <filterRules>
 					<filterRule name="filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>                    	     
+                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>
                         </filterTests>
-                        <filterActions>           	
+                        <filterActions>
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -1520,8 +1520,8 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <!-- 20. Verify creating a rule with blank value for name attribute in  action  -->
     <t:test id="ModifyPrefsRequest42e">
        <t:request>
@@ -1529,10 +1529,10 @@
                 <filterRules>
 					<filterRule name="filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>                    	     
+                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>
                         </filterTests>
-                        <filterActions> 
-                        	 <actionFileInto folderPath="" />         
+                        <filterActions>
+                        	 <actionFileInto folderPath="" />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -1550,10 +1550,10 @@
                 <filterRules>
 					<filterRule name="filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>                    	     
+                         <headerTest header="from" stringComparison="is" negative="1" value="test11"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionKeep_invalid />          
+                        <filterActions>
+                        	<actionKeep_invalid />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -1571,10 +1571,10 @@
                 <filterRules>
 					<filterRule name="filter${TIME}${COUNTER}" active="0">
                          <filterTests condition="anyof">
-                         <headerTest header="" stringComparison="is" negative="1" value="test11"/>                    	     
+                         <headerTest header="" stringComparison="is" negative="1" value="test11"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionKeep/>   
+                        <filterActions>
+                        	<actionKeep/>
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -1586,7 +1586,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="ModifyPrefsRequest43" type="functional" >
+<t:test_case testcaseid="ModifyPrefsRequest43" type="regression" >
  <t:objective> Set Zimbra Preference that is not in LDAB Schema./leading spaces/etc.
 </t:objective>
 

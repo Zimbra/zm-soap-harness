@@ -51,7 +51,7 @@
 <t:test_case testcaseid="account_setup_conversation" type="always" >
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a mail account 
+            2. Create a mail account
     </steps>
 
     <t:test id="admin_login" required="true" >
@@ -65,7 +65,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1"  required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -280,7 +280,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 	 </t:response>
@@ -290,7 +290,7 @@
 
 
 
-<t:test_case testcaseid="GetConvRequest1" type="bhr">
+<t:test_case testcaseid="GetConvRequest1" type="sanity">
  <t:objective>Search for a mail, then get the conversation</t:objective>
 
 	<t:test id="getconvrequest1a">
@@ -306,7 +306,7 @@
 		<t:select path="//mail:SearchResponse/mail:c" attr="su" match="Subject1"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test depends="getconvrequest1a">
 	 <t:request>
 	   <GetConvRequest xmlns="urn:zimbraMail">
@@ -326,7 +326,7 @@
 
 
 
-<t:test_case testcaseid="ConvActionRequest1" type="bhr">
+<t:test_case testcaseid="ConvActionRequest1" type="sanity">
  <t:objective>Flag a conversation</t:objective>
 
 
@@ -340,7 +340,7 @@
 		<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test id="convactionrequest1b" depends="convactionrequest1a">
 	 <t:request>
 	   <GetConvRequest xmlns="urn:zimbraMail">
@@ -353,7 +353,7 @@
 		<t:select path="//mail:GetConvResponse/mail:c" attr="f" set="flag"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test id="convactionrequest1c" depends="convactionrequest1b">
 	 <t:request>
 	   <ConvActionRequest xmlns="urn:zimbraMail">
@@ -364,7 +364,7 @@
 	   <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id}"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test depends="convactionrequest1c">
 	 <t:request>
 	   <GetConvRequest xmlns="urn:zimbraMail">
@@ -382,7 +382,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="conversation01" type="sanity" bugids="4437">
+<t:test_case testcaseid="conversation01" type="functional" bugids="4437">
  <t:objective>Verify bug 4437</t:objective>
  <t:steps>
  1. Inject 3 messages.  The 2nd and 3rd messages have differing whitespace in the subject, but all should be combined into one conversation
@@ -397,7 +397,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 	 </t:response>
@@ -414,7 +414,7 @@
 		<t:select path="//mail:SearchResponse"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test >
 	 <t:request>
 	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
@@ -426,7 +426,7 @@
 		<t:select path="//mail:SearchResponse/mail:c" attr="n" match="3"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test >
 	 <t:request>
 	   <GetConvRequest xmlns="urn:zimbraMail">
@@ -442,7 +442,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 
-<t:test_case testcaseid="conversation01a" type="sanity" bugids="4437">
+<t:test_case testcaseid="conversation01a" type="functional" bugids="4437">
  <t:objective>Verify bug 4437</t:objective>
  <t:steps>
  1. Inject 3 messages.  All three messages have a double space in them
@@ -457,7 +457,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 	 </t:response>
@@ -474,7 +474,7 @@
 		<t:select path="//mail:SearchResponse"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test >
 	 <t:request>
 	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
@@ -486,7 +486,7 @@
 		<t:select path="//mail:SearchResponse/mail:c" attr="n" match="3"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test >
 	 <t:request>
 	   <GetConvRequest xmlns="urn:zimbraMail">
@@ -502,7 +502,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
 
-<t:test_case testcaseid="conversation01b" type="sanity" bugids="4437">
+<t:test_case testcaseid="conversation01b" type="functional" bugids="4437">
  <t:objective>Verify bug 4437</t:objective>
  <t:steps>
  1. Inject 3 messages.  The first message has double spaces, the second and third don't
@@ -517,7 +517,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 	 </t:response>
@@ -534,7 +534,7 @@
 		<t:select path="//mail:SearchResponse"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test >
 	 <t:request>
 	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
@@ -546,7 +546,7 @@
 		<t:select path="//mail:SearchResponse/mail:c" attr="n" match="3"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test >
 	 <t:request>
 	   <GetConvRequest xmlns="urn:zimbraMail">
@@ -562,7 +562,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
 
-<t:test_case testcaseid="conversation01c" type="sanity" bugids="4437">
+<t:test_case testcaseid="conversation01c" type="functional" bugids="4437">
  <t:objective>Verify bug 4437</t:objective>
  <t:steps>
  1. Inject 3 messages.  All messages have double spaces in different locations.
@@ -577,7 +577,7 @@
 	  </AuthRequest>
 	 </t:request>
 	 <t:response>
-		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
 		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 	 </t:response>
@@ -594,7 +594,7 @@
 		<t:select path="//mail:SearchResponse"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test >
 	 <t:request>
 	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
@@ -606,7 +606,7 @@
 		<t:select path="//mail:SearchResponse/mail:c" attr="n" match="3"/>
 	 </t:response>
 	</t:test>
-	
+
 	<t:test >
 	 <t:request>
 	   <GetConvRequest xmlns="urn:zimbraMail">

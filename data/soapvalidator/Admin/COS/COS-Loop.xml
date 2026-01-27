@@ -42,30 +42,30 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Cos_loop1" type="sanity" duration="long">
+<t:test_case testcaseid="Cos_loop1" type="functional" duration="long">
     <t:objective> Create 500 COS with valid name </t:objective>
-     
-    <t:test_loop count="500"> 
-        
+
+    <t:test_loop count="500">
+
         <t:test timeframeMax="2000">
             <t:request>
                 <CreateCosRequest xmlns="urn:zimbraAdmin">
-                    <name >cos${TIME}${COUNTER}</name>        
+                    <name >cos${TIME}${COUNTER}</name>
                 </CreateCosRequest>
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateCosResponse/admin:cos"/>
             </t:response>
         </t:test>
-        
+
     </t:test_loop>
-    
+
 </t:test_case>
 
-    
-<t:test_case testcaseid="Cos_loop2" type="sanity" duration="long">
+
+<t:test_case testcaseid="Cos_loop2" type="functional" duration="long">
     <t:objective> Get COS details for a cos with valid id </t:objective>
-    <t:steps> 
+    <t:steps>
             1. Create new COS
             2. Get details of COS by id
             3. Get details of COS by name
@@ -81,7 +81,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS.id1"/>
         </t:response>
     </t:test>
-        
+
     <t:test depends="cos_loop2a" timeframeMax="2000">
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -92,7 +92,7 @@
             <t:select path="//admin:GetCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="cos_loop2a" timeframeMax="2000">
         <t:request xmlns="urn:zimbraAdmin">
             <GetCosRequest>
@@ -107,16 +107,16 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Cos_loop3" type="sanity" duration="long">
+<t:test_case testcaseid="Cos_loop3" type="functional" duration="long">
     <t:objective> Modify a COS with valid id and valid values for all the attributes </t:objective>
     <t:steps>1. Create the COS.
-             2. Modify it with value values for each of the attributes. 
+             2. Modify it with value values for each of the attributes.
     </t:steps>
-    
+
     <t:test id = "cos_loop3a">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name>${COS.name2}</name>        
+                <name>${COS.name2}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -124,7 +124,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS.id2" />
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateServerRequest xmlns="urn:zimbraAdmin">
@@ -191,7 +191,7 @@
                 <a n="zimbraPrefUseKeyboardShortcuts">FALSE</a>
                 <a c="1" n="description">New cos for modification </a>
                 <a n="zimbraMailHostPool" c="1">${server.id}</a>
-                <a n="zimbraNewMailNotificationFrom">Notification </a>    
+                <a n="zimbraNewMailNotificationFrom">Notification </a>
             </ModifyCosRequest>
         </t:request>
         <t:response>
@@ -202,16 +202,16 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Cos_loop4" type="sanity" duration="long">
+<t:test_case testcaseid="Cos_loop4" type="functional" duration="long">
     <t:objective> Delete a COS with valid id </t:objective>
     <t:steps>1. Create the COS.
-             2. Delete it 
+             2. Delete it
     </t:steps>
 
     <t:test id="cos_loop4a">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name>${COS.name3}</name>        
+                <name>${COS.name3}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -219,7 +219,7 @@
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS.id3"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="cos_loop4a" timeframeMax="2000">
         <t:request>
             <DeleteCosRequest xmlns="urn:zimbraAdmin">
@@ -234,16 +234,16 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Cos_loop5" type="sanity" duration="long">
+<t:test_case testcaseid="Cos_loop5" type="functional" duration="long">
     <t:objective> Rename a COS  </t:objective>
     <t:steps>1. Create the COS.
-             2. Rename it. 
+             2. Rename it.
     </t:steps>
 
     <t:test id="cos_loop5a">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name>${COS.name4}</name>        
+                <name>${COS.name4}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>

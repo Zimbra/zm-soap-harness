@@ -14,20 +14,20 @@
 
 <t:property name="sieve_test_1" value='require ["tag", "log", "variables", "envelope"];
 if envelope :matches "From" "admin@*" {
-  tag "${variable_name_dollar_one}"; 
+  tag "${variable_name_dollar_one}";
   log "Setting ${variable_name_dollar_one} as tag name for rule 1";
 }'/>
 
 <t:property name="sieve_test_2" value='require ["tag", "log", "variables", "envelope"];
 if envelope :matches ["To","Cc"] "*" {
-  tag "${variable_name_dollar_one}"; 
+  tag "${variable_name_dollar_one}";
   log "Setting ${variable_name_dollar_one} as tag name for rule 2";
 }'/>
 
 <t:property name="sieve_test_3" value='require ["tag", "log","variables", "envelope"];
 set "fr" "admin";
 if envelope :contains "From" "admin@${defaultdomain.name}" {
-  tag "${variable_name_dollar_fr}"; 
+  tag "${variable_name_dollar_fr}";
   log "Setting ${variable_name_dollar_fr} as tag name for rule 3";
 }'/>
 
@@ -35,7 +35,7 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin" />
@@ -44,12 +44,12 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
 			<t:select path="//admin:PingResponse" />
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="acctSetup1" type="always">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -88,7 +88,7 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -102,15 +102,15 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
-    </t:test>  
-                 
+    </t:test>
+
 </t:test_case>
 
 <t:test_case testcaseid="bug106990_rule1"
-        type="functional" bugids="106990" >
+        type="regression" bugids="106990" >
         <t:objective> Check variable within envelope test
         </t:objective>
-     
+
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -156,11 +156,11 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
 </t:test_case>
 
 <t:test_case testcaseid="bug106990_rule2"
-        type="functional" bugids="106990" >
+        type="regression" bugids="106990" >
         <t:objective> Check variable within envelope test
         </t:objective>
 
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -218,11 +218,11 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
 </t:test_case>
 
 <t:test_case testcaseid="bug106990_rule3"
-        type="functional" bugids="106990" >
+        type="regression" bugids="106990" >
         <t:objective> Check variable within envelope test
         </t:objective>
 
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">

@@ -59,7 +59,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -80,7 +80,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -92,7 +92,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -105,7 +105,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -118,7 +118,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -155,7 +155,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-        
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -192,7 +192,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -203,7 +203,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -229,7 +229,7 @@
         </t:response>
     </t:test>
 
- 
+
     <t:test  required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -242,7 +242,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -278,7 +278,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -306,19 +306,19 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account0.folder.root.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account0.folder.root.id"/>
         </t:response>
     </t:test>
-    
-</t:test_case>  
 
- 
+</t:test_case>
+
+
 
 <t:test_case testcaseid="Sharing_GranteeDL_01" type="smoke">
     <t:objective>Share a folder to a DL.  Verify that DL users have access.</t:objective>
@@ -345,7 +345,7 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -371,7 +371,7 @@ Content-Transfer-Encoding: 7bit
 
 In The Matrix, the hero Neo could dodge bullets because
 time moved in slow motion for him during battles. Indeed,
-in the real world, people in danger often feel as if 
+in the real world, people in danger often feel as if
 time slowed down for them.
 
                     </content>
@@ -424,7 +424,7 @@ time slowed down for them.
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -450,10 +450,10 @@ time slowed down for them.
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Sharing_GranteeDL_02" type="bhr">
+<t:test_case testcaseid="Sharing_GranteeDL_02" type="sanity">
     <t:objective>Unshare a folder to a DL.  Verify that DL users no longer have access.</t:objective>
     <t:steps>
             1. Login to account0
@@ -479,7 +479,7 @@ time slowed down for them.
 
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -505,7 +505,7 @@ Content-Transfer-Encoding: 7bit
 
 In The Matrix, the hero Neo could dodge bullets because
 time moved in slow motion for him during battles. Indeed,
-in the real world, people in danger often feel as if 
+in the real world, people in danger often feel as if
 time slowed down for them.
 
                     </content>
@@ -567,7 +567,7 @@ time slowed down for them.
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -593,20 +593,20 @@ time slowed down for them.
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="FoldersDelegated_DistributionList_02" type="bhr" bugids="8862">
+<t:test_case testcaseid="FoldersDelegated_DistributionList_02" type="sanity" bugids="8862">
     <t:objective>Verify that a folder can be delegated to a distribution list</t:objective>
     <t:steps>
             1. Login to account1
             2. Share folder1 with list3, which includes account3's alias
             3. Login to account3
             4. Read an item from account1's folder1
-    </t:steps>       
-    
+    </t:steps>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -619,7 +619,7 @@ time slowed down for them.
 
         </t:response>
     </t:test>
-                         
+
     <t:test id="getFolderRequest">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -628,7 +628,7 @@ time slowed down for them.
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="folders_delegated1a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -671,7 +671,7 @@ Content Content Content
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test  required="true">
@@ -697,22 +697,22 @@ Content Content Content
             <t:select path="//mail:GetMsgResponse/mail:m" attr="su" match="${account1.folder3.msg01.subject}"/>
         </t:response>
     </t:test>
-                         
-    
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="FoldersDelegated_DistributionList_03" type="sanity">
+<t:test_case testcaseid="FoldersDelegated_DistributionList_03" type="functional">
     <t:objective>Verify that a folder can be delegated to a distribution list, that contains another </t:objective>
     <t:steps>
             1. Login to account1
             2. Share folder4 with list4a, which includes list4b, which incluudes account4
             3. Login to account4
             4. Read an item from account1's folder4
-    </t:steps>       
-    
+    </t:steps>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test  required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -725,7 +725,7 @@ Content Content Content
 
         </t:response>
     </t:test>
-                         
+
     <t:test id="getFolderRequest">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -734,7 +734,7 @@ Content Content Content
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="folders_delegated1a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -777,7 +777,7 @@ Content Content Content
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test  required="true">
@@ -803,8 +803,8 @@ Content Content Content
             <t:select path="//mail:GetMsgResponse/mail:m" attr="su" match="${account1.folder4.msg01.subject}"/>
         </t:response>
     </t:test>
-                         
-    
+
+
 </t:test_case>
 
 

@@ -118,7 +118,7 @@
 <t:test_case testcaseid="TagActionRequest1" type="smoke">
     <t:objective>Delete a Tag</t:objective>
     <t:steps> 1. Create a tag
-              2. delete the tag 
+              2. delete the tag
     </t:steps>
 
     <t:test id="tagactionrequest1a">
@@ -152,17 +152,17 @@
 </t:test_case>
 
 <!--
-	IMPORTANT: TagActionRequest2 MUST follow TagActionRequest1 
+	IMPORTANT: TagActionRequest2 MUST follow TagActionRequest1
 poonam: Added complete steps for TagActionRequest2
 -->
 
-<t:test_case testcaseid="TagActionRequest2" type="functional" >
+<t:test_case testcaseid="TagActionRequest2" type="regression" >
     <t:objective>Delete a non-existing TAG</t:objective>
     <t:steps> 1. Create a tag
-              2. Delete the tag 
+              2. Delete the tag
               3. Again delete the deleted Tag
     </t:steps>
-    
+
     <t:test id="tagactionrequest2a">
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -205,7 +205,7 @@ poonam: Added complete steps for TagActionRequest2
 </t:test_case>
 
 
-<t:test_case testcaseid="TagActionRequest3" type="bhr">
+<t:test_case testcaseid="TagActionRequest3" type="sanity">
     <t:objective>RENAME a tag with valid tag name and valid color</t:objective>
     <t:steps> 1.Create a new tag
               2.rename it to another name
@@ -242,7 +242,7 @@ poonam: Added complete steps for TagActionRequest2
 
 </t:test_case>
 
-<t:test_case testcaseid="TagActionRequest4" type="sanity" >
+<t:test_case testcaseid="TagActionRequest4" type="functional" >
     <t:objective>RENAME a tag with Duplicate tag name and valid color</t:objective>
     <t:steps> 1. Create a new tag
               2. create a second tag
@@ -284,14 +284,14 @@ poonam: Added complete steps for TagActionRequest2
 		    </TagActionRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>	 
+		    <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
 	    </t:response>
 	</t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="TagActionRequest5" type="functional" >
+<t:test_case testcaseid="TagActionRequest5" type="regression" >
     <t:objective>RENAME a tag with non existing tag id </t:objective>
     <t:steps> 1. Create a new tag
               2. delete it
@@ -324,7 +324,7 @@ poonam: Added complete steps for TagActionRequest2
             <t:select attr="op" match="delete"/>
             </t:select>
         </t:response>
-	</t:test>	
+	</t:test>
 
 	<t:test depends="tagactionrequest5b">
 	    <t:request>
@@ -340,7 +340,7 @@ poonam: Added complete steps for TagActionRequest2
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest6" type="sanity" >
+<t:test_case testcaseid="CreateTagRequest6" type="functional" >
     <t:objective>Rename a tag with invalid name (special character/spaces/blank/negative/zero/large number/decimal number) and valid color.</t:objective>
 
     <t:test id="tagactionrequest6a">
@@ -368,7 +368,7 @@ poonam: Added complete steps for TagActionRequest2
             </t:select>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest6b">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -379,7 +379,7 @@ poonam: Added complete steps for TagActionRequest2
 		    <t:select path= "//zimbra:Code" match="^mail.INVALID_NAME"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest6b">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -403,7 +403,7 @@ poonam: Added complete steps for TagActionRequest2
             </t:select>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest6c" id = "tagactionrequest6d">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -416,7 +416,7 @@ poonam: Added complete steps for TagActionRequest2
             </t:select>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest6d" id = "tagactionrequest6e">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -429,7 +429,7 @@ poonam: Added complete steps for TagActionRequest2
             </t:select>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest6e">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -442,11 +442,11 @@ poonam: Added complete steps for TagActionRequest2
             </t:select>
 	    </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest7" type="bhr">
+<t:test_case testcaseid="CreateTagRequest7" type="sanity">
     <t:objective>Perform read operation on a tag</t:objective>
 
     <t:test id="tagactionrequest7a">
@@ -479,7 +479,7 @@ poonam: Added complete steps for TagActionRequest2
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest8" type="functional" >
+<t:test_case testcaseid="CreateTagRequest8" type="regression" >
     <t:objective>Read a non existing tag</t:objective>
     <t:steps> 1. Delete a tag.
               2. Read it.
@@ -513,7 +513,7 @@ poonam: Added complete steps for TagActionRequest2
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest9" type="sanity" >
+<t:test_case testcaseid="CreateTagRequest9" type="functional" >
     <t:objective>Change the color of Tag</t:objective>
 
     <t:test id="tagactionrequest9a">
@@ -546,7 +546,7 @@ poonam: Added complete steps for TagActionRequest2
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest10" type="functional" >
+<t:test_case testcaseid="CreateTagRequest10" type="regression" >
     <t:objective>Color a non existing tag with valid color</t:objective>
 
     <t:test id="tagactionrequest10a">
@@ -575,7 +575,7 @@ poonam: Added complete steps for TagActionRequest2
     	    </t:select>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest10b">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -586,11 +586,11 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/>
 	    </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest11" type="functional" bugids="47901">
+<t:test_case testcaseid="CreateTagRequest11" type="regression" bugids="47901">
     <t:objective>Color a tag with invalid color(special character/ spaces/blank/negative/zero/large number/decimal number) and valid color.</t:objective>
 
     <t:test id="tagactionrequest11a">
@@ -616,7 +616,7 @@ poonam: Added complete steps for TagActionRequest2
 		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest11a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -627,7 +627,7 @@ poonam: Added complete steps for TagActionRequest2
 		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest11a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -651,7 +651,7 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//mail:TagActionResponse/mail:action"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest11b"  id="tagactionrequest11c">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -664,7 +664,7 @@ poonam: Added complete steps for TagActionRequest2
             </t:select>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test id="tagactionrequest11d"  depends="tagactionrequest11c">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -677,7 +677,7 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//mail:TagActionResponse"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest11d">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -688,14 +688,14 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="TagActionRequest12" type="sanity" >
+<t:test_case testcaseid="TagActionRequest12" type="functional" >
     <t:objective>Delete two tags simultaneously.</t:objective>
     <t:steps> 1. Create two tag
-              2. delete those tags simultaneously. 
+              2. delete those tags simultaneously.
     </t:steps>
 
     <t:test id="tagactionrequest12a">
@@ -725,7 +725,7 @@ poonam: Added complete steps for TagActionRequest2
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:test depends="tagactionrequest12a,tagactionrequest12b" id="tagactionrequest12c">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -739,14 +739,14 @@ poonam: Added complete steps for TagActionRequest2
     	    </t:select>
 	    </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="TagActionRequest13" type="functional" >
+<t:test_case testcaseid="TagActionRequest13" type="regression" >
     <t:objective>Delete a tag giving only color.</t:objective>
     <t:steps> 1. Create a tag
-              2. delete that tag giving only color. 
+              2. delete that tag giving only color.
     </t:steps>
 
     <t:test id="tagactionrequest13a">
@@ -762,7 +762,7 @@ poonam: Added complete steps for TagActionRequest2
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:test depends="tagactionrequest13a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -773,11 +773,11 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateTagRequest14" type="sanity" >
+<t:test_case testcaseid="CreateTagRequest14" type="functional" >
     <t:objective>TagActionRequest with invalid (special character/ spaces/blank/negative/zero/large number/decimal number) values of op.</t:objective>
 
     <t:test id="tagactionrequest14a">
@@ -803,7 +803,7 @@ poonam: Added complete steps for TagActionRequest2
 		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest14a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -814,7 +814,7 @@ poonam: Added complete steps for TagActionRequest2
 		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest14a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -836,7 +836,7 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test  depends="tagactionrequest14a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -847,7 +847,7 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest14a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -858,7 +858,7 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest14a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -869,7 +869,7 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 	<t:test depends="tagactionrequest14a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -880,16 +880,16 @@ poonam: Added complete steps for TagActionRequest2
             <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="TagActionRequest_15" type="bhr" bugids="72312">
+<t:test_case testcaseid="TagActionRequest_15" type="sanity" bugids="72312">
     <t:objective>change the color of  a tag using only tag name in the action request </t:objective>
     <t:steps> 1.Create a new tag
               2 Change the color using tag name in action request
-              3.Check tag name is returned in response 
+              3.Check tag name is returned in response
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -921,11 +921,11 @@ poonam: Added complete steps for TagActionRequest2
 
 </t:test_case>
 
-<t:test_case testcaseid="TagActionRequest_16" type="bhr" bugids="72312">
+<t:test_case testcaseid="TagActionRequest_16" type="sanity" bugids="72312">
     <t:objective>change the color of a tag using tag  id in the action request </t:objective>
     <t:steps> 1.Create a new tag
               2 Change the color using id in action request
-              3 Check tag name is not returned in resonse 
+              3 Check tag name is not returned in resonse
     </t:steps>
 
     <t:test>
@@ -959,11 +959,11 @@ poonam: Added complete steps for TagActionRequest2
 
 </t:test_case>
 
-<t:test_case testcaseid="TagActionRequest_17" type="functional" bugids="72312">
+<t:test_case testcaseid="TagActionRequest_17" type="regression" bugids="72312">
     <t:objective>Try to change the color of a tag using non-existing tag name in the action request </t:objective>
-    <t:steps> 
+    <t:steps>
               1.Try to change the color using non-existing tag name in action request
-              2.Check error code is returned in response 
+              2.Check error code is returned in response
     </t:steps>
 
 	<t:test>
@@ -973,17 +973,17 @@ poonam: Added complete steps for TagActionRequest2
 		    </TagActionRequest>
 	    </t:request>
 	    <t:response>
-		   <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/> 
+		   <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/>
 	    </t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="TagActionRequest_18" type="functional" bugids="72312">
+<t:test_case testcaseid="TagActionRequest_18" type="regression" bugids="72312">
     <t:objective>Try to change the color of a tag using invalid tag name in the action request </t:objective>
-    <t:steps> 
+    <t:steps>
               1. Try to change the color using in-valid tag name in action request
-              2. Check error code is returned in response 
+              2. Check error code is returned in response
     </t:steps>
 
 	<t:test>
@@ -993,17 +993,17 @@ poonam: Added complete steps for TagActionRequest2
 		    </TagActionRequest>
 	    </t:request>
 	    <t:response>
-		   <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/> 
+		   <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/>
 	    </t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="TagActionRequest_19" type="functional" bugids="72312">
+<t:test_case testcaseid="TagActionRequest_19" type="regression" bugids="72312">
     <t:objective>Try to change the color of a tag using blank tag name in the action request </t:objective>
-    <t:steps> 
+    <t:steps>
               1. Try to change the color using blank tag name in action request
-              2. Check error code is returned in response 
+              2. Check error code is returned in response
     </t:steps>
 
 	<t:test>
@@ -1013,17 +1013,17 @@ poonam: Added complete steps for TagActionRequest2
 		    </TagActionRequest>
 	    </t:request>
 	    <t:response>
-		   <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+		   <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="TagActionRequest_20" type="functional" bugids="72312">
+<t:test_case testcaseid="TagActionRequest_20" type="regression" bugids="72312">
     <t:objective>Try to change the color of a tag using tag name conataining space in the action request </t:objective>
-    <t:steps> 
+    <t:steps>
               1. Try to change the color using tag name conataining space in action request
-              2. Check error code is returned in response 
+              2. Check error code is returned in response
     </t:steps>
 
 	<t:test>
@@ -1033,7 +1033,7 @@ poonam: Added complete steps for TagActionRequest2
 		    </TagActionRequest>
 	    </t:request>
 	    <t:response>
-		   <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+		   <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
 	    </t:response>
 	</t:test>
 

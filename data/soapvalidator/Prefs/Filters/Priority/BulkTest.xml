@@ -48,7 +48,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -62,17 +62,17 @@
 	    </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bulkTest_01" type="bhr" bugids="42185" >
+<t:test_case testcaseid="bulkTest_01" type="sanity" bugids="42185" >
     <t:objective>Verify that bulk messages gets flagged for bulkTest filter</t:objective>
-    
+
     <t:steps> 1. Create filter for bulkTest for account1
-			  2. Inject  bulk messages to account1 			 
+			  2. Inject  bulk messages to account1
 			  3. Verify that the bulk messages gets flagged in account1 inbox
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -90,20 +90,20 @@
 	<t:property name="filter_bulk1.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk2.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk3.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter_bulk4.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter_bulk4.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk5.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk6.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk7.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk8.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter_bulk9.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter_bulk9.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk10.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk11.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk12.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk13.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter_bulk14.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter_bulk14.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk15.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_bulk16.subject" value="filter${TIME}${COUNTER}"/>
-			
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -116,7 +116,7 @@
 							 <actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -124,7 +124,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="bulk_msg01.file" value="${testMailRaw.root}/bug42185/bulk.txt" />
 	<t:property name="bulk_msg03.file" value="${testMailRaw.root}/bug42185/bulk-02.txt" />
 	<t:property name="bulk_msg04.file" value="${testMailRaw.root}/bug42185/bulk-03.txt" />
@@ -139,7 +139,7 @@
 	<t:property name="bulk_msg14.file" value="${testMailRaw.root}/bug42185/bulk-13.txt" />
 	<t:property name="bulk_msg15.file" value="${testMailRaw.root}/bug42185/bulk-14.txt" />
 	<t:property name="bulk_msg16.file" value="${testMailRaw.root}/bug42185/bulk-15.txt" />
-	
+
 
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -151,9 +151,9 @@
                 <header a="Subject">${filter_bulk1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
-	    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg03.file}</filename>
@@ -165,7 +165,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg04.file}</filename>
@@ -177,7 +177,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg05.file}</filename>
@@ -189,7 +189,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg06.file}</filename>
@@ -201,7 +201,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg07.file}</filename>
@@ -213,7 +213,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg08.file}</filename>
@@ -225,7 +225,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg09.file}</filename>
@@ -237,7 +237,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg10.file}</filename>
@@ -249,7 +249,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg11.file}</filename>
@@ -261,7 +261,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg12.file}</filename>
@@ -273,8 +273,8 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
-       
+
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg14.file}</filename>
@@ -286,7 +286,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg15.file}</filename>
@@ -298,7 +298,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bulk_msg16.file}</filename>
@@ -310,7 +310,7 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -322,7 +322,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-      
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -334,7 +334,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -346,7 +346,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -358,8 +358,8 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-   
-    
+
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -371,7 +371,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -383,7 +383,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -395,7 +395,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -407,7 +407,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -419,7 +419,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -431,7 +431,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -443,7 +443,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -455,7 +455,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -466,8 +466,8 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk15.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
-    </t:test>   
-       
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -478,9 +478,9 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk16.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
 

@@ -29,15 +29,15 @@
 
 
 
-    
-    <t:test_case testcaseid="bug96495" type="bhr" bugids="96495" >
+
+    <t:test_case testcaseid="bug96495" type="sanity" bugids="96495" >
     <t:objective>Verify Content-Type is returned for all supported formats in REST API</t:objective>
-    <t:steps> 
-        1. Login to admin 
-        2. Create a contact.  
-        3. Verify Content-type is returned for all different formats like json,csv,xml,atom,cf and rss.   
+    <t:steps>
+        1. Login to admin
+        2. Create a contact.
+        3. Verify Content-type is returned for all different formats like json,csv,xml,atom,cf and rss.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -50,7 +50,7 @@
         </t:response>
     </t:test>
 
-	
+
 
 	<t:test >
         <t:request>
@@ -59,13 +59,13 @@
                     <a n="firstName">${contact01.FirstName}</a>
                     <a n="lastName">${contact01.LastName}</a>
                     <a n="email">${contact01.emailAddress}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
 				<t:select attr="id" set="contact.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -92,7 +92,7 @@
 		</t:restServletResponse>
 	</t:resttest>
 
-	
+
 		<t:resttest>
 		<t:restServletRequest>
 			<folder>contacts</folder>
@@ -103,7 +103,7 @@
 			<t:select attr="Content-Type" match="text/xml"/>
 		</t:restServletResponse>
 	</t:resttest>
-	
+
 
 <t:resttest>
 		<t:restServletRequest>
@@ -115,8 +115,8 @@
 			<t:select attr="Content-Type" match="text/x-zimbra-delimitted-fields"/>
 		</t:restServletResponse>
 	</t:resttest>
-	
-	
+
+
 		<t:resttest>
 		<t:restServletRequest>
 			<folder>contacts</folder>
@@ -127,7 +127,7 @@
 			<t:select attr="Content-Type" match="application/atom.*xml;charset=utf-8"/>
 		</t:restServletResponse>
 	</t:resttest>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<folder>contacts</folder>
@@ -138,7 +138,7 @@
 			<t:select attr="Content-Type" match="application/rss.*xml;charset=utf-8"/>
 		</t:restServletResponse>
 	</t:resttest>
-	
+
 </t:test_case>
 
 

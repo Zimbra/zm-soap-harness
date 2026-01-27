@@ -14,7 +14,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -42,7 +42,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1"  depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -84,7 +84,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -93,7 +93,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile1.rev1}</filename>
@@ -102,7 +102,7 @@
 			<t:select attr="id" set="account1.document.textfile1.rev1.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -114,7 +114,7 @@
         <t:response>
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document.textfile1.rev1.id"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
@@ -124,7 +124,7 @@
 			<t:select attr="id" set="account1.document.textfile1.rev2.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -137,7 +137,7 @@
             <t:select path="//zimbra:Error/zimbra:a[@n='itemId']" match="${account1.document.textfile1.rev1.id}"  />
             <t:select path="//zimbra:Error/zimbra:a[@n='ver']" set="prever"  />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -159,7 +159,7 @@
 			<t:select attr="id" set="account1.document.textfile1.rev3.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -172,7 +172,7 @@
             <t:select path="//zimbra:Error/zimbra:a[@n='itemId']" match="${account1.document.textfile1.rev2.id}"  />
             <t:select path="//zimbra:Error/zimbra:a[@n='ver']" set="prever"  />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -195,7 +195,7 @@
 			<t:select attr="id" set="account1.document.textfile2.rev1.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -207,7 +207,7 @@
         <t:response>
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document.textfile2.rev1.id"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 		<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -225,7 +225,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -234,7 +234,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account2.folder.briefcase.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account2.document.textfile1.rev1}</filename>
@@ -243,7 +243,7 @@
 			<t:select attr="id" set="account2.document.textfile1.rev1.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -255,7 +255,7 @@
         <t:response>
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account2.document.textfile1.rev1.id"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
@@ -265,7 +265,7 @@
 			<t:select attr="id" set="account2.document.textfile1.rev2.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -278,7 +278,7 @@
             <t:select path="//zimbra:Error/zimbra:a[@n='itemId']" match="${account2.document.textfile1.rev1.id}"  />
             <t:select path="//zimbra:Error/zimbra:a[@n='ver']" set="prever"  />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -300,7 +300,7 @@
 			<t:select attr="id" set="account2.document.textfile1.rev3.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	     
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -313,7 +313,7 @@
             <t:select path="//zimbra:Error/zimbra:a[@n='itemId']" match="${account2.document.textfile1.rev2.id}"  />
             <t:select path="//zimbra:Error/zimbra:a[@n='ver']" set="prever"  />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -331,7 +331,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="PurgeRevisionRequest01" type="bhr">
+<t:test_case testcaseid="PurgeRevisionRequest01" type="sanity">
 <t:objective>Purge document with single revision.</t:objective>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test >
@@ -355,7 +355,7 @@
 		<t:response>
 			<t:select path="//mail:PurgeRevisionResponse"/>
 	</t:response>
-	</t:test>		
+	</t:test>
 
 	<t:test >
 		<t:request>
@@ -366,13 +366,13 @@
         <t:response>
             <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc" attr="ver" match="1"/>
             <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc/mail:fr" equals="This is revison1 File2 test2"/>
-            
+
         </t:response>
     </t:test>
-    
-    
+
+
     </t:test_case>
-    <t:test_case testcaseid="PurgeRevisionRequest02" type="bhr">
+    <t:test_case testcaseid="PurgeRevisionRequest02" type="sanity">
 	<t:objective>Purge particular revision of document with multiple revision.</t:objective>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test >
@@ -397,7 +397,7 @@
 		<t:response>
 			<t:select path="//mail:PurgeRevisionResponse"/>
 	</t:response>
-	</t:test>		
+	</t:test>
 
 	<t:test >
 		<t:request>
@@ -409,7 +409,7 @@
             <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc/mail:fr" emptyset="1"/>
          </t:response>
     </t:test>
-    
+
 
 	<t:test >
 		<t:request>
@@ -421,10 +421,10 @@
             <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc/mail:fr" match="This is revison1 File1 test1"/>
          </t:response>
     </t:test>
-    
+
     </t:test_case>
-    
-       <t:test_case testcaseid="PurgeRevisionRequest03" type="bhr">
+
+       <t:test_case testcaseid="PurgeRevisionRequest03" type="sanity">
 	<t:objective>Purge older revision of document with multiple revision.</t:objective>
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test >
@@ -449,7 +449,7 @@
 		<t:response>
 			<t:select path="//mail:PurgeRevisionResponse"/>
 	</t:response>
-	</t:test>		
+	</t:test>
 
 	<t:test >
 		<t:request>
@@ -461,7 +461,7 @@
             <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc/mail:fr" emptyset="1"/>
          </t:response>
     </t:test>
-    
+
 
 	<t:test >
 		<t:request>
@@ -473,7 +473,7 @@
             <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc/mail:fr" emptyset="1"/>
          </t:response>
     </t:test>
-    
+
     	<t:test >
 		<t:request>
 			<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
@@ -484,10 +484,10 @@
             <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc/mail:fr" match="This is revison3 File1 test1"/>
          </t:response>
     </t:test>
-    
+
     </t:test_case>
-  
-<t:test_case testcaseid="PurgeRevisionRequest04" type="bhr">
+
+<t:test_case testcaseid="PurgeRevisionRequest04" type="sanity">
 <t:objective>Purge document with invalid values.</t:objective>
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test >
@@ -501,7 +501,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="doc.invalid.id" value="12398012345539" />
 	<t:test >
 		<t:request>
@@ -522,7 +522,7 @@
 		<t:response>
 			<t:select path="//mail:PurgeRevisionResponse"/>
 	</t:response>
-	</t:test>		
+	</t:test>
 	<t:test >
 		<t:request>
 			<PurgeRevisionRequest xmlns="urn:zimbraMail">
@@ -535,10 +535,9 @@
 	</t:test>
 
 
-</t:test_case>   
- 
-    
+</t:test_case>
+
+
     </t:tests>
-    
-    
-    
+
+

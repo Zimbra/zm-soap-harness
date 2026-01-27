@@ -87,16 +87,16 @@
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="Filter_AddressIn_01" type="bhr">
+<t:test_case testcaseid="Filter_AddressIn_01" type="sanity">
     <t:objective> Verify filter works if from field of the mail matches the contacts saved </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a contact
 			  3. Save a Rule as Addressbook -> FROM -> :in -> contacts
 			  4. Inject a Mail with From field is one of the contact that is being saved.
 			  5. Search mail get filtered.
         </t:steps>
-        
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -109,7 +109,7 @@
 
         </t:response>
     </t:test>
-	 
+
 	<t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -117,7 +117,7 @@
                     <a n="firstName">${firstName}</a>
                     <a n="lastName">${lastName}</a>
                     <a n="email">${account2.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -131,11 +131,11 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	<addressBookTest header="from" stringComparison="contacts"/>                    	     
+                         	<addressBookTest header="from" stringComparison="contacts"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />       
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -145,7 +145,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -157,7 +157,7 @@
     </t:test>
 
     <t:delay sec="10" />
-	
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -185,15 +185,15 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_AddressIn_02" type="bhr">
+<t:test_case testcaseid="Filter_AddressIn_02" type="sanity">
     <t:objective> Verify filter works if To field of the mail matches the contacts saved </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Create a contact
 			  2. Save a Rule as Addressbook -> To -> :in -> contacts
 			  3. Inject a Mail with To field is one of the contact that is being saved.
 			  4. Search mail get filtered.
         </t:steps>
-  
+
 	<t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -201,7 +201,7 @@
                     <a n="firstName">${firstName}</a>
                     <a n="lastName">${lastName}</a>
                     <a n="email">${account1.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -215,11 +215,11 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	<addressBookTest header="to" stringComparison="contacts"/>                    	     
+                         	<addressBookTest header="to" stringComparison="contacts"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -229,7 +229,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -239,9 +239,9 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:delay sec="10" />
- 
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -271,9 +271,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_AddressIn_03" type="bhr">
+<t:test_case testcaseid="Filter_AddressIn_03" type="sanity">
     <t:objective> Verify filter works if To field of the mail matches the contacts saved </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to account3
 			  2. Create a contact with for account1
 			  3. Create a rule as Addressbook -> Cc -> :in -> contacts
@@ -303,7 +303,7 @@
                     <a n="firstName">${firstName}</a>
                     <a n="lastName">${lastName}</a>
                     <a n="email">${account1.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -317,11 +317,11 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	<addressBookTest header="cc" stringComparison="contacts"/>                    	     
+                         	<addressBookTest header="cc" stringComparison="contacts"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -331,7 +331,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -341,9 +341,9 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:delay sec="10" />
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -370,9 +370,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_AddressIn_04" type="bhr">
+<t:test_case testcaseid="Filter_AddressIn_04" type="sanity">
     <t:objective> Verify filter works if Cc field of the mail doesnot matches the contacts saved </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to account3
 			  2. Create a rule as Addressbook -> Cc -> not :in -> contacts
 			  3. Inject a Mail with Cc field is one of the contact that is not in the address book.
@@ -401,11 +401,11 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	<addressBookTest header="cc" negative="1" stringComparison="contacts"/>                    	     
+                         	<addressBookTest header="cc" negative="1" stringComparison="contacts"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -415,7 +415,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -425,7 +425,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-   
+
     <t:delay sec="10" />
 
     <t:mailinjecttest >
@@ -454,9 +454,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filter_AddressIn_05" type="bhr">
+<t:test_case testcaseid="Filter_AddressIn_05" type="sanity">
     <t:objective> Verify filter works if Bcc field of the mail doesnot matches the contacts saved </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to account3
 			  2. Create a rule as Addressbook -> Bcc -> not :in -> contacts
 			  3. Inject a Mail with Bcc field is one of the contact that is not in the address book.
@@ -485,11 +485,11 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         	<addressBookTest header="bcc" negative="1" stringComparison="contacts"/>                    	     
+                         	<addressBookTest header="bcc" negative="1" stringComparison="contacts"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFlag flagName="flagged" />    
-                        	<actionStop />                 
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -499,7 +499,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -511,7 +511,7 @@
     </t:test>
 
     <t:delay sec="10" />
-   
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>

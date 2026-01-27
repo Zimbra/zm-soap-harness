@@ -57,8 +57,8 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="account1.fullName"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
-  
+    </t:test>
+
       <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,7 +71,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="account2.fullName"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -86,7 +86,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -101,11 +101,11 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAllRightsRequest01" type="bhr"  bugids="43391" >
+<t:test_case testcaseid="GetAllRightsRequest01" type="sanity"  bugids="43391" >
 <t:objective> Basic test case to verify GrantRightRequest </t:objective>
 	<t:steps>
 	1. Create a regular admin account (created in above request)
@@ -120,7 +120,7 @@
 				<target type="domain" by="name">${domain.name}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right>setAccountPassword</right>
-				</GrantRightRequest>    
+				</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -133,7 +133,7 @@
 				<target type="domain" by="name">${domain.name}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right>getAccountInfo</right>
-				</GrantRightRequest>    
+				</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -180,7 +180,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAllRightsRequest02" type="sanity" >
+<t:test_case testcaseid="GetAllRightsRequest02" type="functional" >
 <t:objective> Granting rights by using attr "id" instead of "name" </t:objective>
 
 	<t:test required="true" >
@@ -201,7 +201,7 @@
 				<target type="domain" by="id">${domain.id}</target>
 				<grantee type="usr" by="id">${admin1.id}</grantee>
 				<right>getAccount</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -233,7 +233,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAllRightsRequest03" type="bhr" bugids="36257">
+<t:test_case testcaseid="GetAllRightsRequest03" type="sanity" bugids="36257">
 <t:objective> Verify 'canDelegate'  </t:objective>
 
 	<t:steps>
@@ -260,7 +260,7 @@
 				<target type="domain" by="name">${domain.name}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right canDelegate="1">getDomain</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -285,7 +285,7 @@
 				<target type="domain" by="name">${domain.name}</target>
 				<grantee type="usr" by="name">${admin2.fullName}</grantee>
 				<right>getDomain</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -294,12 +294,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAllRightsRequest04" type="bhr" bugids="36396">
+<t:test_case testcaseid="GetAllRightsRequest04" type="sanity" bugids="36396">
 <t:objective> Verify 'deny = 1' works </t:objective>
 
 <t:steps>
-1. Grant admin1 the modifyAccount right on domain domain.com (grant1) 
-2. Grant admin1 the negative (deny) modifyAccount  right on domain for ${account1.fullName} (grant2) 
+1. Grant admin1 the modifyAccount right on domain domain.com (grant1)
+2. Grant admin1 the negative (deny) modifyAccount  right on domain for ${account1.fullName} (grant2)
 3. Login as admin1 and try to send modifyAccount  for account1. (Should fail)
 4. Login as admin1 and try to send modifyAccount  for account1. (Success)
 </t:steps>
@@ -322,7 +322,7 @@
 				<target type="domain" by="name">${domain.name}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right>modifyAccount</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -335,7 +335,7 @@
 				<target type="account" by="name">${account1.fullName}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right deny="1">modifyAccount</right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -380,7 +380,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAllRightsRequest05" type="bhr" bugids="36396">
+<t:test_case testcaseid="GetAllRightsRequest05" type="sanity" bugids="36396">
 <t:objective> Verify sending invalid rights. should throw "NO_SUCH_RIGHT" </t:objective>
 
 	<t:test required="true" >
@@ -401,7 +401,7 @@
 				<target type="account" by="name">${account1.fullName}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right deny="1">SetPasswordRequest </right>
-			</GrantRightRequest>    
+			</GrantRightRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^account.NO_SUCH_RIGHT" />

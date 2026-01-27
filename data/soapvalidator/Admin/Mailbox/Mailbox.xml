@@ -12,7 +12,7 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:property name="test_acct1.server" value="NOT_DEFINED"/>
 
-<t:test_case testcaseid="GetMailboxRequest_01" type="bhr" >
+<t:test_case testcaseid="GetMailboxRequest_01" type="sanity" >
     <t:objective>Sanity test for GetMailboxRequest </t:objective>
 
     <t:test>
@@ -29,16 +29,16 @@
     </t:test>
 
 	<t:property name="admin.authToken" value="authToken"/>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${account.password}</password>         
+                <password>${account.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id"/>
         </t:response>
     </t:test>
 
@@ -70,22 +70,22 @@
     </t:test>
 
 	<t:property name="admin.authToken" value="authToken"/>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account5.name}</name>
-                <password>${account.password}</password>         
+                <password>${account.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-	
+
    <t:property name="server.zimbraAccount" value="${account1.server}"/>
- 
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -98,7 +98,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -111,7 +111,7 @@
             <t:select path="//mail:AddMsgResponse" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -121,7 +121,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:test>
@@ -134,7 +134,7 @@
             <t:select path="//admin:PurgeMessagesResponse/admin:mbox" />
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -154,19 +154,19 @@
     </t:test>
 
 	<t:property name="admin.authToken" value="authToken"/>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account4.name}</name>
-                <password>${account.password}</password>         
+                <password>${account.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -179,7 +179,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -192,7 +192,7 @@
             <t:select path="//mail:AddMsgResponse" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -202,7 +202,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:test>
@@ -215,7 +215,7 @@
             <t:select path="//admin:ReIndexResponse" attr="status" match="started"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="RecalculateMailboxCountsRequest_01" type="smoke" >
@@ -234,19 +234,19 @@
     </t:test>
 
 	<t:property name="admin.authToken" value="authToken"/>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account3.name}</name>
-                <password>${account.password}</password>         
+                <password>${account.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -259,7 +259,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
           </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -272,7 +272,7 @@
             <t:select path="//mail:AddMsgResponse" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -282,7 +282,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:test>
@@ -295,7 +295,7 @@
             <t:select path="//admin:RecalculateMailboxCountsResponse/admin:mbox"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="DeleteMailboxRequest_01" type="smoke" >
@@ -315,16 +315,16 @@
     </t:test>
 
 	<t:property name="admin.authToken" value="authToken"/>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${account.password}</password>         
+                <password>${account.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
         </t:response>
     </t:test>
 
@@ -340,7 +340,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -353,7 +353,7 @@
             <t:select path="//mail:AddMsgResponse" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -363,9 +363,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
 	<t:test>
         <t:request>
             <DeleteMailboxRequest xmlns="urn:zimbraAdmin">
@@ -376,7 +376,7 @@
             <t:select path="//admin:DeleteMailboxResponse/admin:mbox"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="ExportAndDeleteItemsRequest_01" type="smoke" >
@@ -396,16 +396,16 @@
     </t:test>
 
 	<t:property name="admin.authToken" value="authToken"/>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account6.name}</name>
-                <password>${account.password}</password>         
+                <password>${account.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>           
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
         </t:response>
     </t:test>
 
@@ -421,7 +421,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -434,7 +434,7 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -444,9 +444,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetMailboxRequest xmlns="urn:zimbraAdmin">
@@ -457,24 +457,24 @@
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid" set="mailbox6.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
         <t:request>
             <ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
-                <mbox id="${mailbox6.id}"/>                 
+                <mbox id="${mailbox6.id}"/>
             </ExportAndDeleteItemsRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ExportAndDeleteItemsResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="GetAllMailboxesRequest_01" type="smoke" >
     <t:objective>Sanity test for GetAllMailboxesRequest </t:objective>
-    
+
     <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -484,9 +484,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
 	<t:test>
         <t:request>
             <GetAllMailboxesRequest xmlns="urn:zimbraAdmin" limit="5" />
@@ -495,12 +495,12 @@
             <t:select path="//admin:GetAllMailboxesResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="GetMailboxStatsRequest_01" type="smoke" >
     <t:objective>Sanity test for GetMailboxStatsRequest </t:objective>
-    
+
    <t:test>
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -510,9 +510,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
 	<t:test>
         <t:request>
             <GetMailboxStatsRequest xmlns="urn:zimbraAdmin" />
@@ -521,7 +521,7 @@
             <t:select path="//admin:GetMailboxStatsResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

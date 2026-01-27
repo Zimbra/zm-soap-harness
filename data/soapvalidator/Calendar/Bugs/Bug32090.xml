@@ -1,10 +1,10 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
-<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
+
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>
 <t:property name="domain1.name" value="domain${TIME}${COUNTER}"/>
-    
+
 <t:property name="account1.name" value="organizer.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="invitee.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test.name" value="itest.${TIME}.${COUNTER}@${domain1.name}"/>
@@ -97,21 +97,21 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <!-- Creating a Domain -->
      <t:test id="createDomRequest">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
-                <name>${domain1.name}</name>               
+                <name>${domain1.name}</name>
             </CreateDomainRequest>
         </t:request>
         <t:response>
             <t:select path= "//admin:CreateDomainResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Creating a user in a specific domain in the same server -->
     <t:test depends="createAccountRequest159a">
         <t:request>
@@ -124,7 +124,7 @@
            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -170,18 +170,18 @@
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 <t:property name="appointmentpub.exception.subject" value="publicexception${TIME}.${COUNTER}"/>
 <t:property name="appointmentpub.exception.content" value="public content modified by invitee1${TIME}.${COUNTER}"/>
-<t:property name="appointment.exception.subject" value="exception${TIME}.${COUNTER}"/>	
+<t:property name="appointment.exception.subject" value="exception${TIME}.${COUNTER}"/>
 
 
 <t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
 <t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
 <t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
-	
+
 <t:property name="appointment1.subject" value="Fsubject${TIME}.${COUNTER}"/>
 <t:property name="appointment1.location" value="Flocation${TIME}.${COUNTER}"/>
 <t:property name="appointment1.content" value="Fcontent${TIME}.${COUNTER}"/>
 
-	
+
 <t:property name="time.22Dec2009100000.gmt" value="1261476000000"/>
 <t:property name="time.22Dec2009100000.pst" value="${TIME(-8h)[${time.22Dec2009100000.gmt}]}"/>
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
@@ -200,7 +200,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-  	
+
 	 <t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -223,8 +223,8 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
         </t:response>
-    </t:test>	
-    
+    </t:test>
+
     <!-- Create a series of appointment as public -->
     <t:test required="true" >
         <t:request>
@@ -232,7 +232,7 @@
 				<m l="${organizer.folder.calendar}">
 					<inv>
 						<comp status="CONF" fb="B" transp="O" class="PUB" allDay="0" name="${appointment.subject}">
-							<or a="${organizer1.name}"/>							
+							<or a="${organizer1.name}"/>
 							<s d="${ICALTIME[${time.22Dec2009100000.pst}]}" tz="${timezone.pst}" />
 							<e d="${ICALTIME(+3h)[${time.22Dec2009100000.pst}]}" tz="${timezone.pst}" />
 							<recur>
@@ -254,19 +254,19 @@
         </t:request>
         <t:response>
             <t:select path="//mail:CreateAppointmentResponse">
-            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>            	
+            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>
             	<t:select attr="invId" set="organizer1.appt1.invId"/>
             	<t:select attr="apptId" set="organizer1.appt1.apptId"/>
             </t:select>
         </t:response>
-    </t:test>	
+    </t:test>
 </t:test_case>
 
 <t:test_case testcaseid="RestServlet_ShareAll_Calendar_html_01" type="smoke">
     <t:objective>Verify a calendar shared with read rights to all authenticated users returns data for authenticated users</t:objective>
 
 	<t:property name="server.restServlet" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -278,7 +278,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-		
+
 	<t:resttest>
 		<t:restServletRequest>
 			<user>${organizer1.name}</user>
@@ -294,11 +294,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_ShareAll_Calendar_html_02" type="bhr">
+<t:test_case testcaseid="RestServlet_ShareAll_Calendar_html_02" type="sanity">
     <t:objective>Verify a calendar item shared with read rights to all authenticated users returns data for authenticated users</t:objective>
 
 	<t:property name="server.restServlet" value="${account1.server}"/>
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -310,24 +310,24 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-		
+
 	<t:resttest>
 		<t:restServletRequest>
 			<user>${organizer1.name}</user>
 			<id>${organizer1.appt1.apptId}</id>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="200"/>		
+			<t:select attr="StatusCode" match="200"/>
 		</t:restServletResponse>
 	</t:resttest>
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_ShareAll_Calendar_html_03" type="bhr">
+<t:test_case testcaseid="RestServlet_ShareAll_Calendar_html_03" type="sanity">
     <t:objective>Verify a calendar shared with read rights to all authenticated users returns 401 for non-authenticated users</t:objective>
 
 	<t:property name="authToken" value=""/>
-		
+
 	<t:resttest>
 		<t:restServletRequest>
 			<user>${organizer1.name}</user>
@@ -335,10 +335,10 @@
 			<fmt>ics</fmt>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="401"/>		
+			<t:select attr="StatusCode" match="401"/>
 		</t:restServletResponse>
 	</t:resttest>
 
 </t:test_case>
-  
+
 </t:tests>

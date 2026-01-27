@@ -24,11 +24,11 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -38,7 +38,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -62,7 +62,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account16.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
@@ -72,17 +72,17 @@
 		    <server>${test_acct.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
 
     <t:objective> Create setup for the Search </t:objective>
     <t:steps>1. Login to the account.
              2. Search a mail to get the message-id
-             3. Create two tags 
-             4. add tags to messages 
+             3. Create two tags
+             4. add tags to messages
     </t:steps>
 
     <t:test id="login" required="true">
@@ -182,7 +182,7 @@
             </t:select>
         </t:response>
     </t:test>
-   
+
     <t:test id="searchRequest7">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -210,7 +210,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!--
     <t:test id = "getTagRequest">
         <t:request>
@@ -222,7 +222,7 @@
         </t:response>
     </t:test>
     -->
-    
+
     <t:test id = "createTagRequest1">
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -234,7 +234,7 @@
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id1"/>
         </t:response>
     </t:test>
-    
+
     <t:test id = "createTagRequest2">
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -258,8 +258,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest2" depends="searchRequest2,createTagRequest2">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -282,7 +282,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest4" depends="searchRequest4,createTagRequest2">
         <t:request>
@@ -294,7 +294,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id4}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest5" depends="searchRequest5,createTagRequest1">
         <t:request>
@@ -306,7 +306,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id5}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest6" depends="searchRequest6,createTagRequest2">
         <t:request>
@@ -318,7 +318,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id6}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest7" depends="searchRequest7,createTagRequest1">
         <t:request>
@@ -330,7 +330,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id7}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest8" depends="searchRequest8,createTagRequest2">
         <t:request>
@@ -342,14 +342,14 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id8}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
-  
 
-<t:test_case testcaseid="combo_from_tag_SearchRequest1" type="sanity" >
 
-    <t:objective> Verify the results are correct for query using from: and tag: </t:objective>      
+<t:test_case testcaseid="combo_from_tag_SearchRequest1" type="functional" >
+
+    <t:objective> Verify the results are correct for query using from: and tag: </t:objective>
     <!-- From: with tag:, with (tag: or tag:) and with (tag:)(tag:) -->
     <t:test>
         <t:request>
@@ -385,7 +385,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id7}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id8}']" emptyset="1"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test>
         <t:request>
@@ -406,11 +406,11 @@
     </t:test>
 
 </t:test_case>
-     
-     
-<t:test_case testcaseid="combo_to_tag_SearchRequest1" type="sanity" >
 
-    <t:objective> Verify the results are correct for query using To: and tag: </t:objective>         
+
+<t:test_case testcaseid="combo_to_tag_SearchRequest1" type="functional" >
+
+    <t:objective> Verify the results are correct for query using To: and tag: </t:objective>
     <!-- To/Cc: with tag:, with (tag: or tag:) and with (tag:)(tag:) -->
 
     <t:test>
@@ -471,10 +471,10 @@
 
 
 <t:property name="emailSubject" value="(email16E or email16F)"/>
-    
-<t:test_case testcaseid="combo_subject_tag_SearchRequest1" type="sanity" >
 
-    <t:objective> Verify the results are correct for query using Subject: and tag:</t:objective>           
+<t:test_case testcaseid="combo_subject_tag_SearchRequest1" type="functional" >
+
+    <t:objective> Verify the results are correct for query using Subject: and tag:</t:objective>
     <!-- Subject: with tag:, with (tag: or tag:) and with (tag:)(tag:) -->
 
     <t:test>
@@ -533,10 +533,10 @@
 
 </t:test_case>
 
-     
-<t:test_case testcaseid="combo_Content_tag_SearchRequest1" type="sanity" >
 
-    <t:objective> Verify the results are correct for query using Subject: and tag: </t:objective>           
+<t:test_case testcaseid="combo_Content_tag_SearchRequest1" type="functional" >
+
+    <t:objective> Verify the results are correct for query using Subject: and tag: </t:objective>
     <!-- Content: with tag:, with (tag: or tag:) and with (tag:)(tag:) -->
 
     <t:test>

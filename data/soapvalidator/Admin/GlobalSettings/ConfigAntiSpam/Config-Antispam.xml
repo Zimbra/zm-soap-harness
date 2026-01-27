@@ -19,14 +19,14 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 
 <t:test_case testcaseid="admin_login" type="always">
     <t:objective>Login to Admin Account</t:objective>
-        
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -39,7 +39,7 @@
         </t:response>
     </t:test>
 
-	
+
     <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -50,17 +50,17 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
 		</t:response>
     </t:test>
-    
-   
-	
-    
+
+
+
+
 </t:test_case>
 
 
 <t:finally areas="spam, noncluster">
 
 	<!-- After all tests have run, reset the zimbraSpamCheckEnabled setting to the default -->
-	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test id="admin_login" required="true" >
@@ -74,7 +74,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
                 <ModifyConfigRequest xmlns="urn:zimbraAdmin">
@@ -88,7 +88,7 @@
         </t:response>
     </t:test>
 
-	
+
 
 	<t:staftask >
 		<t:request>
@@ -115,7 +115,7 @@
 
     <t:objective>Set zimbraSpamCheckEnabled = TRUE</t:objective>
 
-    
+
 
     <t:test>
 
@@ -174,7 +174,7 @@
 
     <t:objective>Set zimbraSpamCheckEnabled = FALSE</t:objective>
 
-    
+
 
     <t:test>
 
@@ -236,7 +236,7 @@
 
     <t:objective>Set anti spam configuration settings</t:objective>
 
-    
+
 
     <t:test>
 
@@ -348,9 +348,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyConfigRequest_spam12" type="sanity" bugids="2329" areas="spam,noncluster" >
+<t:test_case testcaseid="ModifyConfigRequest_spam12" type="functional" bugids="2329" areas="spam,noncluster" >
     <t:objective>Verify that the value of zimbraSpamHeaderValue can be null</t:objective>
-        
+
     <t:test>
         <t:request>
             <ModifyConfigRequest xmlns="urn:zimbraAdmin">
@@ -361,7 +361,7 @@
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:staftask >
 		<t:request>
 			<server>${mta.server}</server>
@@ -382,7 +382,7 @@
             <t:select path="//zimbra:Code" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

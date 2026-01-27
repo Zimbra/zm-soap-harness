@@ -80,7 +80,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
         <!-- Create resource -->
     <t:test id="CreateCalendarResourceRequest1">
         <t:request>
@@ -89,7 +89,7 @@
                 <password>${defaultpassword.value}</password>
 				<a n="zimbraCalResType">${Resource.location}</a>
 				<a n="displayName">${resource1.displayname}</a>
-				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>	
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
 			</CreateCalendarResourceRequest>
         </t:request>
         <t:response>
@@ -102,7 +102,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="bug41754_1" type="bhr" bugids="41754">
+<t:test_case testcaseid="bug41754_1" type="sanity" bugids="41754">
     <t:objective>Attachments are lost from recurring appointment when an instance is canceled</t:objective>
     <t:steps>
     1. Login to ZWC.
@@ -125,11 +125,11 @@
 
         </t:response>
     </t:test>
-   
+
     <t:property name="uploadServletServer" value="${test_acct1.server}"/>
 	<t:property name="server.restServlet" value="${test_acct1.server}"/>
 	<t:property name="uploadFile.basic" value="${testMailRaw.root}/attachments1/pdfaccess.pdf"/>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.basic}</filename>
@@ -138,15 +138,15 @@
 			<t:select attr="id" set="attach.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-    
+
     <!--Create Appointments-->
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                         <recur>
                             <add>
@@ -197,11 +197,11 @@
             <t:select path = "//mail:CancelAppointmentResponse"/>
         </t:response>
     </t:test>
-        
+
     <t:property name="TimeRangeStart" value="${TIME}"/>
 	<t:property name="TimeRangeFinish" value="${TIME(+10d)}"/>
 	<t:property name="attachement.name" value="pdfaccess.pdf"/>
-	
+
   <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
@@ -216,7 +216,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug41754_2" type="bhr" bugids="41754">
+<t:test_case testcaseid="bug41754_2" type="sanity" bugids="41754">
     <t:objective>Attachments are lost from recurring appointment when an instance is created</t:objective>
     <t:steps>
     1. Login to ZWC.
@@ -225,7 +225,7 @@
 	4. create an instance.
 	5. Open series/instance again. > verify attachment is present.
 	</t:steps>
-	
+
     <!-- login as the test account -->
     <t:test id="auth1" required="true">
         <t:request>
@@ -239,11 +239,11 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="uploadServletServer" value="${test_acct1.server}"/>
 	<t:property name="server.restServlet" value="${test_acct1.server}"/>
 	<t:property name="uploadFile.basic" value="${testMailRaw.root}/attachments1/pdfaccess.pdf"/>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.basic}</filename>
@@ -252,20 +252,20 @@
 			<t:select attr="id" set="attach.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-    
+
     <t:property name="Time1" value="${ICALTIME(+2h)}"/>
 	<t:property name="Time2" value="${ICALTIME(+3h)}"/>
 	<t:property name="appointment2.subject" value="Subj2${TIME}.${COUNTER}"/>
-	
-    
+
+
     <!--Create Appointments-->
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                         <recur>
                             <add>
@@ -298,17 +298,17 @@
             <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="appointment.content" value="newcont${TIME}.${COUNTER}"/>
-	
+
 	    <!--Modify an instance of appointment with valid values.-->
     <t:test>
         <t:request>
             <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
-                        <s d="${Time5}"/>  
-                        <e d="${Time6}"/>  
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
                         <or a="${acct1.name}"/>
                         <exceptId d="${Time1}"/>
                     </inv>
@@ -324,10 +324,10 @@
             <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
         </t:response>
     </t:test>
-            
+
     <t:property name="TimeRangeStart" value="${TIME}"/>
 	<t:property name="TimeRangeFinish" value="${TIME(+10d)}"/>
-	
+
   	<t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
@@ -339,10 +339,10 @@
             <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="${appointment1.id}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="bug61323" type="bhr" bugids="61323">
+<t:test_case testcaseid="bug61323" type="sanity" bugids="61323">
     <t:objective>Cancelling a meeting in a Series does not free resource</t:objective>
     <t:steps>
     1. Login to ZWC.
@@ -351,7 +351,7 @@
 	4. create an instance.
 	5. Open series/instance again. > verify attachment is present.
 	</t:steps>
-	
+
     <!-- login as the test account -->
     <t:test id="auth1" required="true">
         <t:request>
@@ -365,7 +365,7 @@
 
         </t:response>
     </t:test>
-   
+
 
     <!--Create Appointments-->
     <t:test>
@@ -374,8 +374,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}">
                     <at role="REQ" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                         <recur>
                             <add>
@@ -388,7 +388,7 @@
                     <mp content-type="text/plain">
                         <content>${appointment.content}</content>
                     </mp>
-                    <su>${appointment1.subject}</su>           
+                    <su>${appointment1.subject}</su>
                 </m>
             </CreateAppointmentRequest>
         </t:request>
@@ -426,7 +426,7 @@
             <t:select path = "//mail:CancelAppointmentResponse"/>
         </t:response>
     </t:test>
-        
+
     <t:property name="TimeRangeStart" value="${TIME}"/>
 	<t:property name="TimeRangeFinish" value="${TIME(+1d)}"/>
 
@@ -434,15 +434,15 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"  uid="${resource1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${resource1.id}']">
             	<t:select path="//mail:f" attr="s" match="${TimeRangeStart}"/>
             	<t:select path="//mail:f" attr="e" match="${TimeRangeFinish}"/>
-         </t:select>      
+         </t:select>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
-  
-  
+
+
 </t:tests>

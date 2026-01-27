@@ -17,7 +17,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -38,7 +38,7 @@
             3. Get those accounts.
             4. Get auth token of the 2 accounts created.
     </t:steps>
-   
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -52,7 +52,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -65,7 +65,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="create_test_account2" required="true" depends="admin_login" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -78,7 +78,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="create_test_account3" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -91,7 +91,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="create_test_account4" required="true" depends="admin_login" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -104,7 +104,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-         
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -116,7 +116,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest1a">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -128,7 +128,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest1a">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -140,7 +140,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -152,7 +152,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="addDistributionListMemberRequest2b" >
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -164,7 +164,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="addDistributionListMemberRequest2b">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -176,7 +176,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
      <t:test>
         <t:request>
             <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
@@ -187,17 +187,17 @@
         <t:response>
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
-    
-    
-    
-    
-    
-    
-     
+    </t:test>
+
+
+
+
+
+
+
 </t:test_case>
-  
-<t:test_case testcaseid="CreateMountpoint_Bug_40759_01" type="bhr" bugids="40759">
+
+<t:test_case testcaseid="CreateMountpoint_Bug_40759_01" type="sanity" bugids="40759">
     <t:objective>Verify error does not occur: system failure: java.lang.ClassCastException: [Ljava.lang.String;</t:objective>
     <t:steps>
 1) Create a Zimbra distribution list (zimbraDistributionList).
@@ -211,7 +211,7 @@ Sharing /Calendar here.
 8) Open UserB mailbox
 9) CreateMountpointRequest
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test depends="create_test_account1" required="true">
@@ -231,11 +231,11 @@ Sharing /Calendar here.
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>             
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
     </t:test>
-   
-    
+
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -259,7 +259,7 @@ Sharing /Calendar here.
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -273,7 +273,7 @@ Sharing /Calendar here.
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test>
         <t:request>
             <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
@@ -284,7 +284,7 @@ Sharing /Calendar here.
         <t:response>
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -305,7 +305,7 @@ Sharing /Calendar here.
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetFolderResponse"/>             
+            <t:select path="//mail:GetFolderResponse"/>
         </t:response>
     </t:test>
 
@@ -328,10 +328,10 @@ Sharing /Calendar here.
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>             
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
     </t:test>
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -345,7 +345,7 @@ Sharing /Calendar here.
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateMountpoint_Bug_40759_02" type="bhr" bugids="40759">
+<t:test_case testcaseid="CreateMountpoint_Bug_40759_02" type="sanity" bugids="40759">
     <t:objective>Verify error does not occur: system failure: java.lang.ClassCastException: [Ljava.lang.String;</t:objective>
     <t:steps>
 1) Create a Zimbra distribution list (zimbraDistributionList) *add alias to it*.
@@ -359,7 +359,7 @@ Sharing /Calendar here.
 8) Open UserB mailbox
 9) CreateMountpointRequest
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test depends="create_test_account3" required="true">
@@ -379,11 +379,11 @@ Sharing /Calendar here.
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>             
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
     </t:test>
-   
-    
+
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -407,7 +407,7 @@ Sharing /Calendar here.
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -421,7 +421,7 @@ Sharing /Calendar here.
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
     <t:test>
         <t:request>
             <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
@@ -432,7 +432,7 @@ Sharing /Calendar here.
         <t:response>
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
@@ -453,7 +453,7 @@ Sharing /Calendar here.
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetFolderResponse"/>             
+            <t:select path="//mail:GetFolderResponse"/>
         </t:response>
     </t:test>
 
@@ -476,10 +476,10 @@ Sharing /Calendar here.
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>             
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
         </t:response>
     </t:test>
-   
+
     <t:test>
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -492,6 +492,6 @@ Sharing /Calendar here.
     </t:test>
 
 </t:test_case>
-  
+
 </t:tests>
-  
+

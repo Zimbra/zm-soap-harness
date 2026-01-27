@@ -51,7 +51,7 @@
 
 	<t:test_case testcaseid="Ping" type="always" >
 	    <t:objective>basic system check</t:objective>
-	    
+
 	    <t:test id="ping">
 	        <t:request>
 	            <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -60,12 +60,12 @@
 	            <t:select path="//admin:PingResponse"/>
 	        </t:response>
 	    </t:test>
-	
+
 	</t:test_case>
-	
+
 	<t:test_case testcaseid="acct_setup" type="always" >
 	    <t:objective>Create test accounts</t:objective>
-	   
+
 	    <!-- Login to admin -->
 	    <t:test id="admin_login" required="true" depends="ping">
 	        <t:request>
@@ -78,7 +78,7 @@
 	            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 	        </t:response>
 	    </t:test>
-	    
+
 	    <t:test id="create_account1" required="true" depends="admin_login">
 	        <t:request>
 	            <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -91,7 +91,7 @@
 	            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test id="create_account2" required="true" depends="admin_login">
 	        <t:request>
 	            <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -104,7 +104,7 @@
 	            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <AuthRequest xmlns="urn:zimbraAccount">
@@ -114,11 +114,11 @@
 	        </t:request>
 	        <t:response>
 	            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
-	
+
 	        </t:response>
 	    </t:test>
-	
-	
+
+
 		<t:test>
 		        <t:request>
 		         <CreateContactRequest xmlns="urn:zimbraMail">
@@ -127,11 +127,11 @@
 		                    <a n="lastName">${contact1.lastname}</a>
 		                    <a n="fullName">${contact1.firstname} ${contact1.lastname}</a>
 		                    <a n="email">${contact1.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -142,11 +142,11 @@
 		                    <a n="lastName">${contact2.lastname}</a>
 		                    <a n="fullName">${contact2.firstname} ${contact2.lastname}</a>
 		                    <a n="email">${contact2.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -157,11 +157,11 @@
 		                    <a n="lastName">${contact3.lastname}</a>
 		                    <a n="fullName">${contact3.firstname} ${contact3.lastname}</a>
 		                    <a n="email">${contact3.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -172,11 +172,11 @@
 		                    <a n="lastName">${contact4.lastname}</a>
 		                    <a n="fullName">${contact4.firstname} ${contact4.lastname}</a>
 		                    <a n="email">${contact4.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact4.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact4.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -187,11 +187,11 @@
 		                    <a n="lastName">${contact5.lastname}</a>
 		                    <a n="fullName">${contact5.firstname} ${contact5.lastname}</a>
 		                    <a n="email">${contact5.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact5.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact5.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -202,11 +202,11 @@
 		                    <a n="lastName">${contact6.lastname}</a>
 		                    <a n="fullName">${contact6.firstname} ${contact6.lastname}</a>
 		                    <a n="email">${contact6.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact6.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact6.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -217,11 +217,11 @@
 		                    <a n="lastName">${contact7.lastname}</a>
 		                    <a n="fullName">${contact7.firstname} ${contact7.lastname}</a>
 		                    <a n="email">${contact7.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact7.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact7.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -232,11 +232,11 @@
 		                    <a n="lastName">${contact8.lastname}</a>
 		                    <a n="fullName">${contact8.firstname} ${contact8.lastname}</a>
 		                    <a n="email">${contact8.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact8.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact8.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -247,11 +247,11 @@
 		                    <a n="lastName">${contact9.lastname}</a>
 		                    <a n="fullName">${contact9.firstname} ${contact9.lastname}</a>
 		                    <a n="email">${contact9.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact9.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact9.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -262,11 +262,11 @@
 		                    <a n="lastName">${contact10.lastname}</a>
 		                    <a n="fullName">${contact10.firstname} ${contact10.lastname}</a>
 		                    <a n="email">${contact10.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact10.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact10.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -277,11 +277,11 @@
 		                    <a n="lastName">${contact11.lastname}</a>
 		                    <a n="fullName">${contact11.firstname} ${contact11.lastname}</a>
 		                    <a n="email">${contact11.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact11.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact11.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -292,11 +292,11 @@
 		                    <a n="lastName">${contact12.lastname}</a>
 		                    <a n="fullName">${contact12.firstname} ${contact12.lastname}</a>
 		                    <a n="email">${contact12.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact12.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact12.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -307,11 +307,11 @@
 		                    <a n="lastName">${contact13.lastname}</a>
 		                    <a n="fullName">${contact13.firstname} ${contact13.lastname}</a>
 		                    <a n="email">${contact13.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact13.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact13.id"/>
 		        </t:response>
 		</t:test>
 		<t:test>
@@ -322,11 +322,11 @@
 		                    <a n="lastName">${contact14.lastname}</a>
 		                    <a n="fullName">${contact14.firstname} ${contact14.lastname}</a>
 		                    <a n="email">${contact14.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact14.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact14.id"/>
 		        </t:response>
 		</t:test>
 			<t:test>
@@ -336,16 +336,16 @@
 		                    <a n="firstName">${contact15.firstname}</a>
 		                    <a n="fullName">${contact15.firstname}</a>
 		                    <a n="email">${contact15.email}</a>
-		                </cn>     
+		                </cn>
 		         </CreateContactRequest>
 		        </t:request>
 		        <t:response>
-		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact15.id"/>          
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact15.id"/>
 		        </t:response>
 		</t:test>
 
 	</t:test_case>
-	
+
 	<t:test_case testcaseid="SearchContact_Lucene_1" type="smoke">
 		<t:objective>Lucene SearchContact test for "a"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -358,12 +358,12 @@
 			<t:response>
 				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact1.email}" />
 				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact2.email}" />
-				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact3.email}" /> 
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact3.email}" />
 				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact4.email}" />
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_2" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_2" type="sanity">
 		<t:objective>Lucene SearchContact test for "an"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -377,7 +377,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_3" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_3" type="sanity">
 		<t:objective>Lucene SearchContact test for "and"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -391,7 +391,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_4" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_4" type="sanity">
 		<t:objective>Lucene SearchContact test for "are"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -405,7 +405,7 @@
 	       	</t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_5" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_5" type="sanity">
 		<t:objective>Lucene SearchContact test for "as"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -419,7 +419,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_6" type="bhr" bugids="53606">
+	<t:test_case testcaseid="SearchContact_Lucene_6" type="sanity" bugids="53606">
 		<t:objective>Lucene SearchContact test for "at"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -434,7 +434,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_7" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_7" type="sanity">
 		<t:objective>Lucene SearchContact test for "be"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -448,7 +448,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_8" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_8" type="sanity">
 		<t:objective>Lucene SearchContact test for "but"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -462,7 +462,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_9" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_9" type="sanity">
 		<t:objective>Lucene SearchContact test for "by"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -476,7 +476,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_10" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_10" type="sanity">
 		<t:objective>Lucene SearchContact test for "for"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -490,7 +490,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_11" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_11" type="sanity">
 		<t:objective>Lucene SearchContact test for "if"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -504,7 +504,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_12" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_12" type="sanity">
 		<t:objective>Lucene SearchContact test for "in"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -519,7 +519,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_13" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_13" type="sanity">
 		<t:objective>Lucene SearchContact test for "into"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -532,7 +532,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_14" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_14" type="sanity">
 		<t:objective>Lucene SearchContact test for "is"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -546,7 +546,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_15" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_15" type="sanity">
 		<t:objective>Lucene SearchContact test for "it"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -560,7 +560,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_16" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_16" type="sanity">
 		<t:objective>Lucene SearchContact test for "no"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -574,7 +574,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_17" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_17" type="sanity">
 		<t:objective>Lucene SearchContact test for "not"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -588,7 +588,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_18" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_18" type="sanity">
 		<t:objective>Lucene SearchContact test for "of"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -602,7 +602,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_19" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_19" type="sanity">
 		<t:objective>Lucene SearchContact test for "on"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -616,7 +616,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_20" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_20" type="sanity">
 		<t:objective>Lucene SearchContact test for "or"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -630,7 +630,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_21" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_21" type="sanity">
 		<t:objective>Lucene SearchContact test for "such"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -644,7 +644,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_22" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_22" type="sanity">
 		<t:objective>Lucene SearchContact test for "that"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -658,7 +658,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_23" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_23" type="sanity">
 		<t:objective>Lucene SearchContact test for "the"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -674,7 +674,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_24" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_24" type="sanity">
 		<t:objective>Lucene SearchContact test for "their"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -688,7 +688,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_25" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_25" type="sanity">
 		<t:objective>Lucene SearchContact test for "then"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -702,7 +702,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_26" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_26" type="sanity">
 		<t:objective>Lucene SearchContact test for "there"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -716,7 +716,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_27" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_27" type="sanity">
 		<t:objective>Lucene SearchContact test for "these"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -730,7 +730,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_28" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_28" type="sanity">
 		<t:objective>Lucene SearchContact test for "they"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -744,7 +744,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_29" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_29" type="sanity">
 		<t:objective>Lucene SearchContact test for "this"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -758,7 +758,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_30" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_30" type="sanity">
 		<t:objective>Lucene SearchContact test for "to"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -772,7 +772,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_31" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_31" type="sanity">
 		<t:objective>Lucene SearchContact test for "was"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -786,7 +786,7 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_32" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_32" type="sanity">
 		<t:objective>Lucene SearchContact test for "will"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -800,7 +800,7 @@
 	        </t:response>
 		</t:test>
 	</t:test_case>
-	<t:test_case testcaseid="SearchContact_Lucene_33" type="bhr">
+	<t:test_case testcaseid="SearchContact_Lucene_33" type="sanity">
 		<t:objective>Lucene SearchContact test for "with"</t:objective>
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
@@ -815,5 +815,5 @@
 		</t:test>
 	</t:test_case>
 
-	
+
 </t:tests>

@@ -7,13 +7,13 @@
 <t:property name="acct2.server" value="NOT_DEFINED"/>
 
 <t:property name="message.subj" value="${TIME}"/>
-    
 
-<t:property name="op.move" value="move"/>  
+
+<t:property name="op.move" value="move"/>
 <t:property name="op.delete" value="delete"/>
 
 <t:property name="loop.count" value="1000"/>
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>Basic system check</t:objective>
@@ -33,7 +33,7 @@
 <t:test_case testcaseid="acctSetup1_message_loop" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps> 1. Login to admin.
-              2. Create test account. 
+              2. Create test account.
     </t:steps>
 
     <t:test required="true" depends="ping">
@@ -52,7 +52,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${acct1.name}</name>
-                <password>${defaultpassword.value}</password>               
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -98,7 +98,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MessageDeleteLoop01" type="sanity" duration="long" >
+<t:test_case testcaseid="MessageDeleteLoop01" type="functional" duration="long" >
     <t:objective>Send 5000 mails and delete each one immediately after sending</t:objective>
     <t:steps>
 		1. Loop for 5000 times:
@@ -111,17 +111,17 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
         </t:response>
     </t:test>
 
-    <t:test_loop count="${loop.count}" timeframeMax="10000">      
-        
+    <t:test_loop count="${loop.count}" timeframeMax="10000">
+
         <t:test id="MessageDeleteLoop01a">
 	        <t:requestContext>
 	            <authToken>${authToken}</authToken>
@@ -142,8 +142,8 @@
             <t:response>
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
 
 	    <t:test id="MessageDeleteLoop01b" depends="MessageDeleteLoop01a,getFolderRequest">
 	        <t:requestContext>
@@ -185,7 +185,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="MessageDeleteLoop02" type="sanity" duration="long" >
+<t:test_case testcaseid="MessageDeleteLoop02" type="functional" duration="long" >
     <t:objective>Send 5000 mails, then move each one to the trash, then delete them from the trash</t:objective>
     <t:steps>
 		1. Loop for 5000 times:
@@ -200,17 +200,17 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
         </t:response>
     </t:test>
 
-    <t:test_loop count="${loop.count}" timeframeMax="10000">      
-        
+    <t:test_loop count="${loop.count}" timeframeMax="10000">
+
         <t:test id="MessageDeleteLoop02a">
 	        <t:requestContext>
 	            <authToken>${authToken}</authToken>
@@ -231,11 +231,11 @@
             <t:response>
                 <t:select path="//mail:SendMsgResponse/mail:m"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
     </t:test_loop>
 
-    <t:test_loop count="${loop.count}" timeframeMax="10000">      
+    <t:test_loop count="${loop.count}" timeframeMax="10000">
 
 		<t:test id="MessageDeleteLoop02b" depends="MessageDeleteLoop02a">
 	        <t:requestContext>
@@ -269,10 +269,10 @@
 	            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message.id}"/>
 	        </t:response>
 	    </t:test>
-        
+
     </t:test_loop>
 
-    <t:test_loop count="${loop.count}" timeframeMax="10000">      
+    <t:test_loop count="${loop.count}" timeframeMax="10000">
 
 		<t:test id="MessageDeleteLoop02d">
 	        <t:requestContext>
@@ -312,8 +312,8 @@
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="MessageDeleteLoop03" type="sanity" duration="long" >
+
+<t:test_case testcaseid="MessageDeleteLoop03" type="functional" duration="long" >
     <t:objective>Send 5000 mails, then move each one to the trash, then o one Folder Action to delete all  from the trash</t:objective>
     <t:steps>
 		1. Loop for 5000 times:
@@ -326,17 +326,17 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
         </t:response>
     </t:test>
 
-    <t:test_loop count="${loop.count}" timeframeMax="10000">      
-        
+    <t:test_loop count="${loop.count}" timeframeMax="10000">
+
         <t:test id="MessageDeleteLoop03a">
 	        <t:requestContext>
 	            <authToken>${authToken}</authToken>
@@ -357,8 +357,8 @@
             <t:response>
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
 	    <t:test id="MessageDeleteLoop03b" depends="MessageDeleteLoop03a,getFolderRequest">
 	        <t:requestContext>
 	            <authToken>${authToken}</authToken>
@@ -375,7 +375,7 @@
 	            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message.id}"/>
 	        </t:response>
 	    </t:test>
-        
+
     </t:test_loop>
 
     <t:test >
@@ -387,7 +387,7 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
 	            <t:select attr="id" match="${trashFolder.id}"/>
-	            <t:select attr="op" match="empty"/>        
+	            <t:select attr="op" match="empty"/>
             </t:select>
         </t:response>
     </t:test>
@@ -395,7 +395,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="MessageDeleteLoop04" type="sanity" duration="long" >
+<t:test_case testcaseid="MessageDeleteLoop04" type="functional" duration="long" >
     <t:objective>Send 5000 mails, remember their id's.  Then, issue one delete for all the id's.</t:objective>
     <t:steps>
 		1. Loop for 5000 times:
@@ -408,11 +408,11 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
         </t:response>
     </t:test>
@@ -432,12 +432,12 @@
         <t:response>
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 	<t:property name="message.ids" value="${message.id}"/>
 
-    <t:test_loop count="${loop.count}" timeframeMax="10000">      
-        
+    <t:test_loop count="${loop.count}" timeframeMax="10000">
+
         <t:test id="MessageDeleteLoop03b">
 	        <t:requestContext>
 	            <authToken>${authToken}</authToken>
@@ -458,11 +458,11 @@
             <t:response>
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
 		<t:property name="message.ids" value="${message.ids},${message.id}"/>
 
-        
+
     </t:test_loop>
 
     <t:test id="MessageDeleteLoop03c" depends="MessageDeleteLoop03b,getFolderRequest">

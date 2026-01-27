@@ -21,7 +21,7 @@
 
 <t:test_case testcaseid = "Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id = "ping">
         <t:request>
             <PingRequest xmlns = "urn:zimbraAdmin"/>
@@ -30,13 +30,13 @@
             <t:select path = "//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid = "acctSetup1_search_read" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test id = "admin_login" required = "true" depends = "ping">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAdmin">
@@ -48,7 +48,7 @@
             <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +61,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -73,14 +73,14 @@
             <t:select path="//admin:CreateAccountResponse/admin:account"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
-    </t:test>   
-       
+    </t:test>
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup2_search_read" type="always">
 <t:objective>Setup the accounts for test purpose </t:objective>
-<t:steps>1. Login to account2 
+<t:steps>1. Login to account2
          2. Send a mail to account1
          3. Login to account 1 for test purpose
 </t:steps>
@@ -116,7 +116,7 @@
             <t:select path="//mail:SendMsgResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Order is important in this test, make sure message1 comes before message2 -->
     <t:test required="true" delay="${postfixdelay.msec}">
         <t:request>
@@ -176,7 +176,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="search_read01" type="sanity">
+<t:test_case testcaseid="search_read01" type="functional">
     <t:objective>Verify read attribute of search by putting fetch=0 and read=1.</t:objective>
 
     <t:test>
@@ -187,29 +187,29 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m[1]" attr="id" match="${send2.id}"/>
-            <t:select path="//mail:SearchResponse/mail:m[1]/mail:e[@t='f']" attr="a" match="${account2.name}"/>            
-            <t:select path="//mail:SearchResponse/mail:m[1]" attr="su" match="${msg02.subject}"/>           
+            <t:select path="//mail:SearchResponse/mail:m[1]/mail:e[@t='f']" attr="a" match="${account2.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m[1]" attr="su" match="${msg02.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[2]" attr="id" match="${send1.id}"/>
-            <t:select path="//mail:SearchResponse/mail:m[2]/mail:e[@t='f']" attr="a" match="${account2.name}"/>           
-            <t:select path="//mail:SearchResponse/mail:m[2]" attr="su" match="${msg01.subject}"/>                                  
+            <t:select path="//mail:SearchResponse/mail:m[2]/mail:e[@t='f']" attr="a" match="${account2.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m[2]" attr="su" match="${msg01.subject}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
-        <t:request>            
+        <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
                 <query>is:read</query>
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail" emptyset="1"/>   
+            <t:select path="//mail:SearchResponse/mail" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_read02" type="bhr" bugids="6473, 16719">
+<t:test_case testcaseid="search_read02" type="sanity" bugids="6473, 16719">
     <t:objective>Verify read attribute of search for read="0".</t:objective>
 
     <t:test>
@@ -222,35 +222,35 @@
             <t:select path="//mail:SearchResponse/mail:m[1]" attr="id" match="${send2.id}"/>
             <t:select path="//mail:SearchResponse/mail:m[1]/mail:e[@t='f']" attr="a" match="${account2.name}"/>
             <t:select path="//mail:SearchResponse/mail:m[1]/mail:e[@t='t']" attr="a" match="${account1.name}"/>
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg02.subject}"/>                
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg02.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[1]/mail:mp" attr="body" match="1"/>
             <t:select path="//mail:SearchResponse/mail:m[1]/mail:mp/mail:content" match="(?s)${message_content}.*"/>
             <t:select path="//mail:SearchResponse/mail:m[2]" attr="id" match="${send1.id}"/>
-            <t:select path="//mail:SearchResponse/mail:m[2]/mail:e[@t='f']" attr="a" match="${account2.name}"/>           
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg01.subject}"/>            
+            <t:select path="//mail:SearchResponse/mail:m[2]/mail:e[@t='f']" attr="a" match="${account2.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg01.subject}"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
-        <t:request>            
+        <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
                 <query>is:unread</query>
             </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m[1]" attr="id" match="${send2.id}"/>
-            <t:select path="//mail:SearchResponse/mail:m[1]/mail:e[@t='f']" attr="a" match="${account2.name}"/>            
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg02.subject}"/>           
+            <t:select path="//mail:SearchResponse/mail:m[1]/mail:e[@t='f']" attr="a" match="${account2.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg02.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[2]" attr="id" match="${send1.id}"/>
-            <t:select path="//mail:SearchResponse/mail:m[2]/mail:e[@t='f']" attr="a" match="${account2.name}"/>           
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg01.subject}"/>            
+            <t:select path="//mail:SearchResponse/mail:m[2]/mail:e[@t='f']" attr="a" match="${account2.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg01.subject}"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_read03" type="bhr">
+<t:test_case testcaseid="search_read03" type="sanity">
     <t:objective>Verify read attribute of search for read="1".</t:objective>
 
     <t:test>
@@ -263,34 +263,34 @@
             <t:select path="//mail:SearchResponse/mail:m[1]" attr="id" match="${send2.id}"/>
             <t:select path="//mail:SearchResponse/mail:m[1]/mail:e[@t='f']" attr="a" match="${account2.name}"/>
             <t:select path="//mail:SearchResponse/mail:m[1]/mail:e[@t='t']" attr="a" match="${account1.name}"/>
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg02.subject}"/>                
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg02.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[1]/mail:mp" attr="body" match="1"/>
             <t:select path="//mail:SearchResponse/mail:m[1]/mail:mp/mail:content" match="(?s)${message_content}.*"/>
             <t:select path="//mail:SearchResponse/mail:m[2]" attr="id" match="${send1.id}"/>
-            <t:select path="//mail:SearchResponse/mail:m[2]/mail:e[@t='f']" attr="a" match="${account2.name}"/>           
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg01.subject}"/>           
+            <t:select path="//mail:SearchResponse/mail:m[2]/mail:e[@t='f']" attr="a" match="${account2.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg01.subject}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
-        <t:request>            
+        <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
                 <query>is:read</query>
             </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="id" match="${send2.id}"/>
-            <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${account2.name}"/>           
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg02.subject}"/>                         
+            <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${account2.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg02.subject}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <!--
-<t:test_case testcaseid="search_read04" type="functional">
+<t:test_case testcaseid="search_read04" type="regression">
     <t:objective>Verify read attribute of search by putting invalid values of it (blank, spchar, integer. negative, sometext, alpha, spaces, deciaml).</t:objective>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="1" read="">
@@ -298,9 +298,9 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>   
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test>
         <t:request>
@@ -309,9 +309,9 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>         
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
@@ -320,7 +320,7 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                       
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
 
@@ -331,7 +331,7 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                       
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
 
@@ -342,7 +342,7 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                                                
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
 
@@ -353,7 +353,7 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                                                        
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
 
@@ -364,10 +364,10 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>          
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="1" read="${read_decimal}">
@@ -375,14 +375,14 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>         
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 -->
 
-<t:test_case testcaseid="search_read05" type="functional">
+<t:test_case testcaseid="search_read05" type="regression">
     <t:objective>Verify read attribute of search by putting leading and trailing spaces with its value=1.</t:objective>
 
     <t:test>
@@ -392,10 +392,10 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>        
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="1" read="1   ">
@@ -403,10 +403,10 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>         
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

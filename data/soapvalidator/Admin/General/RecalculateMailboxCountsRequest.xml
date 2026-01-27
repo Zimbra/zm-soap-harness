@@ -17,7 +17,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RecalculateMailboxCountsRequest_Basic01" type="bhr">
+<t:test_case testcaseid="RecalculateMailboxCountsRequest_Basic01" type="sanity">
     <t:objective>RecalculateMailboxCountsRequest</t:objective>
 
     <t:test required="true" >
@@ -56,10 +56,10 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
-       
+
+
     <t:property name="message1.folder" value="${testMailRaw.root}/email01/"/>
-    <t:property name="nonZimbraUser.name" value="test@test.com"/>   
+    <t:property name="nonZimbraUser.name" value="test@test.com"/>
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <foldername>${message1.folder}</foldername>
@@ -68,9 +68,9 @@
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-  
-    <t:property name="message2.folder" value="${testMailRaw.root}/email02/"/>   
-    
+
+    <t:property name="message2.folder" value="${testMailRaw.root}/email02/"/>
+
      <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <foldername>${message2.folder}</foldername>
@@ -89,7 +89,7 @@
         <t:response>
             <t:select path="//admin:RecalculateMailboxCountsResponse/admin:mbox[@id='${account1.id}']" attr="used" match="^[0-9].*"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test  >
         <t:request>
@@ -100,11 +100,11 @@
         <t:response>
             <t:select path="//admin:RecalculateMailboxCountsResponse/admin:mbox[@id='${account2.id}']" attr="used" match="^[0-9].*"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="RecalculateMailboxCountsRequest_Basic02" type="bhr">
+<t:test_case testcaseid="RecalculateMailboxCountsRequest_Basic02" type="sanity">
     <t:objective>RecalculateMailboxCountsRequest for non existing mail box</t:objective>
 
     <t:test required="true" >
@@ -128,7 +128,7 @@
         <t:response>
             <t:select path="//zimbra:Code" match="account.NO_SUCH_ACCOUNT"> </t:select>
         </t:response>
-    </t:test> 
- </t:test_case>   
-    
+    </t:test>
+ </t:test_case>
+
 </t:tests>

@@ -28,7 +28,7 @@
 <t:test_case testcaseid="acctSetup1_folder_nested" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps> 1. Login to admin.
-              2. Create test account. 
+              2. Create test account.
     </t:steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -47,7 +47,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -88,14 +88,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Folder_nested1" type="sanity" duration="long">
+<t:test_case testcaseid="Folder_nested1" type="functional" duration="long">
     <t:objective>Creating 1000 nested folders</t:objective>
     <t:steps> 1. Create nested Folders
-              2. Send GetInfoRequest        
-    </t:steps>    
-    
-    <t:test_loop count="1000">      
-        
+              2. Send GetInfoRequest
+    </t:steps>
+
+    <t:test_loop count="1000">
+
         <t:test>
             <t:request>
                 <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -105,8 +105,8 @@
             <t:response>
                 <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.pname"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
     </t:test_loop>
 
     <t:test timeframeMax="3000">
@@ -120,11 +120,11 @@
 
 </t:test_case>
 
-<!-- Performing various operation in a deeply nested folder -->  
+<!-- Performing various operation in a deeply nested folder -->
 
 <t:test_case testcaseid="acctSetup3_folder_nested" type="always">
     <t:objective>Creating a folder to test various operation </t:objective>
-    
+
     <t:test required="true">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -134,12 +134,12 @@
         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Folder_nested2" type="sanity" duration="long">
+
+
+<t:test_case testcaseid="Folder_nested2" type="functional" duration="long">
     <t:objective>Basic test of GetFolderRequest</t:objective>
 
     <t:test timeframeMax="3000">
@@ -153,8 +153,8 @@
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="Folder_nested3" type="sanity" duration="long">
+
+<t:test_case testcaseid="Folder_nested3" type="functional" duration="long">
     <t:objective>Creating a duplicate folder</t:objective>
 
     <t:test timeframeMax="3000">
@@ -166,32 +166,32 @@
         <t:response>
             <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Folder_nested4" type="sanity" duration="long">
+
+
+<t:test_case testcaseid="Folder_nested4" type="functional" duration="long">
     <t:objective>Rename a folder</t:objective>
-    
+
     <t:test timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="rename" id="${folder.id}" name="${folder2.name}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="rename"/>                
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="rename"/>
         </t:response>
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="Folder_nested5" type="sanity" duration="long">
+
+<t:test_case testcaseid="Folder_nested5" type="functional" duration="long">
     <t:objective>Move a folder</t:objective>
     <t:steps>1. Create a folder
-             2. Move into some existing folder        
+             2. Move into some existing folder
     </t:steps>
 
     <t:test id="folder_nested5a">
@@ -204,29 +204,29 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="folder_nested5a" timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="move" id="${folder2.id}" l="${folder.id}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="move"/>             
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="move"/>
         </t:response>
     </t:test>
 
 </t:test_case>
-    
- 
-<t:test_case testcaseid="Folder_nested6" type="sanity"  duration="long">
-    <t:objective>Empty a folder </t:objective>    
+
+
+<t:test_case testcaseid="Folder_nested6" type="functional"  duration="long">
+    <t:objective>Empty a folder </t:objective>
     <t:steps>1.Add a mail to the newly created folder.
              2 Search the mail
              3.Empty the folder.
-             4.Search the mail in the newly created folder (Should not exist).             
+             4.Search the mail in the newly created folder (Should not exist).
     </t:steps>
-    
+
     <t:test id="folder_nested6a">
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -276,10 +276,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Folder_nested7" type="sanity" duration="long" >
+<t:test_case testcaseid="Folder_nested7" type="functional" duration="long" >
     <t:objective>Empty a folder having a sub folder in it </t:objective>
     <t:steps>1.Create a sub folder in any existing folder
-             2.Empty the parent folder                     
+             2.Empty the parent folder
     </t:steps>
 
     <t:test id="folder_nested7a">
@@ -303,25 +303,25 @@
             <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="empty"/>
         </t:response>
     </t:test>
-    
-</t:test_case>   
-    
-    
-<t:test_case testcaseid="Folder_nested8" type="sanity" duration="long">
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Folder_nested8" type="functional" duration="long">
     <t:objective>Delete a folder</t:objective>
-    
+
     <t:test timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="delete" id="${folder.id}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="delete"/>                
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="delete"/>
         </t:response>
     </t:test>
 
-</t:test_case>    
-    
+</t:test_case>
+
 
 </t:tests>

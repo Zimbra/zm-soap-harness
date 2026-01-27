@@ -32,10 +32,10 @@
 	<t:property name="admin_script_value_before_1"
 		value='require ["fileinto", "tag", "flag"];
 if header :contains "subject" "priority"
-{ 
+{
 	log "priority mail forward to user";
 }
-else 
+else
 {
    discard;
    stop;
@@ -54,8 +54,8 @@ if header :contains "subject" "priority"
 	<t:property name="admin_script_value_after_1"
 		value='require ["fileinto", "tag", "flag"];
 if address :is :all "from" "admin@${defaultdomain.name}"
-{ 
-  log "Redirect to third account"; 
+{
+  log "Redirect to third account";
   redirect "${account2.name}";
  }
 ' />
@@ -86,15 +86,15 @@ if header :contains ["subject"] ["spam"]
 	<t:property name="admin_script_value_after_2"
 		value='require ["fileinto", "tag", "flag"];
 if header :contains ["subject"] ["spam"]
-{ 
-	log "Should not reach on admin again";   
+{
+	log "Should not reach on admin again";
 	redirect "${account2.name}";
  }
 ' />
 
 
 	<t:property name="admin_script_value_before_3"
-		value='require ["fileinto", "log"];        
+		value='require ["fileinto", "log"];
 if address :is :all "from" "${account2.name}"
 {
  	log "account 2 mail. Admin succeeded";
@@ -115,9 +115,9 @@ if header :contains "subject" "Skip User Script"
 	<t:property name="admin_script_value_after_3"
 		value='require ["fileinto", "tag", "flag"];
 if address :is "to" ["${account1.name}", "admin@${defaultdomain.name}"]
-{ 
+{
 	log "Should get executed as after admin";
-	fileinto "Sent";  
+	fileinto "Sent";
  }
 ' />
 
@@ -125,10 +125,10 @@ if address :is "to" ["${account1.name}", "admin@${defaultdomain.name}"]
 	<t:property name="admin_script_value_before_4"
 		value='require ["fileinto", "tag", "flag"];
 if size :over 2500k
-{ 
+{
 	log "Size exceeded hence rejected";
-	discard; 
-	stop;  
+	discard;
+	stop;
  }
  else
  {
@@ -139,17 +139,17 @@ if size :over 2500k
 	<t:property name="user_script_value_4"
 		value='require ["fileinto"];
 if address :is "from" "admin@${defaultdomain.name}"
-{ 
+{
 	log "User filter succeeded";
-	fileinto "Trash";  
+	fileinto "Trash";
  }
 ' />
 
 	<t:property name="admin_script_value_after_4"
 		value='require ["fileinto", "tag", "flag"];
 if size :over 1k
-{ 
-     redirect "${account2.name}"; 
+{
+     redirect "${account2.name}";
      stop;
  }
 ' />
@@ -158,7 +158,7 @@ if size :over 1k
 	<t:property name="admin_script_value_before_Outgoing_5"
 		value='require ["fileinto", "log"];
 if header :contains "subject" "outgoing"
-{ 
+{
 	log "Outgoing before filter from admin ";
 }
 else
@@ -171,16 +171,16 @@ else
 	<t:property name="user_script_value_Outgoing_5"
 		value='require ["fileinto", "tag", "flag"];
 if address :is :all "to" "${account2.name}"
-{ 
+{
 	log "user outgoing";
-	redirect "${account3.name}";  
+	redirect "${account3.name}";
  }
 ' />
 
 	<t:property name="admin_script_value_after_Outgoing_5"
 		value='require ["fileinto", "tag", "flag"];
 if address :is :all "to" "${account1.name}"
-{ 
+{
      log "admin after outgoing ";
      discard;
  }
@@ -191,10 +191,10 @@ if address :is :all "to" "${account1.name}"
 	<t:property name="admin_script_value_before_Outgoing_6"
 		value='require ["fileinto", "tag", "flag"];
 if size :over 2500k
-	{ 
+	{
 		log "Size exceeded hence rejected";
-		discard; 
-		stop; 
+		discard;
+		stop;
 	 }
  else
  {
@@ -205,16 +205,16 @@ if size :over 2500k
 	<t:property name="user_script_value_Outgoing_6"
 		value='require ["fileinto","log"];
 if address :is :all "to" "${account2.name}"
-{ 
+{
 	log "user outgoing";
-	redirect "${account3.name}";  
+	redirect "${account3.name}";
  }
 ' />
 
 	<t:property name="admin_script_value_after_Outgoing_6"
 		value='require ["fileinto", "log"];
 if address :all :is "to" "${account2.name}"
-{ 
+{
 	log "After outgoing admin filter getting executed";
     fileinto "${folder1.name}";
  }
@@ -256,7 +256,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 if header :contains "subject" "${subject13}"
 {
 	log "Admin before reached test 8";
-	fileinto "${folder2.name}";       
+	fileinto "${folder2.name}";
 	discard;
 }
 ' />
@@ -283,7 +283,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 
 
 	<t:test_case testcaseid="AcctSetup1_filters_actions_discard_basic"
-		type="bhr">
+		type="sanity">
 		<t:objective> Create test account and login to first account
 		</t:objective>
 
@@ -298,7 +298,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:staftask >
     <t:request>
         <server>${zimbraServer.name}</server>
@@ -315,7 +315,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
     </t:request>
 </t:staftask>
 
-    
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -414,7 +414,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_1"
-		type="bhr">
+		type="sanity">
 		<t:objective>Create sieve filters for incoming admin before, user and
 			admin after and verify them</t:objective>
 
@@ -619,7 +619,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 <t:test_case testcaseid="SendMail_And_checkFilter_Execution_2" type="q4fix">
     <t:objective>Modify account and send mail to check sieve filter</t:objective>
 
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -632,7 +632,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
         </t:response>
     </t:test>
 
-    
+
     <t:test id="modifyaccountrequest_2">
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -680,7 +680,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
         </t:response>
     </t:test>
 
-    
+
     <t:delay sec="10"/>
 
     <t:test>
@@ -695,7 +695,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
         </t:response>
     </t:test>
 
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail">
@@ -708,7 +708,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
     </t:test>
 
 
-   
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -739,7 +739,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
         </t:response>
     </t:test>
 
-    
+
     <t:delay sec="10"/>
 
     <t:test>
@@ -754,7 +754,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
         </t:response>
     </t:test>
 
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail">
@@ -766,7 +766,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
         </t:response>
     </t:test>
 
-   
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail">
@@ -783,7 +783,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_3"
-		type="bhr">
+		type="sanity">
 
 		<t:objective> Modify account and send mail to check sieve filter.
 			Purpose of this test is that user script should be skipped, if user
@@ -919,7 +919,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail">
@@ -950,7 +950,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_4"
-		type="bhr">
+		type="sanity">
 		<t:objective> Modify account and send mail to check seive filter
 		</t:objective>
 
@@ -982,7 +982,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 		<t:delay sec="10"/>
-		
+
 		<t:test>
             <t:request>
                 <FlushCacheRequest xmlns="urn:zimbraAdmin">
@@ -1169,7 +1169,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_5"
-		type="bhr">
+		type="sanity">
 		<t:objective> Modify account and send mail to check sieve Outgoing
 			filter</t:objective>
 
@@ -1185,7 +1185,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<!-- Set incoming filters of account 1 as null as it would conflict with 
+		<!-- Set incoming filters of account 1 as null as it would conflict with
 			Outgoing filters test -->
 		<t:test id="modifyaccountrequest_5">
 			<t:request>
@@ -1329,7 +1329,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					set="Sent_message1.id" emptyset="1"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1382,10 +1382,10 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					match="${subject9}" emptyset="1" />
 			</t:response>
 		</t:test>
-	</t:test_case>	
+	</t:test_case>
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_6"
-		type="bhr">
+		type="sanity">
 		<t:objective> Modify account and send mail to check seive filter for
 			outgoing mails</t:objective>
 
@@ -1587,7 +1587,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_7"
-		type="bhr">
+		type="sanity">
 		<t:objective> Modify account and send mail to check sieve filter for
 			incoming mail</t:objective>
 
@@ -1689,7 +1689,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 
 
 	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_8"
-		type="bhr">
+		type="sanity">
 		<t:objective> Modify account and send mail to check seive filter for
 			incoming mail</t:objective>
 

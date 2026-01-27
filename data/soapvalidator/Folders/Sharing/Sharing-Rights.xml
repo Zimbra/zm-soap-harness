@@ -100,7 +100,7 @@
     <t:objective>basic system check</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test  id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -350,7 +350,7 @@
 	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
 	12. Create a subfolder in the folder.  PERM_DENIED.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -387,7 +387,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -419,7 +419,7 @@
             <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -500,7 +500,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account2.message1.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -509,7 +509,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${account2.message1.id}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='f']" attr="a" match="${admin.user}"/> 
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='f']" attr="a" match="${admin.user}"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='t']" attr="a" match="${admin.user}"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${uploadFile.subject}"/>
 			<t:select path="//mail:GetMsgResponse/mail:m/mail:mp[@ct='text/plain']/mail:content"/>
@@ -539,7 +539,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -550,7 +550,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -562,7 +562,7 @@
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -574,11 +574,11 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test >
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersBasic_02" type="bhr">
+<t:test_case testcaseid="SharingFoldersBasic_02" type="sanity">
     <t:objective>Verify that sharing folders with manager (rwidx) access allows messages to be viewed, added, modified, and deleted, but not reshared</t:objective>
 	<t:steps>
 	1. Login as account4
@@ -594,7 +594,7 @@
 	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
 	12. Create a subfolder in the folder-->  allowed( r + i permission grants c permission) .
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 	<t:property name="uploadServletServer" value="${account4.server}"/>
 
@@ -631,7 +631,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account4.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -663,7 +663,7 @@
             <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -744,7 +744,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account5.message1.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -786,7 +786,7 @@
 			</t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -800,7 +800,7 @@
 			</t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -824,11 +824,11 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="newfolder.id"/>
         </t:response>
     </t:test >
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersBasic_03" type="bhr" bugids="8491, 8890">
+<t:test_case testcaseid="SharingFoldersBasic_03" type="sanity" bugids="8491, 8890">
     <t:objective>Verify that sharing contacts with "none" access does not grant access to the contact information</t:objective>
 	<t:steps>
 	1. Login as account6
@@ -840,13 +840,13 @@
 	5. Run a folder search.  No results.
 	6. GetMsgRequest.  PERM_DENIED.
 	7. AddMsgRequest.  PERM_DENIED.
-	8. MsgActionRequest(op=read).  PERM_DENIED. 
-	9. MsgActionRequest(op=delete).  PERM_DENIED. 
+	8. MsgActionRequest(op=read).  PERM_DENIED.
+	9. MsgActionRequest(op=delete).  PERM_DENIED.
 	10. FolderActionRequest(grant).  PERM_DENIED.
 	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
 	12. Create a subfolder in the folder.  PERM_DENIED.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 	<t:property name="uploadServletServer" value="${account6.server}"/>
 
@@ -883,7 +883,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -915,7 +915,7 @@
             <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -996,7 +996,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
+
 
     <t:test>
         <t:request>
@@ -1021,7 +1021,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -1032,7 +1032,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -1056,7 +1056,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test -->
-    
+
 
 
 
@@ -1064,7 +1064,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersBasic_11" type="sanity" bugids="8491">
+<t:test_case testcaseid="SharingFoldersBasic_11" type="functional" bugids="8491">
     <t:objective>Verify that a folder shared with none permissions cannot be searched</t:objective>
 	<t:steps>
 	1. Login as account8
@@ -1073,7 +1073,7 @@
 	4. GetFolderRequest should return PERM_DENIED
 	5. Run a message search.  The messages MUST NOT be shown.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account8.server}"/>
 	<t:property name="uploadServletServer" value="${account8.server}"/>
 
@@ -1110,7 +1110,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -1142,7 +1142,7 @@
             <t:select path="//mail:MsgActionResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -1224,14 +1224,14 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test-->
-	
+
 
 
 
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersBasic_12" type="sanity" bugids="4413">
+<t:test_case testcaseid="SharingFoldersBasic_12" type="functional" bugids="4413">
     <t:objective>Verify a grantee with "ra" rights can share the folder again to another user</t:objective>
 	<t:steps>
 	1. Login as account10
@@ -1241,7 +1241,7 @@
 	5. Login as account12.
 	6. Verify that account10's contents can be viewed.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account10.server}"/>
 
     <t:test  required="true">
@@ -1276,7 +1276,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -1289,11 +1289,11 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-C'mon, stop being such a goody two-shoes. Everybody's 
-doing it. Well, maybe not everyone, but according to 
-a recent Harris Interactive survey, more than half of 
-us admit to regifting -- that is, passing off unwanted 
-gifts as if they were being bestowed for the very 
+C'mon, stop being such a goody two-shoes. Everybody's
+doing it. Well, maybe not everyone, but according to
+a recent Harris Interactive survey, more than half of
+us admit to regifting -- that is, passing off unwanted
+gifts as if they were being bestowed for the very
 first time.
 
 
@@ -1396,15 +1396,15 @@ first time.
             </t:select>
         </t:response>
     </t:test>
-    
 
-	
+
+
 
 
 
 </t:test_case>
 
-<t:test_case testcaseid="SharingFoldersBasic_13" type="sanity" bugids="23317">
+<t:test_case testcaseid="SharingFoldersBasic_13" type="functional" bugids="23317">
     <t:objective>Verify tagging a shared message does not apply</t:objective>
 	<t:steps>
 	1. Login as account13
@@ -1414,7 +1414,7 @@ first time.
 	5. Login as account13
 	6. Verify that the tag does not appear
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account13.server}"/>
 
     <t:test >
@@ -1460,7 +1460,7 @@ first time.
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account13.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -1471,8 +1471,8 @@ To: bar@example.com
 Subject: subject${TIME}${COUNTER}
 
 
-Residents of Minneapolis and Seattle are the most bookish 
-and well-read, according to results from a new survey released 
+Residents of Minneapolis and Seattle are the most bookish
+and well-read, according to results from a new survey released
 today of the most literate American cities.
 
 
@@ -1570,7 +1570,7 @@ today of the most literate American cities.
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersBasic_14" type="sanity" bugids="23904">
+<t:test_case testcaseid="SharingFoldersBasic_14" type="functional" bugids="23904">
     <t:objective>Verify flagging a shared message </t:objective>
 	<t:steps>
 	1. Login as account15
@@ -1580,7 +1580,7 @@ today of the most literate American cities.
 	5. Login as account15
 	6. Verify that the message got flagged
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account15.server}"/>
 
     <t:test >
@@ -1615,7 +1615,7 @@ today of the most literate American cities.
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account15.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -1626,8 +1626,8 @@ To: bar@example.com
 Subject: subject${TIME}${COUNTER}
 
 
-Residents of Minneapolis and Seattle are the most bookish 
-and well-read, according to results from a new survey released 
+Residents of Minneapolis and Seattle are the most bookish
+and well-read, according to results from a new survey released
 today of the most literate American cities.
 
 

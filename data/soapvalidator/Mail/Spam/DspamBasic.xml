@@ -30,7 +30,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -46,7 +46,7 @@
 <t:test_case testcaseid="dspamBasic_Account_Setup" type="always">
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a account1 
+            2. Create a account1
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -60,7 +60,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="service_check" required="true" depends="ping">
         <t:request>
             <GetServerRequest xmlns="urn:zimbraAdmin">
@@ -71,7 +71,7 @@
             <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -84,7 +84,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -95,7 +95,7 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account1.mta.server"/>
 		</t:response>
 	</t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -108,8 +108,8 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
-    
+
+
 	<t:test>
         <t:request>
             <GetServerRequest xmlns="urn:zimbraAdmin">
@@ -120,7 +120,7 @@
             <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account2.mta.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -133,7 +133,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -144,7 +144,7 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account3.mta.server"/>
 		</t:response>
 	</t:test>
-        
+
 	<t:test id="service_check" required="true" depends="ping">
         <t:request>
             <GetServerRequest xmlns="urn:zimbraAdmin"  attrs="zimbraServiceEnabled">
@@ -156,7 +156,7 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
@@ -195,7 +195,7 @@
 <t:finally areas="spam,noncluster">
 
     <!-- After all tests have run, reset the zimbraSpamCheckEnabled setting to the default -->
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -207,7 +207,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -234,12 +234,12 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmamavisdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
 		</t:request>
 	</t:staftask>
-	
+
 </t:finally>
 
 
 
-<t:test_case testcaseid="dspamBasic_ReceiveSpam_01" type="sanity" areas="spam, smtp,noncluster" >
+<t:test_case testcaseid="dspamBasic_ReceiveSpam_01" type="functional" areas="spam, smtp,noncluster" >
     <t:objective>Verify that a spam message (GTUBE sample) is not sent to the mailbox</t:objective>
     <t:steps>
     1. Send the sample spam message to account1
@@ -256,7 +256,7 @@
             <recipient>${account1.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-   
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -280,7 +280,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-   
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message" >
@@ -291,12 +291,12 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-   
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="dspamBasic_ReceiveSpam_02" type="sanity" bugids="43378" areas="spam, smtp,noncluster" >
+<t:test_case testcaseid="dspamBasic_ReceiveSpam_02" type="functional" bugids="43378" areas="spam, smtp,noncluster" >
     <t:objective>Verify that particular message having specific spam rating is placed in junk </t:objective>
     <t:steps>
     1. Send the sample spam message to account2
@@ -305,7 +305,7 @@
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 <!-- Poonam: adding delay, as we modified the globalconfig setting-->
 		<t:delay msec="2000"/>
 
@@ -316,7 +316,7 @@
             <recipient>${account2.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-   
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -340,7 +340,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-   
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message" >
@@ -353,10 +353,10 @@
 			</t:select>
 		</t:response>
 	</t:test>
-   
+
 </t:test_case>
 
-<t:test_case testcaseid="dspamBasic_ReceiveSpam_03" type="sanity" bugids="43381" areas="spam, smtp,noncluster" >
+<t:test_case testcaseid="dspamBasic_ReceiveSpam_03" type="functional" bugids="43381" areas="spam, smtp,noncluster" >
     <t:objective>Verify that a sample spam message is placed in the Junk folder</t:objective>
     <t:steps>
     1. Send the sample spam message to account2
@@ -365,7 +365,7 @@
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:delay msec="2000"/>
 
 	<t:smtpinjecttest>
@@ -375,7 +375,7 @@
             <recipient>${account3.name}</recipient>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-   
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -399,7 +399,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-   
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message" >
@@ -412,7 +412,7 @@
 			</t:select>
 		</t:response>
 	</t:test>
-   
+
 </t:test_case>
 
 

@@ -1,7 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
-    
+
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>
+
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
@@ -42,7 +42,7 @@
 <t:property name="view.appointment" value="appointment"/>
 <t:property name="view.note" value="note"/>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -146,10 +146,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_CalendarSharing_PrivateApt" type="bhr">
+<t:test_case testcaseid="new_CalendarSharing_PrivateApt" type="sanity">
     <t:objective>Verify if Private appointments can be created in shared calendars</t:objective>
     <t:steps>
-        1. Login as account1. 
+        1. Login as account1.
         2. Create a private appointment.
         3. Login as account2. Accept and mount the shared calendar
         4. Get the appointment in account1's calendar
@@ -187,7 +187,7 @@
 							<s d="${ICALTIME[${appt.start.tz}]}" tz="${appt.timezone}"/>
 							<e d="${ICALTIME(+1h)[${appt.start.tz}]}" tz="${appt.timezone}"/>
 							<or a="${account1.name}"/>
-							
+
 						</comp>
 					</inv>
 					<mp ct="multipart/alternative">
@@ -202,7 +202,7 @@
             <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt.apptId"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test required="true">
@@ -237,7 +237,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="account2.delegated.name"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -249,16 +249,16 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 			</t:response>
 	</t:test>
-	
+
 	<t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt.apptId}"/>
         </t:request>
         <t:response>
             <t:select path = "//mail:GetAppointmentResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -270,12 +270,12 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    <!-- To check Only start/end times, duration,recurrence information and organizer identity are shown.  
-    Subject,notes, location, attendee list, and so on are hidden. Non-owner cannot create/edit/cancel or reply to a non-public 
+
+    <!-- To check Only start/end times, duration,recurrence information and organizer identity are shown.
+    Subject,notes, location, attendee list, and so on are hidden. Non-owner cannot create/edit/cancel or reply to a non-public
 	appointment/task . I have to test this
 	-->
-	
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment">
@@ -286,16 +286,16 @@
             <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="apptt.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
-        <t:request> 
-            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${apptt.id}"/>			
+        <t:request>
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${apptt.id}"/>
         </t:request>
         <t:response>
-            <t:select path = "//mail:GetAppointmentResponse/appt/inv/comp" attr="name" emptyset="1" />            
+            <t:select path = "//mail:GetAppointmentResponse/appt/inv/comp" attr="name" emptyset="1" />
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
 </t:test_case>
-    
+
 </t:tests>

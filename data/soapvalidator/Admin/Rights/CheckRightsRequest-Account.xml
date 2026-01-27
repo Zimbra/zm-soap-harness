@@ -74,7 +74,7 @@
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -88,10 +88,10 @@
 		</t:response>
 	</t:test>
 
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckRightsRequest_Account01" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckRightsRequest_Account01" type="sanity" bugids="" >
     <t:objective>CheckRightsRequest Default user rights on other Account </t:objective>
 
 
@@ -107,7 +107,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -122,7 +122,7 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='0']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='0']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
     </t:test_case>
 
 <t:test_case testcaseid="CheckRightsRequest_Account02" type="smoke" bugids="" >
@@ -141,7 +141,7 @@
 	</t:test>
 
 
-			
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -153,7 +153,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -166,7 +166,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -180,7 +180,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -195,7 +195,7 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='1']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='1']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     </t:test_case>
@@ -225,7 +225,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -238,7 +238,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -251,7 +251,7 @@
 		<t:response>
 		<t:select path="//admin:RevokeRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -264,7 +264,7 @@
 		<t:response>
 		<t:select path="//admin:RevokeRightResponse"/>
 		</t:response>
-	</t:test>	
+	</t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -279,7 +279,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -294,12 +294,12 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='0']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='0']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     </t:test_case>
 
-<t:test_case testcaseid="CheckRightsRequest_Account04" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckRightsRequest_Account04" type="sanity" bugids="" >
     <t:objective>CheckRightsRequest on Account Alias AS zimbraPrefAllowAddressForDelegatedSender </t:objective>
 
 	<t:test required="true" >
@@ -326,8 +326,8 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	   <t:test>
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -336,10 +336,10 @@
             </ModifyAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyAccountResponse"/> 
+            <t:select path="//admin:ModifyAccountResponse"/>
         </t:response>
     </t:test>
-			
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -351,7 +351,7 @@
 		<t:response>
 			<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -364,7 +364,7 @@
 			<t:select path="//admin:GrantRightResponse"/>
 		<t:response>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -378,7 +378,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
    	<t:test >
         <t:request >
         	<CheckRightsRequest  xmlns="urn:zimbraAccount" >
@@ -392,7 +392,7 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='0']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='0']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -407,13 +407,13 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='1']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='1']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 
 
  </t:test_case>
 
-<t:test_case testcaseid="CheckRightsRequest_Account05" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckRightsRequest_Account05" type="sanity" bugids="" >
     <t:objective>CheckRightsRequest  on non existing Account </t:objective>
 
 
@@ -429,7 +429,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -444,7 +444,7 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='0']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='account']/acct:right[@allow='0']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     </t:test_case>
 

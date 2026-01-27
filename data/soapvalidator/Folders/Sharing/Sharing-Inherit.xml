@@ -102,7 +102,7 @@
     <t:objective>basic system check</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test  id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -299,19 +299,19 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_01" type="bhr" bugids="12371" >
+<t:test_case testcaseid="SharingFoldersInheritBasic_01" type="sanity" bugids="12371" >
     <t:objective>Verify flags="i" does not allow subfolders to be read</t:objective>
 	<t:steps>
 	1. Login as account1
 	 A. Inbox/subfolder1/message01
-	 B. Inbox/subfolder1/subfolder2/message02 
+	 B. Inbox/subfolder1/subfolder2/message02
 	2. Share sbufolder1 with account2 (flags="i")
 	3. Login as account2
 	4. Mount the drive, success.
 	5. Get message01 (success)
 	5. Get message02 (PERM_DENIED)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -348,7 +348,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -359,7 +359,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder2.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -470,7 +470,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account2.message1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<!--
 		A search for an existing folder (but no permissions) and a non-existant folder
 		should return similar results.  In this case, an empty SearchResponse
@@ -485,7 +485,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -496,7 +496,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -524,19 +524,19 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_02" type="bhr" bugids="9238">
+<t:test_case testcaseid="SharingFoldersInheritBasic_02" type="sanity" bugids="9238">
     <t:objective>Verify by default subfolders are allowed to be read</t:objective>
 	<t:steps>
 	1. Login as account4
 	 A. Inbox/subfolder1/message01
-	 B. Inbox/subfolder1/subfolder2/message02 
+	 B. Inbox/subfolder1/subfolder2/message02
 	2. Share subfolder1 with account5
 	3. Login as account5
 	4. Mount the drive, success.
 	5. Get message01 (success)
 	5. Get message02 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 	<t:property name="uploadServletServer" value="${account4.server}"/>
 
@@ -573,7 +573,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account4.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -584,7 +584,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account4.folder2.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -717,12 +717,12 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_03" type="bhr" bugids="9238">
+<t:test_case testcaseid="SharingFoldersInheritBasic_03" type="sanity" bugids="9238">
     <t:objective> Verify that newly-created subfolders will automatically inherit granted rights as appropriate</t:objective>
 	<t:steps>
 	1. Login as account6
 	2. Create Inbox/subfolder1/message01
-	3. Share subfolder1 with account7 
+	3. Share subfolder1 with account7
 	4. Login as account7
 	5. Mount the drive, success.
 	6. Get message01 (success)
@@ -731,7 +731,7 @@
 	9. Login as account7
 	10. Get message02 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 	<t:property name="uploadServletServer" value="${account6.server}"/>
 
@@ -768,7 +768,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -857,7 +857,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account7.message1.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -898,7 +898,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder2.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -963,7 +963,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_04" type="bhr">
+<t:test_case testcaseid="SharingFoldersInheritBasic_04" type="sanity">
     <t:objective>
     	Verify that Existing folders
 		moved to a different point in the folder hierarchy will also reinterpret
@@ -983,7 +983,7 @@
 	10. Get message02 (success)
 	11. Flag message02 (PERM_DENIED)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account8.server}"/>
 	<t:property name="uploadServletServer" value="${account8.server}"/>
 
@@ -1020,7 +1020,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1031,7 +1031,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder2.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1042,7 +1042,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder3.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -1180,7 +1180,7 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse"/>      
+            <t:select path="//mail:FolderActionResponse"/>
         </t:response>
     </t:test>
 
@@ -1229,7 +1229,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_05" type="bhr" bugids="9238">
+<t:test_case testcaseid="SharingFoldersInheritBasic_05" type="sanity" bugids="9238">
     <t:objective>Verify by default read permission applies to multiple levels (4 levels) of subfolders</t:objective>
 	<t:steps>
 	1. Login as account10
@@ -1239,7 +1239,7 @@
 	4. Mount the drive, success.
 	5. Get message01 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account10.server}"/>
 	<t:property name="uploadServletServer" value="${account10.server}"/>
 
@@ -1276,7 +1276,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1287,7 +1287,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder2.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1298,7 +1298,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder3.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1309,7 +1309,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder4.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1320,7 +1320,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder5.id"/>
         </t:response>
     </t:test >
-        
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -1409,7 +1409,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_06" type="bhr" bugids="9235">
+<t:test_case testcaseid="SharingFoldersInheritBasic_06" type="sanity" bugids="9235">
     <t:objective>Verify that one subfolder with perm=none and flags="i" breaks the inherit properties of all subfolders</t:objective>
 	<t:steps>
 	1. From SharingFoldersInheritBasic_05:
@@ -1423,9 +1423,9 @@
 	3. Share subfolder3 with account11 (perm=none)
 	4. Login as account11
 	5. Get message01 (PERM_DENIED)
-		
+
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account10.server}"/>
 	<t:property name="uploadServletServer" value="${account10.server}"/>
 
@@ -1491,7 +1491,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_07" type="sanity" bugids="9860">
+<t:test_case testcaseid="SharingFoldersInheritBasic_07" type="functional" bugids="9860">
     <t:objective>Verify by default  delgatee are allowed to create a subfolder in the shared folder</t:objective>
 	<t:steps>
 	1. Login as account12
@@ -1501,7 +1501,7 @@
 	4. Mount the drive, success.
 	5. CreateFolderRequest (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account12.server}"/>
 
     <t:test  required="true">
@@ -1537,7 +1537,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account12.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -1598,7 +1598,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account13.folder2.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:property name="server.zimbraAccount" value="${account12.server}"/>
 
     <t:test  required="true">
@@ -1631,7 +1631,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_08" type="sanity" bugids="9860">
+<t:test_case testcaseid="SharingFoldersInheritBasic_08" type="functional" bugids="9860">
     <t:objective>Verify that a subfolder folder cannot be shared if parent folder has "d" permission but flags="i".</t:objective>
     <t:steps>
             1. Login to first account.
@@ -1641,9 +1641,9 @@
             4. Login to second account.
             5. Give CreateMountPointRequest to make a delegated folder appear as a local folder.
             6. Get the delegated folders.
-            7. Verify that a subfolder folder cannot be deleted.  
-    </t:steps>        
-    
+            7. Verify that a subfolder folder cannot be deleted.
+    </t:steps>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test  required="true">
@@ -1658,7 +1658,7 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test id="delegated_folders19a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1693,11 +1693,11 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-C'mon, stop being such a goody two-shoes. Everybody's 
-doing it. Well, maybe not everyone, but according to 
-a recent Harris Interactive survey, more than half of 
-us admit to regifting -- that is, passing off unwanted 
-gifts as if they were being bestowed for the very 
+C'mon, stop being such a goody two-shoes. Everybody's
+doing it. Well, maybe not everyone, but according to
+a recent Harris Interactive survey, more than half of
+us admit to regifting -- that is, passing off unwanted
+gifts as if they were being bestowed for the very
 first time.
 
 					</content>
@@ -1721,7 +1721,7 @@ first time.
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test  required="true">
@@ -1736,7 +1736,7 @@ first time.
 
         </t:response>
     </t:test>
-    
+
     <t:test id="delegated_folders19d" depends="delegated_folders19c">
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -1758,7 +1758,7 @@ first time.
         <t:response>
             <t:select path="//mail:GetFolderResponse/mail:link" attr="id" match="${mount19.id}"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 	<t:test id="delegated_folders19f" >
         <t:request>
@@ -1775,7 +1775,7 @@ first time.
 
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_09" type="sanity" bugids="9860">
+<t:test_case testcaseid="SharingFoldersInheritBasic_09" type="functional" bugids="9860">
     <t:objective>Verify that a folder cannot be created in a folder whose parent folder has "rwi" permission but flags="i".</t:objective>
     <t:steps>
             1. Login to first account.
@@ -1784,8 +1784,8 @@ first time.
             4. Login to second account.
             5. Give CreateMountPointRequest to make a delegated folder appear as a local folder.
             6. Create a new folder in that delegated folder.(PERM_DENIED)
-    </t:steps>        
-    
+    </t:steps>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test  required="true">
@@ -1800,7 +1800,7 @@ first time.
 
         </t:response>
     </t:test>
- 
+
     <t:test id="delegated_folders20a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1824,7 +1824,7 @@ first time.
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test  required="true">
@@ -1839,7 +1839,7 @@ first time.
 
         </t:response>
     </t:test>
-    
+
     <t:test id="delegated_folders20c" depends="delegated_folders20b">
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -1865,7 +1865,7 @@ first time.
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingFoldersInheritBasic_10" type="sanity" bugids="9860">
+<t:test_case testcaseid="SharingFoldersInheritBasic_10" type="functional" bugids="9860">
     <t:objective>Verify that a folder cannot be moved into another whose parent folder has "rwi" permission and flags="i".</t:objective>
     <t:steps>
             1. Login to first account.
@@ -1874,9 +1874,9 @@ first time.
             4. Login to second account.
             5. Give CreateMountPointRequest to make a delegated folder appear as a local folder.
             6. Create a new folder in the second account?s inbox
-            7. Try to move the new folder into the delegated folder.     
-    </t:steps>        
-    
+            7. Try to move the new folder into the delegated folder.
+    </t:steps>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test  required="true">
@@ -1891,7 +1891,7 @@ first time.
 
         </t:response>
     </t:test>
- 
+
     <t:test id="delegated_folders21a">
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1915,7 +1915,7 @@ first time.
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test  required="true">
@@ -1930,7 +1930,7 @@ first time.
 
         </t:response>
     </t:test>
-    
+
     <t:test id="delegated_folders21c" depends="delegated_folders21b">
         <t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -1952,7 +1952,7 @@ first time.
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder21a.id"/>
         </t:response>
     </t:test>
-        
+
     <t:test  depends="delegated_folders21dc,delegated_folders21d">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -1963,7 +1963,7 @@ first time.
             <t:select path="//zimbra:Code" match="^mail.CANNOT_COPY"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

@@ -30,7 +30,7 @@
 <t:test_case testcaseid="account_setup_conversation" type="always" >
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a mail account 
+            2. Create a mail account
     </steps>
 
     <t:test id="admin_login" required="true" >
@@ -44,7 +44,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1"  required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -85,7 +85,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -102,7 +102,7 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
         </t:response>
     </t:test>
@@ -110,12 +110,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_01" type="sanity" bugids="28536" >
+<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_01" type="functional" bugids="28536" >
 	<t:objective>exclude mailing list prefixes during subject normalization</t:objective>
 	<t:steps>
 		1. AddMsgRequest to account1 with subject: [mailing-list] subject1 (simulates mailing list message)
-		2. AddMsgRequest to account1 with subject: RE: [mailing-list] subject1 
-		3. AddMsgRequest to account1 with subject: FWD: [mailing-list] RE: subject1 
+		2. AddMsgRequest to account1 with subject: RE: [mailing-list] subject1
+		3. AddMsgRequest to account1 with subject: FWD: [mailing-list] RE: subject1
 		3. Verify replies are combined in the conversation
 	</t:steps>
 
@@ -127,7 +127,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -144,11 +144,11 @@
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: mailinglist@example.com 
+                    <content>From: foo@example.com
+To: mailinglist@example.com
 Subject: [mailing-list] ${message.subject}
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message1.content}
@@ -161,16 +161,16 @@ ${message1.content}
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: mailinglist@example.com 
+                    <content>From: foo@example.com
+To: mailinglist@example.com
 Subject: RE: [mailing-list] ${message.subject}
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message2.content}
@@ -183,16 +183,16 @@ ${message2.content}
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: mailinglist@example.com 
+                    <content>From: foo@example.com
+To: mailinglist@example.com
 Subject: FWD: [mailing-list] ${message.subject}
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message3.content}
@@ -205,16 +205,16 @@ ${message3.content}
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message3.id"/>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: mailinglist@example.com 
+                    <content>From: foo@example.com
+To: mailinglist@example.com
 Subject: FWD: [mailing-list] RE: ${message.subject}
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message4.content}
@@ -227,7 +227,7 @@ ${message4.content}
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message4.id"/>
         </t:response>
     </t:test>
-	
+
 
 	<t:test id="convactionrequest1a">
 		<t:request>
@@ -259,13 +259,13 @@ ${message4.content}
 
 </t:test_case>
 
-<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_02" type="sanity" bugids="28536" >
+<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_02" type="functional" bugids="28536" >
 	<t:objective>Verify the mailing list brackets are not included in the sort order by subject</t:objective>
 	<t:steps>
 		1. AddMsgRequest to account1 with subject: b
 		2. AddMsgRequest to account1 with subject: d
-		3. AddMsgRequest to account1 with subject: [mailing-list] a 
-		4. AddMsgRequest to account1 with subject: [mailing-list] c 
+		3. AddMsgRequest to account1 with subject: [mailing-list] a
+		4. AddMsgRequest to account1 with subject: [mailing-list] c
 		5. Verify messages are sorted by a, b, c, e ... not including the brackets
 	</t:steps>
 
@@ -273,7 +273,7 @@ ${message4.content}
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -290,11 +290,11 @@ ${message4.content}
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: bar@example.com 
+                    <content>From: foo@example.com
+To: bar@example.com
 Subject: b
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message.content}
@@ -307,16 +307,16 @@ ${message.content}
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: mailinglist@example.com 
+                    <content>From: foo@example.com
+To: mailinglist@example.com
 Subject: d
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message.content}
@@ -329,16 +329,16 @@ ${message.content}
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: mailinglist@example.com 
+                    <content>From: foo@example.com
+To: mailinglist@example.com
 Subject: [cmailing-list] a
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message.content}
@@ -351,16 +351,16 @@ ${message.content}
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message3.id"/>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account1.folder.inbox.id}">
-                    <content>From: foo@example.com 
-To: mailinglist@example.com 
+                    <content>From: foo@example.com
+To: mailinglist@example.com
 Subject: [amailing-list] c
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 ${message.content}
@@ -373,7 +373,7 @@ ${message.content}
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message4.id"/>
         </t:response>
     </t:test>
-	
+
 
 	<t:test id="convactionrequest1a">
 		<t:request>
@@ -410,7 +410,7 @@ ${message.content}
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -452,7 +452,7 @@ ${message.content}
 	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -500,7 +500,7 @@ ${message.content}
 	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -532,7 +532,7 @@ ${message.content}
 
 
 <t:finally areas="noncluster">
-	
+
 	<t:test id="admin_login" required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -544,7 +544,7 @@ ${message.content}
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -563,15 +563,15 @@ ${message.content}
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmailboxdctl}</params>
 		</t:request>
 	</t:staftask>
-	
+
 	<!-- Sleep for 5 minutes to wait for mbox to come up -->
 	<t:delay sec="300"/>
-	
+
 
 </t:finally>
-	
 
-<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_04" type="sanity" bugids="36851" areas="noncluster">
+
+<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_04" type="functional" bugids="36851" areas="noncluster">
 	<t:objective>Verify two messages with the same message ID are combined into the same conversation</t:objective>
 	<t:steps>
 		1. LMTP inject message with subject="subject1"
@@ -591,7 +591,7 @@ ${message.content}
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
@@ -610,10 +610,10 @@ ${message.content}
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmailboxdctl}</params>
 		</t:request>
 	</t:staftask>
-	
+
 	<!-- Sleep for 5 minutes to wait for mbox to come up -->
 	<t:delay sec="300"/>
-	
+
 
 	<t:property name="mime.folder" value="${testMailRaw.root}/email40"/>
 
@@ -627,7 +627,7 @@ ${message.content}
     </t:mailinjecttest>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">

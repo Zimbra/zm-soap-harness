@@ -6,18 +6,18 @@
 <t:property name="account1.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account1.prefix" value="prefix${TIME}"/>
 <t:property name="account1.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="account2.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.prefix" value="prefix${TIME}"/>
 <t:property name="account2.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
-    
+
 
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -31,7 +31,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_AccountBackup_01" type="sanity" areas="backup" bugids="8361">
+<t:test_case testcaseid="ForeignPrincipal_AccountBackup_01" type="functional" areas="backup" bugids="8361">
     <t:objective>Backup (full) and restore an account with a Foreign Principal.  Verify the Foreign Principal value is backed up and restored</t:objective>
     <t:steps>
     1. Create an account with a Foreign Principal
@@ -65,7 +65,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -94,7 +94,7 @@
 
 		</t:response>
 	</t:test>
-    
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:property name="account.name" value="${account1.name}"/>
@@ -122,7 +122,7 @@
         <t:response>
             <t:select path="//admin:SearchDirectoryResponse/admin:account"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -138,7 +138,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_AccountBackup_02" type="sanity" areas="backup" bugids="8361">
+<t:test_case testcaseid="ForeignPrincipal_AccountBackup_02" type="functional" areas="backup" bugids="8361">
     <t:objective>Backup (incremental) and restore an account with a Foreign Principal.  Verify the Foreign Principal value is backed up and restored</t:objective>
     <t:steps>
     1. Create an account without a Foreign Principal
@@ -173,7 +173,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- workaround to create the mailbox -->
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -191,7 +191,7 @@
 
 		</t:response>
 	</t:test>
-    
+
 
 	<t:property name="account.name" value="${account2.name}"/>
     <t:include filename="BackupRequestFullBasic.inc"/>
@@ -248,7 +248,7 @@
         <t:response>
             <t:select path="//admin:SearchDirectoryResponse/admin:account"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>

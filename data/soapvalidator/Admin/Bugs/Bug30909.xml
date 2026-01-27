@@ -5,8 +5,8 @@
 <t:property name="account1.password1" value="${defaultpassword.value}"/>
 
 <t:property name="account1.password2" value="hello123"/>
-    
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always" >
  <t:objective>basic system check</t:objective>
@@ -26,8 +26,8 @@
 <t:test_case testcaseid="acctSetup_bug30909" type="always">
     <t:objective>Create test accounts</t:objective>
     <t:steps>1. Login to admin account
-             2. Create accounts        
-    </t:steps>  
+             2. Create accounts
+    </t:steps>
 
 	<t:test required="true" >
 	     <t:request>
@@ -45,7 +45,7 @@
 	    <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${account1.password1}</password>                
+                <password>${account1.password1}</password>
             </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
@@ -54,23 +54,23 @@
 	    </t:response>
 
 	</t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 <t:property name="authToken" value=""/>
 
-<t:test_case testcaseid="bug30909" type="bhr" bugids="30909">
+<t:test_case testcaseid="bug30909" type="sanity" bugids="30909">
     <t:objective>Test that the Authtoken expires when administrator resets the password</t:objective>
     <t:steps>1. Login to account1
-             2. Send GetInfoRequest before the authentication has expired.                     
+             2. Send GetInfoRequest before the authentication has expired.
     </t:steps>
 
 	<t:test>
 	     <t:request>
 	          <AuthRequest xmlns="urn:zimbraAccount">
 	                <account by="name">${account1.name}</account>
-	                <password>${account1.password1}</password>	                
+	                <password>${account1.password1}</password>
 	          </AuthRequest>
 	     </t:request>
 	     <t:response>
@@ -81,7 +81,7 @@
 
     <t:property name="authToken_account1" value="${authToken}"/>
 
-    <t:test>        
+    <t:test>
 	<t:request>
             <GetInfoRequest xmlns="urn:zimbraAccount"/>
         </t:request>

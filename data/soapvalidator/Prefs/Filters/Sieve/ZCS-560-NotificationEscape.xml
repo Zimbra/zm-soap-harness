@@ -5,11 +5,11 @@
 	<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="notify_account2.name" value="notify2.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
-	<t:property name="notify_account3.name" value="notify3.${TIME}.${COUNTER}@${defaultdomain.name}" />	
+	<t:property name="notify_account3.name" value="notify3.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="notify_account4.name" value="notify4.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}" />
-	<t:property name="notify_account5.name" value="notify5.${TIME}.${COUNTER}@${defaultdomain.name}" />	
+	<t:property name="notify_account5.name" value="notify5.${TIME}.${COUNTER}@${defaultdomain.name}" />
         <t:property name="cos.name" value="cos560${TIME}${COUNTER}" />
 
     <!-- Variables declaration -->
@@ -40,7 +40,7 @@
 	<t:property name="sieve_rule5" value='require ["enotify", "variables"];
 	notify :from "\\"us\\\\\\\\\\\\\\"e\\\\\\\\\\\\\\"r\\\\\\\\\\\\\\"te\\\\\\\\st\\"@domain1.zimbra.com" :message "${notifymessage}" "mailto:${notify_account5.name}?Importance=High&#038;X-Priority=1&#038;body=${notifybody}&#038;message-id=dummymessageid";'>
 	</t:property>
-				
+
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
         <t:test required="true">
@@ -78,7 +78,7 @@
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -87,10 +87,10 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
-	    
+
                 <t:test id="CreateCosRequest1">
                     <t:request>
                         <CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -173,7 +173,7 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-								
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -185,8 +185,8 @@
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
-		</t:test> 
-		
+		</t:test>
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -199,7 +199,7 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -212,7 +212,7 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -238,10 +238,10 @@
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-										               
+
     </t:test_case>
-    
-	<t:test_case testcaseid="zcs-560_rule1" type="functional" bugids="zcs-560">
+
+	<t:test_case testcaseid="zcs-560_rule1" type="regression" bugids="zcs-560">
 		<t:objective>Verify user "user\\test"@domain1.zimbra.com in :from header of notification message</t:objective>
 		<t:test required="true">
 			<t:request>
@@ -309,8 +309,8 @@
         </t:resttest>
 
 	</t:test_case>
-	
-	<t:test_case testcaseid="zcs-862_rule2" type="functional" bugids="zcs-862">
+
+	<t:test_case testcaseid="zcs-862_rule2" type="regression" bugids="zcs-862">
 		<t:objective>Verify user "user\\te\\st@domain1.zimbra.com" in :from header of notification message</t:objective>
 		<t:test required="true">
 			<t:request>
@@ -378,8 +378,8 @@
         </t:resttest>
 
 	</t:test_case>
-	
-	<t:test_case testcaseid="zcs-862_rule3" type="functional" bugids="zcs-862">
+
+	<t:test_case testcaseid="zcs-862_rule3" type="regression" bugids="zcs-862">
 		<t:objective>Verify user "\"user\\\"test\"@domain1.zimbra.com" in :from header of notification message</t:objective>
 		<t:test required="true">
 			<t:request>
@@ -447,8 +447,8 @@
         </t:resttest>
 
 	</t:test_case>
-	
-	<t:test_case testcaseid="zcs-862_rule4" type="functional" bugids="zcs-862">
+
+	<t:test_case testcaseid="zcs-862_rule4" type="regression" bugids="zcs-862">
 		<t:objective>Verify user "\"us\\\"er\\\"te\\\"st\"@domain1.zimbra.com" in :from header of notification message</t:objective>
 		<t:test required="true">
 			<t:request>
@@ -516,8 +516,8 @@
         </t:resttest>
 
 	</t:test_case>
-	
-	<t:test_case testcaseid="zcs-862_rule5" type="functional" bugids="zcs-862">
+
+	<t:test_case testcaseid="zcs-862_rule5" type="regression" bugids="zcs-862">
 		<t:objective>Verify user "\"us\\\"e\\\"r\\\"te\\st\"@domain1.zimbra.com" in :from header of notification message</t:objective>
 		<t:test required="true">
 			<t:request>
@@ -588,7 +588,7 @@
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -609,9 +609,9 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 
-    </t:finally>-->						
+    </t:finally>-->
 </t:tests>

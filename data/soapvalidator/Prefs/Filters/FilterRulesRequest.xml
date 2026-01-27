@@ -9,9 +9,9 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 
-<t:test_case testcaseid="FilterRulesRequests_AccountSetup" type="bhr" >
+<t:test_case testcaseid="FilterRulesRequests_AccountSetup" type="sanity" >
     <t:objective>Account setup for all filterrules requests smoke test</t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -23,7 +23,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -37,13 +37,13 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-             
+
 </t:test_case>
 
 
 <t:test_case testcaseid="ModifyFilterRulesRequest_01" type="smoke" >
     <t:objective>Smoke test for ModifyFilterRulesRequest</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -73,7 +73,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -86,7 +86,7 @@
 
 <t:test_case testcaseid="GetFilterRulesRequest_01" type="smoke" >
     <t:objective>Smoke test for GetFilterRulesRequest</t:objective>
- 
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -101,7 +101,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
 
@@ -117,7 +117,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -133,7 +133,7 @@
         <t:response>
             <t:select path="//mail:GetFilterRulesResponse">
             	<t:select path="//mail:filterRules">
-            		<t:select path="//mail:filterRule[@name='${filter2.name}']" />            	
+            		<t:select path="//mail:filterRule[@name='${filter2.name}']" />
             	</t:select>
             </t:select>
         </t:response>
@@ -174,7 +174,7 @@
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -187,7 +187,7 @@
 		<t:request>
 			<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
-					<filterRule name="${filter3.name}"/>                                  
+					<filterRule name="${filter3.name}"/>
 				</filterRules>
 				<query>in:inbox</query>
             </ApplyFilterRulesRequest>
@@ -201,7 +201,7 @@
 
 <t:test_case testcaseid="OutgoingFilterRulesRequest_01" type="smoke">
     <t:objective>Smoke test for ModifyOutgoingFilterRulesRequest and GetOutgoingFilterRulesRequest</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -217,9 +217,9 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="filter4.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter4.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter4.subject" value="filter${TIME}${COUNTER}"/>
 
     <t:test id="filters_basic01a">
         <t:request>
@@ -250,12 +250,12 @@
             <t:select path="//mail:GetOutgoingFilterRulesResponse/mail:filterRules/mail:filterRule[@name='${filter4.name}']"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="ApplyOutgoingFilterRulesRequest_01" type="smoke">
     <t:objective>Smoke test for ApplyOutgoingFilterRulesRequest </t:objective>
-     
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -271,9 +271,9 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="filter5.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter5.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter5.subject" value="filter${TIME}${COUNTER}"/>
 
     <t:test id="filters_basic01a">
         <t:request>
@@ -300,7 +300,7 @@
         <t:request>
             <ApplyOutgoingFilterRulesRequest  xmlns="urn:zimbraMail">
             	<filterRules>
-					<filterRule name="${filter5.name}"/>                                  
+					<filterRule name="${filter5.name}"/>
 				</filterRules>
 				<query>in:sent</query>
 			</ApplyOutgoingFilterRulesRequest>
@@ -309,7 +309,7 @@
             <t:select path="//mail:ApplyOutgoingFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

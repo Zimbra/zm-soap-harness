@@ -10,7 +10,7 @@
 
 
 
-<t:test_case testcaseid="GrantPermissionRequest_01" type="bhr" >
+<t:test_case testcaseid="GrantPermissionRequest_01" type="sanity" >
     <t:objective>Sanity test for GrantPermissionRequest </t:objective>
 
     <!-- Login to admin -->
@@ -37,7 +37,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -51,7 +51,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GrantPermissionRequest xmlns="urn:zimbraMail" >
@@ -68,7 +68,7 @@
 
 <t:test_case testcaseid="GetPermissionRequest_01" type="smoke" >
     <t:objective>Sanity test for GetPermissionRequest </t:objective>
-    
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -92,7 +92,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test>
@@ -106,7 +106,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GrantPermissionRequest xmlns="urn:zimbraMail" >
@@ -125,16 +125,16 @@
 		<t:response>
 			<t:select path="//mail:GetPermissionResponse">
 				<t:select path="//mail:ace" attr="gt" match="pub"/>
-				<t:select path="//mail:ace" attr="right" match="invite"/>		
+				<t:select path="//mail:ace" attr="right" match="invite"/>
 			</t:select>
 		</t:response>
-	</t:test>	
-	
+	</t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="RevokePermissionRequest_01" type="bhr" >
+<t:test_case testcaseid="RevokePermissionRequest_01" type="sanity" >
     <t:objective>Sanity test for RevokePermissionRequest </t:objective>
-   
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -158,7 +158,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test required="true">
@@ -172,7 +172,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GrantPermissionRequest xmlns="urn:zimbraMail" >
@@ -194,10 +194,10 @@
             <t:select path="//mail:RevokePermissionResponse"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_01" type="bhr" >
+<t:test_case testcaseid="CheckPermissionRequest_01" type="sanity" >
     <t:objective>Sanity test for CheckPermissionRequest </t:objective>
 
     <t:test>
@@ -223,7 +223,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -235,7 +235,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
         </t:response>
     </t:test>
-   
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test required="true">
@@ -249,7 +249,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GrantPermissionRequest xmlns="urn:zimbraMail" >
@@ -260,7 +260,7 @@
 			<t:select path="//mail:GrantPermissionResponse"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
 
     <t:test required="true">
@@ -286,7 +286,7 @@
 			<t:select path="//mail:CheckPermissionResponse" attr="allow" match="1"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 </t:tests>

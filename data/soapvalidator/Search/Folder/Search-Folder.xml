@@ -2,12 +2,12 @@
 
 <t:property name="test_acct.server" value="NOT_DEFINED"/>
 
-<!-- READ ME : 
+<!-- READ ME :
     There are 6 folders in this account. Folder heirarchy is as follows:
     folder1's parent: USER_ROOT; folder2's parent: Inbox; folder3's parent: Trash; folder4's parent: Sent; folder5's parent: folder1; folder6's parent: Root
 
-    There are 8 mails in this account. The folders they will be residing are as follows: 
-    mail1 : Inbox; mail2 : Inbox/folder2; mail3: Trash/folder3; mail4: Sent/folder5; mail5: folder1/folder5; mail6: Trash; 
+    There are 8 mails in this account. The folders they will be residing are as follows:
+    mail1 : Inbox; mail2 : Inbox/folder2; mail3: Trash/folder3; mail4: Sent/folder5; mail5: folder1/folder5; mail6: Trash;
     mail7: Spam; mail8:folder6 ; mail9:Sent; mail10:folder1; mail11: Inbox; mail12:12
 -->
 
@@ -44,11 +44,11 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -58,7 +58,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -82,8 +82,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account10.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
 		    <foldername>${account10.dir}</foldername>
@@ -97,13 +97,13 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" bugids="2395">
+<t:test_case testcaseid="SearchAuthRequest" type="functional" bugids="2395">
     <t:objective> Create setup for the Search Request </t:objective>
     <t:steps>1. Login to the account.
              2. Modify the Prefs to include Trash and Spam in search result.
              3. Search mails to get the message-ids
              4. Create required folders
-             5. Get the ids of various folders 
+             5. Get the ids of various folders
              6. Move some folder within other
              7. Move the mails to different folders.
     </t:steps>
@@ -121,7 +121,7 @@
 
         </t:response>
     </t:test>
-    
+
      <t:test id="modifyPrefsRequest">
         <t:request>
             <ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -273,7 +273,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest11">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -314,7 +314,7 @@
             <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest1" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -325,7 +325,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest2" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -344,10 +344,10 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest4" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -355,10 +355,10 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest5" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -366,10 +366,10 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createFolderRequest6" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -377,7 +377,7 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder6.id"/>            
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder6.id"/>
         </t:response>
     </t:test>
 
@@ -391,8 +391,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest2" depends="searchRequest2,getFolderRequest">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -415,7 +415,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest4" depends="searchRequest4,getFolderRequest">
         <t:request>
@@ -427,7 +427,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id4}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest5" depends="searchRequest5,getFolderRequest">
         <t:request>
@@ -439,7 +439,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id5}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest6" depends="searchRequest6,getFolderRequest">
         <t:request>
@@ -451,7 +451,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id6}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest7" depends="searchRequest7,getFolderRequest">
         <t:request>
@@ -463,7 +463,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id7}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest8" depends="searchRequest8,getFolderRequest">
         <t:request>
@@ -475,7 +475,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id8}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest9" depends="searchRequest9,getFolderRequest">
         <t:request>
@@ -487,8 +487,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id9}"/>
         </t:response>
-    </t:test> 
- 
+    </t:test>
+
     <t:test id="msgActionRequest10" depends="searchRequest10,getFolderRequest">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -499,7 +499,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id10}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest11" depends="searchRequest11,getFolderRequest">
         <t:request>
@@ -511,7 +511,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id11}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest12" depends="searchRequest12,getFolderRequest">
         <t:request>
@@ -523,12 +523,12 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id12}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest1" type="functional" >
     <t:objective> Verify that a search for query in:DEFAULT_FOLDER is successful </t:objective>
 
     <t:test>
@@ -537,7 +537,7 @@
                 <query> in:${globals.inbox} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']"/>
         </t:response>
@@ -549,7 +549,7 @@
                 <query> in:${globals.sent} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']"/>
         </t:response>
     </t:test>
@@ -560,7 +560,7 @@
                 <query> in:${globals.trash} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']"/>
         </t:response>
@@ -572,15 +572,15 @@
                 <query> in:${globals.spam} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id7}']"/>
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest2" type="functional" >
     <t:objective> Verify that a search for query in:CUSTOM_FOLDER is successful </t:objective>
 
     <t:test>
@@ -589,7 +589,7 @@
                 <query> in:${folder1.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']"/>
         </t:response>
     </t:test>
@@ -600,15 +600,15 @@
                 <query> in:${folder6.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest3" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest3" type="functional" >
     <t:objective> Verify that a search for query in:DEFAULT_FOLDER/CUSTOM_FOLDER is successful </t:objective>
 
     <t:test>
@@ -617,7 +617,7 @@
                 <query> in:${globals.inbox}/${folder2.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
         </t:response>
     </t:test>
@@ -628,7 +628,7 @@
                 <query> in:${globals.trash}/${folder3.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
         </t:response>
     </t:test>
@@ -639,15 +639,15 @@
                 <query> in:${globals.sent}/${folder4.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest4" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest4" type="functional" >
     <t:objective> Verify that a search for query in:CUSTOM_FOLDER/CUSTOM_FOLDER is successful </t:objective>
 
     <t:test>
@@ -656,15 +656,15 @@
                 <query> in:${folder1.name}/${folder5.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest5" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest5" type="functional" >
     <t:objective> Verify that a search for query in:(DEFAULT_FOLDER/CUSTOM_FOLDER OR DEFAULT_FOLDER)is successful </t:objective>
 
     <t:test>
@@ -673,12 +673,12 @@
                 <query> in:(${globals.inbox}/${folder2.name} OR ${globals.inbox})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -686,7 +686,7 @@
                 <query> in:(${globals.trash}/${folder3.name} OR ${globals.trash})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']"/>
@@ -699,32 +699,32 @@
                 <query> in:(${globals.sent}/${folder4.name} OR ${globals.sent})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id9}']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
                 <query> in:(${globals.sent}/${folder4.name} OR ${globals.inbox})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
                 <query> in:(${globals.inbox}/${folder2.name} OR ${globals.trash})</query>
             </SearchRequest>
         </t:request>
-        <t:response>                   
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id12}']"/>
@@ -734,7 +734,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest6" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest6" type="functional" >
     <t:objective> Verify that a search for query in:(CUSTOM_FOLDER/CUSTOM_FOLDER OR CUSTOM_FOLDER)is successful </t:objective>
 
     <t:test>
@@ -743,16 +743,16 @@
                 <query> in:(${folder1.name}/${folder5.name} OR ${folder1.name})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest7" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest7" type="functional" >
     <t:objective> Verify that a search for query in:(DEFAULT_FOLDER OR CUSTOM_FOLDER) is successful </t:objective>
 
     <t:test>
@@ -761,17 +761,17 @@
                 <query> in:(${globals.inbox} OR ${folder1.name})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id10}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id11}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest8" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest8" type="functional" >
     <t:objective> Verify that a search for query in:(FOLDER/CUSTOM_FOLDER OR FOLDER/CUSTOM_FOLDER) where FOLDER can be DEFAULT or CUSTOM is successful </t:objective>
 
     <t:test>
@@ -780,11 +780,11 @@
                 <query> in:(${globals.inbox}/${folder2.name} OR ${globals.trash}/${folder3.name})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -792,7 +792,7 @@
                 <query> in:(${globals.sent}/${folder4.name} OR ${folder1.name}/${folder5.name})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
         </t:response>
@@ -801,7 +801,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest9" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest9" type="functional" >
     <t:objective> Verify that a search for conversation for query in:DEFAULT_FOLDER is successful </t:objective>
 
     <t:test>
@@ -810,7 +810,7 @@
                 <query> in:${globals.inbox} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id11}']"/>
         </t:response>
@@ -822,7 +822,7 @@
                 <query> in:${globals.sent} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id9}']"/>
         </t:response>
     </t:test>
@@ -833,7 +833,7 @@
                 <query> in:${globals.trash} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id12}']"/>
         </t:response>
@@ -845,15 +845,15 @@
                 <query> in:${globals.spam} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id7}']"/>
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest10" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest10" type="functional" >
     <t:objective> Verify that a search for conversation for query in:CUSTOM_FOLDER is successful </t:objective>
 
     <t:test>
@@ -862,7 +862,7 @@
                 <query> in:${folder1.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id10}']"/>
         </t:response>
     </t:test>
@@ -873,15 +873,15 @@
                 <query> in:${folder6.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id8}']"/>
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest11" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest11" type="functional" >
     <t:objective> Verify that a search for conversation for query in:DEFAULT_FOLDER/CUSTOM_FOLDER is successful </t:objective>
 
     <t:test>
@@ -890,7 +890,7 @@
                 <query> in:${globals.inbox}/${folder2.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
         </t:response>
     </t:test>
@@ -901,7 +901,7 @@
                 <query> in:${globals.trash}/${folder3.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
         </t:response>
     </t:test>
@@ -912,15 +912,15 @@
                 <query> in:${globals.sent}/${folder4.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest12" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest12" type="functional" >
     <t:objective> Verify that a search for conversation for query in:CUSTOM_FOLDER/CUSTOM_FOLDER is successful </t:objective>
 
     <t:test>
@@ -929,15 +929,15 @@
                 <query> in:${folder1.name}/${folder5.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest13" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest13" type="functional" >
     <t:objective> Verify that a search for conversation for query in:(DEFAULT_FOLDER/CUSTOM_FOLDER OR DEFAULT_FOLDER)is successful </t:objective>
 
     <t:test>
@@ -946,12 +946,12 @@
                 <query> in:(${globals.inbox}/${folder2.name} OR ${globals.inbox})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id11}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -959,7 +959,7 @@
                 <query> in:(${globals.trash}/${folder3.name} OR ${globals.trash})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id12}']"/>
@@ -972,32 +972,32 @@
                 <query> in:(${globals.sent}/${folder4.name} OR ${globals.sent})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id9}']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
                 <query> in:(${globals.sent}/${folder4.name} OR ${globals.inbox})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id11}']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
                 <query> in:(${globals.inbox}/${folder2.name} OR ${globals.trash})</query>
             </SearchRequest>
         </t:request>
-        <t:response>                   
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id12}']"/>
@@ -1007,7 +1007,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest14" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest14" type="functional" >
     <t:objective> Verify that a search for conversation for query in:(CUSTOM_FOLDER/CUSTOM_FOLDER OR CUSTOM_FOLDER)is successful </t:objective>
 
     <t:test>
@@ -1016,16 +1016,16 @@
                 <query> in:(${folder1.name}/${folder5.name} OR ${folder1.name})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id10}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest15" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest15" type="functional" >
     <t:objective> Verify that a search for conversation for query in:(DEFAULT_FOLDER OR CUSTOM_FOLDER) is successful </t:objective>
 
     <t:test>
@@ -1034,17 +1034,17 @@
                 <query> in:(${globals.inbox} OR ${folder1.name})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id10}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id11}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest16" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest16" type="functional" >
     <t:objective> Verify that a search for conversation for query in:(FOLDER/CUSTOM_FOLDER OR FOLDER/CUSTOM_FOLDER) where FOLDER can be DEFAULT or CUSTOM is successful </t:objective>
 
     <t:test>
@@ -1053,11 +1053,11 @@
                 <query> in:(${globals.inbox}/${folder2.name} OR ${globals.trash}/${folder3.name})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -1065,7 +1065,7 @@
                 <query> in:(${globals.sent}/${folder4.name} OR ${folder1.name}/${folder5.name})</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
         </t:response>
@@ -1074,7 +1074,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest17" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest17" type="functional" >
     <t:objective> Verify that the messages in trash folder is not included in search results if zimbraPrefIncludeTrashInSearch = FALSE </t:objective>
     <t:steps>1. Set zimbraPrefIncludeTrashInSearch = False.
                 2. Check the SearchRequest.
@@ -1105,9 +1105,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest18" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest18" type="functional" >
     <t:objective> Verify that the conversation in trash folder is not included in search results if zimbraPrefIncludeTrashInSearch = FALSE </t:objective>
-    
+
     <t:test depends="folder_SearchRequest17a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -1118,11 +1118,11 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest19" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest19" type="functional" >
     <t:objective> Verify that the messages in spam folder is not included in search results if zimbraPrefIncludeSpamInSearch = FALSE </t:objective>
     <t:steps>1. Set zimbraPrefIncludeSpamInSearch = False.
                 2. Check the SearchRequest.
@@ -1153,9 +1153,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="folder_SearchRequest20" type="sanity" >
+<t:test_case testcaseid="folder_SearchRequest20" type="functional" >
     <t:objective> Verify that the conversation in spam folder is not included in search results if zimbraPrefIncludeSpamInSearch = FALSE </t:objective>
-    
+
     <t:test depends="folder_SearchRequest19a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
@@ -1166,12 +1166,12 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:m" emptyset="1"/>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
-<t:test_case testcaseid="folder_SearchRequest21" type="sanity" bugids="12689">
+<t:test_case testcaseid="folder_SearchRequest21" type="functional" bugids="12689">
     <t:objective> Verify that a search for query in:DEFAULT_FOLDER   /CUSTOM_FOLDER i.e. with spaces is successful. Spaces after default folder should get stripped. </t:objective>
-	<!-- Spaces between the folder and subfolder is not trimmed-->	
+	<!-- Spaces between the folder and subfolder is not trimmed-->
 
     <t:test>
         <t:request>
@@ -1179,7 +1179,7 @@
                 <query> in:${globals.inbox}   /${folder2.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse"/>
         </t:response>
     </t:test>
@@ -1190,7 +1190,7 @@
                 <query> in:${globals.inbox}    /${folder2.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse"/>
         </t:response>
     </t:test>

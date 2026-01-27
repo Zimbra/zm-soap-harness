@@ -15,7 +15,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -42,7 +42,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -81,18 +81,18 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest_From_Alias_01" type="bhr" areas="Calendar" bugids="12301">
+<t:test_case testcaseid="SendInviteReplyRequest_From_Alias_01" type="sanity" areas="Calendar" bugids="12301">
     <t:objective>Verify that reply to address is set to alias if appointment is sent to alias.</t:objective>
     <t:steps>
     1. Login as organizer
     2. Create a simple meeting request.  Invite the alias of the invitee.
-    3. Login as the invitee 
+    3. Login as the invitee
     4. RSVP (Accept) the meeting
     5. Login as organizer
     6. Verify that the from and reply to address is set to alias of the account.
@@ -121,7 +121,7 @@
 			</t:select>
 		</t:response>
 	</t:test>
-  
+
 	<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
@@ -160,7 +160,7 @@
 
     <t:delay msec="2000"/>
     <t:property name="server.zimbraAccount" value="${invitee1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -190,19 +190,19 @@
 				<query>inid:${invitee1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subject}']">
             	<t:select attr="invId" set="invitee1.appt1.invId"/>
             	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
             	<t:select attr="name" set="invitee1.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="verb.response" value="ACCEPT"/>
 	<t:property name="verb.expected" value="AC"/>
-	
+
 	<t:test>
         <t:request>
 			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${invitee1.appt1.invId}" compNum="${invitee1.appt1.compNum}" updateOrganizer="TRUE">
@@ -220,7 +220,7 @@
             <t:select path="//mail:SendInviteReplyResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:delay msec="2000"/>
 	<t:property name="server.zimbraAccount" value="${organizer1.server}"/>
 
@@ -235,7 +235,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-   
+
    <t:test>
 	 <t:request>
 	   <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -246,7 +246,7 @@
 		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
 	 </t:response>
 	</t:test>
-   
+
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">

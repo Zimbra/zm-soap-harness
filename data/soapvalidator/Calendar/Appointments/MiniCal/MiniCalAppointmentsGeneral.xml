@@ -55,19 +55,19 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account1.server"/>
         </t:response>
    </t:test>
-    
-</t:test_case> 
+
+</t:test_case>
 
 
-<t:test_case testcaseid="MiniCal_AppointmentsGeneral_01" type="bhr">
+<t:test_case testcaseid="MiniCal_AppointmentsGeneral_01" type="sanity">
  <t:objective>Create an appointment and check the appointment date using GetMiniCalRequest</t:objective>
- 
+
  <t:steps>
-    1. Make calendar some appointments 
+    1. Make calendar some appointments
     2. Send GetMiniCalResponse for different time-range
-    3. Verify the return dates as per requested time-range.  
- </t:steps> 
- 	
+    3. Verify the return dates as per requested time-range.
+ </t:steps>
+
 <t:property name="server.zimbraAccount" value="${test_account1.server}"/>
 
 	 <t:test required="true">
@@ -77,20 +77,20 @@
                 <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
-        <t:response>            
+        <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-  
+
     <t:test id="getFolderRequest">
         <t:request>
             <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>          
-            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/> 
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -102,18 +102,18 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-    
+
     <t:property name="appt1.uid" value="${TIME}${COUNTER}"/>
     <t:property name="appointment1.start" value="1448928000000"/> <!-- 12/1/2015 00:00:00 GMT -->
-    
+
     <t:test id="minical2b">
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail">
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt1.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" loc="${appt1.location}">
-                            <s d="${ICALTIME[${appointment1.start}]}" tz="${timezone.pst}"/>  
-                            <e d="${ICALTIME(+1h)[${appointment1.start}]}" tz="${timezone.pst}"/>  
+                            <s d="${ICALTIME[${appointment1.start}]}" tz="${timezone.pst}"/>
+                            <e d="${ICALTIME(+1h)[${appointment1.start}]}" tz="${timezone.pst}"/>
                             <or a="${test_account1.name}"/>
                         </inv>
                         <mp content-type="text/plain">
@@ -125,21 +125,21 @@
             </SetAppointmentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SetAppointmentResponse"/>          
-        </t:response>    
-    </t:test> 
-     
+            <t:select path="//mail:SetAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
     <t:property name="appt2.uid" value="${TIME}${COUNTER}"/>
-    <t:property name="appointment2.start" value="1449014400000"/> <!-- 12/2/2015 00:00:00 GMT -->   
-    
+    <t:property name="appointment2.start" value="1449014400000"/> <!-- 12/2/2015 00:00:00 GMT -->
+
       <t:test id="minical2b">
         <t:request>
             <SetAppointmentRequest xmlns="urn:zimbraMail">
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv uid="${appt2.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt2.subject}" loc="${appt2.location}">
-                            <s d="${ICALTIME[${appointment2.start}]}" tz="${timezone.pst}"/>  
-                            <e d="${ICALTIME(+1h)[${appointment2.start}]}" tz="${timezone.pst}"/>  
+                            <s d="${ICALTIME[${appointment2.start}]}" tz="${timezone.pst}"/>
+                            <e d="${ICALTIME(+1h)[${appointment2.start}]}" tz="${timezone.pst}"/>
                             <or a="${test_account1.name}"/>
                         </inv>
                         <mp content-type="text/plain">
@@ -151,45 +151,45 @@
             </SetAppointmentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SetAppointmentResponse"/>          
-        </t:response>    
-    </t:test> 
-    
+            <t:select path="//mail:SetAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
     <t:test >
         <t:request>
-            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-2d)[${appointment1.start}]}" e="${TIME(+1d)[${appointment1.start}]}">       
-			<folder id="${folder.calendar.id}" />			
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-2d)[${appointment1.start}]}" e="${TIME(+1d)[${appointment1.start}]}">
+			<folder id="${folder.calendar.id}" />
 			</GetMiniCalRequest>
-        </t:request>        
+        </t:request>
         <t:response>
 			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE()[${appointment1.start}]}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test >
         <t:request>
-            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${appointment1.start}]}" e="${TIME(+2d)[${appointment1.start}]}">       
-			<folder id="${folder.calendar.id}" />			
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${appointment1.start}]}" e="${TIME(+2d)[${appointment1.start}]}">
+			<folder id="${folder.calendar.id}" />
 			</GetMiniCalRequest>
-        </t:request>        
+        </t:request>
         <t:response>
 			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE()[${appointment1.start}]}"/>
 			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE(+1d)[${appointment1.start}] }"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
-            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-2d)[${appointment1.start}]}" e="${TIME(-1d)[${appointment1.start}]}">       
-			<folder id="${folder.calendar.id}" />			
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-2d)[${appointment1.start}]}" e="${TIME(-1d)[${appointment1.start}]}">
+			<folder id="${folder.calendar.id}" />
 			</GetMiniCalRequest>
-        </t:request>        
+        </t:request>
         <t:response>
 			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE()[${appointment1.start}]}" emptyset="1"/>
 			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE(+1d)[${appointment1.start}]}"  emptyset="1"/>
         </t:response>
-    </t:test> 
-     
- </t:test_case>   
-  
+    </t:test>
+
+ </t:test_case>
+
 </t:tests>

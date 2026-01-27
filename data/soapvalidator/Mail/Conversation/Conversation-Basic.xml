@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
 	<t:objective>basic system check</t:objective>
-    
+
 	<t:test id="ping">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -90,14 +90,14 @@
 
 <t:test_case testcaseid="conversationBasic_Bug59" type="smoke" bugids="59" >
 	<t:objective>Verify bug 59</t:objective>
-	<t:steps> 
+	<t:steps>
         1. Inject mails into a conversation
 		a. Message 1 subject = "Conversation59"
 		b. Message 1 subject = "RE: Conversation59", "From" is missing
 		c. Message 1 subject = "RE: Conversation59"
         2. Verify, that if the middle message is missing the From: header, the conversation participants is does not display "name1, , name2"
 	</t:steps>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${bug59.file}</filename>
@@ -170,7 +170,7 @@
 			<!-- TODO: based on the outcome of bug 59, the next two tests may need changes -->
 			<t:select path="//mail:SearchResponse/mail:c/mail:e[@p='']" emptyset="1"/>
 			<t:select path="//mail:SearchResponse/mail:c/mail:e[@d='']" emptyset="1"/>
-			
+
 		</t:response>
 	</t:test>
 
@@ -178,13 +178,13 @@
 
 
 
-<t:test_case testcaseid="conversationBasic_Bug2288" type="sanity" bugids="2288" >
+<t:test_case testcaseid="conversationBasic_Bug2288" type="functional" bugids="2288" >
 	<t:objective>Verify bug 2288 - bad conversation ID when sending a message to yourself</t:objective>
-	<t:steps> 
+	<t:steps>
         1. Send a message to yourself - verify the negative conversation ID
         2. Search for the mail in the inbox - verify the conv ID is a valid number (i.e. not 0 or the original negative number)
 	</t:steps>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
 	<t:test >
@@ -250,9 +250,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="conversationBasic_Bug6023" type="sanity" bugids="6023" >
+<t:test_case testcaseid="conversationBasic_Bug6023" type="functional" bugids="6023" >
 	<t:objective>Verify bug 6023 - IMAP Copy null pointer exception</t:objective>
-	<t:steps> 
+	<t:steps>
         1. Create a conversation with 3 message
         2. Leave message1 in inbox, move message 2 to subfolder2, move message3 to subfolder3
         3. Move subfolder2 to trash
@@ -260,7 +260,7 @@
         5. SearchConvRequest on "in:inbox"
         6. Get
 	</t:steps>
-    
+
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -360,11 +360,11 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/>
             <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
         </t:response>
     </t:test>

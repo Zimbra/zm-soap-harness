@@ -86,7 +86,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifySearchFolderRequest1" type="bhr">
+<t:test_case testcaseid="ModifySearchFolderRequest1" type="sanity">
  <t:objective> Create Search Folder for query "in:inbox" and type "message" then modify search folder with query "in:contacts".</t:objective>
 	<t:Steps>
 			1. Create Search Folder for query "in:inbox" and type "message".
@@ -105,7 +105,7 @@
 			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query01}"/>
 			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="id" set="search.id1"/>
 		</t:response>
- 
+
 	</t:test>
 
 	<t:test>
@@ -120,11 +120,11 @@
 			<t:select path="//mail:ModifySearchFolderResponse/mail:search" attr="query" match="${query02}"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifySearchFolderRequest2" type="bhr">
+<t:test_case testcaseid="ModifySearchFolderRequest2" type="sanity">
  <t:objective> Create Search Folder for query "in:inbox" and type "conversation" then modify search folder with query "in:contacts".</t:objective>
 
 	<t:test>
@@ -155,9 +155,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifySearchFolderRequest3" type="bhr">
+<t:test_case testcaseid="ModifySearchFolderRequest3" type="sanity">
  <t:objective> Create Search Folder for query "in:contacts" then modify search folder with query "in:inbox" and type "message".  </t:objective>
-	
+
 	<t:test>
 		<t:request>
 			<CreateSearchFolderRequest xmlns="urn:zimbraMail">
@@ -168,7 +168,7 @@
 			<t:select path="//mail:CreateSearchFolderResponse"/>
 			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query02}"/>
 			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="id" set="search.id3"/>
-		</t:response> 
+		</t:response>
 	</t:test>
 
 	<t:test>
@@ -180,13 +180,13 @@
 		<t:response>
 			<t:select path="//mail:ModifySearchFolderResponse"/>
 			<t:select path="//mail:ModifySearchFolderResponse/mail:search" attr="query" match="${query01}"/>
-		</t:response> 
+		</t:response>
 	</t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifySearchFolderRequest4" type="bhr">
+<t:test_case testcaseid="ModifySearchFolderRequest4" type="sanity">
  <t:objective> Create Search Folder for query "in:contacts" then modify search folder with query "in:inbox" and type "conversation".</t:objective>
 
 	<t:test>
@@ -199,7 +199,7 @@
 			<t:select path="//mail:CreateSearchFolderResponse"/>
 			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query02}"/>
 			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="id" set="search.id4"/>
-		</t:response> 
+		</t:response>
 	</t:test>
 
 	<t:test>
@@ -217,7 +217,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifySearchFolderRequest5" type="bhr">
+<t:test_case testcaseid="ModifySearchFolderRequest5" type="sanity">
  <t:objective> Create Search Folder for query "in:sent" and type "message" then modify search folder with query "in:trash" and type "conversation".</t:objective>
 
 	<t:test>
@@ -248,7 +248,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifySearchFolderRequest6" type="bhr">
+<t:test_case testcaseid="ModifySearchFolderRequest6" type="sanity">
  <t:objective> Create Search Folder for query "in:sent" and type "conversation" then modify search folder with query "in:trash" and type "message". </t:objective>
 
 	<t:test>
@@ -261,7 +261,7 @@
 			<t:select path="//mail:CreateSearchFolderResponse"/>
 			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query03}"/>
 			<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="id" set="search.id6"/>
-		</t:response> 
+		</t:response>
 	</t:test>
 
 	<t:test>
@@ -279,9 +279,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifySearchFolderRequest7" type="bhr">
+<t:test_case testcaseid="ModifySearchFolderRequest7" type="sanity">
  <t:objective> Create Search Folder for query "in:trash" then modify search folder with query="is:anywhere not in:trash" </t:objective>
-	
+
 	<t:test>
 		<t:request>
 			<CreateSearchFolderRequest xmlns="urn:zimbraMail">
@@ -310,7 +310,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifySearchFolderRequest8" type="bhr">
+<t:test_case testcaseid="ModifySearchFolderRequest8" type="sanity">
  <t:objective> Create Search Folder for query "in:trash" then modify search folder with query "in:junk" </t:objective>
 
 	<t:test>

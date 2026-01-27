@@ -20,7 +20,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -37,7 +37,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -50,7 +50,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -113,7 +113,7 @@
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -126,7 +126,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -138,8 +138,8 @@
 		</t:response>
 	</t:test>
 
-    
-   
+
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -212,17 +212,17 @@
     </t:test>
 
     <!-- check the first few instances -->
-	
+
 	<!--
-		Hmm. The harness seems to have a bug where 
+		Hmm. The harness seems to have a bug where
 			path="//mail:b[@s='${TIME(+1d)[${time.20180101120000.gmt}]}']"
 		does not parse correctly.
-		
-		Make the verification two steps for now.  
+
+		Make the verification two steps for now.
 		1. Set a property to the correct GMT time
 		2. use the property to validate
 	-->
-	
+
 	<t:property name="instance0.s" value="${TIME[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance0.e" value="${TIME(+3h)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance1.s" value="${TIME(+1d)[${time.20180101120000.gmt}]}"/>
@@ -231,18 +231,18 @@
 	<t:property name="instance2.e" value="${TIME(+2d)(+3h)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance3.s" value="${TIME(+3d)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance3.e" value="${TIME(+3d)(+3h)[${time.20180101120000.gmt}]}"/>
-    
+
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+10d)[${time.20180101120000.gmt}]}"  uid="${account1.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${account1.id}']">
             	<t:select path="//mail:b[@s='${instance0.s}']" attr="e" match="${instance0.e}"/>
             	<t:select path="//mail:b[@s='${instance1.s}']" attr="e" match="${instance1.e}"/>
             	<t:select path="//mail:b[@s='${instance2.s}']" attr="e" match="${instance2.e}"/>
             	<t:select path="//mail:b[@s='${instance3.s}']" attr="e" match="${instance3.e}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -252,7 +252,7 @@
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt1.invId}']"/>
             </t:select>
@@ -263,14 +263,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_RecurringDaily_02" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_RecurringDaily_02" type="sanity" areas="Calendar">
     <t:objective>Create an daily recurring appointment.  5 occurrences.</t:objective>
 
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -283,7 +283,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -295,7 +295,7 @@
 		</t:response>
 	</t:test>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -363,8 +363,8 @@
     </t:test>
 
     <!-- check the first few instances -->
-	
-	
+
+
 	<t:property name="instance0.s" value="${TIME[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance0.e" value="${TIME(+3h)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance1.s" value="${TIME(+1d)[${time.20180101120000.gmt}]}"/>
@@ -377,12 +377,12 @@
 	<t:property name="instance4.e" value="${TIME(+4d)(+3h)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance5.s" value="${TIME(+5d)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance5.e" value="${TIME(+5d)(+3h)[${time.20180101120000.gmt}]}"/>
-    
+
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+10d)[${time.20180101120000.gmt}]}"  uid="${account2.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${account2.id}']">
             	<t:select path="//mail:b[@s='${instance0.s}']" attr="e" match="${instance0.e}"/>
             	<t:select path="//mail:b[@s='${instance1.s}']" attr="e" match="${instance1.e}"/>
@@ -390,7 +390,7 @@
             	<t:select path="//mail:b[@s='${instance3.s}']" attr="e" match="${instance3.e}"/>
             	<t:select path="//mail:b[@s='${instance4.s}']" attr="e" match="${instance4.e}"/>
             	<t:select path="//mail:b[@s='${instance5.s}']" emptyset="1"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -400,7 +400,7 @@
 				<query>inid:${account2.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt1.invId}']"/>
             </t:select>
@@ -412,14 +412,14 @@
 
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_RecurringDaily_03" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_RecurringDaily_03" type="sanity" areas="Calendar">
     <t:objective>Create an daily recurring appointment, every 3 days.</t:objective>
 
 
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -432,7 +432,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -444,7 +444,7 @@
 		</t:response>
 	</t:test>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -510,8 +510,8 @@
     </t:test>
 
     <!-- check the first few instances -->
-	
-	
+
+
 	<t:property name="instance0.s" value="${TIME[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance0.e" value="${TIME(+3h)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance0a.s" value="${TIME(+1d)[${time.20180101120000.gmt}]}"/>
@@ -521,19 +521,19 @@
 	<t:property name="instance2.e" value="${TIME(+6d)(+3h)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance3.s" value="${TIME(+9d)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance3.e" value="${TIME(+9d)(+3h)[${time.20180101120000.gmt}]}"/>
-    
+
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+10d)[${time.20180101120000.gmt}]}"  uid="${account3.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${account3.id}']">
             	<t:select path="//mail:b[@s='${instance0.s}']" attr="e" match="${instance0.e}"/>
             	<t:select path="//mail:b[@s='${instance0a.s}']" emptyset="1"/>
             	<t:select path="//mail:b[@s='${instance1.s}']" attr="e" match="${instance1.e}"/>
             	<t:select path="//mail:b[@s='${instance2.s}']" attr="e" match="${instance2.e}"/>
             	<t:select path="//mail:b[@s='${instance3.s}']" attr="e" match="${instance3.e}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -543,7 +543,7 @@
 				<query>inid:${account3.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt1.invId}']"/>
             </t:select>
@@ -554,14 +554,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAppointmentRequest_RecurringDaily_04" type="bhr" areas="Calendar">
+<t:test_case testcaseid="CreateAppointmentRequest_RecurringDaily_04" type="sanity" areas="Calendar">
     <t:objective>Create an daily recurring appointment, every 3 days.  4 occurences</t:objective>
 
 
 
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -574,7 +574,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -586,7 +586,7 @@
 		</t:response>
 	</t:test>
 
-   
+
 	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
@@ -654,8 +654,8 @@
     </t:test>
 
     <!-- check the first few instances -->
-	
-	
+
+
 	<t:property name="instance0.s" value="${TIME[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance0.e" value="${TIME(+3h)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance0a.s" value="${TIME(+1d)[${time.20180101120000.gmt}]}"/>
@@ -666,12 +666,12 @@
 	<t:property name="instance3.s" value="${TIME(+9d)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance3.e" value="${TIME(+9d)(+3h)[${time.20180101120000.gmt}]}"/>
 	<t:property name="instance4.s" value="${TIME(+12d)[${time.20180101120000.gmt}]}"/>
-    
+
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+10d)[${time.20180101120000.gmt}]}"  uid="${account4.id}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${account4.id}']">
             	<t:select path="//mail:b[@s='${instance0.s}']" attr="e" match="${instance0.e}"/>
             	<t:select path="//mail:b[@s='${instance0a.s}']" emptyset="1"/>
@@ -679,7 +679,7 @@
             	<t:select path="//mail:b[@s='${instance2.s}']" attr="e" match="${instance2.e}"/>
             	<t:select path="//mail:b[@s='${instance3.s}']" attr="e" match="${instance3.e}"/>
             	<t:select path="//mail:b[@s='${instance4.s}']" emptyset="1"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -689,7 +689,7 @@
 				<query>inid:${account4.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt1.invId}']"/>
             </t:select>

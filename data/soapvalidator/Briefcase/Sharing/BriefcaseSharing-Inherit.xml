@@ -84,8 +84,8 @@
 <t:test_case testcaseid="SharingFoldersInheritBasic_AccountSetup" type="always" >
     <t:objective>Create test accounts</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
-    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
 
     <t:test  id="admin_login" required="true" depends="ping">
         <t:request>
@@ -272,19 +272,19 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_01" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_01" type="sanity">
     <t:objective>Verify flags="i" does not allow subfolders to be read</t:objective>
 	<t:steps>
 		1. Login as account1
 		 A. Inbox/subfolder1/briefcasefolder01
-		 B. Inbox/subfolder1/subfolder2/briefcasefolder02 
+		 B. Inbox/subfolder1/subfolder2/briefcasefolder02
 		2. Share sbufolder1 with account2 (flags="i")
 		3. Login as account2
 		4. Mount the drive, success.
 		5. Get briefcasefolder01 (success)
 		5. Get briefcasefolder02 (PERM_DENIED)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -321,7 +321,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -332,7 +332,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder2.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -350,8 +350,8 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document1.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document1.id"/>
         </t:response>
     </t:test>
 
@@ -372,8 +372,8 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document2.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document2.id"/>
         </t:response>
     </t:test>
 
@@ -446,7 +446,7 @@
 			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account2.document1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<!--
 		A search for an existing folder (but no permissions) and a non-existant folder
 		should return similar results.  In this case, an empty SearchResponse
@@ -461,7 +461,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="document">
@@ -472,7 +472,7 @@
 			<t:select path="//mail:SearchResponse/mail:doc" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetItemRequest xmlns="urn:zimbraMail">
@@ -500,19 +500,19 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_02" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_02" type="sanity">
     <t:objective>Verify by default subfolders are allowed to be read</t:objective>
 	<t:steps>
 		1. Login as account4
 		 A. Inbox/subfolder1/document1
-		 B. Inbox/subfolder1/subfolder2/document2 
+		 B. Inbox/subfolder1/subfolder2/document2
 		2. Share subfolder1 with account5
 		3. Login as account5
 		4. Mount the drive, success.
 		5. Get document1 (success)
 		5. Get document2 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 	<t:property name="uploadServletServer" value="${account4.server}"/>
 
@@ -549,7 +549,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account4.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -560,7 +560,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account4.folder2.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -578,12 +578,12 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account4.document1.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account4.document1.id"/>
         </t:response>
     </t:test>
 
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.htmlfile}</filename>
@@ -601,8 +601,8 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account4.document2.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account4.document2.id"/>
         </t:response>
     </t:test>
 
@@ -698,12 +698,12 @@
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_03" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_03" type="sanity">
     <t:objective> Verify that newly-created subfolders will automatically inherit granted rights as appropriate</t:objective>
 	<t:steps>
 		1. Login as account6
 		2. Create Inbox/subfolder1/document1
-		3. Share subfolder1 with account7 
+		3. Share subfolder1 with account7
 		4. Login as account7
 		5. Mount the drive, success.
 		6. Get document1 (success)
@@ -712,7 +712,7 @@
 		9. Login as account7
 		10. Get document2 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 	<t:property name="uploadServletServer" value="${account6.server}"/>
 
@@ -749,7 +749,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -767,8 +767,8 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account6.document1.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account6.document1.id"/>
         </t:response>
     </t:test>
 
@@ -841,7 +841,7 @@
 			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account7.document1.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test >
         <t:request>
             <GetItemRequest xmlns="urn:zimbraMail">
@@ -882,7 +882,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder2.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.htmlfile}</filename>
@@ -900,8 +900,8 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account6.document2.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account6.document2.id"/>
         </t:response>
     </t:test>
 
@@ -949,7 +949,7 @@
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_04" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_04" type="sanity">
     <t:objective>
     	Verify that Existing briefcase folders
 		moved to a different point in the folder hierarchy will also reinterpret
@@ -969,7 +969,7 @@
 		10. Get document01 (success)
 		11. Flag document01 (PERM_DENIED)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account8.server}"/>
 	<t:property name="uploadServletServer" value="${account8.server}"/>
 
@@ -1006,7 +1006,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1017,7 +1017,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder2.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1028,7 +1028,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder3.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -1046,8 +1046,8 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account8.document1.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account8.document1.id"/>
         </t:response>
     </t:test>
 
@@ -1168,7 +1168,7 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse"/>      
+            <t:select path="//mail:FolderActionResponse"/>
         </t:response>
     </t:test>
 
@@ -1217,7 +1217,7 @@
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_05" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_05" type="sanity">
     <t:objective>Verify by default read permission applies to multiple levels (4 levels) of subfolders</t:objective>
 	<t:steps>
 		1. Login as account10
@@ -1227,7 +1227,7 @@
 		4. Mount the drive, success.
 		5. Get document01 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account10.server}"/>
 	<t:property name="uploadServletServer" value="${account10.server}"/>
 
@@ -1264,7 +1264,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder1.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1275,7 +1275,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder2.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1286,7 +1286,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder3.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1297,7 +1297,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder4.id"/>
         </t:response>
     </t:test >
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -1308,7 +1308,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder5.id"/>
         </t:response>
     </t:test >
-        
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -1326,12 +1326,12 @@
 			  </doc>
 			</SaveDocumentRequest>
         </t:request>
-        <t:response>           
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account10.document1.id"/>        
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account10.document1.id"/>
         </t:response>
     </t:test>
 
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -1395,7 +1395,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_06" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_06" type="sanity">
     <t:objective>Verify that one subfolder with perm=none and flags="i" breaks the inherit properties of all subfolders</t:objective>
 	<t:steps>
 		1. From SharingFoldersInheritBasic_05:
@@ -1409,9 +1409,9 @@
 		3. Share subfolder3 with account11 (perm=none)
 		4. Login as account11
 		5. Get document01 (PERM_DENIED)
-		
+
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account10.server}"/>
 	<t:property name="uploadServletServer" value="${account10.server}"/>
 

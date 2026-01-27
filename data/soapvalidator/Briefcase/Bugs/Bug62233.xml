@@ -82,18 +82,18 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug62233" type="bhr" bugids="62233" >
+<t:test_case testcaseid="bug62233" type="sanity" bugids="62233" >
     <t:objective>Verify that sharing  briefcase folders with read access allows document to be viewed, but not added,  deleted, or reshared</t:objective>
 	<t:steps>
 		1. Login as account1
 		2. Add a briefcase folder, share the folder with account2 (permissions=read)
 		3. Login as account2
-		4. Mount the drive, success.	
+		4. Mount the drive, success.
 		5. SearchRequest Text file.  Success.
 		5. SearchRequest HTML file.  Success.
-		
+
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -130,7 +130,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -139,7 +139,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -149,10 +149,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse"/>           
+            <t:select path="//mail:SaveDocumentResponse"/>
         </t:response>
     </t:test>
-    
+
     	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.htmlfile}</filename>
@@ -161,7 +161,7 @@
 			<t:select attr="id" set="document.htmlfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 		<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -171,11 +171,11 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse"/>           
+            <t:select path="//mail:SaveDocumentResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -224,7 +224,7 @@
         <t:response>
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
         </t:response>
-    </t:test>	
+    </t:test>
 
  	<t:test>
 		<t:request>
@@ -237,7 +237,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="document">

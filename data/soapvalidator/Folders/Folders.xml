@@ -27,7 +27,7 @@
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-<t:test_case testcaseid="Ping" type="bhr">
+<t:test_case testcaseid="Ping" type="sanity">
  <t:objective>basic system check</t:objective>
 
 	<t:test id="ping" required="true">
@@ -42,7 +42,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="acct1_setup" type="bhr">
+<t:test_case testcaseid="acct1_setup" type="sanity">
  <t:objective>create test account</t:objective>
 
 	<t:test id="admin_login" required="true" depends="ping">
@@ -62,10 +62,10 @@
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
 			<name>${test_account1.name}</name>
 			<password>${test_account1.password}</password>
-			<!-- 
+			<!--
 			<a n="zimbraMailHost">${LOCALHOST}</a>
 			<a n="zimbraMailStatus">enabled</a>
-			<a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+			<a n="zimbraMailDeliveryAddress">${test_account1.name}</a>
 			<a n="zimbraPasswordMinAge">7</a>
 			Commenting out the optional attributes and sending the request with minimal requirement
 			-->
@@ -82,7 +82,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="acct1_login" type="bhr">
+<t:test_case testcaseid="acct1_login" type="sanity">
  <t:objective>login as the test account</t:objective>
 
 	<t:test required="true">
@@ -122,7 +122,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest2" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest2" type="functional" >
  <t:objective>Create a folder with blank folder name </t:objective>
 
 	<t:test >
@@ -140,7 +140,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest3" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest3" type="functional" >
  <t:objective>Create a folder with all spaces in folder name </t:objective>
 
 	<t:test >
@@ -158,7 +158,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest4" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest4" type="functional" >
  <t:objective>Create a folder with special characters in folder name </t:objective>
 
 	<t:test >
@@ -176,7 +176,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest5" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest5" type="functional" >
  <t:objective>Create a folder with duplicate folder name </t:objective>
 
 	<t:test id="createfolder5a">
@@ -207,7 +207,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest6" type="sanity" >
+<t:test_case testcaseid="CreateFolderRequest6" type="functional" >
  <t:objective>Create a folder with nonexisting parent folder name </t:objective>
 
 	<t:test >
@@ -225,7 +225,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest7" type="functional" bugids="1744" >
+<t:test_case testcaseid="CreateFolderRequest7" type="regression" bugids="1744" >
  <t:objective>Create a folder with blank parent folder name </t:objective>
 
 <t:test >
@@ -243,7 +243,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest8" type="functional" >
+<t:test_case testcaseid="CreateFolderRequest8" type="regression" >
  <t:objective>Create a folder with No parent folder name </t:objective>
 
 <t:test >
@@ -291,7 +291,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest2" type="sanity" >
+<t:test_case testcaseid="FolderActionRequest2" type="functional" >
  <t:objective>Rename a folder to duplicate name </t:objective>
 
 	<!-- First : Create a folder with any name -->
@@ -300,7 +300,7 @@
 	 <t:request>
 	   <CreateFolderRequest xmlns="urn:zimbraMail">
 	     <folder name="${folder7a.name}" l="${folder.pname}"/>
-	   </CreateFolderRequest>	
+	   </CreateFolderRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateFolderResponse/mail:folder">
@@ -315,7 +315,7 @@
 	 <t:request>
 	   <CreateFolderRequest xmlns="urn:zimbraMail">
 	     <folder name="${folder7b.name}" l="${folder.pname}"/>
-	   </CreateFolderRequest>	
+	   </CreateFolderRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateFolderResponse/mail:folder">
@@ -329,7 +329,7 @@
 	 <t:request>
 		<FolderActionRequest xmlns="urn:zimbraMail">
 			<action op="rename" id="${folder7a.id}" name="${folder7b.name}"/>
-		</FolderActionRequest>	
+		</FolderActionRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
@@ -339,14 +339,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest3" type="functional" >
+<t:test_case testcaseid="FolderActionRequest3" type="regression" >
  <t:objective>Rename a folder with nonexisting folder id </t:objective>
 
 	<t:test >
 	 <t:request>
 		<FolderActionRequest xmlns="urn:zimbraMail">
 			<action op="rename" id="10000" name="${folder.name}"/>
-		</FolderActionRequest>	
+		</FolderActionRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER"/>
@@ -356,7 +356,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest4" type="bhr">
+<t:test_case testcaseid="FolderActionRequest4" type="sanity">
  <t:objective>Move a folder within some existing folder </t:objective>
  <t:steps> create folderA, create folderB, move folderB under folderA </t:steps>
 
@@ -364,7 +364,7 @@
 	 <t:request>
 	   <CreateFolderRequest xmlns="urn:zimbraMail">
 	     <folder name="${folder8a.name}" l="${folder.pname}"/>
-	   </CreateFolderRequest>	
+	   </CreateFolderRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateFolderResponse/mail:folder">
@@ -377,7 +377,7 @@
 	 <t:request>
 	   <CreateFolderRequest xmlns="urn:zimbraMail">
 	     <folder name="${folder8b.name}" l="${folder.pname}"/>
-	   </CreateFolderRequest>	
+	   </CreateFolderRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateFolderResponse/mail:folder">
@@ -394,8 +394,8 @@
 	 </t:request>
  	 <t:response>
 		<t:select path="//mail:FolderActionResponse/mail:action">
-		  <t:select attr="id" match="${folder8b.id}"/>	  
-  	 	  <t:select attr="op" match="move"/>	  
+		  <t:select attr="id" match="${folder8b.id}"/>
+  	 	  <t:select attr="op" match="move"/>
 		</t:select>
 	 </t:response>
 
@@ -404,14 +404,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest5" type="sanity" >
+<t:test_case testcaseid="FolderActionRequest5" type="functional" >
  <t:objective>Move a folder within itself </t:objective>
 
 	<t:test id="folderaction5a">
 	 <t:request>
 	   <CreateFolderRequest xmlns="urn:zimbraMail">
 	     <folder name="${folder9.name}" l="${folder.pname}"/>
-	   </CreateFolderRequest>	
+	   </CreateFolderRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateFolderResponse/mail:folder">
@@ -442,7 +442,7 @@
 	 <t:request>
 	   <CreateFolderRequest xmlns="urn:zimbraMail">
 	     <folder name="${folder10.name}" l="${folder.pname}"/>
-	   </CreateFolderRequest>	
+	   </CreateFolderRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateFolderResponse/mail:folder">
@@ -469,14 +469,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest7" type="functional" >
+<t:test_case testcaseid="FolderActionRequest7" type="regression" >
  <t:objective>Move a folder within a non existing folder </t:objective>
 
 	<t:test id="folderaction7a">
 	 <t:request>
 	   <CreateFolderRequest xmlns="urn:zimbraMail">
 	     <folder name="${folder11.name}" l="${folder.pname}"/>
-	   </CreateFolderRequest>	
+	   </CreateFolderRequest>
 	 </t:request>
 	  <t:response>
 		<t:select path="//mail:CreateFolderResponse/mail:folder">
@@ -523,7 +523,7 @@
  </t:request>
   <t:response>
 	<t:select path="//mail:FolderActionResponse/mail:action">
-	  <t:select attr="id" match="${folder12.id}"/>	  
+	  <t:select attr="id" match="${folder12.id}"/>
 	</t:select>
  </t:response>
 </t:test>

@@ -16,7 +16,7 @@
 		value="test6_${TIME}${COUNTER}@${defaultdomain.name}" />
 
 <t:property name="cos.name" value="cos892${TIME}${COUNTER}" />
-		
+
 <!-- Variables declaration -->
 <t:property name="msg_subject" value="Test Sieve" />
 
@@ -89,13 +89,13 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 </t:test_case>
 
 <!-- Create accounts for testing -->
-<t:test_case testcaseid="CreateAccounts" type="functional">
+<t:test_case testcaseid="CreateAccounts" type="regression">
 	<t:objective>create accounts</t:objective>
 		<t:steps>
 			1. Auth with admin
 			2. create accounts
 		</t:steps>
-		
+
 	<t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -119,7 +119,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -128,10 +128,10 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
-	    	 
+
          <t:test id="CreateCosRequest1">
              <t:request>
                  <CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -161,7 +161,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="account.server" />
 			</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -179,7 +179,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="account1.server" />
 			</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -197,7 +197,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="account2.server" />
 			</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -215,7 +215,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="account3.server" />
 			</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -233,7 +233,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="account4.server" />
 			</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -251,7 +251,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="account5.server" />
 			</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -272,17 +272,17 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 </t:test_case>
 
 <!-- Run testcase -->
-<t:test_case testcaseid="ZCS-892_rule1" type="functional" bugids="ZCS-892">
+<t:test_case testcaseid="ZCS-892_rule1" type="regression" bugids="ZCS-892">
 		<t:objective>Verify deleteheader with :count match type "gt" will treat empty value as positive infinity</t:objective>
 		<t:steps>
 			deleteheader :count "gt" :comparator "i;ascii-numeric" "X-Dummy-Header" "";
-			
+
 			1. Auth with account
 			2. send message to account1
 			3. auth with account1
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -295,7 +295,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -313,7 +313,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -326,7 +326,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -339,7 +339,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -351,17 +351,17 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-892_rule2" type="functional" bugids="ZCS-892">
+<t:test_case testcaseid="ZCS-892_rule2" type="regression" bugids="ZCS-892">
 		<t:objective>Verify deleteheader with :count match type "lt" will treat empty value as positive infinity</t:objective>
 		<t:steps>
 			deleteheader :count "lt" :comparator "i;ascii-numeric" "X-Dummy-Header" "";
-			
+
 			1. Auth with account
 			2. send message to account2
 			3. auth with account2
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -374,7 +374,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -392,7 +392,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -405,7 +405,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -418,7 +418,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -430,17 +430,17 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-892_rule3" type="functional" bugids="ZCS-892">
+<t:test_case testcaseid="ZCS-892_rule3" type="regression" bugids="ZCS-892">
 		<t:objective>Verify deleteheader with :count match type "eq" will treat empty value as positive infinity</t:objective>
 		<t:steps>
 			deleteheader :count "eq" :comparator "i;ascii-numeric" "X-Dummy-Header" "";
-			
+
 			1. Auth with account
 			2. send message to account3
 			3. auth with account3
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -453,7 +453,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -471,7 +471,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -484,7 +484,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -497,7 +497,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -509,17 +509,17 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-892_rule4" type="functional" bugids="ZCS-892">
+<t:test_case testcaseid="ZCS-892_rule4" type="regression" bugids="ZCS-892">
 		<t:objective>Verify deleteheader with :count match type "ne" will treat empty value as positive infinity</t:objective>
 		<t:steps>
 			deleteheader :count "ne" :comparator "i;ascii-numeric" "X-Dummy-Header" "";
-			
+
 			1. Auth with account
 			2. send message to account4
 			3. auth with account4
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -532,7 +532,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -550,7 +550,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-			
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -563,7 +563,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -576,7 +576,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -588,17 +588,17 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-892_rule5" type="functional" bugids="ZCS-892">
+<t:test_case testcaseid="ZCS-892_rule5" type="regression" bugids="ZCS-892">
 		<t:objective>Verify replaceheader with :count match type "ge" will treat empty value as positive infinity</t:objective>
 		<t:steps>
 			replaceheader :newvalue "NewValue" :count "ge" :comparator "i;ascii-numeric" "X-Dummy-Header" "";
-			
+
 			1. Auth with account
 			2. send message to account5
 			3. auth with account5
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -611,7 +611,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -629,7 +629,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -642,7 +642,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -655,7 +655,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -667,17 +667,17 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-892_rule6" type="functional" bugids="ZCS-892">
+<t:test_case testcaseid="ZCS-892_rule6" type="regression" bugids="ZCS-892">
 		<t:objective>Verify replaceheader with :count match type "le" will treat empty value as positive infinity</t:objective>
 		<t:steps>
 			replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-Dummy-Header" "";
-			
+
 			1. Auth with account
 			2. send message to account6
 			3. auth with account6
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -690,7 +690,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -708,7 +708,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -721,7 +721,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -734,7 +734,7 @@ replaceheader :newvalue "NewValue" :count "le" :comparator "i;ascii-numeric" "X-
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>

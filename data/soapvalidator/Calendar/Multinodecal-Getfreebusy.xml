@@ -90,7 +90,7 @@
     <t:test depends="admin_login" required="true" >
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name}</name>  
+                <name xmlns="">${COS.name}</name>
 				<a n="zimbraPrefMailPollingInterval">5m</a>
 				<a n="zimbraContactMaxNumEntries">0</a>
 				<a n="zimbraPrefGroupMailBy">conversation</a>
@@ -187,7 +187,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountA1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -201,7 +201,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountA2.id"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request>
@@ -215,7 +215,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountB1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -229,8 +229,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountB2.id"/>
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 </t:test_case>
 
 <t:test_case testcaseid="multinodecal_getfreebusy01" hostCount="2" type="smoke" bugids="7419" >
@@ -238,7 +238,7 @@
 	<t:steps> 1. Login to accountA1.
 			  2. Get the free/busy status of accountA2, accountB1 and accountB2 (All free).
 	</t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
 
 	<t:test>
@@ -253,14 +253,14 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 		</t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test>
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -268,8 +268,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -277,8 +277,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -286,22 +286,22 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="multinodecal_getfreebusy02" hostCount="2" type="bhr" bugids="7419" >
+<t:test_case testcaseid="multinodecal_getfreebusy02" hostCount="2" type="sanity" bugids="7419" >
     <t:objective>Verify the free/busy status of accountA1, accountB1 and accountB2 </t:objective>
 	<t:steps> 1. Login to accountA2.
 			  2. Get the free/busy status of accountA1, accountB1 and accountB2 (All free).
 	</t:steps>
 
 	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
-    
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -314,14 +314,14 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 		</t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test>
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -329,8 +329,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -338,8 +338,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -347,22 +347,22 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="multinodecal_getfreebusy03" hostCount="2" type="bhr" bugids="7419">
+<t:test_case testcaseid="multinodecal_getfreebusy03" hostCount="2" type="sanity" bugids="7419">
     <t:objective>Verify the free/busy status of accountA1, accountA2 and accountB2 </t:objective>
 	<t:steps> 1. Login to accountB1.
 			  2. Get the free/busy status of accountA1, accountA2 and accountB2 (All free).
 	</t:steps>
 
 	<t:property name="uri" value="${multihostB.mailClientUri}"/>
-    
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -375,14 +375,14 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 		</t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test>
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -390,8 +390,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -399,8 +399,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -408,22 +408,22 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="multinodecal_getfreebusy04" hostCount="2" type="bhr" bugids="7419">
+<t:test_case testcaseid="multinodecal_getfreebusy04" hostCount="2" type="sanity" bugids="7419">
     <t:objective>Verify the free/busy status of accountA1, accountA2 and accountB1 </t:objective>
 	<t:steps> 1. Login to accountB2.
 			  2. Get the free/busy status of accountA1, accountA2 and accountB1 (All free).
 	</t:steps>
 
 	<t:property name="uri" value="${multihostB.mailClientUri}"/>
-    
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -436,14 +436,14 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 		</t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test>
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -451,8 +451,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -460,8 +460,8 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB1.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 
@@ -469,21 +469,21 @@
         <t:request>
 			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="multinodecal_getfreebusy05" hostCount="2" type="bhr">
+<t:test_case testcaseid="multinodecal_getfreebusy05" hostCount="2" type="sanity">
     <t:objective>Verify the busy status of accountA2 </t:objective>
 	<t:steps> 1. Login to accountA2.
 			  2. Create a all day appointment fb=busy.
 			  3. Login into accountA1.
 			  4. Get the free/busy status of accountA2.
 	</t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
 
     <t:test>
@@ -505,8 +505,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF"  allDay="1" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${accountA1.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${accountA2.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -522,7 +522,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
-   
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -540,21 +540,21 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="multinodecal_getfreebusy06" hostCount="2" type="bhr">
+<t:test_case testcaseid="multinodecal_getfreebusy06" hostCount="2" type="sanity">
     <t:objective>Verify the busy status of accountA2 </t:objective>
 	<t:steps> 1. Login to accountA2.
 			  2. Create a all day appointment fb=Tentative
 			  3. Login into accountA1.
 			  4. Get the free/busy status of accountA2.
 	</t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
 
     <t:test>
@@ -576,8 +576,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="T" transp="O" status="CONF"  allDay="1" name="${appointment1.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst  ="NE" rsvp="1" a="${accountA1.name}" />
-                        <s d="${Time3}" />  
-                        <e d="${Time5}"/>  
+                        <s d="${Time3}" />
+                        <e d="${Time5}"/>
                         <or a="${accountA2.name}"/>
                     </inv>
                     <mp content-type="text/plain">
@@ -593,7 +593,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
-   
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -611,18 +611,18 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+3}" uid="${accountA2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:t"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:t"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="multinodecal_getfreebusy07" hostCount="2" type="bhr">  
+<t:test_case testcaseid="multinodecal_getfreebusy07" hostCount="2" type="sanity">
     <t:objective>GetFreeBusy status of attendees when status of Account is unknown </t:objective>
     <t:steps> 1. Login to account1.
 			  2. Check the FreeBusy status for account not existing on default domain.
-			  3. Check status non existing account. 
+			  3. Check status non existing account.
     </t:steps>
 
 
@@ -640,14 +640,14 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 		</t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${NonExist1.name}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:n"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:n"/>
         </t:response>
     </t:test>
 
@@ -655,15 +655,15 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${NonExist2.name}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:n"/>  
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:n"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest08" hostCount="2" type="bhr"> 
+<t:test_case testcaseid="GetFreeBusyRequest08" hostCount="2" type="sanity">
     <t:objective>GetFreeBusy status of attendees after the attendee has accepted the meeting and then declines the meeting. </t:objective>
     <t:steps> 1. Login to accountA1.
 			  2. Create an appointment of account1 with accountA2.
@@ -687,16 +687,16 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 		</t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test required="true">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${accountA2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${accountA1.name}"/>
                     </inv>
                     <e a="${accountA2.name}" t="t"/>
@@ -738,7 +738,7 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 		</t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -766,7 +766,7 @@
         <t:response>
            <t:select path = "//mail:SendInviteReplyResponse" attr="id" match="${accountA2.appointment1.id}"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
 
@@ -782,15 +782,15 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
 		</t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>  
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>     
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>
         </t:response>
     </t:test>
 
@@ -825,7 +825,7 @@
         <t:response>
            <t:select path = "//mail:SendInviteReplyResponse" attr="id" match="${accountA2.appointment1.id}"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
 
@@ -847,9 +847,9 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>     
+        <t:response>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>
         </t:response>
     </t:test>
 

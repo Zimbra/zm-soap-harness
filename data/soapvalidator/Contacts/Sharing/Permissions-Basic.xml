@@ -74,7 +74,7 @@
     <t:objective>basic system check</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test  id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -234,7 +234,7 @@
 	10. ContactActionRequest(grant).  PERM_DENIED.
 	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test  required="true">
@@ -258,7 +258,7 @@
                     <a n="firstName">${account1.contact1.firstName}</a>
                     <a n="lastName">${account1.contact1.lastName}</a>
                     <a n="email">${account1.contact1.email}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -347,7 +347,7 @@
 			<t:select path="//mail:SearchResponse/mail:cn"  attr="id" set="account2.contact1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test depends="getcontacts1a">
 		<t:request>
 			<GetContactsRequest xmlns="urn:zimbraMail">
@@ -368,7 +368,7 @@
                     <a n="firstName">firstName</a>
                     <a n="lastName">lastName</a>
                     <a n="email">email@email.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -417,7 +417,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SharingContactsBasic_02" type="bhr">
+<t:test_case testcaseid="SharingContactsBasic_02" type="sanity">
     <t:objective>Verify that sharing contacts with manager (rwidx) access allows contacts to be viewed, added, modified, and deleted, but not reshared</t:objective>
 	<t:steps>
 	1. Login as account4
@@ -432,7 +432,7 @@
 	10. ContactActionRequest(grant).  PERM_DENIED.
 	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test  required="true">
@@ -456,7 +456,7 @@
                     <a n="firstName">${account4.contact1.firstName}</a>
                     <a n="lastName">${account4.contact1.lastName}</a>
                     <a n="email">${account4.contact1.email}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -544,7 +544,7 @@
 			<t:select path="//mail:SearchResponse/mail:cn"  attr="id" set="account5.contact1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test depends="getcontacts1a">
 		<t:request>
 			<GetContactsRequest xmlns="urn:zimbraMail">
@@ -565,7 +565,7 @@
                     <a n="firstName">firstName</a>
                     <a n="lastName">lastName</a>
                     <a n="email">email@email.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -615,7 +615,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SharingContactsBasic_03" type="bhr" bugids="8491, 8890">
+<t:test_case testcaseid="SharingContactsBasic_03" type="sanity" bugids="8491, 8890">
     <t:objective>Verify that sharing contacts with "none" access does not grant access to the contact information</t:objective>
 	<t:steps>
 	1. Login as account6
@@ -625,12 +625,12 @@
 	5. Run a contacts search.  No results.
 	6. GetContactRequest.  PERM_DENIED.
 	7. CreateContactRequest.  PERM_DENIED.
-	8. ModifyContactRequest.  PERM_DENIED. 
-	9. ContactActionRequest(delete).  PERM_DENIED. 
+	8. ModifyContactRequest.  PERM_DENIED.
+	9. ContactActionRequest(delete).  PERM_DENIED.
 	10. ContactActionRequest(grant).  PERM_DENIED.
 	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 
     <t:test  required="true">
@@ -654,7 +654,7 @@
                     <a n="firstName">${account6.contact1.firstName}</a>
                     <a n="lastName">${account6.contact1.lastName}</a>
                     <a n="email">${account6.contact1.email}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -742,7 +742,7 @@
 			<t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
+
 
 	<t:test depends="getcontacts1a">
 		<t:request>
@@ -787,7 +787,7 @@
                     <a n="firstName">firstName</a>
                     <a n="lastName">lastName</a>
                     <a n="email">email@email.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -823,7 +823,7 @@
 	4. GetContactRequest should return PERM_DENIED
 	5. Run a contacts search.  The contacts MUST NOT be shown.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account8.server}"/>
 
     <t:test  required="true">
@@ -847,7 +847,7 @@
                     <a n="firstName">${account8.contact1.firstName}</a>
                     <a n="lastName">${account8.contact1.lastName}</a>
                     <a n="email">${account8.contact1.email}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>

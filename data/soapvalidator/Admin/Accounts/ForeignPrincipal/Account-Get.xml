@@ -5,11 +5,11 @@
 
 <t:property name="account1.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account1.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="account2.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
 <t:property name="account2.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="account3.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account3.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
 
@@ -63,7 +63,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_AccountGet_01" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_01" type="sanity">
     <t:objective>Get an account by id = foreign principal attribute</t:objective>
 
 
@@ -78,7 +78,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -95,7 +95,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_AccountGet_02" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_02" type="sanity">
     <t:objective>Get an account with two foreign principal attributes by id = foreign principal</t:objective>
 
 
@@ -111,7 +111,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -137,7 +137,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ForeignPrincipal_AccountGet_03" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_03" type="sanity">
     <t:objective>Verify that an account with a foreign principal can still be searched by name and zimbra ID</t:objective>
 
 
@@ -152,7 +152,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -178,9 +178,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ForeignPrincipal_AccountGet_04" type="sanity">
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_04" type="functional">
 	<t:objective> GetAccountRequest by "id = foreignPrincipal" and applyCos=1  </t:objective>
-	
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -192,7 +192,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -204,12 +204,12 @@
 			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraFeatureGalEnabled']" match="TRUE|FALSE" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="ForeignPrincipal_AccountGet_05" type="sanity">
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_05" type="functional">
 	<t:objective>Get a deleted account by "id = foreignPrincipal" - should return NO_SUCH_ACCOUNT</t:objective>
-	
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -221,7 +221,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -244,15 +244,15 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT$"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="ForeignPrincipal_AccountGet_06" type="sanity" bugids="8347, 27966">
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_06" type="functional" bugids="8347, 27966">
     <t:objective>Get accounts with the same foreign principal attributes</t:objective>
 	<t:steps>
 		1. Create account1 with foreignPrincipal1 (success)
-		2. Create account2 with foreignPrincipal1 (success)		
-		3. Get accounts with foreignPrincipal1 (MULTIPLE_ACCOUNTS_MATCHED)		
+		2. Create account2 with foreignPrincipal1 (success)
+		3. Get accounts with foreignPrincipal1 (MULTIPLE_ACCOUNTS_MATCHED)
 	</t:steps>
 
     <t:test >
@@ -266,7 +266,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -280,7 +280,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -292,14 +292,14 @@
             <t:select path= "//zimbra:Code" match="^service.FAILURE$"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
 <!-- Since foreignPrincipal must be unique, how can the accounts be recreated? -->
 <t:test_case testcaseid="ForeignPrincipal_AccountCreate_10" type="deprecated" >
     <t:objective>Create an account with zimbraForeignPrincipal as spaces/blank/spchar/sometext/negative/zero/largenumber</t:objective>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -311,7 +311,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -335,7 +335,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -359,7 +359,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -383,7 +383,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -407,7 +407,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -431,7 +431,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
@@ -455,7 +455,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>

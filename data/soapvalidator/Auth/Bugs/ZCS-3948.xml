@@ -38,7 +38,7 @@
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -65,16 +65,16 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="Basic_auth_verification1" type="bhr" bugids="ZCS-3948">
+	<t:test_case testcaseid="Basic_auth_verification1" type="sanity" bugids="ZCS-3948">
 
 		<t:objective>Verify basic authentication for guest accounts and validate account enumeration is not possible</t:objective>
 		<t:steps>1. Send message from admin account to test account.
 		         2. Login as test account and search message sent by admin account.
 		         3. Trigger GET request using basic auth with correct username and password for above message.
 		</t:steps>
-		
+
 		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-		
+
 		<t:test id="admin_login" required="true" depends="ping">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -100,7 +100,7 @@
 				</SendMsgRequest>
 			</t:request>
 		</t:test>
-		
+
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test id="auth_testAccount1" required="true">
@@ -142,7 +142,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="Basic_auth_verification2" type="bhr" bugids="ZCS-3948">
+	<t:test_case testcaseid="Basic_auth_verification2" type="sanity" bugids="ZCS-3948">
 		<t:objective>Verify basic authentication for guest accounts and validate status code returned for incorrect password</t:objective>
 		<t:steps>1. Trigger GET request using basic auth with correct username and incorrect password for above message.
 		         2. Verify status code returned is '401'.
@@ -161,9 +161,9 @@
 		</t:resttest>
 	</t:test_case>
 
-	<t:test_case testcaseid="Basic_auth_verification3" type="bhr" bugids="ZCS-3948">
+	<t:test_case testcaseid="Basic_auth_verification3" type="sanity" bugids="ZCS-3948">
 		<t:objective>Verify basic authentication for guest accounts and validate status code returned for incorrect username</t:objective>
-		
+
 		<t:steps>1. Trigger GET request using basic auth with incorrect username for above message.
 		         2. Verify status code returned is '401'.
 		</t:steps>

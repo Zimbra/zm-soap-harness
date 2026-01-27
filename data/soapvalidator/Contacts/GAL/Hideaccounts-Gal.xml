@@ -69,7 +69,7 @@
     </t:test>
 
 </t:test_case>
- 
+
 
 <t:test_case testcaseid = "acctSetup1_hideaccounts_gal" type="always">
     <t:objective>Account Setup </t:objective>
@@ -127,12 +127,12 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal01" type="bhr">
+<t:test_case testcaseid = "hideaccounts_gal01" type="sanity">
     <t:objective>Verify that after selecting zimbraHideInGal=true account is not visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -165,7 +165,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -184,19 +184,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${account2}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${account2}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//admin:SearchGalResponse/admin:cn[@n='email']" match="${account2}@${domain}" emptyset="1" />
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal02" type="bhr">
+<t:test_case testcaseid = "hideaccounts_gal02" type="sanity">
     <t:objective>Verify that after selecting zimbraHideInGal=false account is visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -216,7 +216,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="CreateAccount2a" required="true" depends="adminlogin">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -229,7 +229,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -248,20 +248,20 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${account3}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${account3}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
  			<t:select path="//admin:SearchGalResponse/admin:cn[@n='email']" match="${account3}@${domain}" emptyset="1" />
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
 
-<t:test_case testcaseid = "hideaccounts_gal03" type="bhr">
+<t:test_case testcaseid = "hideaccounts_gal03" type="sanity">
     <t:objective>Verify that after modifying the account with zimbraHideInGal=false account is visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -292,7 +292,7 @@
         <t:response>
             <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" set="account2.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -311,19 +311,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${account2}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${account2}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='fullName']" match="${account2}" />
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal04" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal04" type="regression">
     <t:objective>Verify that the resource with zimbraHideInGal=true is not visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -378,19 +378,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource"> 
-				<name>${displayName1}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
+				<name>${displayName1}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//admin:SearchGalResponse/admin:cn/admin:a[@n='email']" match="${displayName1}@${domain}" emptyset="1" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal05" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal05" type="regression">
     <t:objective>Verify that the resource with zimbraHideInGal=true is visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -445,19 +445,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource"> 
-				<name>${Resource2.name}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
+				<name>${Resource2.name}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//admin:SearchGalResponse/admin:cn/admin:a[@n='email']" match="${resourceeq2.name}" emptyset="1" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal06" type="functional" bugids="7997">
+<t:test_case testcaseid = "hideaccounts_gal06" type="regression" bugids="7997">
     <t:objective>Verify that when a resource=Location is modified with zimbraHideInGal=false is  visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -501,14 +501,14 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource"> 
-				<name>${Resource3.name}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
+				<name>${Resource3.name}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
    			<t:select path="//admin:SearchGalResponse/admin:cn/admin:a[@n='email']" match="${resourceloc3.name}" emptyset="1"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 
 	<t:test>
@@ -540,19 +540,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource"> 
-				<name>${Resource3.name}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
+				<name>${Resource3.name}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${resourceloc3.name}"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal07" type="functional" bugids="7997">
+<t:test_case testcaseid = "hideaccounts_gal07" type="regression" bugids="7997">
     <t:objective>Verify that when a resource=Equipment is modified with zimbraHideInGal=false is not visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -611,14 +611,14 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource"> 
-				<name>${Resource4.name}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
+				<name>${Resource4.name}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//admin:SearchGalResponse/admin:cn/admin:a[@n='email']" match="${resourceeq4.name}" emptyset="1"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
@@ -661,19 +661,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource"> 
-				<name>${Resource4.name}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
+				<name>${Resource4.name}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${resourceeq4.name}"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal08" type="bhr">
+<t:test_case testcaseid = "hideaccounts_gal08" type="sanity">
     <t:objective>Verify that after selecting zimbraHideInGal=true alias is not visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -693,7 +693,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="CreateAccount8a" required="true" depends="adminlogin">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -706,7 +706,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias8a" required="true" depends="CreateAccount8a">
         <t:request>
@@ -718,7 +718,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -737,19 +737,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${accalias1}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${accalias1}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//admin:SearchGalResponse/admin:cn/admin:a[@n='email']" match="${accalias1}@${domain}" emptyset="1" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal09" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal09" type="regression">
     <t:objective>Verify that after selecting zimbraHideInGal=true alias is not visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -769,7 +769,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="CreateAccount9a" required="true" depends="adminlogin">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -782,7 +782,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias9a" required="true" depends="CreateAccount9a">
         <t:request>
@@ -794,7 +794,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -813,18 +813,18 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${accalias2}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${accalias2}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn/admin:a[@n='email']" match="${accalias2}@${domain}" emptyset="1" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid = "hideaccounts_gal10" type="bhr">
+<t:test_case testcaseid = "hideaccounts_gal10" type="sanity">
     <t:objective>Verify that after selecting zimbraHideInGal=false alias is visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -845,7 +845,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="CreateAccount10a" required="true" depends="adminlogin">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -858,7 +858,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account6.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias10a" required="true" depends="CreateAccount10a">
         <t:request>
@@ -870,7 +870,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -889,19 +889,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${accalias2}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${accalias2}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email2']" match="${accalias2}@${domain}" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal11" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal11" type="regression">
     <t:objective>Verify that after selecting zimbraHideInGal=false, alias is visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -922,7 +922,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="CreateAccount11a" required="true" depends="adminlogin">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -935,7 +935,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account7.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias11a" required="true" depends="CreateAccount11a">
         <t:request>
@@ -947,7 +947,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -966,18 +966,18 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${accalias3}@${domain1}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${accalias3}@${domain1}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email2']" match="${accalias3}@${domain1}"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid = "hideaccounts_gal12" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal12" type="regression">
     <t:objective>Verify that after modifying zimbraHideInGal=false, aliases are not visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -999,7 +999,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="CreateAccount12a" required="true" depends="adminlogin">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1012,7 +1012,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account8.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct8.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias12a" required="true" depends="CreateAccount12a">
         <t:request>
@@ -1024,7 +1024,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias12b" required="true" depends="CreateAccount12a">
         <t:request>
@@ -1036,7 +1036,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="ModifyAccount12a" required="true" depends="adminlogin">
         <t:request>
@@ -1048,7 +1048,7 @@
         <t:response>
             <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" set="account8.id"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -1067,29 +1067,29 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${accalias4}@${domain}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${accalias4}@${domain}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn[@n='email']" match="${accalias4}@${domain}" emptyset="1"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${accalias5}@${domain1}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${accalias5}@${domain1}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn[@n='email']" match="${accalias5}@${domain1}" emptyset="1"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid = "hideaccounts_gal13" type="bhr">
+<t:test_case testcaseid = "hideaccounts_gal13" type="sanity">
     <t:objective>Verify that after selecting zimbraHideInGal=true, DL is not visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -1109,7 +1109,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -1139,19 +1139,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${list1}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${list1}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn[@n='email']" match="${list1}" emptyset="1"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal14" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal14" type="regression">
     <t:objective>Verify that after selecting zimbraHideInGal=false, DL is visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -1171,7 +1171,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -1201,19 +1201,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${list2}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${list2}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${list2}" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal15" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal15" type="regression">
     <t:objective>Verify that after modifying zimbraHideInGal=true, DL is not visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -1234,7 +1234,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
     <t:test required="true">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -1256,7 +1256,7 @@
             </ModifyDistributionListRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyDistributionListResponse"/> 
+            <t:select path="//admin:ModifyDistributionListResponse"/>
         </t:response>
     </t:test>
 
@@ -1277,19 +1277,19 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${list3}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${list3}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${list3}" emptyset="1"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal16" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal16" type="regression">
     <t:objective>Verify that after select zimbraHideInGal=true, nothing is displayed on searching for all items</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -1309,7 +1309,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="CreateAccount16a" required="true" depends="adminlogin">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1322,7 +1322,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account9.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct9.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="AddAlias16a" required="true" depends="CreateAccount16a">
         <t:request>
@@ -1334,7 +1334,7 @@
         <t:response>
              <t:select path="//admin:AddAccountAliasResponse"/>
  		</t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -1402,24 +1402,24 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="all"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="all">
                 <name>${account9}@${domain}</name>
-				<name>${list4}</name> 
+				<name>${list4}</name>
 				<name>${accalias5}@${domain}</name>
-				<name>${resourceloc6.name}</name> 
-			</SearchGalRequest> 
+				<name>${resourceloc6.name}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//admin:SearchGalResponse" emptyset="1"/>
   		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal17" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal17" type="regression">
     <t:objective>Verify that 'more' is not truncated, when type="all". </t:objective>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
     <t:test>
@@ -1437,24 +1437,24 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="all"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="all">
                 <name>${account9}@${domain}</name>
-				<name>${list4}</name> 
+				<name>${list4}</name>
 				<name>${accalias5}@${domain}</name>
-				<name>${resourceloc6.name}</name> 
-			</SearchGalRequest> 
+				<name>${resourceloc6.name}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse" attr="more" match="0" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal18" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal18" type="regression">
     <t:objective>Verify 'type' with spchar/sometext/number/zero/negative/decimal/blank/space . </t:objective>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
     <t:test>
@@ -1472,96 +1472,96 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="spchar"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="spchar">
                 <name>${account9}@${domain}</name>
-			</SearchGalRequest> 
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="sometext"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="sometext">
                 <name>${account9}@${domain}</name>
-			</SearchGalRequest> 
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="number"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="number">
                 <name>${account9}@${domain}</name>
-			</SearchGalRequest> 
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="zero"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="zero">
                 <name>${account9}@${domain}</name>
-			</SearchGalRequest> 
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="functional"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="regression">
                 <name>${account9}@${domain}</name>
-			</SearchGalRequest> 
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="decimal"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="decimal">
                 <name>${account9}@${domain}</name>
-			</SearchGalRequest> 
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="blank"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="blank">
                 <name>${account9}@${domain}</name>
-			</SearchGalRequest> 
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="space"> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="space">
                 <name>${account9}@${domain}</name>
-			</SearchGalRequest> 
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
  		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "hideaccounts_gal19" type="functional">
+<t:test_case testcaseid = "hideaccounts_gal19" type="regression">
     <t:objective>Verify that after selecting zimbraHideInGal=false and is on different domain, the account is not visible</t:objective>
 	<t:steps>
 			1. Login into admin.
@@ -1581,7 +1581,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="CreateAccount17a" required="true" depends="adminlogin">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1594,7 +1594,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account10.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct10.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -1613,15 +1613,15 @@
 
 	<t:test>
 		<t:request>
-			<SearchGalRequest xmlns="urn:zimbraAccount" type="account"> 
-				<name>${account10}@${domain1}</name> 
-			</SearchGalRequest> 
+			<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+				<name>${account10}@${domain1}</name>
+			</SearchGalRequest>
 		</t:request>
 		<t:response>
   			<t:select path="//acct:SearchGalResponse/acct:cn/admin:a[@n='email']" match="${account10}@${domain1}" emptyset="1" />
  		</t:response>
-    </t:test>  
- 
+    </t:test>
+
 </t:test_case>
 
 

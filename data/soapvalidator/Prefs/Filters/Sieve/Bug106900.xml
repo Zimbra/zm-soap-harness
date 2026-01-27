@@ -72,7 +72,7 @@ notify :message "notification_msg4"
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -81,7 +81,7 @@ notify :message "notification_msg4"
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -96,7 +96,7 @@ notify :message "notification_msg4"
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
         </t:response>
-       </t:test>	    
+       </t:test>
 
         <t:test required="true">
             <t:request>
@@ -206,7 +206,7 @@ notify :message "notification_msg4"
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="bug106900_rule1" type="functional" bugids="106900">
+    <t:test_case testcaseid="bug106900_rule1" type="regression" bugids="106900">
         <t:objective>notify action - if :from is a valid email address, From header of the notification message should be set to the address</t:objective>
         <t:test required="true">
             <t:request>
@@ -230,7 +230,7 @@ notify :message "notification_msg4"
                 <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
-       
+
         <t:delay sec="10" />
 
         <t:test>
@@ -276,7 +276,7 @@ notify :message "notification_msg4"
     </t:test_case>
 
 
-    <t:test_case testcaseid="bug106900_rule2" type="functional" bugids="106900">
+    <t:test_case testcaseid="bug106900_rule2" type="regression" bugids="106900">
         <t:objective>notify action - if :from is an invalid email address, From header of the notification message should be set to envelope "To" of the triggered message</t:objective>
         <t:test required="true">
             <t:request>
@@ -335,7 +335,7 @@ notify :message "notification_msg4"
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="bug106900_rule3" type="functional" bugids="106900">
+    <t:test_case testcaseid="bug106900_rule3" type="regression" bugids="106900">
         <t:objective>notify action - if :from is an empty string, From header of the notification message should be set to envelope "To" of the triggered message</t:objective>
         <t:test required="true">
             <t:request>
@@ -394,7 +394,7 @@ notify :message "notification_msg4"
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="bug106900_rule4" type="functional" bugids="106900">
+    <t:test_case testcaseid="bug106900_rule4" type="regression" bugids="106900">
         <t:objective>notify action - if :from does not exist, From header of the notification message should be set to envelope "To" of the triggered message</t:objective>
         <t:test required="true">
             <t:request>
@@ -455,7 +455,7 @@ notify :message "notification_msg4"
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -476,7 +476,7 @@ notify :message "notification_msg4"
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 

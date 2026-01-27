@@ -5,11 +5,11 @@
 
 <t:property name="account1.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account1.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="account2.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
 <t:property name="account2.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="account3.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account4.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account3.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
@@ -52,7 +52,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_AccountCreate_01" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_AccountCreate_01" type="sanity">
     <t:objective>Create an account with a foreign principal attribute</t:objective>
 
 
@@ -67,12 +67,12 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_AccountCreate_02" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_AccountCreate_02" type="sanity">
     <t:objective>Create an account with two foreign principal attributes</t:objective>
 
 
@@ -88,15 +88,15 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ForeignPrincipal_AccountCreate_03" type="bhr" bugids="8347">
+<t:test_case testcaseid="ForeignPrincipal_AccountCreate_03" type="sanity" bugids="8347">
     <t:objective>Create two accounts with the same foreign principal attributes</t:objective>
 	<t:steps>
 		1. Create account1 with foreignPrincipal1 (success)
-		2. Create account2 with foreignPrincipal1 (success)		
+		2. Create account2 with foreignPrincipal1 (success)
 	</t:steps>
 
     <t:test >
@@ -110,7 +110,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -123,14 +123,14 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_AccountCreate_10" type="functional" >
+<t:test_case testcaseid="ForeignPrincipal_AccountCreate_10" type="regression" >
     <t:objective>Create an account with zimbraForeignPrincipal as spaces/blank/spchar/sometext/negative/zero/largenumber</t:objective>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -142,7 +142,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -155,7 +155,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -168,7 +168,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -181,7 +181,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -194,7 +194,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -207,7 +207,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -220,7 +220,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

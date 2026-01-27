@@ -10,7 +10,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-	
+
 		<t:test id="ping">
 			<t:request>
 				<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -65,12 +65,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug67857_01" type="bhr">
+<t:test_case testcaseid="bug67857_01" type="sanity">
 	<t:objective>Verify no NPE in CreateTaskResponse for SOAP CreateTaskRequest with no recipients</t:objective>
 	<t:steps>1. Go to Task
              2. Create an Task with no attendees
              3. Save it
-             
+
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
@@ -121,12 +121,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug67857_02" type="bhr">
+<t:test_case testcaseid="bug67857_02" type="sanity">
 	<t:objective>Verify no NPE in CreateAppointmentResponse for SOAP CreateAppointmentRequest with no recipients</t:objective>
 	<t:steps>1. Go to Calendar
              2. Create an Calendar with no attendees
              3. Save it
-             
+
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
@@ -155,15 +155,15 @@
 	</t:test>
 
 	<t:property name="time.1893499200000.gmt" value="1893499200000"/> <!--  01 Jan 2030 12:00:00 GMT  -->
-	
+
 	<t:test>
 		<t:request>
 	        <CreateAppointmentRequest echo="true" xmlns="urn:zimbraMail">
      		 <m l="${account1.folder.calendar.id}">
         		<inv rsvp="false" method="" compNum="0">
               	 <comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="WSDL Task 1" >
-              	 		<s d="${ICALTIME[${time.1893499200000.gmt}]}"/>  
-	                    <e d="${ICALTIME(+1h)[${time.1893499200000.gmt}]}"/> 
+              	 		<s d="${ICALTIME[${time.1893499200000.gmt}]}"/>
+	                    <e d="${ICALTIME(+1h)[${time.1893499200000.gmt}]}"/>
               	 	<or d="wsdl1" a="${test_account1.name}"/>
           		</comp>
           		</inv>
@@ -173,7 +173,7 @@
        		    </mp>
         	  <su>${appointment.subject}</su>
             </m>
-            </CreateAppointmentRequest> 
+            </CreateAppointmentRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//mail:CreateAppointmentResponse"/>

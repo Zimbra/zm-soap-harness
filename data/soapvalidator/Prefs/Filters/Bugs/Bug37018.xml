@@ -15,7 +15,7 @@
 <t:property name="lastName" value="ContLast.${TIME}.${COUNTER}"/>
 <t:property name="folder.name" value="folder.${TIME}.${COUNTER}"/>
 <t:property name="folder.pname" value="1"/>
-	
+
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -88,7 +88,7 @@
         </t:response>
     </t:test>
 
-	
+
 	<t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -101,24 +101,24 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
     </t:test>
-	
+
 
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="Filter_AddressIn_bug37018" type="bhr">
+<t:test_case testcaseid="Filter_AddressIn_bug37018" type="sanity">
     <t:objective> Verify filter works if To field of the mail matches the contacts saved </t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Create a contact
-			  2. Save a Rule as Addressbook -> (To) (cc) (bcc) -> :in -> contacts			  
+			  2. Save a Rule as Addressbook -> (To) (cc) (bcc) -> :in -> contacts
 			  3. Inject a Mail with To field is one of the contact that is being saved.
 			  4. Inject a mail with To field that is there in the contacts
 			  5. Inject a mail with cc field that is there in the contacts
 			  6. Inject a mail with bcc field that is there in the contacts
 			  7. Search mail get filtered and only one email should be available.
         </t:steps>
-  
+
   	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -131,8 +131,8 @@
 
         </t:response>
     </t:test>
-	
-	<!-- Creating Contact as account2 
+
+	<!-- Creating Contact as account2
 	<t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -140,7 +140,7 @@
                     <a n="firstName">${firstName}</a>
                     <a n="lastName">${lastName}</a>
                     <a n="email">${account2.name}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
@@ -148,12 +148,12 @@
         </t:response>
     </t:test> -->
 		<!-- Create a Folder in Mail -->
-		
+
 	<t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response>        
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
         </t:response>
     </t:test>
@@ -168,7 +168,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -176,14 +176,14 @@
                 	<a n="firstName">foo</a>
                     <a n="lastName">foo</a>
                 	<a n="email">foo@foo.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn"/>
         </t:response>
     </t:test>
-	
+
 	<!-- Saving the rules request an  setting up the filter -->
 	<t:test id="filters_basic01a">
         <t:request>
@@ -193,11 +193,11 @@
                          <filterTests condition="anyof">
                          	<addressBookTest header="to" stringComparison="contacts"/>
                          	<addressBookTest header="cc" stringComparison="contacts"/>
-                         	<addressBookTest header="bcc" stringComparison="contacts"/>                     	     
+                         	<addressBookTest header="bcc" stringComparison="contacts"/>
                         </filterTests>
-                        <filterActions> 
-                        	<actionFileInto folderPath="/${globals.inbox}/${folder.name}" />       
-                        	<actionStop />       
+                        <filterActions>
+                        	<actionFileInto folderPath="/${globals.inbox}/${folder.name}" />
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -207,7 +207,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -231,52 +231,52 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>	
-	
-	
+    </t:test>
+
+
 	<!--Lmtp Inject emails to:account2 and cc:account1 from:account4-->
 	<!-- Account2 is in contact in the Addressbook -->
-	<!-- LMTP Inject the message which should get into the new folder created--> 
+	<!-- LMTP Inject the message which should get into the new folder created-->
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
-            <to>${account1.name}</to>			
+            <to>${account1.name}</to>
 			<from>${account4.name}</from>
-			<server>${account1.server}</server>           
+			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>   
-	
+    </t:mailinjecttest>
+
 	<!-- LMTP Inject the message which should get into inbox -->
 	<t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg02.file}</filename>
-            <to>${account1.name}</to>			
+            <to>${account1.name}</to>
 			<from>${account4.name}</from>
-			<server>${account1.server}</server>           
+			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>   
-	
+    </t:mailinjecttest>
+
 	<!--  <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account1.server}</address>
-            <filename>${msg01.file}</filename>            
-            <recipient>${account1.name}</recipient>           
-            <sender>${account4.name}</sender>            
+            <filename>${msg01.file}</filename>
+            <recipient>${account1.name}</recipient>
+            <sender>${account4.name}</sender>
         </t:smtpInjectRequest>
-    </t:smtpinjecttest> -->    
+    </t:smtpinjecttest> -->
 
 
-	<!-- SMTP Inject the message which should get into inbox        
+	<!-- SMTP Inject the message which should get into inbox
  	<t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account1.server}</address>
-            <filename>${msg02.file}</filename>            
+            <filename>${msg02.file}</filename>
             <recipient>${account1.name}</recipient>
-            <sender>${account4.name}</sender>            
+            <sender>${account4.name}</sender>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>  -->
- 
-    <!-- 
+
+    <!--
      <t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account1.server}</address>
@@ -286,47 +286,47 @@
             <modify>
                 <header a="To">${account2.name}</header>
                 <header a="From">foo.foo@foo.com</header>
-                <header a="Subject">ABCD</header>		        
+                <header a="Subject">ABCD</header>
             </modify>
         </t:smtpInjectRequest>
     </t:smtpinjecttest>
-        
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
 			<to>${account1.name}</to>
 			<from>${nonZimbraUser.name}</from>
-			<server>${account1.server}</server>  
+			<server>${account1.server}</server>
 			<modify>
-                <header a="To">${account3.name}</header>                
-            </modify>          
+                <header a="To">${account3.name}</header>
+            </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest> 
+    </t:mailinjecttest>
 
    <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
 			<to>${account1.name}</to>
 			<from>${nonZimbraUser.name}</from>
-			<server>${account1.server}</server>  
+			<server>${account1.server}</server>
 			<modify>
-                <header a="cc">${account3.name}</header>                
-            </modify>          
+                <header a="cc">${account3.name}</header>
+            </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest> 
-    
+    </t:mailinjecttest>
+
        <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
 			<to>${account1.name}</to>
 			<from>${nonZimbraUser.name}</from>
-			<server>${account1.server}</server>  
+			<server>${account1.server}</server>
 			<modify>
-                <header a="bcc">${account3.name}</header>                
-            </modify>          
+                <header a="bcc">${account3.name}</header>
+            </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>  --> 
-    
+    </t:mailinjecttest>  -->
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -338,8 +338,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-		
-	 	
+
+
     <t:test id="searchRequest1">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -348,7 +348,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="l" match="${folder.id}" />
-            <t:select path="//mail:SearchResponse/mail:m" attr="l" match="${account1.folder.inbox.id}" />            
+            <t:select path="//mail:SearchResponse/mail:m" attr="l" match="${account1.folder.inbox.id}" />
         </t:response>
     </t:test>
 

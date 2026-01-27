@@ -44,7 +44,7 @@
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
 
-	
+
 
     <t:test required="true">
         <t:request>
@@ -57,7 +57,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -70,7 +70,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- account2 creates a conversation and gets the conversation ID -->
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -113,7 +113,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_User_ModifySignatureRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountBy_User_ModifySignatureRequest_Basic01" type="sanity">
     <t:objective>Use a user token with accountby to ModifySignatureRequest</t:objective>
     <t:steps>
     1. Use user authtoken with accountby=account1 to ModifySignatureRequest - PERM_DENIED
@@ -136,7 +136,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
 		</t:response>
 	</t:test>
-	
+
 
 </t:test_case>
 

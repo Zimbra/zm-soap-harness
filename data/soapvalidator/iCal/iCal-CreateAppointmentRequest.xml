@@ -32,7 +32,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -47,7 +47,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -60,7 +60,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -103,7 +103,7 @@
 		2. Login to the second account to get the iCal
 		3. Parse the iCal for correctness
 	</t:steps>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -116,16 +116,16 @@
 
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" loc="${appt1.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-                        <s d="${appt1.start}"/>  
-                        <e d="${appt1.end}"/>  
+                        <s d="${appt1.start}"/>
+                        <e d="${appt1.end}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${account2.name}" t="t"/>
@@ -164,14 +164,14 @@
 
 
 
-<t:test_case testcaseid="iCalBasicFormat_CreateAppointmentRequest2" type="sanity" bugids="8015">
+<t:test_case testcaseid="iCalBasicFormat_CreateAppointmentRequest2" type="functional" bugids="8015">
 	<t:objective>Verify that only one timezone is specified when using tz="Hawaii"</t:objective>
 	<t:steps>
-		1. Add the iCal using CreateAppointmentRequest, with tz="(GMT-10.00) Hawaii" 
+		1. Add the iCal using CreateAppointmentRequest, with tz="(GMT-10.00) Hawaii"
 		2. Get the iCal
 		3. Parse the iCal for correctness
 	</t:steps>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -184,16 +184,16 @@
 
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt2.subject}" loc="${appt2.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
-                        <s d="${appt2.start}" tz="(GMT-10.00) Hawaii"/>  
-                        <e d="${appt2.end}" tz="(GMT-10.00) Hawaii"/>  
+                        <s d="${appt2.start}" tz="(GMT-10.00) Hawaii"/>
+                        <e d="${appt2.end}" tz="(GMT-10.00) Hawaii"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${account2.name}" t="t"/>

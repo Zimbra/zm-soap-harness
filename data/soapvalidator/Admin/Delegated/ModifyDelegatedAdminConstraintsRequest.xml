@@ -18,11 +18,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name1}</name>        
+                <name xmlns="">${COS.name1}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -46,8 +46,8 @@
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-     
+    </t:test>
+
 	<t:test>
         <t:request>
             <ModifyDelegatedAdminConstraintsRequest xmlns="urn:zimbraAdmin" type="cos" name="${COS.name1}">
@@ -55,31 +55,31 @@
 				    <constraint>
 				      <max>624288000</max>
 				      <min>30971520</min>
-				    </constraint>      
-				</a>         	
+				    </constraint>
+				</a>
             </ModifyDelegatedAdminConstraintsRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyDelegatedAdminConstraintsResponse"/>            
+            <t:select path="//admin:ModifyDelegatedAdminConstraintsResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetDelegatedAdminConstraintsRequest xmlns="urn:zimbraAdmin" type="cos" name="${COS.name1}">
-            	<a name="zimbraMailQuota"/>      	
+            	<a name="zimbraMailQuota"/>
             </GetDelegatedAdminConstraintsRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:GetDelegatedAdminConstraintsResponse/admin:a/admin:constraint/admin:min"  match="30971520" />            
+            <t:select path="//admin:GetDelegatedAdminConstraintsResponse/admin:a/admin:constraint/admin:min"  match="30971520" />
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="ModifyDelegatedAdminConstraintsRequest_02" type="bhr">
+<t:test_case testcaseid="ModifyDelegatedAdminConstraintsRequest_02" type="sanity">
     <t:objective>Verify modified cos data of constraint with empty value by ModifyDelegatedAdminConstraintsRequest</t:objective>
-     
+
 	<t:test>
         <t:request>
             <ModifyDelegatedAdminConstraintsRequest xmlns="urn:zimbraAdmin" type="cos" name="${COS.name1}" >
@@ -87,31 +87,31 @@
 				    <constraint>
 				     <max></max>
 				      <min></min>
-				    </constraint>      
-				</a>       	
+				    </constraint>
+				</a>
             </ModifyDelegatedAdminConstraintsRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyDelegatedAdminConstraintsResponse"/>            
+            <t:select path="//admin:ModifyDelegatedAdminConstraintsResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetDelegatedAdminConstraintsRequest xmlns="urn:zimbraAdmin" type="cos" name="${COS.name1}">
-            	<a name="zimbraMailQuota"/>      	
+            	<a name="zimbraMailQuota"/>
             </GetDelegatedAdminConstraintsRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:GetDelegatedAdminConstraintsResponse/admin:a/admin:constraint/admin:min" emptyset="1"/>            
+            <t:select path="//admin:GetDelegatedAdminConstraintsResponse/admin:a/admin:constraint/admin:min" emptyset="1"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="ModifyDelegatedAdminConstraintsRequest_03" type="bhr">
+<t:test_case testcaseid="ModifyDelegatedAdminConstraintsRequest_03" type="sanity">
     <t:objective>Verify modified config data by ModifyDelegatedAdminConstraintsRequest</t:objective>
-     
+
 	<t:test>
         <t:request>
             <ModifyDelegatedAdminConstraintsRequest xmlns="urn:zimbraAdmin" type="config" >
@@ -119,16 +119,16 @@
 				    <constraint>
 				    <values>
 			         <v>10d</v>
-			      </values>				    			      
-				    </constraint>      
-				</a>         	
+			      </values>
+				    </constraint>
+				</a>
             </ModifyDelegatedAdminConstraintsRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyDelegatedAdminConstraintsResponse"/>            
+            <t:select path="//admin:ModifyDelegatedAdminConstraintsResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
            <GetDelegatedAdminConstraintsRequest xmlns="urn:zimbraAdmin" type="config">
@@ -137,10 +137,10 @@
         </t:request>
         <t:response>
             <t:select path="//admin:GetDelegatedAdminConstraintsResponse/admin:a[@name='zimbraLastLogonTimestampFrequency']"  />
-        	<t:select path="//admin:GetDelegatedAdminConstraintsResponse/admin:a/admin:constraint/admin:values/admin:v"  match="10d" />       	
+        	<t:select path="//admin:GetDelegatedAdminConstraintsResponse/admin:a/admin:constraint/admin:values/admin:v"  match="10d" />
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

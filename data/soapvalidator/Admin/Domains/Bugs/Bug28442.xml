@@ -30,7 +30,7 @@
     <t:objective>Create a Domain  </t:objective>
     <t:steps> 1. Create 2 Domains
     </t:steps>
-    
+
      <t:test  id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -42,7 +42,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="CreateDomainRequest1a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -51,10 +51,10 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="CreateDomainRequest1b">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -63,16 +63,16 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id2"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id2"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyDomainSmtpAttrs" type="bhr">
+<t:test_case testcaseid="ModifyDomainSmtpAttrs" type="sanity">
     <t:objective> Modify SMTP attributes of both the domains </t:objective>
-    
+
     <t:test>
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -80,19 +80,19 @@
                 <a n="zimbraSmtpHostname">${domain.name2}</a>
                 <a n="zimbraSmtpPort">${port.no}</a>
                 <a n="zimbraSmtpTimeout">${timeout}</a>
-                <a n="zimbraSmtpSendPartial">${partial}</a>              
+                <a n="zimbraSmtpSendPartial">${partial}</a>
             </ModifyDomainRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
             <t:select path="//admin:ModifyDomainResponse/admin:domain" attr="id"/>
             <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpHostname']" match="${domain.name2}"/>
-            <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpPort']" match="${port.no}"/>            
+            <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpPort']" match="${port.no}"/>
             <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpTimeout']" match="${timeout}"/>
-            <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpSendPartial']" match="${partial}"/>        
+            <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpSendPartial']" match="${partial}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -100,19 +100,19 @@
                 <a n="zimbraSmtpHostname">${domain.name1}</a>
                 <a n="zimbraSmtpPort">${port.no}</a>
                 <a n="zimbraSmtpTimeout">${timeout}</a>
-                <a n="zimbraSmtpSendPartial">TRUE</a>              
+                <a n="zimbraSmtpSendPartial">TRUE</a>
             </ModifyDomainRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
             <t:select path="//admin:ModifyDomainResponse/admin:domain" attr="id"/>
             <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpHostname']" match="${domain.name1}"/>
-            <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpPort']" match="${port.no}"/>            
+            <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpPort']" match="${port.no}"/>
             <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpTimeout']" match="${timeout}"/>
-            <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpSendPartial']" match="TRUE"/>        
+            <t:select path="//admin:ModifyDomainResponse/admin:domain/admin:a[@n='zimbraSmtpSendPartial']" match="TRUE"/>
         </t:response>
     </t:test>
-    
-    
+
+
 </t:test_case>
 </t:tests>

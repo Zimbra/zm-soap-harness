@@ -45,9 +45,10 @@ public class TestCase extends AbsTest {
 	/**
 	 NO_TYPE:		Default value for all tests w/o a type definition
 	 always:		always execute the test (ping test, authentication)
-	 bhr:			bhr test cases
-	 smoke:			basic tests to smoke test an installed build as 'sane'
-	 functional:	tests of requirements and core functionality
+	 smoke:			P1 tests
+	 sanity:		P2 tests
+	 functional:	P3 tests
+	 regression:	P4 tests
 	 feature:		tests of features that are not requirements, but are not negative tests either
 	 negative:		negative tests
 	 deprecated:	tests that are no longer applicable to the implementation
@@ -56,18 +57,18 @@ public class TestCase extends AbsTest {
 			"NO_TYPE",
 			"always",
 			"smoke",
-			"bhr",
 			"sanity",
 			"functional",
+			"regression",
 			"feature",
 			"negative",
 			"measurement",
 			"full",
 			"deprecated",
 			"smoke-temp",
-			"bhr-temp",
 			"sanity-temp",
 			"functional-temp",
+			"regression-temp",
 			"chat",
 			"q4fix"
 		};
@@ -484,24 +485,24 @@ public class TestCase extends AbsTest {
 		/* The type was specified */
 
 
-		/* If the test type is sanity, run always and sanity */
 		/* If the test type is smoke, run always and smoke */
-		/* If the test type is bhr, run always and bhr */
+		/* If the test type is sanity, run always and sanity */
 		/* If the test type is functional, run always, smoke, and functional */
+		/* If the test type is regression, run always, smoke, and regression */
 		/* If the test type is feature, run always, smoke, and feature */
 		/* If the test type is negative, run always, smoke, and negative */
 		String[] SMOKE_TYPES = {"always","smoke"};
-		String[] BHR_TYPES = {"always","bhr"};
 		String[] SANITY_TYPES = {"always","sanity"};
 		String[] FUNCTIONAL_TYPES = {"always","functional"};
+		String[] REGRESSION_TYPES = {"always","regression"};
 		String[] FEATURE_TYPES = {"always","feature"};
 		String[] NEGATIVE_TYPES = {"always","negative"};
 		String[] MEASUREMENT_TYPES = {"always","measurement"};
-		String[] FULL_TYPES = {"always","smoke","bhr"};
+		String[] FULL_TYPES = {"always","smoke","sanity","functional","regression"};
 		String[] SMOKE_TEMP_TYPES = {"always","smoke-temp"};
-		String[] BHR_TEMP_TYPES = {"always","bhr-temp"};
 		String[] SANITY_TEMP_TYPES = {"always","sanity-temp"};
 		String[] FUNCTIONAL_TEMP_TYPES = {"always","functional-temp"};
+		String[] REGRESSION_TEMP_TYPES = {"always","regression-temp"};
 		String[] CHAT_TYPES = {"always","chat"};
 		String[] Q4FIX_TYPES = {"always","q4fix"};
 
@@ -514,12 +515,6 @@ public class TestCase extends AbsTest {
 				}
 			}
 
-			if (type.equalsIgnoreCase("bhr")) {
-				if (hasType(BHR_TYPES)) {
-					return false;
-				}
-			}
-
 			if (type.equalsIgnoreCase("sanity")) {
 				if (hasType(SANITY_TYPES)) {
 					return false;
@@ -528,6 +523,12 @@ public class TestCase extends AbsTest {
 
 			if (type.equalsIgnoreCase("functional")) {
 				if (hasType(FUNCTIONAL_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("regression")) {
+				if (hasType(REGRESSION_TYPES)) {
 					return false;
 				}
 			}
@@ -562,12 +563,6 @@ public class TestCase extends AbsTest {
 				}
 			}
 
-			if (type.equalsIgnoreCase("bhr-temp")) {
-				if (hasType(BHR_TEMP_TYPES)) {
-					return false;
-				}
-			}
-
 			if (type.equalsIgnoreCase("sanity-temp")) {
 				if (hasType(SANITY_TEMP_TYPES)) {
 					return false;
@@ -579,12 +574,19 @@ public class TestCase extends AbsTest {
 					return false;
 				}
 			}
-			if (type.equalsIgnoreCase("functional-temp")) {
+
+			if (type.equalsIgnoreCase("regression-temp")) {
+				if (hasType(REGRESSION_TEMP_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("chat")) {
 				if (hasType(CHAT_TYPES)) {
 					return false;
 				}
 			}
-			
+
 			if (type.equalsIgnoreCase("q4fix")) {
 				if (hasType(Q4FIX_TYPES)) {
 					return false;

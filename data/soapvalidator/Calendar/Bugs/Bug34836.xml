@@ -1,9 +1,9 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
-<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
-    
+
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>
+
 <t:property name="account1.name" value="organizer.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="invitee.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
@@ -123,22 +123,22 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="calSharePubPrivAptsPubEdit" type="bhr">	
+<t:test_case testcaseid="calSharePubPrivAptsPubEdit" type="sanity">
 	<t:objective>Verify Editing Public apts by invitee in a series shared by organizer who also has a private apt in that series </t:objective>
     <t:steps>
-        1. Login as account1 and share calendar with account2 (manager rights without Private Permissions)		
+        1. Login as account1 and share calendar with account2 (manager rights without Private Permissions)
         2. Create a recurring apts as public and also make one apt instance as private appointment.
         3. Share Calendar with invitee (account2) as Manager without private permission
         3. Login as account2. Accept and mount the shared calendar
         4. Access the public appointment series from  account1's calendar
-		5. edit an instance in that series 
-		6. Login to account1 and verify if the changes have taken place 
+		5. edit an instance in that series
+		6. Login to account1 and verify if the changes have taken place
     </t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="appointmentpub.exception.subject" value="publicexception${TIME}.${COUNTER}"/>
 	<t:property name="appointmentpub.exception.content" value="public content modified by invitee1${TIME}.${COUNTER}"/>
-	<t:property name="appointment.exception.subject" value="exception${TIME}.${COUNTER}"/>	
+	<t:property name="appointment.exception.subject" value="exception${TIME}.${COUNTER}"/>
 
     <t:test required="true">
         <t:request>
@@ -174,13 +174,13 @@
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
         </t:response>
-    </t:test>	
-	
+    </t:test>
+
 	<!-- Appointment Properties -->
 	<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
-		
+
 	<t:property name="time.08Jun2009100000.gmt" value="1244455200000"/>
 	<t:property name="time.08Jun2009100000.pst" value="${TIME(-8h)[${time.08Jun2009100000.gmt}]}"/>
 
@@ -223,7 +223,7 @@
     </t:test>
 
 	<!--  Apt exception - Change an instance to more hours and also make this event private -->
-	
+
     <t:test required="true" >
         <t:request>
 			<CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${organizer1.appt1.invId}" comp="0">
@@ -236,7 +236,7 @@
 							<or a="${organizer1.name}"/>
 							<exceptId d="${ICALTIME(+2d)[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}"/>
 						</comp>
-					</inv>					
+					</inv>
 					<su>${appointment.exception.subject}</su>
 					<mp ct="text/plain">
 						<content>${appointment.content}</content>
@@ -248,13 +248,13 @@
             <t:select path="//mail:CreateAppointmentExceptionResponse">
             	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>
             	<t:select attr="invId" set="organizer1.appt1.invId"/>
-            	<t:select attr="apptId" set="organizer1.appt1.apptId"/>            	
+            	<t:select attr="apptId" set="organizer1.appt1.apptId"/>
             </t:select>
         </t:response>
-    </t:test>	 
-	
+    </t:test>
+
 	<!-- Login to Invitee1-->
-	
+
 	<t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -276,7 +276,7 @@
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="invitee.folder.root"/>
         </t:response>
     </t:test>
-	
+
 	<!-- Mount the shared folder in invitees calendar root folder-->
     <t:test required="true">
         <t:request>
@@ -284,30 +284,30 @@
                 <link l="${invitee.folder.root}" name="Calendar.${TIME}.${COUNTER}" view="appointment" rid="${organizer.folder.calendar}" zid="${account1.id}"/>
             </CreateMountpointRequest>
         </t:request>
-        <t:response>        
+        <t:response>
             <!--  <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="invitee.delegated.name"/>
-            <t:select path="//mail:CreateMountPointResponse/mail:link" attr="id" set="invitee.mounted.cal.id"/> -->        
+            <t:select path="//mail:CreateMountPointResponse/mail:link" attr="id" set="invitee.mounted.cal.id"/> -->
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="invitee1.mounted.cal.id"/>
-            <!--  <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account1.name}"/> -->    
+            <!--  <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account1.name}"/> -->
         </t:response>
-    </t:test>        	  
-			  
-			  
+    </t:test>
+
+
 	<!--Get Message Request -->
-	
+
 	 <t:test>
         <t:request>
-		    <SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(1d)[${time.08Jun2009100000.pst}]}" calExpandInstEnd="${TIME(+8d)[${time.08Jun2009100000.pst}]}" types="appointment">  
+		    <SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(1d)[${time.08Jun2009100000.pst}]}" calExpandInstEnd="${TIME(+8d)[${time.08Jun2009100000.pst}]}" types="appointment">
 			<!-- <SearchRequest xmlns="urn:zimbraMail" types="appointment"> -->
 				<query>inid:${invitee1.mounted.cal.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appt1.invId"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-	  
+
 	<t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -315,29 +315,29 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-			<t:select path="//mail:GetMsgResponse/mail:m" attr="id" set="tobe.mounted.id"> 
+			<t:select path="//mail:GetMsgResponse/mail:m" attr="id" set="tobe.mounted.id">
 					<t:select path="//mail:comp" attr="uid" set="item.uid.id" />
-					<t:select path="//mail:comp" attr="calItemId" set="item.calId.id" />					
-			</t:select>         			
+					<t:select path="//mail:comp" attr="calItemId" set="item.calId.id" />
+			</t:select>
        	</t:response>
-    </t:test> 
+    </t:test>
 
-	
-    <!--  Edit an instance of the series which is a public appointment -->   
-    
+
+    <!--  Edit an instance of the series which is a public appointment -->
+
      <t:test required="true" >
         <t:request>
-	
-			<CreateAppointmentExceptionRequest  xmlns="urn:zimbraMail" id="${appt1.invId}" comp="0">				
+
+			<CreateAppointmentExceptionRequest  xmlns="urn:zimbraMail" id="${appt1.invId}" comp="0">
 			<m >
 					<inv uid="${item.uid.id}">
 						<comp status="CONF" fb="B" transp="O" class="PUB" allDay="0" name="test">
 							<s d="${ICALTIME(+1d)[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}"/>
-							<e d="${ICALTIME(+1d)(+10h)[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}"/>							
+							<e d="${ICALTIME(+1d)(+10h)[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}"/>
 							<or a="${organizer1.name}" sentBy="${invitee1.name}"/>
 							<exceptId d="${ICALTIME(+1d)[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}"/>
 						</comp>
-					</inv>					
+					</inv>
 					<!-- <e a="${organizer1.name}" t="f"/> -->
 					<su>test</su>
 					<mp ct="text/plain">
@@ -350,12 +350,12 @@
             <t:select path="//mail:CreateAppointmentExceptionResponse">
             	<t:select attr="calItemId" set="inv1.appt1.calItemId"/>
             	<t:select attr="invId" set="inv1.appt1.invId"/>
-            	<t:select attr="apptId" set="inv1.appt1.apptId"/>            	
+            	<t:select attr="apptId" set="inv1.appt1.apptId"/>
             </t:select>
         </t:response>
-    </t:test>	 
-	
-	
+    </t:test>
+
+
 	<!-- Login to Organizer and check if that instance has changed -->
 	 <t:test required="true">
         <t:request>
@@ -377,16 +377,16 @@
         <t:response>
             <t:select path="//mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.folder.calendar"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="organizer1.folder.root"/>
-        </t:response>		
+        </t:response>
     </t:test>
-	
+
 	 <t:test required="true" >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME[${time.08Jun2009100000.gmt}]}" calExpandInstEnd="${TIME(+9d)[${time.08Jun2009100000.gmt}]}" types="appointment">
 				<query>inid:${organizer1.folder.calendar}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt">
             	<t:select path="//mail:inst[@name='test']">
 	            	<t:select attr="invId" set="inviteechange1.exception1.invId"/>
@@ -396,10 +396,10 @@
             	<t:select path="//mail:appt[@name='${appointment.subject}']">
             		<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
         		</t:select>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
 </t:test_case>
-  
+
 </t:tests>

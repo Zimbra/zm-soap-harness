@@ -24,14 +24,14 @@
 	<t:property name="content5" value="content5.${TIME}${COUNTER}" />
 	<t:property name="subject6" value="subject6.TEST1${TIME}${COUNTER}" />
 	<t:property name="content6" value="content6.${TIME}${COUNTER}" />
-	
+
 	<t:property name="sieve_test1"
-		value='require ["log","fileinto"];	
-		if allof address :matches "from" "admin@${defaultdomain.name}" 
-		{ 
+		value='require ["log","fileinto"];
+		if allof address :matches "from" "admin@${defaultdomain.name}"
+		{
 			fileinto "${folder4.name}";
 			stop;
-		} 
+		}
 ' />
 
 	<t:test_case testcaseid="Ping" type="always">
@@ -141,7 +141,7 @@
 					attr="id" set="folder.id4" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -153,7 +153,7 @@
 					attr="id" set="folder.id5" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -165,7 +165,7 @@
 					attr="id" set="folder.id6" />
 			</t:response>
 		</t:test>
-		
+
 		<!-- Populate some mails in inbox -->
 		<t:test>
 			<t:request>
@@ -202,7 +202,7 @@
 					set="Sent_message2.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -222,8 +222,8 @@
 		</t:test>
 
 	</t:test_case>
-	
-	<t:test_case testcaseid="ZCS-1286_Filter1" type="functional"
+
+	<t:test_case testcaseid="ZCS-1286_Filter1" type="regression"
 		bugids="ZCS-1286">
 		<t:objective>Verify the behavior when Folder is deleted and filter is
 			activated for Incoming rules.
@@ -322,7 +322,7 @@
 				<t:select path="//mail:ModifyFilterRulesResponse" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<GetFilterRulesRequest xmlns="urn:zimbraMail">
@@ -338,7 +338,7 @@
 					attr="folderPath" match="${folder1.name}"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -383,7 +383,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -394,11 +394,11 @@
 				<t:select path="//mail:SearchResponse/mail:m" attr="su"
 					match="${subject4}" />
 			</t:response>
-		</t:test>		
+		</t:test>
 
 	</t:test_case>
 
-<!-- Behavior was changed as part of zcs-540. Marking this test as deprecated -->		
+<!-- Behavior was changed as part of zcs-540. Marking this test as deprecated -->
 	<t:test_case testcaseid="ZCS-1286_Filter2" type="deprecated"
 		bugids="ZCS-1286">
 		<t:objective>Run filter and check the deleted folder gets created again.
@@ -408,8 +408,8 @@
 			3. Activate the above filter. Filter should get activated.
 			4. Run the filter.
 			5. All mails from inbox in step 1 should be moved to newly created folder (deleted in step2).
-		</t:steps>		
-		
+		</t:steps>
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -496,7 +496,7 @@
 				<t:select path="//mail:ModifyFilterRulesResponse" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<GetFilterRulesRequest xmlns="urn:zimbraMail">
@@ -512,14 +512,14 @@
 					attr="folderPath" match="${folder2.name}"/>
 			</t:response>
 		</t:test>
-				
+
 		<!-- Run the filter now -->
-		
+
 		<t:test>
 			<t:request>
 				<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
 					<filterRules>
-						<filterRule name="${filter2.name}"/>                                  
+						<filterRule name="${filter2.name}"/>
 					</filterRules>
 					<m ids="${Sent_message1.id},${Sent_message2.id},${Sent_message3.id}"/>
 	            </ApplyFilterRulesRequest>
@@ -528,37 +528,37 @@
 	            <t:select path="//mail:ApplyFilterRulesResponse"/>
 	        </t:response>
        </t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>in:${folder2.name} subject:${subject1}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:m" attr="su"
 					match="${subject1}" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>in:${folder2.name} subject:${subject2}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:m" attr="su"
 					match="${subject2}" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>in:${folder2.name} subject:${subject3}</query>
 				</SearchRequest>
-			</t:request>	
+			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:m" attr="su"
 					match="${subject3}" />
@@ -566,9 +566,9 @@
 		</t:test>
 
 	</t:test_case>
-	
- 
-	<t:test_case testcaseid="ZCS-1286_Filter3" type="functional"
+
+
+	<t:test_case testcaseid="ZCS-1286_Filter3" type="regression"
 		bugids="ZCS-1286">
 		<t:objective>Verify the behavior when Folder is deleted and filter is
 			activated for Incoming rules.
@@ -668,7 +668,7 @@
 				<t:select path="//mail:ModifyFilterRulesResponse" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<GetFilterRulesRequest xmlns="urn:zimbraMail">
@@ -684,7 +684,7 @@
 					attr="folderPath" match="${folder3.name}"/>
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -708,7 +708,7 @@
 				<t:select path="//admin:ModifyAccountResponse/admin:account"
 					attr="name" match="${account1.name}" />
 			</t:response>
-		</t:test>	
+		</t:test>
 
 		<t:test>
 			<t:request>
@@ -742,7 +742,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -754,13 +754,13 @@
 					match="${subject5}" />
 			</t:response>
 		</t:test>
-		
+
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-1286_Filter4" type="functional"
+	<t:test_case testcaseid="ZCS-1286_Filter4" type="regression"
 		bugids="ZCS-1286">
 		<t:objective>Verify the behavior with filter containing two filineto actions, and subsequent folder(s) is/are
-		deleted. 
+		deleted.
 		</t:objective>
 		<t:steps>1. Create a filter with fileinto 2 folders in deactivated state.
 		2. Delete one folder.
@@ -860,7 +860,7 @@
 				<t:select path="//mail:ModifyFilterRulesResponse" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<GetFilterRulesRequest xmlns="urn:zimbraMail">
@@ -879,7 +879,7 @@
 					attr="folderPath" match="${folder6.name}" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -890,7 +890,7 @@
 			<t:response>
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
-		</t:test>	
+		</t:test>
 
 		<t:test>
 			<t:request>
@@ -924,7 +924,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -936,7 +936,7 @@
 					match="${subject6}" />
 			</t:response>
 		</t:test>
-		
+
 	</t:test_case>
-	
+
 </t:tests>

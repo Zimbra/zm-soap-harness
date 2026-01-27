@@ -8,7 +8,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -47,21 +47,21 @@
 	<t:property name="account1.domain" value="${default.domain.name}"/>
 	<t:property name="account1.name" value="${account1.user}@${account1.domain}"/>
 	<t:property name="account1.password" value="${defaultpassword.value}"/>
-	
+
 	<t:property name="account2.name" value="test${TIME}.${COUNTER}@${default.domain.name}"/>
 	<t:property name="account2.password" value="${defaultpassword.value}"/>
-	
+
 	<t:property name="account3.user" value="test${TIME}.${COUNTER}"/>
 	<t:property name="account3.domain" value="domain.${TIME}.${COUNTER}.com"/>
 	<t:property name="account3.name" value="${account3.user}@${account3.domain}"/>
 	<t:property name="account3.password" value="${defaultpassword.value}"/>
-	
-	
+
+
 	<t:property name="message1.content" value="content${TIME}.${COUNTER}"/>
 	<t:property name="message1.subject" value="subject${TIME}.${COUNTER}"/>
 	<t:property name="message3.content" value="content${TIME}.${COUNTER}"/>
 	<t:property name="message3.subject" value="subject${TIME}.${COUNTER}"/>
-	
+
 	<t:property name="account4.name" value="test${TIME}.${COUNTER}@${default.domain.name}"/>
 
 
@@ -101,7 +101,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain3.id"/>
         </t:response>
     </t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -204,7 +204,7 @@
 
 
 
-<t:test_case testcaseid="RestServlet_user_ID_01" type="bhr">
+<t:test_case testcaseid="RestServlet_user_ID_01" type="sanity">
 	<t:objective>Basic verification of Rest Servlet - get a message with the user ID default ("~")</t:objective>
 	<t:steps>
 	1. Use the rest servlet with the user ID = "~"
@@ -245,7 +245,7 @@
 
 
 
-<t:test_case testcaseid="RestServlet_user_ID_02" type="bhr">
+<t:test_case testcaseid="RestServlet_user_ID_02" type="sanity">
 	<t:objective>Basic verification of Rest Servlet - get a message with the user ID ("name")</t:objective>
 	<t:steps>
 	1. Use the rest servlet with the user ID = the first name
@@ -286,7 +286,7 @@
 
 
 
-<t:test_case testcaseid="RestServlet_user_ID_03" type="bhr">
+<t:test_case testcaseid="RestServlet_user_ID_03" type="sanity">
 	<t:objective>Basic verification of Rest Servlet - get a message with the full user ID ("name@domain.com")</t:objective>
 	<t:steps>
 	1. Use the rest servlet with the user ID = the email address
@@ -327,7 +327,7 @@
 
 
 
-<t:test_case testcaseid="RestServlet_user_ID_04" type="sanity" >
+<t:test_case testcaseid="RestServlet_user_ID_04" type="functional" >
 	<t:objective>Basic verification of Rest Servlet - get a message with the user ID ("name"), non-default domain</t:objective>
 	<t:steps>
 	1. Use the rest servlet with the user ID = the first name
@@ -367,7 +367,7 @@
 
 
 
-<t:test_case testcaseid="RestServlet_user_ID_05" type="sanity" >
+<t:test_case testcaseid="RestServlet_user_ID_05" type="functional" >
 	<t:objective>Basic verification of Rest Servlet - get a message with the full user ID ("name@domain.com")</t:objective>
 	<t:steps>
 	1. Use the rest servlet with the user ID = the email address
@@ -407,7 +407,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_user_ID_06" type="sanity" bugids="18799">
+<t:test_case testcaseid="RestServlet_user_ID_06" type="functional" bugids="18799">
 	<t:objective>Harvesting: verify 401 when accessing an existing account without an auth token</t:objective>
 	<t:steps>
 	1. Clear the authtoken
@@ -434,7 +434,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_user_ID_07" type="sanity" bugids="18799">
+<t:test_case testcaseid="RestServlet_user_ID_07" type="functional" bugids="18799">
 	<t:objective>Harvesting: verify 401 when accessing an existing account without an auth token</t:objective>
 	<t:steps>
 	1. Clear the authtoken
@@ -461,7 +461,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_user_ID_08" type="sanity" bugids="18799">
+<t:test_case testcaseid="RestServlet_user_ID_08" type="functional" bugids="18799">
 	<t:objective>Harvesting: verify 403 when accessing an existing account with an auth token</t:objective>
 	<t:steps>
 	1. Login as account4
@@ -502,7 +502,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RestServlet_user_ID_09" type="sanity" bugids="18799">
+<t:test_case testcaseid="RestServlet_user_ID_09" type="functional" bugids="18799">
 	<t:objective>Harvesting: verify 403 when accessing a non-existing account with an auth token</t:objective>
 	<t:steps>
 	1. Login as account4

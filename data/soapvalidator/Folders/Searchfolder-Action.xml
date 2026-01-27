@@ -28,7 +28,7 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -43,7 +43,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create two test account</t:objective>
-    <t:steps> 1. Login to admin account, 
+    <t:steps> 1. Login to admin account,
             2. Create a test_account1
             3. Create test_account2
      </t:steps>
@@ -79,7 +79,7 @@
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 <t:test_case testcaseid="acct1_login" type="always" >
     <t:objective>login as the test account and create a search folder </t:objective>
-    <t:steps> 1. Login to an account, 
+    <t:steps> 1. Login to an account,
               2. Create a search folder 1
               3. Create search folder 2
      </t:steps>
@@ -88,7 +88,7 @@
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
-                <account by="name">${test_account1.name}</account>	
+                <account by="name">${test_account1.name}</account>
                 <password>${test_account1.password}</password>
             </AuthRequest>
 	 </t:request>
@@ -135,14 +135,14 @@
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction1" type="sanity" >
+<t:test_case testcaseid="SearchFolderAction1" type="functional" >
     <t:objective>  Try to move mail in search folder </t:objective>
     <t:steps> 1. Send a mail
               2. GetMsgRequest to get the message id
@@ -174,15 +174,15 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction2" type="sanity" >
+<t:test_case testcaseid="SearchFolderAction2" type="functional" >
     <t:objective>  Try to move contact in search folder </t:objective>
     <t:steps> 1. Create a Contact
               2. move the contact to search folder
     </t:steps>
-       
+
     <t:test id="SearchFolderAction2a" >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -190,16 +190,16 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
-            <t:select attr="id" set="contact.id"/>            
-            </t:select>	
+            <t:select attr="id" set="contact.id"/>
+            </t:select>
         </t:response>
     </t:test>
-   
+
     <t:test depends="SearchFolderAction2a">
         <t:request>
             <ContactActionRequest xmlns="urn:zimbraMail">
@@ -212,10 +212,10 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction3" type="sanity" >
+<t:test_case testcaseid="SearchFolderAction3" type="functional" >
     <t:objective>  Try to move a tag in search folder </t:objective>
     <t:steps> 1. Create a Tag
               2. move the contact to search folder
@@ -247,10 +247,10 @@
 	</t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction4" type="sanity" >
+<t:test_case testcaseid="SearchFolderAction4" type="functional" >
     <t:objective>  Try to move a mail folder into search folder </t:objective>
     <t:steps> 1. Create a mail folder
               2. Move it to search folder
@@ -278,11 +278,11 @@
             <t:select path= "//zimbra:Code" match="^mail.CANNOT_CONTAIN"/>
         </t:response>
     </t:test>
-  
-</t:test_case> 
+
+</t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction5" type="bhr">
+<t:test_case testcaseid="SearchFolderAction5" type="sanity">
     <t:objective> Move a search folder within another search folder </t:objective>
 
     <t:test>
@@ -295,11 +295,11 @@
             <t:select path="//mail:FolderActionResponse"/>
         </t:response>
     </t:test>
-           
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction6" type="bhr">
+<t:test_case testcaseid="SearchFolderAction6" type="sanity">
     <t:objective> Move default folders into search folder </t:objective>
 
      <t:test>
@@ -349,7 +349,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction7" type="bhr">
+<t:test_case testcaseid="SearchFolderAction7" type="sanity">
     <t:objective> Move search folder to custom folders </t:objective>
 
     <t:test>
@@ -366,7 +366,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction8" type="bhr">
+<t:test_case testcaseid="SearchFolderAction8" type="sanity">
     <t:objective> Rename a search folder </t:objective>
 
     <t:test>
@@ -383,7 +383,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction9" type="bhr">
+<t:test_case testcaseid="SearchFolderAction9" type="sanity">
     <t:objective> Delete a search folder </t:objective>
 
     <t:test id="SearchFolderAction9a">
@@ -400,7 +400,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchFolderAction10" type="functional" >
+<t:test_case testcaseid="SearchFolderAction10" type="regression" >
     <t:objective> Delete already deleted search folder </t:objective>
 
     <t:test depends="SearchFolderAction9a">

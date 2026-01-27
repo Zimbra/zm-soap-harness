@@ -67,7 +67,7 @@
 
 
 
-<t:test_case testcaseid="ApplyFilterRulesRequest_01" type="bhr" bugids="42051" >
+<t:test_case testcaseid="ApplyFilterRulesRequest_01" type="sanity" bugids="42051" >
     <t:objective>Apply filter rule to same folder as "file into".  Verify no duplicates.</t:objective>
     <t:steps>
     1. Login as user1
@@ -96,7 +96,7 @@
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
         </t:response>
     </t:test>
@@ -124,16 +124,16 @@
 		<t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${folder.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: ${filter1.subject}
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
 
-					
+
 					</content>
                 </m>
             </AddMsgRequest>
@@ -155,7 +155,7 @@ simple text string in the body
 							<actionFileInto folderPath="${globals.inbox}/${folder.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -168,7 +168,7 @@ simple text string in the body
 		<t:request>
 			<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
-					<filterRule name="${filter1.name}"/>                                  
+					<filterRule name="${filter1.name}"/>
 				</filterRules>
 				<query>in:${globals.inbox}/${folder.name}</query>
             </ApplyFilterRulesRequest>
@@ -197,7 +197,7 @@ simple text string in the body
 </t:test_case>
 
 
-<t:test_case testcaseid="ApplyFilterRulesRequest_02" type="bhr" bugids="42142" >
+<t:test_case testcaseid="ApplyFilterRulesRequest_02" type="sanity" bugids="42142" >
     <t:objective>Apply filter rule should execute move rather than copy</t:objective>
     <t:steps>
     1. Login as user1
@@ -226,7 +226,7 @@ simple text string in the body
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
         </t:request>
-        <t:response>              
+        <t:response>
             <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
         </t:response>
     </t:test>
@@ -254,16 +254,16 @@ simple text string in the body
 		<t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="${account2.folder.inbox.id}">
-                    <content>From: foo@foo.com 
-To: foo@foo.com 
+                    <content>From: foo@foo.com
+To: foo@foo.com
 Subject: ${filter1.subject}
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 simple text string in the body
 
-					
+
 					</content>
                 </m>
             </AddMsgRequest>
@@ -285,7 +285,7 @@ simple text string in the body
 							<actionFileInto folderPath="${globals.inbox}/${folder.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -298,7 +298,7 @@ simple text string in the body
 		<t:request>
 			<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
-					<filterRule name="${filter1.name}"/>                                  
+					<filterRule name="${filter1.name}"/>
 				</filterRules>
 				<query>in:${globals.inbox}</query>
             </ApplyFilterRulesRequest>

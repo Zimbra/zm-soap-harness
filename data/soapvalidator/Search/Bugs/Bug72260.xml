@@ -6,7 +6,7 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
 <t:property name="msg01.file" value="${testMailRaw.root}/bugs/72260/bug72260.txt" />
 <t:property name="subject.match" value="Moved Go/No To Tomorrow Thursday, 10am" />
-	
+
 <t:test_case testcaseid="Ping" type="always">
 		<t:objective>basic system check</t:objective>
 		<t:test id="ping" required="true">
@@ -22,7 +22,7 @@
 <t:test_case testcaseid="acctSetup" type="always">
 	<t:objective>Create test accounts</t:objective>
 	<t:steps>	1. Login to admin account
-					2. Create accounts        
+					2. Create accounts
 	</t:steps>
 
 	<t:test required="true">
@@ -49,17 +49,17 @@
 				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'	set="account1.server" />
 			</t:response>
 	</t:test>
-		
+
 </t:test_case>
 
 
-<t:test_case testcaseid="bug72260_1" type="bhr" bugids="72260">
+<t:test_case testcaseid="bug72260_1" type="sanity" bugids="72260">
 	<t:objective>Verify that advanced search query "from:" and "to:" works fine. </t:objective>
 	<t:steps>
 		1. Inject the message.
 		2. Search for "to:kevinh" , "to:afregoso" and "from:Kathy Duran". => Verify message is returned in SearchResponse
 	</t:steps>
-	
+
     	<t:mailinjecttest >
         	<t:lmtpInjectRequest>
             	<filename>${msg01.file}</filename>
@@ -67,8 +67,8 @@
 				<from>${account2.name}</from>
 				<server>${account1.server}</server>
         	</t:lmtpInjectRequest>
-    	</t:mailinjecttest> 
-    		 
+    	</t:mailinjecttest>
+
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
@@ -90,9 +90,9 @@
 			</t:request>
 	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
-				
+
 			</t:response>
-		</t:test> 
+		</t:test>
 
 	 <t:test>
 			<t:request>
@@ -102,11 +102,11 @@
 			</t:request>
 	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
-				
+
 			</t:response>
-		</t:test> 
-		
-		
+		</t:test>
+
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -115,10 +115,10 @@
 			</t:request>
 	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
-				
+
 			</t:response>
-		</t:test> 
-		
+		</t:test>
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -127,10 +127,10 @@
 			</t:request>
 	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
-				
+
 			</t:response>
-		</t:test> 
-		
+		</t:test>
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -139,10 +139,10 @@
 			</t:request>
 	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
-				
+
 			</t:response>
-		</t:test> 
-		
+		</t:test>
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -151,10 +151,10 @@
 			</t:request>
 	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
-				
+
 			</t:response>
-		</t:test> 
-		
+		</t:test>
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -163,10 +163,10 @@
 			</t:request>
 	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
-				
+
 			</t:response>
-		</t:test> 
-		
+		</t:test>
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -174,10 +174,10 @@
 				</SearchRequest>
 			</t:request>
 	        <t:response>
-				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />			
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
 			</t:response>
-		</t:test> 
-		
+		</t:test>
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -185,8 +185,8 @@
 				</SearchRequest>
 			</t:request>
 	        <t:response>
-				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />			
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />
 			</t:response>
-		</t:test> 
+		</t:test>
     </t:test_case>
 </t:tests>

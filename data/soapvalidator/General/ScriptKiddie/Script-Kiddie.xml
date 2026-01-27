@@ -12,17 +12,17 @@
 
 <t:property name="root" value="${soapxml.root}/General/ScriptKiddie/Mime"/>
 
-<t:property name="msg01.subject" value="email01A"/>    
-<t:property name="msg01.attachment.name" value="${string.long}.doc"/>    
-<t:property name="msg02.subject" value="email01B"/>    
-<t:property name="msg03.subject" value="email01C"/>    
-<t:property name="msg04.content" value="email01E"/>    
+<t:property name="msg01.subject" value="email01A"/>
+<t:property name="msg01.attachment.name" value="${string.long}.doc"/>
+<t:property name="msg02.subject" value="email01B"/>
+<t:property name="msg03.subject" value="email01C"/>
+<t:property name="msg04.content" value="email01E"/>
 
 
-    
+
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -31,16 +31,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_script_kiddie" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create a test account        
+             2. Create a test account
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -52,7 +52,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
@@ -89,17 +89,17 @@
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
 
-    
-</t:test_case> 
-    
-    
-<t:test_case testcaseid="script_kiddie01" type="bhr">
+
+</t:test_case>
+
+
+<t:test_case testcaseid="script_kiddie01" type="sanity">
     <t:objective>Verify a message a mime message with an attachment whose filename is longer than 256 characters can be injected.</t:objective>
-    <t:steps>1. Upload a message              
-             2. Search the message        
+    <t:steps>1. Upload a message
+             2. Search the message
              3. Get the message
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test required="true">
         <t:request>
@@ -136,20 +136,20 @@
             	<t:select path="//mail:m[@id='${msg1.id}']">
             		<t:select path="//mail:mp[@cd='attachment']" attr="filename" match="${msg01.attachment.name}"/>
             	</t:select>
-            </t:select>            	
+            </t:select>
         </t:response>
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="script_kiddie02" type="sanity">
+
+<t:test_case testcaseid="script_kiddie02" type="functional">
     <t:objective>Verify a message with very long name in "To", "Cc" and "From" field can be received </t:objective>
-    <t:steps>1. Upload a message              
-             2. Search the message        
+    <t:steps>1. Upload a message
+             2. Search the message
              3. Get the message
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test required="true">
         <t:request>
@@ -188,19 +188,19 @@
             		<t:select path="//mail:e[@t='t']" attr="a" match="${account.longname}"/>
             		<t:select path="//mail:e[@t='c']" attr="a" match="${account.longname}"/>
             	</t:select>
-            </t:select>            	
+            </t:select>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="script_kiddie03" type="sanity">
+<t:test_case testcaseid="script_kiddie03" type="functional">
     <t:objective>Verify a message with very long domain in "To", "Cc" and "From" field can be received </t:objective>
-    <t:steps>1. Upload a message              
-             2. Search the message        
+    <t:steps>1. Upload a message
+             2. Search the message
              3. Get the message
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test required="true">
         <t:request>
@@ -239,19 +239,19 @@
             		<t:select path="//mail:e[@t='t']" attr="a" match="${account.longdname}"/>
             		<t:select path="//mail:e[@t='c']" attr="a" match="${account.longdname}"/>
             	</t:select>
-            </t:select>            	
+            </t:select>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="script_kiddie04" type="sanity">
+<t:test_case testcaseid="script_kiddie04" type="functional">
     <t:objective>Verify a message with very long name in "To", "Cc" and "Bcc" field can be sent </t:objective>
     <t:steps>1. Send a msg to a user with very long name.
-             2. Search the message        
+             2. Search the message
              3. Get the message
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test required="true">
         <t:request>
@@ -289,13 +289,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="script_kiddie05" type="sanity">
+<t:test_case testcaseid="script_kiddie05" type="functional">
     <t:objective>Verify a message with very long domain name in "To", "Cc" and "Bcc" field can be sent </t:objective>
-    <t:steps>1. Send a msg to a user with very long domain name.              
-             2. Search the message        
+    <t:steps>1. Send a msg to a user with very long domain name.
+             2. Search the message
              3. Get the message
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 	<t:test required="true">
         <t:request>

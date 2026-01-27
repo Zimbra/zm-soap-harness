@@ -7,7 +7,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    	
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true">
@@ -48,7 +48,7 @@
 	        </CreateAccountRequest>
 	    </t:request>
 	    <t:response>
-		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
 	</t:test>
@@ -62,15 +62,15 @@
 			<server>${account1.server}</server>
          </t:lmtpInjectRequest>
     </t:mailinjecttest>
-   
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug31552" type="bhr" bugids="31552">
+<t:test_case testcaseid="Bug31552" type="sanity" bugids="31552">
     <t:objective>Attachment file names are always encoded in UTF-8</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<!-- Login to the account -->
 	<t:test >
 		<t:request>
@@ -83,7 +83,7 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
 	<!-- Search for the email -->
 	<t:test id="SearchRequest">
 		<t:request>
@@ -106,15 +106,15 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp[@ct='multipart/mixed']">
             	<t:select path="mail:mp[@ct='text/plain']" attr="part" set="message1.part1.id"/>
-            </t:select>        	
+            </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="message1.part1.id" value="2"/>
 
-	
+
 	<t:property name="server.restServlet" value="${account1.server}"/>
-	
+
 	<t:resttest>
 		<t:restServletRequest>
 			<id>${msg01.id}</id>

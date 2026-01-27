@@ -38,7 +38,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -52,9 +52,9 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create two test account</t:objective>
-    <steps>1. Login to admin account  
+    <steps>1. Login to admin account
         2. Create the domains
-        3. Create a test accounts 
+        3. Create a test accounts
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -68,7 +68,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createDomainRequest1" required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -76,10 +76,10 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createDomainRequest2" required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -89,14 +89,14 @@
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain2.id"/>
         </t:response>
-        
+
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -104,12 +104,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account2" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
-                <password>${test_account2.password}</password>               
+                <password>${test_account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -117,12 +117,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account3" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
-                <password>${test_account3.password}</password>                
+                <password>${test_account3.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -130,12 +130,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
- 
+
     <t:test id="create_test_account4" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account4.name}</name>
-                <password>${test_account4.password}</password>                
+                <password>${test_account4.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -143,13 +143,13 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 <t:test_case testcaseid="acct_setup2" type="always" >
     <t:objective>login as the test account</t:objective>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -163,11 +163,11 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal1" type="bhr">
+<t:test_case testcaseid="SearchGal1" type="sanity">
     <t:objective>Search a GAL for a test account</t:objective>
 
     <t:test id="SearchGal1">
@@ -177,14 +177,14 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>                        
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal2" type="functional" >
+<t:test_case testcaseid="SearchGal2" type="regression" >
     <t:objective>Search a GAL with spaces within the name tag</t:objective>
 
     <t:test id="SearchGal2">
@@ -201,7 +201,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal3" type="functional" >
+<t:test_case testcaseid="SearchGal3" type="regression" >
     <t:objective>Search a GAL with blank within the name tag</t:objective>
 
     <t:test id="SearchGal3">
@@ -218,7 +218,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal4" type="sanity" >
+<t:test_case testcaseid="SearchGal4" type="functional" >
     <t:objective>Search a GAL with special characters within the name tag</t:objective>
 
     <t:test id="SearchGal4">
@@ -235,7 +235,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal5" type="functional" >
+<t:test_case testcaseid="SearchGal5" type="regression" >
     <t:objective>Search a GAL with no name tag</t:objective>
 
     <t:test id="SearchGal5">
@@ -251,7 +251,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal6" type="functional" >
+<t:test_case testcaseid="SearchGal6" type="regression" >
     <t:objective>Search a GAL with misspelled name tag</t:objective>
 
     <t:test id="SearchGal6">
@@ -268,7 +268,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal7" type="sanity" >
+<t:test_case testcaseid="SearchGal7" type="functional" >
     <t:objective>Search a GAL for a generalized string </t:objective>
 
     <t:test>
@@ -278,15 +278,15 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>            
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account2.name}"/>            
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account2.name}"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal8" type="sanity" >
+<t:test_case testcaseid="SearchGal8" type="functional" >
     <t:objective>Search a GAL for a particular domain </t:objective>
 
     <t:test>
@@ -305,7 +305,7 @@
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-<t:test_case testcaseid="SearchGal9" type="bhr">
+<t:test_case testcaseid="SearchGal9" type="sanity">
     <t:objective>To change the Number of result returned by GAL and Verify it </t:objective>
     <t:steps>1. Login to admin
              2. Set zimbraGalMaxResults = 1
@@ -324,20 +324,20 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchGal9b" depends="searchGal9a">
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
                 <id>${domain1.id}</id>
-                <a n="zimbraGalMaxResults">0</a>                
+                <a n="zimbraGalMaxResults">0</a>
             </ModifyDomainRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
         </t:response>
     </t:test>
-  
-<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>    
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test id="searchGal9c">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -351,7 +351,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test depends="searchGal9b,searchGal9c">
         <t:request>
             <SearchGalRequest xmlns="urn:zimbraAccount">
@@ -359,14 +359,14 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>                        
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal10" type="sanity" bugids="2552">
+<t:test_case testcaseid="SearchGal10" type="functional" bugids="2552">
     <t:objective>To disable the GAL Search and Verify it </t:objective>
     <t:steps>1. Login to admin
              2. Set zimbraFeatureGalEnabled = FALSE
@@ -374,7 +374,7 @@
              4. Verify GAL search.
     </t:steps>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>     
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test  id="SearchGal10a">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -386,8 +386,8 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-   
+
+
     <t:test id="SearchGal10b" depends="SearchGal10a">
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
@@ -399,8 +399,8 @@
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
-  
-<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>    
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test id="SearchGal10c">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -414,7 +414,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test depends="SearchGal10b,SearchGal10c">
         <t:request>
             <SearchGalRequest xmlns="urn:zimbraAccount">
@@ -422,14 +422,14 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" emptyset="1"/>                        
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" emptyset="1"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGa111" type="sanity" >
+<t:test_case testcaseid="SearchGa111" type="functional" >
     <t:objective>Search a GAL for a nonexisting account </t:objective>
 
     <t:test>
@@ -439,14 +439,14 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a" emptyset="1"/>                       
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a" emptyset="1"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal12" type="functional" >
+<t:test_case testcaseid="SearchGal12" type="regression" >
     <t:objective>Search a GAL for a deleted account </t:objective>
     <t:steps>1. Login to admin
              2. Delete the account
@@ -466,21 +466,21 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
     <t:test id="SearchGal12b" depends="SearchGal12a">
         <t:request>
             <DeleteAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account4.id}</id>                
+                <id>${test_account4.id}</id>
             </DeleteAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-  
+
 <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
-    
+
     <t:test id="SearchGal12c">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -494,7 +494,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test depends="SearchGal12b,SearchGal12c">
         <t:request>
             <SearchGalRequest xmlns="urn:zimbraAccount">
@@ -502,14 +502,14 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" emptyset="1"/>                        
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal13" type="functional" bugids="4997">
+<t:test_case testcaseid="SearchGal13" type="regression" bugids="4997">
     <t:objective>Search a GAL for a deleted domain </t:objective>
     <t:steps>1. Login to admin
              2. Delete the account to empty the domain.
@@ -530,32 +530,32 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
     <t:test id="SearchGal13b" depends="SearchGal13a">
         <t:request>
             <DeleteAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account3.id}</id>                
+                <id>${test_account3.id}</id>
             </DeleteAccountRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-   
+
     <t:test id="SearchGal13c" depends="SearchGal13b">
         <t:request>
             <DeleteDomainRequest xmlns = "urn:zimbraAdmin">
-                <id>${domain2.id}</id>                
+                <id>${domain2.id}</id>
             </DeleteDomainRequest>
         </t:request>
         <t:response>
             <t:select path = "//admin:DeleteDomainResponse"/>
         </t:response>
     </t:test>
-  
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test id="SearchGal13d">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -569,7 +569,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test depends="SearchGal13d">
         <t:request>
             <SearchGalRequest xmlns="urn:zimbraAccount">
@@ -577,14 +577,14 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" emptyset="1"/>                        
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchGal14" type="sanity" >
+<t:test_case testcaseid="SearchGal14" type="functional" >
     <t:objective>Search a GAL for a nonexisting domain </t:objective>
 
     <t:test>
@@ -594,24 +594,24 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a" emptyset="1"/>                       
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a" emptyset="1"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "SearchGa115" type="functional"  bugids="5940">
+<t:test_case testcaseid = "SearchGa115" type="regression"  bugids="5940">
     <t:objective> Verify that seraching for a Distribution List returns unique DL only </t:objective>
     <t:steps> 1. Login to admin
-              2. Create an distribution list              
+              2. Create an distribution list
 			  3. Add accounts to the distribution list
 			  4. Login to test account
 			  5. search for DL
     </t:steps>
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-     
+
     <t:test  id="SearchGal15a">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -623,7 +623,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test id="SearchGal15b" depends="SearchGal15a">
 		<t:request>
 			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -635,7 +635,7 @@
 			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
 		</t:response>
 	</t:test>
-           
+
     <t:test id="SearchGal15c" depends="SearchGal15b">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -647,7 +647,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
      <t:test id="SearchGal15d" depends="SearchGal15b">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -670,7 +670,7 @@
         <t:response>
             <t:select path="//admin:GetDistributionListResponse"/>
         </t:response>
-	</t:test>	
+	</t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 	<t:test id="SearchGal15f" required="true">

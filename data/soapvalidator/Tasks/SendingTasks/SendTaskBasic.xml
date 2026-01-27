@@ -10,7 +10,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -25,7 +25,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts, tags, and appointments</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -38,7 +38,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,11 +71,11 @@
 
 
 
-<t:test_case testcaseid="SendTask_Basic_01" type="bhr">
+<t:test_case testcaseid="SendTask_Basic_01" type="sanity">
     <t:objective>Send a partially completed task from user1 to user2</t:objective>
-   
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -88,7 +88,7 @@
 
         </t:response>
     </t:test>
-        
+
 	<t:property name="task1.start" value="1167652800000"/>
 	<t:property name="task1.name" value="task1.${TIME}.${COUNTER}"/>
 
@@ -119,7 +119,7 @@
 
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -143,15 +143,15 @@
     </t:test>
 
     <t:test >
-        <t:request> 
+        <t:request>
             <GetTaskRequest  xmlns="urn:zimbraMail" id="${account2.task1.calItemId}"/>
         </t:request>
         <t:response>
             <t:select path="//mail:GetTaskResponse"/>
         </t:response>
     </t:test>
-    
-        
+
+
 </t:test_case>
 
 

@@ -39,7 +39,7 @@
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
 
-	
+
 
     <t:test required="true">
         <t:request>
@@ -52,7 +52,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -65,7 +65,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -99,7 +99,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_Admin_CreateMountpointRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountBy_Admin_CreateMountpointRequest_Basic01" type="sanity">
     <t:objective>Use an admin token with accountby to CreateMountpointRequest</t:objective>
     <t:steps>
     1. Use admin authtoken with accountby=user1 to CreateMountPointRequest to account2 - Success
@@ -113,7 +113,7 @@
 
 			<account by="id">${account1.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
             <CreateMountpointRequest xmlns="urn:zimbraMail">
                 <link l="1" name="Mountpoint${TIME}${COUNTER}" rid="1" zid="${account2.id}"/>
             </CreateMountpointRequest>

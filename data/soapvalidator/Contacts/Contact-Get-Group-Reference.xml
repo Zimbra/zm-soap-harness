@@ -62,7 +62,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>   
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -75,7 +75,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
-                <password>${test_account2.password}</password>   
+                <password>${test_account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -88,7 +88,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
-                <password>${test_account3.password}</password>   
+                <password>${test_account3.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -100,7 +100,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetContacts_Group_Reference_01" type="bhr">
+<t:test_case testcaseid="GetContacts_Group_Reference_01" type="sanity">
     <t:objective>Get contact group reference with type=C,G,I</t:objective>
 
     <t:test required="true">
@@ -115,8 +115,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    
+
+
      <t:staftask >
 		<t:request>
 			<server>${zimbraLDAPServer.name}</server>
@@ -125,9 +125,9 @@
 		</t:request>
 		<t:response>
         	<t:select regex="(?s)(RC.*)(Data.*:\sldap_root_password\s=\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="ldap.password"/>
-        </t:response> 
+        </t:response>
     </t:staftask>
-    
+
    <t:staftask>
     <t:request>
         <server>${zimbraLDAPServer.name}</server>
@@ -149,9 +149,9 @@
 		</t:request>
 		<t:response>
         	<t:select regex="(?s)(RC.*)(Data.*:\sdn:\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="acct2.ldap.base"/>
-        </t:response> 
+        </t:response>
     </t:staftask>  -->
-    
+
      <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -159,16 +159,16 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_ref.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:delay msec="3000"/>
 
     <t:test>
@@ -180,20 +180,20 @@
                     <m type="G" value="${acct2.ldap.base}"/>
 					<m type="C" value="${contact_ref.id}"/>
                     <m type="I" value="${contact2.mailid}"/>
-               </cn>     
+               </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
-            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/> 
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>
+            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/>
+            </t:select>
         </t:response>
     </t:test>
-    
-    
+
+
      <t:test>
         <t:request>
             <GetContactsRequest xmlns="urn:zimbraMail" sortBy="nameAsc" derefGroupMember="1">
@@ -203,15 +203,15 @@
         <t:response>
             <t:select path="//mail:GetContactsResponse/mail:cn">
             <t:select attr="id" set="contact_group.id"/>
-			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
-            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/> 
-            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/> 
-            </t:select>    
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>
+            <t:select path='//mail:m[@type="G"]' attr="value" match="${acct2.ldap.base}"/>
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/>
+            </t:select>
         </t:response>
     </t:test>
 
-    
-    
+
+
 </t:test_case>
 
 

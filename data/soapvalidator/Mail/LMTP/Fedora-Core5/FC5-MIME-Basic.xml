@@ -20,11 +20,11 @@
 <t:property name="attachment2.name" value="634.jpg"/>
 
 
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -33,16 +33,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_FC5_MIMEBasic" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-                  2. Create a test account.       
+                  2. Create a test account.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -54,7 +54,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -69,7 +69,7 @@
     </t:test>
 
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 <t:test_case testcaseid="acctSetup2_FC5_MIMEBasic" type="always">
@@ -92,7 +92,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_FC5_MIMEBasic1" type="bhr">
+<t:test_case testcaseid="lmtp_FC5_MIMEBasic1" type="sanity">
     <t:objective>Verify a MIME message in text format from a FC5 Account</t:objective>
     <t:steps>
         1. Upload a message
@@ -108,7 +108,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_FC5_MIMEBasic1a">
         <t:request>
@@ -121,7 +121,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_FC5_MIMEBasic1a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -131,13 +131,13 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg1.id}']">
             <t:select attr="sd" match="1164156939000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="n1@nidhi.com"/> 
+			<t:select path="//mail:e[@t='f']" attr="a" match="n1@nidhi.com"/>
            	<t:select path="//mail:e[@t='t']" attr="a" match="test@liquidsys.zimbraqa.com"/>
             <t:select path="//mail:m/mail:mp" attr="ct" match="text/plain"/>
             <t:select path="//mail:mp[@ct='text/plain']" attr="content" match="(?s)This is basic test mail from fc5 OS dated 22 November 2006\..*"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test depends="lmtp_FC5_MIMEBasic1a">
         <t:request>
@@ -150,12 +150,12 @@
              <t:select path="//mail:mp[@ct='text/plain']" attr="content" match="(?s).*This is basic test mail from fc5 OS dated 22 November 2006\..*"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_FC5_MIMEBasic2" type="bhr">
+<t:test_case testcaseid="lmtp_FC5_MIMEBasic2" type="sanity">
     <t:objective>Verify a MIME message with Word Document Attached from a FC5 Account</t:objective>
     <t:steps>
         1. Upload a message
@@ -171,7 +171,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_FC5_MIMEBasic2a">
         <t:request>
@@ -184,7 +184,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_FC5_MIMEBasic2a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -194,14 +194,14 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg2.id}']">
             <t:select attr="sd" match="1164158309000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="n1@nidhi.com"/> 
+			<t:select path="//mail:e[@t='f']" attr="a" match="n1@nidhi.com"/>
            	<t:select path="//mail:e[@t='t']" attr="a" match="test@liquidsys.zimbraqa.com"/>
-            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/mixed"/>            
+            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/mixed"/>
              <t:select path="//mail:mp[@ct='text/plain']" attr="content" match="(?s).This is a test mail with attachment from fc5 OS dated 22 November 2006.*"/>
-          <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>  
+          <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>
   			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test depends="lmtp_FC5_MIMEBasic2a">
         <t:request>
@@ -214,12 +214,12 @@
             <t:select path="//mail:mp[@ct='text/plain']" attr="content" match="(?s).*This is a test mail with attachment from fc5 OS dated 22 November 2006.*"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="lmtp_FC5_MIMEBasic3" type="bhr">
+<t:test_case testcaseid="lmtp_FC5_MIMEBasic3" type="sanity">
     <t:objective>Verify a MIME message with Word Document Attached from a FC5 Account</t:objective>
     <t:steps>
         1. Upload a message
@@ -235,7 +235,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_FC5_MIMEBasic3a">
         <t:request>
@@ -248,7 +248,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_FC5_MIMEBasic3a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -258,14 +258,14 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg3.id}']">
             <t:select attr="sd" match="1165645648000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="user@zm1rhel4.zimbraqa.com"/> 
+			<t:select path="//mail:e[@t='f']" attr="a" match="user@zm1rhel4.zimbraqa.com"/>
            	<t:select path="//mail:e[@t='t']" attr="a" match="test@zm1rhel4.zimbraqa.com"/>
-            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/mixed"/>            
+            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/mixed"/>
             <t:select path="//mail:mp[@ct='text/plain']" attr="content" match="(?s)This is a test mail from FC5 OS with an image as an attachment dated 8th December\..*"/>
-            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>  
+            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test depends="lmtp_FC5_MIMEBasic3a">
         <t:request>
@@ -278,7 +278,7 @@
             <t:select path="//mail:mp[@ct='text/plain']" attr="content" match="(?s).*This is a test mail from FC5 OS with an image as an attachment dated 8th December\..*"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

@@ -13,7 +13,7 @@
 
 <t:test_case testcaseid="acctSetup1" type="always" >
  <t:objective>create test account</t:objective>
-	
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -43,7 +43,7 @@
 
 <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
-<t:test_case testcaseid="zcs-1864" type="bhr" bugids="zcs-1864">
+<t:test_case testcaseid="zcs-1864" type="sanity" bugids="zcs-1864">
  <t:objective> Send a mail with malformed encoded subject. Verify mail is delivered successfully </t:objective>
 
     <t:test required="true">
@@ -74,7 +74,7 @@
 		<t:select path="//mail:SendMsgResponse"/>
 	 </t:response>
 	</t:test>
- 
+
 	<t:test >
 	 <t:request>
 	   <SendMsgRequest xmlns="urn:zimbraMail">
@@ -138,7 +138,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test>
 		 <t:request>
 		   <SearchRequest xmlns="urn:zimbraMail" types="message">

@@ -20,7 +20,7 @@
 
 <t:test_case testcaseid = "Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id = "ping">
         <t:request>
             <PingRequest xmlns = "urn:zimbraAdmin"/>
@@ -29,13 +29,13 @@
             <t:select path = "//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid = "acct1_setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test id = "admin_login" required = "true" depends = "ping">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAdmin">
@@ -60,7 +60,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id = "create_test_account2" required = "true" depends = "admin_login">
         <t:request>
             <CreateAccountRequest xmlns = "urn:zimbraAdmin">
@@ -73,16 +73,16 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid = "searchUuencode_word_01" type="functional" areas="verity" bugids="1246">
+<t:test_case testcaseid = "searchUuencode_word_01" type="regression" areas="verity" bugids="1246">
     <t:objective>
     Search attachment content of a mime message with uuencoded Word Doc attachment
 	</t:objective>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
@@ -91,7 +91,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -133,11 +133,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "searchUuencode_text_01" type="functional" areas="verity" bugids="1246,700">
+<t:test_case testcaseid = "searchUuencode_text_01" type="regression" areas="verity" bugids="1246,700">
     <t:objective>
     Search attachment content of a mime message with uuencoded text attachment
     </t:objective>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${msg02.file}</filename>
@@ -146,7 +146,7 @@
 			<server>${account2.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >

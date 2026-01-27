@@ -9,7 +9,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -24,7 +24,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true">
         <t:request>
@@ -37,7 +37,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -63,8 +63,8 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
-     
+
+
     <t:test>
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -76,10 +76,10 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl1.id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="GetAdminConsoleUICompRequest01" type="bhr">
+<t:test_case testcaseid="GetAdminConsoleUICompRequest01" type="sanity">
 <t:objective>Send GetAdminConsoleUICompRequest on account by name</t:objective>
 
     <t:test required="true">
@@ -93,10 +93,10 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" > 
+    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" >
     			<account by="name">${account1.name}</account>
     		</GetAdminConsoleUICompRequest>
     	</t:request>
@@ -104,11 +104,11 @@
     		<t:select path="//admin:GetAdminConsoleUICompResponse"/>
     	</t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="GetAdminConsoleUICompRequest02" type="bhr">
+<t:test_case testcaseid="GetAdminConsoleUICompRequest02" type="sanity">
 <t:objective>Send GetAdminConsoleUICompRequest on account by id</t:objective>
 
     <t:test required="true">
@@ -122,10 +122,10 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" > 
+    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" >
     			<account by="id">${account1.id}</account>
     		</GetAdminConsoleUICompRequest>
     	</t:request>
@@ -137,7 +137,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAdminConsoleUICompRequest03" type="bhr">
+<t:test_case testcaseid="GetAdminConsoleUICompRequest03" type="sanity">
 <t:objective>Send GetAdminConsoleUICompRequest on DL by name</t:objective>
     <t:test required="true">
         <t:request>
@@ -150,10 +150,10 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" > 
+    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" >
     			<dl by="name">${dl1.name}</dl>
     		</GetAdminConsoleUICompRequest>
     	</t:request>
@@ -164,7 +164,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetAdminConsoleUICompRequest04" type="bhr">
+<t:test_case testcaseid="GetAdminConsoleUICompRequest04" type="sanity">
 <t:objective>Send GetAdminConsoleUICompRequest on DL by ID</t:objective>
    <t:test required="true">
         <t:request>
@@ -177,10 +177,10 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" > 
+    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" >
     			<dl by="id">${dl1.id}</dl>
     		</GetAdminConsoleUICompRequest>
     	</t:request>
@@ -190,7 +190,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="GetAdminConsoleUICompRequest05" type="bhr">
+<t:test_case testcaseid="GetAdminConsoleUICompRequest05" type="sanity">
 <t:objective>Send GetAdminConsoleUICompRequest non existing account and DL</t:objective>
    <t:test required="true">
         <t:request>
@@ -203,10 +203,10 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
     	<t:request>
-    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" > 
+    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" >
     			<dl by="name">${dl2.name}</dl>
     		</GetAdminConsoleUICompRequest>
     	</t:request>
@@ -216,7 +216,7 @@
     </t:test>
     <t:test>
     	<t:request>
-    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" > 
+    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" >
     			<account by="name">${account3.name}</account>
     		</GetAdminConsoleUICompRequest>
     	</t:request>
@@ -224,10 +224,10 @@
     		<t:select path="//zimbra:Code" match="account.NO_SUCH_ACCOUNT"/>
     	</t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="GetAdminConsoleUICompRequest06" type="bhr">
+<t:test_case testcaseid="GetAdminConsoleUICompRequest06" type="sanity">
 <t:objective>Send GetAdminConsoleUICompRequest on account and dl together.</t:objective>
 
    <t:test required="true">
@@ -241,11 +241,11 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 
     <t:test>
     	<t:request>
-    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" > 
+    		<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin" >
     			<account by="name">${account1.name}</account>
     			<dl by="name">${dl1.name}</dl>
     		</GetAdminConsoleUICompRequest>

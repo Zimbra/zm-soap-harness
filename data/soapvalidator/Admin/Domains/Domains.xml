@@ -16,7 +16,7 @@
 
 <t:test_case testcaseid="GetDomainRequest01" type="smoke" >
 	<t:objective>Sanity test for GetDomainRequest</t:objective>
-    
+
 	<t:test id="admin_login" required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -38,7 +38,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:test>
@@ -51,12 +51,12 @@
 	        <t:select path="//admin:GetDomainResponse/admin:domain" attr="id"  match="^${domain1.id}$"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 <t:test_case testcaseid="ModifyDomainRequest_01" type="smoke" >
 	<t:objective>Sanity test for ModifyDomainRequest </t:objective>
-    
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -78,9 +78,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain2.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -91,13 +91,13 @@
         <t:response>
             <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
         </t:response>
-    </t:test>   
-   
+    </t:test>
+
 </t:test_case>
 
 <t:test_case testcaseid="DeleteDomainRequest_01" type="smoke" >
 	<t:objective>Sanity test for DeleteDomainRequest</t:objective>
-    
+
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -119,20 +119,20 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain3.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
-                <id>${domain3.id}</id>               
+                <id>${domain3.id}</id>
             </DeleteDomainRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:DeleteDomainResponse"/>
         </t:response>
-    </t:test>   
-   
+    </t:test>
+
 </t:test_case>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -143,11 +143,11 @@
 	<t:test>
         <t:request>
             <GetDomainInfoRequest xmlns="urn:zimbraAdmin">
-                <domain by="name">${defaultdomain.name}</domain>                 
+                <domain by="name">${defaultdomain.name}</domain>
             </GetDomainInfoRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${defaultdomain.name}"/>  
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${defaultdomain.name}"/>
         </t:response>
     </t:test>
 
@@ -156,7 +156,7 @@
 
 <t:test_case testcaseid="GetAllDomainsRequest_01" type="smoke" >
     <t:objective>Sanity test for GetAllDomainsRequest</t:objective>
-  
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test >
@@ -184,7 +184,7 @@
 
 <t:test_case testcaseid="GetAllAccountsRequest_01" type="smoke" >
     <t:objective>Sanity test for GetAllAccountsRequest</t:objective>
-  
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test >
@@ -198,7 +198,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -208,7 +208,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:test >
@@ -221,7 +221,7 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" />
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test>
         <t:request>
@@ -236,9 +236,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetQuotaUsageRequest_01" type="bhr" >
+<t:test_case testcaseid="GetQuotaUsageRequest_01" type="sanity" >
     <t:objective>Sanity test for GetQuotaUsageRequest</t:objective>
-  
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test >
@@ -252,7 +252,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -262,7 +262,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
 	<t:test >
@@ -276,7 +276,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
  	<t:test>
         <t:request>

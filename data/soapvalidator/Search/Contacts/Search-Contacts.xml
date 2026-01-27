@@ -18,7 +18,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -27,7 +27,7 @@
     <t:steps>1. Login to admin
              2. Create a test account
     </t:steps>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -39,7 +39,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -112,17 +112,17 @@
                     <a n="workPostalCode">99991</a>
                     <a n="workCountry">workCountry1</a>
                     <a n="workURL">workURL1</a>
-                    <a n="notes">notes1</a>      
-                </cn>     
+                    <a n="notes">notes1</a>
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id1"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="createContactRequest2">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -154,17 +154,17 @@
                     <a n="workPostalCode">99992</a>
                     <a n="workCountry">workCountry2</a>
                     <a n="workURL">workURL2</a>
-                    <a n="notes">notes1 notes2</a>      
-                </cn>     
+                    <a n="notes">notes1 notes2</a>
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id2"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="createContactRequest3">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -172,16 +172,16 @@
                     <a n="firstName">firstName3</a>
                     <a n="lastName">lastName3</a>
                     <a n="email">firstName03_lastName03@testsearch.co.in</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
          </t:request>
          <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id3"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="createContactRequest4">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -190,16 +190,16 @@
                     <a n="lastName">lastName4</a>
                     <a n="email">firstname04_lastname04@testsearch.com</a>
                     <a n="company">company4 pvt ltd</a>
-                </cn>    
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id4"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="createContactRequest5">
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -208,13 +208,13 @@
                     <a n="lastName">lastName5</a>
                     <a n="email">firstname05_lastname05@testsearch.com</a>
                     <a n="company">company5 pvt ltd</a>
-                </cn>    
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id5"/>
-            </t:select>    
+            </t:select>
         </t:response>
     </t:test>
 
@@ -223,815 +223,815 @@
 
 <t:test_case testcaseid="search_contact1" type="smoke">
     <t:objective>Searching with name (FirstName\Lastname\Middlename) </t:objective>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>firstName1</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>          
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>lastName2</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>middleName2</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="search_contact2" type="sanity" >
+<t:test_case testcaseid="search_contact2" type="functional" >
     <t:objective>Searching with email Id </t:objective>
-    
+
     <!--searching with username in email1 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>firstName01_lastName01</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!--searching with username in email2 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>firstName22_lastName22</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!--searching with username in email3 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>firstName31_lastName31</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_contact3" type="sanity" >
+<t:test_case testcaseid="search_contact3" type="functional" >
     <t:objective>Searching contact with email (incomplete username\@domainname\domainname) </t:objective>
-    
+
     <t:test>
          <t:request>
              <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>firstName01</query>
-            </SearchRequest>        
+            </SearchRequest>
          </t:request>
          <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:info/mail:wildcard" attr="str" match="firstname01.*"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>@testsearch.com</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>testsearch.com</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="search_contact4" type="sanity" >
+<t:test_case testcaseid="search_contact4" type="functional" >
     <t:objective>Searching contact with (complete\incomplete company name)  </t:objective>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>company1</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>comp</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_contact5" type="sanity" >
+<t:test_case testcaseid="search_contact5" type="functional" >
     <t:objective>Searching with different Phone numbers </t:objective>
-    
-    <!-- searching with mobile phone number  --> 
+
+    <!-- searching with mobile phone number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12412</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with home phone number  --> 
+
+    <!-- searching with home phone number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12402</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with business phone number  --> 
+
+    <!-- searching with business phone number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12391</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with workFax number  --> 
+
+    <!-- searching with workFax number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12311</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with workPhone2 number  --> 
+
+    <!-- searching with workPhone2 number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12321</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with callbackPhone number  --> 
+
+    <!-- searching with callbackPhone number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12331</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with carPhone number  --> 
+
+    <!-- searching with carPhone number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12341</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with homePhone2 number  --> 
+
+    <!-- searching with homePhone2 number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12352</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with homeFax number  --> 
+
+    <!-- searching with homeFax number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12362</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with otherPhone number  --> 
+
+    <!-- searching with otherPhone number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12372</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
-    <!-- searching with otherFax number  --> 
+
+    <!-- searching with otherFax number  -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>12382</query>
-            </SearchRequest>        
-        </t:request>
-        <t:response>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>            
-        </t:response>
-    </t:test>
-    
-    <!-- searching with pager number  --> 
-    <t:test>
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>12422</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
-    </t:test>    
-    
-</t:test_case>    
+    </t:test>
+
+    <!-- searching with pager number  -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>12422</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
 
 
-<t:test_case testcaseid="search_contact6" type="sanity" >
+<t:test_case testcaseid="search_contact6" type="functional" >
     <t:objective>Searching with jobtitle</t:objective>
 
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>jobTitle2</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_contact7" type="sanity" >
+<t:test_case testcaseid="search_contact7" type="functional" >
     <t:objective>Searching with Place (Street\City\State\PostalCode\Country)</t:objective>
-    
+
     <!--searching with workStreet in email1 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>workStreet1</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!--searching with workCity in email1 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>workCity1</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!--searching with workState in email1 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>workState2</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!--searching with workPostalCode in email1 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>99992</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!--searching with workCountry in email1 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>workCountry2</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
 
-</t:test_case>    
+</t:test_case>
 
 
-<t:test_case testcaseid="search_contact8" type="sanity" >
+<t:test_case testcaseid="search_contact8" type="functional" >
     <t:objective>Searching contact with URL in contact information</t:objective>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>workURL1</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-        
-</t:test_case>    
+
+</t:test_case>
 
 
-<t:test_case testcaseid="search_contact9" type="sanity" >
+<t:test_case testcaseid="search_contact9" type="functional" >
     <t:objective>Searching with notes in contact information</t:objective>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>notes1</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>notes2</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>notes1 notes2</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
-    </t:test>       
-    
-</t:test_case> 
+    </t:test>
+
+</t:test_case>
 
 
-<t:test_case testcaseid="search_contact10" type="sanity" >
+<t:test_case testcaseid="search_contact10" type="functional" >
     <t:objective>Searching contacts with Partial String (firstName\ common word present in contacts separated with space) </t:objective>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>firstName4</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>          
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>Name</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" /> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" />          
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>company5</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" />          
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" />
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>pvt</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" /> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" />          
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" />
         </t:response>
-    </t:test>     
-    
-         
+    </t:test>
+
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="search_contact11" type="bhr">
+<t:test_case testcaseid="search_contact11" type="sanity">
     <t:objective>Searching using the query "contact:" with name (FirstName\Lastname\Middlename) </t:objective>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:firstName1</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>          
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>lastName2</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>middleName2</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>            
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="search_contact12" type="sanity" >
+<t:test_case testcaseid="search_contact12" type="functional" >
     <t:objective>Searching using the query "contact:" with email Id </t:objective>
-    
+
     <!--searching with username in email1 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:firstName01_lastName01</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!--searching with username in email2 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:firstName22_lastName22</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!--searching with username in email3 -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:firstName31_lastName31</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="search_contact13" type="sanity" >
+<t:test_case testcaseid="search_contact13" type="functional" >
     <t:objective>Searching using the query "contact:" contact with email (incomplete username\@domainname\domainname) </t:objective>
-    
+
     <t:test>
          <t:request>
              <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:firstName01</query>
-            </SearchRequest>        
+            </SearchRequest>
          </t:request>
          <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" />
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:@testsearch.com</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:testsearch.com</query>
-            </SearchRequest>        
+            </SearchRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="search_contact14" type="sanity" >
+<t:test_case testcaseid="search_contact14" type="functional" >
     <t:objective>Searching using the query "contact:" wildcards the result, i.e. contact:term = contact:term*</t:objective>
-    
+
     <t:test>
          <t:request>
              <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>contact:firstName31</query>
-            </SearchRequest>        
+            </SearchRequest>
          </t:request>
          <t:response>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id1}']" />
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id2}']" emptyset="1"/>
             <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id3}']" emptyset="1"/>
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/> 
-            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>             
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id5}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 

@@ -48,7 +48,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,11 +61,11 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
-<t:test_case testcaseid="bug77367_1" type="bhr" bugids="77367">
+<t:test_case testcaseid="bug77367_1" type="sanity" bugids="77367">
     <t:objective>Notifyaction filter can result in mail loop</t:objective>
     <t:steps>
     1. Setup notify filter for two accounts to each other.
@@ -87,10 +87,10 @@
 
         </t:response>
     </t:test>
-    
-    
+
+
     <t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="notify1.subject" value="Notify subject account1"/>
 	<t:property name="notify1.body" value="Notify body account1"/>
 	<t:test>
@@ -108,7 +108,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -116,7 +116,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -129,12 +129,12 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-     
+
     <t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="notify2.subject" value="Notify subject account2"/>
 	<t:property name="notify2.body" value="Notify body account2"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -150,7 +150,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -158,7 +158,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-     
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -173,7 +173,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
  		<t:request>
  			  <SendMsgRequest xmlns="urn:zimbraMail">
@@ -190,9 +190,9 @@
 				<t:select path="//mail:SendMsgResponse"/>
  		</t:response>
 	</t:test>
- 	
+
  	<t:delay sec="60"/>
- 	
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -203,7 +203,7 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="mail01.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -216,7 +216,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-     
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -227,9 +227,9 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="mail01.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:delay sec="10"/>
-	
+
 	  <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -240,12 +240,12 @@
 			<t:select path="//mail:SearchResponse/mail:m[3]" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
-    
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="bug77367_2" type="bhr" bugids="77367">
+<t:test_case testcaseid="bug77367_2" type="sanity" bugids="77367">
     <t:objective>actionReply filter can result in mail loop</t:objective>
 	<t:steps>
 	 1. Setup actionReply filter for two accounts to each other.
@@ -266,10 +266,10 @@
 
         </t:response>
     </t:test>
-    
-    
+
+
     <t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter1.subject" value="testfilter${TIME}${COUNTER}"/>	
+	<t:property name="filter1.subject" value="testfilter${TIME}${COUNTER}"/>
 	<t:property name="reply1.subject" value="Reply subject account1"/>
 	<t:property name="reply1.body" value="Reply body account1"/>
 	<t:test>
@@ -287,7 +287,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -295,7 +295,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -308,12 +308,12 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-     
+
     <t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="reply2.subject" value="Reply subject account2"/>
 	<t:property name="reply2.body" value="Reply body account2"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -329,7 +329,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -337,7 +337,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-     
+
    	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -352,7 +352,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
  		<t:request>
  			  <SendMsgRequest xmlns="urn:zimbraMail">
@@ -382,7 +382,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-     
+
      <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -393,9 +393,9 @@
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="mail01.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:delay sec="10"/>
-	
+
 	 <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -406,7 +406,7 @@
 			<t:select path="//mail:SearchResponse/mail:m[5]" emptyset="1"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 </t:tests>

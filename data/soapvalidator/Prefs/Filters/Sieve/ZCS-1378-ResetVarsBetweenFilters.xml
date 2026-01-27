@@ -72,7 +72,7 @@ if  header :matches ["X-Header3"] "*" {
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-		
+
 		<t:staftask >
             <t:request>
                 <server>${zimbraServer.name}</server>
@@ -89,7 +89,7 @@ if  header :matches ["X-Header3"] "*" {
                 <params>START SHELL COMMAND "su - zimbra -c 'zmprov fc all'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
             </t:request>
         </t:staftask>
-        
+
         <t:delay sec="5"/>
 
         <t:test required="true">
@@ -134,7 +134,7 @@ if  header :matches ["X-Header3"] "*" {
         </t:test>
     </t:test_case>-->
 
-    <t:test_case testcaseid="zcs-1378_rule1" type="bhr" bugids="zcs-1378">
+    <t:test_case testcaseid="zcs-1378_rule1" type="sanity" bugids="zcs-1378">
         <t:objective>
             1. The user-defined rule should not be able to refer any variables
                   (the labeled style $\{abc} and the numeric style $\{1}) defined in
@@ -172,7 +172,7 @@ if  header :matches ["X-Header3"] "*" {
                 <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
-	
+
 	 <t:test>
             <t:request>
                 <FlushCacheRequest xmlns="urn:zimbraAdmin">
@@ -185,7 +185,7 @@ if  header :matches ["X-Header3"] "*" {
                 <t:select path="//admin:FlushCacheResponse"/>
             </t:response>
         </t:test>
-	
+
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">

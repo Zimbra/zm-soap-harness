@@ -38,16 +38,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="CreateWaitSetRequest_Contacts_AccountSetup" type="always">
     <t:objective>create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create an account.    
+             2. Create an account.
     </t:steps>
-    
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -59,7 +59,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -72,7 +72,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -85,7 +85,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -98,7 +98,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -109,7 +109,7 @@
     2. Send the CreateWaitSetRequest to create a wait set
     3. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -152,10 +152,10 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="CreateWaitSetRequest_folders_02" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_folders_02" type="sanity">
     <t:objective>Test Case for WaitSetRequest for folder changes</t:objective>
     <t:steps>
     1. Login to account1
@@ -163,7 +163,7 @@
     3. Create a new folder into the mailbox
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -205,7 +205,7 @@
 	</t:test>
 
 	<t:property name="waitset.seq" value="2"/>
-	
+
     <t:test >
         <t:request>
 			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account1.waitset.waitSet}" seq="${account1.waitset.seq}"  >
@@ -220,9 +220,9 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CreateWaitSetRequest_folders_03" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_folders_03" type="sanity">
     <t:objective>Test Case for WaitSetRequest (non blocking) for folder changes</t:objective>
     <t:steps>
     1. Login to account1
@@ -230,7 +230,7 @@
     3. Create a new folder into the mailbox > modify created folder
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -270,9 +270,9 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:property name="waitset.seq" value="2"/>
-	
+
 	<t:test  depends="folderaction1a">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -280,13 +280,13 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action">        
+            <t:select path="//mail:FolderActionResponse/mail:action">
             </t:select>
         </t:response>
     </t:test>
-	
+
 	<t:property name="waitset.seq" value="2"/>
-	
+
     <t:test >
         <t:request>
 			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account2.waitset.waitSet}" seq="${waitset.seq}"  >
@@ -301,9 +301,9 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CreateWaitSetRequest_folders_04" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_folders_04" type="sanity">
     <t:objective>Test Case for WaitSetRequest (non blocking) for folder changes</t:objective>
     <t:steps>
     1. Login to account1
@@ -311,7 +311,7 @@
     3. Create a new folder into the mailbox > delete created folder
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test >
@@ -351,7 +351,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test  depends="folderaction1a">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -359,13 +359,13 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action">        
+            <t:select path="//mail:FolderActionResponse/mail:action">
             </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="waitset.seq" value="2"/>
-	
+
     <t:test >
         <t:request>
 			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account3.waitset.waitSet1}" seq="${account3.waitset.seq1}"  >
@@ -379,17 +379,17 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CreateWaitSetRequest_folders_04" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_folders_04" type="sanity">
     <t:objective>Test Case for WaitSetRequest (non blocking) for folder changes</t:objective>
     <t:steps>
     1. Login to account1
     2. Send the CreateWaitSetRequest to create a wait set
-    3. Create two folder into the mailbox 
+    3. Create two folder into the mailbox
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test >
@@ -429,7 +429,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test id="CreateFolderRequest1" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -442,7 +442,7 @@
 	</t:test>
 
 	<t:property name="waitset.seq" value="2"/>
-	
+
     <t:test >
         <t:request>
 			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account3.waitset.waitSet}" seq="${account3.waitset.seq}"  >
@@ -457,9 +457,9 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CreateWaitSetRequest_folders_05" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_folders_05" type="sanity">
     <t:objective>Test Case for WaitSetRequest (non blocking) for folder changes</t:objective>
     <t:steps>
     1. Login to account1
@@ -468,7 +468,7 @@
     4. Send the WaitSetRequest to pick up the changes
     5. repeat step 3,4 and verify value of attr seq changed accordingly.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test >
@@ -508,9 +508,9 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder8.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:property name="waitset.seq" value="2"/>
-	
+
 	<t:test >
         <t:request>
 			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account3.waitset.waitSet}" seq="${waitset.seq}"  >
@@ -522,7 +522,7 @@
             </t:select>
         </t:response>
     </t:test>
-	
+
 	<t:test id="CreateFolderRequest1" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -535,7 +535,7 @@
 	</t:test>
 
 	<t:property name="waitset.seq" value="3"/>
-	
+
     <t:test >
         <t:request>
 			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account3.waitset.waitSet}" seq="${account3.waitset.seq}"  >
@@ -550,17 +550,17 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CreateWaitSetRequest_folders_06" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_folders_06" type="sanity">
     <t:objective>Test Case for WaitSetRequest (non blocking) for folder changes</t:objective>
     <t:steps>
     1. Login to account1
     2. Send the CreateWaitSetRequest to create a wait set
-    3. Create a new folder into the mailbox > GetFolderRequest to get folder list 
+    3. Create a new folder into the mailbox > GetFolderRequest to get folder list
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test >
@@ -600,7 +600,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder7.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -610,9 +610,9 @@
             <t:select path="//mail:folder[@name='${folder7.name}']" attr="id" set="folder7.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="waitset.seq" value="2"/>
-	
+
     <t:test >
         <t:request>
 			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account3.waitset.waitSet}" seq="${account3.waitset.seq}"  >
@@ -627,9 +627,9 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CreateWaitSetRequest_folders_07" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_folders_07" type="sanity">
     <t:objective>Test Case for WaitSetRequest (non blocking) for folder changes</t:objective>
     <t:steps>
     1. Login to account1
@@ -637,7 +637,7 @@
     3. Create a new folder into the mailbox > modify created folder > delete that folder.
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test >
@@ -677,7 +677,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder10.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test  depends="folderaction1a">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -685,11 +685,11 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action">        
+            <t:select path="//mail:FolderActionResponse/mail:action">
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test  depends="folderaction1a">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -697,13 +697,13 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action">        
+            <t:select path="//mail:FolderActionResponse/mail:action">
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="waitset.seq" value="2"/>
-	
+
     <t:test >
         <t:request>
 			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account3.waitset.waitSet}" seq="${account3.waitset.seq}"  >
@@ -718,6 +718,6 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
 </t:tests>

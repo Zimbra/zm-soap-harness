@@ -6,8 +6,8 @@
 <t:property name="account4.name" value="account4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 
 
-<t:test_case testcaseid="ModifyWhiteBlackListRequest_01" type="bhr">
-    <t:objective>Sanity test for ModifyWhiteBlackListRequest </t:objective> 
+<t:test_case testcaseid="ModifyWhiteBlackListRequest_01" type="sanity">
+    <t:objective>Sanity test for ModifyWhiteBlackListRequest </t:objective>
 
  	<t:test>
         <t:request>
@@ -46,7 +46,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-	
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -73,12 +73,12 @@
             <t:select path="//acct:ModifyWhiteBlackListResponse" />
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 <t:test_case testcaseid="GetWhiteBlackListRequest_01" type="smoke">
     <t:objective>Sanity test for GetWhiteBlackListRequest </t:objective>
-  
+
  	<t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -98,7 +98,7 @@
                 <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
-        <t:response>            
+        <t:response>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
@@ -114,7 +114,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" />
         </t:response>
     </t:test>
-   
+
 	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 
     <t:test >
@@ -152,7 +152,7 @@
 			<t:select path="//acct:GetWhiteBlackListResponse/acct:blackList/acct:addr" match="${account4.name}"/>
         </t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 </t:tests>

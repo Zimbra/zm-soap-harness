@@ -49,13 +49,13 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_Admin_GetInfoRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountBy_Admin_GetInfoRequest_Basic01" type="sanity">
     <t:objective>Use an admin token with accountby to GetFolderRequest</t:objective>
     <t:steps>
     1. Use admin authtoken with accountby=user1 to GetFolderRequest - Success
@@ -84,7 +84,7 @@
 
 			<account by="id">${account1.id}</account>
 		</t:requestContext>
-		<t:request> 
+		<t:request>
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
         </t:request>
         <t:response>

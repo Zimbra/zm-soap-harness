@@ -21,7 +21,7 @@
 
 <t:test_case testcaseid="ping" type="always" >
 	<t:objective>basic system check</t:objective>
-	
+
 	<t:test id="ping" required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -98,7 +98,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 
 </t:test_case>
 
@@ -107,7 +107,7 @@
 	<t:objective>Send a message (onnet) with high importance</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -142,7 +142,7 @@
 	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -183,11 +183,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Message_Importance_02" type="bhr">
+<t:test_case testcaseid="Message_Importance_02" type="sanity">
 	<t:objective>Send a message (onnet) with low importance</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -222,7 +222,7 @@
 	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -235,7 +235,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:delay sec="10"/>
 
 	<t:test>
@@ -264,11 +264,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_03" type="bhr">
+<t:test_case testcaseid="Message_Importance_03" type="sanity">
 	<t:objective>Send a message (onnet) with normal importance</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -303,7 +303,7 @@
 	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -345,11 +345,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_04" type="bhr">
+<t:test_case testcaseid="Message_Importance_04" type="sanity">
 	<t:objective>Send a message (offnet) with high importance and check headers</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -399,11 +399,11 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_05" type="bhr">
+<t:test_case testcaseid="Message_Importance_05" type="sanity">
 	<t:objective>Send a message (offnet) with high importance and check headers</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -453,12 +453,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_06" type="bhr">
+<t:test_case testcaseid="Message_Importance_06" type="sanity">
 	<t:objective>Receive a message (lmtp) with high importance</t:objective>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -498,12 +498,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_07" type="bhr">
+<t:test_case testcaseid="Message_Importance_07" type="sanity">
 	<t:objective>Receive a message (lmtp) with low importance</t:objective>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -543,12 +543,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_08" type="bhr">
+<t:test_case testcaseid="Message_Importance_08" type="sanity">
 	<t:objective>Receive a message (lmtp) with normal importance</t:objective>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -589,12 +589,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_09" type="sanity" >
+<t:test_case testcaseid="Message_Importance_09" type="functional" >
 	<t:objective>Receive a message (lmtp) with "X-Priority: 1" and "Importance: low"</t:objective>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -635,12 +635,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_10" type="sanity" >
+<t:test_case testcaseid="Message_Importance_10" type="functional" >
 	<t:objective>Receive a message (lmtp) with "X-Priority: 5" and "Importance: high"</t:objective>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -682,12 +682,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Message_Importance_11" type="bhr">
+<t:test_case testcaseid="Message_Importance_11" type="sanity">
 	<t:objective>Receive a message from Outlook Express 2000 POP (lmtp) with high importance</t:objective>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -727,12 +727,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_12" type="bhr">
+<t:test_case testcaseid="Message_Importance_12" type="sanity">
 	<t:objective>Receive a message from Outlook Express 2000 POP (lmtp) with low importance</t:objective>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -773,12 +773,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Message_Importance_13" type="bhr">
+<t:test_case testcaseid="Message_Importance_13" type="sanity">
 	<t:objective>Receive a message from Outlook 2007 ZCO (lmtp) with high importance</t:objective>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -818,12 +818,12 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Message_Importance_14" type="bhr">
+<t:test_case testcaseid="Message_Importance_14" type="sanity">
 	<t:objective>Receive a message from Outlook 2007 ZCO (lmtp) with low importance</t:objective>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">

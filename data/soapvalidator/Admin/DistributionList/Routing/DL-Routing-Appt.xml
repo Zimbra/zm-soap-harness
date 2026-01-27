@@ -27,9 +27,9 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="DistributionList_Routing_Appt_AccountSetup" type="always">
     <t:objective>Create test Distribution List </t:objective>
@@ -60,13 +60,13 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DistributionList_Routing_Appt_01" type="bhr">
+<t:test_case testcaseid="DistributionList_Routing_Appt_01" type="sanity">
     <t:objective>Send a meeting request to a DL without any members - verify a bounce message </t:objective>
     <t:steps>
     1. Create a new DL - don't add any members
@@ -114,7 +114,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.start" value="1233576000000"/>	<!-- Feb 2, 2009  12:00:00 -->
 
@@ -160,7 +160,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 </t:test_case>
 
-<t:test_case testcaseid="DistributionList_Routing_Appt_02" type="bhr">
+<t:test_case testcaseid="DistributionList_Routing_Appt_02" type="sanity">
     <t:objective>Send a meeting request to a DL with one member</t:objective>
     <t:steps>
     1. Create a new DL with one member
@@ -218,7 +218,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
 	<t:test required="true">
@@ -233,7 +233,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.start" value="1233489600000"/>	<!-- Feb 1, 2009  12:00:00 -->
 
@@ -278,7 +278,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -292,7 +292,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 </t:test_case>
 
-<t:test_case testcaseid="DistributionList_Routing_Appt_03" type="bhr">
+<t:test_case testcaseid="DistributionList_Routing_Appt_03" type="sanity">
     <t:objective>Send a meeting request to a DL with multiple members</t:objective>
     <t:steps>
     1. Create a new DL with three members
@@ -350,7 +350,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 	<t:test >
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -375,7 +375,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 	<t:test >
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -400,7 +400,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
 	<t:test required="true">
@@ -415,7 +415,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.start" value="1233489600000"/>	<!-- Feb 1, 2009  12:00:00 -->
 
@@ -461,7 +461,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -487,7 +487,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -513,7 +513,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">

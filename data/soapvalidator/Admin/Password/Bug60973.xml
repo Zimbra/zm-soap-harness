@@ -37,7 +37,7 @@
 
 
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always" >
 	<t:objective>basic system check</t:objective>
@@ -55,7 +55,7 @@
 
 <t:test_case testcaseid="CreateAccountPasswordRuleOnCos" type="always" >
 	<t:objective>Password Rule zimbraPasswordMinDigitsOrPuncs on Create account applied by COS</t:objective>
-	
+
 	<t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -67,7 +67,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
   	<t:test required="true">
  		<t:request>
   			<CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -81,7 +81,7 @@
 			<t:select path="//admin:CreateCosResponse/admin:cos" attr="id"  set="cos1.id"/>
  		</t:response>
 	</t:test>
-	
+
 	  <t:test>
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -94,7 +94,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account"/>
         </t:response>
       </t:test>
-            
+
 
 	  <t:test >
         <t:request>
@@ -108,7 +108,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account"/>
         </t:response>
       </t:test>
-            
+
 	<t:test >
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -188,7 +188,7 @@
             <t:select path="//soap:Text" match="invalid password: not enough numeric or punctuation characters" />
         </t:response>
       </t:test>
-      
+
       	<t:test >
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -202,7 +202,7 @@
             <t:select path="//soap:Text" match="invalid password: not enough numeric or punctuation characters" />
         </t:response>
       </t:test>
-      
+
       	<t:test >
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -216,7 +216,7 @@
             <t:select path="//soap:Text" match="invalid password: not enough numeric or punctuation characters" />
         </t:response>
       </t:test>
-      
+
       	<t:test >
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -230,7 +230,7 @@
             <t:select path="//soap:Text" match="invalid password: not enough numeric or punctuation characters" />
         </t:response>
       </t:test>
-      
+
       <t:test >
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -247,9 +247,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateAccountPasswordRuleOnAccount" type="bhr">
+<t:test_case testcaseid="CreateAccountPasswordRuleOnAccount" type="sanity">
 	<t:objective>Password Rule zimbraPasswordMinDigitsOrPuncs on account</t:objective>
-	
+
 	<t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -261,7 +261,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
 	  <t:test>
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -275,7 +275,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account"/>
         </t:response>
       </t:test>
-      
+
      <t:test>
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -290,11 +290,11 @@
             <t:select path="//soap:Text" match="invalid password: not enough numeric or punctuation characters" />
         </t:response>
       </t:test>
-            
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ChangePasswordRequestFollowPasswordRule01" type="bhr">
+<t:test_case testcaseid="ChangePasswordRequestFollowPasswordRule01" type="sanity">
  <t:objective>Password policy on changepasswordrequest with valid password as per rule..</t:objective>
 
      <t:test>
@@ -307,7 +307,7 @@
         </t:request>
         <t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account15.id"/>
-			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account15.server"/>    
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account15.server"/>
         </t:response>
       </t:test>
 
@@ -356,7 +356,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ChangePasswordRequestFollowPasswordRule02" type="bhr">
+<t:test_case testcaseid="ChangePasswordRequestFollowPasswordRule02" type="sanity">
  <t:objective>Password policy on changepasswordrequest with invalid password as per rule..</t:objective>
 	<t:test required="true" >
 		<t:request>
@@ -369,7 +369,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
      <t:test>
         <t:request>
 	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -380,7 +380,7 @@
         </t:request>
         <t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account16.id"/>
-			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account16.server"/>    
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account16.server"/>
         </t:response>
       </t:test>
 

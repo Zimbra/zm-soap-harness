@@ -50,7 +50,7 @@
 		</t:response>
 	</t:test>
 
-	
+
     <t:test>
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -90,10 +90,10 @@
         </t:response>
     </t:test>
 
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="CheckRightsRequest_CalResource01" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckRightsRequest_CalResource01" type="sanity" bugids="" >
     <t:objective>CheckRightsRequest Default user rights on CalResource </t:objective>
 
 
@@ -109,7 +109,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -124,7 +124,7 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='calresource']/acct:right[@allow='0']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='calresource']/acct:right[@allow='0']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
     </t:test_case>
 
 <t:test_case testcaseid="CheckRightsRequest_CalResource02" type="smoke" bugids="" >
@@ -143,7 +143,7 @@
 	</t:test>
 
 
-			
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -155,7 +155,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -168,7 +168,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -182,7 +182,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -197,12 +197,12 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='calresource']/acct:right[@allow='1']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='calresource']/acct:right[@allow='1']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     </t:test_case>
 
-<t:test_case testcaseid="CheckRightsRequest_CalResource03" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckRightsRequest_CalResource03" type="sanity" bugids="" >
     <t:objective>CheckRightsRequest Revoked  user rights on CalResource </t:objective>
 
 	<t:test required="true" >
@@ -227,7 +227,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -240,7 +240,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -253,7 +253,7 @@
 		<t:response>
 		<t:select path="//admin:RevokeRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -266,7 +266,7 @@
 		<t:response>
 		<t:select path="//admin:RevokeRightResponse"/>
 		</t:response>
-	</t:test>	
+	</t:test>
 
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -281,7 +281,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -296,13 +296,13 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='calresource']/acct:right[@allow='0']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='calresource']/acct:right[@allow='0']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     </t:test_case>
 
 
-<t:test_case testcaseid="CheckRightsRequest_CalResource05" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckRightsRequest_CalResource05" type="sanity" bugids="" >
     <t:objective>CheckRightsRequest  on non existing CalResource </t:objective>
 
 
@@ -318,7 +318,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
    	<t:test >
         <t:request >
@@ -333,7 +333,7 @@
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='calresource']/acct:right[@allow='0']" match="sendAs" />
   			<t:select path="//acct:CheckRightsResponse/acct:target[@type='calresource']/acct:right[@allow='0']" match="sendOnBehalfOf" />
         </t:response>
-    </t:test> 
+    </t:test>
 
     </t:test_case>
 

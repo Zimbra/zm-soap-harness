@@ -47,18 +47,18 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 	    </t:response>
     </t:test>
-    
-          
+
+
 </t:test_case>
 
-<t:test_case testcaseid="meTest_01" type="bhr" bugids="42185" >
+<t:test_case testcaseid="meTest_01" type="sanity" bugids="42185" >
     <t:objective>Verify that the mail sent to me is filtered for meTest filter</t:objective>
-    
+
     <t:steps> 1. Create a filter meTest  header="To" for accoun1 to flag
 			  2. Send a message to the account1
 			  3. Verify that the message gets flagged.
     </t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -70,32 +70,32 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>	
-    
+    </t:test>
+
 	<t:property name="filter_meTest1.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter_meTest1.subject" value="metTest ${TIME}${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_meTest1.name}" active="1">
 						<filterTests condition="allof">
-						 <meTest  header="To"/>			
+						 <meTest  header="To"/>
 						</filterTests>
 						<filterActions>
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
-    </t:test>    
-   
+    </t:test>
+
 	<t:property name="addressBook_msg01.file" value="${testMailRaw.root}/bug42185/addressbook01.txt" />
 
 	<t:mailinjecttest >
@@ -105,12 +105,12 @@
 			<from>${account2.name}</from>
 			<server>${account1.server}</server>
 			<modify>
-				<header a="To">${account1.name}</header>				
-                <header a="Subject">${filter_meTest1.subject}</header>               
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_meTest1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -119,21 +119,21 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_meTest1.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
-    </t:test>    
-   
-          
-</t:test_case> 
+    </t:test>
 
-<t:test_case testcaseid="meTest_02" type="bhr" bugids="42185" >
+
+</t:test_case>
+
+<t:test_case testcaseid="meTest_02" type="sanity" bugids="42185" >
     <t:objective>Verify that the mail CC to me is filtered for meTest filter</t:objective>
-    
+
     <t:steps> 1. Create a filter meTest  header="CC" for account1 to flag
 			  2. Send a message and CC to the account1
 			  3. Verify that the message gets flagged for account1.
     </t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -145,24 +145,24 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>	
-    
+    </t:test>
+
 	<t:property name="filter_meTest2.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter_meTest2.subject" value="meTest ${TIME}${COUNTER}"/>		
-	    
+	<t:property name="filter_meTest2.subject" value="meTest ${TIME}${COUNTER}"/>
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
 					<filterRule name="${filter_meTest2.name}" active="1">
 						<filterTests condition="allof">
-						  <meTest  header="CC"/>				
+						  <meTest  header="CC"/>
 						</filterTests>
 						<filterActions>
 							<actionFlag flagName="flagged" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -170,7 +170,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-            
+
     <t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -183,7 +183,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
 	  <t:request>
 	    <SendMsgRequest xmlns="urn:zimbraMail">
@@ -201,8 +201,8 @@
 	         <t:select path="//mail:SendMsgResponse"/>
 	   </t:response>
 	</t:test>
-    
-    
+
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -215,7 +215,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -224,10 +224,10 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_meTest2.subject}"/>
-            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />
         </t:response>
-    </t:test>  
-          
-</t:test_case> 
+    </t:test>
+
+</t:test_case>
 
 </t:tests>

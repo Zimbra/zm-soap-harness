@@ -27,7 +27,7 @@
     <t:steps>
     	Pinging the server
     </t:steps>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -44,9 +44,9 @@
     <t:steps>
     	Logging in as admin
     	Creating organizer
-		Creating resource    	 
+		Creating resource
     </t:steps>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -59,7 +59,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <!-- Create Organizer -->
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
@@ -91,7 +91,7 @@
             <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource1.server"/>
         </t:response>
     </t:test>
-    
+
 	<!-- Create Invitee
     <t:test id="create_test_organizer1" required="false" depends="admin_login">
         <t:request>
@@ -103,22 +103,22 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="invitee1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="invitee1.server"/>
-        </t:response> 
+        </t:response>
     </t:test> -->
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest_RecException_01" type="bhr" areas="Calendar">
+<t:test_case testcaseid="SendInviteReplyRequest_RecException_01" type="sanity" areas="Calendar">
     <t:objective>Verify participant status is shown to the organizer for an exception to a basic weekly recurrent appointment</t:objective>
     <t:steps>
     1. Login as organizer
-    2. Create a recurring (daily) meeting request with booking a resource.  
-    3. The resource will auto accept the meeting.        
-    4. Create an exception for an instance of the recurring event      
+    2. Create a recurring (daily) meeting request with booking a resource.
+    3. The resource will auto accept the meeting.
+    4. Create an exception for an instance of the recurring event
     5. The resource will again auto accept the exception meeting/booking.
-    6. Create an event which overlaps with the exception event 
-    7. The resource should decline it since auto-decline is set to on.    
+    6. Create an event which overlaps with the exception event
+    7. The resource should decline it since auto-decline is set to on.
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${organizer1.server}"/>
@@ -135,7 +135,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test required="true" >
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -145,8 +145,8 @@
 				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.calendar.folder.id"/>
 			</t:select>
 		</t:response>
-	</t:test>    
-   
+	</t:test>
+
    	<!-- Apt Properties -->
 	<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
@@ -181,7 +181,7 @@
 						</comp>
 					</inv>
 					<!--  <e a="${invitee1.name}" t="t"/> -->
-					<e a="${resource1.name}" t="t"/>					
+					<e a="${resource1.name}" t="t"/>
 					<su>${appointment.subject}</su>
 					<mp ct="text/plain">
 						<content>${appointment.content}</content>
@@ -200,7 +200,7 @@
     </t:test>
 
 	<!--  Apt exception - Change an instance to more hours and also changing the subject -->
-	
+
 	<t:property name="appointment.exception.subject" value="exception${TIME}.${COUNTER}" delay="30000" />
     <t:test required="true" delay="30000" >
         <t:request>
@@ -210,7 +210,7 @@
 						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.exception.subject}">
 							<s d="${StartTime2}" tz="${timezone.pst}"/>
 							<e d="${EndTime2}" tz="${timezone.pst}"/>
-							<!--  <at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="1"/>-->							
+							<!--  <at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="1"/>-->
 							<at a="${resource1.name}" role="NON" ptst="AC" cutype="RES" rsvp="1"/>
 							<or a="${organizer1.name}"/>
 							<exceptId d="${StartTime2}" tz="${timezone.pst}"/>
@@ -229,13 +229,13 @@
             <t:select path="//mail:CreateAppointmentExceptionResponse">
             	<!--  <t:select attr="calItemId" set="organizer1.appt1.calItemId"/>
             	<t:select attr="invId" set="organizer1.appt1.invId"/>
-            	<t:select attr="apptId" set="organizer1.appt1.apptId"/> -->            	
+            	<t:select attr="apptId" set="organizer1.appt1.apptId"/> -->
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!--  Create an appointment which overlaps with the existing one -->
-    
+
     <t:property name="appointment.overlap.subject" value="overlap${TIME}.${COUNTER}"/>
     <t:test required="true" delay="10000" >
         <t:request>
@@ -243,12 +243,12 @@
 				<m >
 					<inv>
 						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.overlap.subject}">
-							<or a="${organizer1.name}"/>							
+							<or a="${organizer1.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" a="${resource1.name}" rsvp="1"/>
 							<s d="${StartTime3}" tz="${timezone.pst}" />
 							<e d="${EndTime3}" tz="${timezone.pst}" />
 						</comp>
-					</inv>					
+					</inv>
 					<e a="${resource1.name}" t="t"/>
 					<su>${appointment.overlap.subject}</su>
 					<mp ct="text/plain">
@@ -258,15 +258,15 @@
 			</CreateAppointmentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateAppointmentResponse">        	
-	          	<t:select attr="calItemId" set="organizer1.over.appt1.calItemId"/>   	
+            <t:select path="//mail:CreateAppointmentResponse">
+	          	<t:select attr="calItemId" set="organizer1.over.appt1.calItemId"/>
             	<t:select attr="invId" set="organizer1.over.appt1.invId"/>
             	<t:select attr="apptId" set="organizer1.over.appt1.apptId"/>
             </t:select>
         </t:response>
     </t:test>
-    
-    
+
+
     <!--  Do a GetMsgRequest to know the status of the overlap appointment -->
     <t:test delay="10000">
         <t:request>
@@ -277,11 +277,11 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${organizer1.over.appt1.invId}']">
             	 <t:select path="//mail:at[@a='${resource1.name}']" attr="ptst" match="${ptst.decline}"/>
-            	<!-- <t:select path="//mail:reply[@at='${resource1.name}']" attr="ptst" match="${ptst.decline}"/> --> 
+            	<!-- <t:select path="//mail:reply[@at='${resource1.name}']" attr="ptst" match="${ptst.decline}"/> -->
             </t:select>
         </t:response>
     </t:test>
-      
+
 </t:test_case>
 
 </t:tests>

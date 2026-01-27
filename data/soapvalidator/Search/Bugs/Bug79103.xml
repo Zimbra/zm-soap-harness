@@ -9,7 +9,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -23,7 +23,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -36,7 +36,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -51,7 +51,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="bug79103" type="bhr" bugids="79103" >
+<t:test_case testcaseid="bug79103" type="sanity" bugids="79103" >
     	<t:objective>Searchrequest with non UTF subject.</t:objective>
 	    <t:mailinjecttest>
     	    <t:lmtpInjectRequest>
@@ -60,8 +60,8 @@
             	<from>${account1.name}</from>
             	<server>${account1.server}</server>
         	</t:lmtpInjectRequest>
-    	
-    	</t:mailinjecttest>    
+
+    	</t:mailinjecttest>
     		    <t:mailinjecttest>
     	    <t:lmtpInjectRequest>
         	    <filename>${mime.filename2}</filename>
@@ -69,8 +69,8 @@
             	<from>${account1.name}</from>
             	<server>${account1.server}</server>
         	</t:lmtpInjectRequest>
-    	</t:mailinjecttest>    
-    	
+    	</t:mailinjecttest>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -85,7 +85,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -97,7 +97,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${subject2}.*"/>
         </t:response>
     </t:test>
-    
+
         <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -109,7 +109,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${subject2}.*"/>
         </t:response>
     </t:test>
-    
+
         <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -121,7 +121,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${subject2}.*"/>
         </t:response>
     </t:test>
-    
+
         <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -133,7 +133,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${subject2}.*"/>
         </t:response>
     </t:test>
-    
+
         <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -145,7 +145,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${subject2}.*"/>
         </t:response>
     </t:test>
-    
+
         <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -157,8 +157,8 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${subject2}.*"/>
         </t:response>
     </t:test>
-    
-    
+
+
 </t:test_case>
 
 </t:tests>

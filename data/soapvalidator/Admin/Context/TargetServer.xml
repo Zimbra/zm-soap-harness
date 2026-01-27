@@ -9,7 +9,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin" />
@@ -18,13 +18,13 @@
 			<t:select path="//admin:PingResponse" />
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_notification" type="always">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -36,7 +36,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -99,13 +99,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="HeaderContext_Admin_TargetServer_01" type="sanity">
+<t:test_case testcaseid="HeaderContext_Admin_TargetServer_01" type="functional">
     <t:objective>Send an admin request using targetServer</t:objective>
     <t:steps>
     1. Execute GetQuotaUsageRequest with targetServer set to the user account server
     (GetQuotaUsageRequest requires the request to be sent to the account's server)
     </t:steps>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
 	<t:test required="true">
 		<t:request>
@@ -118,7 +118,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    
+
 	<t:test >
         <t:requestContext>
             <authToken>${authToken}</authToken>

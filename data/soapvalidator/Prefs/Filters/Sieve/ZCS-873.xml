@@ -25,96 +25,96 @@
 	<t:property name="var8" value="$\{var_eight}" />
 
 	<t:property name="sieve_test1"
-		value='require ["log","fileinto","variables","tag"];	
+		value='require ["log","fileinto","variables","tag"];
 		set :lower :upper "var_one" "demo TEST 123";
 		if header :contains "Subject" "sub1"
 		{
 			log "Should not be logged in as ${var_one}";
 			fileinto "Junk";
 			tag "${var_one}";
-		}   
+		}
 ' />
 
 	<t:property name="sieve_test2"
-		value='require ["log","fileinto","variables", "tag"];	
+		value='require ["log","fileinto","variables", "tag"];
 		set :lowerfirst :upperfirst "var_two" "demo TEST 123";
 		if header :contains "Subject" "sub2"
 		{
 			log "Should not be logged in as ${var_two}";
 			fileinto "Junk";
 			tag "${var_two}";
-		}   
+		}
 ' />
 
 	<t:property name="sieve_test3"
-		value='require ["log","fileinto","tag","variables"];	
+		value='require ["log","fileinto","tag","variables"];
 		set :length :upperfirst "var_three" "demo TEST 123";
 		if header :contains "Subject" "sub3"
 		{
 			log "Should be logged in as ${var3}";
 			tag "${var3}";
 			fileinto "Junk";
-		}   
+		}
 ' />
 
 	<t:property name="sieve_test4"
-		value='require ["log","fileinto","tag","variables"];	
+		value='require ["log","fileinto","tag","variables"];
 		set :lower :upperfirst "var_four" "demo TEST 123";
 		if header :contains "Subject" "sub4"
 		{
 			log "Should be logged in as ${var4}";
 			tag "${var4}";
 			fileinto "Junk";
-		}   
+		}
 ' />
 
 	<t:property name="sieve_test5"
-		value='require ["log","fileinto","tag","variables"];	
+		value='require ["log","fileinto","tag","variables"];
 		set :lowerfirst :upper "var_five" "Sieve Test";
 		if header :contains "Subject" "sub5"
 		{
 			log "Should be logged in as ${var5}";
 			tag "${var5}";
 			fileinto "Junk";
-		}   
+		}
 ' />
 
 	<t:property name="sieve_test6"
-		value='require ["log","fileinto","tag","variables"];	
+		value='require ["log","fileinto","tag","variables"];
 		set :lowerfirst :length :upperfirst "var_six" "demo TEST 123";
 		if header :contains "Subject" "sub6"
 		{
 			log "Should be logged in as ${var6}";
 			tag "${var6}";
 			fileinto "Junk";
-		}   
+		}
 ' />
 
 	<t:property name="sieve_test7"
-		value='require ["log","fileinto","tag","variables"];	
+		value='require ["log","fileinto","tag","variables"];
 		set :length :lower :length "var_seven" "demo TEST 123";
 		if header :contains "Subject" "sub7"
 		{
 			log "Should be logged in as ${var7}";
 			tag "${var7}";
 			fileinto "Junk";
-		}   
+		}
 ' />
 
 	<t:property name="sieve_test8"
-		value='require ["log","fileinto","tag","variables"];	
+		value='require ["log","fileinto","tag","variables"];
 		set :length :lower :lower :lower "var_eight" "demo TEST 123";
 		if header :contains "Subject" "sub8"
 		{
 			log "Should be logged in as ${var8}";
 			tag "${var8}";
 			fileinto "Junk";
-		}   
+		}
 ' />
 
 
 	<t:test_case testcaseid="AcctSetup1_Sieve"
-		type="functional" bugids="zcs873">
+		type="regression" bugids="zcs873">
 		<t:objective> Create test account and login to first account
 		</t:objective>
 
@@ -144,7 +144,7 @@
 					attr="name" set="account1.name" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 	    	<t:request>
 	            <GetServerRequest xmlns="urn:zimbraAdmin">
@@ -154,11 +154,11 @@
 	        <t:response>
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
 	        </t:response>
-    	</t:test> 
+    	</t:test>
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-873_Filter1" type="functional"
+	<t:test_case testcaseid="ZCS-873_Filter1" type="regression"
 		bugids="ZCS-873">
 		<t:objective>Set a variable with match types of same precedence.
 			Message should not be tagged and filedInto Junk folder
@@ -234,7 +234,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-873_Filter2" type="functional"
+	<t:test_case testcaseid="ZCS-873_Filter2" type="regression"
 		bugids="ZCS-873">
 		<t:objective>Set a variable with match types of same precedence.
 			Message should not be tagged and filedInto Junk folder
@@ -310,7 +310,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-873_Filter3" type="functional"
+	<t:test_case testcaseid="ZCS-873_Filter3" type="regression"
 		bugids="ZCS-873">
 		<t:objective>Set a variable with match types of same precedence.
 			Message should not be tagged and filedInto Junk folder
@@ -386,7 +386,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-873_Filter4" type="functional"
+	<t:test_case testcaseid="ZCS-873_Filter4" type="regression"
 		bugids="ZCS-873">
 		<t:objective>Set a variable with match types of different precedences.
 			Message should be tagged and filedInto Junk folder
@@ -462,7 +462,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-873_Filter5" type="functional"
+	<t:test_case testcaseid="ZCS-873_Filter5" type="regression"
 		bugids="ZCS-873">
 		<t:objective>Set a variable with match types of different precedences.
 			Message should be tagged and filedInto Junk folder
@@ -538,7 +538,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-873_Filter6" type="functional"
+	<t:test_case testcaseid="ZCS-873_Filter6" type="regression"
 		bugids="ZCS-873">
 		<t:objective>Set a variable with match types of same precedences.
 			Message should not be tagged and filedInto Junk folder
@@ -615,7 +615,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-873_Filter7" type="functional"
+	<t:test_case testcaseid="ZCS-873_Filter7" type="regression"
 		bugids="ZCS-873">
 		<t:objective>Set a variable with match types of same precedences.
 			Message should not be tagged and filedInto Junk folder
@@ -692,7 +692,7 @@
 	</t:test_case>
 
 
-	 <t:test_case testcaseid="ZCS-873_Filter8" type="functional"
+	 <t:test_case testcaseid="ZCS-873_Filter8" type="regression"
 		bugids="ZCS-873">
 		<t:objective>Set a variable with match types of same precedences.
 			Message should not be tagged and filedInto Junk folder
@@ -770,9 +770,9 @@
 	</t:test_case>
 
 </t:tests>
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+

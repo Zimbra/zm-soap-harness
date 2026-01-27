@@ -19,7 +19,7 @@
 
 <t:test_case testcaseid="acct_setup_conv_msg_count" type="always" >
     <t:objective>Create a test account</t:objective>
-    <steps> 
+    <steps>
         1. Login to admin account
         2. Create a test_account1 and test_account2
     </steps>
@@ -35,7 +35,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -48,7 +48,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-	
+
 	<t:test id="create_test_account2" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -66,21 +66,21 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="conv_msg_count1" type="bhr" bugids="68341">
+<t:test_case testcaseid="conv_msg_count1" type="sanity" bugids="68341">
     <t:objective>Verify that conversation has correct message count after hard delete of some messages from the conversation</t:objective>
-    <t:steps> 
-        1. Login to test_account2 
-        2. Send a mail to test_account1 
-        3. Forward the same message so it becomes conversation  
+    <t:steps>
+        1. Login to test_account2
+        2. Send a mail to test_account1
+        3. Forward the same message so it becomes conversation
         4. Login to test_account1
         5. Search for conversation in inbox and check message count is 2
-        6. Hard Delete the conversation 
-        7. Login to test_account2 
+        6. Hard Delete the conversation
+        7. Login to test_account2
         8. Forward the same message to test_account1
         9. Login to test_account1
-       10. Search for conversation in inbox and check message count is 1    
+       10. Search for conversation in inbox and check message count is 1
     </t:steps>
-    
+
     <t:test  required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -93,7 +93,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -138,10 +138,10 @@
             <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id1"/>
         </t:response>
     </t:test>
-    
+
     <t:delay msec="2000"/>
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test  required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -166,7 +166,7 @@
              <t:select path="//mail:SearchResponse/mail:c" attr="n" match="2"/>
         </t:response>
     </t:test>
-    
+
       <t:test >
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -178,7 +178,7 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${account1.conv.id1}"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
@@ -189,9 +189,9 @@
             <t:select path="//mail:SearchResponse/mail:c" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-    
+
      <t:test required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -203,8 +203,8 @@
             <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
-   
+    </t:test>
+
  	<t:test required="true">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -221,11 +221,11 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id2"/>
         </t:response>
     </t:test>
-    
+
     <t:delay msec="2000"/>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-    
+
     <t:test required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
@@ -250,7 +250,7 @@
              <t:select path="//mail:SearchResponse/mail:c" attr="n" match="1"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 </t:tests>

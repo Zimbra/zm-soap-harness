@@ -1,16 +1,16 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
 <t:property name="account1.name" value="outlook.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-  
+
 <t:property name="appt1.filename" value="${testMailRaw.root}/email31/nonrecc-nonallday.txt"/>
 <t:property name="appt1.subject" value="nonrecc_nonallday"/>
 <t:property name="appt1.start" value="1168137000000"/>
- 
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -19,13 +19,13 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
+
 
 <t:test_case testcaseid="new_Outlook2007_Calendar_Basic_setup" type="always">
     <t:objective>Create test account and inject messages</t:objective>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -37,7 +37,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -58,12 +58,12 @@
             <from>${nonZimbraUser.name}</from>
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="new_Outlook2007_Calendar_Basic_01" type="bhr">
+
+<t:test_case testcaseid="new_Outlook2007_Calendar_Basic_01" type="sanity">
     <t:objective>Login to the test account </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -104,7 +104,7 @@
 						<content>Message Content</content>
 					</mp>
 				</m>
-			</SendInviteReplyRequest>    
+			</SendInviteReplyRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SendInviteReplyResponse" attr="invId" set="appt1.invId"/>
@@ -132,5 +132,5 @@
     </t:test>
 
 </t:test_case>
-       
+
 </t:tests>

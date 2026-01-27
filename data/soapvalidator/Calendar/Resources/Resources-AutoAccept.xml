@@ -22,7 +22,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -37,7 +37,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -50,7 +50,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -143,7 +143,7 @@
     		A. verify that resource1 is an attendee
     		B. verify that resource1 is awaiting a response (ptst=NE)
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -159,22 +159,22 @@
         </t:response>
     </t:test>
 
-   
+
     <t:property name="appt1.timezone" value="${timezone5}"/>
     <t:property name="appt1.start.gmt" value="1606800847000"/>						<!-- 12/1/2010 12:00:00 -->
     <t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>	<!-- 12/1/2010 04:00:00 -->
     <t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
     <t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
-    
-    
+
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" >
                         <at role="REQ" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
-                        <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
+                        <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.timezone}"/>
+                        <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.timezone}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${resource1.name}" t="t"/>
@@ -196,9 +196,9 @@
 
 	<!-- delay for the response -->
 	<t:delay sec="15"/>
-	
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt1.invId}"/>
         </t:request>
         <t:response>
@@ -211,7 +211,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Resources_CreateAppointment_02" type="bhr">
+<t:test_case testcaseid="Resources_CreateAppointment_02" type="sanity">
     <t:objective>Create an appointment with a resource that is busy (Auto-accept appointments unless busy)</t:objective>
     <t:steps>
     	1. Login as account2
@@ -223,7 +223,7 @@
     		A. verify that resource2 is a participant
     		B. verify that resource2 has declined (ptst=DE)
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -239,22 +239,22 @@
         </t:response>
     </t:test>
 
-   
+
     <t:property name="appt2.timezone" value="${timezone5}"/>
     <t:property name="appt2.start.gmt" value="1956528000000"/>						<!-- 1/1/2032 00:00:00 -->
     <t:property name="appt2.start.pst" value="${TIME(-8h)[${appt2.start.gmt}]}"/>			<!-- 12/31/2031 04:00:00 -->
     <t:property name="appt2.subject" value="subject.${TIME}.${COUNTER}"/>
     <t:property name="appt2.content" value="content.${TIME}.${COUNTER}"/>
-    
-    
+
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt2.subject}" >
                         <at role="REQ" ptst="NE" rsvp="1" cutype="RES" a="${resource2.name}"/>
-                        <s d="${ICALTIME[${appt2.start.pst}]}" tz="${appt2.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt2.start.pst}]}" tz="${appt2.timezone}"/>  
+                        <s d="${ICALTIME[${appt2.start.pst}]}" tz="${appt2.timezone}"/>
+                        <e d="${ICALTIME(+1h)[${appt2.start.pst}]}" tz="${appt2.timezone}"/>
                         <or a="${account2.name}"/>
                     </inv>
                     <e a="${resource2.name}" t="t"/>
@@ -276,9 +276,9 @@
 
 	<!-- delay for the response -->
 	<t:delay sec="15"/>
-	
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt2.invId}"/>
         </t:request>
         <t:response>
@@ -293,11 +293,11 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${appt2.start.gmt}" e="${TIME(+1h)[${appt2.start.gmt}]}"  uid="${resource2.name}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${resource2.name}']">
             	<t:select path="//mail:b" attr="s" match="${appt2.start.gmt}"/>
             	<t:select path="//mail:b" attr="e" match="${TIME(+1h)[${appt2.start.gmt}]}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -317,15 +317,15 @@
         </t:response>
     </t:test>
 
-       
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt2.subject}" >
                         <at role="REQ" ptst="NE" rsvp="1" cutype="RES" a="${resource2.name}"/>
-                        <s d="${ICALTIME[${appt2.start.pst}]}" tz="${appt2.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt2.start.pst}]}" tz="${appt2.timezone}"/>  
+                        <s d="${ICALTIME[${appt2.start.pst}]}" tz="${appt2.timezone}"/>
+                        <e d="${ICALTIME(+1h)[${appt2.start.pst}]}" tz="${appt2.timezone}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${resource2.name}" t="t"/>
@@ -344,12 +344,12 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<!-- delay for the response -->
 	<t:delay sec="15"/>
-	
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt2.invId}"/>
         </t:request>
         <t:response>
@@ -364,18 +364,18 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${appt2.start.gmt}" e="${TIME(+1h)[${appt2.start.gmt}]}"  uid="${resource2.name}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${resource2.name}']">
             	<t:select path="//mail:b" attr="s" match="${appt2.start.gmt}"/>
             	<t:select path="//mail:b" attr="e" match="${TIME(+1h)[${appt2.start.gmt}]}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="Resources_CreateAppointment_03" type="bhr">
+<t:test_case testcaseid="Resources_CreateAppointment_03" type="sanity">
     <t:objective>Create an appointment with a resource that is busy (Auto-accept all appointments)</t:objective>
     <t:steps>
     	1. Login as account2
@@ -389,7 +389,7 @@
     		A. verify that resource3 has accepted
     		B. verify that resource3 remains Free in F/B
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -405,22 +405,22 @@
         </t:response>
     </t:test>
 
-   
+
     <t:property name="appt3.timezone" value="${timezone5}"/>
     <t:property name="appt3.start.gmt" value="1956528000000"/>                                          <!-- 1/1/2032 00:00:00 -->
     <t:property name="appt3.start.pst" value="${TIME(-8h)[${appt3.start.gmt}]}"/>                       <!-- 12/31/2031 04:00:00 -->
     <t:property name="appt3.subject" value="subject.${TIME}.${COUNTER}"/>
     <t:property name="appt3.content" value="content.${TIME}.${COUNTER}"/>
-    
-    
+
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt3.subject}" >
                         <at role="REQ" ptst="NE" rsvp="1" cutype="RES" a="${resource3.name}"/>
-                        <s d="${ICALTIME[${appt3.start.pst}]}" tz="${appt3.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt3.start.pst}]}" tz="${appt3.timezone}"/>  
+                        <s d="${ICALTIME[${appt3.start.pst}]}" tz="${appt3.timezone}"/>
+                        <e d="${ICALTIME(+1h)[${appt3.start.pst}]}" tz="${appt3.timezone}"/>
                         <or a="${account2.name}"/>
                     </inv>
                     <e a="${resource3.name}" t="t"/>
@@ -442,9 +442,9 @@
 
 	<!-- delay for the response -->
 	<t:delay sec="15"/>
-	
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt3.invId}"/>
         </t:request>
         <t:response>
@@ -454,16 +454,16 @@
             </t:select>
         </t:response>
     </t:test>
-	
+
     <t:test>
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${appt3.start.gmt}" e="${TIME(+1h)[${appt3.start.gmt}]}"  uid="${resource3.name}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${resource3.name}']">
             	<t:select path="//mail:b" attr="s" match="${appt3.start.gmt}"/>
             	<t:select path="//mail:b" attr="e" match="${TIME(+1h)[${appt3.start.gmt}]}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 
@@ -483,15 +483,15 @@
         </t:response>
     </t:test>
 
-       
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt3.subject}" >
                         <at role="REQ" ptst="NE" rsvp="1" cutype="RES" a="${resource3.name}"/>
-                        <s d="${ICALTIME[${appt3.start.pst}]}" tz="${appt3.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt3.start.pst}]}" tz="${appt3.timezone}"/>  
+                        <s d="${ICALTIME[${appt3.start.pst}]}" tz="${appt3.timezone}"/>
+                        <e d="${ICALTIME(+1h)[${appt3.start.pst}]}" tz="${appt3.timezone}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${resource3.name}" t="t"/>
@@ -510,12 +510,12 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<!-- delay for the response -->
 	<t:delay sec="15"/>
-	
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt3.invId}"/>
         </t:request>
         <t:response>
@@ -529,11 +529,11 @@
         <t:request>
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${appt3.start.gmt}" e="${TIME(+1h)[${appt3.start.gmt}]}"  uid="${resource3.name}"/>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${resource3.name}']">
             	<t:select path="//mail:b" attr="s" match="${appt3.start.gmt}"/>
             	<t:select path="//mail:b" attr="e" match="${TIME(+1h)[${appt3.start.gmt}]}"/>
-            </t:select>      
+            </t:select>
         </t:response>
     </t:test>
 

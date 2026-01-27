@@ -50,12 +50,12 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createaccountrequest1" required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${account1.password}</password>                
+                <password>${account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -63,12 +63,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createaccountrequest2" required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${account2.password}</password>                
+                <password>${account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -81,7 +81,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account3.name}</name>
-                <password>${account3.password}</password>                
+                <password>${account3.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -93,15 +93,15 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteMailboxRequest1" type="bhr" bugids="4329">
+<t:test_case testcaseid="DeleteMailboxRequest1" type="sanity" bugids="4329">
     <t:objective> Delete the mailbox of any account </t:objective>
     <t:steps>1. Login to the account
-             2. Add Message to the account            
+             2. Add Message to the account
              3. Delete the Mailbox.
     </t:steps>
-    
+
     <t:property name="authToken.admin" value="${authToken}"/>
-<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>    
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
     <t:test id="deleteMailBoxRequest1a">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -115,22 +115,22 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="deleteMailBoxRequest1b" depends="deleteMailBoxRequest1a">
-        <t:request>        
+        <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
                 <m l="1">
                     <content>Subject: hello do it </content>
                 </m>
-            </AddMsgRequest>            
+            </AddMsgRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="authToken" value="${authToken.admin}"/>
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test depends="deleteMailBoxRequest1b">
         <t:request>
             <DeleteMailboxRequest xmlns="urn:zimbraAdmin">
@@ -140,17 +140,17 @@
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse/admin:mbox"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteMailboxRequest2" type="functional">
+<t:test_case testcaseid="DeleteMailboxRequest2" type="regression">
     <t:objective> Delete the mailbox of deleted account </t:objective>
     <t:steps>1. Delete any account.
              2. Delete the mailbox of deleted account.
     </t:steps>
-    
+
     <t:test id="deleteMailboxRequest2a">
         <t:request>
             <DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -171,14 +171,14 @@
         <t:response>
             <t:select path="//admin:DeleteAccountResponse/admin:mbox" emptyset="1"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteMailboxRequest3" type="functional">
+<t:test_case testcaseid="DeleteMailboxRequest3" type="regression">
     <t:objective> Delete the mailbox with invalid values for account-id (blank\spaces\special characters)</t:objective>
-    
+
     <t:test>
         <t:request>
             <DeleteMailboxRequest xmlns="urn:zimbraAdmin">
@@ -188,7 +188,7 @@
         <t:response>
             <t:select path="//admin:DeleteAccountResponse/admin:mbox" emptyset="1"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test>
         <t:request>
@@ -199,8 +199,8 @@
         <t:response>
             <t:select path="//admin:DeleteAccountResponse/admin:mbox" emptyset="1"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <DeleteMailboxRequest xmlns="urn:zimbraAdmin">
@@ -215,7 +215,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteMailboxRequest4" type="functional" bugids="3197">
+<t:test_case testcaseid="DeleteMailboxRequest4" type="regression" bugids="3197">
     <t:objective> Search for a mail after deleting the mailbox </t:objective>
     <t:steps>1. Login to the user account.
              2. Add message to that account.
@@ -225,8 +225,8 @@
              6. Login to the user account.
              7. Search for the added message.
     </t:steps>
-    
-<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>    
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
     <t:test id="deleteMailBoxRequest4a">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -240,7 +240,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test id="deleteMailBoxRequest4b" depends="deleteMailBoxRequest4a">
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -253,7 +253,7 @@
             <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="deleteMailBoxRequest4c" depends="deleteMailBoxRequest4b">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -264,8 +264,8 @@
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${message1.id}"/>
         </t:response>
     </t:test>
-        
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test id="deleteMailBoxRequest4d">
         <t:request >
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -275,9 +275,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test id="deleteMailBoxRequest4e" depends="deleteMailBoxRequest4d">
         <t:request>
             <DeleteMailboxRequest xmlns="urn:zimbraAdmin">
@@ -287,9 +287,9 @@
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse/admin:mbox"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
-<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>    
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
     <t:test id="deleteMailBoxRequest4f">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -303,7 +303,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test depends="deleteMailBoxRequest4b,deleteMailBoxRequest4e">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -318,12 +318,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteMailboxRequest5" type="functional">
+<t:test_case testcaseid="DeleteMailboxRequest5" type="regression">
     <t:objective> Verify sending DeleteMailboxRequest with users authtoken </t:objective>
     <t:steps>1. Get the Authtoken of user account.
              2. Verify sending DeleteMailboxRequest.
-    </t:steps>    
-    
+    </t:steps>
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
     <t:test id="deleteMailboxRequest5a">
 
@@ -349,19 +349,19 @@
         <t:response>
             <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
 
 
 
-<t:test_case testcaseid="DeleteMailboxRequest6" type="functional" bugids="2722">
+<t:test_case testcaseid="DeleteMailboxRequest6" type="regression" bugids="2722">
     <t:objective> Verify deleting the deleted mailbox </t:objective>
-    <t:steps>1. Login to the admin. 
+    <t:steps>1. Login to the admin.
              2. Delete the mailbox of any account.
              3. Re delete the mailbox.
-    </t:steps>    
-    
+    </t:steps>
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test id="deleteMailboxRequest6a">
         <t:request>
@@ -370,7 +370,7 @@
                 <password>${admin.password}</password>
             </AuthRequest>
         </t:request>
-        <t:response>            
+        <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
@@ -384,7 +384,7 @@
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 	<t:test depends="deleteMailboxRequest6b">
         <t:request>
@@ -395,7 +395,7 @@
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse/admin:mbox" emptyset="1"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

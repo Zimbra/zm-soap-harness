@@ -3,10 +3,10 @@
 	<t:property name="account1.name"
 		value="user1_${TIME}${COUNTER}@${defaultdomain.name}" />
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
-	
+
 	<t:property name="uploadFile.jpg" value="${testMailRaw.root}/zcs3929/image.jpg" />
 	<t:property name="uploadFile.png" value="${testMailRaw.root}/zcs3929/image.png" />
-	
+
 	<t:test_case testcaseid="Ping" type="always">
 		<t:objective>basic system check</t:objective>
 
@@ -91,7 +91,7 @@
 		</t:test>
 
 		<!--  JWT token will be set in Authorization header and salt value would be added to ZM_JWT cookie -->
-		
+
 		<t:uploadservlettest>
 			<t:uploadServletRequest>
 				<filename>${uploadFile.png}</filename>
@@ -100,7 +100,7 @@
 				<t:select attr="id" set="image1.aid" />
 			</t:uploadServletResponse>
 		</t:uploadservlettest>
-		
+
 		<t:test>
 		<t:requestContext>
 				<jwtToken>${authToken}</jwtToken>   <!-- JWT Salt value will be automatically injected in the soap context header -->
@@ -115,11 +115,11 @@
         <t:response>
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="image.aid.1"/>
         </t:response>
-    </t:test>   
-	
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="zcs3929_FileUpload_02" type="bhr"
+<t:test_case testcaseid="zcs3929_FileUpload_02" type="sanity"
 		bugsids="zcs-3929">
 		<t:objective>Generate normal auth token and use it to fire the FileUpload servlet request
 		</t:objective>
@@ -140,7 +140,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:uploadservlettest>
 			<t:uploadServletRequest>
 				<filename>${uploadFile.jpg}</filename>
@@ -149,7 +149,7 @@
 				<t:select attr="id" set="image1.aid" />
 			</t:uploadServletResponse>
 		</t:uploadservlettest>
-		
+
 		<t:test>
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -161,9 +161,9 @@
         <t:response>
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="image.aid.1"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
-		
-		
+
+
 </t:test_case>
 </t:tests>

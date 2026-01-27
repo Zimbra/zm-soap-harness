@@ -21,7 +21,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -137,11 +137,11 @@
             <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest1" type="functional" >
+<t:test_case testcaseid="ConvActionRequest1" type="regression" >
     <t:objective>ConvActionRequest invalid values of tcon </t:objective>
 
     <!--ConvActionRequest with valid tcon with leading spaces-->
@@ -179,7 +179,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
- 
+
     <!--ConvActionRequest with spaces in place of tcon-->
     <t:test>
         <t:request>
@@ -190,7 +190,7 @@
         <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <!--ConvActionRequest with blank in place of tcon-->
    <!-- <t:test>
@@ -215,7 +215,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
- 
+
     <!--ConvActionRequest with some text in place of tcon-->
     <t:test>
         <t:request>
@@ -280,7 +280,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ConvActionRequest2" type="bhr">
+<t:test_case testcaseid="ConvActionRequest2" type="sanity">
     <t:objective>ConvActionRequest with combination of constraints of tcon</t:objective>
 
     <t:test id="ConvActionRequest12">

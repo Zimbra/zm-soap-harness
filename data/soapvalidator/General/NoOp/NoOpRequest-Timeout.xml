@@ -9,7 +9,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -24,7 +24,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Login to admin </t:objective>
-    <steps> 1. Login to admin account 
+    <steps> 1. Login to admin account
             2. Create a test account
     </steps>
 
@@ -44,7 +44,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -57,7 +57,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
-                <password>${defaultpassword.value}</password>              
+                <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -68,11 +68,11 @@
 
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="NoOpRequest_timeout_01" type="bhr" bugids="33803">
+<t:test_case testcaseid="NoOpRequest_timeout_01" type="sanity" bugids="33803">
     <t:objective>Send NoOpRequest with timeout=45000, verify the response is returned within 45 seconds (+/- 1 second)</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test >
         <t:request>
@@ -109,14 +109,14 @@
             <t:select path="//mail:NoOpResponse"/>
         </t:response>
     </t:test>
-	
+
     <!--
 		zimbra@qa60:~$ zmlocalconfig | grep _noop_
 		zimbra_noop_default_timeout = 300
 		zimbra_noop_max_timeout = 1200
 		zimbra_noop_min_timeout = 30
     -->
-    
+
     <t:test timeframeMax="46000" timeframeMin="44000">
         <t:request>
             <NoOpRequest xmlns="urn:zimbraMail" wait="1" timeout="45000"/>

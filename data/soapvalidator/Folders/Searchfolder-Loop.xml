@@ -33,7 +33,7 @@
 <t:test_case testcaseid="acctSetup1_Searchfolder_loop" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps> 1. Login to admin.
-              2. Create test account. 
+              2. Create test account.
     </t:steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -52,7 +52,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -84,12 +84,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Searchfolder_loop1" type="sanity" duration="long">
+<t:test_case testcaseid="Searchfolder_loop1" type="functional" duration="long">
     <t:objective>Creating 500 search folders at root level </t:objective>
     <t:steps> 1. Get the id of root folder
               2. Create folders
-              3. Send GetInfoRequest        
-    </t:steps>    
+              3. Send GetInfoRequest
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -100,8 +100,8 @@
         </t:response>
     </t:test>
 
-    <t:test_loop count="5000" timeframeMax="1000">      
-        
+    <t:test_loop count="5000" timeframeMax="1000">
+
         <t:test>
             <t:request>
                 <CreateSearchFolderRequest xmlns="urn:zimbraMail">
@@ -111,8 +111,8 @@
             <t:response>
                 <t:select path="//mail:CreateSearchFolderResponse"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
     </t:test_loop>
 
     <t:test timeframeMax="3000">
@@ -137,11 +137,11 @@
 
 </t:test_case>
 
-<!--- Performing various operation in an account with huge searchfolder list-->  
+<!--- Performing various operation in an account with huge searchfolder list-->
 
-<t:test_case testcaseid="acctSetup3_Searchfolder_loop" type="sanity" duration="long">
+<t:test_case testcaseid="acctSetup3_Searchfolder_loop" type="functional" duration="long">
     <t:objective>Creating search folders to test various operations </t:objective>
-    
+
     <t:test required="true">
         <t:request>
             <CreateSearchFolderRequest xmlns="urn:zimbraMail">
@@ -151,7 +151,7 @@
         <t:response>
             <t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="id" set="search.id1"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test>
         <t:request>
@@ -163,11 +163,11 @@
             <t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="id" set="search.id2"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Searchfolder_loop2" type="sanity" duration="long">
+
+
+<t:test_case testcaseid="Searchfolder_loop2" type="functional" duration="long">
     <t:objective>Basic test of GetSearchFolderRequest</t:objective>
 
     <t:test timeframeMax="3000">
@@ -181,8 +181,8 @@
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="Searchfolder_loop3" type="sanity" duration="long">
+
+<t:test_case testcaseid="Searchfolder_loop3" type="functional" duration="long">
     <t:objective>Creating a duplicate search folder</t:objective>
 
     <t:test  timeframeMax="3000">
@@ -194,26 +194,26 @@
         <t:response>
             <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
- 
-   
-<t:test_case testcaseid="Searchfolder_loop4" type="sanity" duration="long">
+
+
+<t:test_case testcaseid="Searchfolder_loop4" type="functional" duration="long">
     <t:objective>Rename a with SearchFolder</t:objective>
     <t:steps>
         1. Renaming a search folder with valid name
-        2. Renaming a search folder with already existing folder name    
+        2. Renaming a search folder with already existing folder name
     </t:steps>
 
     <t:test id="searchfolder_loop4a" timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="rename" id="${search.id1}" name="${search3.name}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="rename"/>                
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="rename"/>
         </t:response>
     </t:test>
 
@@ -221,20 +221,20 @@
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="rename" id="${search.id2}" name="${search3.name}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>                
+            <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Searchfolder_loop5" type="sanity"  duration="long" bugids="4187">
+<t:test_case testcaseid="Searchfolder_loop5" type="functional"  duration="long" bugids="4187">
     <t:objective>Moving a search folder to a custom folder</t:objective>
     <t:steps>1. Create a custom folder
-             2. Move the search folder into custom folder        
+             2. Move the search folder into custom folder
     </t:steps>
 
     <t:test id="searchfolder_loop5a" >
@@ -247,41 +247,41 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="searchfolder_loop5a" timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="move" id="${search.id1}" l="${folder.id}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="move"/>             
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="move"/>
         </t:response>
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="Searchfolder_loop6" type="sanity" duration="long">
+
+<t:test_case testcaseid="Searchfolder_loop6" type="functional" duration="long">
     <t:objective>Move a search folder to a search folder</t:objective>
-         
+
     <t:test timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="move" id="${search.id2}" l="${search.id1}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="move"/>             
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="move"/>
         </t:response>
     </t:test>
 
 </t:test_case>
- 
 
-<t:test_case testcaseid="Searchfolder_loop7" type="sanity" duration="long" >
+
+<t:test_case testcaseid="Searchfolder_loop7" type="functional" duration="long" >
     <t:objective> Modify a search folder </t:objective>
-    
+
     <t:test timeframeMax="3000">
          <t:request>
               <ModifySearchFolderRequest xmlns="urn:zimbraMail">
@@ -290,30 +290,30 @@
          </t:request>
          <t:response>
             <t:select path="//mail:ModifySearchFolderResponse"/>
-         </t:response> 
+         </t:response>
      </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Searchfolder_loop8" type="sanity" duration="long">
+<t:test_case testcaseid="Searchfolder_loop8" type="functional" duration="long">
     <t:objective>Move a parent search folder to its child search folder</t:objective>
-         
+
     <t:test timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="move" id="${search.id1}" l="${search.id2}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^mail.CANNOT_CONTAIN$"/>             
+            <t:select path="//zimbra:Code" match="^mail.CANNOT_CONTAIN$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Searchfolder_loop9" type="sanity" duration="long">
+<t:test_case testcaseid="Searchfolder_loop9" type="functional" duration="long">
     <t:objective>Empty a search folder having child folders"</t:objective>
     <t:steps>
         1. Verify that search folder2 is child of search folder1
@@ -326,9 +326,9 @@
             <GetSearchFolderRequest xmlns="urn:zimbraMail" />
         </t:request>
         <t:response>
-            <t:select path="//mail:GetSearchFolderResponse/mail:search[@id='${search.id2}']" attr="l" match="${search.id1}"/>                
+            <t:select path="//mail:GetSearchFolderResponse/mail:search[@id='${search.id2}']" attr="l" match="${search.id1}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="searchfolder_loop9b" depends="searchfolder_loop9a" timeframeMax="3000">
         <t:request>
@@ -346,28 +346,28 @@
             <GetSearchFolderRequest xmlns="urn:zimbraMail" />
         </t:request>
         <t:response>
-            <t:select path="//mail:GetSearchFolderResponse/mail:search[@id='${search.id2}']" emptyset="1"/>     
-            <t:select path="//mail:GetSearchFolderResponse/mail:search[@id='${search.id1}']"/>            
+            <t:select path="//mail:GetSearchFolderResponse/mail:search[@id='${search.id2}']" emptyset="1"/>
+            <t:select path="//mail:GetSearchFolderResponse/mail:search[@id='${search.id1}']"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Searchfolder_loop10" type="sanity" duration="long">
+<t:test_case testcaseid="Searchfolder_loop10" type="functional" duration="long">
     <t:objective>Delete a search folder</t:objective>
-    
+
     <t:test timeframeMax="3000">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
                 <action op="delete" id="${search.id1}"/>
-            </FolderActionRequest>    
+            </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="delete"/>                
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="delete"/>
         </t:response>
     </t:test>
 
-</t:test_case>    
+</t:test_case>
 
 </t:tests>

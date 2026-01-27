@@ -10,11 +10,11 @@
 
 <t:property name="resource1.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="resource1.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="resource2.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="resource2.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
 <t:property name="resource2.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
-    
+
 <t:property name="resource3.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="resource4.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="resource3.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
@@ -49,7 +49,7 @@
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${cos1.name}</name>        
+                <name xmlns="">${cos1.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -60,7 +60,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_ResourceCreate_01" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_ResourceCreate_01" type="sanity">
     <t:objective>Create an account with a foreign principal attribute</t:objective>
 
 
@@ -80,12 +80,12 @@
         <t:response>
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id"  set="resource1.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_ResourceCreate_02" type="bhr">
+<t:test_case testcaseid="ForeignPrincipal_ResourceCreate_02" type="sanity">
     <t:objective>Create an account with two foreign principal attributes</t:objective>
 
     <t:test >
@@ -105,12 +105,12 @@
         <t:response>
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id"  set="resource2.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ForeignPrincipal_ResourceCreate_03" type="bhr" bugids="8347">
+<t:test_case testcaseid="ForeignPrincipal_ResourceCreate_03" type="sanity" bugids="8347">
     <t:objective>Create two accounts with the same foreign principal attributes</t:objective>
 
     <t:test >
@@ -129,7 +129,7 @@
         <t:response>
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id"  set="resource3.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -147,7 +147,7 @@
         <t:response>
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id"  set="resource3.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 </t:test_case>
 
 

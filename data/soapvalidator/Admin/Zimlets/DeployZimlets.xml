@@ -36,7 +36,7 @@
     <t:test id = "deployZimlets_CreateCos" required="true" depends="admin_login">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">${COS.name}</name>        
+                <name xmlns="">${COS.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -48,15 +48,15 @@
         <t:request>
             <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="${zimlet.name}"]' attr="priority" set="zimlet.priority"/>
         </t:response>
     </t:test-->
 </t:test_case>
 
-<t:test_case testcaseid="deployZimlets" type="bhr" areas="dev_sanity" bugids="33695">
+<t:test_case testcaseid="deployZimlets" type="sanity" areas="dev_sanity" bugids="33695">
     <t:objective> Deploy Zimlet </t:objective>
-    
+
     <t:uploadservlettest id="Upload" depends="deployZimlets_CreateCos" >
 	<t:uploadServletRequest>
 	    <filename>${uploadFile.name}</filename>
@@ -72,7 +72,7 @@
                 <content aid="${message.aid}"/>
             </DeployZimletRequest>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:DeployZimletResponse' match=""/>
         </t:response>
     </t:test>
@@ -81,7 +81,7 @@
         <t:request>
             <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
-        <t:response> 
+        <t:response>
             <t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@name="${zimlet.name}"]' attr="status" match="enabled"/>
             <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="${zimlet.name}"]' attr="priority" match="\d+"/>
         </t:response>

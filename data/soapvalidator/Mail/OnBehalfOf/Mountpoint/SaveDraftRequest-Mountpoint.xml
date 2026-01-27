@@ -86,7 +86,7 @@
 
 
 
-<t:test_case testcaseid="Mountpoints_saveDraft_01" type="bhr">
+<t:test_case testcaseid="Mountpoints_saveDraft_01" type="sanity">
     <t:objective>Reply to a message in a mountpoint (read only permission) - try to save as a draft in delegatee folder</t:objective>
     <t:steps>
         1. Login to account1
@@ -146,7 +146,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -212,7 +212,7 @@ ${message1.content}
                 <query>is:remote</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
 				<t:select path="//mail:m" attr="id" set="account2.message1.id"/>
             </t:select>
@@ -238,7 +238,7 @@ ${message1.content}
 
 </t:test_case>
 
-<t:test_case testcaseid="Mountpoints_saveDraft_02" type="bhr">
+<t:test_case testcaseid="Mountpoints_saveDraft_02" type="sanity">
     <t:objective>Reply to a message on behalf of in a mountpoint (read only permission) - try to save as a draft in delegatee folder</t:objective>
     <t:steps>
         1. Login to account1
@@ -298,7 +298,7 @@ ${message1.content}
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -364,7 +364,7 @@ ${message2.content}
                 <query>is:remote</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
 				<t:select path="//mail:m" attr="id" set="account2.message2.id"/>
             </t:select>

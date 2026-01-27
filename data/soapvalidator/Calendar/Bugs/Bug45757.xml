@@ -16,7 +16,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -32,7 +32,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -45,7 +45,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_user1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -64,7 +64,7 @@
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${user2.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefMailForwardingAddress">${user3.name}</a> 
+                <a n="zimbraPrefMailForwardingAddress">${user3.name}</a>
                 <a n="zimbraPrefMailLocalDeliveryDisabled">TRUE</a>
             </CreateAccountRequest>
         </t:request>
@@ -73,7 +73,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_user3" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -91,7 +91,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug_45757" type="bhr" areas="Calendar" bugids="45757">
+<t:test_case testcaseid="bug_45757" type="sanity" areas="Calendar" bugids="45757">
     <t:objective>Create new appointment when accepting an appointment already in Trash</t:objective>
     <t:steps>
 	1. Create user1, user2, user3
@@ -120,7 +120,7 @@
 
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -132,8 +132,8 @@
 		</t:response>
 	</t:test>
 
-    
-   
+
+
 	<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
 	<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
@@ -175,7 +175,7 @@
 
 	<t:property name="server.zimbraAccount" value="${user3.server}"/>
 
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -206,19 +206,19 @@
 				<query>inid:${user3.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subject}']">
             	<t:select attr="invId" set="user3.appt1.invId"/>
             	<t:select attr="compNum" set="user3.appt1.compNum"/>
             	<t:select attr="name" set="user3.appt1.name"/>
             	<t:select path="//mail:or" attr="a" set="user3.appt1.or"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
 	<t:property name="verb.response" value="ACCEPT"/>
 	<t:property name="verb.expected" value="AC"/>
-	
+
 	<t:test>
         <t:request>
 			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${user3.appt1.invId}" compNum="${user3.appt1.compNum}" updateOrganizer="TRUE">
@@ -249,7 +249,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="appointment.subjectNew" value="${appointment.subject}Updated" />
     <t:property name="appointment.message" value="Changed Meeting" />
     <t:test>
@@ -297,10 +297,10 @@
 				<query>${appointment.message}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="user2.modinvID" >
 
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
 
@@ -329,8 +329,8 @@
 				<query>inid:${user3.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subjectNew}']"/> 
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment.subjectNew}']"/>
         </t:response>
     </t:test>
 

@@ -27,7 +27,7 @@
     <t:steps> 1. Login to Admin
               2. Create test accounts
     </t:steps>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -50,7 +50,7 @@
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
-		</t:response>        
+		</t:response>
 	</t:test>
 
 	<t:test required="true">
@@ -63,7 +63,7 @@
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
-		</t:response>        
+		</t:response>
 	</t:test>
 
 	<t:test required="true">
@@ -76,7 +76,7 @@
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
-		</t:response>        
+		</t:response>
 	</t:test>
 
 
@@ -87,7 +87,7 @@
 <t:test_case testcaseid="SyncRequest_Sync_Action_01" type="smoke">
     <t:objective>Send SyncRequest to get results from MsgAction Request</t:objective>
     <t:steps>
-    1. Login to account3 
+    1. Login to account3
     2. AddMsgRequest
     3. SyncRequest to sync all changes
     4. MsgActionRequest move to subfolder
@@ -128,7 +128,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
 	</t:test>
-	    
+
     <t:test>
         <t:request>
             <AddMsgRequest xmlns="urn:zimbraMail">
@@ -154,7 +154,7 @@ Content
 		<t:request>
 			<SyncRequest xmlns="urn:zimbraMail"/>
 		</t:request>
-		<t:response> 
+		<t:response>
 			<t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>
 		</t:response>
 	</t:test>
@@ -185,10 +185,10 @@ Content
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest_Sync_Action_02" type="sanity" >
+<t:test_case testcaseid="SyncRequest_Sync_Action_02" type="functional" >
     <t:objective>Send SyncRequest to get results from (multiple) MsgAction Request (related to bug 4992, but I can't repro that issue with these steps)</t:objective>
     <t:steps>
-    1. Login to account2 
+    1. Login to account2
     2. Send 3 messages to account3 (same conversation)
     3. Login to account3
     4. SyncRequest to sync all changes
@@ -301,7 +301,7 @@ Content
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account3.folder1.id"/>
         </t:response>
 	</t:test>
-	    
+
     <t:test id="CreateFolderRequest1a" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -312,7 +312,7 @@ Content
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account3.folder2.id"/>
         </t:response>
 	</t:test>
-	    
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -330,7 +330,7 @@ Content
 		<t:request>
 			<SyncRequest xmlns="urn:zimbraMail"/>
 		</t:request>
-		<t:response> 
+		<t:response>
 			<t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>
 		</t:response>
 	</t:test>

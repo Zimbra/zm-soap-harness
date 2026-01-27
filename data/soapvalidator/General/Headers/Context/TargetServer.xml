@@ -8,7 +8,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin" />
@@ -17,13 +17,13 @@
 			<t:select path="//admin:PingResponse" />
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_notification" type="always">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -35,7 +35,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -87,9 +87,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="HeaderContext_TargetServer_01" type="sanity">
+<t:test_case testcaseid="HeaderContext_TargetServer_01" type="functional">
     <t:objective>Send a client request using targetServer</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:test >
 		<t:request>
@@ -121,9 +121,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="HeaderContext_TargetServer_01" type="sanity">
+<t:test_case testcaseid="HeaderContext_TargetServer_01" type="functional">
     <t:objective>Send a client AuthRequest using targetServer</t:objective>
-    
+
 	<t:property name="server.zimbraAccount" value="${zimbraServer.name}"/>
 	<t:test >
         <t:requestContext>

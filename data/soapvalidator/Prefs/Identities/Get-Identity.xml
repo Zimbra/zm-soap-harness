@@ -13,7 +13,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
    <t:objective>basic system check</t:objective>
-   
+
     <t:test required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin" />
@@ -22,7 +22,7 @@
             <t:select path="//admin:PingResponse" />
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -31,7 +31,7 @@
 	<t:steps> 1. Login as an admin
               2. create a test account
     </t:steps>
-	
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -43,7 +43,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -56,11 +56,11 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="get_identity01" type="bhr">
+<t:test_case testcaseid="get_identity01" type="sanity">
 	<t:objective> GetIdentitiesRequest for default identity.</t:objective>
 
 
@@ -88,7 +88,7 @@
 				<t:select path="//acct:GetIdentitiesResponse/acct:identity" attr="name" match="DEFAULT"/>
 			</t:response>
 		</t:test>
-		
+
 </t:test_case>
 
 
@@ -131,7 +131,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="get_identity02" type="bhr">
+<t:test_case testcaseid="get_identity02" type="sanity">
 	<t:objective> GetIdentitiesRequest with valid value of "id" </t:objective>
 		<t:test>
 			<t:request>
@@ -143,10 +143,10 @@
 				<t:select path="//acct:GetIdentitiesResponse/acct:identity[@id='${identity1.id}']" attr="name" match="${Identity1.name}"/>
 			</t:response>
 		</t:test>
-		
+
 </t:test_case>
 
-<t:test_case testcaseid="get_identity03" type="bhr">
+<t:test_case testcaseid="get_identity03" type="sanity">
 	<t:objective> GetIdentitiesRequest with valid value of "name" </t:objective>
 		<t:test>
 			<t:request>
@@ -158,11 +158,11 @@
 				<t:select path="//acct:GetIdentitiesResponse/acct:identity[@name='${Identity1.name}']" attr="id" match="${identity1.id}"/>
 			</t:response>
 		</t:test>
-		
+
 </t:test_case>
 
 
-<t:test_case testcaseid="get_identity04" type="functional">
+<t:test_case testcaseid="get_identity04" type="regression">
 	<t:objective> GetIdentitiesRequest by id/name and with leading spaces in id/name  </t:objective>
 
 	<t:test>
@@ -186,11 +186,11 @@
 			<t:select path="//acct:GetIdentitiesResponse" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="get_identity05" type="functional">
+<t:test_case testcaseid="get_identity05" type="regression">
 	<t:objective> GetIdentitiesRequest by id/name and with trailing spaces in id/name  </t:objective>
 
 	<t:test>
@@ -214,11 +214,11 @@
 			<t:select path="//acct:GetIdentitiesResponse" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="get_identity06" type="functional">
+<t:test_case testcaseid="get_identity06" type="regression">
 	<t:objective> GetIdentitiesRequest by id/name and with both leading and trailing spaces in id/name  </t:objective>
 
 	<t:test>
@@ -231,7 +231,7 @@
 			<t:select path="//acct:GetIdentitiesResponse" />
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
@@ -242,11 +242,11 @@
 			<t:select path="//acct:GetIdentitiesResponse" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="get_identity07" type="functional">
+<t:test_case testcaseid="get_identity07" type="regression">
 	<t:objective> GetIdentitiesRequest with value of atrribute "by" as sometext (i.e invalid) </t:objective>
 
 	<t:test>
@@ -259,10 +259,10 @@
 			<t:select path="//acct:GetIdentitiesResponse" />
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="get_identity08" type="functional">
+<t:test_case testcaseid="get_identity08" type="regression">
 	<t:objective> GetIdentitiesRequest by name of deleted Identity </t:objective>
 	<t:steps> 1. create an identity.
               2. delete it.

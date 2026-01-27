@@ -76,7 +76,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -104,7 +104,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_acct1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -197,15 +197,15 @@
 
 <t:test_case testcaseid="new_ModifyAppointmentRequest1" type="smoke" areas="Calendar">
     <t:objective>Modify an appointment with valid values.</t:objective>
-    
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment1.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${appointment1.invitee}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${appointment1.invitee}" t="t"/>
@@ -238,8 +238,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.newsubject}" loc="${appointment1.newlocation}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${appointment1.newinvitee}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${appointment1.newinvitee}" t="t"/>
@@ -258,7 +258,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest2" type="sanity" areas="Calendar" >
+<t:test_case testcaseid="new_ModifyAppointmentRequest2" type="functional" areas="Calendar" >
  <t:objective>Modify an appointment, but leave all fields the same</t:objective>
 
     <t:test>
@@ -267,8 +267,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" loc="${appointment2.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -301,8 +301,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment2.subject}" loc="${appointment2.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -323,7 +323,7 @@
 
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest3" type="sanity" areas="Calendar" >
+<t:test_case testcaseid="new_ModifyAppointmentRequest3" type="functional" areas="Calendar" >
  <t:objective>Modify an appointment, multiple (3) times</t:objective>
 
     <t:test>
@@ -332,8 +332,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment3.subject}" loc="${appointment3.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -367,8 +367,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment3.subject}" loc="${appointment3.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -401,8 +401,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment3.subject}" loc="${appointment3.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -435,8 +435,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment3.subject}" loc="${appointment3.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -455,7 +455,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest5" type="sanity" areas="Calendar" bugids="3347">
+<t:test_case testcaseid="new_ModifyAppointmentRequest5" type="functional" areas="Calendar" bugids="3347">
     <t:objective>Modify an appointment with non-existing account name in attendees</t:objective>
 
     <t:test>
@@ -464,8 +464,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment5.subject}" loc="${appointment5.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -498,8 +498,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment5.subject}" loc="${appointment5.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct3.name}" t="t"/>
@@ -527,12 +527,12 @@
 				<t:select path = "//mail:SearchResponse/mail:c" attr="su" match="Undelivered Mail Returned to Sender" query="response1" />
      		</t:response>
 		</t:test>
-	</t:for>    
-	
+	</t:for>
+
 </t:test_case>
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest6" type="functional" areas="Calendar" bugids="4255">
+<t:test_case testcaseid="new_ModifyAppointmentRequest6" type="regression" areas="Calendar" bugids="4255">
     <t:objective>Modify an appointment with start and end time as alphabets </t:objective>
 
     <t:test>
@@ -541,8 +541,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment6.subject}" loc="${appointment6.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -575,8 +575,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment6.subject}" loc="${appointment6.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="aaaa"/>  
-                        <e d="bbbb"/>  
+                        <s d="aaaa"/>
+                        <e d="bbbb"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -595,7 +595,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest7" type="sanity" areas="Calendar">
+<t:test_case testcaseid="new_ModifyAppointmentRequest7" type="functional" areas="Calendar">
     <t:objective>Modify an appointment inviting multiple people.</t:objective>
 
     <t:test>
@@ -605,8 +605,8 @@
                 <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment7.subject}" loc="${appointment7.location}">
                     <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
                     <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                    <s d="${Time1}"/>  
-                    <e d="${Time2}"/>  
+                    <s d="${Time1}"/>
+                    <e d="${Time2}"/>
                     <or a="${acct1.name}"/>
                 </inv>
                 <e a="${acct2.name}" t="t"/>
@@ -641,8 +641,8 @@
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment7.subject}" loc="${appointment7.location}">
                     <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
                     <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                    <s d="${Time1}"/>  
-                    <e d="${Time2}"/>  
+                    <s d="${Time1}"/>
+                    <e d="${Time2}"/>
                     <or a="${acct1.name}"/>
                 </inv>
                 <e a="${acct2.name}" t="t"/>
@@ -662,7 +662,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest8" type="sanity" areas="Calendar" bugids="3347">
+<t:test_case testcaseid="new_ModifyAppointmentRequest8" type="functional" areas="Calendar" bugids="3347">
     <t:objective>Modify an appointment inviting multiple people in which address of one attendee is non-existing.</t:objective>
 
     <t:test>
@@ -671,8 +671,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment8.subject}" loc="${appointment8.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -715,8 +715,8 @@
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment8.subject}" loc="${appointment8.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -745,12 +745,12 @@
 				<t:select path = "//mail:SearchResponse/mail:c" attr="su" match="Undelivered Mail Returned to Sender" query="response2" />
      		</t:response>
 		</t:test>
-	</t:for>    
+	</t:for>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest9" type="sanity" areas="Calendar" bugids="3347">
+<t:test_case testcaseid="new_ModifyAppointmentRequest9" type="functional" areas="Calendar" bugids="3347">
     <t:objective>Modify an appointment inviting multiple people in which address of all attendees is non-existing.</t:objective>
 
     <t:test>
@@ -759,8 +759,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment9.subject}" loc="${appointment9.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -794,8 +794,8 @@
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment9.subject}" loc="${appointment9.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct5.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct3.name}" t="t"/>
@@ -829,13 +829,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest10" type="functional" areas="Calendar" >
+<t:test_case testcaseid="new_ModifyAppointmentRequest10" type="regression" areas="Calendar" >
     <t:objective>Create an appointment having attendee whose account has been deleted.</t:objective>
     <t:steps>1.Create an appointment.
             2.Login to admin.
             3.Delete an account.
             4.Login to mail client.
-            5.Modify an appointment with attendee whose account has been deleted.        
+            5.Modify an appointment with attendee whose account has been deleted.
     </t:steps>
 
     <!--Create an appointment.-->
@@ -845,8 +845,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment10.subject}" loc="${appointment10.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct6.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct6.name}" t="t"/>
@@ -890,11 +890,11 @@
 <t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
 
 
-    <!-- delete an account.-->   
+    <!-- delete an account.-->
     <t:test>
         <t:request>
             <DeleteAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${acct6.id}</id>                
+                <id>${acct6.id}</id>
             </DeleteAccountRequest>
         </t:request>
         <t:response>
@@ -917,7 +917,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test>   
+    </t:test>
 
     <t:test>
         <t:request>
@@ -925,8 +925,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment10.subject}" loc="${appointment10.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct6.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct6.name}" t="t"/>
@@ -954,13 +954,13 @@
 				<t:select path = "//mail:SearchResponse/mail:c" attr="su" match="Undelivered Mail Returned to Sender" query="response4" />
      		</t:response>
 		</t:test>
-	</t:for>    
-		
+	</t:for>
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest11" type="bhr" areas="Calendar">
+<t:test_case testcaseid="new_ModifyAppointmentRequest11" type="sanity" areas="Calendar">
     <t:objective>Modify a request and check whether the attendees get the both mails or not.</t:objective>
     <t:steps>1.Create an appointment.
             2.Modify that.
@@ -975,8 +975,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="Created${appointment11.subject}" loc="${appointment11.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct7.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct7.name}" t="t"/>
@@ -1010,8 +1010,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="Modified${appointment11.subject}" loc="${appointment11.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct7.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct7.name}" t="t"/>
@@ -1050,7 +1050,7 @@
         <t:request>
             <SyncRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
          <t:select path="//mail:SyncResponse"/>
         </t:response>
     </t:test>
@@ -1078,16 +1078,16 @@
             <t:select path="//mail:SearchResponse/mail:c/mail:su" match="Created${appointment11.subject}"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SyncRequest xmlns="urn:zimbraMail"/>
         </t:request>
-        <t:response> 
+        <t:response>
          <t:select path="//mail:SyncResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Search the modified mail.-->
     <t:test>
         <t:request>
@@ -1131,7 +1131,7 @@
 
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest12" type="functional" areas="Calendar" bugids="3633">
+<t:test_case testcaseid="new_ModifyAppointmentRequest12" type="regression" areas="Calendar" bugids="3633">
  <t:objective>Attempt to access an appointment ID that has been modified already</t:objective>
  <t:steps>
  	1. Create an appointment
@@ -1160,8 +1160,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment12.subject}" loc="${appointment12.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -1194,8 +1194,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment12.subject}" loc="${appointment12.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -1217,8 +1217,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment12.subject}" loc="${appointment12.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -1238,7 +1238,7 @@
 
 
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest13" type="sanity" areas="Calendar">
+<t:test_case testcaseid="new_ModifyAppointmentRequest13" type="functional" areas="Calendar">
     <t:objective>Verify service.PERM_DENIED return code (acct2 attempts to modify an appointment owned by acct1)</t:objective>
 
 <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
@@ -1263,8 +1263,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="Created${appointment13.subject}" loc="${appointment13.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct4.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -1314,8 +1314,8 @@
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="Modified${appointment13.subject}" loc="${appointment13.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
-                        <s d="${Time3}"/>  
-                        <e d="${Time4}"/>  
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
                         <or a="${acct4.name}"/>
                     </inv>
                     <e a="${acct2.name}" t="t"/>
@@ -1351,15 +1351,15 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="new_ModifyAppointmentRequest14" type="bhr" areas="Calendar" bugids="41212">
+<t:test_case testcaseid="new_ModifyAppointmentRequest14" type="sanity" areas="Calendar" bugids="41212">
     <t:objective>Create an appointment having attendee whose account has been deleted.</t:objective>
     <t:steps>1.Create an appointment.
             2.Login to admin.
             3.Delete an account.
             4.Login to mail client.
-            5.Modify an appointment with attendee whose account has been deleted.        
+            5.Modify an appointment with attendee whose account has been deleted.
     </t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 
@@ -1375,8 +1375,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <!--Create an appointment.-->
     <t:test>
         <t:request>
@@ -1386,8 +1386,8 @@
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct7.name}"/>
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct7.name}" t="t"/>
@@ -1433,11 +1433,11 @@
 <t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
 
 
-    <!-- delete an account.-->   
+    <!-- delete an account.-->
     <t:test>
         <t:request>
             <DeleteAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${acct7.id}</id>                
+                <id>${acct7.id}</id>
             </DeleteAccountRequest>
         </t:request>
         <t:response>
@@ -1460,8 +1460,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
     <t:property name="appointment10.subject" value="NewSubj10${TIME}.${COUNTER}"/>
     <t:property name="appointment10.location" value="NewLoc10${TIME}.${COUNTER}"/>
     <t:property name="appointment10.content" value="NewContent10${TIME}.${COUNTER}"/>
@@ -1474,8 +1474,8 @@
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct7.name}"/>
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
                         <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${acct1.name}"/>
                     </inv>
                     <e a="${acct7.name}" t="t"/>
@@ -1492,7 +1492,7 @@
             <t:select path="//mail:ModifyAppointmentResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
 
 
@@ -1509,7 +1509,7 @@
 
         </t:response>
     </t:test>
-    
+
       <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
@@ -1522,8 +1522,8 @@
             <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment10.subject}"/>
         </t:response>
     </t:test>
-	
-	
+
+
 </t:test_case>
 
 </t:tests>

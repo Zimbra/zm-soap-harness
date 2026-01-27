@@ -57,7 +57,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_DL01" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckPermissionRequest_DL01" type="sanity" bugids="" >
     <t:objective>CheckPermissionRequest Default user rights on DL </t:objective>
 
 	<t:test required="true" >
@@ -77,7 +77,7 @@
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
                 <name>${admin.dl1.name}</name>
                 <a n="description">A test distribution list</a>
-               
+
             </CreateDistributionListRequest>
         </t:request>
         <t:response>
@@ -97,7 +97,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	 <t:test >
         <t:request >
@@ -109,8 +109,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendToDistList" />
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -121,7 +121,7 @@
         <t:response>
     			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="viewDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request >
@@ -133,8 +133,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="ownDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -145,8 +145,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendAsDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -157,7 +157,7 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendOnBehalfOfDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     </t:test_case>
@@ -202,7 +202,7 @@
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -215,8 +215,8 @@
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -228,8 +228,8 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
-			
+	</t:test>
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -241,7 +241,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -254,7 +254,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -268,7 +268,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	 <t:test >
         <t:request >
@@ -280,8 +280,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendToDistList" />
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -292,7 +292,7 @@
         <t:response>
     			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="viewDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request >
@@ -304,8 +304,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="ownDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -316,8 +316,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendAsDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -328,12 +328,12 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendOnBehalfOfDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_DL03" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckPermissionRequest_DL03" type="sanity" bugids="" >
     <t:objective>CheckPermissionRequest Revoked  user rights on DL </t:objective>
 
 	<t:test required="true" >
@@ -373,7 +373,7 @@
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -386,8 +386,8 @@
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -399,8 +399,8 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
-			
+	</t:test>
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -412,7 +412,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -425,7 +425,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 
 	<t:test required="true">
@@ -440,7 +440,7 @@
 		<t:select path="//admin:RevokeRightResponse"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -453,8 +453,8 @@
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -466,8 +466,8 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
-			
+	</t:test>
+
 	<t:test required="true">
 		<t:request>
 			<RevokeRightRequest xmlns="urn:zimbraAdmin">
@@ -479,7 +479,7 @@
 		<t:response>
 		<t:select path="//admin:RevokeRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -492,7 +492,7 @@
 		<t:response>
 		<t:select path="//admin:RevokeRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -506,7 +506,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	 <t:test >
         <t:request >
@@ -518,8 +518,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendToDistList" />
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -530,7 +530,7 @@
         <t:response>
     			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="viewDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request >
@@ -542,8 +542,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="ownDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -554,8 +554,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendAsDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -566,12 +566,12 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendOnBehalfOfDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     </t:test_case>
 
-<t:test_case testcaseid="CheckPermissionRequest_DL04" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckPermissionRequest_DL04" type="sanity" bugids="" >
     <t:objective>CheckPermissionRequest on DL Alias AS zimbraPrefAllowAddressForDelegatedSender </t:objective>
 
 	<t:test required="true" >
@@ -591,7 +591,7 @@
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
                 <name>${admin.dl4.name}</name>
                 <a n="description">A test distribution list</a>
-               
+
             </CreateDistributionListRequest>
         </t:request>
         <t:response>
@@ -609,11 +609,11 @@
         <t:response>
             <t:select path="//admin:AddDistributionListAliasResponse"/>
         </t:response>
-    </t:test> 
-	
-	
+    </t:test>
 
-	
+
+
+
 	    <t:test>
         <t:request>
             <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -622,7 +622,7 @@
             </ModifyDistributionListRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyDistributionListResponse"/> 
+            <t:select path="//admin:ModifyDistributionListResponse"/>
         </t:response>
     </t:test>
 	<t:test required="true">
@@ -637,7 +637,7 @@
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -650,8 +650,8 @@
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
 	</t:test>
-	
-	
+
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -663,8 +663,8 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
-			
+	</t:test>
+
 	<t:test required="true">
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -676,7 +676,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:test required="true">
 		<t:request>
@@ -689,7 +689,7 @@
 		<t:response>
 		<t:select path="//admin:GrantRightResponse"/>
 		</t:response>
-	</t:test>	 
+	</t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
@@ -703,7 +703,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	 <t:test >
         <t:request >
@@ -715,8 +715,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendToDistList" />
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -727,7 +727,7 @@
         <t:response>
     			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="viewDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request >
@@ -739,8 +739,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="ownDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -751,8 +751,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendAsDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -763,7 +763,7 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendOnBehalfOfDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	 <t:test >
         <t:request >
@@ -775,8 +775,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendToDistList" />
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -787,7 +787,7 @@
         <t:response>
     			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="viewDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request >
@@ -799,8 +799,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="ownDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -811,8 +811,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendAsDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -823,11 +823,11 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendOnBehalfOfDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
-	
+
  </t:test_case>
-<t:test_case testcaseid="CheckPermissionRequest_DL05" type="bhr" bugids="" >
+<t:test_case testcaseid="CheckPermissionRequest_DL05" type="sanity" bugids="" >
     <t:objective>CheckPermissionRequest on non existing DL </t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -842,7 +842,7 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 	 <t:test >
         <t:request >
@@ -854,8 +854,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendToDistList" />
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
 	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -866,7 +866,7 @@
         <t:response>
     			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="viewDistList" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 	<t:test >
         <t:request >
@@ -878,8 +878,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="ownDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     	<t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -890,8 +890,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendAsDistList" />
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
       <t:test >
         <t:request >
         	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
@@ -902,8 +902,8 @@
         <t:response>
   			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendOnBehalfOfDistList" />
         </t:response>
-    </t:test> 
-	
+    </t:test>
+
  </t:test_case>
 
 

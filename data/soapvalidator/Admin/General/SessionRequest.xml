@@ -7,7 +7,7 @@
 
 <t:test_case testcaseid="GetSessionsRequest_01" type="smoke" >
     <t:objective>Sanity test for GetSessionsRequest</t:objective>
-   
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -32,8 +32,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DumpSessionsRequest_01" type="bhr" >
-    <t:objective>Sanity test for DumpSessionsRequest</t:objective>	
+<t:test_case testcaseid="DumpSessionsRequest_01" type="sanity" >
+    <t:objective>Sanity test for DumpSessionsRequest</t:objective>
 
 	<t:test>
         <t:request>
@@ -55,12 +55,12 @@
             <t:select path="//admin:DumpSessionsResponse" />
         </t:response>
     </t:test>
-  
+
 </t:test_case>
 
 <t:test_case testcaseid="EndSessionRequest_01" type="smoke">
     <t:objective>Sanity test for EndSessionRequest</t:objective>
-    
+
      <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -84,8 +84,8 @@
         <t:response>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -107,7 +107,7 @@
         <t:response>
             <t:select path="//acct:EndSessionResponse"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
 

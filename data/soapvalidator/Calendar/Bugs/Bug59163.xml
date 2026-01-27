@@ -14,7 +14,7 @@
 	<t:objective>setup accounts</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
 	<t:test required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -51,7 +51,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Bug59163_01" type="functional" bugids="59163">
+<t:test_case testcaseid="Bug59163_01" type="regression" bugids="59163">
 	<t:objective>Verify events with audio alarm are converted to visual alarm when synced from ical.</t:objective>
 	<t:steps>
 	1. Use the rest servlet to upload a calendar ICS
@@ -93,7 +93,7 @@
 				<query>${ical.subject}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt/mail:alarmData/mail:alarm" attr="action" match="DISPLAY"/>
 			<t:select path="//mail:SearchResponse/mail:appt/mail:alarmData/mail:alarm/mail:trigger/mail:rel" attr="h" match="1"/>
         </t:response>

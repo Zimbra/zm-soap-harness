@@ -18,7 +18,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -33,7 +33,7 @@
 
 <t:test_case testcaseid="SetAppointmentRequest_except_accountSetup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -45,7 +45,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -88,7 +88,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SetAppointmentRequest_CreateAppointmentWithException_01" type="bhr">
+<t:test_case testcaseid="SetAppointmentRequest_CreateAppointmentWithException_01" type="sanity">
     <t:objective>Create a daily recurring appointment with one exception</t:objective>
     <t:steps>
     1. Use SetAppointmentRequest to create a daily appointment
@@ -96,9 +96,9 @@
     	B. The 2 instance is modified to occur 1 hour later
     2. Use GetAppointmentSummariesRequest to verify that the appointments were set correctly
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-	
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -122,8 +122,8 @@
                 <default needsReply="0" ptst="AC">
                     <m>
                         <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" loc="${appt1.location}">
-                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${tz}"/>  
-                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${tz}"/>  
+                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${tz}"/>
+                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${tz}"/>
                             <or a="${account1.name}"/>
 	                        <recur><add>
 								<rule freq="DAI">

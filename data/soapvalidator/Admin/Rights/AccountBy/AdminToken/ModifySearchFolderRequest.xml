@@ -41,7 +41,7 @@
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
 
-	
+
 
     <t:test required="true">
         <t:request>
@@ -54,7 +54,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- Create a contact -->
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -81,7 +81,7 @@
         <t:response>
             <t:select path="//mail:CreateSearchFolderResponse">
 				<t:select path="//mail:search" attr="id" set="account1.searchfolder1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
 	</t:test>
 
@@ -89,7 +89,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_Admin_ModifySearchFolderRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountBy_Admin_ModifySearchFolderRequest_Basic01" type="sanity">
     <t:objective>Use an admin token with accountby to ModifySearchFolderRequest</t:objective>
     <t:steps>
     1. Use admin authtoken with accountby=account1 to ModifySearchFolderRequest - Success

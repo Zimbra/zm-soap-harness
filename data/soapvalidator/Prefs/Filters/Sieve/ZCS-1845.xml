@@ -5,10 +5,10 @@
 <t:property name="account2.name"
 		value="test2_${TIME}${COUNTER}@${defaultdomain.name}" />
 <t:property name="account3.name"
-		value="test3_${TIME}${COUNTER}@${defaultdomain.name}" />	
-<t:property name="cos.name" value="cos1845${TIME}${COUNTER}" />	
+		value="test3_${TIME}${COUNTER}@${defaultdomain.name}" />
+<t:property name="cos.name" value="cos1845${TIME}${COUNTER}" />
 
-<!-- Variables declaration -->		
+<!-- Variables declaration -->
 <t:property name="msg01.file" value="${testMailRaw.root}/zcs-1845/mime01.txt" />
 <t:property name="msg02.file" value="${testMailRaw.root}/zcs-1845/mime02.txt" />
 
@@ -50,15 +50,15 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
             </t:response>
         </t:test>
     </t:test_case>
-	
+
 <!-- Create accounts for testing -->
-<t:test_case testcaseid="CreateAccounts" type="functional">
+<t:test_case testcaseid="CreateAccounts" type="regression">
 	<t:objective>create accounts</t:objective>
 		<t:steps>
 			1. Auth with admin
 			2. create accounts
 		</t:steps>
-	
+
 	<t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -82,7 +82,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -91,11 +91,11 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
-        
+
         <t:test id="CreateCosRequest1">
             <t:request>
                 <CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -108,7 +108,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
                 <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
             </t:response>
         </t:test>
-	    	
+
 	<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -136,7 +136,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server" />
 			</t:response>
 	</t:test>
-	
+
 	<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -153,7 +153,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 </t:test_case>
 
 <!-- Run testcase -->
-	<t:test_case testcaseid="ZCS-1845_rule1" type="functional" bugids="ZCS-1845">
+	<t:test_case testcaseid="ZCS-1845_rule1" type="regression" bugids="ZCS-1845">
 		<t:objective>Verify if any header is malformed, no exception is given and editheader rule for other headers is executed successfully.</t:objective>
 		<t:steps>
 			1. Auth with admin
@@ -173,7 +173,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:mailinjecttest>
 			<t:lmtpInjectRequest>
 				<filename>${msg01.file}</filename>
@@ -185,7 +185,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -198,7 +198,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -211,7 +211,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -221,8 +221,8 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 			</t:restServletResponse>
 		</t:resttest>
 	</t:test_case>
-	
-	<t:test_case testcaseid="ZCS-1845_rule2" type="functional" bugids="ZCS-1845">
+
+	<t:test_case testcaseid="ZCS-1845_rule2" type="regression" bugids="ZCS-1845">
 		<t:objective>Verify immutable headers cannot be deleted even if it malformed</t:objective>
 		<t:steps>
 			1. Auth with admin
@@ -254,7 +254,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -267,7 +267,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -280,7 +280,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -291,8 +291,8 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 			</t:restServletResponse>
 		</t:resttest>
 	</t:test_case>
-	
-	<t:test_case testcaseid="ZCS-1845_rule3" type="functional" bugids="ZCS-1845">
+
+	<t:test_case testcaseid="ZCS-1845_rule3" type="regression" bugids="ZCS-1845">
 		<t:objective>Verify any invalid value cannot be added immutable headers</t:objective>
 		<t:steps>
 			1. Auth with admin
@@ -324,7 +324,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -337,7 +337,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -350,7 +350,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -365,7 +365,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -386,7 +386,7 @@ if header :matches "To" "test3_*@${defaultdomain.name}" {
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 

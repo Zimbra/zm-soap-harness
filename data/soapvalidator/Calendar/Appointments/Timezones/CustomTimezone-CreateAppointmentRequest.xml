@@ -7,7 +7,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -22,7 +22,7 @@
 
 <t:test_case testcaseid="customTimezone_CreateAppointmentRequest_AccountSetup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -35,7 +35,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -73,7 +73,7 @@
 	2. Get the appointment.  Verify the local start/end times
 	3. Get the appointment summaries.  Verify the gmt start/end times
 	</t:steps>
-	    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -88,10 +88,10 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:property name="timezone.name" value="timezone.${TIME}.${COUNTER}"/>
 	<t:property name="timezone.stdoff" value="60"/>	<!-- 60 minutes ahead of GMT (GMT+01.00) -->
-	
+
 
 	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appointment.start.gmt" value="1263902400000"/>							<!-- 01/19/2010 12:00:00 UTC time -->
@@ -123,12 +123,12 @@
     </t:test>
 
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.apptId}"/>
         </t:request>
         <t:response>
             <t:select path="//mail:GetAppointmentResponse/mail:appt">
-				<!-- As per bug 33396 comment #1 If the client-supplied TZID is not listed in timezones.ics, we look 
+				<!-- As per bug 33396 comment #1 If the client-supplied TZID is not listed in timezones.ics, we look
         at its definition to map it to an exact match. Hence for this test case the mathced TZ is returned instead of custom TZ. -->
             	<t:select path="//mail:s[@tz='Africa/Algiers']" attr="d" match="${ICALTIME[${appointment.start.tz}]}"/>
             	<t:select path="//mail:e[@tz='Africa/Algiers']" attr="d" match="${ICALTIME(+1h)[${appointment.start.tz}]}"/>
@@ -151,7 +151,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_02" type="bhr">
+<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_02" type="sanity">
     <t:objective>Create an appointment (standard time) with a custom timezone offset (stdoff and dayoff) - check GMT setting of the appointment</t:objective>
 	<t:steps>
 	1. Define a custom timezone:
@@ -161,7 +161,7 @@
 	3. Get the appointment.  Verify the local start/end times
 	4. Get the appointment summaries.  Verify the gmt start/end times
 	</t:steps>
-	    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -176,11 +176,11 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:property name="timezone.name" value="timezone.${TIME}.${COUNTER}"/>
 	<t:property name="timezone.stdoff" value="60"/>		<!-- Standard time: 60 minutes ahead of GMT (GMT+01.00) -->
 	<t:property name="timezone.dayoff" value="120"/>	<!-- Savings time: 120 minutes ahead of GMT (GMT+02.00) -->
-	
+
 
 	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appointment.start.gmt" value="1265025600000"/>							<!-- 02/01/2010 12:00:00 UTC time -->
@@ -215,7 +215,7 @@
     </t:test>
 
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.apptId}"/>
         </t:request>
         <t:response>
@@ -241,7 +241,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_03" type="bhr">
+<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_03" type="sanity">
     <t:objective>Create an appointment (daylight time) with a custom timezone offset (stdoff and dayoff) - check GMT setting of the appointment</t:objective>
 	<t:steps>
 	1. Define a custom timezone:
@@ -251,7 +251,7 @@
 	3. Get the appointment.  Verify the local start/end times
 	4. Get the appointment summaries.  Verify the gmt start/end times
 	</t:steps>
-	    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -266,11 +266,11 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:property name="timezone.name" value="timezone.${TIME}.${COUNTER}"/>
 	<t:property name="timezone.stdoff" value="60"/>		<!-- Standard time: 60 minutes ahead of GMT (GMT+01.00) -->
 	<t:property name="timezone.dayoff" value="120"/>	<!-- Savings time: 120 minutes ahead of GMT (GMT+02.00) -->
-	
+
 
 	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appointment.start.gmt" value="1275393600000"/>							<!-- 02/01/2010 12:00:00 UTC time -->
@@ -305,7 +305,7 @@
     </t:test>
 
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.apptId}"/>
         </t:request>
         <t:response>
@@ -331,7 +331,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_04" type="sanity" bugids="12623">
+<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_04" type="functional" bugids="12623">
     <t:objective>Create an appointment using custom timezone from Jerusalem (from bug 12623)</t:objective>
 	<t:steps>
 	1. Define a custom timezone:
@@ -341,7 +341,7 @@
 	2. Create an appointment in the timezone
 	3. Verify no error: java.lang.IllegalArgumentException: Illegal end time 86400000
 	</t:steps>
-	    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth2" required="true">
@@ -356,9 +356,9 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:property name="timezone.name" value="(GMT+02.00) Auto-Detected"/>
-	
+
 
 	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
 	<t:property name="appointment.start.jst" value="1164970800000"/>	<!-- 20061201T110000 -->
@@ -395,7 +395,7 @@
     </t:test>
 
     <t:test >
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.apptId}"/>
         </t:request>
         <t:response>

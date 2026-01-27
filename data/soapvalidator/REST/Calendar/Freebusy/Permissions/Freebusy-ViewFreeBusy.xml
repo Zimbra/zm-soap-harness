@@ -30,7 +30,7 @@
 <t:test_case testcaseid="RestServlet_calendar_ics_account_setup" type="always" >
     <t:objective>create test account</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test id="admin_login" required="true" >
         <t:request>
@@ -145,7 +145,7 @@
 	</t:steps>
 
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -185,15 +185,15 @@
 
 	<t:property name="freebusy.start" value="1263902400000"/>	<!-- Jan 19, 2010 12:00:00 -->
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
-	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -211,7 +211,7 @@
 
 	<!-- clear the auth token to be a non-authenticated user -->
 	<t:property name="authToken" value=""/>
-	
+
 	<t:property name="server.restServlet" value="${account1.server}"/>
 	<t:resttest>
 		<t:restServletRequest>
@@ -254,14 +254,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_02" type="bhr">
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_02" type="sanity">
     <t:objective>Verify if viewFreeBusy=pub, all users are allowed F/B access</t:objective>
 	<t:steps>
 	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
 	</t:steps>
 
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test id="auth1" required="true">
@@ -301,15 +301,15 @@
 
 	<t:property name="freebusy.start" value="1295438400000"/>	<!-- Jan 19, 2011 12:00:00 -->
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
-	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>
 	                        <or a="${account2.name}"/>
                         </comp>
                     </inv>
@@ -327,7 +327,7 @@
 
 	<!-- clear the auth token to be a non-authenticated user -->
 	<t:property name="authToken" value=""/>
-	
+
 	<t:property name="server.restServlet" value="${account2.server}"/>
 	<t:resttest>
 		<t:restServletRequest>
@@ -370,14 +370,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_03" type="bhr" bugids="41926" >
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_03" type="sanity" bugids="41926" >
     <t:objective>Verify if viewFreeBusy=all/deny=1, all users are allowed F/B access</t:objective>
 	<t:steps>
 	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
 	</t:steps>
 
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
     <t:test id="auth1" required="true">
@@ -417,15 +417,15 @@
 
 	<t:property name="freebusy.start" value="1295438400000"/>	<!-- Jan 19, 2011 12:00:00 -->
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
-	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>
 	                        <or a="${account3.name}"/>
                         </comp>
                     </inv>
@@ -443,7 +443,7 @@
 
 	<!-- clear the auth token to be a non-authenticated user -->
 	<t:property name="authToken" value=""/>
-	
+
 	<t:property name="server.restServlet" value="${account3.server}"/>
 	<t:resttest>
 		<t:restServletRequest>
@@ -486,14 +486,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_04" type="bhr" bugids="41926" >
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_04" type="sanity" bugids="41926" >
     <t:objective>Verify if viewFreeBusy=usr, only specified users are allowed F/B access</t:objective>
 	<t:steps>
 	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
 	</t:steps>
 
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
     <t:test id="auth1" required="true">
@@ -534,15 +534,15 @@
 
 	<t:property name="freebusy.start" value="1295438400000"/>	<!-- Jan 19, 2011 12:00:00 -->
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
-	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>
 	                        <or a="${account4.name}"/>
                         </comp>
                     </inv>
@@ -560,7 +560,7 @@
 
 	<!-- clear the auth token to be a non-authenticated user -->
 	<t:property name="authToken" value=""/>
-	
+
 	<t:property name="server.restServlet" value="${account4.server}"/>
 	<t:resttest>
 		<t:restServletRequest>
@@ -630,14 +630,14 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_05" type="bhr" bugids="41926" >
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_05" type="sanity" bugids="41926" >
     <t:objective>Verify if viewFreeBusy=usr (multiple users), only specified users are allowed F/B access</t:objective>
 	<t:steps>
 	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
 	</t:steps>
 
 
-	
+
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
 
     <t:test id="auth1" required="true">
@@ -680,15 +680,15 @@
 
 	<t:property name="freebusy.start" value="1295438400000"/>	<!-- Jan 19, 2011 12:00:00 -->
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
-	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>
 	                        <or a="${account5.name}"/>
                         </comp>
                     </inv>
@@ -706,7 +706,7 @@
 
 	<!-- clear the auth token to be a non-authenticated user -->
 	<t:property name="authToken" value=""/>
-	
+
 	<t:property name="server.restServlet" value="${account5.server}"/>
 	<t:resttest>
 		<t:restServletRequest>

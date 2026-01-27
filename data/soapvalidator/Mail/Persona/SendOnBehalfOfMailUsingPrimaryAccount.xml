@@ -8,7 +8,7 @@
 	<t:property name="msg02.subject" value="test mail from persona" />
 	<t:property name="message.content2" value="content of the message${TIME}.${COUNTER}" />
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
-	
+
 	<t:test_case testcaseid="Ping" type="always">
 		<t:objective>basic system check</t:objective>
 		<t:test id="ping" required="true">
@@ -85,7 +85,7 @@
 					set="test_acct3.server" />
 			</t:response>
 		</t:test>
-		
+
 		<!-- Grant test_account1.name sendOnBehalfOf permission on test_account2.name -->
 		<t:test required="true">
 			<t:request>
@@ -98,12 +98,12 @@
 		<t:response>
 			<t:select path="//admin:GrantRightResponse" />
 		</t:response>
-	</t:test>	
+	</t:test>
 	</t:test_case>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
 
-	<t:test_case testcaseid="sendMailOnBehalfOfPrimaryAccount" type="bhr">
+	<t:test_case testcaseid="sendMailOnBehalfOfPrimaryAccount" type="sanity">
 		<t:objective>Verify user is able to send an email with sendOnBehalfOf right
 		</t:objective>
 		<t:steps>
@@ -253,7 +253,7 @@
 		</t:resttest>
 	</t:test_case>
 
-	<t:test_case testcaseid="sendMailOnBehalfOfAccountPersona" type="bhr">
+	<t:test_case testcaseid="sendMailOnBehalfOfAccountPersona" type="sanity">
 		<t:objective>Verify user is able to send an email with sendOnBehalfOf right
 		</t:objective>
 		<t:steps>
@@ -363,7 +363,7 @@
 				</t:select>
 			</t:response>
 		</t:test>
-		
+
 		<!-- Login as recipient test_account3.name -->
 		<t:property name="server.zimbraAccount" value="${test_acct3.server}" />
 		<t:test id="auth_acct3" required="true" depends="acct1_setup">
@@ -415,5 +415,5 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-	
+
 </t:tests>

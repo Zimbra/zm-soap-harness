@@ -26,7 +26,7 @@
 <t:property name="search.start" value="1121336254170"/>
 <t:property name="search.end" value="1138616254170"/>
 
-<t:property name="root" value="${soapxml.root}/iCal/MS-Outlook-2003/"/>    
+<t:property name="root" value="${soapxml.root}/iCal/MS-Outlook-2003/"/>
 <t:property name="appt1.file" value="${root}/outlook-ical-simple.txt"/>
 <t:property name="appt2.file" value="${root}/outlook-ical-without-sub.txt"/>
 <t:property name="appt3.file" value="${root}/outlook-ical-without-loc.txt"/>
@@ -84,7 +84,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -99,7 +99,7 @@
 
 <t:test_case testcaseid="acctSetup1_outlook_iCalBasic" type="always">
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test>
         <t:request>
@@ -112,7 +112,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -129,7 +129,7 @@
             </CreateAccountRequest>
         </t:request>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -138,7 +138,7 @@
             </CreateAccountRequest>
         </t:request>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -159,7 +159,7 @@
             <t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -171,7 +171,7 @@
             <t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -195,8 +195,8 @@
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test>
@@ -209,7 +209,7 @@
             <t:select path="//admin:DeleteMailboxResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 
     <t:test>
@@ -221,7 +221,7 @@
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
@@ -235,7 +235,7 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
     <t:test>
@@ -248,7 +248,7 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 
     <t:test>
@@ -270,7 +270,7 @@
             </CreateAccountRequest>
         </t:request>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -279,7 +279,7 @@
             </CreateAccountRequest>
         </t:request>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -288,7 +288,7 @@
             </CreateAccountRequest>
         </t:request>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -300,7 +300,7 @@
             <t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -312,7 +312,7 @@
             <t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -334,10 +334,10 @@
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
-              3. SearchRequest , verify message is receiving with proper basic information 
+              3. SearchRequest , verify message is receiving with proper basic information
               4. GetApptSummaries, verify the appointment creating properly
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${appt1.file}</filename>
@@ -361,7 +361,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
@@ -379,7 +379,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -395,7 +395,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
 
-<t:test_case testcaseid="outlook_ical_basic02" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic02" type="functional">
     <t:objective>Verify the basic iCal format invitation without subject from Outlook2003 </t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
@@ -403,7 +403,7 @@
               3. SearchRequest , verify message is receiving without subject
               4. GetApptSummaries, verify the appointment creating properly
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${appt2.file}</filename>
@@ -427,7 +427,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
@@ -442,7 +442,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -450,7 +450,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse">
 				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
-			</t:select>		
+			</t:select>
 		</t:response>
 	</t:test>
 
@@ -469,7 +469,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 
-<t:test_case testcaseid="outlook_ical_basic03" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic03" type="functional">
     <t:objective>Verify the basic iCal format invitation without location from Outlook2003 </t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
@@ -477,7 +477,7 @@
               3. SearchRequest , verify message is receiving without location
               4. GetApptSummaries, verify the appointment creating properly
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${appt3.file}</filename>
@@ -501,7 +501,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
@@ -516,7 +516,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -532,15 +532,15 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 
-<t:test_case testcaseid="outlook_ical_basic04" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic04" type="functional">
     <t:objective>Verify the basic iCal format invitation with two invitees from Outlook2003 </t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
-              2. Login as the invitee 
+              2. Login as the invitee
               3. SearchRequest , verify message is receiving to invitees
               4. GetApptSummaries, verify appointment is sent to 2 invitees
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${appt4.file}</filename>
@@ -564,7 +564,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
@@ -580,7 +580,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -591,20 +591,20 @@
            <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="mail4.id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 
-<t:test_case testcaseid="outlook_ical_basic05" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic05" type="functional">
     <t:objective>Verify the basic iCal format invitation with One hour meeting from Outlook2003 </t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
-              2. Login as the invitee 
+              2. Login as the invitee
               3. SearchRequest , verify message is receiving for 1 hout meeting.
               4. GetApptSummaries, verify the appointment creating properly
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${appt5.file}</filename>
@@ -628,7 +628,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
@@ -645,7 +645,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -656,19 +656,19 @@
            <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="mail5.id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic06" type="sanity" bugids="5207">
+<t:test_case testcaseid="outlook_ical_basic06" type="functional" bugids="5207">
     <t:objective>Verify the basic iCal format invitation for all day meeting from Outlook2003 </t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
-              2. Login as the invitee 
+              2. Login as the invitee
               3. SearchRequest , verify message is receiving for all day
-              4. GetApptSummaries, verify the appointment creating properly 
+              4. GetApptSummaries, verify the appointment creating properly
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${appt6.file}</filename>
@@ -692,7 +692,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
@@ -708,7 +708,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -719,19 +719,19 @@
            <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="mail6.id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic07" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic07" type="functional">
     <t:objective>Verify the basic iCal format invitation without enabling the reminder from Outlook2003 </t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
-              3. SearchRequest , verify message is receiving without reminder is proper 
-              4. GetApptSummaries, verify the appointment creating properly 
+              3. SearchRequest , verify message is receiving without reminder is proper
+              4. GetApptSummaries, verify the appointment creating properly
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${appt7.file}</filename>
@@ -754,7 +754,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test>    
+    </t:test>
 
     <t:test>
         <t:request>
@@ -770,7 +770,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -781,19 +781,19 @@
            <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="mail7.id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-    
-<t:test_case testcaseid="outlook_ical_basic08" type="sanity">
+
+<t:test_case testcaseid="outlook_ical_basic08" type="functional">
     <t:objective>Verify the basic iCal format for an appointment with status of an appointment = busy ('Show Time as' = busy )</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
-              2. Login as the invitee 
-              3. SearchRequest , verify message is receiving status of appointment is busy 
+              2. Login as the invitee
+              3. SearchRequest , verify message is receiving status of appointment is busy
               4. GetApptSummaries, verify the appointment creating properly
     </t:steps>
-    
+
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${appt8.file}</filename>
@@ -817,7 +817,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
@@ -833,7 +833,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -844,16 +844,16 @@
            <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="mail8.id"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic09" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic09" type="functional">
     <t:objective>Verify the basic iCal format for an appointment with status of an appointment = free/tentative/out of office  ('Show Time as' = other than busy )</t:objective>
     <t:steps>
         1. Use lmtp inject to inject the message
         2. Login as the invitee
-        3. SearchRequest , verify message is receiving status of appointment is other than busy (free/tentative/out of office) 
+        3. SearchRequest , verify message is receiving status of appointment is other than busy (free/tentative/out of office)
         4. GetApptSummaries, verify the appointment creating properly
     </t:steps>
 
@@ -896,7 +896,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -911,7 +911,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic10" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic10" type="functional">
     <t:objective>Verify the basic iCal format for an appointment without alarm enable</t:objective>
     <t:steps>
         1. Use lmtp inject to inject the message
@@ -974,13 +974,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic11" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic11" type="functional">
     <t:objective>Verify the basic iCal format for an appointment which send as a private from Outlook2003</t:objective>
     <t:steps>
         1. Use lmtp inject to inject the message
         2. Login as the invitee
-        3. SearchRequest , verify message is receiving properly after enabling private 
-        4. GetApptSummaries, verify appointment is creating properly 
+        3. SearchRequest , verify message is receiving properly after enabling private
+        4. GetApptSummaries, verify appointment is creating properly
     </t:steps>
 
     <t:mailinjecttest>
@@ -1021,7 +1021,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -1036,13 +1036,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic12" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic12" type="functional">
     <t:objective>Verify the basic iCal format for an appointment which send as a public from Outlook2003</t:objective>
     <t:steps>
         1. Use lmtp inject to inject the message
         2. Login as the invitee
         3. SearchRequest , verify message is receiving properly for appointment type:public
-        4. GetApptSummaries, verify appointment is creating properly 
+        4. GetApptSummaries, verify appointment is creating properly
     </t:steps>
 
     <t:mailinjecttest>
@@ -1083,7 +1083,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -1098,13 +1098,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic13" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic13" type="functional">
     <t:objective>Verify the basic iCal format for an appointment which is sent with low priority from Outlook2003</t:objective>
     <t:steps>
         1. Use lmtp inject to inject the message
         2. Login as the invitee
-        3. SearchRequest , verify message is receiving properly for low priority appointment 
-        4. GetApptSummaries, verify appointment is creating properly 
+        3. SearchRequest , verify message is receiving properly for low priority appointment
+        4. GetApptSummaries, verify appointment is creating properly
     </t:steps>
 
     <t:mailinjecttest>
@@ -1145,7 +1145,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -1160,13 +1160,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic14" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic14" type="functional">
     <t:objective>Verify the basic iCal format for an appointment which is sent with high priority from Outlook2003</t:objective>
     <t:steps>
         1. Use lmtp inject to inject the message
         2. Login as the invitee
-        3. SearchRequest , verify message is receiving properly for high priority appointment 
-        4. GetApptSummaries, verify appointment is creating properly 
+        3. SearchRequest , verify message is receiving properly for high priority appointment
+        4. GetApptSummaries, verify appointment is creating properly
     </t:steps>
 
     <t:mailinjecttest>
@@ -1207,7 +1207,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -1222,13 +1222,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic15" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic15" type="functional">
     <t:objective>Verify the basic iCal format for an appointment which is sent as a meeting request from Outlook2003</t:objective>
     <t:steps>
         1. Use lmtp inject to inject the message
         2. Login as the invitee
-        3. SearchRequest , verify message is receiving properly for meeting request 
-        4. GetApptSummaries, verify appointment is creating properly 
+        3. SearchRequest , verify message is receiving properly for meeting request
+        4. GetApptSummaries, verify appointment is creating properly
     </t:steps>
 
     <t:mailinjecttest>
@@ -1269,7 +1269,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -1284,13 +1284,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="outlook_ical_basic16" type="sanity">
+<t:test_case testcaseid="outlook_ical_basic16" type="functional">
     <t:objective>Verify the basic iCal format for an appointment which is sent from different timezone of Outlook2003</t:objective>
     <t:steps>
         1. Use lmtp inject to inject the message
         2. Login as the invitee
-        3. SearchRequest , verify message is receiving properly with different timezone 
-        4. GetApptSummaries, verify appointment is creating properly 
+        3. SearchRequest , verify message is receiving properly with different timezone
+        4. GetApptSummaries, verify appointment is creating properly
     </t:steps>
 
     <t:mailinjecttest>
@@ -1332,7 +1332,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${appt.organizer}"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
@@ -1343,7 +1343,7 @@
            <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="mail16.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appt16.Id}"/>
@@ -1356,7 +1356,7 @@
 
 <t:test_case testcaseid="acctSetup2_outlook_iCalBasic" type="deprecated">
     <t:objective>Delete test accounts</t:objective>
-   
+
     <t:test>
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1368,7 +1368,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
 
     <t:test>
@@ -1380,8 +1380,8 @@
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 <t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
 
     <t:test>
@@ -1394,7 +1394,7 @@
             <t:select path="//admin:DeleteMailboxResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 
     <t:test>
@@ -1406,7 +1406,7 @@
         <t:response>
             <t:select path="//admin:DeleteMailboxResponse"/>
         </t:response>
-    </t:test>   
+    </t:test>
 
 <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
 
@@ -1420,7 +1420,7 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
 
     <t:test>
@@ -1433,7 +1433,7 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 
     <t:test>
@@ -1446,7 +1446,7 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 

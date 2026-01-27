@@ -62,7 +62,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -74,7 +74,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
-    
+
      <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -86,7 +86,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -98,7 +98,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -110,7 +110,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -122,7 +122,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -141,13 +141,13 @@
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 
-<t:test_case testcaseid="SaveConvDraftRequest1" type="bhr" bugids="21040">
+<t:test_case testcaseid="SaveConvDraftRequest1" type="sanity" bugids="21040">
     <t:objective>Saved draft reply of a conversation should show up in conversation search result </t:objective>
-    
+
     <t:steps>
         1. Account 1 send an email to account 2(message1)
         2. Account 2 forward back to account2(message2)
-        3. Account 1 get the conversation id       
+        3. Account 1 get the conversation id
         4  Save draft reply with original id(message1).
         5. Search for the conversation.
         6. Conversation should have(saved draft).
@@ -166,7 +166,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -183,9 +183,9 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -199,7 +199,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -216,7 +216,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id2"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
  	<t:test id="auth" required="true">
@@ -259,8 +259,8 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
 		<t:request>
 			<GetConvRequest xmlns="urn:zimbraMail">
@@ -273,7 +273,7 @@
 			</t:select>
 		</t:response>
 	</t:test>
-    
+
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -283,13 +283,13 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" />
 		</t:response>
-    </t:test> 	
-    
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="SaveConvDraftRequest2" type="sanity" bugids="21040">
+<t:test_case testcaseid="SaveConvDraftRequest2" type="functional" bugids="21040">
     <t:objective>Delete the parent message of the conversation but conversation will have saved draft reply </t:objective>
-    
+
     <t:steps>
         1. Account 3 send an email to account 4(message3)
         2. Account 4 forward back to account3(message4)
@@ -301,7 +301,7 @@
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
-	
+
 	<t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -314,7 +314,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -331,9 +331,9 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -346,7 +346,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -363,7 +363,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 
  	<t:test id="auth" required="true">
@@ -389,7 +389,7 @@
 			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test >
         <t:request>
             <MsgActionRequest xmlns="urn:zimbraMail">
@@ -399,8 +399,8 @@
         <t:response>
             <t:select path="//mail:MsgActionResponse"/>
         </t:response>
-    </t:test>    
-	
+    </t:test>
+
     <t:test>
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -416,8 +416,8 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft2.id"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
 		<t:request>
 			<GetConvRequest xmlns="urn:zimbraMail">
@@ -429,13 +429,13 @@
 				<t:select path="//mail:m[@id='${draft2.id}']"/>
 			</t:select>
 		</t:response>
-	</t:test>    
-       
+	</t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="SaveConvDraftRequest3" type="sanity" bugids="21040">
+<t:test_case testcaseid="SaveConvDraftRequest3" type="functional" bugids="21040">
     <t:objective>Conversation should contain saved draft reply with same subject and  with or without original id</t:objective>
-    
+
     <t:steps>
         1. Account 5 send an email to account 6
         2. Account 6 forward back to account 5
@@ -445,7 +445,7 @@
         6. Search for the conversation.
         7. Conversation should have(draft3 and draft4).
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
 
 	<t:test id="auth" required="true">
@@ -460,7 +460,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -477,9 +477,9 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message5.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -492,7 +492,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -509,7 +509,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message6.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
 
  	<t:test id="auth" required="true">
@@ -535,7 +535,7 @@
 			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv3.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test>
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -551,8 +551,8 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft3.id"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -568,8 +568,8 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft4.id"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
 		<t:request>
 			<GetConvRequest xmlns="urn:zimbraMail">
@@ -577,16 +577,16 @@
 			</GetConvRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//mail:GetConvResponse/mail:c/mail:m" attr="id" match="${draft4.id}">				
+			<t:select path="//mail:GetConvResponse/mail:c/mail:m" attr="id" match="${draft4.id}">
 			</t:select>
 		</t:response>
-	</t:test>    
-       
+	</t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="SaveConvDraftRequest4" type="bhr" bugids="21040">
+<t:test_case testcaseid="SaveConvDraftRequest4" type="sanity" bugids="21040">
     <t:objective>Conversation should not contain  draft with changed subject and without original id. Conversation does contain  draft with changed subject but with original id. </t:objective>
-    
+
     <t:steps>
         1. Account 7 send an email to account 8
         2. Account 8 forward back to account 7
@@ -596,7 +596,7 @@
         6. Search for the conversation.
         7. Conversation should not have draft3 but draft4.
     </t:steps>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 
 	<t:test id="auth" required="true">
@@ -611,7 +611,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -628,9 +628,9 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message7.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct8.server}"/>
-    
+
     <t:test id="auth" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -643,7 +643,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -660,7 +660,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message8.id"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 
  	<t:test id="auth" required="true">
@@ -686,7 +686,7 @@
 			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv4.id"/>
 		</t:response>
 	</t:test>
-	
+
     <t:test>
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -702,8 +702,8 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft5.id"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -719,8 +719,8 @@
         <t:response>
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft6.id"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
 		<t:request>
 			<GetConvRequest xmlns="urn:zimbraMail">
@@ -729,10 +729,10 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:GetConvResponse/mail:c/mail:m" attr="id" match="${draft6.id}"/>
-			<t:select path="//mail:GetConvResponse/mail:c/mail:m" attr="id" match="${draft5.id}" emptyset="1"/>			
+			<t:select path="//mail:GetConvResponse/mail:c/mail:m" attr="id" match="${draft5.id}" emptyset="1"/>
 		</t:response>
-	</t:test>    
-       
+	</t:test>
+
 </t:test_case>
 </t:tests>
 

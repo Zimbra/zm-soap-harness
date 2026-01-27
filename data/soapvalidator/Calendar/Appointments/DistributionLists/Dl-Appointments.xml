@@ -14,7 +14,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -42,7 +42,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -55,7 +55,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
         </t:response>
     </t:test>
-        
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -105,7 +105,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
- 
+
     <t:test >
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -117,11 +117,11 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
-<t:test_case testcaseid="DL_Appointments_01" type="sanity" >
+<t:test_case testcaseid="DL_Appointments_01" type="functional" >
     <t:objective>Send a meeting request to a DL.  Verify the members can accept the request.</t:objective>
     <t:steps>
     1. Create a DL with two members
@@ -131,7 +131,7 @@
     5. Accept the request
     </t:steps>
 
-  
+
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
 
 	<t:test required="true">
@@ -146,7 +146,7 @@
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.start" value="1233489600000"/>	<!-- Feb 1, 2009  12:00:00 -->
 
@@ -283,9 +283,9 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
     <t:test depends="GetAppointmentRequest1a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment.invId}"/>
         </t:request>
         <t:response>
@@ -325,7 +325,7 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="appointment.subject" value="appt2subject${TIME}${COUNTER}"/>
 	<t:property name="appointment.start" value="1233489600000"/>	<!-- Feb 1, 2009  12:00:00 -->
 
@@ -462,9 +462,9 @@ That's a good thing, right? Well, it can be, but don't make a quick ruling on th
 
 		</t:response>
 	</t:test>
-	
+
     <t:test depends="GetAppointmentRequest1a">
-        <t:request> 
+        <t:request>
             <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment.invId}"/>
         </t:request>
         <t:response>

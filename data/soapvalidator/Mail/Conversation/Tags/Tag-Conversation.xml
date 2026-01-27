@@ -100,7 +100,7 @@
 
 <t:test_case testcaseid="conv_TagActionRequest1" type="smoke" bugids="3433, 6473">
     <t:objective>search for a tagged conversation (ConvActionRequest - tag)</t:objective>
-    <t:steps> 
+    <t:steps>
         1. Add 2 emails (same conversation).
         2. Create a new tag;
         3. Tag the conversation (ConvActionRequest)
@@ -178,14 +178,14 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id}"/>
          </t:response>
     </t:test>
- 
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
                 <query>tag:"${tag.name.default}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id}"/>
         </t:response>
     </t:test>
@@ -193,10 +193,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="conv_TagActionRequest3" type="bhr" bugids="3433, 6473">
+<t:test_case testcaseid="conv_TagActionRequest3" type="sanity" bugids="3433, 6473">
     <t:objective>search for a tagged conversation (ItemActionRequest - tag)</t:objective>
-    <t:steps> 
-            1. Add 2 emails (same conversation). 
+    <t:steps>
+            1. Add 2 emails (same conversation).
             2. Create a new tag;
             3. Tag the conversation (ItemActionRequest)
             4. Search for the tag
@@ -273,14 +273,14 @@
             <t:select path="//mail:ItemActionResponse/mail:action" attr="id" match="${conv.id}"/>
          </t:response>
     </t:test>
- 
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
                 <query>tag:"${tag3.name}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id}"/>
         </t:response>
     </t:test>
@@ -288,10 +288,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="conv_TagActionRequest5" type="bhr" bugids="6473">
+<t:test_case testcaseid="conv_TagActionRequest5" type="sanity" bugids="6473">
     <t:objective>search for a tagged conversation</t:objective>
-    <t:steps> 
-            1. Add 2 emails (same conversation). 
+    <t:steps>
+            1. Add 2 emails (same conversation).
             2. Create a new tag;
             3. Tag the conversation (MsgActionRequest)
             4. Search for the tag
@@ -368,14 +368,14 @@
             <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message1.id}"/>
          </t:response>
     </t:test>
- 
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
                 <query>tag:"${tag5.name}"</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id}"/>
         </t:response>
     </t:test>
@@ -383,7 +383,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="conv_TagActionRequest6" type="functional">
+<t:test_case testcaseid="conv_TagActionRequest6" type="regression">
     <t:objective>Test for invalid values in tag id in ConvActionRequest</t:objective>
 
     <!-- Tag a conversation with leading spaces in tag id-->
@@ -397,7 +397,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
          </t:response>
     </t:test>
- 
+
     <!--  Tag a conversation with trailing spaces in tag id -->
     <t:test>
         <t:request>
@@ -409,7 +409,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
          </t:response>
     </t:test>
- 
+
     <!--  Tag a conversation with both leading and trailing spaces in tag id-->
     <t:test>
         <t:request>
@@ -421,7 +421,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
          </t:response>
     </t:test>
- 
+
     <!-- Tag a conversation with special characters in tag id-->
     <t:test>
         <t:request>
@@ -433,7 +433,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
          </t:response>
     </t:test>
- 
+
     <!-- Tag a conversation with spaces in tag id-->
     <t:test>
         <t:request>
@@ -445,7 +445,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
          </t:response>
     </t:test>
- 
+
     <!-- Tag a conversation with blank tag id-->
     <t:test>
         <t:request>
@@ -457,7 +457,7 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
          </t:response>
     </t:test>
- 
+
     <!-- Tag a conversation with some text in tag id-->
     <t:test>
         <t:request>
@@ -469,8 +469,8 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
          </t:response>
     </t:test>
- 
-    <!-- Tag a conversation with a decimal number in tag id--> 
+
+    <!-- Tag a conversation with a decimal number in tag id-->
     <t:test>
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -481,8 +481,8 @@
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
          </t:response>
     </t:test>
- 
-    <!-- Tag a conversation with a invalid number in tag id-->  
+
+    <!-- Tag a conversation with a invalid number in tag id-->
     <t:test>
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -493,8 +493,8 @@
             <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
          </t:response>
     </t:test>
-  
-    <!-- Tag a conversation with a negative number in tag id-->  
+
+    <!-- Tag a conversation with a negative number in tag id-->
     <t:test>
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -505,8 +505,8 @@
             <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
          </t:response>
     </t:test>
-  
-    <!-- Tag a conversation with a non existing tag id --> 
+
+    <!-- Tag a conversation with a non existing tag id -->
     <t:test id="TagActionRequest6a">
 	    <t:request>
 	        <TagActionRequest xmlns="urn:zimbraMail">
@@ -587,9 +587,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="conv_TagActionRequest7" type="functional">
+<t:test_case testcaseid="conv_TagActionRequest7" type="regression">
     <t:objective>Test for invalid values in tag id in ItemActionRequest</t:objective>
-    
+
     <!--Tag a conversation with a valid tag id with leading spaces using ItemActionRequest-->
     <t:test>
         <t:request>
@@ -685,7 +685,7 @@
              <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-     
+
     <!--Tag a conversation with a invalid number in tag id using ItemActionRequest-->
     <t:test>
         <t:request>
@@ -709,7 +709,7 @@
              <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
         </t:response>
     </t:test>
-    
+
     <!--Tag a conversation with a non existing tag id using ItemActionRequest-->
     <t:test id="TagActionRequest7">
         <t:request>
@@ -733,7 +733,7 @@
              <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
          </t:response>
     </t:test>
-   
+
     <!--Untag a conversation with a non existing tag id using ItemActionRequest-->
     <t:test depends="TagActionRequest7">
         <t:request>
@@ -787,7 +787,7 @@
              <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
          </t:response>
     </t:test>
-     
+
 </t:test_case>
 
 

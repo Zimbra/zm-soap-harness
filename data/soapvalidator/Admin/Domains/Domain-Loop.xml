@@ -1,5 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-    
+
 <t:property name="domain.name0" value="domain${TIME}${COUNTER}.com"/>
 <t:property name="domain.name1" value="domain${TIME}${COUNTER}.com"/>
 <t:property name="domain.name2" value="domain${TIME}${COUNTER}.com"/>
@@ -12,7 +12,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -21,13 +21,13 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="accountSetup_Domain_Loop" type="always" >
     <t:objective>Login to Admin Account</t:objective>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -43,9 +43,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Domain_loop1" type="sanity">
-    <t:objective>Create 100 Domains  </t:objective>    
-    
+<t:test_case testcaseid="Domain_loop1" type="functional">
+    <t:objective>Create 100 Domains  </t:objective>
+
     <t:test_loop count="100">
         <t:test id="domain_loop1a" timeframeMax="1000">
             <t:request>
@@ -58,16 +58,16 @@
             </t:response>
         </t:test>
     </t:test_loop>
-        
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Domain_loop2" type="sanity" >
+<t:test_case testcaseid="Domain_loop2" type="functional" >
     <t:objective> Get all Domains Request </t:objective>
-    <t:steps>  1. Create one known new Domains 
-               2. Verify that this domain id must return by Search Directory Request 
+    <t:steps>  1. Create one known new Domains
+               2. Verify that this domain id must return by Search Directory Request
     </t:steps>
-    
+
     <t:test id="domain_loop2a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -93,14 +93,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Domain_loop3" type="sanity" >
+<t:test_case testcaseid="Domain_loop3" type="functional" >
     <t:objective>Delete the existing domain </t:objective>
-    <t:steps> 1. Create a new Domain 
+    <t:steps> 1. Create a new Domain
               2. Delete it
     </t:steps>
-    
+
     <t:test id="domain_loop3a">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain.name1}</name>
             </CreateDomainRequest>
@@ -109,7 +109,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="domain_loop3a" timeframeMax="1000">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -124,15 +124,15 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Domain_loop4" type="sanity">
+<t:test_case testcaseid="Domain_loop4" type="functional">
 	<t:objective> Get  Domains Request  (by id/name)</t:objective>
-    <t:steps> 
-        1. Create a new Domain 
+    <t:steps>
+        1. Create a new Domain
         2. Retrieve it by id
     </t:steps>
-    
+
     <t:test id="domain_loop4a">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain.name2}</name>
             </CreateDomainRequest>
@@ -141,7 +141,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id2"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="domain_loop4a" timeframeMax="100">
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin">
@@ -152,7 +152,7 @@
 	        <t:select path="//admin:GetDomainResponse/admin:domain" attr="id"  match="${domain.id2}"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="domain_loop4a" timeframeMax="100">
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin">
@@ -167,12 +167,12 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Domain_loop5" type="sanity" >
+<t:test_case testcaseid="Domain_loop5" type="functional" >
     <t:objective>Modify a a domain   </t:objective>
     <t:steps> 1. Create a Domain
               2. Modify the attributes
     </t:steps>
-    
+
     <t:test id="domain_loop5a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -216,8 +216,8 @@
             <t:select path="//admin:ModifyDomainResponse/admin:domain" attr="id" match="${domain.id3}"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-    
+
+
 </t:tests>

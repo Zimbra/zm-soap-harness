@@ -2,7 +2,7 @@
 
 	<t:property name="invalidDomain_name" value="invalid.com" />
 	<t:property name="invalid_user" value="invaliduser${TIME}@${defaultdomain.name}" />
-	
+
 	<t:property name="message.subject" value="subject1" />
 	<t:property name="message.content" value="content1" />
 
@@ -85,7 +85,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_01"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>
 			ChangePrimaryEmail Address of an account by name.
 			<t:steps>
@@ -153,9 +153,9 @@
 				<t:select path="//admin:GetAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-		
+
 		<!-- Send mail to old email address from admin. It should be received by new email address too -->
-		
+
 		<t:test id="send_message">
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -173,9 +173,9 @@
 			     set="Sent_message1.id" />
 		   </t:response>
 		</t:test>
-		
+
 		<t:delay msec="3000" />
-		
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -188,7 +188,7 @@
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id="search_message">
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -203,7 +203,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_02"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>Change primary email address for user. Delete alias and
 			verify addresses.
 		</t:objective>
@@ -216,7 +216,7 @@
 			3. GetAccount request to verify new account exits and
 			old deleted.
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -302,7 +302,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_03"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>Change primary email address for user using it's alias.
 		</t:objective>
 		<t:steps>
@@ -383,7 +383,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_04"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>Change primary email address for user using it's ID.
 		</t:objective>
 		<t:steps>
@@ -449,7 +449,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_05"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>Change primary email address to a name already present in
 			server.
 		</t:objective>
@@ -489,7 +489,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_06"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>Change primary email address to a domain not present in
 			server.
 		</t:objective>
@@ -529,7 +529,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_07"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>Change primary email address to a new name without
 			domain.
 		</t:objective>
@@ -569,7 +569,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_08"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>Change primary email address with old address not
 			present on server
 		</t:objective>
@@ -594,7 +594,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_09"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>Change primary email address for a resource.
 		</t:objective>
 		<t:steps>
@@ -674,9 +674,9 @@
 		</t:test>
 
 	</t:test_case>
-	
+
 	<t:test_case testcaseid="PrimaryEmailAddressChange_10"
-		type="bhr" bugids="ZCS-5359">
+		type="sanity" bugids="ZCS-5359">
 		<t:objective>Change primary email address for user using it's foreign principal.
 		</t:objective>
 		<t:steps>
@@ -686,7 +686,7 @@
 			3. GetAccount request to verify
 			both old and new account remains.
 		</t:steps>
-		
+
 		<t:property name="account.foreignPrincipal" value="testZCS-5359:${TIME}.${COUNTER}"/>
 
 		<t:test id="createAccountRequest10">
@@ -740,6 +740,6 @@
 		</t:test>
 
 	</t:test_case>
-	
+
 
 </t:tests>

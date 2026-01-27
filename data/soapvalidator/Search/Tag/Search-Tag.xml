@@ -26,11 +26,11 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
                 1.Admin login
                 2.Create test account
                 3.Use lmtp inject to inject the message
-    </t:steps> 
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -40,7 +40,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -64,7 +64,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account08.user}"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
@@ -74,11 +74,11 @@
 		    <server>${test_acct.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
-<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
     <t:objective> Create setup for the Search </t:objective>
     <t:steps>1. Login to the account.
              2. Search a mail to get the message-id.
@@ -212,7 +212,7 @@
             </t:select>
         </t:response>
     </t:test>
-     
+
     <t:test id = "createTagRequest1">
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -224,7 +224,7 @@
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id1"/>
         </t:response>
     </t:test>
-    
+
     <t:test id = "createTagRequest2">
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -236,7 +236,7 @@
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id2"/>
         </t:response>
     </t:test>
-    
+
     <t:test id = "createTagRequest3">
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -248,7 +248,7 @@
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id3"/>
         </t:response>
     </t:test>
-    
+
     <!--
     <t:test id = "getTagRequest">
         <t:request>
@@ -261,7 +261,7 @@
         </t:response>
     </t:test>
     -->
-    
+
     <t:test id="msgActionRequest1" depends="searchRequest1,createTagRequest1">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -272,8 +272,8 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test id="msgActionRequest2" depends="searchRequest2,createTagRequest2">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -296,7 +296,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest4a" depends="searchRequest4,createTagRequest1">
         <t:request>
@@ -308,7 +308,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id4}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest4b" depends="searchRequest4,createTagRequest2">
         <t:request>
@@ -320,7 +320,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id4}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
         <t:test id="msgActionRequest5a" depends="searchRequest5,createTagRequest2">
         <t:request>
@@ -332,7 +332,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id5}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest5b" depends="searchRequest5,createTagRequest3">
         <t:request>
@@ -344,7 +344,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id5}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test id="msgActionRequest6a" depends="searchRequest8,createTagRequest1">
         <t:request>
@@ -356,7 +356,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id6}"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="msgActionRequest6b" depends="searchRequest6,createTagRequest2">
         <t:request>
@@ -380,12 +380,12 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id6}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest1" type="functional" >
     <t:objective> Verify that a search for tagged mail is successful </t:objective>
 
     <t:test>
@@ -394,7 +394,7 @@
                 <query> tag:"${tag1.name}" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
@@ -407,7 +407,7 @@
                 <query> tag:"${tag2.name}" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
@@ -421,7 +421,7 @@
                 <query> tag:"${tag3.name}" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
@@ -431,7 +431,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest2" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 OR TAG2) is successful </t:objective>
 
     <t:test>
@@ -440,9 +440,9 @@
                 <query>  tag:("${tag1.name}" OR  "${tag2.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>            
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
@@ -455,9 +455,9 @@
                 <query>  tag:("${tag1.name}" OR  "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>            
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
@@ -470,9 +470,9 @@
                 <query>  tag:("${tag2.name}" OR  "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>            
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
@@ -481,7 +481,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="tag_SearchRequest3" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest3" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 OR TAG2 OR TAG3) is successful </t:objective>
 
     <t:test>
@@ -490,9 +490,9 @@
                 <query>  tag:("${tag1.name}" OR  "${tag2.name}" OR "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>            
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
@@ -503,7 +503,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest4" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest4" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 AND TAG2) is successful </t:objective>
 
     <t:test>
@@ -512,7 +512,7 @@
                 <query>  tag:("${tag1.name}" AND  "${tag2.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
         </t:response>
@@ -524,7 +524,7 @@
                 <query>  tag:("${tag1.name}" AND  "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
         </t:response>
     </t:test>
@@ -535,7 +535,7 @@
                 <query>  tag:("${tag2.name}" AND  "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
         </t:response>
@@ -544,7 +544,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest5" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest5" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 AND TAG2 AND TAG3) is successful </t:objective>
 
     <t:test>
@@ -553,7 +553,7 @@
                 <query>  tag:("${tag1.name}" AND  "${tag2.name}" AND "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
         </t:response>
     </t:test>
@@ -561,7 +561,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest6" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest6" type="functional" >
     <t:objective> Verify that a search for with query NOT (TAG1 OR TAG2 OR NOT) is successful </t:objective>
 
     <t:test>
@@ -570,7 +570,7 @@
                 <query>  NOT tag:("${tag1.name}" OR  "${tag2.name}" OR "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id7}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id8}']"/>
         </t:response>
@@ -579,7 +579,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest7" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest7" type="functional" >
     <t:objective>Verify that a search for with query NOT (TAG1 AND TAG2 AND NOT) is successful </t:objective>
 
     <t:test>
@@ -588,9 +588,9 @@
                 <query>  NOT tag:("${tag1.name}" AND  "${tag2.name}" AND "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
-            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>            
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
@@ -602,7 +602,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest8" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest8" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 AND TAG2 OR NOT) is successful </t:objective>
 
     <t:test>
@@ -611,7 +611,7 @@
                 <query>  tag:(("${tag1.name}" AND  "${tag2.name}") OR "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
@@ -624,7 +624,7 @@
                 <query>  tag:(("${tag2.name}" AND  "${tag1.name}") OR "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']"/>
@@ -634,7 +634,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest9" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest9" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 OR TAG2 AND NOT) is successful </t:objective>
 
     <t:test>
@@ -643,7 +643,7 @@
                 <query>  tag:(("${tag2.name}" OR "${tag3.name}") AND "${tag1.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
         </t:response>
@@ -655,7 +655,7 @@
                 <query>  tag:(("${tag3.name}" OR "${tag2.name}") AND "${tag1.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']"/>
         </t:response>
@@ -665,7 +665,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest10" type="functional" >
+<t:test_case testcaseid="tag_SearchRequest10" type="regression" >
     <t:objective> Verify that a search with query tag:() gives query parse error .</t:objective>
 
     <t:test>
@@ -674,7 +674,7 @@
                 <query>  tag:()</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//zimbra:Code" match="^mail.QUERY_PARSE_ERROR$"/>
         </t:response>
     </t:test>
@@ -682,7 +682,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest11" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest11" type="functional" >
     <t:objective> Verify that a search for tagged mail is successful </t:objective>
 
     <t:test>
@@ -691,7 +691,7 @@
                 <query> tag:"${tag1.name}" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
@@ -704,7 +704,7 @@
                 <query> tag:"${tag2.name}" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
@@ -718,7 +718,7 @@
                 <query> tag:"${tag3.name}" </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
@@ -728,7 +728,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest12" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest12" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 OR TAG2) is successful </t:objective>
 
     <t:test>
@@ -737,9 +737,9 @@
                 <query>  tag:("${tag1.name}" OR  "${tag2.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>            
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
@@ -752,9 +752,9 @@
                 <query>  tag:("${tag1.name}" OR  "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>            
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
@@ -767,9 +767,9 @@
                 <query>  tag:("${tag2.name}" OR  "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>            
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
@@ -778,7 +778,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="tag_SearchRequest13" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest13" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 OR TAG2 OR TAG3) is successful </t:objective>
 
     <t:test>
@@ -787,9 +787,9 @@
                 <query>  tag:("${tag1.name}" OR  "${tag2.name}" OR "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>            
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
@@ -800,7 +800,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest14" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest14" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 AND TAG2) is successful </t:objective>
 
     <t:test>
@@ -809,7 +809,7 @@
                 <query>  tag:("${tag1.name}" AND  "${tag2.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
         </t:response>
@@ -821,7 +821,7 @@
                 <query>  tag:("${tag1.name}" AND  "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
         </t:response>
     </t:test>
@@ -832,7 +832,7 @@
                 <query>  tag:("${tag2.name}" AND  "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
         </t:response>
@@ -841,7 +841,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest15" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest15" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 AND TAG2 AND TAG3) is successful </t:objective>
 
     <t:test>
@@ -850,7 +850,7 @@
                 <query>  tag:("${tag1.name}" AND  "${tag2.name}" AND "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
         </t:response>
     </t:test>
@@ -858,7 +858,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest16" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest16" type="functional" >
     <t:objective> Verify that a search for with query NOT (TAG1 OR TAG2 OR NOT) is successful </t:objective>
 
     <t:test>
@@ -867,7 +867,7 @@
                 <query>  NOT tag:("${tag1.name}" OR  "${tag2.name}" OR "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id7}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id8}']"/>
         </t:response>
@@ -876,7 +876,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest17" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest17" type="functional" >
     <t:objective>Verify that a search for with query NOT (TAG1 AND TAG2 AND NOT) is successful </t:objective>
 
     <t:test>
@@ -885,9 +885,9 @@
                 <query>  NOT tag:("${tag1.name}" AND  "${tag2.name}" AND "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>            
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
@@ -899,7 +899,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest18" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest18" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 AND TAG2 OR NOT) is successful </t:objective>
 
     <t:test>
@@ -908,7 +908,7 @@
                 <query>  tag:(("${tag1.name}" AND  "${tag2.name}") OR "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
@@ -921,7 +921,7 @@
                 <query>  tag:(("${tag2.name}" AND  "${tag1.name}") OR "${tag3.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']"/>
@@ -931,7 +931,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="tag_SearchRequest19" type="sanity" >
+<t:test_case testcaseid="tag_SearchRequest19" type="functional" >
     <t:objective> Verify that a search for with query (TAG1 OR TAG2 AND NOT) is successful </t:objective>
 
     <t:test>
@@ -940,7 +940,7 @@
                 <query>  tag:(("${tag2.name}" OR "${tag3.name}") AND "${tag1.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
         </t:response>
@@ -952,7 +952,7 @@
                 <query>  tag:(("${tag3.name}" OR "${tag2.name}") AND "${tag1.name}")</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
             <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id6}']"/>
         </t:response>

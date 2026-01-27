@@ -30,7 +30,7 @@
 <t:test_case testcaseid="acctSetup1_tag_loop" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-             2. Create admin account. 
+             2. Create admin account.
     </t:steps>
 
     <t:test id="admin_login" required="true">
@@ -49,7 +49,7 @@
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -83,14 +83,14 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Tag_loop1" type="sanity" duration="long">
+<t:test_case testcaseid="Tag_loop1" type="functional" duration="long">
     <t:objective>Creating 62 tags</t:objective>
     <t:steps> 1. Create Tags
-              2. Send GetInfoRequest        
-    </t:steps> 
+              2. Send GetInfoRequest
+    </t:steps>
 
-    <t:test_loop count="62">      
-        
+    <t:test_loop count="62">
+
         <t:test>
             <t:request>
                 <CreateTagRequest xmlns="urn:zimbraMail">
@@ -98,10 +98,10 @@
                 </CreateTagRequest>
             </t:request>
             <t:response>
-                <t:select path="//mail:CreateTagResponse/mail:tag" attr="id"/>                                    
+                <t:select path="//mail:CreateTagResponse/mail:tag" attr="id"/>
             </t:response>
-        </t:test> 
-        
+        </t:test>
+
     </t:test_loop>
 
     <t:test timeframeMax="3000">
@@ -112,14 +112,14 @@
             <t:select path="//acct:GetInfoResponse/acct:name"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-<!--- Performing various operation in an account with huge folder list-->  
-    
+
+<!--- Performing various operation in an account with huge folder list-->
+
 <t:test_case testcaseid="acctSetup3_tag_loop" type="always">
     <t:objective>Create a tag for test purpose </t:objective>
-        
+
     <t:test required="true">
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -127,14 +127,14 @@
             </CreateTagRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id"/>                                    
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Tag_loop2" type="sanity" duration="long">
+
+
+<t:test_case testcaseid="Tag_loop2" type="functional" duration="long">
     <t:objective>Get all tags</t:objective>
 
 	<t:test>
@@ -145,11 +145,11 @@
 		    <t:select path="//mail:GetTagResponse"/>
 	    </t:response>
 	</t:test>
-    
-</t:test_case>    
-    
 
-<t:test_case testcaseid="Tag_loop3" type="sanity" duration="long">
+</t:test_case>
+
+
+<t:test_case testcaseid="Tag_loop3" type="functional" duration="long">
     <t:objective>Get particular tags</t:objective>
 
 	<t:test>
@@ -160,11 +160,11 @@
 		    <t:select path="//mail:GetTagResponse"/>
 	    </t:response>
 	</t:test>
-    
-</t:test_case>        
-    
-    
-<t:test_case testcaseid="Tag_loop4" type="sanity" duration="long">
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Tag_loop4" type="functional" duration="long">
     <t:objective>Rename a tag </t:objective>
 
     <t:test  timeframeMax="3000">
@@ -174,14 +174,14 @@
             </TagActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="rename"/>                
+            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="rename"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="Tag_loop5" type="sanity" duration="long">
+
+
+<t:test_case testcaseid="Tag_loop5" type="functional" duration="long">
     <t:objective>Change color of tag </t:objective>
 
     <t:test  timeframeMax="3000">
@@ -191,14 +191,14 @@
             </TagActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="color"/>                
+            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="color"/>
         </t:response>
     </t:test>
-    
-</t:test_case>    
-    
-    
-<t:test_case testcaseid="Tag_loop6" type="sanity" duration="long">
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Tag_loop6" type="functional" duration="long">
     <t:objective>Exceed the maximum limit of tags creation</t:objective>
 
     <t:test_loop count="10">
@@ -216,10 +216,10 @@
 
     </t:test_loop>
 
-</t:test_case>  
-    
-    
-<t:test_case testcaseid="Tag_loop7" type="sanity" duration="long">
+</t:test_case>
+
+
+<t:test_case testcaseid="Tag_loop7" type="functional" duration="long">
     <t:objective>Delete a tag </t:objective>
 
     <t:test id="tag_loop7a"  timeframeMax="3000">
@@ -229,14 +229,14 @@
             </TagActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="delete"/>                
+            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="delete"/>
         </t:response>
     </t:test>
-    
-</t:test_case> 
-    
-    
-<t:test_case testcaseid="Tag_loop8" type="sanity" duration="long">
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Tag_loop8" type="functional" duration="long">
     <t:objective>Verify new tag can be created if a tag is deleted at stage of its maximum limit</t:objective>
 
    <t:test depends="tag_loop7a" timeframeMax="3000">
@@ -250,7 +250,7 @@
         </t:response>
     </t:test>
 
-</t:test_case>   
-    
-    
+</t:test_case>
+
+
 </t:tests>

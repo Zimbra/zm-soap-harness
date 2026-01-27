@@ -50,13 +50,13 @@ deleteheader "X-New-Header";
 </t:test_case>
 
 <!-- Create accounts for testing -->
-<t:test_case testcaseid="CreateAccounts" type="functional">
+<t:test_case testcaseid="CreateAccounts" type="regression">
 	<t:objective>create accounts</t:objective>
 		<t:steps>
 			1. Auth with admin
 			2. create accounts
 		</t:steps>
-		
+
 		<t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -80,7 +80,7 @@ deleteheader "X-New-Header";
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -89,10 +89,10 @@ deleteheader "X-New-Header";
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
-	
+
                 <t:test id="CreateCosRequest1">
                     <t:request>
                         <CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -105,7 +105,7 @@ deleteheader "X-New-Header";
                         <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
                     </t:response>
                 </t:test>
-	
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -123,7 +123,7 @@ deleteheader "X-New-Header";
 					set="account1.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -141,7 +141,7 @@ deleteheader "X-New-Header";
 					set="account2.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -162,7 +162,7 @@ deleteheader "X-New-Header";
 </t:test_case>
 
 <!-- Run testcase -->
-<t:test_case testcaseid="ZCS-893_rule1" type="functional" bugids="ZCS-893">
+<t:test_case testcaseid="ZCS-893_rule1" type="regression" bugids="ZCS-893">
 		<t:objective>Verify first letter of headers are not capitalized</t:objective>
 		<t:steps>
 			1. Auth with admin
@@ -170,7 +170,7 @@ deleteheader "X-New-Header";
 			3. auth with account1
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -182,7 +182,7 @@ deleteheader "X-New-Header";
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	 	<t:mailinjecttest>
 			<t:lmtpInjectRequest>
 				<filename>${msg01.file}</filename>
@@ -195,7 +195,7 @@ deleteheader "X-New-Header";
 				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-				
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -208,7 +208,7 @@ deleteheader "X-New-Header";
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -221,7 +221,7 @@ deleteheader "X-New-Header";
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -236,7 +236,7 @@ deleteheader "X-New-Header";
 </t:test_case>
 
 
-<t:test_case testcaseid="ZCS-893_rule2" type="functional" bugids="ZCS-893">
+<t:test_case testcaseid="ZCS-893_rule2" type="regression" bugids="ZCS-893">
 		<t:objective>Verify first letter is not changed if all header's first letter are capital</t:objective>
 		<t:steps>
 			1. Auth with admin
@@ -244,7 +244,7 @@ deleteheader "X-New-Header";
 			3. auth with account2
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -256,7 +256,7 @@ deleteheader "X-New-Header";
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:mailinjecttest>
 			<t:lmtpInjectRequest>
 				<filename>${msg02.file}</filename>
@@ -266,10 +266,10 @@ deleteheader "X-New-Header";
 				<modify>
 					<header a="To">${account2.name}</header>
 					<header a="From">${admin.user}</header>
-				</modify>				
+				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -282,7 +282,7 @@ deleteheader "X-New-Header";
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -295,7 +295,7 @@ deleteheader "X-New-Header";
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -309,7 +309,7 @@ deleteheader "X-New-Header";
 		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-893_rule3" type="functional" bugids="ZCS-893">
+<t:test_case testcaseid="ZCS-893_rule3" type="regression" bugids="ZCS-893">
 		<t:objective>Verify first letter is not changed if all header's letters are capital</t:objective>
 		<t:steps>
 			1. Auth with admin
@@ -317,7 +317,7 @@ deleteheader "X-New-Header";
 			3. auth with account3
 			4. find and verify email headers
 		</t:steps>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -329,7 +329,7 @@ deleteheader "X-New-Header";
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:mailinjecttest>
 			<t:lmtpInjectRequest>
 				<filename>${msg03.file}</filename>
@@ -339,10 +339,10 @@ deleteheader "X-New-Header";
 				<modify>
 					<header a="TO">${account3.name}</header>
 					<header a="FROM">${admin.user}</header>
-				</modify>				
+				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -355,7 +355,7 @@ deleteheader "X-New-Header";
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -368,7 +368,7 @@ deleteheader "X-New-Header";
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -380,12 +380,12 @@ deleteheader "X-New-Header";
 				<t:select attr="X-New-Header" count="1" emptyset="1"/>
 			</t:restServletResponse>
 		</t:resttest>
-</t:test_case> 
+</t:test_case>
 
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -406,10 +406,10 @@ deleteheader "X-New-Header";
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 
     </t:finally>-->
-    
+
 </t:tests>

@@ -55,7 +55,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -68,7 +68,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetServerRequest xmlns="urn:zimbraAdmin">
@@ -79,7 +79,7 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account1.mta.server"/>
 		</t:response>
     </t:test>
-    
+
 
     <t:test required="true" >
         <t:request>
@@ -96,13 +96,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug48297_1" type="bhr" bugids="48297">
+<t:test_case testcaseid="bug48297_1" type="sanity" bugids="48297">
     <t:objective>system failure: subject too long</t:objective>
     <t:steps>
     1. Login to ZWC
 	2. Inject mail which has long subject which causes in exception.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
@@ -119,7 +119,7 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:staftask>
     <t:request>
         <server>${zimbraServer.name}</server>
@@ -129,17 +129,17 @@
         </params>
     </t:request>
 	</t:staftask>
-	
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/bugs/48297/bug48297.txt"/>
-	
+
 	<t:smtpinjecttest>
         <t:smtpInjectRequest>
             <address>${account1.mta.server}</address>
             <filename>${msg01.file}</filename>
             <recipient>${account1.name}</recipient>
         </t:smtpInjectRequest>
-    </t:smtpinjecttest>  
-	
+    </t:smtpinjecttest>
+
     <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -148,10 +148,10 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
-		
+
 		</t:response>
 	</t:test>
-	
+
 	<t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -159,20 +159,20 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-       		<t:select path="//mail:GetMsgResponse"/>           		      
+       		<t:select path="//mail:GetMsgResponse"/>
         </t:response>
     </t:test>
-	
+
 </t:test_case>
 
 
-<t:test_case testcaseid="bug48297_2" type="bhr" bugids="48297">
+<t:test_case testcaseid="bug48297_2" type="sanity" bugids="48297">
     <t:objective>system failure: subject too long</t:objective>
     <t:steps>
     1. Login to ZWC
 	2. Create an appointment with long subject which causes in exception.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
@@ -189,15 +189,15 @@
 
         </t:response>
     </t:test>
-	
+
 	  <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.name}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${account1.name}"/>
-                        <s d="${Time1}"/>  
-                        <e d="${Time2}"/>  
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
                         <or a="${account1.name}"/>
                     </inv>
                     <e a="${account1.name}" t="t"/>
@@ -209,14 +209,14 @@
             </CreateAppointmentRequest>
         </t:request>
         <t:response>
-         
+
             <t:select path="//mail:CreateAppointmentResponse"
           attr="apptId"
           set="appointment1.id"/>
 
         </t:response>
     </t:test>
-	
+
 	<t:delay sec="15"/>
 
     <t:test>
@@ -228,16 +228,16 @@
         <t:select path="//mail:GetAppointmentResponse/mail:appt"/>
     </t:response>
 </t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="bug48297_3" type="bhr" bugids="48297">
+<t:test_case testcaseid="bug48297_3" type="sanity" bugids="48297">
     <t:objective>system failure: subject too long</t:objective>
     <t:steps>
     1. Login to ZWC
 	2. Create a task with long subject which causes in exception.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
@@ -254,7 +254,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -264,7 +264,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test id="CreateTaskRequest">
 		<t:request>
 	        <CreateTaskRequest xmlns="urn:zimbraMail">
@@ -291,14 +291,14 @@
 	</t:test>
 
     <t:test depends="GetTaskRequest1a">
-        <t:request> 
+        <t:request>
             <GetTaskRequest  xmlns="urn:zimbraMail" id="${task1.id}"/>
         </t:request>
         <t:response>
-            <t:select path = "//mail:GetTaskResponse"/>  
+            <t:select path = "//mail:GetTaskResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

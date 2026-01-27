@@ -11,15 +11,15 @@
 
     <!-- Sieve rules declaration -->
     <!-- Test case patterns
-      # : test   | type   | comparator      | l.h.s                        | r.h.s 
-      01: string | :value | i;ascii-casemap | variable (text)              | literal (single character) 
+      # : test   | type   | comparator      | l.h.s                        | r.h.s
+      01: string | :value | i;ascii-casemap | variable (text)              | literal (single character)
       02: string | :value | i;ascii-casemap | literal (single character)   | variable (text)
-      03: string | :value | i;ascii-casemap | variable (text)              | literal (text) 
-      04: string | :value | i;ascii-casemap | undefined variable           | literal (text) 
-      05: string | :value | i;ascii-casemap | literal (text)               | variable 
-      06: string | :value | i;ascii-casemap | literal (text)               | undefined variable 
-      07: string | :value | i;ascii-casemap | list of variable (inc. undefined variable) | list of literal 
-      08: string | :value | i;ascii-casemap | list of literal              | list of variable (inc. undefined variable) 
+      03: string | :value | i;ascii-casemap | variable (text)              | literal (text)
+      04: string | :value | i;ascii-casemap | undefined variable           | literal (text)
+      05: string | :value | i;ascii-casemap | literal (text)               | variable
+      06: string | :value | i;ascii-casemap | literal (text)               | undefined variable
+      07: string | :value | i;ascii-casemap | list of variable (inc. undefined variable) | list of literal
+      08: string | :value | i;ascii-casemap | list of literal              | list of variable (inc. undefined variable)
       09: string | :value | - (default i;ascii-numeric) | variable (text)  | literal  (digit)
       10: string | :value | - (default i;ascii-numeric) | literal  (digit) | variable (text)
       11: string | :value | - (default i;ascii-numeric) | variable (digit) | literal  (digit)
@@ -51,7 +51,7 @@
       37: string | :count | i;ascii-numeric | list of variable (inc. undefined variable) | list of literal
       38: string | :count | i;ascii-numeric | list of variable (inc. undefined variable) | list of literal (inc. variable (text & digit))
     -->
-    
+
     <t:property name="sieve_rule1" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
 set "text" "test text";
 set "digit" "7";
@@ -369,7 +369,7 @@ if string :count "ne" :comparator "i;ascii-numeric" ["${text}","${undefined}"] [
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="ZCS-863_rule1" type="functional" bugids="ZCS-863">
+    <t:test_case testcaseid="ZCS-863_rule1" type="regression" bugids="ZCS-863">
         <t:objective>Verify the various combination of parameters with :value and :count for the test "string"</t:objective>
         <!--<t:test>
             <t:request>

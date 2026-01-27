@@ -76,15 +76,15 @@
 
         </t:response>
     </t:test>
-  
-   
+
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="Rename_tag_79604" type="bhr" bugids="79604">
+<t:test_case testcaseid="Rename_tag_79604" type="sanity" bugids="79604">
     <t:objective> Renaming tag breaks filters referencing the tag</t:objective>
-    <t:steps> 
+    <t:steps>
           1) Create a tag
           2) Create filter where action is to tag the incoming message with the tag from step 1.
           3) Save filter
@@ -95,7 +95,7 @@
 
      <t:property name="message1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
     <t:property name="message1.subject" value="email01A"/>
-   
+
     <t:test  >
         <t:request>
 			<CreateTagRequest xmlns="urn:zimbraMail">
@@ -106,18 +106,18 @@
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test id="filters_setting">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${message1.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${message1.subject}"/>
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionTag tagName="${tag1.name}" />
-                        	<actionStop />                 
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -127,9 +127,9 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
-	
+
+
+
 	    <t:test depends="tagactionrequest3a">
         <t:request>
             <TagActionRequest xmlns="urn:zimbraMail">
@@ -143,8 +143,8 @@
             </t:select>
         </t:response>
     </t:test>
-    
-	
+
+
      <t:test>
 		<t:request>
 			<GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -159,13 +159,13 @@
 		            		<t:select attr="header" match="subject"/>
 		            		<t:select attr="stringComparison" match="is"/>
 		            	</t:select>
-	            	</t:select>	            	
+	            	</t:select>
 	            		<t:select path="//mail:filterActions/mail:actionTag" attr="tagName" match="${tag2.name}"/>
            	 </t:select>
             </t:select>
         </t:response>
         </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message1.file}</filename>
@@ -174,8 +174,8 @@
 			<server>${test_acct.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
- 
+
+
       <t:test id="filters_verification" depends="filters_setting">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -188,7 +188,7 @@
             </t:select>
         </t:response>
     </t:test>
- 
+
 
 </t:test_case>
 

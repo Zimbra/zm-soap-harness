@@ -16,7 +16,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -30,7 +30,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -43,7 +43,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -70,23 +70,23 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test>    
+    </t:test>
 </t:test_case>
 
 
-<t:test_case testcaseid="CreDelCalReq" type="bhr" areas="Calendar" bugids="11255">
+<t:test_case testcaseid="CreDelCalReq" type="sanity" areas="Calendar" bugids="11255">
     <t:objective>Verify bug 11255 </t:objective>
     <t:steps>
     			1. Create a calendar with name as "ramcal"
-    			2. Create few apts in that calendar 
+    			2. Create few apts in that calendar
     			3. Delete the calendar
-    			4. Create a mail folder with the same name as the calendar which is "ramcal"    			
+    			4. Create a mail folder with the same name as the calendar which is "ramcal"
     			5. Delete the folder "ramcal"
     			6. Again create the calendar with the name "ramcal"
     </t:steps>
 
 	<t:property name="folder.name" value="calendar.${TIME}.${COUNTER}"/>
-	
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -111,15 +111,15 @@
 
 	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
 	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m l="${folder1.id}">
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject2}" >
-	                        <s d="${ICALTIME[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -145,7 +145,7 @@
 				<query>inid:${folder1.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment.subject2}"/>
             <t:select path="//mail:SearchResponse/mail:appt" attr="l" match="${folder1.id}"/>
         </t:response>
@@ -159,7 +159,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
-            <t:select attr="id" match="${folder1.id}"/>      
+            <t:select attr="id" match="${folder1.id}"/>
             </t:select>
         </t:response>
     </t:test>
@@ -174,7 +174,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -185,7 +185,7 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test  id="folderaction2" depends="folderaction2b">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -194,7 +194,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:FolderActionResponse/mail:action">
-            <t:select attr="id" match="${folder2.id}"/>      
+            <t:select attr="id" match="${folder2.id}"/>
             </t:select>
         </t:response>
     </t:test>
@@ -210,7 +210,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>

@@ -26,13 +26,13 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 
 
-<t:test_case testcaseid="CreateWaitSetRequest_Basic_01" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_Basic_01" type="sanity">
     <t:objective>WaitSetRequest for a particular account (non-blocking)</t:objective>
     <t:steps>
     1. Login to admin
@@ -40,7 +40,7 @@
     3. Inject a message into the mailbox
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
-    
+
 	<!--
 		Should the admin be able to send the waitset requests to the 'main' server?
 		Or, does he need to send it to the account server?
@@ -57,7 +57,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -72,7 +72,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
     <t:test >
         <t:request>
 			<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="${interest.all}" >
@@ -111,9 +111,9 @@
     </t:test>
 
 
-</t:test_case> 
+</t:test_case>
 
-<t:test_case testcaseid="CreateWaitSetRequest_Basic_02" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_Basic_02" type="sanity">
     <t:objective>WaitSetRequest for a particular account (blocking)</t:objective>
     <t:steps>
     1. Login to admin
@@ -122,7 +122,7 @@
     4. Inject a message into the mailbox
     5. Wait for the WaitSetResponse
     </t:steps>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:property name="server.zimbraMail" value="${zimbraServer.name}"/>
 	<!--
@@ -141,7 +141,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -154,7 +154,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
 			<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="${interest.all}" >
@@ -182,7 +182,7 @@
     </t:test>
 
 	<t:delay sec="10"/>
-	
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt"/>
 
     <t:mailinjecttest >
@@ -197,10 +197,10 @@
     <!-- The WaitSetRequest will return here, once the LMTP message is received -->
 
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="CreateWaitSetRequest_Basic_02" type="bhr">
+<t:test_case testcaseid="CreateWaitSetRequest_Basic_02" type="sanity">
     <t:objective> TC to verify Admin can create more than 5 existing/valid Waiset  </t:objective>
 
     <t:test required="true">

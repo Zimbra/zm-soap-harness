@@ -69,7 +69,7 @@
     </t:test>
 
 	<t:test id="CreateDomainRequest1">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain1.black.name}</name>
             </CreateDomainRequest>
@@ -80,7 +80,7 @@
     </t:test>
 
 	<t:test id="CreateDomainRequest2">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain2.black.name}</name>
             </CreateDomainRequest>
@@ -91,7 +91,7 @@
     </t:test>
 
 	<t:test id="CreateDomainRequest3">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain1.white.name}</name>
             </CreateDomainRequest>
@@ -102,7 +102,7 @@
     </t:test>
 
 	<t:test id="CreateDomainRequest4">
-        <t:request> 
+        <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain2.white.name}</name>
             </CreateDomainRequest>
@@ -206,7 +206,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_01" type="bhr" bugids="46684">
+<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_01" type="sanity" bugids="46684">
     <t:objective>Verify that ModifyWhiteBlackListRequest set to domain is obeyed </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -244,7 +244,7 @@
 
         </t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
 
     <t:test >
@@ -293,9 +293,9 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:delay msec="5000"/>
-     
+
 	<t:test>
     	<t:request>
         	<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -303,10 +303,10 @@
            	</SearchRequest>
         </t:request>
         <t:response>
-                <t:select path="//mail:SearchResponse"/> 
+                <t:select path="//mail:SearchResponse"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
     	<t:request>
         	<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -314,14 +314,14 @@
            	</SearchRequest>
         </t:request>
         <t:response>
-                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message1.subject}" emptyset="1"/> 
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message1.subject}" emptyset="1"/>
         </t:response>
     </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_02" type="bhr">
+<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_02" type="sanity">
     <t:objective>Verify that ModifyWhiteBlackListRequest set to user is obeyed </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -359,7 +359,7 @@
 
         </t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
 
     <t:test >
@@ -408,9 +408,9 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:delay sec="5"/>
-        
+
 	<t:test>
     	<t:request>
         	<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -418,14 +418,14 @@
            	</SearchRequest>
         </t:request>
         <t:response>
-                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message1.subject}" emptyset="1"/> 
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message1.subject}" emptyset="1"/>
         </t:response>
     </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_03" type="bhr">
+<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_03" type="sanity">
     <t:objective>Verify that ModifyWhiteBlackListRequest set to domain is obeyed </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -463,7 +463,7 @@
 
         </t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
 
     <t:test >
@@ -512,9 +512,9 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:delay sec="5"/>
-        
+
 	<t:test>
     	<t:request>
         	<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -522,14 +522,14 @@
            	</SearchRequest>
         </t:request>
         <t:response>
-                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message3.subject}"/> 
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message3.subject}"/>
         </t:response>
     </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_04" type="bhr">
+<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_04" type="sanity">
     <t:objective>Verify that ModifyWhiteBlackListRequest set to user is obeyed </t:objective>
     <t:steps>
 	1. Login to Account1.
@@ -567,7 +567,7 @@
 
         </t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 
     <t:test >
@@ -616,9 +616,9 @@
 
         </t:response>
     </t:test>
-	
+
 	<t:delay sec="5"/>
-        
+
 	<t:test>
     	<t:request>
         	<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -626,7 +626,7 @@
            	</SearchRequest>
         </t:request>
         <t:response>
-                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message4.subject}"/> 
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message4.subject}"/>
         </t:response>
     </t:test>
 

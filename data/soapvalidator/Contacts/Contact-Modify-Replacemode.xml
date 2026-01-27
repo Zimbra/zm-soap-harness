@@ -41,7 +41,7 @@
 
 <t:test_case testcaseid = "Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test required = "true">
         <t:request>
             <PingRequest xmlns = "urn:zimbraAdmin"/>
@@ -50,12 +50,12 @@
             <t:select path = "//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid = "ContactsModify_ReplaceMode_acctsetup" type="always">
     <t:objective>create test account</t:objective>
-    
+
     <t:test required = "true">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAdmin">
@@ -67,7 +67,7 @@
             <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required = "true">
         <t:request>
             <CreateAccountRequest xmlns = "urn:zimbraAdmin">
@@ -80,14 +80,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
 <t:test_case testcaseid = "ContactsModify_ReplaceMode_acctlogin" type="always">
     <t:objective>login as the test account</t:objective>
-    
+
     <t:test required = "true">
         <t:request>
             <AuthRequest xmlns = "urn:zimbraAccount">
@@ -101,7 +101,7 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid = "ModifyContact_ReplaceMode_01" bugids="59738" type="smoke">
@@ -110,7 +110,7 @@
         2. Modify and add more userSMIMECertificate, userCertiticate attributes
 		3. Verify that multiple attributes are added
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -125,11 +125,11 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact.id"/>            
+            <t:select attr = "id" set = "contact.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
@@ -151,13 +151,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "ModifyContact_ReplaceMode_02" bugids="59738" type="bhr">
+<t:test_case testcaseid = "ModifyContact_ReplaceMode_02" bugids="59738" type="sanity">
     <t:objective>Modify a contact: Remove previous attributes and add new</t:objective>
     <t:steps>1. create a new contact with email address, userSMIMECertificate, userCertiticate
         2. Modify contact: remove previous userSMIMECertificate, userCertiticate attributes and add new values for same attributes
 		3. Verify that new attributes are added
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -172,11 +172,11 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact2.id"/>            
+            <t:select attr = "id" set = "contact2.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
@@ -198,13 +198,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "ModifyContact_ReplaceMode_03" bugids="59738" type="bhr">
+<t:test_case testcaseid = "ModifyContact_ReplaceMode_03" bugids="59738" type="sanity">
     <t:objective>Modify a contact: Remove all added attributes</t:objective>
     <t:steps>1. create a new contact with email address, userSMIMECertificate, userCertiticate
         2. Modify contact: remove all userSMIMECertificate, userCertiticate attributes
 		3. Verify that attributes are removed
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -219,11 +219,11 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact3.id"/>            
+            <t:select attr = "id" set = "contact3.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
@@ -245,13 +245,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "ModifyContact_ReplaceMode_04" bugids="59738" type="bhr">
+<t:test_case testcaseid = "ModifyContact_ReplaceMode_04" bugids="59738" type="sanity">
     <t:objective>Modify a contact: Verify invalid request is thrown for empty value with op=+</t:objective>
     <t:steps>1. create a new contact with email address, userSMIMECertificate, userCertiticate
         2. Modify contact: With op=+ enter empty value to be modified
 		3. Verify that invalid request error is thrown
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -266,11 +266,11 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact4.id"/>            
+            <t:select attr = "id" set = "contact4.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
@@ -293,20 +293,20 @@
             </ModifyContactRequest>
         </t:request>
         <t:response>
-          	<t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/> 
+          	<t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
 
 </t:test_case>
 
-<t:test_case testcaseid = "ModifyContact_ReplaceMode_05" bugids="59738" type="bhr">
+<t:test_case testcaseid = "ModifyContact_ReplaceMode_05" bugids="59738" type="sanity">
     <t:objective>Modify a contact: with replace=1 replace the value of the attributes</t:objective>
     <t:steps>1. create a new contact with email address, userSMIMECertificate, userCertiticate
         2. Modify contact: modify userSMIMECertificate, userCertiticate attributes
 		3. Verify that attributes are updated with new value
     </t:steps>
-    
+
     <t:test>
         <t:request>
             <CreateContactRequest xmlns = "urn:zimbraMail">
@@ -321,11 +321,11 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact5.id"/>            
+            <t:select attr = "id" set = "contact5.id"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace="1">
@@ -347,5 +347,5 @@
 
 </t:test_case>
 </t:tests>
-    
+
 

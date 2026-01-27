@@ -82,7 +82,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filters_Fileinto_01" type="bhr">
+<t:test_case testcaseid="Filters_Fileinto_01" type="sanity">
     <t:objective>Create Rule with action as "fileinto" already existing folder</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -99,7 +99,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="message1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
     <t:property name="message1.subject" value="email01A"/>
     <t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
@@ -130,9 +130,9 @@
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="/${globals.inbox}/${folder1.name}" />
                         </filterActions>
                     </filterRule>
@@ -143,8 +143,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -163,7 +163,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -176,10 +176,10 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Filters_Fileinto_02" type="sanity" bugids="45688">
+<t:test_case testcaseid="Filters_Fileinto_02" type="functional" bugids="45688">
     <t:objective>Create Rule with action as "fileinto" a deleted folder</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -196,7 +196,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="message2.file" value="${testMailRaw.root}/email01/msg02.txt"/>
     <t:property name="message2.subject" value="email01B"/>
     <t:property name="folder2.name" value="folder${TIME}${COUNTER}"/>
@@ -228,9 +228,9 @@
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message2.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message2.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="/${globals.inbox}/${folder2.name}" />
                         </filterActions>
                     </filterRule>
@@ -241,7 +241,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:test  id="folderaction3b" depends="folderaction2b">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -249,7 +249,7 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse"/>      
+            <t:select path="//mail:FolderActionResponse"/>
         </t:response>
     </t:test>
 
@@ -260,7 +260,7 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse"/>      
+            <t:select path="//mail:FolderActionResponse"/>
         </t:response>
     </t:test>
 
@@ -282,7 +282,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -295,10 +295,10 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Filters_Fileinto_03" type="sanity">
+<t:test_case testcaseid="Filters_Fileinto_03" type="functional">
     <t:objective>Create Rule with action as "fileinto" a recreated folder</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -315,7 +315,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="message3.file" value="${testMailRaw.root}/email01/msg03.txt"/>
     <t:property name="message3.subject" value="email01C"/>
     <t:property name="folder3.name" value="folder${TIME}${COUNTER}"/>
@@ -346,9 +346,9 @@
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="is"  value="${message3.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message3.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="/${globals.inbox}/${folder3.name}" />
                         </filterActions>
                     </filterRule>
@@ -359,8 +359,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test  id="folderaction3b" depends="folderaction2b">
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -368,7 +368,7 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse"/>      
+            <t:select path="//mail:FolderActionResponse"/>
         </t:response>
     </t:test>
 
@@ -402,7 +402,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -415,10 +415,10 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Filters_Fileinto_04" type="bhr" bugids="10450">
+<t:test_case testcaseid="Filters_Fileinto_04" type="sanity" bugids="10450">
     <t:objective>Verify bug 10450: multiple copies should be saved if multiple fileinto folders</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
@@ -449,7 +449,7 @@
 
 	<t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
 	<t:property name="folder2.name" value="folder${TIME}${COUNTER}"/>
-	
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -475,29 +475,29 @@
     <t:property name="message4.file" value="${testMailRaw.root}/email01/msg04.txt"/>
     <t:property name="message4.subject" value="email01D"/>
 
-    
+
     <t:test id="filters_basic01a">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="contains"  value="${message4.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="contains"  value="${message4.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="/${globals.inbox}/${folder1.name}" />
                         </filterActions>
                     </filterRule>
-                    
+
                     <filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                        	<headerTest  header= "subject" stringComparison="contains"  value="${message4.subject}" />          
+                        	<headerTest  header= "subject" stringComparison="contains"  value="${message4.subject}" />
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionFileInto folderPath="/${globals.inbox}/${folder2.name}" />
                         </filterActions>
                     </filterRule>
-                    
+
                  </filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -505,7 +505,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
@@ -524,7 +524,7 @@
 			<server>${account3.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -541,7 +541,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@l='${account3.folder.inbox.id}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 </t:tests>

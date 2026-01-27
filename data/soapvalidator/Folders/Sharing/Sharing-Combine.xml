@@ -91,7 +91,7 @@
     <t:objective>basic system check</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-    
+
     <t:test  id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -200,7 +200,7 @@
     <t:test >
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name >${cos4.name}</name>        
+                <name >${cos4.name}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -377,7 +377,7 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
 		</t:response>
 	</t:test>
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -448,7 +448,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder5.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -479,7 +479,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder6.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -510,7 +510,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder7.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${uploadFile.name}</filename>
@@ -606,7 +606,7 @@
 	5. Get message01 (success)
 	5. Delete message01 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -714,7 +714,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersCombineBasic_02" type="bhr">
+<t:test_case testcaseid="SharingFoldersCombineBasic_02" type="sanity">
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and a domain (delete)</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -725,7 +725,7 @@
 	5. Get message01 (success)
 	5. Delete message01 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -832,7 +832,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersCombineBasic_03" type="bhr">
+<t:test_case testcaseid="SharingFoldersCombineBasic_03" type="sanity">
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and a COS (delete)</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -843,7 +843,7 @@
 	5. Get message01 (success)
 	5. Delete message01 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -950,7 +950,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersCombineBasic_04" type="bhr">
+<t:test_case testcaseid="SharingFoldersCombineBasic_04" type="sanity">
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and all (delete)</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -961,7 +961,7 @@
 	5. Get message01 (success)
 	5. Delete message01 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -1068,7 +1068,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersCombineBasic_05" type="bhr">
+<t:test_case testcaseid="SharingFoldersCombineBasic_05" type="sanity">
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and a pub (delete)</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -1079,7 +1079,7 @@
 	5. Get message01 (success)
 	5. Delete message01 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -1186,7 +1186,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersCombineBasic_06" type="sanity" >
+<t:test_case testcaseid="SharingFoldersCombineBasic_06" type="functional" >
     <t:objective>Verify that rights combine when a folder is shared with an account (read) and a guest (delete)</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -1197,7 +1197,7 @@
 	6. Get message01 (PERM_DENIED - requires password?)
 	7. Delete message01 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -1317,7 +1317,7 @@
 	5. Get message01 (success)
 	5. Delete message01 (requires password?)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -1424,7 +1424,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersCombineBasic_11" type="bhr">
+<t:test_case testcaseid="SharingFoldersCombineBasic_11" type="sanity">
     <t:objective>Verify that different combinations of rights can be combined (read + insert)</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -1435,7 +1435,7 @@
 	5. Get message01 (success)
 	5. Add a new message (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -1553,7 +1553,7 @@
 
 
 
-<t:test_case testcaseid="SharingFoldersCombineBasic_12" type="sanity" bugids="9246">
+<t:test_case testcaseid="SharingFoldersCombineBasic_12" type="functional" bugids="9246">
     <t:objective>Verify the specific rights read and none are combined: both should be applied meaning read access allowed</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -1564,7 +1564,7 @@
 	6. Mount the drive (success)
 	7. Get message01 (success)
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 

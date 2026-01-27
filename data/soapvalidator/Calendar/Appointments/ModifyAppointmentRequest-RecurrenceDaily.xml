@@ -12,7 +12,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -29,7 +29,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -42,7 +42,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,7 +71,7 @@
 
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -86,20 +86,20 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="437017" type="bhr" areas="Calendar">
+<t:test_case testcaseid="437017" type="sanity" areas="Calendar">
     <t:objective> Open Daily recurring events and set reminder for First time and later change event start time for All Dates - Days</t:objective>
 
 
 	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
-   
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
+                    <inv >
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
-	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
 							<recur>
 								<add>
@@ -127,8 +127,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject}" >
-	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
 							<recur>
 								<add>
@@ -161,8 +161,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appt1.invId}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject}" >
-	                        <s d="${ICALTIME(+30m)[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME(+30m)[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}" tz="${timezone.pst}"/>
 	                        <or a="${account1.name}"/>
 							<recur>
 								<add>
@@ -197,15 +197,15 @@
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${appt2.invId}']"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:test>
-		<t:request> 
+		<t:request>
 			<GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt2.invId}"/>
 		</t:request>
 		<t:response>

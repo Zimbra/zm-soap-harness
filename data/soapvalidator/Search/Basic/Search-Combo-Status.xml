@@ -33,14 +33,14 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_search_combo_basic" type="always" >
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a mail account 
+            2. Create a mail account
     </steps>
 
     <t:test id="admin_login" required="true" >
@@ -54,7 +54,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1"  required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -111,8 +111,8 @@
 
         </t:response>
     </t:test>
-    
-    
+
+
     <t:test id="searchRequest1">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -124,11 +124,11 @@
 		    <t:select attr="su" match="^${mail1.subject}$"/>
 		    <t:select attr="id" set="message.id1"/>
 		    <t:select attr="cid" set="message.cid1"/>
-		    <t:select path="mail:e" attr="a" set="message.sender1"/>            
+		    <t:select path="mail:e" attr="a" set="message.sender1"/>
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest2">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -144,7 +144,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest3">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -160,7 +160,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest4">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -176,7 +176,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest5">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -192,7 +192,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest6">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -208,17 +208,17 @@
             </t:select>
         </t:response>
     </t:test>
- 
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acc_setup2_search_combo_status" type="always" >
     <t:objective> 1. Changing the status of mails </t:objective>
-    
+
     <t:steps> 1. Adding flag to the 1st messages
               2. Mark 2nd messages as read
               3. Reply to the 3rd mail
-              4. forward the 4th mail 
+              4. forward the 4th mail
     </t:steps>
 
     <t:test id="msgActionRequest1" depends="searchRequest1">
@@ -231,9 +231,9 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.flag}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
         </t:response>
-    </t:test> 
-       
-    
+    </t:test>
+
+
     <t:test id="msgActionRequest2" depends="searchRequest2">
         <t:request>
             <MsgActionRequest xmlns = "urn:zimbraMail">
@@ -244,9 +244,9 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.read}"/>
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id2}"/>
         </t:response>
-    </t:test> 
-    
-    
+    </t:test>
+
+
     <t:test id="sendMsgRequest3" depends="searchRequest3">
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -260,9 +260,9 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
-    </t:test> 
+    </t:test>
 
 
     <t:test id="sendMsgRequest4" depends="searchRequest4">
@@ -278,17 +278,17 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" />            
+            <t:select path="//mail:SendMsgResponse/mail:m" />
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_from_status_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_from_status_SearchRequest1" type="functional" >
     <t:objective> Verify the results are correct for query using from: and all status </t:objective>
-                  
+
     <!-- From: and Flagged: -->
     <t:test>
         <t:request>
@@ -305,7 +305,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- From: and Unflagged: -->
     <t:test>
         <t:request>
@@ -391,13 +391,13 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_from_status_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_from_status_SearchRequest2" type="functional" >
     <t:objective> Verify the results are correct for query using from: and all status (by conversation) </t:objective>
-                  
+
     <!-- From: and Flagged: -->
     <t:test>
         <t:request>
@@ -414,7 +414,7 @@
             <t:select path="//mail:SearchResponse/mail:c[@id='${message.cid6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- From: and Unflagged: -->
     <t:test>
         <t:request>
@@ -500,14 +500,14 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="combo_to_status_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_to_status_SearchRequest1" type="functional" >
     <t:objective> Verify the results are correct for query using to: and status </t:objective>
-                  
+
     <!-- To: and Flagged: -->
     <t:test>
         <t:request>
@@ -524,7 +524,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- To: and Unflagged: -->
     <t:test>
         <t:request>
@@ -610,13 +610,13 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_to_status_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_to_status_SearchRequest2" type="functional" >
     <t:objective> Verify the results are correct for query using to: and status (by conversation) </t:objective>
-                  
+
     <!-- To: and Flagged: -->
     <t:test>
         <t:request>
@@ -633,7 +633,7 @@
             <t:select path="//mail:SearchResponse/mail:c[@id='${message.cid6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- To: and Unflagged: -->
     <t:test>
         <t:request>
@@ -719,12 +719,12 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="combo_cc_status_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_cc_status_SearchRequest1" type="functional" >
     <t:objective> Verify the results are correct for query using ccand status </t:objective>
-                  
+
     <!-- Cc: and Flagged: -->
     <t:test>
         <t:request>
@@ -741,7 +741,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Cc: and Unflagged: -->
     <t:test>
         <t:request>
@@ -827,13 +827,13 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_cc_status_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_cc_status_SearchRequest2" type="functional" >
     <t:objective> Verify the results are correct for query using ccand status (by conversation) </t:objective>
-                  
+
     <!-- Cc: and Flagged: -->
     <t:test>
         <t:request>
@@ -850,7 +850,7 @@
             <t:select path="//mail:SearchResponse/mail:c[@id='${message.cid6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Cc: and Unflagged: -->
     <t:test>
         <t:request>
@@ -936,12 +936,12 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="combo_subject_status_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_subject_status_SearchRequest1" type="functional" >
     <t:objective> Verify the results are correct for query using ccand status </t:objective>
-                  
+
     <!-- Subject: and Flagged: -->
     <t:test>
         <t:request>
@@ -958,7 +958,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Subject: and Unflagged: -->
     <t:test>
         <t:request>
@@ -1044,13 +1044,13 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_subject_status_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_subject_status_SearchRequest1" type="functional" >
     <t:objective> Verify the results are correct for query using ccand status (by conversation) </t:objective>
-                  
+
     <!-- Subject: and Flagged: -->
     <t:test>
         <t:request>
@@ -1067,7 +1067,7 @@
             <t:select path="//mail:SearchResponse/mail:c[@id='${message.cid6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Subject: and Unflagged: -->
     <t:test>
         <t:request>
@@ -1153,14 +1153,14 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 <t:property name="mail.content" value="Now is the time for all good men"/>
-  
-<t:test_case testcaseid="combo_content_status_SearchRequest1" type="sanity" >
+
+<t:test_case testcaseid="combo_content_status_SearchRequest1" type="functional" >
     <t:objective> Verify the results are correct for query using ccand status </t:objective>
-                  
+
     <!-- Content: and Flagged: -->
     <t:test>
         <t:request>
@@ -1177,7 +1177,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Content: and Unflagged: -->
     <t:test>
         <t:request>
@@ -1263,13 +1263,13 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_content_status_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_content_status_SearchRequest2" type="functional" >
     <t:objective> Verify the results are correct for query using cc and status (by conversation) </t:objective>
-                  
+
     <!-- Content: and Flagged: -->
     <t:test>
         <t:request>
@@ -1286,7 +1286,7 @@
             <t:select path="//mail:SearchResponse/mail:c[@id='${message.cid6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Content: and Unflagged: -->
     <t:test>
         <t:request>
@@ -1375,9 +1375,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_isanywhere_status_SearchRequest1" type="sanity" >
+<t:test_case testcaseid="combo_isanywhere_status_SearchRequest1" type="functional" >
     <t:objective> Verify the results are correct for query using is anywhere and status </t:objective>
-                  
+
     <!-- Is Anywhere: and Flagged: -->
     <t:test>
         <t:request>
@@ -1394,7 +1394,7 @@
             <t:select path="//mail:SearchResponse/mail:m[@id='${message.id6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Is Anywhere: and Unflagged: -->
     <t:test>
         <t:request>
@@ -1480,13 +1480,13 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="combo_isanywhere_status_SearchRequest2" type="sanity" >
+<t:test_case testcaseid="combo_isanywhere_status_SearchRequest2" type="functional" >
     <t:objective> Verify the results are correct for query using is:anywhere and status (by conversation) </t:objective>
-                  
+
     <!-- Is Anywhere: and Flagged: -->
     <t:test>
         <t:request>
@@ -1503,7 +1503,7 @@
             <t:select path="//mail:SearchResponse/mail:c[@id='${message.cid6}']" emptyset="1"/>
         </t:response>
     </t:test>
-    
+
     <!-- Is Anywhere: and Unflagged: -->
     <t:test>
         <t:request>
@@ -1589,13 +1589,13 @@
         </t:response>
     </t:test>
 
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug6422" type="sanity" bugids="6422">
+<t:test_case testcaseid="Bug6422" type="functional" bugids="6422">
     <t:objective>To verify bug 6422 "(to:foo or to:bar) is:unread/read query returns proper results" </t:objective>
-                  
+
 
     <t:test>
         <t:request>
@@ -1632,9 +1632,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Bug6422" type="sanity" bugids="6422">
+<t:test_case testcaseid="Bug6422" type="functional" bugids="6422">
     <t:objective>To verify bug 6422 "(to:foo or to:bar) OR is:unread/read query returns proper results" </t:objective>
-                  
+
 
     <t:test>
         <t:request>

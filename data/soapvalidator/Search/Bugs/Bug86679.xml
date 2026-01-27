@@ -9,7 +9,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -23,7 +23,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -36,7 +36,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -51,14 +51,14 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="bug86679" type="sanity" bugids="86679">
+<t:test_case testcaseid="bug86679" type="functional" bugids="86679">
 
     <t:objective>is:fromme does not work as expected</t:objective>
       <t:steps>
-   		1. Inject message 
+   		1. Inject message
 		2. Verify mail get searched when search defined as "in:commits is:fromme".
     </t:steps>
-    
+
 	    <t:mailinjecttest>
     	    <t:lmtpInjectRequest>
         	    <filename>${mime.filename}</filename>
@@ -66,8 +66,8 @@
             	<from>${account1.name}</from>
             	<server>${account1.server}</server>
         	</t:lmtpInjectRequest>
-    	</t:mailinjecttest>    
-    	
+    	</t:mailinjecttest>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -82,45 +82,45 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name = "${newfolder1}" l = "1"/>
             </CreateFolderRequest>
         </t:request>
-         <t:response>       
+         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="fold.id1"/>
         </t:response>
    </t:test>
-   
+
         <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
                 <folder name = "${newfolder2}" l = "2"/>
             </CreateFolderRequest>
         </t:request>
-         <t:response>       
+         <t:response>
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="fold.id2"/>
         </t:response>
    </t:test>
-   
-   	<!-- Sleep for 1 minute to wait for mbox to come up 
+
+   	<!-- Sleep for 1 minute to wait for mbox to come up
 	<t:delay sec="30"/> -->
-	
+
        <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="conversation">
                 <query>subject:test</query>
             </SearchRequest>
         </t:request>
-        
-        <t:response>       
+
+        <t:response>
             <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
         </t:response>
     </t:test>
-   
-    
+
+
         <t:test >
         <t:request>
             <ConvActionRequest xmlns="urn:zimbraMail">
@@ -128,7 +128,7 @@
             </ConvActionRequest>
         </t:request>
    </t:test>
-   
+
    <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -139,7 +139,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}" />
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -150,7 +150,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}" />
         </t:response>
     </t:test>
- 
+
        <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -161,7 +161,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}" />
         </t:response>
     </t:test>
-       
+
       <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -172,7 +172,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}" />
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -183,7 +183,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}" />
         </t:response>
     </t:test>
-    
+
    <t:test >
         <t:request>
             <ConvActionRequest  xmlns="urn:zimbraMail">
@@ -191,7 +191,7 @@
             </ConvActionRequest>
         </t:request>
    </t:test>
-   
+
    <t:test >
        <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -202,7 +202,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}" />
         </t:response>
     </t:test>
-    
+
        <t:test >
        <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -213,6 +213,6 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}" />
         </t:response>
     </t:test>
-    
+
 </t:test_case >
 </t:tests>

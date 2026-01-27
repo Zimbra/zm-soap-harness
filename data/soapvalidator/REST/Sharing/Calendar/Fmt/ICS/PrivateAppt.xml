@@ -1,6 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-    
+
+
 <t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
@@ -45,7 +45,7 @@
 
 
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -61,7 +61,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="CalendarSharing_CalendarsDelegated_Private_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -204,10 +204,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CalendarSharing_RestServlet_Private_01" type="bhr" bugids="27183">
+<t:test_case testcaseid="CalendarSharing_RestServlet_Private_01" type="sanity" bugids="27183">
     <t:objective>Verify Rest download of mounted calendar does not show private appointments</t:objective>
     <t:steps>
-        1. Login as account1.  Share calendar with account2.  
+        1. Login as account1.  Share calendar with account2.
         2. Create a private appointment.
         3. Login as account2.
         4. Accept and mount the shared calendar
@@ -264,7 +264,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 	<t:property name="server.restServlet" value="${account2.server}"/>
 
@@ -288,7 +288,7 @@
 				<query>inid:${account2.delegated.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${account1.id}:${appt.invId}']" attr="uid" set="appt.uid"/>
         	</t:select>
@@ -306,9 +306,9 @@
         </t:response>
     </t:test>
 
-	<!-- 
+	<!--
 		See bug 27183 for expected behavior
-		
+
 		At the time of this test case creation, it is expected that the appointment
 		does not appear in the ICS.  But, it may be decided that the appointment
 		should appear in the ICS.
@@ -329,11 +329,11 @@
 
 
 </t:test_case>
-    
-<t:test_case testcaseid="CalendarSharing_RestServlet_Private_02" type="bhr">
+
+<t:test_case testcaseid="CalendarSharing_RestServlet_Private_02" type="sanity">
     <t:objective>Verify Rest download of specific private appointment does not show all the data</t:objective>
     <t:steps>
-        1. Login as account1.  Share calendar with account2.  
+        1. Login as account1.  Share calendar with account2.
         2. Create a private appointment.
         3. Login as account2.
         4. Accept and mount the shared calendar
@@ -391,7 +391,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 	<t:property name="server.restServlet" value="${account2.server}"/>
 
@@ -415,7 +415,7 @@
 				<query>inid:${account2.delegated.id}</query>
 			</SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:appt[@invId='${account1.id}:${appt.invId}']" attr="uid" set="appt.uid"/>
         	</t:select>
@@ -453,6 +453,6 @@
 
 
 </t:test_case>
-    
+
 
 </t:tests>

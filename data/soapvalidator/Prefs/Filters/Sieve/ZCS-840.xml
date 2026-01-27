@@ -50,7 +50,7 @@ set "subject" "subject";
 deleteheader :is "${dollar}{subject}" "${mail_subject}";
 
 replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
-'/> 
+'/>
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
     <t:test required="true">
@@ -93,7 +93,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
 	    </t:test>
-	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -102,7 +102,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -118,7 +118,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id" />
         </t:response>
     </t:test>
-	        
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -130,7 +130,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
         </t:response>
-    </t:test> 
+    </t:test>
 
      <t:test required="true">
         <t:request>
@@ -147,13 +147,13 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="bugZCS-840_rule1" type="functional" bugids="ZCS-840">
+<t:test_case testcaseid="bugZCS-840_rule1" type="regression" bugids="ZCS-840">
    <t:objective>Verify address test with variables on LHS and RHS</t:objective>
-    <steps> 
+    <steps>
         1. Add sieve_rule1 for the user.
-        2. Send email to that user. 
+        2. Send email to that user.
         3. Verify header is added and value is appended even though the case of variable name does not match.
-    </steps>    
+    </steps>
 
     <t:test required="true">
         <t:request>
@@ -218,12 +218,12 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
             <t:select attr="Subject" emptyset="1"/>
             <t:select attr="X-Test-Header" match="Replaced" />
         </t:restServletResponse>
-    </t:resttest> 
+    </t:resttest>
 </t:test_case>
 
     <t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">

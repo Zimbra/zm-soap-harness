@@ -72,7 +72,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -86,7 +86,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -99,7 +99,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="CreateDomainRequest0a">
         <t:request>
@@ -125,7 +125,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 </t:test_case>
@@ -139,10 +139,10 @@
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:property name="account1.timestamp" value="${TIME}"/>
 	<t:property name="account1.expires" value="0"/>
-	
+
 	<t:preauth
 		account="${account1.name}"
 		by="name"
@@ -150,7 +150,7 @@
 		expires="${account1.expires}"
 		key="${domain1.preauthkey}"
 		set="account1.preauthkey"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -168,7 +168,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="PreauthRequest_basic_02" type="bhr">
+<t:test_case testcaseid="PreauthRequest_basic_02" type="sanity">
 	<t:objective>Preauth request - basic test.  by="id"</t:objective>
 
 
@@ -176,10 +176,10 @@
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:property name="account1.timestamp" value="${TIME}"/>
 	<t:property name="account1.expires" value="0"/>
-	
+
 	<t:preauth
 		account="${account1.id}"
 		by="id"
@@ -187,7 +187,7 @@
 		expires="${account1.expires}"
 		key="${domain1.preauthkey}"
 		set="account1.preauthkey"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -205,7 +205,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="PreauthRequest_basic_03" type="bhr">
+<t:test_case testcaseid="PreauthRequest_basic_03" type="sanity">
 	<t:objective>Preauth request - basic test.  by="foreignPrincipal"</t:objective>
 
 
@@ -213,10 +213,10 @@
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:property name="account2.timestamp" value="${TIME}"/>
 	<t:property name="account2.expires" value="0"/>
-	
+
 	<t:preauth
 		account="${account2.foreignPrincipal}"
 		by="foreignPrincipal"
@@ -224,7 +224,7 @@
 		expires="${account2.expires}"
 		key="${domain1.preauthkey}"
 		set="account2.preauthkey"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -243,7 +243,7 @@
 
 
 
-<t:test_case testcaseid="PreauthRequest_basic_04" type="bhr">
+<t:test_case testcaseid="PreauthRequest_basic_04" type="sanity">
 	<t:objective>Preauth request - basic test.  preauthkey is only valid for 5 minutes</t:objective>
 
 
@@ -251,10 +251,10 @@
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:property name="account3.timestamp" value="${TIME(-1d)}"/>
 	<t:property name="account3.expires" value="600000"/> <!-- 10 minutes -->
-	
+
 	<t:preauth
 		account="${account3.name}"
 		by="name"
@@ -262,7 +262,7 @@
 		expires="${account3.expires}"
 		key="${domain1.preauthkey}"
 		set="account3.preauthkey"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -277,7 +277,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="PreauthRequest_05" type="sanity" bugids="16208">
+<t:test_case testcaseid="PreauthRequest_05" type="functional" bugids="16208">
 	<t:objective>Preauth request - authenticate after the token expires, but while the preauth is still valid</t:objective>
 
 
@@ -285,10 +285,10 @@
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:property name="account3.timestamp" value="${TIME}"/>
 	<t:property name="account3.expires" value="60000"/> <!-- 1 minute -->
-	
+
 	<t:preauth
 		account="${account3.name}"
 		by="name"
@@ -296,9 +296,9 @@
 		expires="${account3.expires}"
 		key="${domain1.preauthkey}"
 		set="account3.preauthkey"/>
-	
+
 	<t:delay msec="60000"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -314,7 +314,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="PreauthRequest_06" type="sanity" >
+<t:test_case testcaseid="PreauthRequest_06" type="functional" >
 	<t:objective>Preauth request - authenticate after the token expires, and after the preauth expires (5 mins)</t:objective>
 
 
@@ -322,10 +322,10 @@
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:property name="account3.timestamp" value="${TIME(-10m)}"/>
 	<t:property name="account3.expires" value="60000"/> <!-- 1 minutes -->
-	
+
 	<t:preauth
 		account="${account3.name}"
 		by="name"
@@ -333,7 +333,7 @@
 		expires="${account3.expires}"
 		key="${domain1.preauthkey}"
 		set="account3.preauthkey"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -348,7 +348,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="PreauthRequest_07" type="sanity" >
+<t:test_case testcaseid="PreauthRequest_07" type="functional" >
 	<t:objective>Preauth request - authenticate before the token expires, and before the preauth expires (5 mins)</t:objective>
 
 
@@ -356,10 +356,10 @@
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:property name="account3.timestamp" value="${TIME(+10m)}"/>
 	<t:property name="account3.expires" value="60000"/> <!-- 1 minutes -->
-	
+
 	<t:preauth
 		account="${account3.name}"
 		by="name"
@@ -367,7 +367,7 @@
 		expires="${account3.expires}"
 		key="${domain1.preauthkey}"
 		set="account3.preauthkey"/>
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -382,13 +382,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="PreauthRequest_08" type="sanity" >
+<t:test_case testcaseid="PreauthRequest_08" type="functional" >
 	<t:objective>Preauth request - use "name" when "id" is expected</t:objective>
 
 
 	<t:property name="account3.timestamp" value="${TIME}"/>
 	<t:property name="account3.expires" value="0"/>
-	
+
 	<t:preauth
 		account="${account3.id}"
 		by="id"
@@ -396,13 +396,13 @@
 		expires="${account3.expires}"
 		key="${domain1.preauthkey}"
 		set="account3.preauthkey"/>
-	
-	
+
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -417,13 +417,13 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="PreauthRequest_09" type="bhr">
+<t:test_case testcaseid="PreauthRequest_09" type="sanity">
 	<t:objective>Preauth request - use preauth against a domain that does not have preauth configured</t:objective>
 
 
 	<t:property name="account3.timestamp" value="${TIME}"/>
 	<t:property name="account3.expires" value="0"/>
-	
+
 	<t:preauth
 		account="${account3.id}"
 		by="id"
@@ -431,13 +431,13 @@
 		expires="${account3.expires}"
 		key="${domain1.preauthkey}"
 		set="account3.preauthkey"/>
-	
-	
+
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
 	<t:property name="authToken" value=""/>
 
-	
+
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">

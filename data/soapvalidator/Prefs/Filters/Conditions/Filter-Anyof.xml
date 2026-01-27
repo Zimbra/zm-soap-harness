@@ -94,7 +94,7 @@
 
 <t:test_case testcaseid="acctsetup2_rules_save_subject" type="always" >
     <t:objective>login as the test account and Create a folder/tag with valid name</t:objective>
-	    <t:steps> 
+	    <t:steps>
 			  1. Login to test account 1
 			  2. Create a folder with valid name
               3. Create a Tag with valid name
@@ -112,7 +112,7 @@
 
         </t:response>
     </t:test>
-	   
+
 	<t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -123,7 +123,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -142,7 +142,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="From_is_SaveRulesRequest1" type="sanity" >
+<t:test_case testcaseid="From_is_SaveRulesRequest1" type="functional" >
     <t:objective>  Create Rules with different Actions </t:objective>
     <t:steps> 1. Rule with action "keep"
               2. Rule with action "fileinto"
@@ -162,7 +162,7 @@
 			            </g>
                         <action name="keep"/>
                     </r>
-					
+
 					<r name="${filter2.name}" active="1">
                         <g op="anyof">
                         <c name="header" k0="subject" op=":is" k1="${subject2}"/>
@@ -231,9 +231,9 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="acct_setup" type="sanity">
+<t:test_case testcaseid="acct_setup" type="functional">
     <t:objective>login as the test_account2 and send message with different subject to test_account1 </t:objective>
- 
+
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -261,7 +261,7 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
         </t:response>
     </t:test>
 
@@ -278,7 +278,7 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id2"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id2"/>
         </t:response>
     </t:test>
 
@@ -295,7 +295,7 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id3"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id3"/>
         </t:response>
     </t:test>
 
@@ -312,7 +312,7 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id4"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id4"/>
         </t:response>
     </t:test>
 
@@ -329,7 +329,7 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id5"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id5"/>
         </t:response>
     </t:test>
 
@@ -346,7 +346,7 @@
             </SendMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id6"/>            
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id6"/>
         </t:response>
     </t:test>
 
@@ -354,7 +354,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="acct_setup2" type="sanity">
+<t:test_case testcaseid="acct_setup2" type="functional">
  <t:objective>login to test_account1 and get the message id </t:objective>
 
     <t:test required="true">
@@ -408,7 +408,7 @@
         </t:request>
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${subject3}" emptyset="1"/>
-            
+
         </t:response>
     </t:test>
 
@@ -456,7 +456,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="subject_is_SaveRuleRequest1" type="sanity" >
+<t:test_case testcaseid="subject_is_SaveRuleRequest1" type="functional" >
     <t:objective> Verify rule subject: is: keep is working </t:objective>
 
     <t:test>
@@ -473,7 +473,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="subject_is_SaveRuleRequest2" type="sanity" bugids="6027" >
+<t:test_case testcaseid="subject_is_SaveRuleRequest2" type="functional" bugids="6027" >
     <t:objective> Verify rule subject: is: fileinto is working     </t:objective>
 
 	<t:test>
@@ -490,7 +490,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="subject_is_SaveRuleRequest3" type="sanity" bugids="2723">
+<t:test_case testcaseid="subject_is_SaveRuleRequest3" type="functional" bugids="2723">
     <t:objective> Verify rule subject: is: discard  is working  </t:objective>
 
     <t:test>
@@ -507,7 +507,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="subject_is_SaveRuleRequest4" type="sanity" bugids="2723">
+<t:test_case testcaseid="subject_is_SaveRuleRequest4" type="functional" bugids="2723">
     <t:objective> Verify rule subject: is: flag (read) is working </t:objective>
 
     <t:test>
@@ -524,7 +524,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="subject_is_SaveRuleRequest5" type="sanity" bugids="2723" >
+<t:test_case testcaseid="subject_is_SaveRuleRequest5" type="functional" bugids="2723" >
     <t:objective> Verify rule subject: is: flag (flagged) is working  </t:objective>
 
     <t:test>

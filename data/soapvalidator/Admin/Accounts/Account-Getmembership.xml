@@ -40,7 +40,7 @@
         </t:response>
     </t:test>
 </t:test_case>
- 
+
 
 <t:test_case testcaseid = "acctSetup1_account_getmembership" type="always">
     <t:objective>Account Setup </t:objective>
@@ -135,7 +135,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="CreateAccountRequest1b">
         <t:request>
@@ -148,7 +148,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateAccountRequest1c">
         <t:request>
@@ -161,7 +161,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="addDistributionListMemberRequest1b" required="true">
         <t:request>
@@ -211,7 +211,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateDistributionList2a" required="true" depends="adminlogin">
         <t:request>
@@ -299,7 +299,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:test id="CreateDistributionList3a" required="true" depends="adminlogin">
         <t:request>
@@ -379,7 +379,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "aaccount_getmembership01" type="bhr">
+<t:test_case testcaseid = "aaccount_getmembership01" type="sanity">
     <t:objective> Verifying the GetAccountMembershipRequest by id, where DL with one user is a member of account2</t:objective>
 
     <t:test>
@@ -389,13 +389,13 @@
 			</GetAccountMembershipRequest>
         </t:request>
         <t:response>
-	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1}"/>        
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1}"/>
 		</t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid = "aaccount_getmembership02" type="bhr">
+<t:test_case testcaseid = "aaccount_getmembership02" type="sanity">
     <t:objective> Verifying the GetAccountMembershipRequest by id, where DL without user is a member of account2</t:objective>
 
     <t:test>
@@ -405,14 +405,14 @@
 			</GetAccountMembershipRequest>
         </t:request>
         <t:response>
-	        <t:select path="//admin:GetAccountMembershipResponse"/>        
+	        <t:select path="//admin:GetAccountMembershipResponse"/>
 		</t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "aaccount_getmembership03" type="bhr">
+<t:test_case testcaseid = "aaccount_getmembership03" type="sanity">
     <t:objective> Verifying the GetAccountMembershipRequest by name, where DL with one user is a member of account2</t:objective>
 
     <t:test>
@@ -422,13 +422,13 @@
 			</GetAccountMembershipRequest>
         </t:request>
         <t:response>
-	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1}"/>        
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1}"/>
 		</t:response>
     </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid = "aaccount_getmembership04" type="bhr">
+<t:test_case testcaseid = "aaccount_getmembership04" type="sanity">
     <t:objective> Verifying the GetAccountMembershipRequest by name, where DL without user is a member of account2</t:objective>
 
     <t:test>
@@ -438,14 +438,14 @@
 			</GetAccountMembershipRequest>
         </t:request>
         <t:response>
-	        <t:select path="//admin:GetAccountMembershipResponse" />        
+	        <t:select path="//admin:GetAccountMembershipResponse" />
 		</t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "aaccount_getmembership05" type="functional">
+<t:test_case testcaseid = "aaccount_getmembership05" type="regression">
     <t:objective> Verifying the GetAccountMembershipRequest by id with blank/space/spchar/sometext/ zero/ negative   </t:objective>
 
     <t:test>
@@ -517,7 +517,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "aaccount_getmembership06" type="functional">
+<t:test_case testcaseid = "aaccount_getmembership06" type="regression">
     <t:objective> Verifying the GetAccountMembershipRequest by name with blank/space/spchar/sometext/ zero/ negative   </t:objective>
 
     <t:test>
@@ -593,14 +593,14 @@
 			</GetAccountMembershipRequest>
         </t:request>
         <t:response>
-<!-- 	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1}"/>        
+<!-- 	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1}"/>
  -->		</t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid = "aaccount_getmembership07" type="functional">
+<t:test_case testcaseid = "aaccount_getmembership07" type="regression">
     <t:objective> Verifying the 'via-dl-name' by name, where account is member of DL4 and DL4 is member of DL5</t:objective>
 
     <t:test>
@@ -618,7 +618,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "aaccount_getmembership08" type="functional">
+<t:test_case testcaseid = "aaccount_getmembership08" type="regression">
     <t:objective> Verifying the 'via-dl-name' by id, where account is member of DL4 and DL4 is member of DL5</t:objective>
 
     <t:test>
@@ -636,7 +636,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "aaccount_getmembership09" type="functional">
+<t:test_case testcaseid = "aaccount_getmembership09" type="regression">
     <t:objective> Verifying the 'via-dl-name' by name and id, where account is member of DL6 and DL6 is member of DL7 and DL7 is member of DL8 and </t:objective>
 	<t:steps>
 			1. Login into admin.

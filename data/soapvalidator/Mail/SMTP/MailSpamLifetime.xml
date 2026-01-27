@@ -14,7 +14,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -48,7 +48,7 @@
 
 	<t:property name="authToken" value="${authToken.admin}"/>
 
-    
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -66,10 +66,10 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MailSpamLifetime01" type="bhr"  areas="smtp" >
+<t:test_case testcaseid="MailSpamLifetime01" type="sanity"  areas="smtp" >
     <t:objective>Verify that the SPAM mail injected using SMTP gets purged after time specified in zimbraMailSpamLifetime.</t:objective>
     <steps> 1. Inject a SPAM mail using SMTP.
-            2. Login to account1. 
+            2. Login to account1.
 			3. The message should be in Junk folder.
 			4. After purging messages, the mail should not be in Junk folder.
     </steps>
@@ -83,7 +83,7 @@
             <from>${defaultdestination.email}</from>
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
 
     <!--t:smtpinjecttest>
@@ -137,8 +137,8 @@
         <t:response>
             <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="account1.mbxid"/>
         </t:response>
-    </t:test>  
- 
+    </t:test>
+
 
     <t:test delay="60000" >
         <t:request>
@@ -149,7 +149,7 @@
         <t:response>
             <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${account1.mbxid}$"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="authToken" value="${authToken.account1}"/>
@@ -169,4 +169,4 @@
 
 </t:test_case>
 
-</t:tests> 
+</t:tests>

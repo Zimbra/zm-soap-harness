@@ -16,10 +16,10 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>account setup</t:objective>
-    <t:steps> 
+    <t:steps>
             1.Admin login
-            2.Create test account               
-    </t:steps> 
+            2.Create test account
+    </t:steps>
 
     <t:test required="true">
         <t:request>
@@ -29,7 +29,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -54,8 +54,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server1"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
 	<t:test>
 		<t:request>
 			<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,9 +71,9 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
 
-<t:test_case testcaseid="SearchMovedJunkmail_01" type="bhr" bugids="62687">
+<t:test_case testcaseid="SearchMovedJunkmail_01" type="sanity" bugids="62687">
     <t:objective>Verify that moved junk mail to inbox is search-able when zimbraJunkMessagesIndexingEnabled is set to FALSE </t:objective>
-    
+
     <t:steps>1. Login to the account.
              2. Inject a junk mail
              3. Search the email in Inbox- expect empty search result.
@@ -94,20 +94,20 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 
         </t:response>
-    </t:test>    
-	
+    </t:test>
+
 	<t:mailinjecttest>
         <t:lmtpInjectRequest>
 		    <foldername>${junkuser.dir}</foldername>
 		    <to>${junkuser}</to>
 		    <from>${nonZimbraUser.name}</from>
 		    <server>${test_acct.server1}</server>
-		    <modify>				
+		    <modify>
                 <header a="Subject">${junkmail.subject1}</header>
-            </modify>	
+            </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
     <t:test id="searchRequest2">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -115,7 +115,7 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m" emptyset="1">				
+            <t:select path="//mail:SearchResponse/mail:m" emptyset="1">
 			</t:select>
         </t:response>
     </t:test>
@@ -145,7 +145,7 @@
             <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="searchRequest2">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -158,8 +158,8 @@
 			</t:select>
         </t:response>
     </t:test>
-	
-</t:test_case> 
+
+</t:test_case>
 
 </t:tests>
 

@@ -5,9 +5,9 @@
 
 <t:test_case testcaseid="GetCsrRequest_setup" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -16,7 +16,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -42,9 +42,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetCsrRequest_01" type="bhr">
+<t:test_case testcaseid="GetCsrRequest_01" type="sanity">
     <t:objective>Sanity test for GetCertRequest</t:objective>
-	
+
     <t:test >
         <t:request>
             <GenCSRRequest type="self" new="1" server="${server.id}" keysize="2048" xmlns="urn:zimbraAdmin">
@@ -69,9 +69,9 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetCsrRequest_02" type="bhr">
+<t:test_case testcaseid="GetCsrRequest_02" type="sanity">
     <t:objective>Sanity test for GetCertRequest</t:objective>
-	
+
     <t:test >
         <t:request>
             <GenCSRRequest type="comm" new="1" server="${server.id}" keysize="2048" xmlns="urn:zimbraAdmin">

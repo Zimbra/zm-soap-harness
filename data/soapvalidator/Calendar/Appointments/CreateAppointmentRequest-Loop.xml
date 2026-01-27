@@ -1,12 +1,12 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
-    
+
+
 <t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 
 
 
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -22,7 +22,7 @@
 
 </t:test_case>
 
-    
+
 <t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Basic_AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>
@@ -83,7 +83,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateAppointmentRequest_Loop_01" type="sanity" duration="long">
+<t:test_case testcaseid="CreateAppointmentRequest_Loop_01" type="functional" duration="long">
     <t:objective>Create 300 meetings in the calendar</t:objective>
     <t:steps>
         1. In a loop, create an appointment
@@ -92,23 +92,23 @@
 
 	<t:property name="time.20111201120000.gmt" value="1322740800000"/>
 	<t:property name="appointment.start" value="${TIME(+1h)[${time.20111201120000.gmt}]}"/>
-   
-    <t:test_loop count="300">      
-        
+
+    <t:test_loop count="300">
+
 		<t:property name="appointment.start" value="${TIME(+1h)[${appointment.start}]}"/>
-	   
+
 		<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
 		<t:property name="appointment.location" value="location${TIME}${COUNTER}"/>
 		<t:property name="appointment.content" value="content${TIME}${COUNTER}"/>
-	
+
 	    <t:test>
 	        <t:request>
 	            <CreateAppointmentRequest xmlns="urn:zimbraMail">
 	                <m>
-	                    <inv > 
+	                    <inv >
 	                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-		                        <s d="${ICALTIME[${appointment.start}]}"/>  
-		                        <e d="${ICALTIME(+1h)[${appointment.start}]}"/>  
+		                        <s d="${ICALTIME[${appointment.start}]}"/>
+		                        <e d="${ICALTIME(+1h)[${appointment.start}]}"/>
 		                        <or a="${account1.name}"/>
 	                        </comp>
 	                    </inv>
@@ -124,12 +124,12 @@
 	        </t:response>
 	    </t:test>
 
-	
+
     </t:test_loop>
 
 
 </t:test_case>
-    
+
 
 
 </t:tests>

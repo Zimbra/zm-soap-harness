@@ -20,7 +20,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -34,9 +34,9 @@
 
 <t:test_case testcaseid="SearchGal_GroupReference_acct_setup" type="always" >
     <t:objective>Create two test account</t:objective>
-    <steps>1. Login to admin account  
+    <steps>1. Login to admin account
         2. Create the domains
-        3. Create a test accounts 
+        3. Create a test accounts
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -50,7 +50,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="createDomainRequest1" required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -58,15 +58,15 @@
             </CreateDomainRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
-                <password>${test_account1.password}</password>               
+                <password>${test_account1.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -74,12 +74,12 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account2" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
-                <password>${test_account2.password}</password>               
+                <password>${test_account2.password}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -87,13 +87,13 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-<t:test_case testcaseid="SearchGal_GroupReference_01" type="bhr">
+<t:test_case testcaseid="SearchGal_GroupReference_01" type="sanity">
     <t:objective>Verify that SearchGALResponse has contact group reference.</t:objective>
-    
+
     <t:staftask >
 		<t:request>
 			<server>${zimbraLDAPServer.name}</server>
@@ -102,9 +102,9 @@
 		</t:request>
 		<t:response>
         	<t:select regex="(?s)(RC.*)(Data.*:\sldap_root_password\s=\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="ldap.password"/>
-        </t:response> 
+        </t:response>
     </t:staftask>
-    
+
 <t:staftask>
     <t:request>
         <server>${zimbraLDAPServer.name}</server>
@@ -113,7 +113,7 @@
         <params>START SHELL COMMAND "echo '${test_account1.name}' | cut -d'@' -f2 | sed 's/\\./,dc=/g' | sed 's/^/dc=/'" RETURNSTDOUT WAIT</params>
     </t:request>
     <t:response>
-       
+
         <t:select regex="(?s)(RC.*)(Data.*:\s)([^\s]+)(.*)" group="3" set="account1.ldap.base"/>
     </t:response>
 </t:staftask>
@@ -133,7 +133,7 @@
     </t:test>
 	<t:delay msec="5000"/>
 
-  
+
     <t:test id="SearchGal1">
         <t:request>
             <SearchGalRequest xmlns="urn:zimbraAccount">
@@ -142,7 +142,7 @@
         </t:request>
         <t:response>
              <t:select path="//acct:SearchGalResponse/acct:cn" attr="ref" match="uid=.*"/>
-            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>                        
+            <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>
         </t:response>
     </t:test>
 

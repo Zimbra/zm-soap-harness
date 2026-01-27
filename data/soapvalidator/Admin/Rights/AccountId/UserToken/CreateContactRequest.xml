@@ -49,7 +49,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -62,7 +62,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 
 	<!-- Determine the account1 Notebook folder id -->
@@ -82,7 +82,7 @@
 	</t:test>
 
 	<t:test>
-		<t:request> 
+		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
@@ -111,7 +111,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountId_User_CreateContactRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountId_User_CreateContactRequest_Basic01" type="sanity">
     <t:objective>Use a user token to CreateContactRequest</t:objective>
     <t:steps>
     1. Login as user0
@@ -120,7 +120,7 @@
 
 	<t:property name="authToken" value="${authToken.account0}"/>
 
-	
+
 	<t:property name="server.zimbraMail" value="${account0.server}"/>
 
 	<t:test>
@@ -130,7 +130,7 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>

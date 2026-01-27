@@ -85,7 +85,7 @@
 	            <t:select path="//admin:ModifyConfigResponse"/>
 	        </t:response>
 	    </t:test>
-	    	
+
 	    <t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -94,7 +94,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>-->
 
@@ -111,7 +111,7 @@
         </t:response>
     </t:test>
 
-	    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -124,7 +124,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test required="true">
         <t:request>
@@ -153,7 +153,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -167,7 +167,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account4.server"/>
         </t:response>
     </t:test>
-    
+
   <t:test required="true">
    <t:request>
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -312,7 +312,7 @@
      set="account13.server" />
    </t:response>
   </t:test>
-  
+
   <t:test required="true">
    <t:request>
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -329,7 +329,7 @@
      set="account14.server" />
    </t:response>
   </t:test>
-  
+
   <t:test required="true">
    <t:request>
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -346,7 +346,7 @@
      set="account15.server" />
    </t:response>
   </t:test>
-      
+
   <t:test required="true">
    <t:request>
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -448,7 +448,7 @@
      set="account21.server" />
    </t:response>
   </t:test>
-      
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -462,10 +462,10 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="outgoing.server"/>
         </t:response>
     </t:test>
-                  
+
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_before_is" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_before_is" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader with last=true
@@ -498,7 +498,7 @@
 				              <test matchType="is" comparator="i;ascii-casemap" >
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Oldval1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -509,7 +509,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -535,7 +535,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -543,23 +543,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -567,10 +567,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_after_contains" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_after_contains" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin after script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader with last=false
@@ -601,7 +601,7 @@
 				              <test matchType="contains">
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Oldval3</headerValue>
-							  </test>				              
+							  </test>
 				              <newName>X-New-Sieve-Header2</newName>
 				              <newValue>NewValue2</newValue>
 				            </actionReplaceheader>
@@ -614,7 +614,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -640,7 +640,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -648,23 +648,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -672,10 +672,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header2" match="NewValue2"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_after1_contains" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_after1_contains" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin after script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader without last
@@ -706,7 +706,7 @@
 				              <test matchType="contains" comparator="i;ascii-casemap" >
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Oldval3</headerValue>
-							  </test>				              
+							  </test>
 				              <newName>X-New-Sieve-Header2</newName>
 				              <newValue>NewValue2</newValue>
 				            </actionReplaceheader>
@@ -719,7 +719,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -745,7 +745,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -753,23 +753,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -777,10 +777,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header2" match="NewValue2"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_after_contains_octet" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_after_contains_octet" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin after script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader with last=false and comparator=octet
@@ -811,7 +811,7 @@
 				              <test matchType="contains" comparator="i;octet" >
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Oldval3</headerValue>
-							  </test>				              
+							  </test>
 				              <newName>X-New-Sieve-Header2</newName>
 				              <newValue>NewValue2</newValue>
 				            </actionReplaceheader>
@@ -824,7 +824,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -850,7 +850,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -858,23 +858,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -882,10 +882,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header2" match="NewValue2"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_after_matches" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_after_matches" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin after script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader with offset param
@@ -916,7 +916,7 @@
 				              <test matchType="matches" comparator="i;ascii-casemap" >
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>*</headerValue>
-							  </test>				              
+							  </test>
 				              <newName>X-New-Sieve-Header3</newName>
 				              <newValue>NewValue3</newValue>
 				            </actionReplaceheader>
@@ -929,7 +929,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -955,7 +955,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -963,23 +963,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -989,10 +989,10 @@
 				<t:select attr="X-Sieve-Header1" match="Oldval3"/>
 				<t:select attr="X-Sieve-Header1" match="Oldval2"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_before_matches_2" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_before_matches_2" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin after script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader without last parameter
@@ -1023,7 +1023,7 @@
 				              <test matchType="matches" comparator="i;ascii-casemap" >
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>*</headerValue>
-							  </test>				              
+							  </test>
 				              <newValue>NewValue4</newValue>
 				            </actionReplaceheader>
 				          </filterActions>
@@ -1035,7 +1035,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -1061,7 +1061,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1069,23 +1069,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -1093,10 +1093,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-Sieve-Header1" count="3" match="NewValue4"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_before_value_gt" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_before_value_gt" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader
@@ -1127,7 +1127,7 @@
 				              <test valueComparator="true" relationalComparator="gt" comparator="i;ascii-numeric" >
 								<headerName>X-Numeric-Header</headerName>
 								<headerValue>1</headerValue>
-							  </test>				              
+							  </test>
 				              <newValue>NewValue5</newValue>
 				            </actionReplaceheader>
 				          </filterActions>
@@ -1139,7 +1139,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -1165,7 +1165,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1173,23 +1173,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -1200,10 +1200,10 @@
 				<t:select attr="X-Numeric-Header" match="3" emptyset="1"/>
 				<t:select attr="X-Numeric-Header" match="4" emptyset="1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_after_value_ge" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_after_value_ge" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin after script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader with last=true and offset param
@@ -1235,7 +1235,7 @@
 								<headerName>X-Numeric-Header</headerName>
 								<headerValue>4</headerValue>
 							  </test>
-							  <newName>X-New-Header</newName>				              
+							  <newName>X-New-Header</newName>
 				              <newValue>NewValue6</newValue>
 				            </actionReplaceheader>
 				          </filterActions>
@@ -1247,7 +1247,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -1273,7 +1273,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1281,23 +1281,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -1307,10 +1307,10 @@
 				<t:select attr="X-Numeric-Header" match="2"/>
 				<t:select attr="X-Numeric-Header" match="3"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_after_value_lt" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_after_value_lt" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin after script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader with last=true and offset param and countComparator is set false
@@ -1342,7 +1342,7 @@
 								<headerName>X-Numeric-Header</headerName>
 								<headerValue>4</headerValue>
 							  </test>
-							  <newName>X-New-Header</newName>				              
+							  <newName>X-New-Header</newName>
 				              <newValue>NewValue7</newValue>
 				            </actionReplaceheader>
 				          </filterActions>
@@ -1354,7 +1354,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
@@ -1380,7 +1380,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1388,23 +1388,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -1414,10 +1414,10 @@
 				<t:select attr="X-Numeric-Header" match="2"/>
 				<t:select attr="X-Numeric-Header" match="4"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_before_count_le" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_before_count_le" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader with last=false and offset param
@@ -1449,7 +1449,7 @@
 								<headerName>X-Test-Header</headerName>
 								<headerValue>5</headerValue>
 							  </test>
-							  <newName>X-New-Header</newName>				              
+							  <newName>X-New-Header</newName>
 				              <newValue>NewValue8</newValue>
 				            </actionReplaceheader>
 				          </filterActions>
@@ -1461,7 +1461,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -1487,7 +1487,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1495,23 +1495,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -1523,10 +1523,10 @@
 				<t:select attr="X-Test-Header" match="test4"/>
 				<t:select attr="X-Test-Header" match="test2" emptyset="1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_after_count_eq" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_after_count_eq" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader with last=true and offset param
@@ -1558,7 +1558,7 @@
 								<headerName>X-Test-Header</headerName>
 								<headerValue>4</headerValue>
 							  </test>
-							  <newName>X-New-Header</newName>				              
+							  <newName>X-New-Header</newName>
 				              <newValue>NewValue9</newValue>
 				            </actionReplaceheader>
 				          </filterActions>
@@ -1570,7 +1570,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -1596,7 +1596,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1604,23 +1604,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -1632,10 +1632,10 @@
 				<t:select attr="X-Test-Header" match="test4"/>
 				<t:select attr="X-Test-Header" match="test3" emptyset="1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_after_count_ne" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_after_count_ne" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script</t:objective>
     <t:steps>
     	1. Create after rule for admin for replaceheader with last=false and offset param
@@ -1678,7 +1678,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -1704,7 +1704,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1712,23 +1712,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
-					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -1740,10 +1740,10 @@
 				<t:select attr="X-Test-Header" match="test4"/>
 				<t:select attr="X-Test-Header" match="test1" emptyset="1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_before_is_Outgoing" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_before_is_Outgoing" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before outgoing script</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader with last=true and offset param for Outgoing
@@ -1762,7 +1762,7 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
 	<!-- 2. STAF: Whitelist the Custom Header (CRITICAL FIX) -->
     <t:staftask >
         <t:request>
@@ -1780,7 +1780,7 @@
             <params>START SHELL COMMAND "su - zimbra -c \'zmprov fc all\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
         </t:request>
     </t:staftask>
-    
+
     <t:delay sec="5"/>
 
     <t:test >
@@ -1796,7 +1796,7 @@
 				              <test matchType="is" comparator="i;ascii-casemap" >
 								<headerName>X-Test-Header</headerName>
 								<headerValue>Value1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -1808,7 +1808,7 @@
 	        </t:response>
     </t:test>
 	<t:delay sec="10"/>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -1829,11 +1829,11 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1852,7 +1852,7 @@
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1860,23 +1860,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -1884,10 +1884,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_before_contains_Outgoing" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_before_contains_Outgoing" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before outgoing script</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader with last=false for Outgoing
@@ -1920,7 +1920,7 @@
 				              <test matchType="contains" comparator="i;ascii-casemap" >
 								<headerName>X-Test-Header</headerName>
 								<headerValue>Value1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -1932,7 +1932,7 @@
 	        </t:response>
     </t:test>
 	<t:delay sec="10"/>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -1952,11 +1952,11 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1975,7 +1975,7 @@
 					set="msg1.id" />
 			</t:response>
 		</t:test>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -1983,23 +1983,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -2007,10 +2007,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_DefaultTest" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_DefaultTest" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader.
@@ -2044,7 +2044,7 @@
 				              <test>
 								<headerName>X-Sieve-Header3</headerName>
 								<headerValue>Oldval5</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2055,7 +2055,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2081,7 +2081,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -2089,23 +2089,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -2113,10 +2113,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_casemap" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_casemap" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script using casemap comparator with value comparison=true</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader.
@@ -2150,7 +2150,7 @@
 				              <test valueComparator="true" relationalComparator="ge" comparator="i;ascii-casemap">
 								<headerName>X-Alpha-Header</headerName>
 								<headerValue>A</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2161,7 +2161,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2187,7 +2187,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -2195,23 +2195,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -2219,10 +2219,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_octet" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_octet" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script using octet comparator with value comparison=true</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader and comparator to octet
@@ -2256,7 +2256,7 @@
 				              <test valueComparator="true" relationalComparator="eq" comparator="i;octet">
 								<headerName>X-Alpha-Header</headerName>
 								<headerValue>d</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2267,7 +2267,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2293,7 +2293,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -2301,23 +2301,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -2325,10 +2325,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header1" match="NewValue1" emptyset="1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_multiheader_value" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_multiheader_value" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script for multiple value header</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader.
@@ -2362,7 +2362,7 @@
 								<headerName>X-MultiVal-Header</headerName>
 								<headerValue>Val1</headerValue>
 								<headerValue>Val2</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2373,7 +2373,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2399,7 +2399,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -2407,23 +2407,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -2431,10 +2431,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_onlyname" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_onlyname" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script and replace only name of the header</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader.
@@ -2466,7 +2466,7 @@
 				              <test matchType="is" comparator="i;ascii-casemap">
 								<headerName>X-Sieve-Header2</headerName>
 								<headerValue>Oldval4</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2477,7 +2477,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2503,7 +2503,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -2511,23 +2511,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -2536,10 +2536,10 @@
 				<t:select attr="X-New-Sieve-Header1" match="Oldval4"/>
 				<t:select attr="X-Sieve-Header2" match="Oldval4" emptyset="1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_onlyNewName" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_onlyNewName" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script to replace only the name of the header for multiple value header</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader.
@@ -2573,7 +2573,7 @@
 								<headerName>X-MultiVal-Header</headerName>
 								<headerValue>Val1</headerValue>
 								<headerValue>Val2</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2584,7 +2584,7 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2610,7 +2610,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -2618,23 +2618,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -2643,10 +2643,10 @@
 				<t:select attr="X-New-Sieve-Header1" match="Val1"/>
 				<t:select attr="X-New-Sieve-Header1" match="Val2"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_before_json" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_before_json" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for admin before script</t:objective>
     <t:steps>
     	1. Create before rule for admin for replaceheader and verify json response
@@ -2670,7 +2670,7 @@
 	    <t:requestContext>
 	    	<authToken>${authToken}</authToken>
             <format type="js"/>
-        </t:requestContext>       
+        </t:requestContext>
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             <account by="name">${account21.name}</account>
@@ -2683,7 +2683,7 @@
 				              <test matchType="is" comparator="i;ascii-casemap" >
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Oldval1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2694,12 +2694,12 @@
 	            <t:select path="//admin:ModifyFilterRulesResponse"/>
 	        </t:response>
     </t:test>
-    
+
 	  <t:test>
 	    <t:requestContext>
 	    	<authToken>${authToken}</authToken>
             <format type="js"/>
-        </t:requestContext>   	  
+        </t:requestContext>
 	   	<t:request>
 	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
 	    		<account by="name">${account21.name}</account>
@@ -2724,7 +2724,7 @@
 	            </modify>
 	        </t:lmtpInjectRequest>
 	    </t:mailinjecttest>
-		
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -2732,23 +2732,23 @@
 				<password>${defaultpassword.value}</password>
 			</AuthRequest>
 			</t:request>
-			<t:response>		   
+			<t:response>
 				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 	     <t:test>
 				<t:request>
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
 						<query>subject:${mail_subject}</query>
 					</SearchRequest>
 				</t:request>
-		        <t:response>			
+		        <t:response>
 					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
 					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
 				</t:response>
 	    </t:test>
-	
+
 		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
@@ -2756,10 +2756,10 @@
 			<t:restServletResponse>
 				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
 			</t:restServletResponse>
-		</t:resttest>				    
+		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ReplaceHeader_negative_tests" type="bhr" bugids="zcs-273">
+<t:test_case testcaseid="ReplaceHeader_negative_tests" type="sanity" bugids="zcs-273">
     <t:objective>Replaceheader rule for error codes</t:objective>
     <t:steps>
     	1. Create rule for admin for replaceheader for invalid values/parameters and verify correct error is returned.
@@ -2791,7 +2791,7 @@
 								<headerName>X-MultiVal-Header</headerName>
 								<headerValue>Val1</headerValue>
 								<headerValue>Val2</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2803,7 +2803,7 @@
 	            <t:select path="//soap:Text" match="parse error: EditheaderTest : :count and :value, both can not be received"/>
 	        </t:response>
     </t:test>
- 
+
      <t:test >
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2818,7 +2818,7 @@
 								<headerName>X-MultiVal-Header</headerName>
 								<headerValue>Val1</headerValue>
 								<headerValue>Val2</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2830,7 +2830,7 @@
 	            <t:select path="//soap:Text" match="parse error: EditheaderTest : Invalid comparator type provided: invalid"/>
 	        </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2845,7 +2845,7 @@
 								<headerName>X-MultiVal-Header</headerName>
 								<headerValue>Val1</headerValue>
 								<headerValue>Val2</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2871,7 +2871,7 @@
 				              <test matchType="is" comparator="i;ascii-casemap">
 								<headerName>X-Test-Heade</headerName>
 								<headerValue>test1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2883,7 +2883,7 @@
 	            <t:select path="//soap:Text" match="parse error: :newname or :newvalue must be provided with replaceHeader"/>
 	        </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2897,7 +2897,7 @@
 				              <test matchType="is" comparator="i;ascii-casemap">
 								<headerName></headerName>
 								<headerValue>Val1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2909,7 +2909,7 @@
 	            <t:select path="//soap:Text" match="parse error: EditheaderTest : Missing headerName"/>
 	        </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
@@ -2923,7 +2923,7 @@
 				              <test matchType="is" comparator="i;ascii-casemap">
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Oldval1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2935,8 +2935,8 @@
 	            <t:select path="//soap:Text" match="parse error: :index &lt;offset&gt; must be provided with :last"/>
 	        </t:response>
     </t:test>
-    
-    <t:test >       
+
+    <t:test >
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
             <account by="name">${account21.name}</account>
@@ -2949,7 +2949,7 @@
 				              <test countComparator="true" relationalComparator="invalid" comparator="i;ascii-numeric" >
 								<headerName>X-Sieve-Header1</headerName>
 								<headerValue>Oldval1</headerValue>
-							  </test>					              
+							  </test>
 				            </actionReplaceheader>
 				          </filterActions>
                     </filterRule>
@@ -2961,12 +2961,12 @@
 	            <t:select path="//soap:Text" match='parse error: EditheaderTest : Invalid relationalComparator provided : "invalid"'/>
 	        </t:response>
     </t:test>
-                            	    
+
 </t:test_case>
 
     <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
-        
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -2987,7 +2987,7 @@
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>
 	        </t:response>
 	    </t:test>
 
@@ -3001,6 +3001,6 @@
 				<t:select path="//admin:ModifyConfigResponse" />
 			</t:response>
 		</t:test>
-		
+
     </t:finally>-->
 </t:tests>

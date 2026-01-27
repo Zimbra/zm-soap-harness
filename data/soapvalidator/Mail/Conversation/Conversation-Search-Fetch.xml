@@ -33,7 +33,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -48,9 +48,9 @@
 
 <t:test_case testcaseid="acctSetup1_conversation_search_fetch" type="always" >
     <t:objective>Create a test account</t:objective>
-    <steps> 
+    <steps>
         1. Login to admin account
-        2. Create a test_account1 
+        2. Create a test_account1
     </steps>
 
     <t:test id="admin_login" required="true" depends="ping">
@@ -96,11 +96,11 @@
 
 <t:test_case testcaseid="acctSetup2_conversation_search_fetch" type="always" >
     <t:objective>login as the test account and create a conversation.</t:objective>
-    <t:steps> 
-        1. Login to test_account1 
-        2. Send a mail to test_account1        
+    <t:steps>
+        1. Login to test_account1
+        2. Send a mail to test_account1
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
     <t:test id="auth1" required="true">
@@ -137,7 +137,7 @@
 	<!--
 		To ensure that the conversation emails are received correctly
 		wait for the message to be sent before sending the next one.
-		
+
 		When I ran this test, the converstation wasn't received in the
 		correct order (FWD came before the original).
 	-->
@@ -146,7 +146,7 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse"/> 
+			<t:select path="//acct:GetInfoResponse"/>
 		</t:response>
 	</t:test>
 
@@ -170,7 +170,7 @@
 	<!--
 		To ensure that the conversation emails are received correctly
 		wait for the message to be sent before sending the next one.
-		
+
 		When I ran this test, the converstation wasn't received in the
 		correct order (FWD came before the original).
 	-->
@@ -179,7 +179,7 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse"/> 
+			<t:select path="//acct:GetInfoResponse"/>
 		</t:response>
 	</t:test>
 
@@ -208,7 +208,7 @@
 	<!--
 		To ensure that the conversation emails are received correctly
 		wait for the message to be sent before sending the next one.
-		
+
 		When I ran this test, the converstation wasn't received in the
 		correct order (FWD came before the original).
 	-->
@@ -217,7 +217,7 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse"/> 
+			<t:select path="//acct:GetInfoResponse"/>
 		</t:response>
 	</t:test>
 
@@ -247,7 +247,7 @@
 	<!--
 		To ensure that the conversation emails are received correctly
 		wait for the message to be sent before sending the next one.
-		
+
 		When I ran this test, the converstation wasn't received in the
 		correct order (FWD came before the original).
 	-->
@@ -256,7 +256,7 @@
 			<GetInfoRequest xmlns="urn:zimbraAccount"/>
 		</t:request>
 		<t:response>
-			<t:select path="//acct:GetInfoResponse"/> 
+			<t:select path="//acct:GetInfoResponse"/>
 		</t:response>
 	</t:test>
 
@@ -340,7 +340,7 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
          </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25">
@@ -351,10 +351,10 @@
             <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="id" match="${message2.id}"/>
             <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="cid" match="${conv1.id}"/>
             <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="f" match=".*u.*"/>
-            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
             <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:su" emptyset="0"/>
             <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp" attr="body" emptyset="1"/>
-            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp/mail:content" emptyset="1"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp/mail:content" emptyset="1"/>
         </t:response>
     </t:test>
 
@@ -383,7 +383,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SearchConvRequest_fetch2" type="bhr" bugids="6606">
+<t:test_case testcaseid="SearchConvRequest_fetch2" type="sanity" bugids="6606">
     <t:objective>Search for a conversation with fetch=1 should expand first hit (read=not specified, html=not specified)</t:objective>
 
     <t:test >
@@ -397,7 +397,7 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
          </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="0" html="0">
@@ -440,7 +440,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchConvRequest_read3" type="bhr" bugids="8175,7568">
+<t:test_case testcaseid="SearchConvRequest_read3" type="sanity" bugids="8175,7568">
     <t:objective>Search for a conversation with fetch=1, read=1, html=not specified should mark the first message as read.</t:objective>
 
     <t:test >
@@ -454,7 +454,7 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
          </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="1">
@@ -499,7 +499,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SearchConvRequest_read4" type="bhr">
+<t:test_case testcaseid="SearchConvRequest_read4" type="sanity">
     <t:objective>Search for a conversation with fetch=1, read=1, html=not specified should return the text part.</t:objective>
 
     <t:test >
@@ -513,7 +513,7 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv2.id}"/>
          </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv2.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="1">
@@ -530,7 +530,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SearchConvRequest_read5" type="bhr">
+<t:test_case testcaseid="SearchConvRequest_read5" type="sanity">
     <t:objective>Search for a conversation with fetch=1, read=1, html=1 should return the HTML part.</t:objective>
 
     <t:test >
@@ -544,7 +544,7 @@
             <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv2.id}"/>
          </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv2.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="1" html="1">
@@ -584,7 +584,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchConvRequest_fetch4" type="functional" bugids="27139">
+<t:test_case testcaseid="SearchConvRequest_fetch4" type="regression" bugids="27139">
     <t:objective>Search for a conversation with invalid values(blank,text,integer other than 1/0,long positive/negative integer,spaces,decimal number,special character.</t:objective>
 
     <t:test>
@@ -594,10 +594,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="${fetch_text}">
@@ -605,10 +605,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="834545344">
@@ -616,10 +616,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchConvResponse"/>                     
+            <t:select path="//mail:SearchConvResponse"/>
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="${fetch_positive}">
@@ -627,10 +627,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchConvResponse"/>                     
+            <t:select path="//mail:SearchConvResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="${fetch_negative}">
@@ -638,10 +638,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchConvResponse"/>                     
+            <t:select path="//mail:SearchConvResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="${fetch_spaces}">
@@ -649,10 +649,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch=" 1">
@@ -660,10 +660,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchConvResponse"/>                     
+            <t:select path="//mail:SearchConvResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1 ">
@@ -671,10 +671,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchConvResponse"/>                     
+            <t:select path="//mail:SearchConvResponse"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1.0">
@@ -682,10 +682,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="${fetch_spchar}">
@@ -693,11 +693,11 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
-</t:test_case>    
+
+</t:test_case>
 
 <!-- fetch=0 and read=0 have the same functionality as not specifying the attribute -->
 <t:test_case testcaseid="SearchConvRequest_fetch5" type="deprecated" bugids="4926">
@@ -710,14 +710,14 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
-    
 
-<t:test_case testcaseid="SearchConvRequest_read6" type="functional" >
+
+<t:test_case testcaseid="SearchConvRequest_read6" type="regression" >
     <t:objective>Search for a conversation with invalid values(blank,text,integer,long positive/negative integer,spaces,decimal number,special characters).</t:objective>
 
     <t:test>
@@ -727,10 +727,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="${read_text}">
@@ -738,10 +738,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="8">
@@ -749,10 +749,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="${read_positive}">
@@ -760,10 +760,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="${read_negative}">
@@ -771,10 +771,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="${read_spaces}">
@@ -782,10 +782,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>   
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read=" 1">
@@ -793,10 +793,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="1 ">
@@ -804,10 +804,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>    
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="1.0">
@@ -815,10 +815,10 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="${read_spchar}">
@@ -826,12 +826,12 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
-     
+
 </t:test_case>
-    
+
 <!-- fetch=0 and read=0 have the same functionality as not specifying the attribute -->
 <t:test_case testcaseid="SearchConvRequest_read7" type="deprecated" bugids="4926">
     <t:objective>Verify that a search for a conversation with fetch=1 and read=0 returns INVALID_REQUEST - read=0 is invalid</t:objective>
@@ -843,12 +843,12 @@
             </SearchConvRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>                     
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
     </t:test>
 
 </t:test_case>
-    
+
 
 
 </t:tests>

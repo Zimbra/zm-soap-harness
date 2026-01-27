@@ -122,7 +122,7 @@
     <t:steps> 1. Create filter with Action Reply set reply message body with some header(body-template) from incoming mail.
     2. verify reply message delivered to sender.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -137,8 +137,8 @@
     </t:test>
 
 	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -153,7 +153,7 @@
             				</actionReply>
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -161,9 +161,9 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
-    
-    
+
+
+
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -178,7 +178,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -195,9 +195,9 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
-		
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -208,18 +208,18 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}"/>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Re: ${filter1.subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="Message received from ${account2.name} with subject ${filter1.subject} and body Hello world"/>
-				
+
 			</t:response>
     </t:test>
  </t:test_case>
- 
- <t:test_case testcaseid="FilterActionReply_02" type="sanity" bugids="58383" >
+
+ <t:test_case testcaseid="FilterActionReply_02" type="functional" bugids="58383" >
     <t:objective>Verify Filter Action Reply</t:objective>
     <t:steps> 1. Create filter with Action Reply set reply message body with subject from incoming mail.
-    2. Send message with multi-byte subject 
+    2. Send message with multi-byte subject
     3. verify reply message returned to sender and subject rendered properly.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -234,9 +234,9 @@
     </t:test>
 
 	<t:property name="filter1A.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter1A.subject" value="偶者 Japanese"/>	
-	<t:property name="filter1A.body" value="body text${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter1A.subject" value="偶者 Japanese"/>
+	<t:property name="filter1A.body" value="body text${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -251,7 +251,7 @@
             				</actionReply>
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -259,9 +259,9 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
-    
-    
+
+
+
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -276,7 +276,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -293,9 +293,9 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
-		
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -306,18 +306,18 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}"/>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Re: ${filter1A.subject}"/>
 				<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="Message received with subject ${filter1A.subject}"/>
-				
+
 			</t:response>
     </t:test>
  </t:test_case>
 
-<t:test_case testcaseid="FilterActionReply_03" type="bhr" bugids="60848" >
+<t:test_case testcaseid="FilterActionReply_03" type="sanity" bugids="60848" >
     <t:objective>Filter Action Reply Implicite keep</t:objective>
-    <t:steps> 1. Create account1 filter with Action Reply 
+    <t:steps> 1. Create account1 filter with Action Reply
     2. verify reply message delivered to sender.
-	3. verify message in also present in account1 
+	3. verify message in also present in account1
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -332,8 +332,8 @@
     </t:test>
 
 	<t:property name="filter6.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter6.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter6.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -348,7 +348,7 @@
             				</actionReply>
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -356,9 +356,9 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
-    
-    
+
+
+
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -373,7 +373,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -390,9 +390,9 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
-		
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -404,7 +404,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Re: ${filter6.subject}"/>
 			</t:response>
     </t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -429,17 +429,17 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter6.subject}"/>
 			</t:response>
     </t:test>
-	
+
  </t:test_case>
 
 
-<t:test_case testcaseid="FilterActionReply_04" type="bhr" bugids="70848" >
+<t:test_case testcaseid="FilterActionReply_04" type="sanity" bugids="70848" >
     <t:objective>Filter Action Reply Action Discard overrites Implicite keep </t:objective>
     <t:steps> 1. Create account1 filter with Action Reply with discard option
     2. verify reply message delivered to sender.
-	3. verify message not present in account1 
+	3. verify message not present in account1
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -454,8 +454,8 @@
     </t:test>
 
 	<t:property name="filter7.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter7.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter7.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -470,7 +470,7 @@
             				</actionReply>
 							<actionDiscard />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -478,9 +478,9 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
-    
-    
+
+
+
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
@@ -495,7 +495,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -512,9 +512,9 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
-		
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -526,7 +526,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Re: ${filter7.subject}"/>
 			</t:response>
     </t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -551,13 +551,13 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" emptyset="1"/>
 			</t:response>
     </t:test>
-	
+
  </t:test_case>
 
 
 
 
-<t:test_case testcaseid="FilterActionNotify_01" type="bhr" bugids="18288">
+<t:test_case testcaseid="FilterActionNotify_01" type="sanity" bugids="18288">
     <t:objective>Verify Filter Action Notify</t:objective>
     <t:steps> 1. Create filter with Action Notify set some different notification subject reply message body with meta data from incoming mail.
     2. verify Notification message delivered to sender with customisation made.
@@ -576,7 +576,7 @@
     </t:test>
 
 	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="notify.subject" value="Thanks $\{from} $\{SUBJECT}"/>
 	<t:property name="notify.body" value="Dear $\{from} with subject $\{SUBJECT} and body $\{BODY}"/>
 	<t:test>
@@ -594,7 +594,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -602,7 +602,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -615,7 +615,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -632,7 +632,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 
      <t:test>
@@ -649,9 +649,9 @@
     </t:test>
  </t:test_case>
 
-<t:test_case testcaseid="FilterActionNotify_02" type="bhr" bugids="18288" >
+<t:test_case testcaseid="FilterActionNotify_02" type="sanity" bugids="18288" >
     <t:objective>Verify Filter Action Notify to third user</t:objective>
-    <t:steps> 
+    <t:steps>
     1. login to user1 Create filter with Action Notify set some notification address say user2.
     2. Send mail from foo@foo.com matching filter criteria.
     3. verify user2 gets notification.
@@ -670,8 +670,8 @@
     </t:test>
 
 	<t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="test3.subject" value="test${TIME}${COUNTER}"/>	
-	
+	<t:property name="test3.subject" value="test${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -687,7 +687,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -695,10 +695,10 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-		
+
 	<t:smtpinjecttest>
 		<t:smtpInjectRequest>
 			<address>${mta.server}</address>
@@ -706,7 +706,7 @@
 			<recipient>${account1.name}</recipient>
 		</t:smtpInjectRequest>
 	</t:smtpinjecttest>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -719,7 +719,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -734,7 +734,7 @@
     </t:test>
  </t:test_case>
 
-<t:test_case testcaseid="FilterActionNotify_03" type="sanity" bugids="57890">
+<t:test_case testcaseid="FilterActionNotify_03" type="functional" bugids="57890">
     <t:objective>Verify Filter Action Notify to multiple user2</t:objective>
     <t:steps> 1. Create filter with Action Notify set 2 email addresses for notification mail.
     2. verify Notification message delivered to both sender.
@@ -753,8 +753,8 @@
     </t:test>
 
 	<t:property name="filter4.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter4.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter4.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -770,9 +770,9 @@
            					 <actionNotify a="${account3.name}" su="${filter4.subject}">
            						 <content>replied</content>
            					 </actionNotify>
-  						
+
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -780,9 +780,9 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-    
-        
+
+
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -795,7 +795,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -812,7 +812,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 
      <t:test>
@@ -851,7 +851,7 @@
 			</t:response>
     </t:test>
  </t:test_case>
-<t:test_case testcaseid="FilterActionNotify_04" type="sanity" bugids="58383">
+<t:test_case testcaseid="FilterActionNotify_04" type="functional" bugids="58383">
     <t:objective>Verify Filter Action Notify</t:objective>
     <t:steps> 1. Create filter with Action Notify set notification mail subject and body from original received.
     2. Send mail with multi-byte characters subject
@@ -871,9 +871,9 @@
     </t:test>
 
 	<t:property name="filter6.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter6.subject" value="配偶者 kon"/>	
-	<t:property name="filter6.body" value="body${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter6.subject" value="配偶者 kon"/>
+	<t:property name="filter6.body" value="body${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -889,7 +889,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -897,7 +897,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -910,7 +910,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -927,7 +927,7 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 
      <t:test>
@@ -945,9 +945,9 @@
  </t:test_case>
 
 
-<t:test_case testcaseid="FilterActionNotify_05" type="bhr" bugids="60848" >
+<t:test_case testcaseid="FilterActionNotify_05" type="sanity" bugids="60848" >
     <t:objective>Verify Filter Action Notify follows implicit keep.</t:objective>
-    <t:steps> 
+    <t:steps>
     1. login to user1 Create filter with Action Notify set some notification address say user2.
     2. Send mail from foo@foo.com matching filter criteria.
     8. verify user2 gets notification.
@@ -967,8 +967,8 @@
     </t:test>
 
 	<t:property name="filter8.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="test8.subject" value="test${TIME}${COUNTER}"/>	
-	
+	<t:property name="test8.subject" value="test${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -983,7 +983,7 @@
            					 </actionNotify>
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -991,10 +991,10 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-		
+
 	<t:smtpinjecttest>
 		<t:smtpInjectRequest>
 			<address>${mta.server}</address>
@@ -1015,7 +1015,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1028,8 +1028,8 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="bye"/>
 			</t:response>
     </t:test>
-    
-	
+
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
     <t:test required="true">
         <t:request>
@@ -1042,7 +1042,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1053,15 +1053,15 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su"/>
 			</t:response>
     </t:test>
-	
-	
+
+
  </t:test_case>
- 
- <t:test_case testcaseid="FilterActionNotify_06" type="bhr" bugids="60949" >
+
+ <t:test_case testcaseid="FilterActionNotify_06" type="sanity" bugids="60949" >
     <t:objective>Verify Filter Action Notify: Action discard overrides implicit keep.</t:objective>
-    <t:steps> 
+    <t:steps>
     1. login to user1 Create filter with Action Notify and action discard set some notification address say user2.
-    2. Send mail from foo@foo.com matching filter criteria. 
+    2. Send mail from foo@foo.com matching filter criteria.
     9. verify user2 gets notification.
 	4. verify user1 has not the copy of original received mail
     </t:steps>
@@ -1079,8 +1079,8 @@
     </t:test>
 
 	<t:property name="filter9.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="test9.subject" value="test${TIME}${COUNTER}"/>	
-	
+	<t:property name="test9.subject" value="test${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1095,7 +1095,7 @@
            					 </actionNotify>
   							<actionDiscard />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1103,10 +1103,10 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
-		
+
 	<t:smtpinjecttest>
 		<t:smtpInjectRequest>
 			<address>${mta.server}</address>
@@ -1127,7 +1127,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1140,7 +1140,7 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="bye"/>
 			</t:response>
     </t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
     <t:test required="true">
         <t:request>
@@ -1153,7 +1153,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
      <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1164,21 +1164,21 @@
 				<t:select path="//mail:SearchResponse/mail:m/mail:su"  emptyset="1"/>
 			</t:response>
     </t:test>
-	
-	
+
+
  </t:test_case>
- 
-  
- <t:test_case testcaseid="FilterActionNotifyOrigHeaders_01" type="bhr" bugids="61199">
+
+
+ <t:test_case testcaseid="FilterActionNotifyOrigHeaders_01" type="sanity" bugids="61199">
     <t:objective>Verify Filter Action Notify copy the Headers mentioned in origHeaders</t:objective>
-    
+
     <t:steps>
     	1. Login to account1
      	2. Create a filter with Action Notify to copy From, Subject, Cc headers from incoming mail and send the notification to account2.
     	3. Account2 sends a email to account1
     	4. Verify that account2 received notification with Form, Cc and Subject from original email
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -1194,7 +1194,7 @@
 
 	<t:property name="filter7.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="filter7.subject" value="filter${TIME}${COUNTER}"/>
-		
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1210,7 +1210,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1218,7 +1218,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -1231,7 +1231,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1249,20 +1249,20 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>in:inbox "${filter7.subject}"</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg.id"/>
 			</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -1272,23 +1272,23 @@
         <t:response>
             	<t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg.id}"/>
             	<t:select path="//mail:GetMsgResponse/mail:m/mail:e" attr="a" match="${account2.name}"/>
-            	<t:select path="//mail:GetMsgResponse/mail:m/mail:e" attr="a" match="${account3.name}"/>					
+            	<t:select path="//mail:GetMsgResponse/mail:m/mail:e" attr="a" match="${account3.name}"/>
 				<t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${filter7.subject}"/>
         </t:response>
-    </t:test>   
-   
+    </t:test>
+
  </t:test_case>
- 
- <t:test_case testcaseid="FilterActionNotifyOrigHeaders_02" type="bhr" bugids="61199">
+
+ <t:test_case testcaseid="FilterActionNotifyOrigHeaders_02" type="sanity" bugids="61199">
     <t:objective>Verify Filter Action Notify copy the Headers mentioned in origHeaders and default from header if the from header is not mentioned in origHeaders</t:objective>
-    
+
     <t:steps>
     	1. Login to account1
      	2. Create a filter with Action Notify to copy  Subject, Cc, Message-Id headers from incoming mail and send the notification to account2.
     	3. Account2 sends a email to account1
     	4. Verify that account2 received notification with Cc,Subject and Message-id from original email and From is accoun1 instead of original sender(account2)
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -1303,8 +1303,8 @@
     </t:test>
 
 	<t:property name="filter8.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter8.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter8.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1320,7 +1320,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1328,7 +1328,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -1341,7 +1341,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1359,20 +1359,20 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
-		
+
     <t:test>
 		<t:request>
-			<SearchRequest xmlns="urn:zimbraMail" types="message">					
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:inbox "${filter8.subject}"</query>
 			</SearchRequest>
 		</t:request>
-        <t:response>			
+        <t:response>
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account2_msg.id"/>
 		</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -1385,22 +1385,22 @@
             	<t:select path="//mail:GetMsgResponse/mail:m/mail:e" attr="a" match="${account3.name}"/>
 				<t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${filter8.subject}"/>
         </t:response>
-    </t:test>    
-   
+    </t:test>
+
  </t:test_case>
- 
- 
- 
- <t:test_case testcaseid="FilterActionNotifyOrigHeaders_03" type="bhr" bugids="61199">
+
+
+
+ <t:test_case testcaseid="FilterActionNotifyOrigHeaders_03" type="sanity" bugids="61199">
    <t:objective>Verify Filter Action Notify copy the Headers mentioned in origHeaders and default from header, mentioned subject header if the from, subject headers are not mentioned in origHeaders</t:objective>
-    
+
     <t:steps>
     	1. Login to account1
      	2. Create a filter with Action Notify to copy  Cc, Message-Id headers from incoming mail with mentioned subject and  send the notification to account2.
     	3. Account2 sends a email to account1
     	4. Verify that account2 received notification with Cc from original email and From is accoun1 instead of original sender(account2) with mentioned subject
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -1415,9 +1415,9 @@
     </t:test>
 
 	<t:property name="filter9.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter9.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter9.subject" value="filter${TIME}${COUNTER}"/>
 	<t:property name="notify.subject" value="Notification subject"/>
-	
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1433,7 +1433,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1441,7 +1441,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -1454,7 +1454,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1472,20 +1472,20 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
 
      <t:test>
 			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail" types="message">					
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>in:inbox "${notify.subject}"</query>
 				</SearchRequest>
 			</t:request>
-	        <t:response>			
+	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg.id"/>
 			</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -1495,23 +1495,23 @@
         <t:response>
             	<t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg.id}"/>
             	<t:select path="//mail:GetMsgResponse/mail:m/mail:e" attr="a" match="${account1.name}"/>
-            	<t:select path="//mail:GetMsgResponse/mail:m/mail:e" attr="a" match="${account3.name}"/>					
+            	<t:select path="//mail:GetMsgResponse/mail:m/mail:e" attr="a" match="${account3.name}"/>
 				<t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${notify.subject}"/>
         </t:response>
-    </t:test>   
-   
+    </t:test>
+
  </t:test_case>
- 
-  <t:test_case testcaseid="FilterActionNotifyOrigHeaders_04" type="bhr" bugids="64839">
+
+  <t:test_case testcaseid="FilterActionNotifyOrigHeaders_04" type="sanity" bugids="64839">
     <t:objective>Verify Filter Action Notify copy all the headers from the original message when origHeaders is set to *</t:objective>
-    
+
     <t:steps>
     	1. Login to account1
      	2. Create a filter with Action Notify with origHeaders="*" and send the notification to account2.
     	3. Account2 sends a email to account1
     	4. Verify that account2 received notification with all the headers from original message and From is also accoun2 instead of sender(account1)
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
@@ -1526,8 +1526,8 @@
     </t:test>
 
 	<t:property name="filter8.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter8.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<t:property name="filter8.subject" value="filter${TIME}${COUNTER}"/>
+
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1543,7 +1543,7 @@
            					 <actionKeep />
   						<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -1551,7 +1551,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-        
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
@@ -1564,7 +1564,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
      </t:test>
-    
+
     <t:test >
  		<t:request>
     		<SendMsgRequest xmlns="urn:zimbraMail">
@@ -1582,20 +1582,20 @@
         	<t:select path="//mail:SendMsgResponse"/>
    		</t:response>
 	</t:test>
-	
+
 	<t:waitforpostfixqueue/>
-		
+
     <t:test>
 		<t:request>
-			<SearchRequest xmlns="urn:zimbraMail" types="message">					
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:inbox "${filter8.subject}"</query>
 			</SearchRequest>
 		</t:request>
-        <t:response>			
+        <t:response>
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account2_msg.id"/>
 		</t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -1608,10 +1608,10 @@
             	<t:select path='//mail:GetMsgResponse/mail:m/mail:e[@t="c"]' attr="a" match="${account3.name}"/>
 				<t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${filter8.subject}"/>
         </t:response>
-    </t:test>    
-   
+    </t:test>
+
  </t:test_case>
- 
-  
+
+
 </t:tests>
 

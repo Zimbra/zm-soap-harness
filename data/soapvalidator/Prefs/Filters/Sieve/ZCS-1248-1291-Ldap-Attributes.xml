@@ -93,7 +93,7 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server" />
             </t:response>
         </t:test>
-        
+
         <t:test id="CreateAccountRequest2" required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -107,10 +107,10 @@
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server" />
             </t:response>
         </t:test>
-        
+
     </t:test_case>
 
-    <t:test_case testcaseid="ModifyDomainRequest" type="bhr" bugids="ZCS-1248">
+    <t:test_case testcaseid="ModifyDomainRequest" type="sanity" bugids="ZCS-1248">
 	        <t:objective> Modify sieve attributes of a domain </t:objective>
 
         <t:test required="true">
@@ -124,7 +124,7 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-        	
+
 		<t:test>
 			<t:request>
 				<ModifyCosRequest xmlns="urn:zimbraAdmin">
@@ -134,7 +134,7 @@
 				</ModifyCosRequest>
 			</t:request>
 		</t:test>
-        
+
         <t:test>
             <t:request>
                 <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -171,7 +171,7 @@
                     <account by="id">${account1.id}</account>
                 </GetAccountRequest>
             </t:request>
-            
+
             <t:response>
                 <t:select path="//admin:GetAccountResponse/admin:account" />
                 <t:select path="//admin:GetAccountResponse/admin:account" attr="id" />
@@ -216,7 +216,7 @@
 
     </t:test_case>
 
-    <t:test_case testcaseid="ModifyCosRequest" type="bhr" bugids="ZCS-1248">
+    <t:test_case testcaseid="ModifyCosRequest" type="sanity" bugids="ZCS-1248">
         <t:objective> Modify sieve attributes of a Cos </t:objective>
         <t:test>
             <t:request>
@@ -230,7 +230,7 @@
                     <a n="zimbraAdminOutgoingSieveScriptAfter">${sieve_rule1}</a>
                 </ModifyCosRequest>
             </t:request>
-            
+
             <t:response>
                 <t:select path="//admin:ModifyCosResponse/admin:cos" />
                 <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" />
@@ -279,7 +279,7 @@
                     <account by="id">${account2.id}</account>
                 </GetAccountRequest>
             </t:request>
-            
+
             <t:response>
                 <t:select path="//admin:GetAccountResponse/admin:account" />
                 <t:select path="//admin:GetAccountResponse/admin:account" attr="id" />
@@ -300,7 +300,7 @@
 
     </t:test_case>
 
-    <t:test_case testcaseid="ModifyAccountRequest" type="bhr" bugids="ZCS-1248">
+    <t:test_case testcaseid="ModifyAccountRequest" type="sanity" bugids="ZCS-1248">
         <t:objective> Modify sieve attributes of an Account </t:objective>
         <t:test>
             <t:request>
@@ -314,7 +314,7 @@
                     <a n="zimbraAdminOutgoingSieveScriptAfter">${sieve_rule4}</a>
                 </ModifyAccountRequest>
             </t:request>
-            
+
             <t:response>
                 <t:select path="//admin:ModifyAccountResponse/admin:account" />
                 <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" />
@@ -385,7 +385,7 @@
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="EditheaderEnableDisableVerification" type="bhr" bugids="ZCS-1841">
+    <t:test_case testcaseid="EditheaderEnableDisableVerification" type="sanity" bugids="ZCS-1841">
         <t:objective> Verify whether zimbraSieveEditHeaderEnabled works or not </t:objective>
         <t:steps>
             1. auth with admin

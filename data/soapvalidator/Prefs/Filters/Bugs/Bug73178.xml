@@ -40,7 +40,7 @@
                 <password>${defaultpassword.value}</password>
             </CreateAccountRequest>
         </t:request>
-	    <t:response>               
+	    <t:response>
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 	    </t:response>
     </t:test>
@@ -50,12 +50,12 @@
 
 <t:property name="folder1.name" value="Activity Streams"/>
 
-<t:test_case testcaseid="Bug73178" type="bhr" bugids="73178" >
+<t:test_case testcaseid="Bug73178" type="sanity" bugids="73178" >
     <t:objective>Null pointer exception while moving messages from inbox to activity stream.</t:objective>
     <t:steps>
 	    1. Login as user1
 	    2. Create Activity Streams filter for massage send not to me
-	    3. Apply filter rule on Inbox 
+	    3. Apply filter rule on Inbox
 	    4. verify message is moved to Activity stream folder
     </t:steps>
 
@@ -72,23 +72,23 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder1.name}"/>  	 
+                <folder l="1" name="${folder1.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
     </t:test>
-    
+
 
 	<t:property name="filter1.name" value="Activity Streams"/>
 	<t:property name="filter1.subject" value="subject${TIME}${COUNTER}"/>
-	
-	
+
+
     <t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -100,8 +100,8 @@
 						<filterActions>
 							<actionFileInto folderPath="${folder1.name}" />
 							<actionStop />
-						</filterActions> 
-						</filterRule>                           
+						</filterActions>
+						</filterRule>
 					</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -109,8 +109,8 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
-   
+
+
     <t:property name="msg01.file" value="${testMailRaw.root}/bug55927/bug55927.txt" />
 
 	<t:mailinjecttest >
@@ -123,13 +123,13 @@
                 <header a="Subject">${filter1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
 
 	<t:test>
 	<t:request>
 	     <ApplyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
-					<filterRule name="${filter1.name}"/>                                  
+					<filterRule name="${filter1.name}"/>
 				</filterRules>
 				<query>in:"${globals.inbox}"</query>
             </ApplyFilterRulesRequest>
@@ -138,7 +138,7 @@
             <t:select path="//mail:ApplyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -146,10 +146,10 @@
             </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter1.subject}"/>            
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter1.subject}"/>
         </t:response>
-    </t:test>	   
-    
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

@@ -40,7 +40,7 @@
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
 
-	
+
 
     <t:test required="true">
         <t:request>
@@ -53,7 +53,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
 	<!-- account1 creates a conversation and gets the conversation ID -->
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -91,7 +91,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountBy_Admin_GetSignaturesRequest_Basic01" type="bhr">
+<t:test_case testcaseid="AccountBy_Admin_GetSignaturesRequest_Basic01" type="sanity">
     <t:objective>Use an admin token with accountby to GetSignaturesRequest</t:objective>
     <t:steps>
     1. Use admin authtoken with accountby=account1 to GetSignaturesRequest - Success

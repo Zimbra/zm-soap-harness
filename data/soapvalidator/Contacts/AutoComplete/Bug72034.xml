@@ -25,7 +25,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -34,7 +34,7 @@
     <t:steps>1. Login to admin
              2. Create a test accounts
     </t:steps>
-    
+
     <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -46,7 +46,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
 	<t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -79,7 +79,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="bug72034" type="bhr" bugid="72034" >
+<t:test_case testcaseid="bug72034" type="sanity" bugid="72034" >
     <t:objective>Unable to delete 'Contact groups' from shared address-books with manager rights </t:objective>
 	<t:steps>
 	1. create a sub folder: "nested" under the "Contacts" folder.
@@ -102,7 +102,7 @@
 
         </t:response>
     </t:test>
-       
+
    	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -111,8 +111,8 @@
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="contacts.id"/>
 		</t:response>
 	</t:test>
-	
-	<t:property name="folder1.name" value="folder${TIME}"/>    
+
+	<t:property name="folder1.name" value="folder${TIME}"/>
     <t:test id="createFolderRequest1" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -123,7 +123,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
     </t:test>
-    
+
 	   <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -131,16 +131,16 @@
                     <a n="firstName">First.${TIME}.${COUNTER}</a>
                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact1.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
-    
+
       	<t:test>
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -149,16 +149,16 @@
                    <a n="nickname">${contact.mailid}</a>
                    <a n="type">group</a>
 					<m type="C" value="${contact1.id}"/>
-               </cn>     
+               </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateContactResponse/mail:cn"> 
+            <t:select path="//mail:CreateContactResponse/mail:cn">
              <t:select attr="id" set="contact_group.id"/>
-            </t:select> 
+            </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -220,10 +220,10 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>email1</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -236,8 +236,8 @@
  				</t:select>
  			</t:select>
 		</t:response>
-    </t:test>  
-	
+    </t:test>
+
 </t:test_case>
 
 </t:tests>

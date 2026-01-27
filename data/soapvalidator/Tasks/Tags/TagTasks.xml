@@ -17,7 +17,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -32,7 +32,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts, tags, and tasks</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -45,7 +45,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -73,7 +73,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -86,7 +86,7 @@
 
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -99,7 +99,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-    
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -112,7 +112,7 @@
 
         </t:response>
     </t:test>
-        
+
     <t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -128,11 +128,11 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="TagTask_01" type="bhr">
+<t:test_case testcaseid="TagTask_01" type="sanity">
     <t:objective>Verify that GetTaskRequest show the tags</t:objective>
-   
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -182,25 +182,25 @@
             <t:select path="//mail:ItemActionResponse/mail:action"/>
         </t:response>
     </t:test>
-        
-        
+
+
     <t:test >
-        <t:request> 
+        <t:request>
             <GetTaskRequest  xmlns="urn:zimbraMail" id="${account1.task1.calItemId}"/>
         </t:request>
         <t:response>
             <t:select path = "//mail:GetTaskResponse/mail:task" attr="t" match=".*${account1.tag1.id}.*"/>
         </t:response>
     </t:test>
-    
-        
+
+
 </t:test_case>
 
-<t:test_case testcaseid="TagTask_02" type="bhr">
+<t:test_case testcaseid="TagTask_02" type="sanity">
     <t:objective>Verify that GetTaskSummariesRequest show the tags</t:objective>
-   
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -250,7 +250,7 @@
             <t:select path="//mail:ItemActionResponse/mail:action"/>
         </t:response>
     </t:test>
-            
+
 	<t:test >
         <t:request>
             <GetTaskSummariesRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${task2.start}]}" e="${TIME(+1d)[${task2.start}]}"/>
@@ -259,15 +259,15 @@
             <t:select path="//mail:GetTaskSummariesResponse/mail:task[@name='${task2.name}']" attr="t" match=".*${account1.tag1.id}.*"/>
         </t:response>
     </t:test>
-    
-        
+
+
 </t:test_case>
 
-<t:test_case testcaseid="TagTask_03" type="bhr">
+<t:test_case testcaseid="TagTask_03" type="sanity">
     <t:objective>Verify that SearchRequest for the tag returns the task</t:objective>
-   
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -317,28 +317,28 @@
             <t:select path="//mail:ItemActionResponse/mail:action"/>
         </t:response>
     </t:test>
-            
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="task">
                 <query> tag:${account1.tag1.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:task" attr="id" match="${account1.task3.calItemId}" />
             </t:select>
         </t:response>
     </t:test>
-    
-        
+
+
 </t:test_case>
 
-<t:test_case testcaseid="TagTask_04" type="bhr">
+<t:test_case testcaseid="TagTask_04" type="sanity">
     <t:objective>Remove the tag, Verify that SearchRequest for the tag does not return the task</t:objective>
-   
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-    
+
     <t:test >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -388,7 +388,7 @@
             <t:select path="//mail:ItemActionResponse/mail:action"/>
         </t:response>
     </t:test>
-            
+
     <t:test >
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -399,21 +399,21 @@
             <t:select path="//mail:ItemActionResponse/mail:action"/>
         </t:response>
     </t:test>
-            
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="task">
                 <query> tag:${account1.tag1.name} </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:task" attr="id" match="${account1.task4.calItemId}" emptyset="1"/>
             </t:select>
         </t:response>
     </t:test>
-    
-        
+
+
 </t:test_case>
 
 

@@ -9,7 +9,7 @@
 
 <t:test_case testcaseid="FilterRulesRequests_AccountSetup" type="always" >
     <t:objective>Account setup</t:objective>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -21,7 +21,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -47,14 +47,14 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-	
-             
+
+
 </t:test_case>
 
 
-<t:test_case testcaseid="ApplyOutGoingFilterRulesRequest_basic_01" type="bhr">
-    <t:objective>Apply outgoing filter rule to existing messages in sent folder. </t:objective>    
-    
+<t:test_case testcaseid="ApplyOutGoingFilterRulesRequest_basic_01" type="sanity">
+    <t:objective>Apply outgoing filter rule to existing messages in sent folder. </t:objective>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -70,7 +70,7 @@
     </t:test>
 
 	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
 
  <t:test>
         <t:request>
@@ -90,7 +90,7 @@
     </t:test>
 
  <t:delay sec="10" />
-  
+
  <t:test>
         <t:request>
             <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail">
@@ -124,9 +124,9 @@
         <t:response>
             <t:select path="//mail:ApplyOutgoingFilterRulesResponse"/>
       </t:response>
-    </t:test>	
+    </t:test>
 
-  
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -137,14 +137,14 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter1.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='sf']" />
         </t:response>
-    </t:test>	
+    </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="ApplyOutGoingFilterRulesRequest_basic_02" type="bhr">
-    <t:objective>Apply outgoing filter rule to existing messages in sent folder using message id. </t:objective>    
-    
+<t:test_case testcaseid="ApplyOutGoingFilterRulesRequest_basic_02" type="sanity">
+    <t:objective>Apply outgoing filter rule to existing messages in sent folder using message id. </t:objective>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -160,7 +160,7 @@
     </t:test>
 
 	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
 
  <t:test>
         <t:request>
@@ -178,7 +178,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
         </t:response>
     </t:test>
-  
+
  <t:test>
         <t:request>
             <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail">
@@ -214,9 +214,9 @@
         <t:response>
             <t:select path="//mail:ApplyOutgoingFilterRulesResponse/mail:m" attr="ids" match="${message1.id}"/>
       </t:response>
-    </t:test>	
+    </t:test>
 
-  
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -227,13 +227,13 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter2.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='sf']" />
         </t:response>
-    </t:test>	
+    </t:test>
 
 </t:test_case>
 
-<t:test_case testcaseid="ApplyOutGoingFilterRulesRequest_basic_03" type="bhr">
-    <t:objective>Check inactive filter  rule not applied .</t:objective>    
-    
+<t:test_case testcaseid="ApplyOutGoingFilterRulesRequest_basic_03" type="sanity">
+    <t:objective>Check inactive filter  rule not applied .</t:objective>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -251,7 +251,7 @@
 	<t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
 	<t:property name="filter3.subject" value="filter${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns = "urn:zimbraMail">
@@ -281,7 +281,7 @@
         </t:response>
     </t:test>
 
-    
+
 
    <t:test>
         <t:request>
@@ -317,7 +317,7 @@
         <t:response>
             <t:select path="//mail:ApplyOutgoingFilterRulesResponse"/>
       </t:response>
-    </t:test>	
+    </t:test>
 
     <t:test>
         <t:request>
@@ -328,11 +328,11 @@
         <t:response>
             <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
         </t:response>
-    </t:test>	
+    </t:test>
 </t:test_case>
-<t:test_case testcaseid="ApplyOutGoingFilterRulesRequest_basic_04" type="bhr">
-    <t:objective>Apply filter rule request with multiple action .</t:objective>    
-    
+<t:test_case testcaseid="ApplyOutGoingFilterRulesRequest_basic_04" type="sanity">
+    <t:objective>Apply filter rule request with multiple action .</t:objective>
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test required="true">
@@ -351,7 +351,7 @@
 	<t:property name="filter5b.name" value="filter${TIME}${COUNTER}"/>
 	<t:property name="folder2.name" value="folder${TIME}${COUNTER}"/>
 	<t:property name="filter5.subject" value="filter${TIME}${COUNTER}"/>
-	
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns = "urn:zimbraMail">
@@ -362,7 +362,7 @@
             <t:select path = "//mail:CreateFolderResponse/mail:folder" attr = "id" set = "folder2.id"/>
         </t:response>
     </t:test>
-  
+
  <t:test>
         <t:request>
             <SendMsgRequest xmlns="urn:zimbraMail">
@@ -379,7 +379,7 @@
             <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message5.id"/>
         </t:response>
     </t:test>
-  
+
  <t:delay sec="10" />
 
    <t:test>
@@ -424,7 +424,7 @@
             <t:select path="//mail:ApplyOutgoingFilterRulesResponse"/>
       </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -435,7 +435,7 @@
               <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter5.subject}"/>
             <t:select path="//mail:SearchResponse/mail:m[@f='sf']" />
         </t:response>
-    </t:test>	
+    </t:test>
 
 </t:test_case>
 

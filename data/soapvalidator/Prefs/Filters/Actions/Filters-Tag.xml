@@ -82,7 +82,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Filters_Tag_01" type="bhr">
+<t:test_case testcaseid="Filters_Tag_01" type="sanity">
     <t:objective>Create Rule with action as "tag" for already existing tag</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -99,7 +99,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="message1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
     <t:property name="message1.subject" value="email01A"/>
     <t:property name="tag1.name" value="tag${TIME}${COUNTER}"/>
@@ -114,18 +114,18 @@
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag1.id"/>
         </t:response>
 	</t:test>
-	
+
 	<t:test id="filters_basic01a">
         <t:request>
             <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${message1.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${message1.subject}"/>
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionTag tagName="${tag1.name}" />
-                        	<actionStop />                 
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -145,7 +145,7 @@
             <t:select path="//mail:GetFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message1.file}</filename>
@@ -154,7 +154,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -167,10 +167,10 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="Filters_Tag_02" type="sanity" bugids="45688, 46951">
+<t:test_case testcaseid="Filters_Tag_02" type="functional" bugids="45688, 46951">
     <t:objective>Create Rule with action as "tag" a deleted tag</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -187,7 +187,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="message2.file" value="${testMailRaw.root}/email01/msg02.txt"/>
     <t:property name="message2.subject" value="email01B"/>
     <t:property name="tag2.name" value="tag${TIME}${COUNTER}"/>
@@ -209,11 +209,11 @@
                 <filterRules>
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${message2.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${message2.subject}"/>
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionTag tagName="${tag2.name}" />
-                        	<actionStop />                 
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -223,7 +223,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
     <!-- Create a temp tag, so the tag ID is not reused -->
     <t:test  >
         <t:request>
@@ -266,7 +266,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -279,7 +279,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <!--
     	The message must be tagged for the "t" element to appear.
     	So, tag it with a new tag, then make sure the other tag does not appear
@@ -312,7 +312,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Filters_Tag_03" type="sanity">
+<t:test_case testcaseid="Filters_Tag_03" type="functional">
     <t:objective>Create Rule with action as "tag" a recreated tag</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -328,7 +328,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="message3.file" value="${testMailRaw.root}/email01/msg03.txt"/>
     <t:property name="message3.subject" value="email01C"/>
     <t:property name="tag3.name" value="tag${TIME}${COUNTER}"/>
@@ -352,11 +352,11 @@
                 <filterRules>
 					<filterRule name="${filter1.name}" active="1">
                          <filterTests condition="anyof">
-                         <headerTest header="subject" stringComparison="is" value="${message3.subject}"/>                    	     
+                         <headerTest header="subject" stringComparison="is" value="${message3.subject}"/>
                         </filterTests>
-                        <filterActions> 
+                        <filterActions>
                         	<actionTag tagName="${tag3.name}" />
-                        	<actionStop />                 
+                        	<actionStop />
                         </filterActions>
                     </filterRule>
                  </filterRules>
@@ -366,7 +366,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-    
+
 	<t:test id="tagactionRequest1b" depends="tagactionrequest1a">
 	    <t:request>
 		    <TagActionRequest xmlns="urn:zimbraMail">
@@ -411,7 +411,7 @@
 							<actionTag tagName="${tag3.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>                                  
+					</filterRule>
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -420,7 +420,7 @@
         </t:response>
     </t:test>
 
-	
+
 	<!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -430,8 +430,8 @@
             <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule" attr="active" match="1"/>
         </t:response>
     </t:test>
-	
-	
+
+
      <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message3.file}</filename>
@@ -440,7 +440,7 @@
 			<server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -453,11 +453,11 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 
-<t:test_case testcaseid="Filters_Tag_04" type="sanity" bugids="19610">
+<t:test_case testcaseid="Filters_Tag_04" type="functional" bugids="19610">
     <t:objective>Create 2 rules that match a message.  First has tag and stop.  Second has file into folder.</t:objective>
     <t:steps>
     1. Auth as account3
@@ -465,7 +465,7 @@
     	A. Filter1 - matches "From", then tag, stop
     	B. Filter2 - matches "Subject", then fileinto subfolder.
     </t:steps>
-    
+
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
@@ -481,7 +481,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:property name="message4a.file" value="${testMailRaw.root}/email37/message4a.txt"/>
     <t:property name="message4b.file" value="${testMailRaw.root}/email37/message4b.txt"/>
     <t:property name="message4a.subject" value="test case modification"/>
@@ -533,19 +533,19 @@
 							<actionTag tagName="${tag4.name}" />
 							<actionStop />
 						</filterActions>
-					</filterRule>     
-					
+					</filterRule>
+
 					<filterRule name="Filter${TIME}${COUNTER}" active="1">
 						<filterTests condition="allof">
 							<headerTest header="X-From-Perforce" stringComparison="is" value="Indeed" />
-							
+
 						</filterTests>
 						<filterActions>
 							<actionFileInto folderPath="/${globals.inbox}/${folder4.name}" />
-							
+
 						</filterActions>
-					</filterRule>     
-					                             
+					</filterRule>
+
 				</filterRules>
             </ModifyFilterRulesRequest>
         </t:request>
@@ -553,7 +553,7 @@
             <t:select path="//mail:ModifyFilterRulesResponse"/>
         </t:response>
     </t:test>
-	
+
      <!-- Get the rules to check if it has got created -->
 	<t:test>
         <t:request>
@@ -573,7 +573,7 @@
 			<server>${account3.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-       
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <filename>${message4b.file}</filename>
@@ -583,7 +583,7 @@
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
 
-       
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -597,7 +597,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -611,7 +611,7 @@
             </t:select>
         </t:response>
     </t:test>
-    
+
 
 </t:test_case>
 

@@ -7,7 +7,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -32,7 +32,7 @@
 			7. Login to account2.name
 			8. Create mountpoints for shared task and contact
     </t:steps>
-   
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -44,7 +44,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-     
+
 
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
@@ -58,7 +58,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
-    
+
     <t:test  id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -71,7 +71,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test depends="create_test_account1" required="true">
@@ -96,14 +96,14 @@
             <t:select path="//mail:folder[@name='${globals.tasks}']" attr="id" set="account1.folder.tasks.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account1.folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account1.folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account1.folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account1.folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account1.folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root.id"/>
 			<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account1.folder.contact.id"/>
 
 		</t:response>
     </t:test>
-    
+
 	<t:property name="contact1.firstname" value="First1.${TIME}.${COUNTER}"/>
 	<t:property name="contact1.lastname" value="First-Last1.${TIME}.${COUNTER}"/>
 	<t:property name="contact1.email" value="aemail1.${TIME}.${COUNTER}@domain1.com"/>
@@ -118,13 +118,13 @@
                     <a n="firstName">${contact1.firstname}</a>
                     <a n="lastName">${contact1.lastname}</a>
                     <a n="email">${contact1.email}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -135,13 +135,13 @@
                     <a n="firstName">${contact2.firstname}</a>
                     <a n="lastName">${contact2.lastname}</a>
                     <a n="email">${contact2.email}</a>
-                </cn>     
+                </cn>
             </CreateContactRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateContactResponse/mail:cn">
             <t:select attr="id" set="contact.id"/>
-            </t:select>	
+            </t:select>
         </t:response>
     </t:test>
 
@@ -197,7 +197,7 @@
     </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-     
+
     <t:test depends="create_test_account2" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -210,7 +210,7 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test id="getFolderRequest" required="true">
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -220,13 +220,13 @@
             <t:select path="//mail:folder[@name='${globals.tasks}']" attr="id" set="account2.folder.tasks.id"/>
             <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account2.folder.trash.id"/>
             <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account2.folder.sent.id"/>
-            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account2.folder.spam.id"/> 
-            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account2.folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account2.folder.spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account2.folder.drafts.id"/>
             <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root.id"/>
 			<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account2.folder.contact.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="account2.mountpoint.name" value="Mountpoint.${TIME}.${COUNTER}"/>
 
     <t:test>
@@ -239,7 +239,7 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.mountpoint1.id"/>
         </t:response>
     </t:test>
-  
+
   	<t:property name="account2.mountpoint.name2" value="Mountpoint2.${TIME}.${COUNTER}"/>
 
       <t:test>
@@ -254,20 +254,20 @@
     </t:test>
 
 </t:test_case>
-  
 
-<t:test_case testcaseid="Search_Mountpoint_Share_01" type="sanity">
+
+<t:test_case testcaseid="Search_Mountpoint_Share_01" type="functional">
     <t:objective>Verify a mountpoint can be searched with query "is:local or is:remote"</t:objective>
     <t:steps>
             1. Login to delegatee account.
             2. Search for shared contact with query "is:local or is:remote"
-            3. Search with query "is:local" and type="contact" should not return the shared contact 
+            3. Search with query "is:local" and type="contact" should not return the shared contact
             4. Search for shared task with query "is:local or is:remote"
-            5. Search with query "is:local" and type="task" should not return the shared task 
+            5. Search with query "is:local" and type="task" should not return the shared task
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-     
+
     <t:test depends="create_test_account2" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -280,14 +280,14 @@
 
         </t:response>
     </t:test>
- 
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="contact">
                 <query>${contact1.firstname} (is:local or is:remote)</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:cn/mail:a[@n='firstName']" match="${contact1.firstname}"/>
             </t:select>
@@ -300,7 +300,7 @@
                 <query>${contact1.firstname} (is:local)</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:cn/mail:a[@n='firstName']" match="${contact1.firstname}" emptyset="1"/>
             </t:select>
@@ -313,7 +313,7 @@
                 <query>${task1.subject} (is:local or is:remote)</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:task" attr="name" match="${task1.subject}"/>
             </t:select>
@@ -326,7 +326,7 @@
                 <query>${task1.subject} (is:local)</query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
             <t:select path="//mail:SearchResponse">
             	<t:select path="//mail:task" attr="name" match="${task1.subject}" emptyset="1"/>
             </t:select>
@@ -334,18 +334,18 @@
     </t:test>
 
 </t:test_case>
-  
 
-<t:test_case testcaseid="Search_Mountpoint_Share_02" type="sanity" bugids="21532">
+
+<t:test_case testcaseid="Search_Mountpoint_Share_02" type="functional" bugids="21532">
     <t:objective> Verify 'is:local in:trash'  returns results even if there are entries in the trash folder</t:objective>
     <t:steps>
            1. Login to account1
 		   2. Add a message to Trash
 		   3. Search with query "is:local in:trash"
     </t:steps>
-     
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-     
+
     <t:test depends="create_test_account1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -358,7 +358,7 @@
 
         </t:response>
     </t:test>
-  
+
      <t:test>
         <t:request>
                <GetFolderRequest xmlns = "urn:zimbraMail"/>
@@ -380,7 +380,7 @@ Subject: ${subject1}
 Date: Wed, 15 Aug 2007 10:11:05 -0700 (PDT)
 
 Hello how r u?
-                    
+
                     </content>
                 </m>
             </AddMsgRequest>
@@ -396,7 +396,7 @@ Hello how r u?
                 <query> is:local in:trash </query>
             </SearchRequest>
         </t:request>
-        <t:response>       
+        <t:response>
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${subject1}"/>
         </t:response>
     </t:test>

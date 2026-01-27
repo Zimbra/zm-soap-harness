@@ -281,7 +281,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account14.server"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -291,14 +291,14 @@
 		1. Login as account1
 		2. Add a briefcase folder, share the folder with account2 (permissions=read)
 		3. Login as account2
-		4. Mount the drive, success.	
+		4. Mount the drive, success.
 		5. SearchRequest.  Success.
-		6. Try add a document.  PERM_DENIED.	
+		6. Try add a document.  PERM_DENIED.
 		7. Try to delete a document from mounted folder (op=delete).  PERM_DENIED.
-		8. FolderActionRequest(grant).  PERM_DENIED.	
+		8. FolderActionRequest(grant).  PERM_DENIED.
 		9. Create a subfolder in the folder.  PERM_DENIED.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="uploadServletServer" value="${account1.server}"/>
 
@@ -335,7 +335,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -344,7 +344,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -354,10 +354,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse"/>           
+            <t:select path="//mail:SaveDocumentResponse"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -406,7 +406,7 @@
         <t:response>
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
         </t:response>
-    </t:test>	
+    </t:test>
 
     <t:test >
         <t:request>
@@ -430,7 +430,7 @@
 			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account1.document.id"/>
 		</t:response>
 	</t:test>
-	
+
   	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account2.document.htmlfile}</filename>
@@ -439,7 +439,7 @@
 			<t:select attr="id" set="account2.document.htmlfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -449,9 +449,9 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>    
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test >
         <t:request>
@@ -463,7 +463,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -475,7 +475,7 @@
         <t:response>
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
@@ -487,10 +487,10 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test >
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="BriefcaseFoldersSharingBasic_02" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingBasic_02" type="sanity">
     <t:objective>Verify that sharing briefcase folders with manager (rwidx) access allows messages to be viewed, added, modified, and deleted, but not reshared</t:objective>
 	<t:steps>
 		1. Login as account4
@@ -499,12 +499,12 @@
 		4. Mount the drive, success.
 		5. Run a document search.  Success.
 		6. GetItemRequest.  Success.
-		7. Add a document.  Success.	
+		7. Add a document.  Success.
 		9. ItemActionRequest(op=delete).  Success.
 		10. FolderActionRequest(grant).  PERM_DENIED.
 		12. Create a subfolder in the folder-->  allowed( r + i permission grants c permission) .
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 	<t:property name="uploadServletServer" value="${account4.server}"/>
 
@@ -541,7 +541,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account4.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -550,7 +550,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -560,10 +560,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse"/>           
+            <t:select path="//mail:SaveDocumentResponse"/>
         </t:response>
     </t:test>
-      
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -612,7 +612,7 @@
         <t:response>
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account5.folder.shared.id"/>
         </t:response>
-    </t:test>	
+    </t:test>
 
     <t:test >
         <t:request>
@@ -635,7 +635,7 @@
 			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account5.document1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account2.document.htmlfile}</filename>
@@ -644,7 +644,7 @@
 			<t:select attr="id" set="account5.document.htmlfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -654,10 +654,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse"/>       
+            <t:select path="//mail:SaveDocumentResponse"/>
         </t:response>
-    </t:test>  
-   
+    </t:test>
+
     <t:test >
         <t:request>
             <ItemActionRequest xmlns="urn:zimbraMail">
@@ -671,7 +671,7 @@
 			</t:select>
         </t:response>
     </t:test>
-    
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -695,21 +695,21 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="newfolder.id"/>
         </t:response>
     </t:test >
-    
+
 </t:test_case>
 
 
 
-<t:test_case testcaseid="BriefcaseFoldersSharingBasic_03" type="bhr">
+<t:test_case testcaseid="BriefcaseFoldersSharingBasic_03" type="sanity">
     <t:objective>Verify that sharing briefcase folders with no permission does not allow to be mounted, viewed</t:objective>
 	<t:steps>
 	1. Login as account6
 	2. Add a briefcase folder, share folder with account7 (permissions=none)
 	3. Login as account7
 	4. Mount the drive, fialure.
-	5. Run a document search.   No results.		
+	5. Run a document search.   No results.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 	<t:property name="uploadServletServer" value="${account6.server}"/>
 
@@ -745,7 +745,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -754,7 +754,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -764,10 +764,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse"/>           
+            <t:select path="//mail:SaveDocumentResponse"/>
         </t:response>
     </t:test>
-      
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -826,11 +826,11 @@
 		<t:response>
 			<t:select path="//mail:SearchResponse" emptyset="1"/>
 		</t:response>
-	</t:test>    
-    
+	</t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="BriefcaseFoldersSharingBasic_04" type="sanity" >
+<t:test_case testcaseid="BriefcaseFoldersSharingBasic_04" type="functional" >
     <t:objective>Verify a grantee with "ra" rights can share the folder again to another user</t:objective>
 	<t:steps>
 		1. Login as account8
@@ -840,7 +840,7 @@
 		5. Login as account10.
 		6. Verify that account8's contents can be viewed.
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account8.server}"/>
 	<t:property name="uploadServletServer" value="${account8.server}"/>
 
@@ -876,7 +876,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -885,7 +885,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -895,10 +895,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse"/>           
+            <t:select path="//mail:SaveDocumentResponse"/>
         </t:response>
     </t:test>
-      
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -946,7 +946,7 @@
         <t:response>
              <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account9.folder.shared.id"/>
         </t:response>
-    </t:test>	
+    </t:test>
 
     <t:test >
         <t:request>
@@ -969,7 +969,7 @@
 			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account9.document1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetItemRequest xmlns="urn:zimbraMail">
@@ -980,7 +980,7 @@
 			<t:select path="//mail:GetItemResponse/mail:doc" attr="name" match="contact1.txt"/>
 		</t:response>
 	</t:test>
-	
+
 	 <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -993,10 +993,10 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account10.server}"/>
 	<t:property name="account10.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
-    
+
     <t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -1009,7 +1009,7 @@
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -1029,7 +1029,7 @@
             <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
         </t:response>
     </t:test>
-   
+
 	<t:test>
 		<t:request>
 			<GetItemRequest xmlns="urn:zimbraMail">
@@ -1040,10 +1040,10 @@
 			<t:select path="//mail:GetItemResponse/mail:doc" attr="name" match="contact1.txt"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
-<t:test_case testcaseid="BriefcaseFoldersSharingBasic_05" type="sanity" >
+<t:test_case testcaseid="BriefcaseFoldersSharingBasic_05" type="functional" >
     <t:objective>Verify tagging a shared message does not apply</t:objective>
 	<t:steps>
 		1. Login as account11
@@ -1053,9 +1053,9 @@
 		5. Flag the shared document-- Success
 		6. Login as account11.
 		7. Verify that the tag does not appear
-		8. Verify the shared doc is flagged 
+		8. Verify the shared doc is flagged
 	</t:steps>
-	
+
 	<t:property name="server.zimbraAccount" value="${account11.server}"/>
 	<t:property name="uploadServletServer" value="${account11.server}"/>
 
@@ -1091,7 +1091,7 @@
             <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account11.folder1.id"/>
         </t:response>
     </t:test >
-    
+
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -1100,7 +1100,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -1110,10 +1110,10 @@
 			</SaveDocumentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account11.document1.id"/>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account11.document1.id"/>
         </t:response>
     </t:test>
-      
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -1161,7 +1161,7 @@
         <t:response>
              <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account12.folder.shared.id"/>
         </t:response>
-    </t:test>	
+    </t:test>
 
     <t:test >
         <t:request>
@@ -1181,10 +1181,10 @@
 			</SearchRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account12.document1.id"/>			
+			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account12.document1.id"/>
 		</t:response>
 	</t:test>
-	
+
 	<t:test>
         <t:request>
             <CreateTagRequest xmlns="urn:zimbraMail">
@@ -1195,31 +1195,31 @@
             <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="account12.tag1.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<ItemActionRequest xmlns="urn:zimbraMail">
 				<action id="${account12.document1.id}" op="${op.tag}"  tag="${account12.tag1.id}"/>
-			</ItemActionRequest>	
+			</ItemActionRequest>
 		</t:request>
 		<t:response>
 			 <t:select path="//zimbra:Code" />
 		</t:response>
 	</t:test>
-	
+
     <t:test>
 		<t:request>
 			<ItemActionRequest xmlns="urn:zimbraMail">
 				<action id="${account12.document1.id}" op="${op.flag}" />
-			</ItemActionRequest>	
+			</ItemActionRequest>
 		</t:request>
 		<t:response>
 			  <t:select path="//mail:ItemActionResponse/mail:action" attr="op" match="${op.flag}"/>
 		</t:response>
 	</t:test>
-	
-    <t:property name="server.zimbraAccount" value="${account11.server}"/>	
-    
+
+    <t:property name="server.zimbraAccount" value="${account11.server}"/>
+
     <t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -1231,8 +1231,8 @@
 			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
 			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 		</t:response>
-	</t:test>	
-   
+	</t:test>
+
 	<t:test>
 		<t:request>
 			<GetItemRequest xmlns="urn:zimbraMail">
@@ -1243,7 +1243,7 @@
 			<t:select path="//mail:GetItemResponse/mail:doc" attr="t" match="${account12.tag1.id}" emptyset="1"/>
 		</t:response>
 	</t:test>
-    
+
     <t:test>
 		<t:request>
 			<GetItemRequest xmlns="urn:zimbraMail">

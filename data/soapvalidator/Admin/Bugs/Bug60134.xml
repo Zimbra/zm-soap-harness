@@ -84,7 +84,7 @@
 	<t:test id="Createcos" required="true" depends="admin_login">
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">TestCos${TIME}${COUNTER}</name>        
+                <name xmlns="">TestCos${TIME}${COUNTER}</name>
             </CreateCosRequest>
         </t:request>
         <t:response>
@@ -114,9 +114,9 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-    
+
 	<t:test id="CreateRes1" required="true" depends="Createcos">
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -141,10 +141,10 @@
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='displayName']"  set="resourceeq1.name"/>
 			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="name" set="resource1.name"/>
 			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='description']"  set="resource1.description"/>
-			
+
         </t:response>
     </t:test>
-    
+
     <t:test id="CreateRes2" required="true" depends="Createcos">
         <t:request>
 			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -168,14 +168,14 @@
             <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='displayName']"  set="resourceeq2.name"/>
 			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="name" set="resource2.name"/>
 			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='description']"  set="resource2.description"/>
-			
+
         </t:response>
     </t:test>
 
 </t:test_case>
 
 
-<t:test_case testcaseid="resource_search01" type="bhr" bugids="60134">
+<t:test_case testcaseid="resource_search01" type="sanity" bugids="60134">
     <t:objective>Search the resources by Equipment using description.</t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -216,7 +216,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="resource_search02" type="bhr" bugids="60134">
+<t:test_case testcaseid="resource_search02" type="sanity" bugids="60134">
     <t:objective>Search by zimbraCalResType and description. </t:objective>
 	<t:steps>
 			1. Login into test account.
@@ -259,7 +259,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="resource_search03" type="functional" bugids="60134">
+<t:test_case testcaseid="resource_search03" type="regression" bugids="60134">
     <t:objective>Search the resources by Equipment using non existing resource.</t:objective>
 	<t:steps>
 			1. Login into test account.

@@ -46,12 +46,12 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 
 </t:test_case>
- 
 
-<t:test_case testcaseid="bug65081" type="bhr" bugids="65081,65974" >
+
+<t:test_case testcaseid="bug65081" type="sanity" bugids="65081,65974" >
     <t:objective>AutoCompleteRequest first last and last first</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -85,11 +85,11 @@
 	<t:property name="contact2.email" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
 	<t:property name="contact2.firstname" value="matt"/>
 	<t:property name="contact2.lastname" value="malcom${TIME}${COUNTER}"/>
-	
+
 	<t:property name="contact3.email" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
 	<t:property name="contact3.firstname" value="mic${TIME}${COUNTER}"/>
 	<t:property name="contact3.lastname" value="rickson"/>
-	
+
 
     <t:test >
         <t:request>
@@ -98,11 +98,11 @@
                     <a n="firstName">${contact1.firstname}</a>
                     <a n="lastName">${contact1.lastname}</a>
                     <a n="email">${contact1.email}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
         </t:response>
     </t:test>
 
@@ -114,11 +114,11 @@
                     <a n="firstName">${contact2.firstname}</a>
                     <a n="lastName">${contact2.lastname}</a>
                     <a n="email">${contact2.email}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>
         </t:response>
     </t:test>
 
@@ -130,19 +130,19 @@
                     <a n="firstName">${contact3.firstname}</a>
                     <a n="lastName">${contact3.lastname}</a>
                     <a n="email">${contact3.email}</a>
-                </cn>     
+                </cn>
         	</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>
         </t:response>
     </t:test>
 
 	<t:delay sec="20"/>
-	
+
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>matt m</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -152,13 +152,13 @@
  				<t:select path="//mail:match" attr="email" match=".*${contact1.email}.*" emptyset="1"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
         <t:delay sec="20"/>
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>rickson m</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -169,13 +169,13 @@
  			<t:select path="//mail:match" attr="email" match=".*${contact2.email}.*" emptyset="1"/>
  			</t:select>
 		</t:response>
-    </t:test>  
+    </t:test>
 
         <t:delay sec="20"/>
 
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>rickson mic</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -186,12 +186,12 @@
  				<t:select path="//mail:match" attr="email" match=".*${contact1.email}.*" emptyset="1"/>
  			</t:select>
 		</t:response>
-    </t:test> 
+    </t:test>
 
 	<t:delay sec="60"/>
 	<t:test>
 		<t:request>
-			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>rickson matt</name>
 			</AutoCompleteRequest>
 		</t:request>
@@ -202,7 +202,7 @@
  				<t:select path="//mail:match" attr="email" match=".*${contact3.email}.*" emptyset="1"/>
  			</t:select>
 		</t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 

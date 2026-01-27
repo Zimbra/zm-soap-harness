@@ -18,7 +18,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
 	<t:objective>basic system check</t:objective>
-    
+
 	<t:test id="ping" required="true">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
@@ -27,13 +27,13 @@
 			<t:select path="//admin:PingResponse"/>
 		</t:response>
 	</t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup_domains_get" type="always" >
 	<t:objective>Login to Admin Account</t:objective>
-    
+
 	<t:test id="admin_login" required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -55,7 +55,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
-        </t:response>        
+        </t:response>
     </t:test>
 
     <t:test required="true">
@@ -69,7 +69,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -81,7 +81,7 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <ModifyDomainRequest xmlns="urn:zimbraAdmin">
@@ -97,9 +97,9 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SearchDirectoryRequest1" type="bhr" areas="dev_sanity">
+<t:test_case testcaseid="SearchDirectoryRequest1" type="sanity" areas="dev_sanity">
 	<t:objective> Search Directory Request </t:objective>
-  
+
 	<t:test>
 		<t:request>
 			<SearchDirectoryRequest xmlns="urn:zimbraAdmin" offset="0" sortBy="zimbraDomainName" sortAscending="1" types="domains">
@@ -113,9 +113,9 @@
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="GetDomainRequest1" type="bhr" areas="dev_sanity">
+<t:test_case testcaseid="GetDomainRequest1" type="sanity" areas="dev_sanity">
 	<t:objective> Get domain by id</t:objective>
-  
+
     <t:test>
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin">
@@ -129,10 +129,10 @@
 
 </t:test_case>
 
-    
-<t:test_case testcaseid="GetDomainRequest2" type="bhr" areas="dev_sanity">
+
+<t:test_case testcaseid="GetDomainRequest2" type="sanity" areas="dev_sanity">
 	<t:objective> Get domain by id (applyConfig=0)</t:objective>
-  
+
     <t:test>
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin" applyConfig="0">
@@ -143,13 +143,13 @@
 	        <t:select path="//admin:GetDomainResponse/admin:domain" attr="id"  match="^${domain1.id}$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="GetDomainRequest3" type="bhr" areas="dev_sanity">
+
+
+<t:test_case testcaseid="GetDomainRequest3" type="sanity" areas="dev_sanity">
 	<t:objective> Get domain by name </t:objective>
-  
+
     <t:test>
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin">
@@ -162,11 +162,11 @@
     </t:test>
 
 </t:test_case>
-    
-   
-<t:test_case testcaseid="GetDomainRequest4" type="bhr" areas="dev_sanity">
+
+
+<t:test_case testcaseid="GetDomainRequest4" type="sanity" areas="dev_sanity">
 	<t:objective> Get domain by name (applyConfig=0)</t:objective>
-  
+
     <t:test>
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin" applyConfig="0">
@@ -179,9 +179,9 @@
     </t:test>
 
 </t:test_case>
-    
-    
-<t:test_case testcaseid="GetDomainRequest5" type="functional">
+
+
+<t:test_case testcaseid="GetDomainRequest5" type="regression">
 	<t:objective> Get  a deleted Domains</t:objective>
     <t:steps>1. Delete a domain
              2. Get the deleted domain by id
@@ -197,9 +197,9 @@
         </t:request>
         <t:response>
             <t:select path="//admin:DeleteDomainResponse"/>
-        </t:response>        
+        </t:response>
     </t:test>
-    
+
     <t:test depends="getDomainRequest5a">
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin">
@@ -234,10 +234,10 @@
 	</t:test>
 </t:test_case>
 
-    
-<t:test_case testcaseid="GetDomainRequest6" type="functional">
+
+<t:test_case testcaseid="GetDomainRequest6" type="regression">
 	<t:objective>GetDomainRequest with invalid values for applyConfig (Negative/LargeNumber/blank/Spaces/Sometext/Special character)</t:objective>
-  
+
     <t:test>
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin" applyConfig="${domain.negative}">
@@ -302,14 +302,14 @@
         <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
-    
-   
-<t:test_case testcaseid="GetDomainRequest7" type="functional">
+
+
+<t:test_case testcaseid="GetDomainRequest7" type="regression">
 	<t:objective>GetDomainRequest with invalid values for name (Blank/Sometext/Special character)</t:objective>
-  
+
     <t:test>
         <t:request>
             <GetDomainRequest xmlns="urn:zimbraAdmin">
@@ -341,12 +341,12 @@
         <t:response>
             <t:select path="//zimbra:Code" match="^account.NO_SUCH_DOMAIN$"/>
         </t:response>
-    </t:test>    
+    </t:test>
 
 </t:test_case>
-    
-   
-<t:test_case testcaseid="GetDomainRequest8" type="functional">
+
+
+<t:test_case testcaseid="GetDomainRequest8" type="regression">
 	<t:objective>GetDomainRequest with invalid values for id (NEgative/Zero/Large Number/Blank/Sometext/Special character)</t:objective>
 
     <t:test>
@@ -414,16 +414,16 @@
             <t:select path="//zimbra:Code" match="^account.NO_SUCH_DOMAIN$"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-    
-<t:test_case testcaseid="GetDomainRequest9" type="functional">
+
+
+<t:test_case testcaseid="GetDomainRequest9" type="regression">
 	<t:objective> GetDomainRequest without domain element</t:objective>
-  
+
     <t:test>
         <t:request>
-            <GetDomainRequest xmlns="urn:zimbraAdmin" applyConfig="0">                
+            <GetDomainRequest xmlns="urn:zimbraAdmin" applyConfig="0">
             </GetDomainRequest>
         </t:request>
         <t:response>
@@ -433,7 +433,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetDomainRequest10" type="bhr" bugids="ZBUG-201">
+<t:test_case testcaseid="GetDomainRequest10" type="sanity" bugids="ZBUG-201">
 	<t:objective> GetDomainRequest when zimbraAuthLdapURL is space separated list </t:objective>
 
     <t:test>
@@ -449,6 +449,6 @@
     </t:test>
 
 </t:test_case>
-    
+
 </t:tests>
 

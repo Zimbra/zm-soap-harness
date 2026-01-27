@@ -5,10 +5,10 @@
 	<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
-	<t:property name="test_account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}" />	
+	<t:property name="test_account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="folder_inbox" value="Inbox" />
 	<t:property name="mime01.file" value="${testMailRaw.root}/zcs-1858/mime01.txt" />
-	
+
     <t:property name="sieve_rule1" value='require ["fileinto"];
 if envelope :matches "To" "test1.*@${defaultdomain.name}" {
 	fileinto "bug1858";
@@ -41,7 +41,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 
 <t:test_case testcaseid="Config setup" type="always">
     <t:objective>create test account</t:objective>
-    
+
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -70,7 +70,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 				<t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -82,7 +82,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
                 <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account.server" />
             </t:response>
         </t:test>
-	    
+
 		<t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -146,7 +146,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 	</t:test_case>
 
 <!-- Verify  some extension test without declare in require-->
-	<t:test_case testcaseid="ZCS-1858_rule1" type="functional" bugids="ZCS-1858">
+	<t:test_case testcaseid="ZCS-1858_rule1" type="regression" bugids="ZCS-1858">
 		<t:objective>Verify  envelope test without declare in require</t:objective>
 		<t:steps>
 			1. applied envelope test without declare in require to account1
@@ -165,7 +165,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:mailinjecttest>
 			<t:lmtpInjectRequest>
 				<filename>${mime01.file}</filename>
@@ -177,7 +177,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -190,7 +190,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -204,7 +204,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-1858_rule2" type="functional" bugids="ZCS-1858">
+	<t:test_case testcaseid="ZCS-1858_rule2" type="regression" bugids="ZCS-1858">
 		<t:objective>Verify comparator test without declare in require</t:objective>
 		<t:steps>
 			1. applied comparator test without declare in require to account2
@@ -223,7 +223,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:mailinjecttest>
 			<t:lmtpInjectRequest>
 				<filename>${mime01.file}</filename>
@@ -236,7 +236,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -249,7 +249,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -258,12 +258,12 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				</SearchRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//mail:SearchResponse/mail:m" attr="su" match="zcs-1858 test" emptyset="0"/>				
+				<t:select path="//mail:SearchResponse/mail:m" attr="su" match="zcs-1858 test" emptyset="0"/>
 			</t:response>
 		</t:test>
 	</t:test_case>
-  
- 	<t:test_case testcaseid="ZCS-1858_rule3" type="functional" bugids="ZCS-1858">
+
+ 	<t:test_case testcaseid="ZCS-1858_rule3" type="regression" bugids="ZCS-1858">
 		<t:objective>Verify relational test without declare in require</t:objective>
 		<t:steps>
 			1. applied relational test without declare in require to account3
@@ -282,7 +282,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:mailinjecttest>
 			<t:lmtpInjectRequest>
 				<filename>${mime01.file}</filename>
@@ -296,7 +296,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				</modify>
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
-		
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -309,7 +309,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message"
@@ -323,7 +323,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
 		</t:test>
 	</t:test_case>
 
-     <t:test_case testcaseid="zcs-1858_rule4" type="functional" bugids="zcs-1858">
+     <t:test_case testcaseid="zcs-1858_rule4" type="regression" bugids="zcs-1858">
         <t:objective>Verify ereject works without require "ereject"</t:objective>
         <t:test required="true">
             <t:request>
@@ -336,7 +336,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-     
+
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${mime01.file}</filename>
@@ -371,7 +371,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
         </t:test>
     </t:test_case>
 
-     <t:test_case testcaseid="zcs-1858_rule5" type="functional" bugids="zcs-1858">
+     <t:test_case testcaseid="zcs-1858_rule5" type="regression" bugids="zcs-1858">
         <t:objective>Verify reject works without require "reject"</t:objective>
         <t:test required="true">
             <t:request>
@@ -417,7 +417,7 @@ if header :matches "To" "test3.*@${defaultdomain.name}" {
                 <t:select path="//mail:SearchResponse/mail:m" attr="su" match="zcs-1858 test" emptyset="0"/>
             </t:response>
         </t:test>
-        
+
     </t:test_case>
-		
+
 </t:tests>

@@ -28,7 +28,7 @@
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    	
+
     <t:test required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -64,7 +64,7 @@
 	<Steps> 1. Create a valid account.
 			2. Delete the account.
 	</Steps>
-	
+
     <!-- Create an account  -->
     <t:test id="deleteAccountRequest1a">
         <t:request>
@@ -75,7 +75,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
-            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>	 
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
 
@@ -95,7 +95,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteAccountRequest2" type="functional" >
+<t:test_case testcaseid="DeleteAccountRequest2" type="regression" >
     <t:objective>Delete two accounts simultaneously (cann't delete simultaneously two accounts)</t:objective>
     <Steps> 1. Create 2 accounts.
 			2. Delete the 2 accounts.
@@ -110,7 +110,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
-            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>	 
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
 
@@ -122,8 +122,8 @@
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>	
-            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/> 
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
 
@@ -141,13 +141,13 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteAccountRequest3" type="bhr">
+<t:test_case testcaseid="DeleteAccountRequest3" type="sanity">
     <t:objective>Delete an account ID that is already deleted</t:objective>
 	<Steps>	1. Create a account
 			2. Delete the account
 			3. Again try deleting the same account.
 	</Steps>
-	
+
     <!--  Create an account  -->
     <t:test id="deleteAccountRequest3a">
         <t:request>
@@ -189,7 +189,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteAccountRequest4" type="sanity" >
+<t:test_case testcaseid="DeleteAccountRequest4" type="functional" >
     <t:objective>Delete non-existing account</t:objective>
 
     <t:test>
@@ -208,7 +208,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteAccountRequest5" type="functional" >
+<t:test_case testcaseid="DeleteAccountRequest5" type="regression" >
     <t:objective>Delete an account with some text in id</t:objective>
 
     <t:test>
@@ -225,7 +225,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteAccountRequest6" type="sanity" >
+<t:test_case testcaseid="DeleteAccountRequest6" type="functional" >
     <t:objective>Delete a renamed account </t:objective>
     <Steps>	1. Create a account.
 			2. Rename the account.
@@ -277,7 +277,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteAccountRequest7" type="functional" >
+<t:test_case testcaseid="DeleteAccountRequest7" type="regression" >
     <t:objective>Delete an account with spaces/Special Character/Zero/Negative numbers/Leading Spaces / Trailling Spaces / Space before and after the id </t:objective>
 
 	<!-- Spaces -->
@@ -303,7 +303,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-    
+
     <!-- Zero -->
     <t:test>
         <t:request>
@@ -315,7 +315,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-    
+
     <!-- Negative Number -->
     <t:test>
         <t:request>
@@ -327,7 +327,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-    
+
     <!-- Leading Spaces  -->
     <t:test>
         <t:request>
@@ -339,7 +339,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-    
+
     <!-- Trailing Spaces  -->
     <t:test>
         <t:request>
@@ -351,7 +351,7 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-    
+
     <!-- Leading & trailing Spaces -->
     <t:test>
         <t:request>
@@ -363,11 +363,11 @@
             <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
-<t:test_case testcaseid="DeleteAccountRequest8" type="sanity" >
+<t:test_case testcaseid="DeleteAccountRequest8" type="functional" >
     <t:objective>Delete account by parsing invalid attribute in DeleteAccountRequest</t:objective>
 
     <t:test>

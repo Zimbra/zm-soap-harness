@@ -43,9 +43,9 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 		</t:response>
-    </t:test>  
+    </t:test>
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="Contact_Groups_01" type="smoke">
     <t:objective>Create contact group</t:objective>
@@ -83,10 +83,10 @@
 			</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>
         </t:response>
     </t:test>
-  
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -103,7 +103,7 @@
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="Contact_Groups_02" type="bhr">
+<t:test_case testcaseid="Contact_Groups_02" type="sanity">
     <t:objective>Modify contact group</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -142,10 +142,10 @@
 			</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0">
@@ -158,7 +158,7 @@
             <t:select path = "//mail:ModifyContactResponse/mail:cn" attr="id" set="group1.id"/>
         </t:response>
     </t:test>
-    
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -176,7 +176,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="Contact_Groups_03" type="bhr">
+<t:test_case testcaseid="Contact_Groups_03" type="sanity">
     <t:objective>Modify contact to contact group</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -217,10 +217,10 @@
         </t:request>
         <t:response>
             <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set = "contact.id"/>            
+            <t:select attr = "id" set = "contact.id"/>
             </t:select>
         </t:response>
-    </t:test>	
+    </t:test>
 
     <t:test>
         <t:request>
@@ -234,10 +234,10 @@
 			</ModifyContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:ModifyContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        	<t:select path="//mail:ModifyContactResponse/mail:cn" attr="id" set="group1.id"/>
         </t:response>
     </t:test>
-  
+
   	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -254,7 +254,7 @@
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="Contact_Groups_04" type="bhr">
+<t:test_case testcaseid="Contact_Groups_04" type="sanity">
     <t:objective>Create contact group in sub folder</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -283,10 +283,10 @@
         </t:request>
         <t:response>
             <t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="contacts.id"/>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/>
         </t:response>
     </t:test>
-	<t:property name="folder1.name" value="folder${TIME}"/>    
+	<t:property name="folder1.name" value="folder${TIME}"/>
     <t:test id="createFolderRequest1" >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -313,10 +313,10 @@
 			</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>
         </t:response>
     </t:test>
-  
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -333,7 +333,7 @@
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="Contact_Groups_05" type="bhr">
+<t:test_case testcaseid="Contact_Groups_05" type="sanity">
     <t:objective>Delete contact group</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -371,7 +371,7 @@
 			</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>
         </t:response>
     </t:test>
 
@@ -386,7 +386,7 @@
         </t:response>
     </t:test>
 
-  
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -399,7 +399,7 @@
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="Contact_Groups_06" type="bhr">
+<t:test_case testcaseid="Contact_Groups_06" type="sanity">
     <t:objective>Move contact group</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -422,7 +422,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	<t:property name="folder2.name" value="folder2${TIME}"/>    
+	<t:property name="folder2.name" value="folder2${TIME}"/>
 
     <t:test>
         <t:request>
@@ -430,10 +430,10 @@
         </t:request>
         <t:response>
             <t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="contacts.id"/>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -459,7 +459,7 @@
 			</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>
         </t:response>
     </t:test>
 
@@ -474,7 +474,7 @@
         </t:response>
     </t:test>
 
-  
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -488,11 +488,11 @@
 				<t:select path="mail:a[@n='dlist']" match="${account2.name},${account3.name}" />
 			</t:select>
 		</t:response>
-		
+
 	</t:test>
 </t:test_case>
 
-<t:test_case testcaseid="Contact_Groups_07" type="bhr">
+<t:test_case testcaseid="Contact_Groups_07" type="sanity">
     <t:objective>Delete contact group from folder</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -516,7 +516,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	<t:property name="folder2.name" value="folder2${TIME}"/>    
+	<t:property name="folder2.name" value="folder2${TIME}"/>
 
     <t:test>
         <t:request>
@@ -524,10 +524,10 @@
         </t:request>
         <t:response>
             <t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="contacts.id"/>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
@@ -553,7 +553,7 @@
 			</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>
         </t:response>
     </t:test>
 
@@ -568,7 +568,7 @@
         </t:response>
     </t:test>
 
-  
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -594,7 +594,7 @@
         </t:response>
     </t:test>
 
-  
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -606,7 +606,7 @@
 		</t:response>
 	</t:test>
 </t:test_case>
-<t:test_case testcaseid="Contact_Groups_08" type="bhr">
+<t:test_case testcaseid="Contact_Groups_08" type="sanity">
     <t:objective>Create contact group with member having first name and last name</t:objective>
 	<t:steps>
 	1. Login as account1
@@ -651,10 +651,10 @@
 			</CreateContactRequest>
         </t:request>
         <t:response>
-        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>
         </t:response>
     </t:test>
-  
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">

@@ -2,15 +2,15 @@
 ----------------------
 
 URL for posting to SOAP is:
- 
+
 ${uri}
 OR
 ${soapservice.mode}://${server.zimbraAccount}:${soapservice.port}/${soapservice.path}
 ${soapservice.mode}://${server.zimbraMail}:${soapservice.port}/${soapservice.path}
 ${admin.mode}://${server.zimbraAdmin}:${admin.port}/${admin.path}
- 
+
 -------------------------------
- 
+
 urn:zimbraTestHarness  -- top-level namespace for global attributes/elements
 
 
@@ -18,9 +18,9 @@ urn:zimbraTestHarness  -- top-level namespace for global attributes/elements
 
 <t:test_case objective="{objective}" type="{type}" [ areas="{areas}" bugids="{bugids}" supportedAfter="{version}" ]>
 	[ <t:steps>{steps}</t:steps> ]
-	
+
 	... {tests}
-	
+
 </t:test_case>
 
 
@@ -29,10 +29,11 @@ Define a test case, which is a series of one or more test elements.
 	{objective} = The objective statement for the test case (text)
 	{type}		= The level of test case:
 					always: always run the test case
-					smoke: only run the test for when suite = smoke, functional
+					smoke: only run the test for when suite = smoke
+					sanity: only run the test for when suite = sanity
 					functional: only run the test for when suite = functional
-					negative: only run the test for when suite = functional
-					deprecated: never run the teset
+					regression: only run the test for when suite = regression
+					deprecated: never run the test
 	{areas}		= Defines the test case as OSS or NETWORK.  NETWORK features include:
 					backup: backup feature tests
 					verity: convertd feature tests
@@ -45,15 +46,15 @@ Define a test case, which is a series of one or more test elements.
 				  that was upgraded from 4.5.9 to 5.0.2 will skip the test.  A
 				  server that was upgraded from 5.0.2 to 5.0.3 will execute the test.
 				  See also, .install_history.  Format is "X.Y.Z"
-	
-	
-	
+
+
+
 ----------------------------
 
 <t:test_loop [ count="{count}" ]>
 
 	... {tests}
-	
+
 </t:test_loop>
 
 
@@ -64,14 +65,14 @@ Define a series of tests to run in a loop.
 
 Properties are re-evaluated for each iteration.  For example, ${account.id} can be reused
 for each iteration.
-	
-	
+
+
 ----------------------------
 
 <t:for [name="{expression}"] [start="{initializer}"] end="{limit}" [increment="{increment}"] [break="{looptest}"]>
 
 	... {tests}
-	
+
 </t:for>
 
 
@@ -85,20 +86,20 @@ Define a series of tests to run in a for loop.
 
 Properties are re-evaluated for each iteration.  For example, ${account.id} can be reused
 for each iteration.
-	
-	
+
+
 ----------------------------
 
 <t:finally >
 
 	... {tests}
-	
+
 </t:finally>
 
 
 Define tests to run after the test XML script finishes.
 
-The <t:finally> element is useful when global settings or postfix are being 
+The <t:finally> element is useful when global settings or postfix are being
 modified.  Since global changes may affect other test cases, use <t:finally> to
 undo the changes after the test completes.
 
@@ -121,8 +122,8 @@ search ZimbraQA for the file
 	{file}		= The name of the file to include.  Do not specify the path to
 					the file.  The preferred nomenclature is use the .inc extension
 					for the file.
-	
-	
+
+
 ----------------------------
 
 <t:test [ id="{i}" depends="{d}" required="{r}" >
@@ -160,7 +161,7 @@ Execute a SOAP test step.
 				If false, then the XML script will continue, even if this test case fails.
 
 
-Use the optional <t:requestContext/> to define the request context.  By default, the 
+Use the optional <t:requestContext/> to define the request context.  By default, the
 request context uses the properties ${authToken} and ${sessionId} to build the context.
 See soap.txt for context definitions.
 
@@ -191,7 +192,7 @@ Import a PST file using the PST Import wizard.
 							then the import wizard does not translate the old messages or
 							calendar appointments from the old address to the new address.
 	{wizard path}	= Path (from ZimbraQA) to a PST Import wizard executable.
-	
+
 The harness uses the following wizard executable locations, in order of preference:
 	1. {wizard path}, if specified
 	2. ${pstImportTool.path}, if specified
@@ -226,9 +227,9 @@ Import from an exchange server.
 	[ <zimbraaccountserverssl> {zimbra account server ssl} </zimbraaccountserverssl> ]
 	[ <zimbraaccountname> {zimbra account name} </zimbraaccountname> ]
 	[ <zimbraaccountpassword> {zimbra account password} </zimbraaccountpassword> ]
-	
+
 	[ <zimbradestinationdomain> {zimbra destination domain} </zimbradestinationdomain> ]
-	
+
 	[ <gwdomaindirectorypath> {gw domain directory path} </gwdomaindirectorypath> ]
 	[ <gwpostofficeinformation> {gw postoffice information} </gwpostofficeinformation> ]
 	[ <gwldapserveraddress> {gw ldap server address} </gwldapserveraddress> ]
@@ -253,7 +254,7 @@ Import from a GroupWise server.
 	{gw ldap server port}		= The GW LDAP server port (groupwise.ldapserver.port)
 	{gw admin username}			= The GW admin user (groupwise.admin.user)
 	{gw admin password}			= The GW admin password (groupwise.admin.password)
-	
+
 One of {groupwise account} or {base dn} must be specified.  All other values are optional.
 
 The properties in parantheses (e.g. "(zimbraServer.name)") can be found in global.properties.
@@ -283,7 +284,7 @@ Execute an HTTP POST or GET on the Zimbra REST interface.
 </t:estServletRequest>
 
 	{url} = hard coded URL path to use
-			
+
 <t:restServletRequest [ method="GET" ]>
 	[ <user> {user} </user> | <userid> {id} </userid> ]
 	<folder> {folder} </folder>
@@ -303,11 +304,11 @@ Execute an HTTP POST or GET on the Zimbra REST interface.
 </t:restServletRequest>
 
 	Build the REST url from the specified values.  See rest.txt for more information.
-	
+
 	The URL will have the format such as:
-	
+
 	http://{server}/zimbra/user/[~][{username}]/[{folder}]?[{query-params}]fmt={ics, csv, etc}
-	
+
 <t:restServletRequest method="POST">
 	[ <user> {user} </user> | <userid> {id} </userid> ]
 	<folder> {folder} </folder>
@@ -431,7 +432,7 @@ Executes a system command on the target server under test.
 	{parameters} = Any command line arguments to the command, such as "777 /tmp/file.txt"
 	{prop1}		= The stdout will be saved to this property
 	{prop2}		= The stderr will be saved to this property
-	
+
 For example:
 
 	<t:system command="cat" parms="/opt/zimbra/.install_history" stdout=".install_history"/>
@@ -443,7 +444,7 @@ For example:
 
 <t:select  [ path="{xpath}" ]  [ attr="{attribute}" ]  [ set="{variable}" ]
 		[ match="{value}" ] [ query="{element}" ] [ emptyset="1" ]>
-		
+
 		... {selects}
 </t:select>
 
@@ -482,7 +483,7 @@ Each test type can implement <t:select/> in its specific manner.  See ContactsSe
 as an example.
 
 * TODO: Define the different <t:select/> interfaces per test class
-		
+
 ----------------------------
 
 <t:property name="{propname}" value="{propvalue}">
@@ -512,14 +513,14 @@ Built in variables:
 Time based variables can apply the following notation to the value:
 
 	${FORMAT([+/-][d+][dhms])[${TIME}]}
-	
+
 	For example, if T=1106136000000 (Jan 19, 2005, noon), the following will evaluate to
 	"20050118T130000":  ${ICALTIME(-1d)(+1h)[${T}]}
-	
+
 	If no time offsets are specified, then the local time is used.  For example, ${ICALTIME}
 	defaults to the current local time.
 
-		
+
 ----------------------------
 
 <t:regex input="{string}" pattern="{regex}" group="{number}" match="{regex}" set="{prop}">
@@ -533,7 +534,7 @@ Apply regex to a string.
 	{match}			= A regex to match against the regex match and group number
 	{set}			= A property to set based on the regex match and group number
 
-		
+
 ----------------------------
 
 <t:delay sec="{duration}" | msec="{duration}">
@@ -543,10 +544,10 @@ Pause for a specified duration.  Specify at least one of sec or msec, but not bo
 
 	${duration}			= The amount of time to pause
 
-	
+
 ----------------------------
 
-<t:preauth account="{account-identifier}" by="{by-value}" timestamp="{timestamp}" 
+<t:preauth account="{account-identifier}" by="{by-value}" timestamp="{timestamp}"
 	expires="{expires}" key="{key}" set="{variable}"/>
 
 Generate a preauth digest value used to preauth authentication (see preauth.txt)
@@ -562,7 +563,7 @@ Generate a preauth digest value used to preauth authentication (see preauth.txt)
  						The timestamp must be within 5 minutes of the server's
  						time for the preauth to work.
 
- {expires}              expiration time of the authtoken, in milliseconds. 
+ {expires}              expiration time of the authtoken, in milliseconds.
                         set to 0 to use the default expiration time for the
                         account. Can be used to sync the auth token expiration
                         time with the external system's notion of expiration
@@ -576,7 +577,7 @@ Generate a preauth digest value used to preauth authentication (see preauth.txt)
  						these two requests.)
 
  {variable}				the computed pre-auth value is set to this property name
- 	
+
 ----------------------------
 
 <t:echo>
@@ -609,12 +610,12 @@ Exit the script immediately.
 General format is:
 
 <t:tests xmlns:t="urn:zimbraTestHarness">
- 
+
  <!-- in order to reference namespaces in the xpath expressions, they need to either be
       pre-defined, or defined with the namespace command.
-      
+
       The following are pre-defined:
-      
+
       acct   -> urn:zimbraAccount
       mail   -> urn:zimbraMail
       admin  -> urn:zimbraAdmin
@@ -622,18 +623,18 @@ General format is:
       soap   -> http://www.w3.org/2003/05/soap-envelope
       soap12 -> http://www.w3.org/2003/05/soap-envelope
 	  soap11 -> http://schemas.xmlsoap.org/soap/envelope/
-      
+
 -->
-      
+
  <t:namespace prefix="foo" uri="http://foo.com/"/>
- 
- 
+
+
  <!-- properties are normally defined at the top.
      there are some special properties:
-     
+
      uri          the uri of the server to connect to
 
-     authToken    the auth token to use in requests   
+     authToken    the auth token to use in requests
 
      sessionId    the session id to use in requests
 
@@ -645,47 +646,47 @@ General format is:
      			  <t:test_case supportedAfter="A.B.C" .../> can then be used
      			  to skip the test case, if any server version did not
      			  support the feature (useful for upgrade testing)
-     
+
      TIME         evaluates to System.currentTimeMillis()
 
      COUNTER      starts at 1, and increments everytime it is referenced
 
      GENTIME      evaluates to current time, in generalized time format (YYYYMMDDhhmmssZ)
-     
-     GENTIME([+-]?\d+[dhms]?) 
-     
+
+     GENTIME([+-]?\d+[dhms]?)
+
                   evaluates to current time +/- the specified number of days/hours/minutes/seconds,
                   in generalized time format (YYYYMMDDhhmmssZ). Defaults to +/days.
-                  
-                  For example: ${GENTIME(-7d)} will expand to the current time minus 7 days. 
+
+                  For example: ${GENTIME(-7d)} will expand to the current time minus 7 days.
 
      properties get expanded in attrs and element values by referencing them
      as ${propname}.
-     
-     
+
+
  -->
- 
+
  <t:property name="..." value="..."/>
 
- <!-- one or more t:test elements 
+ <!-- one or more t:test elements
       id       attribute is used to name this test, so others that depend on it can refer to it.
       required attribute is used to indicate that the test harness should stop if this test fails
       depends  attribute is used to indicate this test should only be run if the others listed passed
       dump     attribute is used to dump out the SOAP request/response
  -->
-  
+
  <t:test id="auth" [required="true|false"] [depends="a,b,c"] [dump="true|false"]/>
   <t:request>
     <!-- the body of the request goes here (i.e,. the child of the soap:body) -->
   </t:request>
   <t:response>
-    <!-- one or more select elements. 
+    <!-- one or more select elements.
        path     attribute is is an xpath expression to match an element. test fails if path isn't found
        attr     attribute means match/set operate on the name attribute instead of element's value
        match    a regex to match on. test fails if regex doesn't match
-       set      name of property to set 
+       set      name of property to set
     -->
-       
+
 	<t:select path="..."  [attr="..."] [match="..."] [set="..."] >
 	   <!-- additional selects can be nested, their pathes are relative to
 	        the outer select's element -->

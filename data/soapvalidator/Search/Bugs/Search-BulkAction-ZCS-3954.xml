@@ -21,8 +21,8 @@
 	<t:property name="folder.name" value="Test_Folder" />
 	<t:property name="folder1.name" value="Nested_Folder" />
 
-	
-	<t:test_case testcaseid="ping" type="bhr">
+
+	<t:test_case testcaseid="ping" type="sanity">
 		<t:objective>basic system check	</t:objective>
 		<t:test id="ping">
 			<t:request>
@@ -33,11 +33,11 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-	
+
 	<t:test_case testcaseid="acct_setup" type="always">
-	
+
 		<t:objective>Create Test Accounts</t:objective>
-		
+
 		<t:test id="admin_login" required="true" depends="ping">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -49,7 +49,7 @@
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id="create_test_account1" required="false" depends="admin_login">
 
 			<t:request>
@@ -89,15 +89,15 @@
 					set="test_acct.server" />
 			</t:response>
 		</t:test>
-		
+
 		<t:property name="server.zimbraAccount" value="${test_acct.server}" />
 
 	</t:test_case>
-	
+
 	<t:test_case testcaseid = "send_testMessages" type="always">
-	
+
 		<t:objective> Send test messages </t:objective>
-		
+
 		<t:test id = "auth_admin" required = "true">
 			<t:request>
 				<AuthRequest xmlns = "urn:zimbraAccount">
@@ -109,7 +109,7 @@
 				<t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id = "Send_mail1">
 			<t:request>
 				<SendMsgRequest xmlns = "urn:zimbraMail">
@@ -145,7 +145,7 @@
 		</t:test>
 
 		<t:test id = "Send_mail3">
-		
+
 			<t:request>
 				<SendMsgRequest xmlns = "urn:zimbraMail">
 					<m>
@@ -163,7 +163,7 @@
 		</t:test>
 
 		<t:test id = "Send_mail6">
-		
+
 			<t:request>
 				<SendMsgRequest xmlns = "urn:zimbraMail">
 					<m>
@@ -181,7 +181,7 @@
 		</t:test>
 
 		<t:test id = "Send_mail7">
-		
+
 			<t:request>
 				<SendMsgRequest xmlns = "urn:zimbraMail">
 					<m>
@@ -196,8 +196,8 @@
 			<t:response>
 				<t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" />
 			</t:response>
-		</t:test>		
-		
+		</t:test>
+
 		<t:test id = "auth_testAccount2" required = "true">
 			<t:request>
 				<AuthRequest xmlns = "urn:zimbraAccount">
@@ -209,7 +209,7 @@
 				<t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id = "Send_mail4">
 			<t:request>
 				<SendMsgRequest xmlns = "urn:zimbraMail">
@@ -226,7 +226,7 @@
 				<t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id = "Send_mail5">
 			<t:request>
 				<SendMsgRequest xmlns = "urn:zimbraMail">
@@ -247,9 +247,9 @@
 	</t:test_case>
 
 	<t:test_case testcaseid = "create_folders" type="always">
-	
+
 		<t:objective> Create folders </t:objective>
-		
+
 		<t:test id = "auth_testAccount1" required = "true">
 			<t:request>
 				<AuthRequest xmlns = "urn:zimbraAccount">
@@ -262,9 +262,9 @@
 			</t:response>
 		</t:test>
 
-		
+
 		<t:test id = "Create_test_folder">
-			
+
 			<t:request>
 				<CreateFolderRequest xmlns = "urn:zimbraMail">
 					<folder name = "${folder.name}" l = "1" />
@@ -276,7 +276,7 @@
 				</t:select>
 			</t:response>
 		</t:test>
-		
+
 		<t:test id = "Create_nested_folder">
 			<t:request>
 				<CreateFolderRequest xmlns = "urn:zimbraMail">
@@ -289,12 +289,12 @@
 				</t:select>
 			</t:response>
 		</t:test>
-		
+
 	</t:test_case>
 
 	<t:test_case testcaseid = "save_draftMessages" type="always">
 		<t:objective> Save few messages as drafts </t:objective>
-		
+
 		<t:test id="SaveDraftMessage1">
 			<t:request>
 				<SaveDraftRequest xmlns="urn:zimbraMail">
@@ -304,11 +304,11 @@
 						<mp ct="text/plain">
 							<content> ${message1.content}_Draft</content>
 						</mp>
-					</m>					
+					</m>
 				</SaveDraftRequest>
 			</t:request>
 		</t:test>
-		
+
 		<t:test id="SaveDraftMessage2">
 			<t:request>
 				<SaveDraftRequest xmlns="urn:zimbraMail">
@@ -318,7 +318,7 @@
 						<mp ct="text/plain">
 							<content> ${message2.content}_Draft</content>
 						</mp>
-					</m>					
+					</m>
 				</SaveDraftRequest>
 			</t:request>
 		</t:test>
@@ -429,9 +429,9 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
- 
+
 	<t:test_case testcaseid = "searchAction_MultipleSearchtest" type="always" >
-		
+
 		<t:objective> Search message from admin in inbox and mark them as unread/read in bulk action </t:objective>
 		<t:delay msec="5000"/>
 		<t:test id = "Mark message from admin in inbox as unread" >
@@ -573,9 +573,9 @@
 			</t:request>
 			<t:response>
 				<t:select path="//mail:FolderActionResponse/mail:action"/>
-			</t:response>			
+			</t:response>
 		</t:test>
-	
+
 		<t:test id = "Auth_testAccount1" required = "true">
 			<t:request>
 				<AuthRequest xmlns = "urn:zimbraAccount">
@@ -587,7 +587,7 @@
 				<t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test id = "Get_Folder_Ids"  required="true" >
 			<t:request>
 				<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -598,7 +598,7 @@
 				</t:select>
 			</t:response>
 		</t:test>
-		
+
 		<t:test id ="Mount_Shared_Folder" required="true">
 			<t:request>
 				<CreateMountpointRequest xmlns="urn:zimbraMail">

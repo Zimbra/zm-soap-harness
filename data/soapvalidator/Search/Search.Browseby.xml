@@ -40,7 +40,7 @@
 <t:test_case testcaseid="acctSetup1_add_message" type="always" >
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account
-            2. Create a mail account 
+            2. Create a mail account
     </steps>
 
     <t:test id="admin_login" required="true" >
@@ -54,16 +54,16 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraBatchedIndexingSize">0</a> <!-- See bug 37742 -->
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos01.id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos01.id"/>
         </t:response>
     </t:test>
 
@@ -111,7 +111,7 @@
 
 <t:delay msec="5000" />
 <!-- browseBy tests -->
-<t:test_case testcaseid="BrowseRequest1" type="bhr">
+<t:test_case testcaseid="BrowseRequest1" type="sanity">
  <t:objective>BrowseRequest: browseBy="domains"</t:objective>
 	<t:test>
 	 <t:request>
@@ -125,7 +125,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="BrowseRequest2" type="bhr" bugids="4895">
+<t:test_case testcaseid="BrowseRequest2" type="sanity" bugids="4895">
  <t:objective>BrowseRequest: browseBy="objects"</t:objective>
 
 	<t:test>
@@ -139,7 +139,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="BrowseRequest3" type="bhr">
+<t:test_case testcaseid="BrowseRequest3" type="sanity">
  <t:objective>BrowseRequest: browseBy="attachments"</t:objective>
 
 	<t:test>
@@ -153,7 +153,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="BrowseRequest4" type="sanity" bugids="4925">
+<t:test_case testcaseid="BrowseRequest4" type="functional" bugids="4925">
  <t:objective>Verify BrowseRequest returns application/octet-stream, not application/exe</t:objective>
  <t:steps>
  1. Inject mime with application/octet-stream attachment
@@ -162,7 +162,7 @@
  </t:steps>
 
 
-    
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test >
         <t:request>
@@ -174,17 +174,17 @@
         <t:response>
             <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
         </t:response>
-    </t:test>    
-				
+    </t:test>
+
     <t:test>
         <t:request>
             <CreateCosRequest xmlns="urn:zimbraAdmin">
-                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <name xmlns="">cos${TIME}${COUNTER}</name>
                 <a n="zimbraBatchedIndexingSize">0</a> <!-- See bug 37742 -->
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos01.id"/>         
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos01.id"/>
         </t:response>
     </t:test>
 
@@ -201,7 +201,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-  
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns = "urn:zimbraAdmin">
@@ -215,7 +215,7 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
-    
+
     <t:mailinjecttest >
         <t:lmtpInjectRequest>
             <foldername>${account2.foldername}</foldername>

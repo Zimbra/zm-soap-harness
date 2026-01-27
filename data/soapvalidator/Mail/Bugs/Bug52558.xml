@@ -36,7 +36,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test required="true" >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -65,7 +65,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="bug52558_1" type="bhr" bugids="52558">
+<t:test_case testcaseid="bug52558_1" type="sanity" bugids="52558">
     <t:objective>"Send Later" does not add new email address to Emalied Contacts.</t:objective>
     <t:steps>
     1. Login to ZWC
@@ -73,7 +73,7 @@
 	3. Compose a mail to New email-address (Address not in contact) and schedule a message using "Send Later"
 	4. Wait till the message get delivered to recipient after schedule time.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
@@ -90,7 +90,7 @@
 
         </t:response>
     </t:test>
-	
+
 	 <t:test>
 	<t:request>
 		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -101,7 +101,7 @@
 		<t:select path="//acct:ModifyPrefsResponse"/>
 	</t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -114,9 +114,9 @@
 			</t:select>
 		</t:response>
 	</t:test>
-    
+
     <t:property name="Time1" value="${TIME(+1m)}"/>
-    
+
     <t:test >
         <t:request>
             <SaveDraftRequest xmlns="urn:zimbraMail">
@@ -134,9 +134,9 @@
             <t:select path="//mail:SaveDraftResponse/mail:m" attr="su" set="message.subject"/>
         </t:response>
     </t:test>
-    
+
     <t:delay sec="70"/>
-    
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -149,7 +149,7 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 	  <t:test >
         <t:request>
@@ -163,7 +163,7 @@
 
         </t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -175,16 +175,16 @@
 			</t:select>
 		</t:response>
 	</t:test>
-	
+
 </t:test_case>
 
-<t:test_case testcaseid="bug52558_2" type="bhr" bugids="52558">
+<t:test_case testcaseid="bug52558_2" type="sanity" bugids="52558">
     <t:objective>Test for "autoSendTime" with invalid values.</t:objective>
     <t:steps>
     1. Login to ZWC
 	2. Send SaveDraftRequest with invalid values for autoSendTime
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
@@ -201,7 +201,7 @@
 
         </t:response>
     </t:test>
-	
+
 	 <t:test>
 	<t:request>
 		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
@@ -212,7 +212,7 @@
 		<t:select path="//acct:ModifyPrefsResponse"/>
 	</t:response>
     </t:test>
-    
+
     <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -225,9 +225,9 @@
 			</t:select>
 		</t:response>
 	</t:test>
-    
+
     <t:property name="Time1" value="${TIME(+1m)}"/>
-    
+
     <!-- Blank autoSendTime -->
     <t:test >
         <t:request>
@@ -245,7 +245,7 @@
 				<t:select path="//zimbra:Code" match="^service.FAILURE"/>
         </t:response>
     </t:test>
-    
+
        <!-- Alfa-numeric autoSendTime -->
     <t:test >
         <t:request>
@@ -263,7 +263,7 @@
 				<t:select path="//zimbra:Code" match="^service.FAILURE"/>
         </t:response>
     </t:test>
-        
+
 </t:test_case>
 
 
