@@ -1,0 +1,30 @@
+import { assert } from 'chai';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
+
+describe('Folders > Bugs > Bug 95572', function () {
+    let accountAuthToken;
+    let testAccount;
+
+    before(async function () {
+        await main.before(this);
+        testAccount = soap.testAccounts.testAccount1;
+        accountAuthToken = await soap.getAccountAuthToken(testAccount.emailAddress);
+    });
+
+
+    it('Regression | Bug 95572 | Create a folder with fie=1 i.e. no parent folder', async () => {
+        const folderName = `bug95572_${common.getUniqueString()}`;
+
+        const createRequest =
+            `<CreateFolderRequest xmlns='urn:zimbraMail'>
+                <folder name='${folderName}' l='1' fie='1'/>
+             </CreateFolderRequest>`;
+
+        // Try with account auth
+        const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+        assert.exists(createResponse.CreateFolderResponse.folder[0].id, 'Folder should be created with fie=1');
+    });
+});

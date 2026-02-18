@@ -1,0 +1,46 @@
+{
+	"name": "zimbrax-api-automation",
+	"repository": "Zimbra/zm-api-automation",
+	"description": "System api automation",
+	"version": "2.0.0",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"test:Smoke": "cross-env mocha tests -g Smoke --recursive --parallel --retries 2 --timeout 10000 --slow 1000 --reporter xunit",
+		"test:Smoke:mochawesome": "cross-env mocha tests -g Smoke --recursive --parallel --retries 2 --timeout 10000 --slow 1000 --reporter mochawesome --reporter-options inline,cdn,saveJson,reportDir=test-reports,reportFilename=smoke-report,reportTitle=smoke-report,reportPageTitle=smoke-report | tee test-reports/smoke-report.txt"
+	},
+	"keywords": [
+		"api-automation"
+	],
+	"author": "Synacor",
+	"private": true,
+	"license": "See Synacor LICENSE in repo",
+	"lint-staged": {
+		"!({tests/**})*.{js}": [
+			"eslint"
+		]
+	},
+	"dependencies": {
+		"@eslint/js": "^9.13.0",
+		"asclient": "^0.1.0",
+		"chai": "^4.5.0",
+		"cross-env": "^10.1.0",
+		"dav": "^1.8.0",
+		"emailjs": "^5.0.0",
+		"eslint": "^9.13.0",
+		"ews-javascript-api": "^0.15.3",
+		"imap-simple": "^5.1.0",
+		"log4js": "^6.9.1",
+		"mocha": "^11.7.5",
+		"mocha-junit-reporter": "^2.2.1",
+		"mocha-multi-reporters": "^1.5.1",
+		"shelljs": "^0.8.5",
+		"smtp-client": "^0.4.0",
+		"xml-js": "1.6.11",
+		"yapople": "^0.4.10",
+		"yargs": "^17.7.2"
+	},
+	"devDependencies": {
+		"@zimbra/soap-client": "file:../../zm-soap-client"
+	}
+}

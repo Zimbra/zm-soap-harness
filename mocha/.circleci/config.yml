@@ -1,0 +1,416 @@
+version: 2.1
+
+############################################################################
+
+executors:
+  node-executor:
+    working_directory: ~/zm-api-automation
+    shell: /bin/bash
+    docker:
+      - image: cimg/node:24.13.1
+        environment:
+          TZ: 'Asia/Calcutta'
+    resource_class: medium
+
+############################################################################
+
+references:
+  add-ssh-keys: &add-ssh-keys
+    add_ssh_keys:
+      fingerprints: 2d:35:2b:4d:d6:b2:06:00:46:c2:87:b7:71:81:32:4e
+
+  store-results: &store-results
+    store_test_results:
+      path: test-reports
+
+  store-artifacts: &store-artifacts
+    store_artifacts:
+      path: test-reports
+
+  persist-workspace: &persist-workspace
+    persist_to_workspace:
+      root: ~/
+      paths:
+        - zm-api-automation
+
+  save-dependencies-cache: &save-dependencies-cache
+    save_cache:
+      paths:
+        - node_modules
+      key: v2-dependencies-{{ .Branch }}-{{ checksum "package.json" }}
+
+  restore-dependencies-cache: &restore-dependencies-cache
+    restore_cache:
+      keys:
+        - v2-dependencies-{{ .Branch }}-{{ checksum "package.json" }}
+        - v2-dependencies-{{ .Branch }}-
+        - v2-dependencies-
+
+  attach-workspace: &attach-workspace
+    attach_workspace:
+      at: ~/
+
+  feature-branch: &feature-branch
+    filters:
+      branches:
+        ignore:
+          - master
+
+  master-branch: &master-branch
+    filters:
+      branches:
+        only:
+          - master
+
+############################################################################
+
+commands:
+  clone-zimbra-repos: &clone-zimbra-repos
+    parameters:
+      repos:
+        type: string
+
+    steps:
+      - run:
+          name: Clone zimbra repositories
+          command: |
+            set -e
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+            REPOS="<< parameters.repos >>"
+            echo "${REPOS}" | tr ',' '\n' | while read -r REPO_NAME; do
+              echo -e "\n++++++++++++++++++++++++++++++++++++++++"
+              cd "${HOME}"
+
+              git clone --depth 1 --progress git@github.com:Zimbra/${REPO_NAME}
+              cd "${HOME}/${REPO_NAME}"
+              git checkout master -f
+              git pull origin master -f
+              git remote prune origin
+
+              if git ls-remote --exit-code --heads origin "${CIRCLE_BRANCH}" >/dev/null 2>&1; then
+                git fetch origin "${CIRCLE_BRANCH}:${CIRCLE_BRANCH}"
+                git checkout "${CIRCLE_BRANCH}" -f
+                git pull origin "${CIRCLE_BRANCH}" -f
+                echo "Checked out ${CIRCLE_BRANCH} branch in ${REPO_NAME}"
+              else
+                echo "Branch ${CIRCLE_BRANCH} does not exist in ${REPO_NAME}, staying on master"
+              fi
+            done
+
+  run-automation:
+    description: Run automation tests
+
+    parameters:
+      SERVER_ENVIRONMENT:
+        type: string
+        default: ZIMBRA101_AUTOMATION
+
+      TESTS_PATH:
+        type: string
+        default: tests/**/*.js
+
+      TEST_SUITE:
+        type: string
+        default: Smoke
+
+      SERIAL:
+        type: boolean
+        default: false
+
+      REPORT_PATH:
+        type: string
+        default: test-reports/${CIRCLE_JOB}
+
+    steps:
+      - checkout
+
+      - run:
+          name: Clone zm-soap-client repo
+          command: |
+            git clone git@github.com:Zimbra/zm-soap-client.git ~/zm-soap-client
+
+      - *restore-dependencies-cache
+
+      - run:
+          name: Install npm dependencies
+          command: |
+            # Install npm packages
+            npm install --no-audit
+
+      - *save-dependencies-cache
+
+      - run:
+          name: Pre-configuration of automation run
+          command: |
+            # Pre-configuration
+            ./.circleci/configuration.sh CONFIG_TYPE="PRE_CONFIG" SERVER_ENVIRONMENT="<< parameters.SERVER_ENVIRONMENT >>" REPORT_PATH="<< parameters.REPORT_PATH >>"
+
+      - run:
+          name: Run automation tests -g "<< parameters.TEST_SUITE >>" --env "<< parameters.SERVER_ENVIRONMENT >>"
+          no_output_timeout: 1h
+          command: |
+            # Run tests
+            TEST_FILES=$(circleci tests glob "<< parameters.TESTS_PATH >>" | circleci tests split)
+            echo "${TEST_FILES}" | xargs node mocha-run.js -g "<< parameters.TEST_SUITE >>"
+
+            # export serverEnvironment="<< parameters.SERVER_ENVIRONMENT >>" && \
+            # export serverHost="${SERVER_HOST}" && \
+            # export smtpPort="${SMTP_PORT}" && \
+            # export popPort="${POP_PORT}" && \
+            # export imapPort="${IMAP_PORT}" && \
+            # npx mocha tests -g "<< parameters.TEST_SUITE >>" --configure true
+
+            # # Move xunit report file under test-reports
+            # mkdir -p "<< parameters.REPORT_PATH >>"
+            # reportPath="<< parameters.REPORT_PATH >>"
+            # testReportXmlFilePath="${reportPath}/test-report.xml"
+            #
+            # # Ensure report directory exists
+            # mkdir -p "${reportPath}" || {
+            # 	echo -e "Could not create report directory: ${reportPath}\nEXIT"
+            # 	exit 1
+            # }
+            #
+            # # Ensure xunit.xml exists
+            # if [ ! -f "xunit.xml" ]; then
+            # 	echo -e "xunit.xml not found\nEXIT"
+            # 	exit 1
+            # fi
+            #
+            # # Move report
+            # mv xunit.xml "${testReportXmlFilePath}" || {
+            # 	echo -e "Could not move xunit.xml to ${testReportXmlFilePath}\nEXIT"
+            # 	exit 1
+            # }
+            #
+            # # Generate HTML report from XML
+            # node utils/xml-to-html-report.js || {
+            # 	echo -e "XML to HTML report generation failed\nEXIT"
+            # 	exit 1
+            # }
+
+      - run:
+          name: Post-configuration of automation run
+          command: |
+            # Post-configuration
+            ./.circleci/configuration.sh CONFIG_TYPE="POST_CONFIG" REPORT_PATH="<<parameters.REPORT_PATH>>"
+
+      - *store-artifacts
+      - *store-results
+      - *save-dependencies-cache
+      - *persist-workspace
+
+  # --------------------------------------------------
+
+  prepare-report:
+    description: Prepare backend automation report
+
+    parameters:
+      SERVER_ENVIRONMENT:
+        type: string
+        default: ZIMBRA101
+
+    steps:
+      - checkout
+
+      - clone-zimbra-repos:
+          repos: zm-soap-client
+
+      - run:
+          name: Install dependencies
+          command: npm install --no-audit
+
+      - run:
+          name: Protocol automation report
+          command: node framework/report/circleci-report.js --SERVER_ENVIRONMENT="ZIMBRA101" REPORT_PATH=test-reports
+
+  # --------------------------------------------------
+
+  build-docker-image:
+    description: Build docker image and run automation tests
+
+    steps:
+      - checkout
+
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run:
+          name: Build docker image
+          command: |
+            # Configuration
+            mkdir -p test-reports
+            TEST_REPORT_FILE="test-reports/smoke-report.txt"
+            [ "${CIRCLE_BRANCH}" = "master" ] && TAG_NAME="latest" || TAG_NAME="${CIRCLE_BRANCH//[a-zA-Z0-9]*\//}"
+
+            # Export environment variables for next jobs
+            echo "export TAG_NAME=${TAG_NAME}" >> $BASH_ENV
+            echo "export TEST_REPORT_FILE=${TEST_REPORT_FILE}" >> $BASH_ENV
+
+            # Build docker image
+            if make DOCKER_REGISTRY="${ENV_DOCKER_REGISTRY}" DOCKER_IMAGE_NAME="${ENV_DOCKER_IMAGE}" DOCKER_IMAGE_TAG="${TAG_NAME}" build; then
+              echo -e "Successfully built docker image"
+            else
+              echo -e "Could not build docker image\nEXIT"
+              exit 1
+            fi
+
+      - run:
+          name: Run docker image and automation tests
+          command: |
+            # Run tests using docker image
+            docker run -it ${ENV_DOCKER_REGISTRY}/${ENV_DOCKER_IMAGE}:${TAG_NAME} sh -c "npm run test:smoke" | tee ${TEST_REPORT_FILE}
+
+            # Report file
+            if [ ! -f "${TEST_REPORT_FILE}" ]; then
+              exit 1
+            fi
+
+            # Passed tests
+            totalPassedTests=$(grep -w '0 passing' ${TEST_REPORT_FILE})
+            if [ ! -z "${totalPassedTests}" ]; then
+              exit 1
+            fi
+
+            # Failed tests
+            totalFailedTests=$(grep 'failing' ${TEST_REPORT_FILE} | head -n 1 | awk '{print $1}')
+            if [ ! -z "${totalFailedTests}" ]; then
+              echo "Total failed tests: ${totalFailedTests}"
+              exit "${totalFailedTests}"
+            fi
+
+            # Failed tests
+            totalFailedTests=$(grep 'failing' ${TEST_REPORT_FILE} | head -n 1 | awk '{print $1}')
+            if [ ! -z "${totalFailedTests}" ]; then
+              echo "Total failed tests: ${totalFailedTests}"
+              exit "${totalFailedTests}"
+            fi
+
+      - run:
+          name: Push docker image
+          command: |
+            # Login to docker registry
+            echo -e "\n+++++ Login to docker registry: docker login ${ENV_DOCKER_REGISTRY} -u ${ENV_DOCKER_USERNAME} -p '${ENV_DOCKER_PASSWORD}'' +++++"
+            if ! docker login ${ENV_DOCKER_REGISTRY} -u ${ENV_DOCKER_USERNAME} -p "${ENV_DOCKER_PASSWORD}"; then
+              echo -e "Could not login to docker registry\nEXIT"
+              exit 1
+            else
+              echo -e "Successfully logged in to docker registry"
+            fi
+
+            # Push image to dev registry
+            if make DOCKER_REGISTRY="${ENV_DOCKER_REGISTRY}" DOCKER_IMAGE_NAME="${ENV_DOCKER_IMAGE}" DOCKER_IMAGE_TAG="${TAG_NAME}" push; then
+              echo -e "Successfully pushed image to docker registry"
+            else
+              echo -e "Could not push image to docker registry\nEXIT"
+              exit 1
+            fi
+
+      - *store-artifacts
+      - *store-results
+
+############################################################################
+
+jobs:
+  smoke-zimbra101:
+    executor: node-executor
+    parallelism: 2
+    steps:
+      - run-automation:
+          TEST_SUITE: Smoke
+
+  serial-zimbra101:
+    executor: node-executor
+    parallelism: 1
+    steps:
+      - run-automation:
+          SERIAL: true
+          TEST_SUITE: Smoke
+
+  report-zimbra101:
+    executor: node-executor
+    parallelism: 1
+    steps:
+      - *attach-workspace
+      - prepare-report:
+          SERVER_ENVIRONMENT: ZIMBRA101_AUTOMATION
+      - *store-artifacts
+      - *store-results
+
+  build-docker-image:
+    executor: node-executor
+    steps:
+      - build-docker-image
+
+############################################################################
+
+workflows:
+  version: 2.1
+
+  ######################################
+
+  # Feature/bug branch workflow
+  commit-workflow:
+    jobs:
+      - smoke-zimbra101-approval:
+          type: approval
+          <<: *feature-branch
+
+      - smoke-zimbra101:
+          requires:
+            - smoke-zimbra101-approval
+          <<: *feature-branch
+
+      - serial-zimbra101-approval:
+          type: approval
+          <<: *feature-branch
+
+      - serial-zimbra101:
+          requires:
+            - serial-zimbra101-approval
+          <<: *feature-branch
+
+      - report-zimbra101-approval:
+          type: approval
+          <<: *feature-branch
+
+      - report-zimbra101:
+          requires:
+            - report-zimbra101-approval
+          <<: *feature-branch
+
+  ######################################
+
+  # Master branch workflow
+  master-workflow:
+    jobs:
+      - smoke-zimbra101-approval:
+          type: approval
+          <<: *master-branch
+
+      - smoke-zimbra101:
+          requires:
+            - smoke-zimbra101-approval
+          <<: *master-branch
+
+      - serial-zimbra101-approval:
+          type: approval
+          <<: *master-branch
+
+      - serial-zimbra101:
+          requires:
+            - serial-zimbra101-approval
+          <<: *master-branch
+
+      - report-zimbra101-approval:
+          type: approval
+          <<: *master-branch
+
+      - report-zimbra101:
+          requires:
+            - report-zimbra101-approval
+          <<: *master-branch
+
+############################################################################

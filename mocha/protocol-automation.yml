@@ -1,0 +1,46 @@
+# Deploy protocol automation container against Zimbra X in Kubernetes
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: api-automation
+  labels:
+    type: system
+    automation: api
+spec:
+  serviceName: api
+  replicas: 1
+  selector:
+    matchLabels:
+      type: system
+      automation: api
+  template:
+    metadata:
+      labels:
+        type: system
+        automation: api
+    spec:
+      volumes:
+        - name: test-reports
+          persistentVolumeClaim:
+            claimName: api-automation-pv-claim
+      containers:
+      - name: api-automation
+        image: "iad.ocir.io/idtnzfdm3vg6/dev/api-automation:latest"
+        imagePullPolicy: Always
+        command: ["sh", "-c", "./init.sh && tail -f /dev/null"]
+        env:
+        - name: SERVER_HOST
+          value: "ci.zimbradev.com"
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: api-automation-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
