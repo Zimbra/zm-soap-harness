@@ -1,0 +1,694 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="domain" value="${COUNTER}.${TIME}-testgal.com" />
+
+	<t:property name="account1" value="syncgal1.${COUNTER}.${TIME}@${domain}" />
+	<t:property name="account2" value="syncgal2.${COUNTER}.${TIME}@${domain}" />
+	<t:property name="account3" value="syncgal3.${COUNTER}.${TIME}@${domain}" />
+	<t:property name="account4" value="syncgal4.${COUNTER}.${TIME}@${domain}" />
+	<t:property name="user" value="galuser_${TIME}" />
+	<t:property name="user_new" value="galuser1_${TIME}" />
+	<t:property name="user_delta" value="galuser2_${TIME}" />
+
+	<t:property name="domain.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain}" />
+	<t:property name="domain.galaccount.datasource.name" value="name${TIME}${COUNTER}" />
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="SyncGalRequest_AccountSetup_01"
+		type="q4fix">
+		<t:objective>Account Setup </t:objective>
+		<t:steps>
+			1. Login into admin.
+			2. Create test domains with galsync
+			accounts.
+			3. Create test accounts .
+		</t:steps>
+
+		<t:test id="adminlogin" required="true" depends="Ping">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="authToken" value="${admin.authToken}" />
+
+		<t:test id="CreateDomain1a" required="true" depends="adminlogin">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain}</name>
+					<a n="zimbraNotes">Domain for testing SyncGalRequest</a>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse" />
+			</t:response>
+		</t:test>
+
+		<t:staftask>
+			<t:request>
+				<server>${zimbraServer.name}</server>
+				<service>PROCESS</service>
+				<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov
+					cabulk
+					'${domain}' ${user} 12'" RETURNSTDOUT RETURNSTDERR WAIT
+					${staf.process.timeout.zmmtactl}</params>
+			</t:request>
+		</t:staftask>
+
+
+		<t:test id="CreateAccount1a" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateAccount2a" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account2.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateAccount3a" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account3}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account3.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateAccount4a" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account4}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account4.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account4.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin"
+					name="${domain.galaccount.datasource.name}" type="zimbra" domain="${domain}"
+					server="${account1.server}">
+					<account by="name">${domain.galaccount.name}</account>
+					<password>${defaultpassword.value}</password>
+				</CreateGalSyncAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateGalSyncAccountResponse/admin:account"
+					attr="id" set="domain.galaccount.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${domain.galaccount.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:a[@n='zimbraMailHost']" set="domain.galaccount.server" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
+					<account id="${domain.galaccount.id}">
+						<datasource by="name" fullSync="false" reset="false">${domain.galaccount.datasource.name}</datasource>
+					</account>
+				</SyncGalAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:SyncGalAccountResponse" />
+			</t:response>
+		</t:test>
+
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="account1.authToken" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="SyncGalRequest_Count_01" type="q4fix"
+		bugids="ZCS-1200">
+		<t:objective>Verify the count of remaining items is returned every
+			time getCount=True is passed in SyncGalRequest
+		</t:objective>
+
+
+		<!-- change to the end-user auth token -->
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+		<t:property name="authToken" value="${account1.authToken}" />
+
+		<t:property name="limit_value_0" value="0" />
+		<t:property name="limit_value_1" value="3" />
+		<t:property name="limit_value_2" value="4" />
+		<t:property name="limit_value_3" value="8" />
+
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount" limit="${limit_value_1}"
+					getCount="true" idOnly="true">
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token1" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="13" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_2}</limit>
+					<getCount>true</getCount>
+					<idOnly>true</idOnly>
+					<token>${token1}</token>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token2" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="9" />
+			</t:response>
+		</t:test>
+
+		<!-- New 10 users get added to the gal sync account -->
+
+		<t:test id="adminlogin" required="true" depends="Ping">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:staftask>
+			<t:request>
+				<server>${zimbraServer.name}</server>
+				<service>PROCESS</service>
+				<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov
+					cabulk
+					'${domain}' ${user_new} 10'" RETURNSTDOUT RETURNSTDERR WAIT
+					${staf.process.timeout.zmmtactl}</params>
+			</t:request>
+		</t:staftask>
+
+		<t:staftask>
+			<t:request>
+				<server>${zimbraServer.name}</server>
+				<service>PROCESS</service>
+				<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov
+					md
+					'${domain}' zimbraGalSyncSizeLimit 0'" RETURNSTDOUT RETURNSTDERR
+					WAIT
+					${staf.process.timeout.zmmtactl}</params>
+			</t:request>
+		</t:staftask>
+
+		<t:test>
+			<t:request>
+				<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
+					<account id="${domain.galaccount.id}">
+						<datasource by="name" fullSync="false" reset="false">${domain.galaccount.datasource.name}</datasource>
+					</account>
+				</SyncGalAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:SyncGalAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount" limit="${limit_value_3}"
+					getCount="true" idOnly="true" token="${token2}">
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token3" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="11" />
+			</t:response>
+		</t:test>
+
+		<!-- Fetch the remaining users in the gal sync account with limit=0 -->
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_0}</limit>
+					<getCount>true</getCount>
+					<idOnly>true</idOnly>
+					<token>${token3}</token>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token4" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="0" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="0" />
+			</t:response>
+		</t:test>
+
+		<!-- Even after all users are fetched, verify the count still returns 0 
+			with new token -->
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_0}</limit>
+					<getCount>true</getCount>
+					<idOnly>true</idOnly>
+					<token>${token4}</token>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token5" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="0" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="0" />
+			</t:response>
+		</t:test>
+
+
+		<!-- New records get added after initial sync. Verify in delta sync the 
+			count is reflected just for the new ones added. -->
+
+		<t:test id="adminlogin" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:staftask>
+			<t:request>
+				<server>${zimbraServer.name}</server>
+				<service>PROCESS</service>
+				<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov
+					cabulk
+					'${domain}' ${user_delta} 10'" RETURNSTDOUT RETURNSTDERR WAIT
+					${staf.process.timeout.zmmtactl}</params>
+			</t:request>
+		</t:staftask>
+
+		<t:test>
+			<t:request>
+				<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
+					<account id="${domain.galaccount.id}">
+						<datasource by="name" fullSync="false" reset="false">${domain.galaccount.datasource.name}</datasource>
+					</account>
+				</SyncGalAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:SyncGalAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_3}</limit>
+					<getCount>true</getCount>
+					<idOnly>true</idOnly>
+					<token>${token5}</token>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token6" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="2" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_2}</limit>
+					<getCount>true</getCount>
+					<idOnly>true</idOnly>
+					<token>${token6}</token>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token7" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="0" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="0" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="SyncGalRequest_Count_02" type="q4fix"
+		bugids="ZCS-1200">
+		<t:objective>Verify count value when 1. Limit greater than no. of
+			records 2. Users get deleted from galsync account
+		</t:objective>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<!-- Fire SyncGal to get the all of users in gal. -->
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>100</limit>
+					<getCount>true</getCount>
+					<idOnly>true</idOnly>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token6" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="0" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="0" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount" limit="${limit_value_2}"
+					getCount="true" idOnly="true">
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token1" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="32" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount" limit="${limit_value_1}"
+					getCount="true" idOnly="true" token="${token1}">
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token2" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="29" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="adminlogin" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<!-- Delete 3 users and perform a count. The remain should reflect it -->
+		<t:test>
+			<t:request>
+				<DeleteAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account2.id}</id>
+				</DeleteAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<DeleteAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account3.id}</id>
+				</DeleteAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<DeleteAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account4.id}</id>
+				</DeleteAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
+					<account id="${domain.galaccount.id}">
+						<datasource by="name" fullSync="true" reset="false">${domain.galaccount.datasource.name}</datasource>
+					</account>
+				</SyncGalAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:SyncGalAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<!-- Fire SyncGal to get the count as decreased. -->
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount" limit="${limit_value_3}"
+					getCount="true" idOnly="true" token="${token2}">
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token3" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="18" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount" limit="${limit_value_0}"
+					getCount="true" idOnly="true" token="${token3}">
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token4" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="0" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					match="0" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="SyncGalRequest_Count_03" type="q4fix"
+		bugids="ZCS-1200">
+		<t:objective>Verify the remain value is not returned in case
+			getCount=false or idOnly=false
+		</t:objective>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<!-- Fire SyncGal with getCount=false to not get the count -->
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_3}</limit>
+					<getCount>false</getCount>
+					<idOnly>true</idOnly>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token1" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					emptyset="1" />
+			</t:response>
+		</t:test>
+
+		<!-- Fire SyncGal with idOnly=false to not get the count -->
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_3}</limit>
+					<getCount>true</getCount>
+					<idOnly>false</idOnly>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token1" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+				<t:select path="//acct:SyncGalResponse" attr="remain"
+					emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>

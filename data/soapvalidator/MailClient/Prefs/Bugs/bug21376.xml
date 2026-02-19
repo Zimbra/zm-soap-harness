@@ -1,0 +1,492 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="extMailTestdomain1.com" />
+<t:property name="domain2.name" value="extMailTestdomain2.com" />
+
+<t:property name="account1.email" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.email" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<!-- GMAIL account properties -->
+<t:property name="gmailaccount.name" value="zimbraextfetch@gmail.com"/>
+<t:property name="gmailaccount.password" value="${IMAP.Gmail.password}"/>
+<t:property name="gmailaccount.hostname" value="${IMAP.Gmail.hostname}"/>
+<t:property name="gmailaccount.port" value="${IMAP.Gmail.port}"/>
+<t:property name="gmailaccount.testhostname" value="${IMAP.Gmail.hostname}"/>
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}"/>    
+<t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message1" value="subject1.${TIME}.${COUNTER}"/>
+<t:property name="message1.content" value="content1.${TIME}.${COUNTER}"/>
+
+<t:property name="message2" value="subject2.${TIME}.${COUNTER}"/>
+<t:property name="message2.content" value="content2.${TIME}.${COUNTER}"/>
+
+<t:property name="message3.subject" value="subject3.${TIME}.${COUNTER}"/>
+<t:property name="message3.content" value="content3.${TIME}.${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account1.server" value="NOT_DEFINED"/>
+<t:property name="account2.server" value="NOT_DEFINED"/>
+<t:property name="relay.host" value="mta02.zimbra.com"/>
+
+<t:property name="msg01.file"		value="${testMailRaw.root}/email29/msg01.txt"/>
+<t:property name="msg01.subject"	value="email29A"/>
+<t:property name="msg02.file"		value="${testMailRaw.root}/email29/msg02.txt"/>
+<t:property name="msg02.subject"	value="email29B"/>
+
+<!-- authentication -->
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1" type="always" areas="noncluster">
+    <t:objective>Prepare the account for testing</t:objective>
+    <t:steps>1. Login to admin.
+             2. Create 2 test accounts.            
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- Creating the two accounts -->
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.email}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.email}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>   
+  
+    <t:test >
+        <t:request>
+            <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+				<a n="zimbraMtaRelayHost">${relay.host}</a>
+			</ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${zimbraServer.name}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
+		</t:response>
+    </t:test>
+
+
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+    
+</t:test_case>
+
+<t:finally areas="noncluster">
+
+    <!-- After all tests have run, reset the zimbraMtaRelayHost setting to the default -->
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+				<a n="zimbraMtaRelayHost"></a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+	
+</t:finally>
+
+
+<t:test_case testcaseid="ExternalMailIMapFetch" type="functional" areas="noncluster">
+    <t:objective> Verify if the externalmail fetch for IMap folders work properly </t:objective>
+    <t:steps>        
+  		 1. Login to the test account and send 2 messages to Gmail Imap account
+         2. Login to account1 and configure external mail pull with the gmail imap account
+         3. Check if message1 is in unread state
+		 4. Login to account2 and configure external mail pull with the same Gmail imap account
+		 5. Check if the message2 is in unread state.		 
+    </t:steps>     
+         
+    <!-- Login to account1 -->
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.email}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+        
+     <t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${gmailaccount.name}"/>			
+					<su>${message1}</su>
+					<mp ct="text/plain">
+						<content> This is important. I am sending this from 60 server and it should be unread. This will be read by Account1 </content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>    
+	
+	<t:delay msec="2000" />
+	
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${admin.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${gmailaccount.name}"/>			
+					<su>${message2}</su>
+					<mp ct="text/plain">
+						<content> This is important. I am sending this from 60 server and it should be unread. This will be read by Account2 </content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>        
+	
+	<t:delay msec="4000" />
+	
+	<!-- Login to account1 -->
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.email}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+ 	<!-- Create a folder --> 
+    <t:test id="CreateFolderReq">
+        <t:request>
+		    <CreateFolderRequest xmlns="urn:zimbraMail" requestId="0">
+				<folder l="1" name="acct2" fie="1"/>
+			</CreateFolderRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="acct2.id"/>
+        </t:response>
+    </t:test>
+        
+    <!-- Configure externalImap pull --> 
+    <t:test id="ConfExternalImapImport">
+        <t:request>
+		    <CreateDataSourceRequest xmlns="urn:zimbraMail" requestId="0">
+				<imap name="acct2" isEnabled="true"	
+				emailAddress="${gmailaccount.name}" 
+				host="${gmailaccount.testhostname}" port="${gmailaccount.port}" 
+				username="zimbraextfetch" password="${gmailaccount.password}" 
+				l="${acct2.id}" connectionType="ssl" pollingInterval="0" leaveOnServer="true" 
+				fromAddress="${account1.email}"/>
+			</CreateDataSourceRequest>
+      	</t:request>
+        <t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:imap" attr="id" set="imap.conf1.id"/>
+        </t:response>
+    </t:test>
+    
+      
+   <t:test id="importDataReq">
+   		<t:request>	   
+	   		<ImportDataRequest xmlns="urn:zimbraMail">
+				<imap id="${imap.conf1.id}"/>
+			</ImportDataRequest>
+		</t:request>
+		<t:response>
+		</t:response>		
+	</t:test>
+	
+	<!-- Bug 51335 ImportDataRequest is now asynchronous so added loop to query till mails get imported. -->
+	<t:for start="1" end="30" break="response">
+		<t:delay msec="3000"/>
+		<t:test >
+        	<t:request>
+				<GetImportStatusRequest xmlns="urn:zimbraMail">
+				</GetImportStatusRequest>
+        	</t:request>
+        	<t:response>              
+            	<t:select path="//mail:GetImportStatusResponse/mail:imap[@isRunning='0']"  query="response"/>
+           	</t:response>
+    	</t:test>
+	</t:for>
+
+	<t:delay msec="5000" />
+      
+	 <!-- Search Msg  --> 
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>in:"acct2/Inbox" is:unread subject:"${message2}"</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
+	 </t:response>
+	</t:test> 
+        
+	 <t:test id="GetMsgRequest">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg01.id}" read="1" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse"/>            	
+        </t:response>
+    </t:test>	
+    	
+	<t:delay msec="5000" />
+	
+	<!-- Login to account2 -->
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.email}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+ 	<!-- Create a folder --> 
+    <t:test id="CreateFolderReq">
+        <t:request>
+		    <CreateFolderRequest xmlns="urn:zimbraMail" requestId="0">
+				<folder l="1" name="acct2" fie="1"/>
+			</CreateFolderRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="acct2.id"/>
+        </t:response>
+    </t:test>
+        <t:test id="CreateFolderReq">
+        <t:request>
+		    <CreateFolderRequest xmlns="urn:zimbraMail" requestId="0">
+				<folder l="1" name="acct_temp" fie="1"/>
+			</CreateFolderRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="acct_temp.id"/>
+        </t:response>
+    </t:test>
+        
+    <!-- Configure externalImap pull --> 
+    <t:test id="ConfExternalImapImport">
+        <t:request>
+		    <CreateDataSourceRequest xmlns="urn:zimbraMail" requestId="0">
+				<imap name="acct2" isEnabled="true"	
+				emailAddress="${gmailaccount.name}" 
+				host="${gmailaccount.testhostname}" port="${gmailaccount.port}" 
+				username="zimbraextfetch" password="${gmailaccount.password}" 
+				l="${acct2.id}" connectionType="ssl" pollingInterval="0" leaveOnServer="false" 
+				fromAddress="${account2.email}"/>
+			</CreateDataSourceRequest>
+      	</t:request>
+        <t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:imap" attr="id" set="imap.conf2.id"/>
+        </t:response>
+    </t:test>
+   
+   
+  
+   <t:test id="importDataReq">
+   		<t:request>	   
+	   		<ImportDataRequest xmlns="urn:zimbraMail">
+				<imap id="${imap.conf2.id}"/>
+			</ImportDataRequest>
+		</t:request>
+		<t:response>
+		</t:response>		
+	</t:test>
+    <t:delay msec="5000"/>
+	<t:test id="importDataReq">
+   		<t:request>	   
+	   		<ImportDataRequest xmlns="urn:zimbraMail">
+				<imap id="${imap.conf2.id}"/>
+			</ImportDataRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportDataResponse" />
+		</t:response>		
+	</t:test>
+	
+	<!-- Bug 51335 ImportDataRequest is now asynchronous so added loop to query till mails get imported. -->
+	<t:for start="1" end="30" break="response1">
+		<t:delay msec="5000"/>
+		<t:test >
+        	<t:request>
+				<GetImportStatusRequest xmlns="urn:zimbraMail">
+				</GetImportStatusRequest>
+        	</t:request>
+        	<t:response>              
+            	<t:select path="//mail:GetImportStatusResponse/mail:imap[@isRunning='0']"  query="response1"/>
+           	</t:response>
+    	</t:test>
+	</t:for>
+	
+   <t:delay msec="3000"/>
+        
+	 <!-- Search for the second injected Msg  --> 
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>in:"acct2/Inbox" is:unread subject:"${message2}"</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg02.id"/>
+	 </t:response>
+	</t:test> 
+	
+	<!-- below are the account cleanup steps this test case adds 2 message to gmail account each and every time to clean we pop the messages from by creating datasource leaveonserver=false. -->
+	
+	<t:test>
+        <t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail" >
+				<pop3 name="pop${TIME}${COUNTER}" l="${acct_temp.id}"
+						isEnabled="0" 
+						host="${POP3.gmail.host}" port="${POP3.gmail.port}"
+						connectionType="${POP3.gmail.connectionType}" 
+						username="zimbraextfetch" password="${POP3.gmail.password}" 
+						leaveOnServer="0" /> 
+			</CreateDataSourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3.tmp.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:test id="importDataReq">
+   		<t:request>	   
+	   		<ImportDataRequest xmlns="urn:zimbraMail">
+				<pop3 id="${pop3.tmp.id}"/>
+			</ImportDataRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportDataResponse" />
+		</t:response>		
+	</t:test>
+	
+	
+	<t:for start="1" end="20" break="responsepop">
+		<t:delay msec="5000"/>
+		<t:test >
+        	<t:request>
+				<GetImportStatusRequest xmlns="urn:zimbraMail">
+				</GetImportStatusRequest>
+        	</t:request>
+        	<t:response>              
+            	<t:select path="//mail:GetImportStatusResponse/mail:pop3[@isRunning='0']"  query="responsepop"/>
+           	</t:response>
+    	</t:test>
+	</t:for>
+	
+</t:test_case>
+  
+</t:tests>

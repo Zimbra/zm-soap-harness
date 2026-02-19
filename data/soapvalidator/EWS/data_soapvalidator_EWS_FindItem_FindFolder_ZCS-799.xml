@@ -1,0 +1,1094 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<!-- Following bug is included as part of this testcase -->
+	<!-- zcs-799:- EWS: Implement FindItem and FindFolder -->
+
+	<t:property name="test_account1.name"
+		value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+	<t:property name="folder1.name" value="folder1.${TIME}.${COUNTER}" />
+	<t:property name="folder2.name" value="folder2.${TIME}.${COUNTER}" />
+	<t:property name="folder3.name" value="folder3.${TIME}.${COUNTER}" />
+	<t:property name="folder4.name" value="folder4.${TIME}.${COUNTER}" />
+	<t:property name="folder5.name" value="folder5.${TIME}.${COUNTER}" />
+	<t:property name="folder6.name" value="folder6.${TIME}.${COUNTER}" />
+	<t:property name="folder7.name" value="folder7.${TIME}.${COUNTER}" />
+	<t:property name="folder8.name" value="folder8.${TIME}.${COUNTER}" />
+
+	<t:property name="message.subject" value="subject${TIME}.${COUNTER}" />
+	<t:property name="message.subject1" value="subject1${TIME}.${COUNTER}" />
+	<t:property name="message.subject2" value="subject2${TIME}.${COUNTER}" />
+	<t:property name="message.subject3" value="subject3${TIME}.${COUNTER}" />
+	<t:property name="message.subject4" value="subject4${TIME}.${COUNTER}" />
+	<t:property name="message.subject5" value="subject5${TIME}.${COUNTER}" />
+
+	<t:property name="message.content" value="Message test content" />
+	<t:property name="message.content1" value="Message 1 test content" />
+	<t:property name="message.content2" value="Message 2 test content" />
+	<t:property name="message.content3" value="Message 3 test content" />
+	<t:property name="message.content4" value="Message 4 test content" />
+	<t:property name="message.content5" value="Message 5 test content" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="acctSetup1" type="always">
+		<t:objective>create test account</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder1.name}" l="2" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id1" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder2.name}" l="2" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id2" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder3.name}" l="${folder.id2}" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id3" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder4.name}" l="${folder.id3}" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id4" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder5.name}" l="5" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id5" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder6.name}" l="${folder.id5}" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id6" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder7.name}" l="10" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id7" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder8.name}" l="${folder.id7}" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id8" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="FindFolder01" type="bhr">
+		<t:objective>FindFolder request for Deep traversal.</t:objective>
+		<t:steps>1. Fire FindFolder request for inbox having two subfolders and child folders of these subfolders
+			with deep traversal.
+			2. Verify all sub folders and child folders are returned in response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Deep">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="folder:EffectiveRights" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<IndexedPageFolderView Offset="0"
+								BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:FolderId Id="2" />
+							</ParentFolderIds>
+						</FindFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:FolderId"
+					attr="Id" match="${folder.id1}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:DisplayName"
+					match="${folder1.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:FolderId"
+					attr="Id" match="${folder.id2}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:DisplayName"
+					match="${folder2.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:FolderId"
+					attr="Id" match="${folder.id3}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id2}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:DisplayName"
+					match="${folder3.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="FindFolder02" type="bhr">
+		<t:objective>FindFolder request for Shallow traversal.</t:objective>
+		<t:steps>1. Fire FindFolder request for inbox having one subfolder and
+			a child of subfolder.
+			2. Verify only subfolders of inbox are returned in response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Shallow">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="folder:EffectiveRights" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<IndexedPageFolderView Offset="0"
+								BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:FolderId Id="2" />
+							</ParentFolderIds>
+						</FindFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:FolderId"
+					attr="Id" match="${folder.id1}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:DisplayName"
+					match="${folder1.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:FolderId"
+					attr="Id" match="${folder.id2}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:DisplayName"
+					match="${folder2.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:FolderId"
+					attr="Id" match="${folder.id3}" emptyset="1" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id2}" emptyset="1" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:DisplayName"
+					match="${folder3.name}" emptyset="1" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:FolderId"
+					attr="Id" match="${folder.id4}" emptyset="1" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id3}" emptyset="1" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:DisplayName"
+					match="${folder4.name}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="FindFolder03" type="bhr">
+		<t:objective>FindFolder request for Deep traversal with Distinguished
+			ID</t:objective>
+		<t:steps>1. Fire FindFolder request for inbox with distinguished id.
+			2. Verify sub folder and child folders for inbox are returned in response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Deep">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="folder:EffectiveRights" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<IndexedPageFolderView Offset="0"
+								BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:DistinguishedFolderId Id="inbox" />
+							</ParentFolderIds>
+						</FindFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:FolderId"
+					attr="Id" match="${folder.id1}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:DisplayName"
+					match="${folder1.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:FolderId"
+					attr="Id" match="${folder.id2}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:DisplayName"
+					match="${folder2.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:FolderId"
+					attr="Id" match="${folder.id3}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id2}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:DisplayName"
+					match="${folder3.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:FolderId"
+					attr="Id" match="${folder.id4}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id3}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:DisplayName"
+					match="${folder4.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="FindFolder04" type="bhr">
+		<t:objective>FindFolder request for Deep traversal with Distinguished
+			ID</t:objective>
+		<t:steps>1. Fire FindFolder request for inbox and Sent folder with
+			distinguished id.
+			2. Verify sub folder and child folders are returned in response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Deep">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="folder:EffectiveRights" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<IndexedPageFolderView Offset="0"
+								BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:FolderId Id="2" />
+								<t:FolderId Id="5" />
+							</ParentFolderIds>
+						</FindFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:FolderId"
+					attr="Id" match="${folder.id1}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:DisplayName"
+					match="${folder1.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:FolderId"
+					attr="Id" match="${folder.id2}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:DisplayName"
+					match="${folder2.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:FolderId"
+					attr="Id" match="${folder.id3}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id2}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:DisplayName"
+					match="${folder3.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:FolderId"
+					attr="Id" match="${folder.id4}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id3}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:DisplayName"
+					match="${folder4.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[1]/ewstype:FolderId"
+					attr="Id" match="${folder.id5}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[1]/ewstype:ParentFolderId"
+					attr="Id" match="5" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[1]/ewstype:DisplayName"
+					match="${folder5.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[2]/ewstype:FolderId"
+					attr="Id" match="${folder.id6}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[2]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id5}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[2]/ewstype:DisplayName"
+					match="${folder6.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="FindFolder05" type="bhr">
+		<t:objective>FindFolder request for Deep traversal with Distinguished
+			ID for inbox and sent</t:objective>
+		<t:steps>1. Fire FindFolder request for inbox and sent with
+			distinguished id.
+			2. Verify sub folder and child folders are returned in response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Deep">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="folder:EffectiveRights" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<IndexedPageFolderView Offset="0"
+								BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:DistinguishedFolderId Id="inbox" />
+								<t:DistinguishedFolderId Id="sentitems" />
+							</ParentFolderIds>
+						</FindFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:FolderId"
+					attr="Id" match="${folder.id1}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:DisplayName"
+					match="${folder1.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:FolderId"
+					attr="Id" match="${folder.id2}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:ParentFolderId"
+					attr="Id" match="2" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:DisplayName"
+					match="${folder2.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:FolderId"
+					attr="Id" match="${folder.id3}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id2}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[3]/ewstype:DisplayName"
+					match="${folder3.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:FolderId"
+					attr="Id" match="${folder.id4}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id3}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[4]/ewstype:DisplayName"
+					match="${folder4.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[1]/ewstype:FolderId"
+					attr="Id" match="${folder.id5}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[1]/ewstype:ParentFolderId"
+					attr="Id" match="5" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[1]/ewstype:DisplayName"
+					match="${folder5.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[2]/ewstype:FolderId"
+					attr="Id" match="${folder.id6}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[2]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id5}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage[2]//ewstype:Folder[2]/ewstype:DisplayName"
+					match="${folder6.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+	
+	<t:test_case testcaseid="FindFolder06" type="bhr">
+		<t:objective>FindFolder request for Shallow traversal with Folder
+			ID for calendar folder</t:objective>
+		<t:steps>1. Fire FindFolder request for calendar  with
+			folder id.
+			2. Verify only immediate sub folder of calendar are returned.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Shallow">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="folder:EffectiveRights" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<IndexedPageFolderView Offset="0"
+								BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:FolderId Id="10" />
+							</ParentFolderIds>
+						</FindFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:FolderId"
+					attr="Id" match="${folder.id7}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:ParentFolderId"
+					attr="Id" match="10" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[1]/ewstype:DisplayName"
+					match="${folder7.name}" />
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:FolderId"
+					attr="Id" match="${folder.id8}" emptyset="1"/>
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:ParentFolderId"
+					attr="Id" match="${folder.id7}" emptyset="1"/>
+				<t:select
+					path="//ewsmsg:FindFolderResponseMessage//ewstype:Folder[2]/ewstype:DisplayName"
+					match="${folder8.name}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+	
+
+	<t:test_case testcaseid="FindItem07" type="bhr">
+		<t:objective>FindItem request for Shallow traversal with Folder ID for
+			inbox</t:objective>
+		<t:steps>1. Fire FindItem request for inbox folder with
+			distinguished id.
+			2. Verify only inbox items are returned in response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject}</su>
+						<mp ct="text/plain">
+							<content>${message.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>${message.content1}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject2}</su>
+						<mp ct="text/plain">
+							<content>${message.content2}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject3}</su>
+						<mp ct="text/plain">
+							<content>${message.content3}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message3.id" />
+			</t:response>
+		</t:test>
+			<t:delay sec="30"/>
+
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Shallow">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:EffectiveRights" />
+									<t:FieldURI FieldURI="item:Subject" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<IndexedPageItemView MaxEntriesReturned="5"
+								Offset="0" BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:FolderId Id="2" />
+							</ParentFolderIds>
+						</FindItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+  <t:select path="//ewstype:Subject" match="${message.subject}" />
+  <t:select path="//ewstype:Subject" match="${message.subject1}" />
+  <t:select path="//ewstype:Subject" match="${message.subject2}" />
+  <t:select path="//ewstype:Subject" match="${message.subject3}" />
+  <t:select path="//ewsmsg:RootFolder" attr="TotalItemsInView" match="4"/>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="FindItem08" type="bhr">
+		<t:objective>FindItem request for Shallow traversal with Folder ID for
+			inbox without Additional Properties and max returned 2</t:objective>
+		<t:steps>1. Fire FindItem request for inbox  with Folder id
+			without Additional Properties.
+			2. Verify items within inbox are returned in response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Shallow">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<IndexedPageItemView MaxEntriesReturned="2"
+								Offset="0" BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:FolderId Id="2" />
+							</ParentFolderIds>
+						</FindItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:FindItemResponseMessage//ewstype:Message[1]//ewstype:ItemClass"
+					match="IPM.Note" />
+				<t:select
+					path="//ewsmsg:FindItemResponseMessage//ewstype:Message[2]//ewstype:ItemClass"
+					match="IPM.Note" />
+				<t:select path="//ewsmsg:FindItemResponseMessage//ewsmsg:RootFolder"
+					attr="TotalItemsInView" match="4" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+ 
+ <t:test_case testcaseid="FindItem09" type="bhr">
+  <t:objective>FindItem request for Shallow traversal with Folder ID for
+   inbox without Additional Properties and max returned 2 and offset 2</t:objective>
+  <t:steps>1. Fire FindItem request for inbox  with Folder id
+   without Additional Properties.
+   2. Verify items within inbox are returned in response are starting at index 2 and max of 2 items
+   are returned.
+  </t:steps>
+
+  <t:test required="true">
+   <t:request ews="true" username="${test_account1.name}"
+    password="${defaultpassword.value}">
+    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+     xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+     xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+     <soap:Body>
+      <FindItem
+       xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+       Traversal="Shallow">
+       <ItemShape>
+        <t:BaseShape>IdOnly</t:BaseShape>
+       </ItemShape>
+       <IndexedPageItemView MaxEntriesReturned="2"
+        Offset="2" BasePoint="Beginning" />
+       <ParentFolderIds>
+        <t:FolderId Id="2" />
+       </ParentFolderIds>
+      </FindItem>
+     </soap:Body>
+    </soap:Envelope>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:Message[1]//ewstype:Subject"
+					match="${message.subject1}" /> />
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:Message[2]//ewstype:Subject"
+					match="${message.subject2}" /> />
+    <t:select path="//ewsmsg:FindItemResponseMessage//ewsmsg:RootFolder"
+     attr="TotalItemsInView" match="4" />
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+	<t:test_case testcaseid="FindItem10" type="bhr">
+		<t:objective>FindItem request for Shallow traversal with
+			DistinguishedFolder ID for inbox with Additional Properties and max
+			returned 2</t:objective>
+		<t:steps>1. Fire FindItem request for inbox  with
+			DistinguishedFolder id with Additional Properties.
+			2. Verify items within inbox folder are returned in response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Shallow">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Subject" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<IndexedPageItemView MaxEntriesReturned="2"
+								Offset="0" BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:DistinguishedFolderId Id="inbox" />
+							</ParentFolderIds>
+						</FindItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+    <t:select
+        path="//ewsmsg:FindItemResponseMessage"
+        attr="ResponseClass"
+        match="Success"/>
+    <t:select
+        path="//ewsmsg:FindItemResponseMessage//ewstype:Message"
+        count="2"/>
+    <t:select
+        path="//ewsmsg:FindItemResponseMessage//ewstype:Message/ewstype:Subject"/>
+</t:response>
+
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="FindItem11" type="bhr">
+		<t:objective>FindItem request for Shallow traversal with
+			DistinguishedFolder ID for inbox and sent folder with Additional
+			Properties and max returned 2</t:objective>
+		<t:steps>1. Fire FindItem request for inbox and sent folder with
+			DistinguishedFolder id with Additional Properties.
+			2. Verify all items within inbox and sent folder are returned in response.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='admin@${defaultdomain.name}' />
+						<su>${message.subject4}</su>
+						<mp ct="text/plain">
+							<content>${message.content4}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message4.id" />
+			</t:response>
+		</t:test>
+			<t:delay sec="30"/>
+
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<FindItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							Traversal="Shallow">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Subject" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<IndexedPageItemView MaxEntriesReturned="10"
+								Offset="0" BasePoint="Beginning" />
+							<ParentFolderIds>
+								<t:DistinguishedFolderId Id="inbox" />
+								<t:DistinguishedFolderId Id="sentitems" />
+							</ParentFolderIds>
+						</FindItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+		<t:select path="//ewsmsg:FindItemResponseMessage"/>
+
+    <!-- Inbox messages exist -->
+    <t:select
+        path="//ewsmsg:FindItemResponseMessage//ewstype:Message/ewstype:Subject"
+        match="${message.subject}" />
+
+    <t:select
+        path="//ewsmsg:FindItemResponseMessage//ewstype:Message/ewstype:Subject"
+        match="${message.subject1}" />
+
+    <t:select
+        path="//ewsmsg:FindItemResponseMessage//ewstype:Message/ewstype:Subject"
+        match="${message.subject2}" />
+
+    <t:select
+        path="//ewsmsg:FindItemResponseMessage//ewstype:Message/ewstype:Subject"
+        match="${message.subject3}" />
+
+    <!-- Sent message must appear somewhere -->
+    <t:select
+        path="//ewsmsg:FindItemResponseMessage//ewstype:Message/ewstype:Subject"
+        match="${message.subject4}" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+ 
+  <t:test_case testcaseid="FindItem12" type="bhr">
+  <t:objective>FindItem request for Shallow traversal with Folder ID for
+   inbox without Additional Properties and max returned 2 and offset 2</t:objective>
+  <t:steps>1. Fire FindItem request for inbox  with Folder id
+   without Additional Properties.
+   2. Verify items within inbox are returned in response are starting at index 2 and max of 2 items
+   are returned.
+  </t:steps>
+
+  <t:test required="true">
+   <t:request ews="true" username="${test_account1.name}"
+    password="${defaultpassword.value}">
+    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+     xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+     xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+     <soap:Body>
+      <FindItem
+       xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+       Traversal="Shallow">
+       <ItemShape>
+        <t:BaseShape>IdOnly</t:BaseShape>
+       </ItemShape>
+       <IndexedPageItemView MaxEntriesReturned="4"
+        Offset="2" BasePoint="End" />
+       <ParentFolderIds>
+        <t:FolderId Id="2" />
+       </ParentFolderIds>
+      </FindItem>
+     </soap:Body>
+    </soap:Envelope>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:Message[2]//ewstype:Subject"
+     match="${message.subject1}" /> />
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:Message[1]//ewstype:Subject"
+     match="${message.subject2}" /> />
+    <t:select path="//ewsmsg:FindItemResponseMessage//ewsmsg:RootFolder"
+     attr="TotalItemsInView" match="4" />
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+</t:tests>

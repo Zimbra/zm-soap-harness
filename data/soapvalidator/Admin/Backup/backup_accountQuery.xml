@@ -1,0 +1,415 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="test123"/>
+<t:property name="account2.password" value="test123"/>
+<t:property name="account3.password" value="test123"/>
+<t:property name="account4.password" value="test123"/>
+
+<t:property name="folder.root" value="/tmp/backup"/>
+<t:property name="folder.custom" value="/tmp/backup/backup${TIME}.${COUNTER}"/>
+<t:property name="folder.nonexisting" value="/${TIME}.${COUNTER}"/>
+	
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>Create test account</t:objective>
+    <t:steps> 1. Admin to login.
+            2. Create test accounts.
+    </t:steps>
+    
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${folder.root}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${folder.root}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${folder.custom}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${folder.custom}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <userPassword>${account1.password}</userPassword>
+				<a n="zimbraMailHost">${adminServer.name}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>  
+        </t:response>
+    </t:test> 
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <userPassword>${account2.password}</userPassword>
+				<a n="zimbraMailHost">${adminServer.name}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>   
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <userPassword>${account3.password}</userPassword>
+				<a n="zimbraMailHost">${adminServer.name}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct2_setup" type="functional" areas="backup">
+    <t:objective>Full System backup in custom and default folders </t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" target="${folder.custom}" sync="1" zip="0">
+                    <account name="all"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="label1"/>
+        </t:response>
+    </t:test>   
+ 
+    <t:test required="true">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+				<backup target="/opt/zimbra/backup" method="full" zip="0">
+                    <account name="all"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup"  attr="label" set="label2"/>
+        </t:response>
+    </t:test>
+     
+</t:test_case>
+
+
+<t:test_case testcaseid="acct3_setup" areas="backup" type="functional" >
+    <t:objective>Account backup in default and custom folders </t:objective>
+    
+    <!-- Backup of particular account -->
+    <t:test required="true" delay="${postfixdelay.msec}">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" target="${folder.custom}" sync="1">
+                    <account name="${account1.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="label3"/>
+        </t:response>
+    </t:test>
+       
+    <t:test required="true" delay="${postfixdelay.msec}">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+				<backup target="/opt/zimbra/backup" method="full">
+                    <account name="${account1.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="label4"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" delay="${postfixdelay.msec}">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" target="${folder.custom}" sync="1">                
+                    <account name="${account2.name}"/>
+                    <account name="${account3.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="label5"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" delay="${postfixdelay.msec}">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+				<backup target="/opt/zimbra/backup" method="full">
+                    <account name="${account2.name}"/>
+                    <account name="${account3.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="label6"/>
+        </t:response>
+    </t:test>    
+    
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupAccountQueryRequest3" areas="backup" type="functional">
+    <t:objective>BackupAccountQueryRequest for backup of an account taken in custom folder.</t:objective>
+    
+    <t:test delay="${postfixdelay.msec}">
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin" >
+                <query target = "${folder.custom}">
+                    <account name="${account1.name}"/>
+                </query>
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup" attr="label" match="${label3}"/>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup" attr="accountId" match="${test_account1.id}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupAccountQueryRequest4" areas="backup" type="functional">
+    <t:objective>BackupAccountQueryRequest for backup of an account taken in default folder.</t:objective>
+    
+    <t:test>
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin" >
+                <query>
+                    <account name="${account1.name}"/>
+                </query>
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup" attr="label" match="${label4}"/>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup" attr="accountId" match="${test_account1.id}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupAccountQueryRequest5" areas="backup" type="negative" bugids="2460">
+    <t:objective>BackupAccountQueryRequest with no account attribute in query tag (for custom folder).</t:objective>
+    
+    <t:test>
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin">
+                <query target = "${folder.custom}"/>
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupAccountQueryRequest6" areas="backup" type="negative" bugids="2460">
+    <t:objective>BackupAccountQueryRequest with no account attribute in query tag (for default folder).</t:objective>
+    
+    <t:test>
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin">
+                <query />
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupAccountQueryRequest7" areas="backup" type="functional">
+    <t:objective>BackupAccountQueryRequest for backup of multiple accounts taken in custom folder.</t:objective>
+    
+    <t:test>
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin" >
+                <query target = "${folder.custom}">
+                    <account name="${account2.name}"/>
+                    <account name="${account3.name}"/>
+                </query>
+                    
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup[@accountId='${test_account2.id}']"/>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup[@accountId='${test_account3.id}']"/>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup"  attr="label" match="${label5}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupAccountQueryRequest8" areas="backup" type="functional">
+    <t:objective>BackupAccountQueryRequest for backup of multiple accounts taken in default folder.</t:objective>
+    
+    <t:test>
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin">
+                <query>
+                    <account name="${account2.name}"/>
+                    <account name="${account3.name}"/>
+                </query>
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup[@accountId='${test_account2.id}']"/>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup[@accountId='${test_account3.id}']"/>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account/admin:backup"  attr="label" match="${label6}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupAccountQueryRequest9" areas="backup" type="negative">
+    <t:objective>BackupAccountQueryRequest for a non-existing account</t:objective>
+    
+    <t:test>
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin">
+                <query>
+                    <account name="${account4.name}"/>                    
+                </query>
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupAccountQueryResponse/admin:account" attr="name" match="${account4.name}"/>
+		</t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupAccountQueryRequest10" areas="backup" type="negative" bugids="9090">
+    <t:objective>BackupAccountQueryRequest for a non-existing target folder.</t:objective>
+    
+    <t:test>
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin">
+                <query target = "${folder.nonexisting}">
+                    <account name="${account2.name}"/>                    
+                </query>
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^backup.INVALID_BACKUP_TARGET"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="BackupAccountQueryRequest11" areas="backup" type="functional">
+    <t:objective>BackupAccountQueryRequest for backup of all account taken in custom folder.</t:objective>
+    
+    <t:test>
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin">
+                <query target="${folder.custom}">
+                    <account name="all"/>
+                </query>
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupAccountQueryRequest12" areas="backup" type="functional">
+    <t:objective>BackupAccountQueryRequest for backup of all account taken in default folder.</t:objective>
+    
+    <t:test>
+        <t:request>
+            <BackupAccountQueryRequest xmlns="urn:zimbraAdmin">
+                <query>
+                    <account name="all"/>
+                </query>
+            </BackupAccountQueryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+</t:tests>
+
+

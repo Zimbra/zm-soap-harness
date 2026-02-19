@@ -1,0 +1,397 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <!-- Following bug is included as part of this test case -->
+    <!--ZCS-17714:- EWS Outlook - ZWC organiser calendar shows extra all-day recurrence instance for outlook created
+    exception -->
+
+    <t:property name="test_account1.username" value="testAccount1${TIME}.${COUNTER}"/>
+    <t:property name="test_account1.name"
+                value="${test_account1.username}@${defaultdomain.name}"/>
+    <t:property name="test_account1.password" value="test123"/>
+
+    <t:property name="test_account2.username" value="testAccount2${TIME}.${COUNTER}"/>
+    <t:property name="test_account2.name"
+                value="${test_account2.username}@${defaultdomain.name}"/>
+    <t:property name="test_account2.password" value="test123"/>
+
+    <t:property name="message.subject1" value="subject1${TIME}.${COUNTER}"/>
+    <t:property name="message.updated_subject2" value="updated_subject2${TIME}.${COUNTER}"/>
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin"/>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="acct_setup" type="always">
+        <t:objective>Create a test account</t:objective>
+        <steps>
+            1. Login to admin account
+            2. Create test accounts
+        </steps>
+
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+        <!--Creating account 1-->
+        <t:test id="create_test_account1" required="false" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${test_account1.password}</password>
+                    <a n="zimbraFeatureEwsEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                          attr="id" set="test_account1.id"/>
+                <t:select
+                        path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+                        set="test_acct.server"/>
+            </t:response>
+        </t:test>
+
+        <!--Creating account 2-->
+        <t:test id="create_test_account2" required="false" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${test_account2.password}</password>
+                    <a n="zimbraFeatureEwsEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                          attr="id" set="test_account2.id"/>
+                <t:select
+                        path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+                        set="test_acct.server"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="AllDayRecurringMeetingExceptionUpdate" type="bhr"
+                 bugids="ZCS-17714">
+        <t:objective>Create a recurring meeting in Outlook (EWS) show all instances in ZWC. When an occurrence is
+            modified (exception created by changing date and subject) exception get updated for Organizer in ZWC.
+        </t:objective>
+        <t:steps>
+            1. Create a all day recurring meeting request from outlook.
+            2. Create Exception instance using UpdateItem to modify the 2nd instance (subject and date).
+            3. Verify update success via EWS response.
+            4. Verify exception updated successfully at ZWC end for Organizer and attendee ends.
+        </t:steps>
+
+        <!-- Step 1: Create an ALL-DAY recurring meeting from Outlook -->
+        <t:test>
+            <t:request ews="true" username="${test_account1.name}"
+                       password="${test_account1.password}">
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+                               xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+                               xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+                    <soap:Body>
+                        <m:CreateItem
+                                MessageDisposition="SaveOnly"
+                                SendMeetingInvitations="SendToAllAndSaveCopy">
+
+                            <m:SavedItemFolderId>
+                                <t:FolderId Id="10"/>
+                            </m:SavedItemFolderId>
+
+                            <m:Items>
+                                <t:CalendarItem>
+                                    <t:Subject>${message.subject1}</t:Subject>
+
+                                    <!-- Required for all-day meetings -->
+                                    <t:IsAllDayEvent>true</t:IsAllDayEvent>
+
+                                    <t:ReminderIsSet>false</t:ReminderIsSet>
+
+                                    <!-- Outlook-style extended properties -->
+                                    <t:ExtendedProperty>
+                                        <t:ExtendedFieldURI DistinguishedPropertySetId="Common"
+                                                            PropertyId="34051"
+                                                            PropertyType="Boolean"/>
+                                        <t:Value>true</t:Value>
+                                    </t:ExtendedProperty>
+
+                                    <!-- UID -->
+                                    <t:UID>147EA834-D714-429E-94D7-80A1A975F61E</t:UID>
+
+                                    <!-- All-day start/end (midnight boundaries) -->
+                                    <t:Start>2025-12-18T00:00:00+05:30</t:Start>
+                                    <t:End>2025-12-19T00:00:00+05:30</t:End>
+
+                                    <t:LegacyFreeBusyStatus>Free</t:LegacyFreeBusyStatus>
+
+                                    <!-- Recurrence -->
+                                    <t:Recurrence>
+                                        <t:WeeklyRecurrence>
+                                            <t:Interval>1</t:Interval>
+                                            <t:DaysOfWeek>Thursday</t:DaysOfWeek>
+                                            <t:FirstDayOfWeek>Sunday</t:FirstDayOfWeek>
+                                        </t:WeeklyRecurrence>
+
+                                        <t:EndDateRecurrence>
+                                            <t:StartDate>2025-12-18</t:StartDate>
+                                            <t:EndDate>2026-07-09</t:EndDate>
+                                        </t:EndDateRecurrence>
+                                    </t:Recurrence>
+
+                                    <!-- Time zone -->
+                                    <t:StartTimeZone Id="India Standard Time"/>
+                                    <t:EndTimeZone Id="India Standard Time"/>
+
+                                    <!-- Attendee -->
+                                    <t:RequiredAttendees>
+                                        <t:Attendee>
+                                            <t:Mailbox>
+                                                <t:Name>${test_account2.username}</t:Name>
+                                                <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+                                            </t:Mailbox>
+                                        </t:Attendee>
+                                    </t:RequiredAttendees>
+
+                                </t:CalendarItem>
+                            </m:Items>
+                        </m:CreateItem>
+                    </soap:Body>
+                </soap:Envelope>
+            </t:request>
+
+            <t:response>
+                <!-- Verify success -->
+                <t:select path="//ewsmsg:CreateItemResponseMessage"
+                          attr="ResponseClass"
+                          match="Success"/>
+
+                <!-- Capture master appointment -->
+                <t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+                          attr="Id"
+                          set="recurring.master.id"/>
+
+                <t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+                          attr="ChangeKey"
+                          set="recurring.master.ck"/>
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${test_account1.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+        <t:delay msec="5000"/>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="appointment">
+                    <query>subject:${message.subject1}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:appt"
+                          attr="invId"
+                          set="inv.id"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetMsgRequest xmlns="urn:zimbraMail">
+                    <m id="${inv.id}"/>
+                </GetMsgRequest>
+            </t:request>
+
+            <t:response>
+                <!-- UNTIL for all-day recurrence -->
+                <t:select
+                        path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until"
+                        attr="d"
+                        match="20260709"/>
+                <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp"
+                          attr="allDay"
+                          match="1"/>
+                <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:dur"
+                          attr="h"
+                          match="24"/>
+                <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:s"
+                          attr="d"
+                          match="20251218"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+                               xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+                               xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+                    <soap:Header>
+                        <t:RequestServerVersion Version="Exchange2010_SP2"/>
+                        <t:MailboxCulture>en-GB</t:MailboxCulture>
+                        <t:TimeZoneContext>
+                            <t:TimeZoneDefinition Id="India Standard Time"/>
+                        </t:TimeZoneContext>
+                    </soap:Header>
+
+                    <soap:Body>
+                        <UpdateItem
+                                xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+                                ConflictResolution="AutoResolve"
+                                SendMeetingInvitationsOrCancellations="SendToAllAndSaveCopy">
+
+                            <ItemChanges>
+                                <t:ItemChange>
+                                    <!-- IMPORTANT: exception instance -->
+                                    <t:OccurrenceItemId
+                                            RecurringMasterId="${recurring.master.id}"
+                                            ChangeKey="${recurring.master.ck}"
+                                            InstanceIndex="2"/>
+
+                                    <t:Updates>
+
+                                        <!-- Update subject -->
+                                        <t:SetItemField>
+                                            <t:FieldURI FieldURI="item:Subject"/>
+                                            <t:CalendarItem>
+                                                <t:Subject>${message.updated_subject2}</t:Subject>
+                                            </t:CalendarItem>
+                                        </t:SetItemField>
+
+                                        <!-- Keep ALL-DAY semantics -->
+                                        <t:SetItemField>
+                                            <t:FieldURI FieldURI="calendar:IsAllDayEvent"/>
+                                            <t:CalendarItem>
+                                                <t:IsAllDayEvent>true</t:IsAllDayEvent>
+                                            </t:CalendarItem>
+                                        </t:SetItemField>
+
+                                        <!-- Instance start (midnight) -->
+                                        <t:SetItemField>
+                                            <t:FieldURI FieldURI="calendar:Start"/>
+                                            <t:CalendarItem>
+                                                <t:Start>2025-12-26T00:00:00+05:30</t:Start>
+                                            </t:CalendarItem>
+                                        </t:SetItemField>
+
+                                        <!-- Instance end (next midnight) -->
+                                        <t:SetItemField>
+                                            <t:FieldURI FieldURI="calendar:End"/>
+                                            <t:CalendarItem>
+                                                <t:End>2025-12-27T00:00:00+05:30</t:End>
+                                            </t:CalendarItem>
+                                        </t:SetItemField>
+
+                                        <!-- Optional but consistent -->
+                                        <t:SetItemField>
+                                            <t:FieldURI FieldURI="calendar:LegacyFreeBusyStatus"/>
+                                            <t:CalendarItem>
+                                                <t:LegacyFreeBusyStatus>Free</t:LegacyFreeBusyStatus>
+                                            </t:CalendarItem>
+                                        </t:SetItemField>
+
+                                    </t:Updates>
+                                </t:ItemChange>
+                            </ItemChanges>
+                        </UpdateItem>
+                    </soap:Body>
+                </soap:Envelope>
+            </t:request>
+
+            <t:response>
+                <t:select path="//ewsmsg:UpdateItemResponseMessage"
+                          attr="ResponseClass"
+                          match="Success"/>
+
+                <t:select path="//ewsmsg:UpdateItemResponseMessage//ewstype:ItemId"
+                          attr="Id"
+                          set="updated.invId"/>
+            </t:response>
+        </t:test>
+
+        <!-- Step 3: Verifying the update is done properly -->
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${test_account1.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+        <t:delay msec="5000"/>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail"
+                               types="appointment"
+                               calExpandInstStart="1766620800000"
+                               calExpandInstEnd="1766793600000"
+                               limit="1000"
+                               offset="0">
+                    <query>(inid:"10")</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:appt/mail:inst[@ex='1']" attr="invId" set="updated.invId"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetMsgRequest xmlns="urn:zimbraMail">
+                    <m id="${updated.invId}"/>
+                </GetMsgRequest>
+            </t:request>
+
+            <t:response>
+
+                <!-- Verify exception instance -->
+                <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp"
+                          attr="ex" match="1"/>
+
+                <!-- Verify updated subject -->
+                <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp"
+                          attr="name" match="${message.updated_subject2}"/>
+
+                <!-- Verify all-day -->
+                <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp"
+                          attr="allDay" match="1"/>
+
+                <!-- Verify exception date -->
+                <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:s"
+                          attr="d" match="20251226"/>
+
+                <!-- Verify duration (1 day) -->
+                <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:dur"
+                          attr="d" match="1"/>
+
+            </t:response>
+        </t:test>
+    </t:test_case>
+</t:tests>

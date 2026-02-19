@@ -1,0 +1,186 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="bug10224.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="bug10224.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Bug_10224_AccountSetup" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="create_test_account2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Bug_10224_01" type="functional" areas="backup"  bugids="10224">
+    <t:objective>Verify "ca" option can be executed on an account without a created mailbox</t:objective>
+    <t:steps>
+	1. Create an account.  Don't let a mailbox be created for it.
+	2. Full backup.
+	3. Restore with -ca/-pre options.  No exception should occur.
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+           <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1">
+                    <account name="${account1.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="account1.label.id"/>
+        </t:response>
+    </t:test>
+    <t:property name="server.zimbraAdmin" value="${account1.server}"/>
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="newAcct${TIME}" method="ca">
+                    <account name="${account1.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+        
+</t:test_case> 
+
+
+<t:test_case testcaseid="Bug_10224_02" type="functional" areas="backup">
+    <t:objective>Verify "ca" option can be executed on an account with a created mailbox</t:objective>
+    <t:steps>
+	1. Create an account.
+	2. Login to the account so that the mailbox is created
+	3. Login as admin
+	4. Full backup.
+	5. Restore with -ca/-pre options.  No exception should occur.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAdmin" value="${account2.server}"/>	
+
+    <t:test required="true">
+           <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1">
+                    <account name="${account2.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="account21.label.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="newAcct${TIME}" method="ca">
+                    <account name="${account2.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+        
+</t:test_case> 
+
+
+</t:tests>
+

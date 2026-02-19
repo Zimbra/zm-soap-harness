@@ -1,0 +1,992 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">	
+	<!-- ZCS-6298:- EWS:EWS Automation - add automation test case for Calendar-Modify meeting invite -->
+	<t:property name="test_account1.username" value="test1${TIME}.${COUNTER}" />
+	<t:property name="test_account1.name" value="${test_account1.username}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	<t:property name="test_account2.username" value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name" value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />	
+	<t:property name="test_account3.username" value="test3${TIME}.${COUNTER}" />
+	<t:property name="test_account3.name" value="${test_account3.username}@${defaultdomain.name}" />
+	<t:property name="test_account3.password" value="test123" />
+	<t:property name="appt.subject1" value="subject1${TIME}.${COUNTER}" />
+	<t:property name="appt.subject2" value="subject2${TIME}.${COUNTER}" />
+	<t:property name="appt.content1" value="Test appointment sent from ZWC for time modification test" />
+	<t:property name="appt.content2" value="Test appointment sent from ZWC for attendee modification test" />		
+	<t:test_case testcaseid="acct_setup" type="q4fix">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+			3. Create a
+			test_account2
+		</steps>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>		
+		<t:test id="create_test_account3" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account3.name}</name>
+					<password>${test_account3.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="ZCS6298_ModifyCalendarMeetingFromEWS_01" type="q4fix">
+		<t:objective>Send a meeting invite from ZWC organizer, modify meeting time from EWS Organizer and Sync on ZWC Organizer, attendee for modified meeting time
+		</t:objective>
+		<t:steps>1. Organizer sends meeting request from ZWC
+		2. Organizer syncs above meeting invite on EWS and modified meeting time from EWS
+		3. Sync modified meeting time from Organizer and attendee on ZWC
+		</t:steps>		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>		
+		<t:property name="systemTime" value="${XMLTIME()}"/>
+		<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+		<t:property name="Time2" value="${ICALTIME(+60m)}"/>
+		<t:property name="new_Time1" value="${XMLTIME(+60m)}"/>
+		<t:property name="start_Time1" value="${GMTTIME(+60m)}"/>
+		<t:property name="new_Time2" value="${XMLTIME(+90m)}"/>				
+		<t:property name="Time3" value="${ICALTIME(-1h)}"/>
+		<t:property name="Time4" value="${ICALTIME(-30m)}"/>
+		<t:property name="xml_Time3" value="${XMLTIME(-1h)}"/>
+		<t:property name="xml_Time4" value="${XMLTIME(-30m)}"/>		
+		<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>	
+		<t:test>
+			<t:request>
+				<CreateAppointmentRequest xmlns="urn:zimbraMail">
+					<m >
+						<inv>
+							<comp status="CONF" fb="B" transp="O" allDay="0" name="${appt.subject1}">
+								<or a="${test_account1.name}"/>
+								<at a="${test_account2.name}" role="REQ" ptst="NE" rsvp="1"/>
+								<s d="${Time1}" />
+								<e d="${Time2}" />
+							</comp>
+						</inv>
+						<e a="${test_account2.name}" t="t"/>
+						<su>${appt.subject1}</su>
+						<mp ct="text/plain">
+							<content>${appt.content1}</content>
+						</mp>
+					</m>
+				</CreateAppointmentRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateAppointmentResponse" />
+			</t:response>
+		</t:test>    
+    	<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+					      <ItemShape>
+					        <t:BaseShape>IdOnly</t:BaseShape>
+					        <t:AdditionalProperties>
+					          <t:FieldURI FieldURI="item:ItemClass"/>
+					          <t:FieldURI FieldURI="item:DateTimeReceived"/>
+					          <t:FieldURI FieldURI="item:HasAttachments"/>
+					          <t:FieldURI FieldURI="item:Categories"/>
+					          <t:FieldURI FieldURI="item:ConversationId"/>
+					          <t:FieldURI FieldURI="item:DateTimeSent"/>
+					          <t:FieldURI FieldURI="message:From"/>
+					          <t:FieldURI FieldURI="item:Importance"/>
+					          <t:FieldURI FieldURI="item:Size"/>
+					          <t:FieldURI FieldURI="item:Subject"/>
+					          <t:FieldURI FieldURI="item:DisplayTo"/>
+					          <t:FieldURI FieldURI="item:IsAssociated"/>
+					          <t:FieldURI FieldURI="message:IsRead"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1090" PropertyType="Integer"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1081" PropertyType="Integer"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1082" PropertyType="SystemTime"/>
+					          <t:ExtendedFieldURI PropertySetId="00020386-0000-0000-C000-000000000046" PropertyName="content-class" PropertyType="String"/>
+					          <t:FieldURI FieldURI="message:ConversationIndex"/>
+					          <t:FieldURI FieldURI="message:ConversationTopic"/>
+					          <t:FieldURI FieldURI="message:InternetMessageId"/>
+					          <t:FieldURI FieldURI="message:References"/>
+					          <t:FieldURI FieldURI="item:InReplyTo"/>
+					          <t:ExtendedFieldURI PropertyTag="0xf03" PropertyType="Binary"/>
+					          <t:ExtendedFieldURI PropertySetId="A98A1EF9-FF40-470B-A0D7-4D7DCE6A6462" PropertyName="WebExtNotifications" PropertyType="String"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1213" PropertyType="Integer"/>
+					        </t:AdditionalProperties>
+					      </ItemShape>
+					      <SyncFolderId>
+					        <t:FolderId Id="10"/>
+					      </SyncFolderId>
+					      <SyncState></SyncState>
+					      <Ignore/>
+					      <MaxChangesReturned>512</MaxChangesReturned>
+					      <SyncScope>NormalAndAssociatedItems</SyncScope>
+					    </SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal01_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState01" />
+			</t:response>
+		</t:test>		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+									 <t:FieldURI FieldURI="calendar:IsAllDayEvent"/>
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal01_id}" ChangeKey="${cal01_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject1}" />				
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Start"
+					set="startTime" />
+					<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:End"
+					set="endTime" />		
+			</t:response>
+		</t:test>	
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" ConflictResolution="AutoResolve" MessageDisposition="SaveOnly" SendMeetingInvitationsOrCancellations="SendToAllAndSaveCopy">
+						<SavedItemFolderId>
+						        <t:FolderId Id="10"/>
+						      </SavedItemFolderId>
+							<ItemChanges><t:ItemChange><t:ItemId Id="${cal01_id}" ChangeKey="${cal01_changeKey}"/>
+								<t:Updates>
+									<t:SetItemField><t:FieldURI FieldURI="item:Subject"/>
+										<t:CalendarItem><t:Subject>${appt.subject1}</t:Subject></t:CalendarItem>
+									</t:SetItemField>									
+									<t:SetItemField><t:FieldURI FieldURI="item:Body"/>
+										<t:CalendarItem>
+											<t:Body BodyType="HTML">Test appointment sent from ZWC for time modification test</t:Body>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="item:Sensitivity"/>
+										<t:CalendarItem>
+											<t:Sensitivity>Normal</t:Sensitivity>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="item:Importance"/>
+										<t:CalendarItem>
+											<t:Importance>Normal</t:Importance>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:StartTimeZone"/>
+										<t:CalendarItem>
+											<t:StartTimeZone>${timezone.pst}</t:StartTimeZone>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:EndTimeZone"/>
+										<t:CalendarItem>
+											<t:EndTimeZone>${timezone.pst}</t:EndTimeZone>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:Start"/>
+										<t:CalendarItem>
+											<t:Start>${new_Time1}</t:Start>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:End"/>
+										<t:CalendarItem>
+											<t:End>${new_Time2}</t:End>
+										</t:CalendarItem>
+									</t:SetItemField>									
+									<t:SetItemField><t:FieldURI FieldURI="calendar:LegacyFreeBusyStatus"/>
+										<t:CalendarItem>
+											<t:LegacyFreeBusyStatus>Busy</t:LegacyFreeBusyStatus>
+										</t:CalendarItem>
+									</t:SetItemField>									
+									<t:SetItemField><t:FieldURI FieldURI="calendar:IsResponseRequested"/>
+										<t:CalendarItem>
+											<t:IsResponseRequested>true</t:IsResponseRequested>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:AllowNewTimeProposal"/>
+										<t:CalendarItem>
+											<t:AllowNewTimeProposal>true</t:AllowNewTimeProposal>
+										</t:CalendarItem>
+									</t:SetItemField>								
+									<t:SetItemField><t:FieldURI FieldURI="calendar:RequiredAttendees"/>
+										<t:CalendarItem>
+											<t:RequiredAttendees>
+												<t:Attendee>
+													<t:Mailbox>
+														<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+													</t:Mailbox>
+													<t:ResponseType>NoResponseReceived</t:ResponseType>
+												</t:Attendee>
+											</t:RequiredAttendees>
+										</t:CalendarItem>
+									</t:SetItemField>		
+									<t:SetItemField><t:ExtendedFieldURI PropertySetId="0FDEE818-4173-11DD-B23A-87BE55D89593" PropertyName="TravelTimeBefore" PropertyType="Integer"/>
+										<t:Item>
+											<t:ExtendedProperty><t:ExtendedFieldURI PropertySetId="0FDEE818-4173-11DD-B23A-87BE55D89593" PropertyName="TravelTimeBefore" PropertyType="Integer"/><t:Value>0</t:Value></t:ExtendedProperty>		
+										</t:Item>
+									</t:SetItemField>
+									<t:SetItemField><t:ExtendedFieldURI PropertySetId="0FDEE818-4173-11DD-B23A-87BE55D89593" PropertyName="TravelTimeAfter" PropertyType="Integer"/>
+										<t:Item>
+											<t:ExtendedProperty><t:ExtendedFieldURI PropertySetId="0FDEE818-4173-11DD-B23A-87BE55D89593" PropertyName="TravelTimeAfter" PropertyType="Integer"/><t:Value>0</t:Value></t:ExtendedProperty>
+										</t:Item>
+									</t:SetItemField>
+									<t:SetItemField><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34144" PropertyType="SystemTime"/>
+										<t:CalendarItem>
+											<t:ExtendedProperty><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34144" PropertyType="SystemTime"/><t:Value>${systemTime}</t:Value></t:ExtendedProperty>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34050" PropertyType="SystemTime"/>
+										<t:CalendarItem>
+											<t:ExtendedProperty><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34050" PropertyType="SystemTime"/><t:Value>${systemTime}</t:Value></t:ExtendedProperty></t:CalendarItem></t:SetItemField><t:SetItemField><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34051" PropertyType="Boolean"/><t:CalendarItem><t:ExtendedProperty><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34051" PropertyType="Boolean"/><t:Value>true</t:Value></t:ExtendedProperty>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34049" PropertyType="Integer"/>
+										<t:CalendarItem>
+											<t:ExtendedProperty><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34049" PropertyType="Integer"/><t:Value>5</t:Value></t:ExtendedProperty>
+										</t:CalendarItem>
+									</t:SetItemField>							
+									<t:SetItemField><t:FieldURI FieldURI="item:ItemClass"/>
+										<t:CalendarItem>
+											<t:ItemClass>IPM.Appointment</t:ItemClass>
+										</t:CalendarItem>
+									</t:SetItemField>	
+									<t:DeleteItemField><t:FieldURI FieldURI="calendar:Recurrence"/>
+										</t:DeleteItemField>
+										<t:DeleteItemField>
+											<t:FieldURI FieldURI="calendar:OptionalAttendees"/>
+										</t:DeleteItemField>
+										<t:DeleteItemField>
+											<t:FieldURI FieldURI="calendar:Resources"/>
+										</t:DeleteItemField>
+										<t:DeleteItemField>
+											<t:FieldURI FieldURI="item:Categories"/>
+										</t:DeleteItemField>								
+									</t:Updates>
+								</t:ItemChange>
+							</ItemChanges>
+						</UpdateItem>
+					</soap:Body>
+				</soap:Envelope>
+				</t:request>			
+				<t:response>
+					<t:select path="//ewsmsg:UpdateItemResponseMessage" attr="ResponseClass"
+						match="Success" />
+					<t:select path="//ewsmsg:UpdateItemResponseMessage//ewstype:ItemId"
+						attr="Id" set="cal02.id" />				
+				</t:response>
+		</t:test>					
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+					      <ItemShape>
+					        <t:BaseShape>IdOnly</t:BaseShape>
+					        <t:AdditionalProperties>
+					          <t:FieldURI FieldURI="item:ItemClass"/>
+					          <t:FieldURI FieldURI="item:DateTimeReceived"/>
+					          <t:FieldURI FieldURI="item:HasAttachments"/>
+					          <t:FieldURI FieldURI="item:Categories"/>
+					          <t:FieldURI FieldURI="item:ConversationId"/>
+					          <t:FieldURI FieldURI="item:DateTimeSent"/>
+					          <t:FieldURI FieldURI="message:From"/>
+					          <t:FieldURI FieldURI="item:Importance"/>
+					          <t:FieldURI FieldURI="item:Size"/>
+					          <t:FieldURI FieldURI="item:Subject"/>
+					          <t:FieldURI FieldURI="item:DisplayTo"/>
+					          <t:FieldURI FieldURI="item:IsAssociated"/>
+					          <t:FieldURI FieldURI="message:IsRead"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1090" PropertyType="Integer"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1081" PropertyType="Integer"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1082" PropertyType="SystemTime"/>
+					          <t:ExtendedFieldURI PropertySetId="00020386-0000-0000-C000-000000000046" PropertyName="content-class" PropertyType="String"/>
+					          <t:FieldURI FieldURI="message:ConversationIndex"/>
+					          <t:FieldURI FieldURI="message:ConversationTopic"/>
+					          <t:FieldURI FieldURI="message:InternetMessageId"/>
+					          <t:FieldURI FieldURI="message:References"/>
+					          <t:FieldURI FieldURI="item:InReplyTo"/>
+					          <t:ExtendedFieldURI PropertyTag="0xf03" PropertyType="Binary"/>
+					          <t:ExtendedFieldURI PropertySetId="A98A1EF9-FF40-470B-A0D7-4D7DCE6A6462" PropertyName="WebExtNotifications" PropertyType="String"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1213" PropertyType="Integer"/>
+					        </t:AdditionalProperties>
+					      </ItemShape>
+					      <SyncFolderId>
+					        <t:FolderId Id="10"/>
+					      </SyncFolderId>
+					      <SyncState>${SyncState01}</SyncState>
+					      <Ignore/>
+					      <MaxChangesReturned>512</MaxChangesReturned>
+					      <SyncScope>NormalAndAssociatedItems</SyncScope>
+					    </SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Update//ewstype:ItemId"
+					attr="Id" set="cal02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Update//ewstype:ItemId"
+					attr="ChangeKey" set="cal02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState02" />
+			</t:response>
+		</t:test>		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+									 <t:FieldURI FieldURI="calendar:IsAllDayEvent"/>
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal02_id}" ChangeKey="${cal02_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject1}" />				
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Start"
+					set="new_startTime" />
+					<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:End"
+					set="new_endTime" />		
+			</t:response>
+		</t:test>		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				    <query>${appt.subject1}</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="invId" set="inv.id1"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject1}"/>
+			    <t:select path="//mail:SearchResponse//mail:inst" attr="ridZ" match="${start_Time1}"/>
+		    </t:response>
+	    </t:test>	
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id1}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>		
+				<t:select
+					path="//mail:GetMsgResponse//mail:comp"
+					attr="name" match="${appt.subject1}" />			
+			</t:response>
+		</t:test>				
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				    <query>${appt.subject1}</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			   <t:select
+    path="//mail:SearchResponse/mail:appt[@name='${appt.subject1}']"
+    attr="invId"
+    set="inv.id2"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject1}"/>
+			    <t:select path="//mail:SearchResponse//mail:inst" attr="ridZ" match="${start_Time1}"/>
+		    </t:response>
+	    </t:test>	
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id2}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>		
+				<t:select
+					path="//mail:GetMsgResponse//mail:comp"
+					attr="name" match="${appt.subject1}" />
+			</t:response>
+		</t:test>			 	
+	</t:test_case>	
+	<t:test_case testcaseid="ZCS6298_ModifyCalendarMeetingFromEWS_02" type="q4fix">
+		<t:objective>Send a meeting invite from ZWC organizer, modified attendee list-adds new attendee, removes existing attendee from EWS Organizer and Sync on ZWC Organizer, attendee for modified attendee list
+		</t:objective>
+		<t:steps>1. Organizer sends meeting request from ZWC
+		2. Organizer syncs above meeting invite on EWS and modified attendee list-adds new attendee, removes existing attendee
+		3. Sync modified attendee list from Organizer and attendee onZWC
+		</t:steps>	
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>		
+		<t:test>
+			<t:request>
+				<CreateAppointmentRequest xmlns="urn:zimbraMail">
+					<m >
+						<inv>
+							<comp status="CONF" fb="B" transp="O" allDay="0" name="${appt.subject2}">
+								<or a="${test_account1.name}"/>
+								<at a="${test_account2.name}" role="REQ" ptst="NE" rsvp="1"/>
+								<s d="${Time3}" />
+								<e d="${Time4}" />
+							</comp>
+						</inv>
+						<e a="${test_account2.name}" t="t"/>
+						<su>${appt.subject2}</su>
+						<mp ct="text/plain">
+							<content>${appt.content2}</content>
+						</mp>
+					</m>
+				</CreateAppointmentRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateAppointmentResponse" />
+			</t:response>
+		</t:test>   
+    	<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+					      <ItemShape>
+					        <t:BaseShape>IdOnly</t:BaseShape>
+					        <t:AdditionalProperties>
+					          <t:FieldURI FieldURI="item:ItemClass"/>
+					          <t:FieldURI FieldURI="item:DateTimeReceived"/>
+					          <t:FieldURI FieldURI="item:HasAttachments"/>
+					          <t:FieldURI FieldURI="item:Categories"/>
+					          <t:FieldURI FieldURI="item:ConversationId"/>
+					          <t:FieldURI FieldURI="item:DateTimeSent"/>
+					          <t:FieldURI FieldURI="message:From"/>
+					          <t:FieldURI FieldURI="item:Importance"/>
+					          <t:FieldURI FieldURI="item:Size"/>
+					          <t:FieldURI FieldURI="item:Subject"/>
+					          <t:FieldURI FieldURI="item:DisplayTo"/>
+					          <t:FieldURI FieldURI="item:IsAssociated"/>
+					          <t:FieldURI FieldURI="message:IsRead"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1090" PropertyType="Integer"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1081" PropertyType="Integer"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1082" PropertyType="SystemTime"/>
+					          <t:ExtendedFieldURI PropertySetId="00020386-0000-0000-C000-000000000046" PropertyName="content-class" PropertyType="String"/>
+					          <t:FieldURI FieldURI="message:ConversationIndex"/>
+					          <t:FieldURI FieldURI="message:ConversationTopic"/>
+					          <t:FieldURI FieldURI="message:InternetMessageId"/>
+					          <t:FieldURI FieldURI="message:References"/>
+					          <t:FieldURI FieldURI="item:InReplyTo"/>
+					          <t:ExtendedFieldURI PropertyTag="0xf03" PropertyType="Binary"/>
+					          <t:ExtendedFieldURI PropertySetId="A98A1EF9-FF40-470B-A0D7-4D7DCE6A6462" PropertyName="WebExtNotifications" PropertyType="String"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1213" PropertyType="Integer"/>
+					        </t:AdditionalProperties>
+					      </ItemShape>
+					      <SyncFolderId>
+					        <t:FolderId Id="10"/>
+					      </SyncFolderId>
+					      <SyncState>${SyncState02}</SyncState>
+					      <Ignore/>
+					      <MaxChangesReturned>512</MaxChangesReturned>
+					      <SyncScope>NormalAndAssociatedItems</SyncScope>
+					    </SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal03_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal03_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState03" />
+			</t:response>
+		</t:test>		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+									 <t:FieldURI FieldURI="calendar:IsAllDayEvent"/>
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal03_id}" ChangeKey="${cal03_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject2}" />				
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:RequiredAttendees//ewstype:Mailbox"
+					attr="EmailAddress" match="${test_account2.name}" />		
+			</t:response>
+		</t:test>	
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" ConflictResolution="AutoResolve" MessageDisposition="SaveOnly" SendMeetingInvitationsOrCancellations="SendToAllAndSaveCopy">
+						<SavedItemFolderId>
+						        <t:FolderId Id="10"/>
+						      </SavedItemFolderId>
+							<ItemChanges><t:ItemChange><t:ItemId Id="${cal03_id}" ChangeKey="${cal03_changeKey}"/>
+								<t:Updates>
+									<t:SetItemField><t:FieldURI FieldURI="item:Subject"/>
+										<t:CalendarItem><t:Subject>${appt.subject2}</t:Subject></t:CalendarItem>
+									</t:SetItemField>									
+									<t:SetItemField><t:FieldURI FieldURI="item:Body"/>
+										<t:CalendarItem>
+											<t:Body BodyType="HTML">Test appointment sent from ZWC for attendee modification test</t:Body>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="item:Sensitivity"/>
+										<t:CalendarItem>
+											<t:Sensitivity>Normal</t:Sensitivity>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="item:Importance"/>
+										<t:CalendarItem>
+											<t:Importance>Normal</t:Importance>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:StartTimeZone"/>
+										<t:CalendarItem>
+											<t:StartTimeZone>${timezone.pst}</t:StartTimeZone>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:EndTimeZone"/>
+										<t:CalendarItem>
+											<t:EndTimeZone>${timezone.pst}</t:EndTimeZone>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:Start"/>
+										<t:CalendarItem>
+											<t:Start>${xml_Time3}</t:Start>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:End"/>
+										<t:CalendarItem>
+											<t:End>${xml_Time4}</t:End>
+										</t:CalendarItem>
+									</t:SetItemField>									
+									<t:SetItemField><t:FieldURI FieldURI="calendar:LegacyFreeBusyStatus"/>
+										<t:CalendarItem>
+											<t:LegacyFreeBusyStatus>Busy</t:LegacyFreeBusyStatus>
+										</t:CalendarItem>
+									</t:SetItemField>									
+									<t:SetItemField><t:FieldURI FieldURI="calendar:IsResponseRequested"/>
+										<t:CalendarItem>
+											<t:IsResponseRequested>true</t:IsResponseRequested>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:FieldURI FieldURI="calendar:AllowNewTimeProposal"/>
+										<t:CalendarItem>
+											<t:AllowNewTimeProposal>true</t:AllowNewTimeProposal>
+										</t:CalendarItem>
+									</t:SetItemField>								
+									<t:SetItemField><t:FieldURI FieldURI="calendar:RequiredAttendees"/>
+										<t:CalendarItem>
+											<t:RequiredAttendees>
+												<t:Attendee>
+													<t:Mailbox>
+														<t:EmailAddress>${test_account3.name}</t:EmailAddress>
+													</t:Mailbox>
+													<t:ResponseType>NoResponseReceived</t:ResponseType>
+												</t:Attendee>
+											</t:RequiredAttendees>
+										</t:CalendarItem>
+									</t:SetItemField>		
+									<t:SetItemField><t:ExtendedFieldURI PropertySetId="0FDEE818-4173-11DD-B23A-87BE55D89593" PropertyName="TravelTimeBefore" PropertyType="Integer"/>
+										<t:Item>
+											<t:ExtendedProperty><t:ExtendedFieldURI PropertySetId="0FDEE818-4173-11DD-B23A-87BE55D89593" PropertyName="TravelTimeBefore" PropertyType="Integer"/><t:Value>0</t:Value></t:ExtendedProperty>		
+										</t:Item>
+									</t:SetItemField>
+									<t:SetItemField><t:ExtendedFieldURI PropertySetId="0FDEE818-4173-11DD-B23A-87BE55D89593" PropertyName="TravelTimeAfter" PropertyType="Integer"/>
+										<t:Item>
+											<t:ExtendedProperty><t:ExtendedFieldURI PropertySetId="0FDEE818-4173-11DD-B23A-87BE55D89593" PropertyName="TravelTimeAfter" PropertyType="Integer"/><t:Value>0</t:Value></t:ExtendedProperty>
+										</t:Item>
+									</t:SetItemField>
+									<t:SetItemField><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34144" PropertyType="SystemTime"/>
+										<t:CalendarItem>
+											<t:ExtendedProperty><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34144" PropertyType="SystemTime"/><t:Value>${systemTime}</t:Value></t:ExtendedProperty>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34050" PropertyType="SystemTime"/>
+										<t:CalendarItem>
+											<t:ExtendedProperty><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34050" PropertyType="SystemTime"/><t:Value>${systemTime}</t:Value></t:ExtendedProperty></t:CalendarItem></t:SetItemField><t:SetItemField><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34051" PropertyType="Boolean"/><t:CalendarItem><t:ExtendedProperty><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34051" PropertyType="Boolean"/><t:Value>true</t:Value></t:ExtendedProperty>
+										</t:CalendarItem>
+									</t:SetItemField>
+									<t:SetItemField><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34049" PropertyType="Integer"/>
+										<t:CalendarItem>
+											<t:ExtendedProperty><t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34049" PropertyType="Integer"/><t:Value>5</t:Value></t:ExtendedProperty>
+										</t:CalendarItem>
+									</t:SetItemField>							
+									<t:SetItemField><t:FieldURI FieldURI="item:ItemClass"/>
+										<t:CalendarItem>
+											<t:ItemClass>IPM.Appointment</t:ItemClass>
+										</t:CalendarItem>
+									</t:SetItemField>	
+									<t:DeleteItemField><t:FieldURI FieldURI="calendar:Recurrence"/>
+										</t:DeleteItemField>
+										<t:DeleteItemField>
+											<t:FieldURI FieldURI="calendar:OptionalAttendees"/>
+										</t:DeleteItemField>
+										<t:DeleteItemField>
+											<t:FieldURI FieldURI="calendar:Resources"/>
+										</t:DeleteItemField>
+										<t:DeleteItemField>
+											<t:FieldURI FieldURI="item:Categories"/>
+										</t:DeleteItemField>								
+									</t:Updates>
+								</t:ItemChange>
+							</ItemChanges>
+						</UpdateItem>
+					</soap:Body>
+				</soap:Envelope>
+				</t:request>			
+				<t:response>
+					<t:select path="//ewsmsg:UpdateItemResponseMessage" attr="ResponseClass"
+						match="Success" />
+					<t:select path="//ewsmsg:UpdateItemResponseMessage//ewstype:ItemId"
+						attr="Id" set="cal04.id" />				
+				</t:response>
+		</t:test>			
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+					      <ItemShape>
+					        <t:BaseShape>IdOnly</t:BaseShape>
+					        <t:AdditionalProperties>
+					          <t:FieldURI FieldURI="item:ItemClass"/>
+					          <t:FieldURI FieldURI="item:DateTimeReceived"/>
+					          <t:FieldURI FieldURI="item:HasAttachments"/>
+					          <t:FieldURI FieldURI="item:Categories"/>
+					          <t:FieldURI FieldURI="item:ConversationId"/>
+					          <t:FieldURI FieldURI="item:DateTimeSent"/>
+					          <t:FieldURI FieldURI="message:From"/>
+					          <t:FieldURI FieldURI="item:Importance"/>
+					          <t:FieldURI FieldURI="item:Size"/>
+					          <t:FieldURI FieldURI="item:Subject"/>
+					          <t:FieldURI FieldURI="item:DisplayTo"/>
+					          <t:FieldURI FieldURI="item:IsAssociated"/>
+					          <t:FieldURI FieldURI="message:IsRead"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1090" PropertyType="Integer"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1081" PropertyType="Integer"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1082" PropertyType="SystemTime"/>
+					          <t:ExtendedFieldURI PropertySetId="00020386-0000-0000-C000-000000000046" PropertyName="content-class" PropertyType="String"/>
+					          <t:FieldURI FieldURI="message:ConversationIndex"/>
+					          <t:FieldURI FieldURI="message:ConversationTopic"/>
+					          <t:FieldURI FieldURI="message:InternetMessageId"/>
+					          <t:FieldURI FieldURI="message:References"/>
+					          <t:FieldURI FieldURI="item:InReplyTo"/>
+					          <t:ExtendedFieldURI PropertyTag="0xf03" PropertyType="Binary"/>
+					          <t:ExtendedFieldURI PropertySetId="A98A1EF9-FF40-470B-A0D7-4D7DCE6A6462" PropertyName="WebExtNotifications" PropertyType="String"/>
+					          <t:ExtendedFieldURI PropertyTag="0x1213" PropertyType="Integer"/>
+					        </t:AdditionalProperties>
+					      </ItemShape>
+					      <SyncFolderId>
+					        <t:FolderId Id="10"/>
+					      </SyncFolderId>
+					      <SyncState>${SyncState03}</SyncState>
+					      <Ignore/>
+					      <MaxChangesReturned>512</MaxChangesReturned>
+					      <SyncScope>NormalAndAssociatedItems</SyncScope>
+					    </SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Update//ewstype:ItemId"
+					attr="Id" set="cal04_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Update//ewstype:ItemId"
+					attr="ChangeKey" set="cal04_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState04" />
+			</t:response>
+		</t:test>		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal04_id}" ChangeKey="${cal04_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject2}" />				
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:RequiredAttendees//ewstype:Mailbox"
+					attr="EmailAddress" match="${test_account3.name}" />		
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				    <query>${appt.subject2}</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="invId" set="inv.id3"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject2}"/>
+		    </t:response>
+	    </t:test>	
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id3}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>		
+				<t:select
+					path="//mail:GetMsgResponse//mail:comp"
+					attr="name" match="${appt.subject2}" />	
+				<t:select
+					path="//mail:GetMsgResponse//mail:at"
+					attr="a" match="${test_account3.name}" />			
+			</t:response>
+		</t:test>				
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account3.name}</account>
+					<password>${test_account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>	
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				    <query>${appt.subject2}</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="invId" set="inv.id4"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject2}"/>
+		    </t:response>
+	    </t:test>	
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id4}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>		
+				<t:select
+					path="//mail:GetMsgResponse//mail:comp"
+					attr="name" match="${appt.subject2}" />
+				<t:select
+					path="//mail:GetMsgResponse//mail:at"
+					attr="a" match="${test_account3.name}" />	
+			</t:response>
+		</t:test>			
+	</t:test_case>	
+</t:tests>
+		

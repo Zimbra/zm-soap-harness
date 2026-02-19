@@ -1,0 +1,767 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- Following bug is included as part of this testcase -->
+<!-- zcs-407:- EWS: Resolve Name should return all the contact information -->
+		
+	<t:property name="test_account1.name"
+		value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="domain1.name" value="domain1${TIME}${COUNTER}.com"/>
+
+	<t:property name="Firstname_contact1" value="Firstname_contact1.${TIME}.${COUNTER}" />
+	<t:property name="Lastname_contact1" value="Lastname_contact1.${TIME}.${COUNTER}" />
+
+	<t:property name="Firstname_account1" value="Firstname_Account1.${TIME}.${COUNTER}" />
+	<t:property name="Lastname_account1" value="Lastname_Account1.${TIME}.${COUNTER}" />
+	<t:property name="uploadFile.name" value="${testMailRaw.root}/ews/image1.jpg" />
+	<t:property name="Firstname_account2_notexists" value="Firstname_Account2.${TIME}.${COUNTER}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="acctSetup1" type="always">
+		<t:objective>create test account</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct1.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="bugZCS407_1" type="bhr">
+		<t:objective>Create a contact and sync using ResolveNames API in EWS.
+			All contact information should be returned.
+		</t:objective>
+		<t:steps>1. Create a new contact with all details.
+			2. Sync on ResolveNames API on EWS client.
+			3. Verify all contact details are returned in the ResolveNames
+			response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">${Firstname_contact1}</a>
+						<a n="lastName">${Lastname_contact1}</a>
+						<a n="email">email1.${TIME}.${COUNTER}@domain.com</a>
+						<a n="company">zimbra</a>
+						<a n="workFax">6666</a>
+						<a n="workPhone2">6666</a>
+						<a n="callbackPhone">6666</a>
+						<a n="carPhone">6666</a>
+						<a n="homePhone2">6666</a>
+						<a n="homeFax">6666</a>
+						<a n="otherPhone">6666</a>
+						<a n="otherFax">6666</a>		
+						<a n="email2">user2@persistent.co.in</a>
+						<a n="middleName">s</a>
+						<a n="jobTitle">QA</a>
+						<a n="workPhone">66666</a>
+						<a n="homePhone">66666</a>
+						<a n="mobilePhone">6666</a>
+						<a n="pager">666</a>
+						<a n="email3">user3@persistent.co.in</a>
+						<a n="workStreet">ttt</a>
+						<a n="workCity">tt</a>
+						<a n="workState">tt</a>
+						<a n="workPostalCode">tt</a>
+						<a n="workCountry">tt</a>
+						<a n="workURL">tt</a>
+						<a n="notes">Notes</a>
+						<a n="imAddress1">xmpp://f</a>
+						<a n="imAddress2">yahoo://v</a>
+						<a n="imAddress4">yahoo://y</a>
+						<a n="imAddress3">im://b</a>
+						<a n="imAddress5">msn://m</a>
+						<a n="birthday">2017-04-04</a>
+						<a n="anniversary">2017-04-01</a>
+					</cn>
+				</CreateContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateContactResponse/mail:cn">
+					<t:select attr="id" set="contact1.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:ResolveNames
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+							ReturnFullContactData="true" SearchScope="ActiveDirectory">
+							<m:UnresolvedEntry>${Firstname_contact1}</m:UnresolvedEntry>
+						</m:ResolveNames>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Mailbox//ewstype:Name"
+					match="${Firstname_contact1} s ${Lastname_contact1}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Mailbox//ewstype:EmailAddress"
+					contains="email1" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Contact//ewstype:Body"
+					match="Notes" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:FirstName"
+					match="${Firstname_contact1}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:LastName"
+					match="${Lastname_contact1}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:MiddleName"
+					match="s" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompanyName"
+					match="zimbra" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:EmailAddresses//ewstype:Entry[@Key='EmailAddress2']"
+					contains="user2@persistent.co.in" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:EmailAddresses//ewstype:Entry[@Key='EmailAddress3']"
+					contains="user3@persistent.co.in" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:EmailAddresses//ewstype:Entry[@Key='EmailAddress1']"
+					contains="email1" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:Street"
+					contains="ttt" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:City"
+					contains="tt" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:State"
+					contains="tt" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:CountryOrRegion"
+					contains="tt" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:PostalCode"
+					contains="tt" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='Callback']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='CarPhone']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='Pager']"
+					contains="666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='OtherFax']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='HomeFax']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='HomePhone']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='HomePhone2']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='BusinessFax']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='MobilePhone']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='OtherTelephone']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='BusinessPhone2']"
+					contains="6666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='BusinessPhone']"
+					contains="6666" />
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Birthday"
+					contains="2017-04-04" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:BusinessHomePage"
+					contains="tt" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:ImAddresses//ewstype:Entry[@Key='ImAddress1']"
+					match="xmpp://f" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:ImAddresses//ewstype:Entry[@Key='ImAddress2']"
+					match="yahoo://v" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:ImAddresses//ewstype:Entry[@Key='ImAddress3']"
+					match="im://b" />
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage//ewstype:JobTitle"
+					match="QA" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:WeddingAnniversary"
+					contains="2017-04-01" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="bugZCS407_2" type="bhr">
+		<t:objective>Create a new account user and sync using ResolveNames API
+			in EWS. All contact information should be returned.
+		</t:objective>
+		<t:steps>1. Create a new user account with all details.
+			2. Sync on ResolveNames API on EWS client.
+			3. Verify all user details are returned in the ResolveNames response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${Firstname_account1}@${defaultdomain.name}</name>
+					<password>test123</password>
+					<a n="zimbraAccountStatus">active</a>
+					<a n="displayName">${Firstname_account1} ${Lastname_account1}</a>
+					<a n="givenName">${Firstname_account1}</a>
+					<a n="sn">${Lastname_account1}</a>
+					<a n="zimbraNotes">Zimbra notes</a>
+					<a n="description">Description present</a>
+					<a n="telephoneNumber">985865865</a>
+					<a n="homePhone">234234223</a>
+					<a n="mobile">994594848845</a>
+					<a n="company">Zimbra</a>
+					<a n="title">Dev</a>
+					<a n="street">123 NewYork, Lincoln street, USA</a>
+					<a n="l">lane</a>
+					<a n="st">Newtown</a>
+					<a n="postalCode">412123</a>
+					<a n="co">USA</a>
+					<a n="zimbraAttachmentsBlocked">TRUE</a>
+					<a n="zimbraFeatureViewInHtmlEnabled">FALSE</a>
+					<a n="zimbraAttachmentsViewInHtmlOnly">FALSE</a>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct1.server" />
+			</t:response>
+		</t:test>
+		
+	<t:delay msec="60000"/>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:ResolveNames
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+							ReturnFullContactData="true" SearchScope="ActiveDirectory">
+							<m:UnresolvedEntry>${Firstname_account1}</m:UnresolvedEntry>
+						</m:ResolveNames>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Mailbox//ewstype:Name"
+					match="${Firstname_account1} ${Lastname_account1}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Mailbox//ewstype:EmailAddress"
+					matches="${Firstname_account1}@${defaultdomain.name}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Contact//ewstype:Body"
+					match="Description present" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:FirstName"
+					match="${Firstname_account1}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:LastName"
+					match="${Lastname_account1}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompanyName"
+					match="Zimbra" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:Street"
+					contains="123 NewYork, Lincoln street, USA" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:City"
+					contains="lane" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:State"
+					contains="Newtown" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:CountryOrRegion"
+					contains="USA" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:PostalCode"
+					contains="412123" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='HomePhone']"
+					contains="234234223" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='BusinessPhone']"
+					contains="985865865" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='MobilePhone']"
+					contains="994594848845" />
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage//ewstype:JobTitle"
+					match="Dev" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="bugZCS407_3" type="bhr">
+		<t:objective>Search for a contact using ResolveNames API in EWS which
+			does not exist. All contact information should be returned.
+		</t:objective>
+		<t:steps>1. Search for a non existing contact in ResolveNames API.
+			2. Verify error message should be seen in response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:ResolveNames
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+							ReturnFullContactData="true" SearchScope="ActiveDirectory">
+							<m:UnresolvedEntry>${Firstname_account2_notexists}
+							</m:UnresolvedEntry>
+						</m:ResolveNames>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage//ewsmsg:MessageText"
+					contains="ResolveNames Failed to find a match: ${Firstname_account2_notexists}" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="bugZCS407_4" type="bhr">
+		<t:objective>Modify an existing contact on ZWC and sync the same in
+			resolveNames API. All modified contact information should be
+			returned.
+		</t:objective>
+		<t:steps>1. Modify an existing contact from ZWC.
+			2. Sync on ResolveNames API on EWS client.
+			3. Verify all modified user details are returned in the ResolveNames
+			response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifycontactrequest4">
+			<t:request>
+				<ModifyContactRequest xmlns="urn:zimbraMail"
+					replace="0" force="0">
+					<cn id="${contact1.id}">
+						<a n="firstName">Modify_fname</a>
+						<a n="lastName">Modify_lname</a>
+						<a n="email">modify_email@${defaultdomain.name}</a>
+						<a n="company">Synacor</a>
+						<a n="workFax">99999999</a>
+						<a n="workPhone2">8888888888</a>
+						<a n="callbackPhone">2222222222</a>
+						<a n="carPhone">3333333333</a>
+						<a n="homePhone2">4444444444</a>
+						<a n="homeFax">555555555</a>
+						<a n="otherPhone">666666666666</a>
+						<a n="otherFax">777777777777</a>
+						<a n="email1">modify_email1@${defaultdomain.name}</a>
+						<a n="email2">modify_email2@${defaultdomain.name}</a>
+						<a n="email3">modify_email3@${defaultdomain.name}</a>
+						<a n="middleName">Modify_mname</a>
+						<a n="jobTitle">IT</a>
+						<a n="workPhone">88888888889</a>
+						<a n="mobilePhone">888888888831</a>
+						<a n="pager">456456</a>
+						<a n="workStreet">Street1</a>
+						<a n="workCity">City1</a>
+						<a n="workState">State1</a>
+						<a n="workPostalCode">123123</a>
+						<a n="workCountry">India</a>
+						<a n="workURL">www.url.com</a>
+						<a n="notes">Modified the contact</a>
+						<a n="imAddress1">xmpp://a</a>
+						<a n="imAddress2">yahoo://b</a>
+						<a n="imAddress4">yahoo://c</a>
+						<a n="imAddress3">im://d</a>
+						<a n="imAddress5">msn://e</a>
+						<a n="birthday">2017-04-20</a>
+						<a n="anniversary">2017-04-30</a>
+					</cn>
+				</ModifyContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyContactResponse/mail:cn" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:ResolveNames
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+							ReturnFullContactData="true" SearchScope="ActiveDirectory">
+							<m:UnresolvedEntry>Modify_fname</m:UnresolvedEntry>
+						</m:ResolveNames>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Mailbox//ewstype:Name"
+					match="Modify_fname Modify_mname Modify_lname" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Mailbox//ewstype:EmailAddress"
+					matches="modify_email@${defaultdomain.name}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Contact//ewstype:Body"
+					match="Modified the contact" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:FirstName"
+					match="Modify_fname" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:LastName"
+					match="Modify_lname" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:MiddleName"
+					match="Modify_mname" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompanyName"
+					match="Synacor" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:EmailAddresses//ewstype:Entry[@Key='EmailAddress1']"
+					contains="modify_email@${defaultdomain.name}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:EmailAddresses//ewstype:Entry[@Key='EmailAddress2']"
+					contains="modify_email2@${defaultdomain.name}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:EmailAddresses//ewstype:Entry[@Key='EmailAddress3']"
+					contains="modify_email3@${defaultdomain.name}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:Street"
+					contains="Street1" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:City"
+					contains="City1" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:State"
+					contains="State1" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:CountryOrRegion"
+					contains="India" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhysicalAddresses//ewstype:PostalCode"
+					contains="123123" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='Callback']"
+					contains="2222222222" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='CarPhone']"
+					contains="3333333333" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='Pager']"
+					contains="456456" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='OtherFax']"
+					contains="777777777777" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='HomeFax']"
+					contains="555555555" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='HomePhone']"
+					contains="66666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='HomePhone2']"
+					contains="4444444444" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='BusinessFax']"
+					contains="99999999" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='MobilePhone']"
+					contains="888888888831" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='OtherTelephone']"
+					contains="666666666666" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='BusinessPhone2']"
+					contains="8888888888" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:PhoneNumbers//ewstype:Entry[@Key='BusinessPhone']"
+					contains="88888888889" />
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Birthday"
+					contains="2017-04-20" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:BusinessHomePage"
+					contains="www.url.com" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:ImAddresses//ewstype:Entry[@Key='ImAddress1']"
+					match="xmpp://a" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:ImAddresses//ewstype:Entry[@Key='ImAddress2']"
+					match="yahoo://b" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:ImAddresses//ewstype:Entry[@Key='ImAddress3']"
+					match="im://d" />
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage//ewstype:JobTitle"
+					match="IT" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:WeddingAnniversary"
+					contains="2017-04-30" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="bugZCS407_5" type="bhr">
+		<t:objective>Delete an existing contact on ZWC and sync the same in
+			resolveNames API. All modified contact information should be
+			returned.
+		</t:objective>
+		<t:steps>1. Delete an existing contact from ZWC.
+			2. Sync on ResolveNames API on EWS client.
+			3. Verify error message should be returned in the response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="contactaction1b" depends="contactaction1a">
+			<t:request>
+				<ContactActionRequest xmlns="urn:zimbraMail">
+					<action id="${contact1.id}" op="delete" />
+				</ContactActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ContactActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:ResolveNames
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+							ReturnFullContactData="true" SearchScope="ActiveDirectory">
+							<m:UnresolvedEntry>Modify_fname</m:UnresolvedEntry>
+						</m:ResolveNames>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage//ewsmsg:MessageText"
+					match="ResolveNames Failed to find a match: Modify_fname" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="bugZCS407_6" type="bhr">
+		<t:objective>Create a contact with image on ZWC and sync the same in
+			resolveNames API. All contact information should be returned.
+		</t:objective>
+		<t:steps>1. Create a new contact with image attached.
+			2. Sync on ResolveNames API on EWS client.
+			3. Verify image details should be returned in the ResolveNames API
+			response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadFile.name}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="contactimage.aid" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+
+		<t:test>
+			<t:request>
+				<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">${Firstname_contact1}</a>
+						<a n="lastName">${Lastname_contact1}</a>
+						<a n="email">qwerty@${defaultdomain.name}</a>
+						<a n="image" aid="${contactimage.aid}" />
+					</cn>
+				</CreateContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateContactResponse//mail:cn"
+					attr="id" set="contact_image.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:ResolveNames
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+							ReturnFullContactData="true" SearchScope="ActiveDirectory">
+							<m:UnresolvedEntry>${Firstname_contact1}</m:UnresolvedEntry>
+						</m:ResolveNames>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:ResolveNamesResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Mailbox//ewstype:Name"
+					match="${Firstname_contact1} ${Lastname_contact1}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Mailbox//ewstype:EmailAddress"
+					matches="qwerty@${defaultdomain.name}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Contact//ewstype:FileAttachment//ewstype:AttachmentId"
+					attr="Id" match="${contact_image.id}_image" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:Contact//ewstype:FileAttachment//ewstype:Name"
+					match="ContactPicture.jpg" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:FirstName"
+					match="${Firstname_contact1}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:CompleteName//ewstype:LastName"
+					match="${Lastname_contact1}" />
+				<t:select
+					path="//ewsmsg:ResolveNamesResponseMessage//ewstype:EmailAddresses//ewstype:Entry[@Key='EmailAddress1']"
+					contains="qwerty@${defaultdomain.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>

@@ -213,36 +213,6 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateSystemRetentionPolicy06" type="deprecated" >
-	 <t:objective>Create 2 System retention policies with same name</t:objective>
-	<t:test>
-        <t:request>
-            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
-				 <keep>
-    				<policy name="${policy6.name}" lifetime="2s" xmlns="urn:zimbraMail"/>
-  				</keep>
-			</CreateSystemRetentionPolicyRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy6.id" />
-			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy6.interval" />
-        </t:response>
-    </t:test>
-
-    <t:test>
-        <t:request>
-            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
-				 <keep>
-    				<policy name="${policy6.name}" lifetime="2m" xmlns="urn:zimbraMail"/>
-  				</keep>
-			</CreateSystemRetentionPolicyRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//zimbra:Code" />
-        </t:response>
-    </t:test>
-</t:test_case>
-
 
 <t:test_case testcaseid="ModifySystemRetentionPolicy01" type="sanity">
 	 <t:objective>Modify System retention policies with change lifetime</t:objective>

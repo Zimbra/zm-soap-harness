@@ -1,0 +1,481 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account1.name" value="${account1.user}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.user}%40${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+	  		</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Calendar_FilterCompFilter_01" type="bhr">
+	<t:objective>Verify filter by time works</t:objective>
+	<t:steps>
+	1. create an appointment on 12/1
+	2. create an appointment on 12/31
+	3. Use CalDav to search after 12/15 - only appointment #2 should show
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+
+	<t:property name="appointment1.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment1.location" value="Location${TIME}.${COUNTER}"/>
+	<t:property name="appointment1.content" value="Content${TIME}.${COUNTER}"/>
+	<t:property name="time.20111201120000.gmt" value="1322740800000"/>
+
+	<t:property name="appointment2.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment2.location" value="Location${TIME}.${COUNTER}"/>
+	<t:property name="appointment2.content" value="Content${TIME}.${COUNTER}"/>
+	<t:property name="time.20111231120000.gmt" value="1325332800000"/>
+   
+   	<t:property name="time.20111215120000.gmt" value="1323950400000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
+	                        <s d="${ICALTIME[${time.20111201120000.gmt}]}Z"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20111201120000.gmt}]}Z"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment1.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment1.invId"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="uid" set="appointment1.uid"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" >
+	                        <s d="${ICALTIME[${time.20111231120000.gmt}]}Z"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20111231120000.gmt}]}Z"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment2.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment2.invId"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment2.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="uid" set="appointment2.uid"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="REPORT" uri="/dav/${account1.name}/Calendar/" depth="1">
+			<x0:calendar-query xmlns:x0="urn:ietf:params:xml:ns:caldav" xmlns:x1="DAV:">
+			  <x1:prop>
+			    <x1:getetag/>
+			  </x1:prop>
+			  <x0:filter>
+			    <x0:comp-filter name="VCALENDAR">
+			      <x0:time-range start="${ICALTIME[${time.20111215120000.gmt}]}Z"/>
+			    </x0:comp-filter>
+			  </x0:filter>
+			</x0:calendar-query> 
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/Calendar/${appointment1.uid}.ics']" emptyset="1"/>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/Calendar/${appointment2.uid}.ics']"/>
+	 	</t:response>
+	</t:caldav>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_Calendar_FilterCompFilter_02" type="bhr" bugids="36022">
+	<t:objective>Verify filter by time works, for VEVENT</t:objective>
+	<t:steps>
+	1. create an appointment on 12/1
+	2. create an appointment on 12/31
+	3. Use CalDav to search after 12/15 - only appointment #2 should show
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+
+	<t:property name="appointment1.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment1.location" value="Location${TIME}.${COUNTER}"/>
+	<t:property name="appointment1.content" value="Content${TIME}.${COUNTER}"/>
+	<t:property name="time.20111201120000.gmt" value="1322740800000"/>
+
+	<t:property name="appointment2.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment2.location" value="Location${TIME}.${COUNTER}"/>
+	<t:property name="appointment2.content" value="Content${TIME}.${COUNTER}"/>
+	<t:property name="time.20111231120000.gmt" value="1325332800000"/>
+   
+   	<t:property name="time.20111215120000.gmt" value="1323950400000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
+	                        <s d="${ICALTIME[${time.20111201120000.gmt}]}Z"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20111201120000.gmt}]}Z"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment1.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment1.invId"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="uid" set="appointment1.uid"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" >
+	                        <s d="${ICALTIME[${time.20111231120000.gmt}]}Z"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20111231120000.gmt}]}Z"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment2.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment2.invId"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment2.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="uid" set="appointment2.uid"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="REPORT" uri="/dav/${account1.name}/Calendar/" depth="1">
+			<x0:calendar-query xmlns:x0="urn:ietf:params:xml:ns:caldav" xmlns:x1="DAV:">
+			  <x1:prop>
+			    <x1:getetag/>
+			  </x1:prop>
+			  <x0:filter>
+			    <x0:comp-filter name="VCALENDAR">
+      				<x0:comp-filter name="VEVENT">
+			      		<x0:time-range start="${ICALTIME[${time.20111215120000.gmt}]}Z"/>
+      				</x0:comp-filter>
+			    </x0:comp-filter>
+			  </x0:filter>
+			</x0:calendar-query> 
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/Calendar/${appointment1.uid}.ics']" emptyset="1"/>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/Calendar/${appointment2.uid}.ics']"/>
+	 	</t:response>
+	</t:caldav>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_Calendar_FilterCompFilter_03" type="bhr" bugids="76876">
+	<t:objective>Calendar-query should return events containing the given time-range</t:objective>
+	<t:steps>
+	1. create an appointment spawning from 2012/11/01 to 2012/11/04
+	2. Use CalDav to search between 2012/11/02 and 2012/11/02 - appointment should show
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+
+	<t:property name="appointment1.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment1.location" value="Location${TIME}.${COUNTER}"/>
+	<t:property name="appointment1.content" value="Content${TIME}.${COUNTER}"/>
+	<t:property name="time.20111201120000.gmt" value="1322740800000"/>
+
+	<t:property name="appointment2.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment2.location" value="Location${TIME}.${COUNTER}"/>
+	<t:property name="appointment2.content" value="Content${TIME}.${COUNTER}"/>
+	<t:property name="time.20121101120000.gmt" value="1351728000000"/>
+   
+   	<t:property name="time.20121101120000.gmt" value="1351728000000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="1" name="${appointment1.subject}" >
+	                        <s d="${ICALTIME[${time.20121101120000.gmt}]}Z"/>  
+	                        <e d="${ICALTIME(+4d)[${time.20121101120000.gmt}]}Z"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment1.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment1.invId"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="uid" set="appointment1.uid"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	 <t:caldav >
+           <t:request method="REPORT" uri="/dav/${account1.name}/Calendar/" depth="1">
+                        <x0:calendar-query xmlns:x0="urn:ietf:params:xml:ns:caldav" xmlns:x1="DAV:">
+                          <x1:prop>
+                                <x0:calendar-data>
+                                          <x0:expand start="20121102T000000Z" end="20121103T000000Z"/>
+                                </x0:calendar-data>
+                            <x1:getetag/>
+                          </x1:prop>
+                          <x0:filter>
+                            <x0:comp-filter name="VCALENDAR">
+                            <x0:comp-filter name="VEVENT">
+                              <x0:time-range start="20121102T000000Z" end="20121103T000000Z"/>
+                            </x0:comp-filter>
+                            </x0:comp-filter>
+
+                          </x0:filter>
+                        </x0:calendar-query>
+             </t:request>
+             <t:response>
+					<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/Calendar/${appointment1.uid}.ics']"/>
+             </t:response>
+        </t:caldav>
+        
+        <t:caldav >
+           <t:request method="REPORT" uri="/dav/${account1.name}/Calendar/" depth="1">
+                        <x0:calendar-query xmlns:x0="urn:ietf:params:xml:ns:caldav" xmlns:x1="DAV:">
+                          <x1:prop>
+                                <x0:calendar-data>
+                                          <x0:expand start="20121202T000000Z" end="20121203T000000Z"/>
+                                </x0:calendar-data>
+                            <x1:getetag/>
+                          </x1:prop>
+                          <x0:filter>
+                            <x0:comp-filter name="VCALENDAR">
+                            <x0:comp-filter name="VEVENT">
+                              <x0:time-range start="20121202T000000Z" end="20121203T000000Z"/>
+                            </x0:comp-filter>
+                            </x0:comp-filter>
+
+                          </x0:filter>
+                        </x0:calendar-query>
+             </t:request>
+             <t:response>
+					<t:select path="//D:response[D:href='/dav/${account1.name}/Calendar/${appointment1.uid}.ics']" emptyset="1"/>
+             </t:response>
+        </t:caldav>
+	
+</t:test_case>
+
+
+</t:tests>

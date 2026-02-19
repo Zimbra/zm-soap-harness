@@ -1,0 +1,202 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.name}" urlencode="true"/>
+<t:property name="account2.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name.encoded" value="${account2.name}" urlencode="true"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+	  		</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Calendar_CreateMeetingRequest_01" type="bhr">
+	<t:objective>Create a basic Meeting Request using CalDav</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+
+    
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="appointment.uid" value="${UUID}"/>
+	<t:property name="date.20091201120000.gmt" value="1259668800000"/>
+	<t:property name="date.20091201120000.pst" value="${TIME(-8h)[${date.20091201120000.gmt}]}"/>
+
+	<t:caldav >
+		<t:request method="PUT" uri="/dav/${account1.name.encoded}/Calendar/${appointment.uid}.ics" >
+			<ical>BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:Zimbra-Calendar-Provider
+BEGIN:VTIMEZONE
+TZID:America/Los_Angeles
+X-LIC-LOCATION:America/Los_Angeles
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0800
+TZOFFSETTO:-0700
+TZNAME:PDT
+DTSTART:19700308T020000
+RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=2SU;BYMONTH=3
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0700
+TZOFFSETTO:-0800
+TZNAME:PST
+DTSTART:19701101T020000
+RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=1SU;BYMONTH=11
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:${appointment.uid}
+SUMMARY:${appointment.subject}
+ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${account2.name}
+X-MOZ-GENERATION:1
+ORGANIZER:mailto:${account1.name}
+DTSTART;TZID=America/Los_Angeles:${ICALTIME[${date.20091201120000.pst}]}
+DTEND;TZID=America/Los_Angeles:${ICALTIME(+2h)[${date.20091201120000.pst}]}
+STATUS:CONFIRMED
+CLASS:PUBLIC
+X-MICROSOFT-CDO-INTENDEDSTATUS:BUSY
+TRANSP:OPAQUE
+X-MICROSOFT-DISALLOW-COUNTER:TRUE
+DTSTAMP:20090603T181108Z
+SEQUENCE:0
+END:VEVENT
+END:VCALENDAR
+</ical>
+	 	</t:request>
+	 	<t:response>
+	 		<t:status code="201"/>
+	 	</t:response>
+	</t:caldav>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+	   		<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-2d)[${date.20091201120000.gmt}]}" calExpandInstEnd="${TIME(+3d)[${date.20091201120000.gmt}]}" types="appointment">
+	   			<query>${appointment.subject}</query>
+	   		</SearchRequest>
+	 	</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:appt[@uid='${appointment.uid}']"/>
+				<t:select path="//mail:appt" attr="invId" set="appointment.invId"/>
+			</t:select>
+	 	</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

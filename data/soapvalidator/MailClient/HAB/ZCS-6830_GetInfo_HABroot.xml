@@ -1,0 +1,217 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <t:property name="domain.name" value="domain${TIME}.com" />
+    <t:property name="acct1.name" value="test1${TIME}.${COUNTER}@${domain.name}" />
+    <t:property name="acct2.name" value="test2${TIME}.${COUNTER}@${domain.name}" />
+    <t:property name="ou1.name" value="ZimbraOU${COUNTER}${TIME}" />
+    <t:property name="hab.notes" value="Group created notes" />
+
+    <t:test_case testcaseid="CreateAccount/Domain" type="always">
+        <t:objective>Account Setup </t:objective>
+        <t:steps>
+            1. Login into admin.
+            2. Create test accounts.
+        </t:steps>
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test required="true">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain.name}</name>
+                    <a n="zimbraNotes">test of adding  an OU</a>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain"
+                    attr="id" set="domain.id" />
+            </t:response>
+        </t:test>
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${acct1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account1.id" />
+            </t:response>
+        </t:test>
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${acct2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account2.id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    <t:test_case testcaseid="CreateOUAndHABGroups" type="bhr"
+        bugids="ZCS-6830">
+        <t:objective>Create a new HAB group and link it to existing OU
+        </t:objective>
+        <t:steps>
+         1. Create a new OU.
+         1. Create 2 HAB groups and link to above OU.
+        </t:steps>
+        <t:test>
+            <t:request>
+                <HABOrgUnitRequest op="create" name="${ou1.name}"
+                    xmlns="urn:zimbraAdmin">
+                    <domain by="name">${domain.name}</domain>
+                </HABOrgUnitRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+                    match="${ou1.name}" />
+            </t:response>
+        </t:test>
+        <t:property name="hab.group1_name" value="grouphab1_${TIME}" />
+        <t:property name="hab.group1" value="${hab.group1_name}@${domain.name}" />
+        <t:property name="hab.group2_name" value="grouphab2_${TIME}" />
+        <t:property name="hab.group2" value="${hab.group2_name}@${domain.name}" />
+        <t:test>
+            <t:request>
+                <CreateHABGroupRequest habDisplayName="${hab.group1_name}"
+                    habOrgUnit="${ou1.name}" name="${hab.group1}" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraNotes">${hab.notes}</a>
+                </CreateHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl"
+                    attr="name" match="${hab.group1}" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl"
+                    attr="id" set="hab.group1_id" />
+                <t:select
+                    path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+                    match="${hab.group1_name}" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateHABGroupRequest habDisplayName="${hab.group2_name}"
+                    habOrgUnit="${ou1.name}" name="${hab.group2}" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraNotes">${hab.notes}</a>
+                </CreateHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl"
+                    attr="name" match="${hab.group2}" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl"
+                    attr="id" set="hab.group2_id" />
+                <t:select
+                    path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+                    match="${hab.group2_name}" />
+            </t:response>
+        </t:test>
+       </t:test_case>
+       <t:test_case testcaseid="GetInfo_HABroots_1" type="bhr"
+        bugids="ZCS-6830">
+        <t:objective>Add a new HAB root to domain and verify in GetInfo roots returned
+        </t:objective>
+        <t:steps>
+         1. Modify domain request to add a new HAB root
+         2. GetInfo request on account 2 user to verify response has HAB root added above.
+        </t:steps>
+         <t:test>
+            <t:request>
+                <ModifyDomainRequest xmlns="urn:zimbraAdmin">
+                    <id>${domain.id}</id>
+                    <a n="+zimbraHierarchicalAddressBookRoot">${hab.group1_id}</a>
+                    <a n="+zimbraHierarchicalAddressBookRoot">${hab.group2_id}</a>
+                </ModifyDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyDomainResponse/admin:domain" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${acct2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GetInfoRequest xmlns="urn:zimbraAccount" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:GetInfoResponse//acct:habRoots//acct:hab" match="${hab.group1_id}">
+                </t:select>
+                <t:select path="//acct:GetInfoResponse//acct:habRoots//acct:hab" match="${hab.group2_id}">
+                </t:select>
+            </t:response>
+        </t:test>
+        </t:test_case>
+        <t:test_case testcaseid="GetInfo_HABroots_2" type="bhr"
+        bugids="ZCS-6830">
+        <t:objective>Remove a HAB root from domain and verify it is not returned in
+        </t:objective>
+        <t:steps>
+         1. Remove a HAB root group from domain.
+         2. GetInfo request on account 2 user to verify response has two HAB roots.
+        </t:steps>
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyDomainRequest xmlns="urn:zimbraAdmin">
+                    <id>${domain.id}</id>
+                    <a n="-zimbraHierarchicalAddressBookRoot">${hab.group1_id}</a>
+                </ModifyDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyDomainResponse/admin:domain" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${acct2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GetInfoRequest xmlns="urn:zimbraAccount" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:GetInfoResponse//acct:habRoots//acct:hab" match="${hab.group1_id}"
+                emptyset="1">
+                 </t:select>
+            </t:response>
+        </t:test>
+        </t:test_case>
+</t:tests>

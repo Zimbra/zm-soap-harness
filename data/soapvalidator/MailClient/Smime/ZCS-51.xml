@@ -1,0 +1,476 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <t:property name="test_account1.name" value="user1@zcs51smime.com" />
+    <t:property name="test_account2.name" value="user2@zcs51smime.com" />
+    <t:property name="contact_email.name" value="email@gmail.com" />
+    <t:property name="P12Cert.user1" value="${testMailRaw.root}/zcs-51/user1/user1_digitalid.p12" />
+    <t:property name="P12Cert.user2" value="${testMailRaw.root}/zcs-51/user2/user2_digitalid.p12" />
+    <t:property name="uploadPubCert.user1" value="${testMailRaw.root}/zcs-51/user1/user1.cer" />
+    <t:property name="uploadPubCert.user2" value="${testMailRaw.root}/zcs-51/user2/user2.cer" />
+    <t:property name="uploadPubCert.multiuser" value="${testMailRaw.root}/zcs-51/multiuser/multi_user.cer" />
+    <t:property name="uploadPubCert.emptyuser" value="${testMailRaw.root}/zcs-51/emptyuser/sha2_noemail.cer" />
+    <t:property name="domain_name" value="zcs51smime.com" />
+    <t:property name="password_for_certs" value="zimbra" />
+
+    <t:test_case testcaseid="zcs51_CreateAndSetupAccounts" type="always" bugids="zcs-51">
+        <t:objective>
+            1. Create domain
+            2. Create account 1
+            3. Create account 2
+            4. Add certificate for account 1
+        </t:objective>
+
+       <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmimeOCSPEnabled">FALSE</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+	
+	<t:delay sec="30"/>
+
+              
+        <t:test required="true">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain_name}</name>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse//admin:domain"
+                    attr="id" set="domain1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraFeatureSMIMEEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraFeatureSMIMEEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${P12Cert.user1}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="StatusCode" match="200" />
+                <t:select attr="id" set="uploadFileId_1" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+        
+        <t:test>
+            <t:request>
+                <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+                    <upload id="${uploadFileId_1}"></upload>
+                    <password>${password_for_certs}</password>
+                </SaveSmimeCertificateRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pubCertId" set="pubCertId" />
+                <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pvtKeyId" set="pvtKeyId" />
+                <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:emailAddress" match="${test_account1.name}" />
+            </t:response>
+        </t:test>
+        
+    </t:test_case>
+
+    <t:test_case testcaseid="zcs51_SingleEmailCert" type="bhr" bugids="zcs-51">
+        <t:objective>
+            1. Create a contact and upload public certificate which has single email address in it.
+            2. Verify contact email associated with certificate is returned.
+        </t:objective>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadPubCert.user2}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="StatusCode" match="200" />
+                <t:select attr="id" set="aid.pub.cert" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+		
+		<t:delay sec="10"/>
+
+        
+        <t:test id="create_contact_request">
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">User1</a>
+                        <a n="lastName">Last</a>
+                        <a n="email">${test_account2.name}</a>
+                        <a n="userCertificate" aid="${aid.pub.cert}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id" />
+            </t:response>
+        </t:test>
+                
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>in:contacts</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+        	 <t:select path="//mail:SearchResponse/mail:cn/acct:certificate" attr="emailAddress" match="${test_account2.name}"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+	 	<t:request>
+			<ContactActionRequest xmlns="urn:zimbraMail">
+			<action id="${contact1.id}" op="delete"/>
+			</ContactActionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ContactActionResponse/mail:action"/>
+	 	</t:response>
+	</t:test>
+
+    </t:test_case>
+
+    <t:test_case testcaseid="zcs51_MultiEmailCert" type="bhr" bugids="zcs-51">
+        <t:objective>
+            1. Create a contact and upload public certificate which has multiple email address in it.
+            2. Verify contact email associated with certificate is returned.
+            3. SubjectAltName has both the email addresses in it.
+        </t:objective>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadPubCert.multiuser}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="StatusCode" match="200" />
+                <t:select attr="id" set="aid.pub.cert" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+		
+		<t:delay sec="10"/>
+
+        
+        <t:test id="create_contact_request">
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">User1</a>
+                        <a n="lastName">Last</a>
+                        <a n="email">${test_account1.name}</a>
+                        <a n="userCertificate" aid="${aid.pub.cert}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id" />
+            </t:response>
+        </t:test>
+                
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>in:contacts</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:SearchResponse/mail:cn/acct:certificate" attr="emailAddress" match="${test_account1.name}"/>
+        	<t:select path="//mail:SearchResponse/mail:cn/acct:certificate/acct:subjectAltName/acct:rfc822Name[1]" match="${test_account1.name}"/>
+        	<t:select path="//mail:SearchResponse/mail:cn/acct:certificate/acct:subjectAltName/acct:rfc822Name[2]" match="${test_account2.name}"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+	 	<t:request>
+			<ContactActionRequest xmlns="urn:zimbraMail">
+			<action id="${contact1.id}" op="delete"/>
+			</ContactActionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ContactActionResponse/mail:action"/>
+	 	</t:response>
+	</t:test>
+
+    </t:test_case>
+    
+    <t:test_case testcaseid="zcs51_EmptyEmailCert" type="bhr" bugids="zcs-51">
+        <t:objective>
+            1. Create a contact and upload public certificate which has no email address in it.
+            2. Verify contact email associated with certificate is returned.
+            3. SubjectAltName should not have any email addresses in it.
+        </t:objective>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadPubCert.emptyuser}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="StatusCode" match="200" />
+                <t:select attr="id" set="aid.pub.cert" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+		
+		<t:delay sec="10"/>
+
+        
+        <t:test id="create_contact_request">
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">User1</a>
+                        <a n="lastName">Last</a>
+                        <a n="email">${contact_email.name}</a>
+                        <a n="userCertificate" aid="${aid.pub.cert}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id" />
+            </t:response>
+        </t:test>
+		
+		<t:delay sec="10"/>
+                
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>in:contacts</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:SearchResponse/mail:cn/acct:certificate" attr="emailAddress" match="${contact_email.name}"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+	 	<t:request>
+			<ContactActionRequest xmlns="urn:zimbraMail">
+			<action id="${contact1.id}" op="delete"/>
+			</ContactActionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ContactActionResponse/mail:action"/>
+	 	</t:response>
+	</t:test>
+
+    </t:test_case>
+    
+    <t:test_case testcaseid="zcs51_EmptyEmailCert" type="bhr" bugids="zcs-51">
+        <t:objective>
+            1. Create a contact and upload public certificate which has no email address in it.
+            2. Verify contact email associated with certificate is returned.
+            3. SubjectAltName should not have any email addresses in it.
+        </t:objective>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadPubCert.emptyuser}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="StatusCode" match="200" />
+                <t:select attr="id" set="aid.pub.cert" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+        
+        <t:test id="create_contact_request">
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">User1</a>
+                        <a n="lastName">Last</a>
+                        <a n="userCertificate" aid="${aid.pub.cert}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id" />
+            </t:response>
+        </t:test>
+                
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>in:contacts</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:SearchResponse/mail:cn/acct:certificate" attr="emailAddress" emptyset="1"/>
+        	<t:select path="//mail:SearchResponse/mail:cn/acct:certificate/acct:subjectAltName" attr="rfc822Name" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+	 	<t:request>
+			<ContactActionRequest xmlns="urn:zimbraMail">
+			<action id="${contact1.id}" op="delete"/>
+			</ContactActionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ContactActionResponse/mail:action"/>
+	 	</t:response>
+	</t:test>
+
+    </t:test_case> 
+               
+    <!-- clean up -->
+    <t:finally>
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test required="false">
+            <t:request>
+                <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                </DeleteAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteAccountResponse" />
+            </t:response>
+        </t:test>
+        <t:test required="false">
+            <t:request>
+                <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account2.id}</id>
+                </DeleteAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteAccountResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                    <id>${domain1.id}</id>
+                </DeleteDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteDomainResponse" />
+            </t:response>
+        </t:test>
+        
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmimeOCSPEnabled">TRUE</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+            
+    </t:finally>
+</t:tests>

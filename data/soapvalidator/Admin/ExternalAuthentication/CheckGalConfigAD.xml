@@ -1,0 +1,730 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="sometext" value="sometext"/>
+
+<t:property name="AD.searchQuery.basic" value="${AD.account01.user}"/>
+<t:property name="AD.searchQuery.spchar1" value="!@#%"/>
+<t:property name="AD.searchQuery.spchar2" value="*^%(&amp;)"/>
+<t:property name="AD.searchQuery.blank" value=""/>
+<t:property name="AD.searchQuery.number" value="1234"/>
+<t:property name="AD.searchQuery.zero" value="0"/>
+<t:property name="AD.searchQuery.alias" value="account04"/>
+<t:property name="AD.searchQuery.DL1" value="authAL"/>
+<t:property name="AD.searchQuery.DL2" value="authDLMemberOff"/>
+<t:property name="AD.searchQuery.DLalias" value="authDLalias"/>
+
+<t:property name="AD.passwordInvalid" value="InvalidPassoword"/>
+
+<t:property name="AD.bindDN" value="${AD.userName}@${AD.domain}"/>
+<t:property name="AD.bindDNInvalid1" value="%u@"/>
+<t:property name="AD.bindDNInvalid2" value="%u${AD.domain}"/>
+<t:property name="AD.bindDNInvalid3" value="@${AD.domain}"/>
+<t:property name="AD.bindDNInvalid4" value="u@${AD.domain}"/> 
+
+<t:property name="AD.zimbraGalLdapURL" value="ldap://${AD.url}:${AD.port}/"/> 
+<t:property name="AD.zimbraGalLdapURLInvalid1" value="http://${AD.url}:${AD.port}/"/> <!-- Wrong protocol -->
+<t:property name="AD.zimbraGalLdapURLInvalid2" value="http://100.100.100.100:${AD.port}/"/> <!-- Wrong url -->
+<t:property name="AD.zimbraGalLdapURLInvalid3" value="http://${AD.url}:80/"/> <!-- Wrong port -->
+
+<t:property name="AD.zimbraGalLdapFilter" value="ad"/>
+
+<t:property name="check.blank" value=""/>
+<t:property name="check.space" value="      "/>
+<t:property name="check.sometext" value="some text"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup_checkgalconfig" type="always" >
+    <t:objective>Login to the account </t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest1" bugids="2244" type="functional" >
+    <t:objective>  CheckGalConfigRequest with invalid attributes </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>testexample.persistent.co.in</a>
+                <a n='zimbraGalLdapSearchBase'>${sometext}</a>
+                <a n='zimbraGalLdapFilter'>${sometext}</a>
+                <a n='zimbraGalLdapBindDn'>${sometext}</a>
+                <a n='zimbraGalLdapBindPassword'>${sometext}</a>
+                <query limit="2"></query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest2" type="functional">
+    <t:objective> CheckGalConfigRequest with valid and minimum required attributes </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.OK" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest3" type="functional" >
+    <t:objective>  CheckGalConfigRequest with valid value of all attributes (mandatory and optional) </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.OK" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest4" type="functional" bugids="8601">
+    <t:objective>  CheckGalConfigRequest zimbraGalLdapBindDn and without zimbraGalLdapBindPassword </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+               <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+            <!--  <t:select path = "//soap:Text" match=".*unable to search gal$" />-->
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest5" type="functional" >
+    <t:objective>  CheckGalConfigRequest with missing mandatory element </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURLInvalid3}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>da</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query>${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>da</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query>${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURLInvalid3}</a>
+                <a n='zimbraGalLdapFilter'>da</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query>${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURLInvalid3}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query>${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURLInvalid3}</a>
+                <a n='zimbraGalLdapFilter'>da</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <!--  t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/-->
+             <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest6" type="functional" >
+    <t:objective> CheckGalConfigRequest for AD server with valid username and valid password in changecase </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.passwordChangeCase}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest7" type="functional" >
+    <t:objective> CheckGalConfigRequest for AD server with Invalid password </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.passwordInvalid}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest8" type="functional" bugids="8601">
+    <t:objective> CheckGalConfigRequest for AD server with blank password </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${check.blank}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+           <!--   <t:select path = "//soap:Text" match=".*unable to search gal$" />-->
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest9" type="functional" >
+    <t:objective> CheckGalConfigRequest with Invalid value for for zimbraGalMode</t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>${sometext}</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+               <query limit="2">domain</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest10" type="functional" bugids="8601">
+    <t:objective> CheckAuthConfigRequest for AD server with Invalid value for zimbraGalLdapBindDn </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDNInvalid1}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDNInvalid2}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDNInvalid3}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDNInvalid4}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${check.blank}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+           <!--   <t:select path = "//soap:Text" match=".*unable to search gal$" />-->
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest11" type="functional" >
+    <t:objective>  CheckGalConfigRequest for AD server with wrong protocol at zimbraGalLdapURL </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURLInvalid1}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest12" type="functional" >
+    <t:objective>  CheckAuthConfigRequest for AD server with wrong URL at zimbraAuthLdapURL </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURLInvalid2}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest13" type="functional" >
+    <t:objective>  CheckGalConfigRequest for AD server with wrong port at zimbraGalLdapURL </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURLInvalid3}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest14" type="functional" >
+    <t:objective>  CheckGalConfigRequest for AD server with invalid value of zimbraGalLdapFilter (other than 'ad') </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURLInvalid3}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>da</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.AUTH_FAILED" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest15" type="functional" bugids="3741">
+    <t:objective>  CheckGalConfigRequest for AD server with invalid search query (spchar/number/zero/blank) </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query>${AD.searchQuery.spchar1}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.INVALID_SEARCH_FILTER|check.OK" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.spchar2}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.INVALID_SEARCH_FILTER|check.OK" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.blank}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.INVALID_SEARCH_FILTER|check.OK" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.number}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.INVALID_SEARCH_FILTER|check.OK" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.zero}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.INVALID_SEARCH_FILTER|check.OK" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest16" type="functional" >
+    <t:objective>  CheckGalConfigRequest for AD server with limit as alphabets </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="${sometext}">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest17" type="functional" >
+    <t:objective>  CheckGalConfigRequest with valid search by alias of an account  </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.alias}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.OK" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest18" type="functional" >
+    <t:objective>  CheckGalConfigRequest with valid search by alias of a DL </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.DLalias}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.OK" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest19" type="functional" >
+    <t:objective>  CheckGalConfigRequest with valid search by a DL  </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.DL1}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.OK" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckGalConfigRequest20" type="functional" >
+    <t:objective>  CheckGalConfigRequest with valid search by a DL, whose one account is MemberOf other DL  </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.DL2}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.OK" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+

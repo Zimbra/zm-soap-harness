@@ -1,0 +1,418 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="cont_backup_zcs2730.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="folder1.name" value="ContactsBackup"/>
+<t:property name="contact.newfolder" value="Folder_2730"/>
+<t:property name="contact.newfolder1" value="Backup_2730"/>
+
+<t:property name="contact.backup.1" value="${testMailRaw.root}/zcs2730/Contacts_backup1.tgz"/>
+<t:property name="contact.backup.2" value="${testMailRaw.root}/zcs2730/Contacts_backup2.tgz"/>
+<t:property name="contact.backup.3" value="${testMailRaw.root}/zcs2730/phayes-geoPHP-1.2-20-g6855624.tgz"/>
+<t:property name="contact.backup.4" value="${testMailRaw.root}/zcs2730/Contact_2730-2017-09-19-151845.tgz"/>
+<t:property name="contact.backup.5" value="${testMailRaw.root}/zcs2730/Folder_2730-2017-09-19-120051.tgz"/>
+<t:property name="contact.backup.6" value="${testMailRaw.root}/zcs2730/Backup_2730-2017-09-19-154634.tgz"/>
+<t:property name="contact.backup.7" value="${testMailRaw.root}/zcs2730/Contacts-2017-09-19-171602.tgz"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup_Contacts_Backup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ZCS-2730_Testcase1" type="q4fix" bugids="2730">
+    <t:objective>Verify RestoreContactsRequest restores a contact tgz file stored in the briefcase.</t:objective>
+    <t:steps>
+			1. Login into account1.
+			2. Create a folder ContactsBackup under Briefcase folder.
+			3. Upload a contact.tgz file having contacts as metadata in above folder.
+			4. Fire RestoreContactsRequest request to have the above contacts from contact.tgz restored in Contacts folder.
+			5. Search the contact folder for the restored contacts.
+    </t:steps>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test> 
+	
+	 <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="16" name="${folder1.name}"/>  	 
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>			
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${contact.backup.1}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="contact.backup1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	 <t:test >	
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${folder1.id}">
+			    <upload id="${contact.backup1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="briefcase_contactBackup1.id"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+	        <t:request>
+	           <RestoreContactsRequest contactsBackupFileName="Contacts_backup1.tgz" xmlns="urn:zimbraMail"/>
+	        </t:request>
+	        <t:response>
+	               <t:select path="//mail:RestoreContactsResponse" />          
+	        </t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:contacts</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f1" />
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f2" />
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f3" />
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f4" />
+		</t:response>
+	</t:test>	
+
+</t:test_case>
+
+<t:test_case testcaseid="ZCS-2730_Testcase2" type="q4fix" bugids="2730">
+    <t:objective>Verify RestoreContactsRequest with resolve="reset" restores a contact tgz file stored in the briefcase.</t:objective>
+    <t:steps>
+			1. Login into account1.
+			2. User 1 modifies some contacts and have those contacts in a Contact_backup2.tgz file.			
+			3. Fire RestoreContactsRequest to have the above contacts from Contact_backup2.tgz restored and reset in Contacts folder.
+			4. Search the contact folder for the restored reset contacts. Verify new contact data should be backed up.
+    </t:steps>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${contact.backup.2}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="contact.backup2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	 <t:test >	
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${folder1.id}">
+			    <upload id="${contact.backup2.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="briefcase_contactBackup2.id"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+	        <t:request>
+	           <RestoreContactsRequest contactsBackupFileName="Contacts_backup2.tgz" xmlns="urn:zimbraMail" resolve="reset"/>
+	        </t:request>
+	        <t:response>	
+	               <t:select path="//mail:RestoreContactsResponse" />          
+	        </t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:contacts</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f1" />
+		    <t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(text(),'f2')]/following-sibling::mail:a[@n='email']" match="abc@zss.com"/>			
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f2" />
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f3" />
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f4" />					    
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(text(),'f1')]/following-sibling::mail:a[@n='company']" match="zimbra"/>						
+		</t:response>		
+	</t:test>	
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ZCS-2730_Testcase4" type="q4fix" bugids="2730">
+    <t:objective>Verify RestoreContactsRequest restores a contact tgz file stored in the briefcase in custom contact folder</t:objective>
+    <t:steps>
+			1. Login into account1.
+			2. Upload a contact tgz file having contacts in a custom folder.
+			3. Fire RestoreContactsRequest request to have the contact tgz file restored in the contacts.
+			4. Search the custom contact folder 'Contact_2730' for the restored contacts.
+    </t:steps>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${contact.backup.4}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="contact.backup4.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	 <t:test >	
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${folder1.id}">
+			    <upload id="${contact.backup4.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="briefcase_contactBackup4.id"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+	        <t:request>
+	           <RestoreContactsRequest contactsBackupFileName="Contact_2730-2017-09-19-151845.tgz" xmlns="urn:zimbraMail"/>
+	        </t:request>
+	        <t:response>
+	               <t:select path="//mail:RestoreContactsResponse" />          
+	        </t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:contacts/Contact_2730</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f_sub2" />
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="f_sub1" />
+		</t:response>
+	</t:test>	
+
+</t:test_case>
+
+<t:test_case testcaseid="ZCS-2730_Testcase5" type="q4fix" bugids="2730">
+    <t:objective>Verify RestoreContactsRequest restores a contact tgz file stored in the briefcase in a sub contact folder</t:objective>
+    <t:steps>
+			1. Login into account1.
+			2. Upload a contact tgz file having contacts within a sub folder.
+			3. Fire RestoreContactsRequest request to have the above contacts from contact.tgz restored in sub folder.
+			4. Search the contact sub folder for the restored contacts. Sub folder and contact both should be created.
+    </t:steps>		
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${contact.backup.5}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="contact.backup5.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	 <t:test >	
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${folder1.id}">
+			    <upload id="${contact.backup5.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="briefcase_contactBackup5.id"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+	        <t:request>
+	           <RestoreContactsRequest contactsBackupFileName="Folder_2730-2017-09-19-120051.tgz" resolve="replace" xmlns="urn:zimbraMail"/>
+	        </t:request>
+	        <t:response>
+	               <t:select path="//mail:RestoreContactsResponse" />          
+	        </t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:${contact.newfolder}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="first2" />
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'lastName')]" match="last1" />
+		</t:response>
+	</t:test>	
+
+</t:test_case>
+
+<t:test_case testcaseid="ZCS-2730_Testcase6" type="q4fix" bugids="2730">
+    <t:objective>Verify RestoreContactsRequest restores a backup.tgz file having contact group stored in the briefcase.</t:objective>
+    <t:steps>
+			1. Login into account1.
+			2. Upload a contact tgz file having contact group in above folder.
+			3. Fire RestoreContactsRequest request to have the above contact group from contact tgz restored in Contacts folder.
+			4. Search the 'Backup_2730' folder for the restored contact group.
+    </t:steps>		
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${contact.backup.6}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="contact.backup6.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	 <t:test >	
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${folder1.id}">
+			    <upload id="${contact.backup6.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="briefcase_contactBackup6.id"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+	        <t:request>
+	           <RestoreContactsRequest contactsBackupFileName="Backup_2730-2017-09-19-154634.tgz" xmlns="urn:zimbraMail"/>
+	        </t:request>
+	        <t:response>
+	               <t:select path="//mail:RestoreContactsResponse" />          
+	        </t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:${contact.newfolder1}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'fullName')]" match="group1" />
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'type')]" match="group" />
+		</t:response>
+	</t:test>	
+
+</t:test_case>
+
+<t:test_case testcaseid="ZCS-2730_Testcase7" type="q4fix" bugids="2730">
+    <t:objective>Verify RestoreContactsRequest restores metadata of a contact from a contact tgz file stored in the briefcase.</t:objective>
+    <t:steps>
+			1. Login into account1.
+			2. Upload a contact tgz file having contacts having some metadata(tag) in briefcase.
+			3. Fire RestoreContactsRequest request to have the above contacts with metadata from contact tgz restored in Contacts folder.
+			4. Search the contact folder for the restored contact and verify the metadata is also present.
+    </t:steps>	
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${contact.backup.7}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="contact.backup7.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	 <t:test >	
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${folder1.id}">
+			    <upload id="${contact.backup7.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="briefcase_contactBackup7.id"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+	        <t:request>
+	           <RestoreContactsRequest contactsBackupFileName="Contacts-2017-09-19-171602.tgz" xmlns="urn:zimbraMail"/>
+	        </t:request>
+	        <t:response>
+	               <t:select path="//mail:RestoreContactsResponse" />          
+	        </t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:contacts</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse//mail:cn" attr="tn" match="tag1" />
+			<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="meta" />
+		</t:response>
+	</t:test>	
+
+</t:test_case>
+
+</t:tests>

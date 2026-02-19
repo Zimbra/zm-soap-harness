@@ -4204,23 +4204,6 @@ TODO
 </t:test_case>
 
 
-<t:test_case testcaseid = "ModifyAccountRequest111" type="deprecated" >
-    <t:objective>Modify an account and set zimbraPrefForwardReplyPrefixChar to invalid value</t:objective>
-
-    <t:test id = "modifyaccountrequest111a">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefForwardReplyPrefixChar">${account.sometext}</a>
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
 
 <t:test_case testcaseid = "ModifyAccountRequest112" type="sanity">
     <t:objective>Modify an account and set zimbraPrefMailPollingInterval to valid value</t:objective>
@@ -4293,41 +4276,6 @@ TODO
 
 </t:test_case>
 
-
-<t:test_case testcaseid = "ModifyAccountRequest116" type="deprecated">
-    <t:objective>Modify an account and set zimbraPrefContactsInitialView to cards/list</t:objective>
-
-    <t:test id = "modifyaccountrequest116a">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefContactsInitialView">cards</a>
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
-
-<t:test_case testcaseid = "ModifyAccountRequest117" type="deprecated">
-    <t:objective>Modify an account and set zimbraPrefContactsInitialView to invalid values</t:objective>
-    <t:test id = "modifyaccountrequest117a">
-
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefContactsInitialView">${account.sometext}</a>
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
-        </t:response>
-    </t:test>
-
-</t:test_case>
 
 
 <t:test_case testcaseid = "ModifyAccountRequest118" type="sanity">

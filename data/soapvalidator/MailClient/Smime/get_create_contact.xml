@@ -1,0 +1,549 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <t:property name="account.password" value="${defaultpassword.value}" />
+    <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+    <t:property name="firstName" value="First.${TIME}.${COUNTER}" />
+    <t:property name="lastName" value="Last.${TIME}.${COUNTER}" />
+    <t:property name="email" value="email.${TIME}.${COUNTER}@domain.com" />
+    <t:property name="image.name" value="${testMailRaw.root}/bug107057/image1.jpg" />
+    <t:property name="uploadFile1.name" value="${testMailRaw.root}/bug107057/pa1.cer" />
+    <t:property name="uploadFile2.name" value="${testMailRaw.root}/bug107057/pa2.cer" />
+    <t:property name="uploadFile3.name" value="${testMailRaw.root}/bug107057/ds1invalid.cer" />
+
+    <t:property name="contact1.firstname" value="Contact.${TIME}.${COUNTER}" />
+    <t:property name="contact1.lastname" value="Name.${TIME}.${COUNTER}" />
+    <t:property name="contact1.mailid" value="email1.${TIME}.${COUNTER}@domain.com" />
+
+    <t:property name="contact2.firstname" value="Contact.${TIME}.${COUNTER}" />
+    <t:property name="contact2.lastname" value="Name.${TIME}.${COUNTER}" />
+    <t:property name="contact2.mailid" value="emai2l.${TIME}.${COUNTER}@domain.com" />
+
+    <t:property name="contact3.firstname" value="Contact.${TIME}.${COUNTER}" />
+    <t:property name="contact3.lastname" value="Name.${TIME}.${COUNTER}" />
+    <t:property name="contact3.mailid" value="email3.${TIME}.${COUNTER}@domain.com" />
+
+    <t:property name="contact4.firstname" value="Contact.${TIME}.${COUNTER}" />
+    <t:property name="contact4.lastname" value="Name.${TIME}.${COUNTER}" />
+    <t:property name="contact4.mailid" value="email4.${TIME}.${COUNTER}@domain.com" />
+
+    <t:property name="contact5.firstname" value="Contact.${TIME}.${COUNTER}" />
+    <t:property name="contact5.lastname" value="Name.${TIME}.${COUNTER}" />
+    <t:property name="contact5.mailid" value="email5.${TIME}.${COUNTER}@domain.com" />
+
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+    <t:property name="test_acct.server" value="NOT_DEFINED" />
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+
+        <t:test id="ping" required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+
+
+    <t:test_case testcaseid="ContactsCreate_acctsetup1" type="always">
+        <t:objective>create test account</t:objective>
+
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraFeatureSMIMEEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server" />
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+
+    <t:property name="server.zimbraAccount" value="${test_acct.server}" />
+
+    <t:test_case testcaseid="CreateContactRequest1_ValidCert" type="bhr" bugids="ZCS-991">
+        <t:objective>Create a contact with userCertificate</t:objective>
+        <t:steps>
+            1. Login with a user
+            2. create contact with certificate as attachment to the contact
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${account.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${image.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactimage.aid1" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile1.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactCertificate.aid1" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+		
+		<t:delay sec="30"/>
+
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">${contact1.firstname}</a>
+                        <a n="lastName">${contact1.lastname}</a>
+                        <a n="email">${contact1.mailid}</a>
+                        <a n="image" aid="${contactimage.aid1}" />
+                        <a n="userCertificate" aid="${contactCertificate.aid1}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+
+    <t:test_case testcaseid="ModifyContactRequest1_Smimedisableduser" type="bhr" bugids="ZCS-991">
+        <t:objective>Create a contact with userCertificate</t:objective>
+        <t:steps>
+            1. Login with a user whose smime is disabled
+            2. create contact with certificate as attachment to the contact
+            3. Modify contact and add a new certificate
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account2.name}</account>
+                    <password>${account.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${image.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactimage.aid2" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile1.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactCertificate.aid2" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+		
+		<t:delay sec="10"/>
+
+        <t:test id="modifycontactrequest1a">
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">${contact2.firstname}</a>
+                        <a n="lastName">${contact2.lastname}</a>
+                        <a n="email">${contact2.mailid}</a>
+                        <a n="image" aid="${contactimage.aid2}" />
+                        <a n="userCertificate" aid="${contactCertificate.aid2}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile2.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="newcert1.aid" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+		
+		<t:delay sec="10"/>
+
+
+        <t:test id="modifycontactrequest1b" depends="modifycontactrequest1a">
+            <t:request>
+                <ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1">
+                    <cn id="${contact1.id}">
+                        <a n="userCertificate" aid="${newcert1.aid}" />
+                    </cn>
+                </ModifyContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:ModifyContactResponse/mail:cn" />
+            </t:response>
+        </t:test>
+
+        <t:test depends="modifycontactrequest1b">
+            <t:request>
+                <GetContactsRequest xmlns="urn:zimbraMail">
+                    <cn id="${contact1.id}" />
+                </GetContactsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='userCertificate']" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="ModifyContactRequest2_Modifyrequest" type="bhr" bugids="ZCS-991">
+        <t:objective>Create a contact with userCertificate</t:objective>
+        <t:steps>
+            1. Login with a user
+            2. create contact with certificate as attachment to the contact
+            3. Modify contact and add a new certificate
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${account.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${image.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactimage.aid" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile1.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactCertificate.aid" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+        <t:test id="modifycontactrequest2a">
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">${contact3.firstname}</a>
+                        <a n="lastName">${contact3.lastname}</a>
+                        <a n="email">${contact3.mailid}</a>
+                        <a n="image" aid="${contactimage.aid}" />
+                        <a n="userCertificate" aid="${contactCertificate.aid}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile2.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactCertificate2.aid" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+        <t:test id="modifycontactrequest2b" depends="modifycontactrequest2a">
+            <t:request>
+                <ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1">
+                    <cn id="${contact.id}">
+                        <a n="userCertificate" aid="${contactCertificate2.aid}" />
+                    </cn>
+                </ModifyContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:ModifyContactResponse/mail:cn" />
+            </t:response>
+        </t:test>
+
+        <t:test depends="modifycontactrequest2b">
+            <t:request>
+                <GetContactsRequest xmlns="urn:zimbraMail">
+                    <cn id="${contact.id}" />
+                </GetContactsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:GetContactsResponse//mail:cn/acct:certificate" emptyset="1" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="CreateContactRequest2_Invalidcert" type="bhr" bugids="ZCS-991">
+        <t:objective>Create a contact with userCertificate</t:objective>
+        <t:steps>
+            1. Login with a user
+            2. create contact with invalid certificate file. CreateContactRequest should fail
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${account.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${image.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactimage.aid1" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+		
+		<t:delay sec="10"/>
+
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">${contact4.firstname}</a>
+                        <a n="lastName">${contact4.lastname}</a>
+                        <a n="email">${contact4.mailid}</a>
+                        <a n="image" aid="${contactimage.aid1}" />
+                        <a n="userCertificate" aid="${contactimage.aid1}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="service.INVALID_REQUEST" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="CreateContactRequest3_CorruptCert" type="bhr" bugids="ZCS-991">
+        <t:objective>Create a contact with userCertificate</t:objective>
+        <t:steps>
+            1. Login with a user
+            2. create contact with corrupt certificate.
+            3. It should be created successfully as no validation is added as part of bug ZCS-991
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${account.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${image.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactimage.aid1" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile3.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactCertificate.aid1" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+		
+		<t:delay sec="10"/>
+
+
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">${contact5.firstname}</a>
+                        <a n="lastName">${contact5.lastname}</a>
+                        <a n="email">${contact5.mailid}</a>
+                        <a n="image" aid="${contactimage.aid1}" />
+                        <a n="userCertificate" aid="${contactCertificate.aid1}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="CreateContactRequest1_ValidCert_GetContact" type="bhr" bugids="ZCS-991">
+        <t:objective>Create a contact with userCertificate</t:objective>
+        <t:steps>
+            1. Login with a user
+            2. create contact with certificate as attachment to the contact
+            3. Call GetContact
+            a. returnCertInfo = true
+            b. returnCertInfo = false
+            c. no returnCertInfo attribute
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${account.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${image.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactimage.aid1" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile1.name}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="contactCertificate.aid1" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+		
+		<t:delay sec="10"/>
+
+
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">${contact1.firstname}</a>
+                        <a n="lastName">${contact1.lastname}</a>
+                        <a n="email">${contact1.mailid}</a>
+                        <a n="image" aid="${contactimage.aid1}" />
+                        <a n="userCertificate" aid="${contactCertificate.aid1}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:CreateContactResponse/mail:cn">
+                    <t:select attr="id" set="contact.id" />
+                </t:select>
+            </t:response>
+        </t:test>
+
+        <t:test depends="getcontacts_certinfo_noflag">
+            <t:request>
+                <GetContactsRequest xmlns="urn:zimbraMail">
+                    <cn id="${contact.id}" />
+                </GetContactsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetContactsResponse" />
+                <t:select path="//mail:GetContactsResponse//mail:cn/mail:certificate" emptyset="1" />
+            </t:response>
+        </t:test>
+
+        <t:test depends="getcontacts_certinfo_flag_1">
+            <t:request>
+                <GetContactsRequest xmlns="urn:zimbraMail" returnCertInfo="1">
+                    <cn id="${contact.id}" />
+                </GetContactsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetContactsResponse" />
+                <t:select path="//mail:GetContactsResponse//mail:cn/acct:certificate" emptyset="0" />
+            </t:response>
+        </t:test>
+
+
+        <t:test depends="getcontacts_certinfo_flag_0">
+            <t:request>
+                <GetContactsRequest xmlns="urn:zimbraMail" returnCertInfo="0">
+                    <cn id="${contact.id}" />
+                </GetContactsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetContactsResponse" />
+                <t:select path="//mail:GetContactsResponse//mail:cn/acct:certificate" emptyset="1" />
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+</t:tests>

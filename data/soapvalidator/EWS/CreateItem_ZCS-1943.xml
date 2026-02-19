@@ -1,0 +1,697 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<!-- Following bug is included as part of this testcase -->
+	<!-- zcs-1943:- NumberFormatException in CreateItem with DistinguishedFolderId -->
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:property name="test_account1.username" value="test1${TIME}.${COUNTER}" />
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+
+	<t:property name="test_account2.username" value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+
+	<t:property name="message.subject" value="subject${TIME}.${COUNTER}" />
+	<t:property name="message.subject1" value="subject1${TIME}.${COUNTER}" />
+	<t:property name="message.subject2" value="subject2${TIME}.${COUNTER}" />
+
+
+	<t:property name="appointment.subject" value="appsubject1${TIME}.${COUNTER}" />
+	<t:property name="appointment.content" value="appcont1${TIME}.${COUNTER}" />
+
+	<t:property name="message.content" value="Message test content" />
+	<t:property name="message.content1" value="Message 1 test content" />
+	<t:property name="message.content2" value="Message 2 test content" />
+	<t:property name="message.content3" value="Message 3 test content" />
+
+
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1943_TC1" type="bhr">
+		<t:objective>CreateItem request with distinguished folder ID for
+			calendar item
+		</t:objective>
+		<t:steps>1. Fire a CreateItem request with distinguished folder ID as
+			'calendar'
+			2. Verify correct response is received.
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							MessageDisposition="SendAndSaveCopy">
+							<SavedItemFolderId>
+								<t:DistinguishedFolderId Id="calendar" />
+							</SavedItemFolderId>
+							<Items>
+								<t:CalendarItem
+									xmlns="http://schemas.microsoft.com/exchange/services/2006/types">
+									<Subject>${message.subject}</Subject>
+									<Body BodyType="Text">${message.content}</Body>
+									<ReminderIsSet>true</ReminderIsSet>
+									<ReminderMinutesBeforeStart>60</ReminderMinutesBeforeStart>
+									<Start>2018-11-02T14:00:00</Start>
+									<End>2018-11-02T15:00:00</End>
+									<IsAllDayEvent>false</IsAllDayEvent>
+									<LegacyFreeBusyStatus>Busy</LegacyFreeBusyStatus>
+									<t:UID>0A1BB546-7FB0-4721-85B1-90961A79BB38</t:UID>
+									<RequiredAttendees>
+										<Attendee>
+											<Mailbox>
+												<EmailAddress>${test_account2.name}</EmailAddress>
+											</Mailbox>
+										</Attendee>
+									</RequiredAttendees>
+								</t:CalendarItem>
+							</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="cal01.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1943_TC2" type="bhr">
+		<t:objective>CreateItem request with distinguished folder ID for
+			unmapped item.
+		</t:objective>
+		<t:steps>1. Fire a CreateItem request with distinguished folder ID as
+			'xyz'.
+			2. Verify success should be received in response as DistinguishedFolderId is an optional attribute.
+			If mapping fails, it will default to calendar folder.
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							MessageDisposition="SendAndSaveCopy">
+							<SavedItemFolderId>
+								<t:DistinguishedFolderId Id="xyz" />
+							</SavedItemFolderId>
+							<Items>
+								<t:CalendarItem
+									xmlns="http://schemas.microsoft.com/exchange/services/2006/types">
+									<Subject>${message.subject1}</Subject>
+									<Body BodyType="Text">${message.content1}</Body>
+									<ReminderIsSet>true</ReminderIsSet>
+									<ReminderMinutesBeforeStart>60</ReminderMinutesBeforeStart>
+									<Start>2018-11-03T14:00:00</Start>
+									<End>2018-11-03T15:00:00</End>
+									<IsAllDayEvent>false</IsAllDayEvent>
+									<LegacyFreeBusyStatus>Busy</LegacyFreeBusyStatus>
+									<Location>Conference Room 721</Location>
+									<t:UID>0A1BB546-7FB0-4721-85B1-90961A79BB39</t:UID>
+									<RequiredAttendees>
+										<Attendee>
+											<Mailbox>
+												<EmailAddress>${test_account2.name}</EmailAddress>
+											</Mailbox>
+										</Attendee>
+									</RequiredAttendees>
+								</t:CalendarItem>
+							</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1943_TC3" type="bhr">
+		<t:objective>CreateItem request with folder ID for calendar item with
+			numeric value
+		</t:objective>
+		<t:steps>1. Fire a CreateItem request with folder ID as '10'
+			2. Verify
+			correct data should be received in response.
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							MessageDisposition="SendAndSaveCopy">
+							<SavedItemFolderId>
+								<t:FolderId Id="10" />
+							</SavedItemFolderId>
+							<Items>
+								<t:CalendarItem
+									xmlns="http://schemas.microsoft.com/exchange/services/2006/types">
+									<Subject>${message.subject2}</Subject>
+									<Body BodyType="Text">${message.content2}</Body>
+									<ReminderIsSet>true</ReminderIsSet>
+									<ReminderMinutesBeforeStart>60</ReminderMinutesBeforeStart>
+									<Start>2018-11-05T14:00:00</Start>
+									<End>2018-11-05T15:00:00</End>
+									<IsAllDayEvent>false</IsAllDayEvent>
+									<LegacyFreeBusyStatus>Busy</LegacyFreeBusyStatus>
+									<t:UID>0A1BB546-7FB0-4721-85B1-90961A79BB40</t:UID>
+									<RequiredAttendees>
+										<Attendee>
+											<Mailbox>
+												<EmailAddress>${test_account2.name}</EmailAddress>
+											</Mailbox>
+										</Attendee>
+									</RequiredAttendees>
+								</t:CalendarItem>
+							</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="cal02.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1943_TC4" type="bhr">
+		<t:objective>CreateItem request with distinguished folder ID for mail
+			item
+		</t:objective>
+		<t:steps>1. Fire a CreateItem request for mail item with distinguished
+			folder ID as 'inbox'
+			2. Verify proper response should be received.
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							MessageDisposition="SendAndSaveCopy">
+							<SavedItemFolderId>
+								<t:DistinguishedFolderId Id="inbox" />
+							</SavedItemFolderId>
+							<Items>
+								<t:Message>
+									<t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xNi4wLjE2MDUwNg0KRGF0ZTogVGh1LCAwNSBKYW4gMjAxNyAxNzo0ODoyMyArMDUzMA0KU3ViamVjdDogZ28gbWFuDQpNZXNzYWdlLUlEOiA8MTRDNkMwNTgtNDM2Mi00OTFDLTk4MDktMTg1OTFFQUQyRjIyQHpkZXYtdm0wMDkuZW5nLnppbWJyYS5jb20+DQpUaHJlYWQtVG9waWM6IGdvIG1hbg0KTWltZS12ZXJzaW9uOiAxLjANCkNvbnRlbnQtdHlwZTogdGV4dC9wbGFpbjsNCgljaGFyc2V0PSJVVEYtOCINCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IDdiaXQNCg0KDQphc2Rhc2Rhc2RhZA0KDQo=
+									</t:MimeContent>
+									<t:Sensitivity>Normal</t:Sensitivity>
+									<t:Importance>Normal</t:Importance>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI PropertyTag="0x0E07"
+											PropertyType="Integer" />
+										<t:Value>12</t:Value>
+									</t:ExtendedProperty>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI PropertyTag="0xE9F"
+											PropertyType="StringArray" />
+										<t:Values>
+											<t:Value>:R:0</t:Value>
+										</t:Values>
+									</t:ExtendedProperty>
+									<t:ToRecipients>
+										<t:Mailbox>
+											<t:Name>${test_account2.username}</t:Name>
+											<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+										</t:Mailbox>
+									</t:ToRecipients>
+									<t:From>
+										<t:Mailbox>
+											<t:Name>${test_account1.username}</t:Name>
+											<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+										</t:Mailbox>
+									</t:From>
+									<t:IsRead>false</t:IsRead>
+								</t:Message>
+							</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail01.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1943_TC5" type="bhr">
+		<t:objective>CreateItem request with distinguished folder ID for
+			contact item
+		</t:objective>
+		<t:steps>1. Fire a CreateItem request for contact item with
+			distinguished folder ID as 'contacts'
+			2. Verify proper response should
+			be received.
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<SavedItemFolderId>
+								<t:DistinguishedFolderId Id="contacts" />
+							</SavedItemFolderId>
+							<Items>
+								<t:Contact>
+									<t:GivenName>Test</t:GivenName>
+									<t:CompanyName>Zimbra</t:CompanyName>
+									<t:EmailAddresses>
+										<t:Entry Key="EmailAddress1">test@example.com</t:Entry>
+									</t:EmailAddresses>
+									<t:PhysicalAddresses>
+										<t:Entry Key="Business">
+											<t:Street>1234 56th Ave</t:Street>
+											<t:City>La Habra</t:City>
+											<t:State>CA</t:State>
+											<t:CountryOrRegion>USA</t:CountryOrRegion>
+										</t:Entry>
+									</t:PhysicalAddresses>
+									<t:PhoneNumbers>
+										<t:Entry Key="BusinessPhone">4255550199</t:Entry>
+									</t:PhoneNumbers>
+									<t:JobTitle>Manager</t:JobTitle>
+									<t:Surname>Plate</t:Surname>
+								</t:Contact>
+							</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="cont01.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1943_TC6" type="bhr">
+		<t:objective>MoveItem request with distinguished folder ID for mail
+			item
+		</t:objective>
+		<t:steps>1. Sync a mail in inbox on EWS client.
+			2. Fire a MoveItem
+			request for mail item with distinguished folder ID as 'drafts'
+			2.
+			Verify proper response should be received.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject}</su>
+						<mp ct="text/plain">
+							<content>${message.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:DistinguishedFolderId Id="inbox" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey" />
+				<t:select path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+					set="SyncState01" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<MoveItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<ToFolderId>
+								<t:DistinguishedFolderId Id="drafts" />
+							</ToFolderId>
+							<ItemIds>
+								<t:ItemId Id="${mail01_id}" ChangeKey="${mail01_changeKey}" />
+							</ItemIds>
+						</MoveItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:MoveItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:MoveItemResponseMessage//ewsmsg:ResponseCode"
+					match="NoError" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1943_TC7" type="bhr">
+		<t:objective>CopyItem request with distinguished folder ID for sent
+			item
+		</t:objective>
+		<t:steps>1. Fire a CopyItem request for mail item with distinguished
+			folder ID as 'sentitems'
+			2. Verify proper response should be received.
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CopyItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<ToFolderId>
+								<t:DistinguishedFolderId Id="sentitems" />
+							</ToFolderId>
+							<ItemIds>
+								<t:ItemId Id="${mail01_id}" />
+							</ItemIds>
+						</CopyItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CopyItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CopyItemResponseMessage//ewsmsg:ResponseCode"
+					match="NoError" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1943_TC7" type="bhr">
+		<t:objective>SyncFolderItems request with distinguished folder ID for
+			calendar item
+		</t:objective>
+		<t:steps>1. User 2 sends a meeting request to user 1.
+			2. Fire a
+			SyncFolderItems request for calendar item with distinguished folder
+			ID as 'calendar' for user 1.
+			2. Verify proper response should be
+			received.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="timezone.pst"
+			value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana" />
+		<t:property name="timezone.pst.regex" value="America\/Los_Angeles" />
+		<t:property name="time.20190101120000.gmt" value="1546344000000" />
+		<t:property name="time.20190101120000.pst" value="${TIME(-8h)[${time.20190101120000.gmt}]}" />
+
+		<t:test>
+			<t:request>
+				<CreateAppointmentRequest xmlns="urn:zimbraMail">
+					<m>
+						<inv>
+							<comp status="CONF" fb="B" transp="O" allDay="0"
+								name="${appointment.subject}">
+								<or a="${test_account2.name}" />
+								<at a="${test_account1.name}" role="REQ" ptst="NE" rsvp="1" />
+								<s d="${ICALTIME[${time.20190101120000.pst}]}" tz="${timezone.pst}" />
+								<e d="${ICALTIME(+1h)[${time.20190101120000.pst}]}" tz="${timezone.pst}" />
+							</comp>
+						</inv>
+						<e a="${test_account1.name}" t="t" />
+						<su>${appointment.subject}</su>
+						<mp ct="text/plain">
+							<content>${appointment.content}</content>
+						</mp>
+					</m>
+				</CreateAppointmentRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateAppointmentResponse">
+					<t:select attr="calItemId" set="organizer1.appt1.calItemId" />
+					<t:select attr="invId" set="organizer1.appt1.invId" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="calendar">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="10" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="calendar.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Calendar" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:DistinguishedFolderId Id="calendar" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+					set="SyncState01" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>
+		

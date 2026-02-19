@@ -1,0 +1,1302 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="user" value="voicemailuser1.user"/>       <!-- dvpdevit34 -->
+<t:property name="password" value="voicemailuser1.password"/>
+
+<!-- 9w numbers -->   
+<t:property name="phone.1" value="4849472364"/>
+<t:property name="phone.2" value="4849472365"/>
+<t:property name="phone.3" value="4849472365"/>  <!-- 9w has only two numbers -->
+<t:property name="phone.calllog" value="4849472364"/> <!-- denver calllog test number -->
+<t:property name="phone.invalid" value="6500000000"/>    
+
+<t:property name="msgid.1" value="1031"/>
+<t:property name="msgid.2" value="1032"/>
+
+<t:property name="folderid.root" value="1-${phone.1}"/>    
+<t:property name="folderid.voicemail" value="1024-${phone.1}"/>
+<t:property name="folderid.missedcall" value="1025-${phone.calllog}"/>    
+<t:property name="folderid.answeredcall" value="1026-${phone.calllog}"/>
+<t:property name="folderid.placedcall" value="1027-${phone.calllog}"/> 
+<t:property name="folderid.trash" value="1028-${phone.1}"/>
+    
+<t:property name="foldername.voicemail" value="Voicemail Inbox"/>
+<t:property name="foldername.missedcall" value="Missed Calls"/>    
+<t:property name="foldername.answeredcall" value="Answered Calls"/>
+<t:property name="foldername.placedcall" value="Placed Calls"/> 
+<t:property name="foldername.trash" value="Trash"/>
+    
+<t:property name="msg.file" value="6secs-voicemail.wav"/> 
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="VoiceServiceTester_ping" type="always" areas="VoiceMail" >
+<t:objective>Basic system check</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester_Setup" type="always" areas="VoiceMail" >
+<t:objective>Login as admin and set zimbraMailHost as currently the script uses hardcoded user:-hpbtstest004@comcast.net</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>admin@comcast.net</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="0">
+				<account by="name">${user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester01" type="bhr" areas="VoiceMail" >
+<t:objective>Verify that attr zimbraFeatureVoiceEnabled is enabled for the test account using Getinfo request</t:objective>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+  
+    <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${user}</account>
+                <password>${password}</password>
+                <prefs><pref name="zimbraPrefSkin"/></prefs>
+                <attrs>
+                    <attr name="zimbraFeaturePortalEnabled"/>
+                    <attr name="zimbraFeatureCalendarEnabled"/>
+                    <attr name="zimbraFeatureContactsEnabled"/>
+                    <attr name="zimbraFeatureIMEnabled"/>
+                    <attr name="zimbraFeatureNotebookEnabled"/>
+                    <attr name="zimbraFeatureTasksEnabled"/>
+                    <attr name="zimbraFeatureVoicemailEnabled"/>
+                </attrs>
+            </AuthRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+  
+    <t:test>
+        <t:request>
+            <GetInfoRequest xmlns="urn:zimbraAccount"/>
+        </t:request>        
+        <t:response>
+            <t:select path="//acct:GetInfoResponse/acct:name"/>
+            <t:select path="//acct:GetInfoResponse/acct:attrs/acct:attr[@name='zimbraFeatureVoiceEnabled']" match="TRUE"/>    
+        </t:response>
+    </t:test>
+  
+</t:test_case>
+    
+<t:test_case testcaseid="VoiceServiceTester02" type="bhr" areas="VoiceMail" >
+<t:objective> VoiceServiceTester using valid phone</t:objective>
+  
+<t:property name="server.zimbraVoice" value="${test_acct1.server}"/>
+
+    <t:test> 
+        <t:request>
+            <VoiceServiceTesterRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}"/> 
+            </VoiceServiceTesterRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//voice:VoiceServiceTesterResponse/voice:phone[@name='${phone.1}']"/>
+        </t:response>
+    </t:test>
+  
+</t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester03" type="functional" areas="VoiceMail" >
+<t:objective> VoiceServiceTester using invalid phone number, missing phone number and multiple phone numbers</t:objective>
+
+	<t:test>
+        <t:request>
+            <VoiceServiceTesterRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.invalid}"/> 
+            </VoiceServiceTesterRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//voice:VoiceServiceTesterResponse/voice:phone[@name='${phone.invalid}']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <VoiceServiceTesterRequest xmlns="urn:zimbraVoice">
+            </VoiceServiceTesterRequest>
+        </t:request>
+        
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <VoiceServiceTesterRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}"/> 
+                <phone name="${phone.2}"/> 
+            </VoiceServiceTesterRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+            
+</t:test_case>
+        
+
+<t:test_case testcaseid="VoiceServiceTester04" type="bhr" areas="VoiceMail" >
+    <t:objective> GetVoiceInfo for all phones</t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetVoiceInfoRequest xmlns="urn:zimbraVoice">
+            </GetVoiceInfoRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//voice:GetVoiceInfoResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:used"/>
+                <t:select path="voice:limit"/>
+                <t:select path="voice:folder[@id='${folderid.root}']" attr="name" match="USER_ROOT">
+                    <t:select path="voice:folder[@view='voicemail']" attr="id" match="${folderid.voicemail}"/>
+                    <t:select path="voice:folder[@view='missedcall']" attr="id" match="${folderid.missedcall}"/>
+                    <t:select path="voice:folder[@view='answeredcall']" attr="id" match="${folderid.answeredcall}"/>
+                    <t:select path="voice:folder[@view='placedcall']" attr="id" match="${folderid.placedcall}"/>
+                    <t:select path="voice:folder[@view='trash']" attr="id" match="${folderid.trash}"/>
+                </t:select>
+                <t:select path="voice:callfeatures">
+                    <t:select path="voice:callfeature[@name='voicemailprefs']"/>
+                    <t:select path="voice:callfeature[@name='callforward']"/>
+                    <t:select path="voice:callfeature[@name='selectivecallforward']"/>
+                </t:select>    
+            </t:select>
+            <t:select path="//voice:GetVoiceInfoResponse/voice:phone[@name='${phone.2}']">
+                <t:select path="voice:used"/>
+                <t:select path="voice:limit"/>
+                <t:select path="voice:folder[@id='1-${phone.2}']" attr="name" match="USER_ROOT">
+                     <t:select path="voice:folder[@view='voicemail']" attr="name" match="${foldername.voicemail}"/>
+                     <t:select path="voice:folder[@view='missedcall']" attr="name" match="${foldername.missedcall}"/>
+                     <t:select path="voice:folder[@view='answeredcall']" attr="name" match="${foldername.answeredcall}"/>
+                     <t:select path="voice:folder[@view='placedcall']" attr="name" match="${foldername.placedcall}"/>
+                     <t:select path="voice:folder[@view='trash']" attr="name" match="${foldername.trash}"/>
+                 </t:select>
+                 <t:select path="voice:callfeatures">
+                     <t:select path="voice:callfeature[@name='voicemailprefs']"/>
+                     <t:select path="voice:callfeature[@name='callforward']"/>
+                     <t:select path="voice:callfeature[@name='selectivecallforward']"/>
+                 </t:select> 
+            </t:select>
+            <t:select path="//voice:GetVoiceInfoResponse/voice:phone[@name='${phone.3}']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester05" type="bhr" areas="VoiceMail" >
+<t:objective> get info for specific valid phones </t:objective>  
+
+    <t:test>    
+        <t:request>
+            <GetVoiceInfoRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}"/>
+            </GetVoiceInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//voice:GetVoiceInfoResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:used"/>
+                <t:select path="voice:limit"/>
+            </t:select>
+           <t:select path="//voice:GetVoiceInfoResponse/voice:phone[@name='${phone.2}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+  </t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester06" type="functional" areas="VoiceMail" >
+<t:objective> get info for specific valid and invalid phones </t:objective>  
+
+    <t:test>
+        <t:request>
+            <GetVoiceInfoRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.2}"/> 
+                <phone name="${phone.invalid}"/> 
+            </GetVoiceInfoRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//voice:GetVoiceInfoResponse/voice:phone[@name='${phone.2}']"/>
+            <t:select path="//voice:GetVoiceInfoResponse/voice:phone[@name='${phone.invalid}']"  emptyset="1"/>
+        </t:response>
+    </t:test>    
+
+</t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester07" type="bhr" areas="VoiceMail" >        
+<t:objective> Get all voice prefernces. </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetVoiceMailPrefsRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}"/>
+            </GetVoiceMailPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//voice:GetVoiceMailPrefsResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:pref[@name='vmPrefTimezone']"/>
+                <t:select path="voice:pref[@name='vmPrefPin']"/>
+                <t:select path="voice:pref[@name='vmPrefPlayDateAndTimeInMsgEnv']"/>
+                <t:select path="voice:pref[@name='vmPrefAutoPlayNewMsgs']"/>
+                <t:select path="voice:pref[@name='vmPrefPromptLevel']"/>
+                <t:select path="voice:pref[@name='vmPrefPlayCallerNameInMsgEnv']"/>
+                <t:select path="voice:pref[@name='vmPrefSkipPinEntry']"/>
+                <t:select path="voice:pref[@name='vmPrefUserLocale']"/>
+                <t:select path="voice:pref[@name='vmPrefAnsweringLocale']"/>
+                <t:select path="voice:pref[@name='zimbraPrefVoiceItemsPerPage']"/>
+            </t:select>
+        </t:response>
+        
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester08" type="bhr" areas="VoiceMail" >        
+<t:objective> Get specific prefs </t:objective>    
+    
+    <t:test>
+
+        <t:request>
+            <GetVoiceMailPrefsRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}"> 
+                    <pref name="vmPrefSkipPinEntry"/>
+                    <pref name="vmPrefAnsweringLocale"/>
+                </phone> 
+             </GetVoiceMailPrefsRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//voice:GetVoiceMailPrefsResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:pref[@name='vmPrefSkipPinEntry']"/>
+                <t:select path="voice:pref[@name='vmPrefAnsweringLocale']"/>
+                <t:select path="voice:pref[@name='vmPrefAutoPlayNewMsgs']" emptyset="1"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester09" type="bhr" areas="VoiceMail" >        
+<t:objective> get message waiting notification (mwn) pref </t:objective>    
+   
+    <t:test>
+
+        <t:request>
+            <GetVoiceMailPrefsRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}"> 
+                    <pref name="vmPrefEmailNotifAddress"/>
+                </phone> 
+             </GetVoiceMailPrefsRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//voice:GetVoiceMailPrefsResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:pref[@name='vmPrefEmailNotifAddress']"/>
+            </t:select>    
+        </t:response>
+    </t:test>   
+        
+</t:test_case>
+    
+<t:test_case testcaseid="VoiceServiceTester10" type="bhr" areas="VoiceMail" >        
+<t:objective> Verify modification of valid prefs with valid value </t:objective>  
+    <t:test>
+        <t:request>
+            <ModifyVoiceMailPrefsRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <pref name="vmPrefPin">1234</pref>  
+                    <pref name="zimbraPrefVoiceItemsPerPage">888</pref>  
+                </phone>    
+            </ModifyVoiceMailPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//voice:ModifyVoiceMailPrefsResponse/voice:phone[@name='${phone.1}']">
+            </t:select>
+        </t:response>
+    </t:test>
+    
+<!-- Modify email notif address --> 
+
+	<t:test>
+        <t:request>
+            <ModifyVoiceMailPrefsRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <pref name="vmPrefEmailNotifAddress">mynewaccount@zimbra.com</pref>    
+                </phone>    
+            </ModifyVoiceMailPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//voice:ModifyVoiceMailPrefsResponse/voice:phone[@name='${phone.1}']">
+            </t:select>
+        </t:response>
+    </t:test>
+ 
+</t:test_case>
+    
+
+<t:test_case testcaseid="VoiceServiceTester11" type="functional" areas="VoiceMail" >        
+<t:objective> modify valid prefs with invalid value </t:objective>  
+
+    <t:test>
+        <t:request>
+            <ModifyVoiceMailPrefsRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <pref name="vmPrefTimezone">BAD</pref>    
+                </phone>    
+            </ModifyVoiceMailPrefsRequest>
+        </t:request>
+
+        <t:response>
+            <t:select path="//zimbra:Code" match="voice.velodrome.GATEWAY_SERVICE_ERROR"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="VoiceServiceTester12" type="functional" areas="VoiceMail" >        
+<t:objective> modify invalid prefs </t:objective>  
+
+    <t:test>
+        <t:request>
+            <ModifyVoiceMailPrefsRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <pref name="vmPrefBad">BAD</pref>    
+                </phone>    
+            </ModifyVoiceMailPrefsRequest>
+        </t:request>
+
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester13" type="functional" areas="VoiceMail" >        
+<t:objective>get folders for all phones   </t:objective>    
+  
+    <t:test>
+        <t:request>
+            <GetVoiceFolderRequest xmlns="urn:zimbraVoice"/>
+        </t:request>
+
+        <t:response>
+            <t:select path="//voice:GetVoiceFolderResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:folder[@id='${folderid.root}']" attr="name" match="USER_ROOT">
+                    <t:select path="voice:folder[@view='voicemail']" attr="id" match="${folderid.voicemail}"/>
+                    <t:select path="voice:folder[@view='missedcall']" attr="id" match="${folderid.missedcall}"/>
+                    <t:select path="voice:folder[@view='answeredcall']" attr="id" match="${folderid.answeredcall}"/>
+                    <t:select path="voice:folder[@view='placedcall']" attr="id" match="${folderid.placedcall}"/>
+                    <t:select path="voice:folder[@view='trash']" attr="id" match="${folderid.trash}"/>
+                 </t:select>
+            </t:select>
+            <t:select path="//voice:GetVoiceFolderResponse/voice:phone[@name='${phone.2}']"/>
+            <t:select path="//voice:GetVoiceFolderResponse/voice:phone[@name='${phone.3}']"/>
+        </t:response>
+    </t:test>
+     
+</t:test_case>
+
+
+<t:test_case testcaseid="VoiceServiceTester14" type="functional" areas="VoiceMail" >        
+<t:objective> get folders for specific phones </t:objective>  
+    
+    <t:test>
+        <t:request>
+            <GetVoiceFolderRequest xmlns="urn:zimbraVoice">
+            <phone name="${phone.1}"/>
+        </GetVoiceFolderRequest>
+        </t:request>
+
+        <t:response>
+            <t:select path="//voice:GetVoiceFolderResponse/voice:phone[@name='${phone.1}']"/>
+            <t:select path="//voice:GetVoiceFolderResponse/voice:phone[@name='${phone.2}']" emptyset="1"/>
+         </t:response>
+    </t:test>
+        
+</t:test_case>
+
+    
+<t:test_case testcaseid="VoiceServiceTester15" type="bhr" areas="VoiceMail" >        
+<t:objective> Search missed calls </t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="calllog">
+            <query>phone:${phone.calllog} in:"${foldername.missedcall}"</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:cl[@l='${folderid.missedcall}']" attr="phone" match="${phone.calllog}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+        
+</t:test_case>
+    
+
+<t:test_case testcaseid="VoiceServiceTester16" type="functional" areas="VoiceMail" >        
+<t:objective> search on multiple types and multiple phones </t:objective>
+        
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="nameAsc" offset="0" limit="25" types="voicemail,calllog">
+            <query>phone:(${phone.1} OR ${phone.2} OR ${phone.calllog}) in:("${foldername.voicemail}" OR "${foldername.placedcall}")</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse"/>
+        </t:response>
+    </t:test>
+  
+</t:test_case>
+    
+
+<t:test_case testcaseid="VoiceServiceTester17" type="functional" areas="VoiceMail" >        
+<t:objective>Search in default voice mail folder (INBOX) </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="voicemail">
+            <query>phone:${phone.1}</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:vm[@l='${folderid.voicemail}']" attr="phone" match="${phone.1}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+              <t:select path="voice:content[@url]"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+   
+</t:test_case>
+    
+
+<t:test_case testcaseid="VoiceServiceTester18" type="functional" areas="VoiceMail" >        
+<t:objective> search in trash folder </t:objective>
+        
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="nameAsc" offset="0" limit="25" types="voicemail">
+            <query>phone:${phone.1} in:"${foldername.trash}"  </query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:vm[@l='${folderid.trash}']"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+
+<t:test_case testcaseid="VoiceServiceTester19" type="functional" areas="VoiceMail" >        
+<t:objective>Search in default voice mail folder (INBOX) using sort by duration</t:objective>
+      
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="durAsc" offset="0" limit="25" types="voicemail">
+            <query>phone:${phone.1}</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse" attr="sortBy" match="durAsc"/>     
+          <t:select path="//voice:SearchVoiceResponse/voice:vm[@l='${folderid.voicemail}']" attr="phone" match="${phone.1}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+              <t:select path="voice:content[@url]"/>
+          </t:select> 
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+
+<t:test_case testcaseid="VoiceServiceTester20" type="functional" areas="VoiceMail" >        
+<t:objective> Search in voice mail INBOX, date based </t:objective>
+        
+    <t:test>        
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="voicemail">
+            <query>phone:${phone.1} after: 1/1/2007 before:1/31/2007</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:vm[@l='${folderid.voicemail}']" attr="phone" match="${phone.1}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+              <t:select path="voice:content[@url]"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+     
+</t:test_case>
+    
+
+<t:test_case testcaseid="VoiceServiceTester21" type="functional" areas="VoiceMail" >        
+<t:objective> search multiple phones </t:objective>
+        
+   <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="voicemail">
+            <query>phone:(4849472364 OR 4849472365)</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:vm[@l='${folderid.voicemail}']" attr="phone" match="${phone.1}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+              <t:select path="voice:content[@url]"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+        
+</t:test_case>    
+
+
+<t:test_case testcaseid="VoiceServiceTester22" type="functional" areas="VoiceMail" >        
+<t:objective> search missed calls form call logs</t:objective>
+
+    <t:test>
+        <t:objective> 
+            
+        </t:objective>
+        
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="calllog">
+            <query>phone:${phone.calllog} in:"${foldername.missedcall}"</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:cl[@l='${folderid.missedcall}']" attr="phone" match="${phone.calllog}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+    
+</t:test_case>    
+
+
+<t:test_case testcaseid="VoiceServiceTester23" type="functional" areas="VoiceMail" >        
+<t:objective> search answered calls</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="calllog">
+            <query>phone:${phone.calllog} in:"${foldername.answeredcall}"</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:cl[@l='${folderid.answeredcall}']" attr="phone" match="${phone.calllog}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+    
+</t:test_case>    
+
+
+<t:test_case testcaseid="VoiceServiceTester24" type="functional" areas="VoiceMail" >        
+<t:objective> Search placed calls </t:objective>
+        
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="calllog">
+            <query>phone:${phone.calllog} in:"${foldername.placedcall}"</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:cl[@l='${folderid.placedcall}']" attr="phone" match="${phone.calllog}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+<t:test_case testcaseid="VoiceServiceTester25" type="functional" areas="VoiceMail" >        
+<t:objective> Search missed calls </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="calllog">
+            <query>phone:${phone.calllog} in:"${foldername.missedcall}"  after:  03/14/2007  before:3/21/2007  </query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:cl[@l='${folderid.missedcall}']" attr="phone" match="${phone.calllog}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+    
+</t:test_case>    
+
+
+<t:test_case testcaseid="VoiceServiceTester26" type="functional" areas="VoiceMail" >        
+<t:objective> search answered calls </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="calllog">
+            <query>phone:${phone.calllog} in:"${foldername.answeredcall}"</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:cl[@l='${folderid.answeredcall}']" attr="phone" match="${phone.calllog}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+     
+</t:test_case>    
+
+
+<t:test_case testcaseid="VoiceServiceTester27" type="functional" areas="VoiceMail" >        
+<t:objective> search placed calls </t:objective>
+
+    <t:test>        
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateDesc" offset="0" limit="25" types="calllog">
+            <query>phone:${phone.calllog} in:"${foldername.placedcall}"</query>
+            </SearchVoiceRequest>
+        </t:request>
+        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:cl[@l='${folderid.placedcall}']" attr="phone" match="${phone.calllog}">
+              <t:select path="voice:cp[@t='f']" attr="p"/>
+          </t:select>    
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+        
+<t:test_case testcaseid="VoiceServiceTester28" type="functional" areas="VoiceMail" >        
+<t:objective> Get message in voicemail inbox </t:objective>
+    
+   <t:include filename="unittest_utils.inc"/>
+    
+    <t:test>
+        <t:request>
+            <GetVoiceMsgRequest xmlns="urn:zimbraVoice" id="1040" phone="${phone.1}">
+            </GetVoiceMsgRequest>
+        </t:request>        
+        <t:response>
+          <t:select path="//GetVoiceMsgResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+	
+<t:test_case testcaseid="VoiceServiceTester29" type="functional" areas="VoiceMail" >        
+<t:objective> Retrieve voice mail content inline</t:objective>    
+
+    <t:include filename="unittest_utils.inc"/>
+    <t:property name="server.restServlet" value="${test_acct1.server}"/>
+
+    <t:resttest>
+        <t:restServletRequest>
+            <url>${msgUrl}</url>
+        </t:restServletRequest>        
+        <t:restServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:content file="${msg.file}"/>
+        </t:restServletResponse>
+    </t:resttest>
+
+ </t:test_case>
+
+	
+<t:test_case testcaseid="VoiceServiceTester30" type="functional" areas="VoiceMail" >        
+<t:objective> Retrieve voice mail content as attachment </t:objective>    
+   
+    <t:resttest>
+        <t:restServletRequest>
+            <url>${msgUrl}&amp;disp=a</url>
+        </t:restServletRequest>        
+        <t:restServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:content file="${msg.file}"/>
+        </t:restServletResponse>
+    </t:resttest>
+       
+</t:test_case>
+    
+<t:test_case testcaseid="VoiceServiceTester31" type="functional" areas="VoiceMail" >        
+<t:objective> VoiceMsgAction mark the msg as read </t:objective>    
+    
+    <t:include filename="unittest_utils.inc"/>
+    
+    <t:test>
+        <t:request>
+            <VoiceMsgActionRequest xmlns="urn:zimbraVoice">
+                <action id="${msgid.1},${msgid.2}" op="read" phone="${phone.1}"/>
+            </VoiceMsgActionRequest>
+        </t:request>        
+        <t:response>
+          <t:select path="//VoiceMsgActionResponse"/>
+        </t:response>
+    </t:test>
+        
+</t:test_case>
+    
+<t:test_case testcaseid="VoiceServiceTester32" type="functional" areas="VoiceMail" >        
+<t:objective> VoiceMsgAction mark the read msg as read </t:objective>    
+   
+    <t:test>
+        <t:request>
+            <VoiceMsgActionRequest xmlns="urn:zimbraVoice">
+                <action id="${msgId}" op="read" phone="${phone.1}"/>
+            </VoiceMsgActionRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//VoiceMsgActionResponse/voice:action[@op='read']" attr="id" match="${msgId}"/>
+        </t:response>
+    </t:test>
+        
+</t:test_case>
+    
+
+<t:test_case testcaseid="VoiceServiceTester33" type="functional" areas="VoiceMail" >        
+<t:objective> VoiceMsgAction mark the unread msg as read </t:objective>    
+              
+    <t:test>
+        <t:request>
+            <VoiceMsgActionRequest xmlns="urn:zimbraVoice">
+                <!-- <action id="${msgid.1},${msgid.2}" op="!read" phone="${phone.1}"/> -->
+                <action id="${msgId}" op="!read" phone="${phone.1}"/>
+            </VoiceMsgActionRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//VoiceMsgActionResponse/voice:action[@op='!read']" attr="id" match="${msgId}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+ 
+	
+<!--<t:test_case testcaseid="VoiceServiceTester34" type="functional" areas="VoiceMail" >        
+<t:objective> VoiceMsgAction empty-trash </t:objective>    
+    <t:test>
+        <t:objective> empty trash </t:objective>
+        
+        <t:request>
+            <VoiceMsgActionRequest xmlns="urn:zimbraVoice">
+                <action id="${folderid.trash}" op="empty" phone="${phone.1}"/>
+            </VoiceMsgActionRequest>
+        </t:request>        
+        <t:response>
+          <t:select path="//VoiceMsgActionResponse"/>
+        </t:response>
+    </t:test>
+  
+</t:test_case>
+
+        
+<t:test_case testcaseid="VoiceServiceTester35" type="functional" areas="VoiceMail" >
+<t:objective> VoiceMsgAction-move </t:objective>    
+
+   
+   <t:test>
+        <t:objective> 
+            empty trash so that after move to trash there will be only one message
+        </t:objective>
+        
+        <t:request>
+            <VoiceMsgActionRequest xmlns="urn:zimbraVoice">
+                <action id="${folderid.trash}" op="empty" phone="${phone.1}"/>
+            </VoiceMsgActionRequest>
+        </t:request>        
+        <t:response>
+          <t:select path="//VoiceMsgActionResponse"/>
+        </t:response>
+    </t:test>
+ </t:test_case>-->
+
+        
+<t:test_case testcaseid="VoiceServiceTester36" type="functional" areas="VoiceMail" >
+<t:objective> Delete the oldest msg </t:objective>
+	<t:steps>1. do a search in voicemail folder and get the message id 
+			 2. sort the search by dateAsc and delete the oldest message.   
+	</t:steps>
+
+    <t:test>     
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateAsc" offset="0" limit="1" types="voicemail">
+            <query>phone:${phone.1}</query>
+            </SearchVoiceRequest>
+        </t:request>        
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:vm[@l='${folderid.voicemail}']" attr="id" set="msgIdToDelete"/>
+        </t:response>
+    </t:test>
+             
+    <t:test>
+        <t:request>
+            <VoiceMsgActionRequest xmlns="urn:zimbraVoice">
+                <action id="${msgIdToDelete}" op="move" phone="${phone.1}" l="${folderid.trash}"/>
+            </VoiceMsgActionRequest>
+        </t:request>        
+        <t:response>
+          <t:select path="//VoiceMsgActionResponse"/>
+        </t:response>
+    </t:test> 
+
+   </t:test_case>
+        
+
+<t:test_case testcaseid="VoiceServiceTester37" type="functional" areas="VoiceMail" >
+<t:objective> Undelete the voice msg</t:objective>
+	<t:steps>1. Search in trash folder to get message id.
+			 2. undelete the msg and note the message is not in the trash folder.
+	</t:steps>
+
+   <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateAsc" offset="0" limit="1" types="voicemail">
+            <query>phone:${phone.1} in:"${foldername.trash}"</query>
+            </SearchVoiceRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:vm[@l='${folderid.trash}']" attr="id" set="msgIdToUndelete"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <VoiceMsgActionRequest xmlns="urn:zimbraVoice">
+                <action id="${msgIdToUndelete}" op="move" phone="${phone.1}" l="${folderid.voicemail}"/>
+            </VoiceMsgActionRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//VoiceMsgActionResponse"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test>
+        <t:request>
+            <SearchVoiceRequest xmlns="urn:zimbraVoice" sortBy="dateAsc" offset="0" types="voicemail">
+            <query>phone:${phone.1} in:"${foldername.trash}</query>
+            </SearchVoiceRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//voice:SearchVoiceResponse/voice:vm[@l='${folderid.trash}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+                        
+</t:test_case>
+                
+				  
+<t:test_case testcaseid="VoiceServiceTester38" type="functional" areas="VoiceMail" >
+<t:objective> Get all call features (this is now disallowed) </t:objective>  
+
+    <t:test>
+        <t:request>
+            <GetVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}"/>
+            </GetVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <!--
+            <t:select path="//GetVoiceFeaturesResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:voicemailprefs[@s='true']" attr="a" match="true"/>
+            </t:select>
+            -->
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>    
+        </t:response>
+    </t:test>
+
+ </t:test_case>
+                
+				  
+<t:test_case testcaseid="VoiceServiceTester39" type="functional" areas="VoiceMail" >
+<t:objective> get specific call features </t:objective>  
+   
+    <t:test>
+        <t:request>
+            <GetVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <voicemailprefs/>
+                    <selectivecallforward/>
+                    <anoncallrejection/>
+                    <callforward/>
+                    <calleridblocking/>
+                </phone>    
+            </GetVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//GetVoiceFeaturesResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:voicemailprefs[@s='true']" attr="a" match="true"/>
+                <t:select path="voice:selectivecallforward[@s='true']"/>
+                <t:select path="voice:anoncallrejection[@s='true']"/>
+                <t:select path="voice:callforward[@s='true']"/>
+                <t:select path="voice:calleridblocking[@s='true']"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+ </t:test_case>
+                
+				  
+<t:test_case testcaseid="VoiceServiceTester40" type="functional" areas="VoiceMail" >
+<t:objective> get specific voice mail prefs </t:objective>  
+
+	<t:test>
+        <t:request>
+            <GetVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <voicemailprefs>
+                        <pref name="vmPrefEmailNotifAddress"/>
+                    </voicemailprefs>    
+                </phone>    
+            </GetVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//GetVoiceFeaturesResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:voicemailprefs[@s='true']" attr="a" match="true">
+                    <t:select path="voice:pref[@name='vmPrefEmailNotifAddress']"/>
+                    <t:select path="voice:pref[@name='vmPrefTimezone']" emptyset="1"/>
+                </t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+
+ </t:test_case>
+                
+				  
+<t:test_case testcaseid="VoiceServiceTester41" type="functional" areas="VoiceMail" >	
+<t:objective> get specific call features, do NOT get any voice mail prefs </t:objective>  
+
+    <t:test>
+        <t:request>
+            <GetVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <callforward/>  
+                </phone>    
+            </GetVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//GetVoiceFeaturesResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:voicemailprefs" emptyset="1"/>
+                <t:select path="voice:callforward[@s='true']"/>
+            </t:select>
+        </t:response>
+    </t:test>                    
+    
+</t:test_case>
+  
+	
+<t:test_case testcaseid="VoiceServiceTester42" type="functional" areas="VoiceMail" >	
+<t:objective>Reset call features </t:objective>  
+
+    <t:test>
+        <t:request>
+            <ResetVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}"/>
+            </ResetVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//ResetVoiceFeaturesResponse/voice:phone[@name='${phone.1}']">
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+  
+	
+<t:test_case testcaseid="VoiceServiceTester43" type="functional" areas="VoiceMail" >	
+<t:objective>Reset voice mail pref in ResetVoiceFeaturesRequest, it will be a noop </t:objective>  
+   
+    <t:test>
+        <t:request>
+            <ResetVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <voicemailprefs>
+                        <pref name="vmPrefEmailNotifAddress"/>
+                    </voicemailprefs>    
+                </phone>    
+            </ResetVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>        
+
+
+<t:test_case testcaseid="VoiceServiceTester44" type="functional" areas="VoiceMail" >	
+<t:objective>  Modify call features and get them back. </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <anoncallrejection s="true" a="false"/>                    
+                    <selectivecallforward a="false" ft="6507777777">
+                        <phone pn="6509999999" a="true"/>
+                    </selectivecallforward>                                               
+                    <callforward a="true" ft="6508888888"/>
+                </phone>    
+            </ModifyVoiceFeaturesRequest>
+        </t:request>
+
+        <t:response>
+            <t:select path="//ModifyVoiceFeaturesResponse/voice:phone[@name='${phone.1}']">
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <selectivecallforward/>
+                    <anoncallrejection/>
+                    <callforward/>
+                    <voicemailprefs/>
+                </phone>
+            </GetVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//GetVoiceFeaturesResponse/voice:phone[@name='${phone.1}']">
+                <t:select path="voice:anoncallrejection[@a='false']"/>
+                <t:select path="voice:selectivecallforward[@a='false']" attr="ft" match="6507777777">
+                    <t:select path="voice:phone[@a='true']" attr="pn" match="6509999999"/>
+                </t:select>    
+                <t:select path="voice:callforward[@a='true']" attr="ft" match="6508888888"/>
+            </t:select>
+        </t:response>
+    </t:test>   
+       
+</t:test_case>        
+
+
+<t:test_case testcaseid="VoiceServiceTester45" type="functional" areas="VoiceMail" >	
+<t:objective> Modify a voicemail pref </t:objective>  
+
+    <t:test>
+        <t:request>
+            <ModifyVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <voicemailprefs>
+                        <pref name="vmPrefPin">1234</pref>
+                        <pref name="vmPrefEmailNotifAddress">mynewaccount@zimbra.com</pref>
+                    </voicemailprefs>
+                </phone>    
+            </ModifyVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//ModifyVoiceFeaturesResponse/voice:phone[@name='${phone.1}']">
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>        
+
+
+<t:test_case testcaseid="VoiceServiceTester46" type="functional" areas="VoiceMail" >	
+<t:objective> Modify both call feature and voicemail pref in one request </t:objective>  
+
+    <t:test>
+        <t:request>
+            <ModifyVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <voicemailprefs>
+                        <pref name="vmPrefPin">1234</pref>
+                        <pref name="vmPrefEmailNotifAddress">mynewaccount@zimbra.com</pref>
+                    </voicemailprefs>
+                    <callforward a="false" ft="6508888888"/>
+                </phone>    
+            </ModifyVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//ModifyVoiceFeaturesResponse/voice:phone[@name='${phone.1}']">
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>        
+
+
+<t:test_case testcaseid="VoiceServiceTester47" type="negative" areas="VoiceMail" >	
+<t:objective> Modify no features (negative test)</t:objective>  
+
+    <t:test>
+        <t:request>
+            <ModifyVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}"/>    
+            </ModifyVoiceFeaturesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>  
+
+	
+<t:test_case testcaseid="VoiceServiceTester48" type="negative" areas="VoiceMail" >	   
+<t:objective> set SCF caller list to empty while forwardto is not empty </t:objective>  
+
+    <t:test>
+        <t:request>            
+            <ModifyVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <selectivecallforward a="false" ft="6507777777">
+                    </selectivecallforward>  
+                </phone>    
+            </ModifyVoiceFeaturesRequest>            
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>  
+
+	
+<t:test_case testcaseid="VoiceServiceTester49" type="negative" areas="VoiceMail" >	   
+<t:objective> set SCF caller list to empty while active is not false </t:objective>  
+
+    <t:test>
+        <t:request>            
+            <ModifyVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <selectivecallforward a="true">
+                    </selectivecallforward>  
+                </phone>    
+            </ModifyVoiceFeaturesRequest>            
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>  
+
+	
+<t:test_case testcaseid="VoiceServiceTester50" type="negative" areas="VoiceMail" >	   
+<t:objective> set SCF caller list to empty, the only way to do it is setting forward to to empty and active to false</t:objective>  
+
+    <t:test>
+        <t:request>            
+            <ModifyVoiceFeaturesRequest xmlns="urn:zimbraVoice">
+                <phone name="${phone.1}">
+                    <selectivecallforward a="false">
+                    </selectivecallforward>  
+                </phone>    
+            </ModifyVoiceFeaturesRequest>            
+        </t:request>
+        <t:response>
+            <t:select path="//ModifyVoiceFeaturesResponse/voice:phone[@name='${phone.1}']"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+        
+
+<t:test_case testcaseid="VoiceServiceTester51" type="negative" areas="VoiceMail" >	   
+<t:objective> UploadVoiceMail and send it.</t:objective>
+    
+    <t:include filename="unittest_utils.inc"/>
+    
+    <t:test>
+        <t:request>
+            <UploadVoiceMailRequest xmlns="urn:zimbraVoice">
+                <vm id="${msgId}" phone="${phone.1}"/>
+            </UploadVoiceMailRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//voice:UploadVoiceMailResponse/voice:upload" attr="id" set="upload.id"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+                    <e t="t" a="user1@zimbra-050"/>
+                    <su> 6 second voicemail </su>
+                    <mp ct="audio/wav">
+                        <content> this is a voice mail </content>
+                    </mp>
+                    <attach aid="${upload.id}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>
+		</t:response>
+	</t:test>
+                
+</t:test_case> 
+
+        
+<t:test_case testcaseid="VoiceServiceTester52" type="negative" areas="VoiceMail" >	   
+<t:objective> Include Junk folder in search.</t:objective>
+
+    <t:test>
+        <t:request>
+                <ModifyPrefsRequest xmlns="urn:zimbraAccount" requestId="0">
+                    <pref name="zimbraPrefIncludeSpamInSearch">TRUE</pref>
+                </ModifyPrefsRequest>
+         </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>      
+    
+</t:test_case>
+
+</t:tests>

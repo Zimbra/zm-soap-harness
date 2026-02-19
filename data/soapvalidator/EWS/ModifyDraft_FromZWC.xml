@@ -1,0 +1,622 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="test_account1.username"
+		value="test1${TIME}.${COUNTER}" />		
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />		
+	<t:property name="test_account1.password" value="test123" />	
+	<t:property name="test_account2.username"
+		value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />	
+	
+	<t:property name="test_acct.server" value="NOT_DEFINED" />	
+	<t:property name="message.subject" value="Create draft with only subject-subject" />	
+	<t:property name="message.content" value="Modify draft-add content and recipient from ZWC-content" />	
+	<t:property name="message.subject1" value="Create draft with subject and content-subject" />	
+	<t:property name="message.content1" value="Create draft with subject content-content" />	
+	<t:property name="message.content2" value="Modify draft-Modify content from ZWC-content2" />	
+	<t:test_case testcaseid="acct_setup" type="always">
+	
+	<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>		
+	</t:test_case>
+		
+	<t:test_case testcaseid="ModifyDraftWithSubject_AddContentAndRecipient_FromZWC" type="bhr">
+			<t:objective>Create draft with subject in EWS and Sync on ZWC. Modify same draft using ZWC, add content and recipient and sync to EWS
+			</t:objective>
+			<t:steps>1.Create draft with subject in EWS and Sync on ZWC.
+			2. Modify same draft using ZWC, add content and recipient. 
+			3. Sync on EWS for modified draft.
+			</t:steps>
+			
+			<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>	
+			</t:test>
+		
+			<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly">
+							<SavedItemFolderId>
+								<t:FolderId Id="6"/>
+							</SavedItemFolderId>
+							<Items>
+								<t:Message><t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xZi4wLjE3MDIxNgpTdWJqZWN0OiBDcmVhdGUgZHJhZnQgd2l0aCBvbmx5IHN1YmplY3Qtc3ViamVjdApUaHJlYWQtVG9waWM6IENyZWF0ZSBkcmFmdCB3aXRoIG9ubHkgc3ViamVjdC1zdWJqZWN0Ck1pbWUtdmVyc2lvbjogMS4wCkNvbnRlbnQtdHlwZTogdGV4dC9wbGFpbjsKCWNoYXJzZXQ9IlVURi04IgpDb250ZW50LXRyYW5zZmVyLWVuY29kaW5nOiA3Yml0</t:MimeContent>
+									<t:Sensitivity>Normal</t:Sensitivity>
+									<t:Importance>Normal</t:Importance>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+										<t:Value>12</t:Value>
+									</t:ExtendedProperty>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI PropertyTag="0x1090" PropertyType="Integer"/>
+										<t:Value>0</t:Value>
+									</t:ExtendedProperty>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34051" PropertyType="Boolean"/>
+										<t:Value>false</t:Value>
+									</t:ExtendedProperty>													         
+							         <t:From>
+							            <t:Mailbox>
+							              <t:Name>${test_account1.username}</t:Name>
+							              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+							            </t:Mailbox>
+							         </t:From>
+									<t:IsRead>false</t:IsRead>
+								</t:Message>
+							</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail.id" />
+			</t:response>
+		</t:test>
+			<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="6" />
+							</SyncFolderId>
+							<SyncState/>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="Id" set="mail_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="ChangeKey" set="mail_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState_EWS" />
+			</t:response>		
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail_id_wc}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+			 	 <t:select path="//mail:GetMsgResponse//mail:su"  contains="${message.subject}"/> 			 	 
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SaveDraftRequest xmlns="urn:zimbraMail">
+					<m>		
+						<id>${mail_id_wc}</id>		
+						<e t="t" a='${test_account2.name}' />							
+						<su>${message.subject}</su>
+						<mp ct="text/plain">
+							<content>${message.content}</content>
+						</mp>
+					</m>
+				</SaveDraftRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SaveDraftResponse/mail:m" attr="id"
+					set="message.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="drafts">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="6" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="drafts1.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Drafts" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${drafts1.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState02" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="message:ToRecipients" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail02_id}" ChangeKey="${mail02_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"  contains="${message.content}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:ToRecipients//ewstype:EmailAddress" match="${test_account2.name}" />
+			</t:response>
+		</t:test>				
+	</t:test_case>
+	
+	
+	
+	
+	<t:test_case testcaseid="ModifyDraftWithSubjectAndContent_ModifyContent_FromZWC" type="bhr">
+			<t:objective>Create draft with subject and content in EWS and sync on ZWC. Modify same draft using ZWC, Modify content and sync to EWS.
+			</t:objective>
+			<t:steps>1.Create draft with subject and content in EWS and sync on ZWC. 
+			2. Modify same draft using ZWC, Modify content
+			3. Sync on EWS for modified draft.
+			</t:steps>
+			
+			<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>	
+			</t:test>
+		
+			<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly">
+							<SavedItemFolderId>
+								<t:FolderId Id="6"/>
+							</SavedItemFolderId>
+							<Items>
+								<t:Message><t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4yNi4wLjE3MDkwMgpTdWJqZWN0OiBDcmVhdGUgZHJhZnQgd2l0aCBzdWJqZWN0IGFuZCBjb250ZW50LXN1YmplY3QKVGhyZWFkLVRvcGljOiBDcmVhdGUgZHJhZnQgd2l0aCBzdWJqZWN0IGFuZCBjb250ZW50LXN1YmplY3QKTWltZS12ZXJzaW9uOiAxLjAKQ29udGVudC10eXBlOiBtdWx0aXBhcnQvYWx0ZXJuYXRpdmU7Cglib3VuZGFyeT0iQl8zNTg4Njg0NzUyXzExNDA3NDA4NTIiCgo+IFRoaXMgbWVzc2FnZSBpcyBpbiBNSU1FIGZvcm1hdC4gU2luY2UgeW91ciBtYWlsIHJlYWRlciBkb2VzIG5vdCB1bmRlcnN0YW5kCnRoaXMgZm9ybWF0LCBzb21lIG9yIGFsbCBvZiB0aGlzIG1lc3NhZ2UgbWF5IG5vdCBiZSBsZWdpYmxlLgoKLS1CXzM1ODg2ODQ3NTJfMTE0MDc0MDg1MgpDb250ZW50LXR5cGU6IHRleHQvcGxhaW47CgljaGFyc2V0PSJVVEYtOCIKQ29udGVudC10cmFuc2Zlci1lbmNvZGluZzogN2JpdAoKQ3JlYXRlIGRyYWZ0IHdpdGggc3ViamVjdCBjb250ZW50LWNvbnRlbnQKCgotLUJfMzU4ODY4NDc1Ml8xMTQwNzQwODUyCkNvbnRlbnQtdHlwZTogdGV4dC9odG1sOwoJY2hhcnNldD0iVVRGLTgiCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IHF1b3RlZC1wcmludGFibGUKCjxodG1sIHhtbG5zOnY9M0QidXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89M0QidXJuOnNjaGVtYXMtbWljcm9zb2Y9CnQtY29tOm9mZmljZTpvZmZpY2UiIHhtbG5zOnc9M0QidXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0KPTNEImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vb2ZmaWNlLzIwMDQvMTIvb21tbCIgeG1sbnM6bXY9M0QiaHR0cDovL21hY1ZtbFM9CmNoZW1hVXJpIiB4bWxucz0zRCJodHRwOi8vd3d3LnczLm9yZy9UUi9SRUMtaHRtbDQwIj48aGVhZD48bWV0YSBuYW1lPTNEVGl0bGUgY29uPQp0ZW50PTNEIiI+PG1ldGEgbmFtZT0zREtleXdvcmRzIGNvbnRlbnQ9M0QiIj48bWV0YSBodHRwLWVxdWl2PTNEQ29udGVudC1UeXBlIGNvbnRlbnQ9Cj0zRCJ0ZXh0L2h0bWw7IGNoYXJzZXQ9M0R1dGYtOCI+PG1ldGEgbmFtZT0zRFByb2dJZCBjb250ZW50PTNEV29yZC5Eb2N1bWVudD48bWV0YSBuYT0KbWU9M0RHZW5lcmF0b3IgY29udGVudD0zRCJNaWNyb3NvZnQgV29yZCAxNSI+PG1ldGEgbmFtZT0zRE9yaWdpbmF0b3IgY29udGVudD0zRCJNaWNyPQpvc29mdCBXb3JkIDE1Ij48bGluayByZWw9M0RGaWxlLUxpc3QgaHJlZj0zRCJjaWQ6ZmlsZWxpc3QueG1sQDAxRDMzMTY3LkFGNjdFMzEwIj0KPjwhLS1baWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpPZmZpY2VEb2N1bWVudFNldHRpbmdzPgo8bzpBbGxvd1BORy8+CjxvOlBpeGVsc1BlckluY2g+OTY8L286UGl4ZWxzUGVySW5jaD4KPC9vOk9mZmljZURvY3VtZW50U2V0dGluZ3M+CjwveG1sPjwhW2VuZGlmXS0tPjwhLS1baWYgZ3RlIG1zbyA5XT48eG1sPgo8dzpXb3JkRG9jdW1lbnQ+Cjx3OlNwZWxsaW5nU3RhdGU+Q2xlYW48L3c6U3BlbGxpbmdTdGF0ZT4KPHc6R3JhbW1hclN0YXRlPkNsZWFuPC93OkdyYW1tYXJTdGF0ZT4KPHc6VHJhY2tNb3Zlcy8+Cjx3OlRyYWNrRm9ybWF0dGluZy8+Cjx3OkRvTm90U2hvd1JldmlzaW9ucy8+Cjx3OkRvTm90UHJpbnRSZXZpc2lvbnMvPgo8dzpEb05vdFNob3dNYXJrdXAvPgo8dzpEb05vdFNob3dDb21tZW50cy8+Cjx3OkRvTm90U2hvd0luc2VydGlvbnNBbmREZWxldGlvbnMvPgo8dzpEb05vdFNob3dQcm9wZXJ0eUNoYW5nZXMvPgo8dzpFbnZlbG9wZVZpcy8+Cjx3OlZhbGlkYXRlQWdhaW5zdFNjaGVtYXMvPgo8dzpTYXZlSWZYTUxJbnZhbGlkPmZhbHNlPC93OlNhdmVJZlhNTEludmFsaWQ+Cjx3Oklnbm9yZU1peGVkQ29udGVudD5mYWxzZTwvdzpJZ25vcmVNaXhlZENvbnRlbnQ+Cjx3OkFsd2F5c1Nob3dQbGFjZWhvbGRlclRleHQ+ZmFsc2U8L3c6QWx3YXlzU2hvd1BsYWNlaG9sZGVyVGV4dD4KPHc6RG9Ob3RQcm9tb3RlUUYvPgo8dzpMaWRUaGVtZU90aGVyPkVOLVVTPC93OkxpZFRoZW1lT3RoZXI+Cjx3OkxpZFRoZW1lQXNpYW4+WC1OT05FPC93OkxpZFRoZW1lQXNpYW4+Cjx3OkxpZFRoZW1lQ29tcGxleFNjcmlwdD5YLU5PTkU8L3c6TGlkVGhlbWVDb21wbGV4U2NyaXB0Pgo8dzpDb21wYXRpYmlsaXR5Pgo8dzpEb05vdEV4cGFuZFNoaWZ0UmV0dXJuLz4KPHc6U3BsaXRQZ0JyZWFrQW5kUGFyYU1hcmsvPgo8dzpFbmFibGVPcGVuVHlwZUtlcm5pbmcvPgo8L3c6Q29tcGF0aWJpbGl0eT4KPG06bWF0aFByPgo8bTptYXRoRm9udCBtOnZhbD0zRCJDYW1icmlhIE1hdGgiLz4KPG06YnJrQmluIG06dmFsPTNEImJlZm9yZSIvPgo8bTpicmtCaW5TdWIgbTp2YWw9M0QiJiM0NTstIi8+CjxtOnNtYWxsRnJhYyBtOnZhbD0zRCJvZmYiLz4KPG06ZGlzcERlZi8+CjxtOmxNYXJnaW4gbTp2YWw9M0QiMCIvPgo8bTpyTWFyZ2luIG06dmFsPTNEIjAiLz4KPG06ZGVmSmMgbTp2YWw9M0QiY2VudGVyR3JvdXAiLz4KPG06d3JhcEluZGVudCBtOnZhbD0zRCIxNDQwIi8+CjxtOmludExpbSBtOnZhbD0zRCJzdWJTdXAiLz4KPG06bmFyeUxpbSBtOnZhbD0zRCJ1bmRPdnIiLz4KPC9tOm1hdGhQcj48L3c6V29yZERvY3VtZW50Pgo8L3htbD48IVtlbmRpZl0tLT48IS0tW2lmIGd0ZSBtc28gOV0+PHhtbD4KPHc6TGF0ZW50U3R5bGVzIERlZkxvY2tlZFN0YXRlPTNEImZhbHNlIiBEZWZVbmhpZGVXaGVuVXNlZD0zRCJmYWxzZSIgRGVmU2VtaUhpZD0KZGVuPTNEImZhbHNlIiBEZWZRRm9ybWF0PTNEImZhbHNlIiBEZWZQcmlvcml0eT0zRCI5OSIgTGF0ZW50U3R5bGVDb3VudD0zRCIzODIiPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIwIiBRRm9ybWF0PTNEInRydWUiIE5hbWU9M0QiTm9ybWFsIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjkiIFFGb3JtYXQ9M0QidHJ1ZSIgTmFtZT0zRCJoZWFkaW5nIDEiPQovPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2U9CmQ9M0QidHJ1ZSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEImhlYWRpbmcgMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2U9CmQ9M0QidHJ1ZSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEImhlYWRpbmcgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2U9CmQ9M0QidHJ1ZSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEImhlYWRpbmcgNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2U9CmQ9M0QidHJ1ZSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEImhlYWRpbmcgNSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2U9CmQ9M0QidHJ1ZSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEImhlYWRpbmcgNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2U9CmQ9M0QidHJ1ZSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEImhlYWRpbmcgNyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2U9CmQ9M0QidHJ1ZSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEImhlYWRpbmcgOCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2U9CmQ9M0QidHJ1ZSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEImhlYWRpbmcgOSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJpbmRleCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImluZGV4IDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiaW5kZXggMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJpbmRleCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImluZGV4IDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiaW5kZXggNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJpbmRleCA3Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImluZGV4IDgiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiaW5kZXggOSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIzOSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXM9CmVkPTNEInRydWUiIE5hbWU9M0QidG9jIDEiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMzkiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzPQplZD0zRCJ0cnVlIiBOYW1lPTNEInRvYyAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjM5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vcz0KZWQ9M0QidHJ1ZSIgTmFtZT0zRCJ0b2MgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIzOSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXM9CmVkPTNEInRydWUiIE5hbWU9M0QidG9jIDQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMzkiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzPQplZD0zRCJ0cnVlIiBOYW1lPTNEInRvYyA1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjM5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vcz0KZWQ9M0QidHJ1ZSIgTmFtZT0zRCJ0b2MgNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIzOSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXM9CmVkPTNEInRydWUiIE5hbWU9M0QidG9jIDciLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMzkiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzPQplZD0zRCJ0cnVlIiBOYW1lPTNEInRvYyA4Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjM5IiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vcz0KZWQ9M0QidHJ1ZSIgTmFtZT0zRCJ0b2MgOSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJOb3JtYWwgSW5kZW50Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImZvb3Rub3RlIHRleHQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiYW5ub3RhdGlvbiB0ZXh0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImhlYWRlciIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJmb290ZXIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiaW5kZXggaGVhZGluZyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIzNSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXM9CmVkPTNEInRydWUiIFFGb3JtYXQ9M0QidHJ1ZSIgTmFtZT0zRCJjYXB0aW9uIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEInRhYmxlIG9mIGZpZ3VyZXMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiZW52ZWxvcGUgYWRkcmVzcyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJlbnZlbG9wZSByZXR1cm4iLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiZm9vdG5vdGUgcmVmZXJlbmNlIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImFubm90YXRpb24gcmVmZXJlbmNlIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImxpbmUgbnVtYmVyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEInBhZ2UgbnVtYmVyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImVuZG5vdGUgcmVmZXJlbmNlIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImVuZG5vdGUgdGV4dCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJ0YWJsZSBvZiBhdXRob3JpdGllcyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJtYWNybyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJ0b2EgaGVhZGluZyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJMaXN0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkxpc3QgQnVsbGV0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkxpc3QgTnVtYmVyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkxpc3QgMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJMaXN0IDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTGlzdCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkxpc3QgNSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJMaXN0IEJ1bGxldCAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkxpc3QgQnVsbGV0IDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTGlzdCBCdWxsZXQgNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJMaXN0IEJ1bGxldCA1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkxpc3QgTnVtYmVyIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTGlzdCBOdW1iZXIgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJMaXN0IE51bWJlciA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkxpc3QgTnVtYmVyIDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMTAiIFFGb3JtYXQ9M0QidHJ1ZSIgTmFtZT0zRCJUaXRsZSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJDbG9zaW5nIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlNpZ25hdHVyZSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIxIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2U9CmQ9M0QidHJ1ZSIgTmFtZT0zRCJEZWZhdWx0IFBhcmFncmFwaCBGb250Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkJvZHkgVGV4dCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJCb2R5IFRleHQgSW5kZW50Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkxpc3QgQ29udGludWUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTGlzdCBDb250aW51ZSAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkxpc3QgQ29udGludWUgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJMaXN0IENvbnRpbnVlIDQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTGlzdCBDb250aW51ZSA1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIk1lc3NhZ2UgSGVhZGVyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjExIiBRRm9ybWF0PTNEInRydWUiIE5hbWU9M0QiU3VidGl0bGUiPQovPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJTYWx1dGF0aW9uIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkRhdGUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiQm9keSBUZXh0IEZpcnN0IEluZGVudCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJCb2R5IFRleHQgRmlyc3QgSW5kZW50IDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTm90ZSBIZWFkaW5nIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkJvZHkgVGV4dCAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkJvZHkgVGV4dCAzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkJvZHkgVGV4dCBJbmRlbnQgMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJCb2R5IFRleHQgSW5kZW50IDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiQmxvY2sgVGV4dCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJIeXBlcmxpbmsiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiRm9sbG93ZWRIeXBlcmxpbmsiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMjIiIFFGb3JtYXQ9M0QidHJ1ZSIgTmFtZT0zRCJTdHJvbmciLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMjAiIFFGb3JtYXQ9M0QidHJ1ZSIgTmFtZT0zRCJFbXBoYXNpcyI9Ci8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkRvY3VtZW50IE1hcCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJQbGFpbiBUZXh0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkUtbWFpbCBTaWduYXR1cmUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiSFRNTCBUb3Agb2YgRm9ybSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJIVE1MIEJvdHRvbSBvZiBGb3JtIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIk5vcm1hbCAoV2ViKSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJIVE1MIEFjcm9ueW0iLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiSFRNTCBBZGRyZXNzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkhUTUwgQ2l0ZSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJIVE1MIENvZGUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiSFRNTCBEZWZpbml0aW9uIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkhUTUwgS2V5Ym9hcmQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiSFRNTCBQcmVmb3JtYXR0ZWQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiSFRNTCBTYW1wbGUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiSFRNTCBUeXBld3JpdGVyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIkhUTUwgVmFyaWFibGUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTm9ybWFsIFRhYmxlIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEImFubm90YXRpb24gc3ViamVjdCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJObyBMaXN0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIk91dGxpbmUgTGlzdCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIk91dGxpbmUgTGlzdCAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIk91dGxpbmUgTGlzdCAzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIFNpbXBsZSAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIFNpbXBsZSAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIFNpbXBsZSAzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIENsYXNzaWMgMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBDbGFzc2ljIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgQ2xhc3NpYyAzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIENsYXNzaWMgNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBDb2xvcmZ1bCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIENvbG9yZnVsIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgQ29sb3JmdWwgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBDb2x1bW5zIDEiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgQ29sdW1ucyAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIENvbHVtbnMgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBDb2x1bW5zIDQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgQ29sdW1ucyA1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIEdyaWQgMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBHcmlkIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgR3JpZCAzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIEdyaWQgNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBHcmlkIDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgR3JpZCA2Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIEdyaWQgNyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBHcmlkIDgiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgTGlzdCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIExpc3QgMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBMaXN0IDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgTGlzdCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIExpc3QgNSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBMaXN0IDYiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgTGlzdCA3Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIExpc3QgOCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSAzRCBlZmZlY3RzIDEiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgM0QgZWZmZWN0cyAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlRhYmxlIDNEIGVmZmVjdHMgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBDb250ZW1wb3JhcnkiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgRWxlZ2FudCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJUYWJsZSBQcm9mZXNzaW9uYWwiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgU3VidGxlIDEiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgU3VidGxlIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgV2ViIDEiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgV2ViIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgV2ViIDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiQmFsbG9vbiBUZXh0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjM5IiBOYW1lPTNEIlRhYmxlIEdyaWQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiVGFibGUgVGhlbWUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTm90ZSBMZXZlbCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIk5vdGUgTGV2ZWwgMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJOb3RlIExldmVsIDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTm90ZSBMZXZlbCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIk5vdGUgTGV2ZWwgNSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJOb3RlIExldmVsIDYiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXNlZD0zRCJ0cnVlIiBOYW1lPQo9M0QiTm90ZSBMZXZlbCA3Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIk5vdGUgTGV2ZWwgOCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJOb3RlIExldmVsIDkiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBOYW1lPTNEIlBsYWNlaG9sZGVyIFRleHQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEIk5vIFNwYWNpbmc9CiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MCIgTmFtZT0zRCJMaWdodCBTaGFkaW5nIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjYxIiBOYW1lPTNEIkxpZ2h0IExpc3QiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjIiIE5hbWU9M0QiTGlnaHQgR3JpZCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MyIgTmFtZT0zRCJNZWRpdW0gU2hhZGluZyAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY0IiBOYW1lPTNEIk1lZGl1bSBTaGFkaW5nIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjUiIE5hbWU9M0QiTWVkaXVtIExpc3QgMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NiIgTmFtZT0zRCJNZWRpdW0gTGlzdCAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY3IiBOYW1lPTNEIk1lZGl1bSBHcmlkIDEiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjgiIE5hbWU9M0QiTWVkaXVtIEdyaWQgMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2OSIgTmFtZT0zRCJNZWRpdW0gR3JpZCAzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjcwIiBOYW1lPTNEIkRhcmsgTGlzdCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI3MSIgTmFtZT0zRCJDb2xvcmZ1bCBTaGFkaW5nIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjcyIiBOYW1lPTNEIkNvbG9yZnVsIExpc3QiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNzMiIE5hbWU9M0QiQ29sb3JmdWwgR3JpZCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MCIgTmFtZT0zRCJMaWdodCBTaGFkaW5nIEFjY2VudCAxIi89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjEiIE5hbWU9M0QiTGlnaHQgTGlzdCBBY2NlbnQgMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MiIgTmFtZT0zRCJMaWdodCBHcmlkIEFjY2VudCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjYzIiBOYW1lPTNEIk1lZGl1bSBTaGFkaW5nIDEgQWNjZW50ID0KMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NCIgTmFtZT0zRCJNZWRpdW0gU2hhZGluZyAyIEFjY2VudCA9CjEiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjUiIE5hbWU9M0QiTWVkaXVtIExpc3QgMSBBY2NlbnQgMSIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgTmFtZT0zRCJSZXZpc2lvbiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIzNCIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEIkxpc3QgUGFyYT0KZ3JhcGgiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMjkiIFFGb3JtYXQ9M0QidHJ1ZSIgTmFtZT0zRCJRdW90ZSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIzMCIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEIkludGVuc2UgUT0KdW90ZSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NiIgTmFtZT0zRCJNZWRpdW0gTGlzdCAyIEFjY2VudCAxIi89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjciIE5hbWU9M0QiTWVkaXVtIEdyaWQgMSBBY2NlbnQgMSIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY4IiBOYW1lPTNEIk1lZGl1bSBHcmlkIDIgQWNjZW50IDEiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2OSIgTmFtZT0zRCJNZWRpdW0gR3JpZCAzIEFjY2VudCAxIi89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNzAiIE5hbWU9M0QiRGFyayBMaXN0IEFjY2VudCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjcxIiBOYW1lPTNEIkNvbG9yZnVsIFNoYWRpbmcgQWNjZW50ID0KMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI3MiIgTmFtZT0zRCJDb2xvcmZ1bCBMaXN0IEFjY2VudCAxIi89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNzMiIE5hbWU9M0QiQ29sb3JmdWwgR3JpZCBBY2NlbnQgMSIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjYwIiBOYW1lPTNEIkxpZ2h0IFNoYWRpbmcgQWNjZW50IDIiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MSIgTmFtZT0zRCJMaWdodCBMaXN0IEFjY2VudCAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjYyIiBOYW1lPTNEIkxpZ2h0IEdyaWQgQWNjZW50IDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjMiIE5hbWU9M0QiTWVkaXVtIFNoYWRpbmcgMSBBY2NlbnQgPQoyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY0IiBOYW1lPTNEIk1lZGl1bSBTaGFkaW5nIDIgQWNjZW50ID0KMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NSIgTmFtZT0zRCJNZWRpdW0gTGlzdCAxIEFjY2VudCAyIi89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjYiIE5hbWU9M0QiTWVkaXVtIExpc3QgMiBBY2NlbnQgMiIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY3IiBOYW1lPTNEIk1lZGl1bSBHcmlkIDEgQWNjZW50IDIiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2OCIgTmFtZT0zRCJNZWRpdW0gR3JpZCAyIEFjY2VudCAyIi89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjkiIE5hbWU9M0QiTWVkaXVtIEdyaWQgMyBBY2NlbnQgMiIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjcwIiBOYW1lPTNEIkRhcmsgTGlzdCBBY2NlbnQgMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI3MSIgTmFtZT0zRCJDb2xvcmZ1bCBTaGFkaW5nIEFjY2VudCA9CjIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNzIiIE5hbWU9M0QiQ29sb3JmdWwgTGlzdCBBY2NlbnQgMiIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjczIiBOYW1lPTNEIkNvbG9yZnVsIEdyaWQgQWNjZW50IDIiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MCIgTmFtZT0zRCJMaWdodCBTaGFkaW5nIEFjY2VudCAzIi89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjEiIE5hbWU9M0QiTGlnaHQgTGlzdCBBY2NlbnQgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MiIgTmFtZT0zRCJMaWdodCBHcmlkIEFjY2VudCAzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjYzIiBOYW1lPTNEIk1lZGl1bSBTaGFkaW5nIDEgQWNjZW50ID0KMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NCIgTmFtZT0zRCJNZWRpdW0gU2hhZGluZyAyIEFjY2VudCA9CjMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjUiIE5hbWU9M0QiTWVkaXVtIExpc3QgMSBBY2NlbnQgMyIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY2IiBOYW1lPTNEIk1lZGl1bSBMaXN0IDIgQWNjZW50IDMiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NyIgTmFtZT0zRCJNZWRpdW0gR3JpZCAxIEFjY2VudCAzIi89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjgiIE5hbWU9M0QiTWVkaXVtIEdyaWQgMiBBY2NlbnQgMyIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY5IiBOYW1lPTNEIk1lZGl1bSBHcmlkIDMgQWNjZW50IDMiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI3MCIgTmFtZT0zRCJEYXJrIExpc3QgQWNjZW50IDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNzEiIE5hbWU9M0QiQ29sb3JmdWwgU2hhZGluZyBBY2NlbnQgPQozIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjcyIiBOYW1lPTNEIkNvbG9yZnVsIExpc3QgQWNjZW50IDMiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI3MyIgTmFtZT0zRCJDb2xvcmZ1bCBHcmlkIEFjY2VudCAzIi89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjAiIE5hbWU9M0QiTGlnaHQgU2hhZGluZyBBY2NlbnQgNCIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjYxIiBOYW1lPTNEIkxpZ2h0IExpc3QgQWNjZW50IDQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjIiIE5hbWU9M0QiTGlnaHQgR3JpZCBBY2NlbnQgNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MyIgTmFtZT0zRCJNZWRpdW0gU2hhZGluZyAxIEFjY2VudCA9CjQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjQiIE5hbWU9M0QiTWVkaXVtIFNoYWRpbmcgMiBBY2NlbnQgPQo0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY1IiBOYW1lPTNEIk1lZGl1bSBMaXN0IDEgQWNjZW50IDQiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NiIgTmFtZT0zRCJNZWRpdW0gTGlzdCAyIEFjY2VudCA0Ii89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjciIE5hbWU9M0QiTWVkaXVtIEdyaWQgMSBBY2NlbnQgNCIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY4IiBOYW1lPTNEIk1lZGl1bSBHcmlkIDIgQWNjZW50IDQiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2OSIgTmFtZT0zRCJNZWRpdW0gR3JpZCAzIEFjY2VudCA0Ii89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNzAiIE5hbWU9M0QiRGFyayBMaXN0IEFjY2VudCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjcxIiBOYW1lPTNEIkNvbG9yZnVsIFNoYWRpbmcgQWNjZW50ID0KNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI3MiIgTmFtZT0zRCJDb2xvcmZ1bCBMaXN0IEFjY2VudCA0Ii89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNzMiIE5hbWU9M0QiQ29sb3JmdWwgR3JpZCBBY2NlbnQgNCIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjYwIiBOYW1lPTNEIkxpZ2h0IFNoYWRpbmcgQWNjZW50IDUiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MSIgTmFtZT0zRCJMaWdodCBMaXN0IEFjY2VudCA1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjYyIiBOYW1lPTNEIkxpZ2h0IEdyaWQgQWNjZW50IDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjMiIE5hbWU9M0QiTWVkaXVtIFNoYWRpbmcgMSBBY2NlbnQgPQo1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY0IiBOYW1lPTNEIk1lZGl1bSBTaGFkaW5nIDIgQWNjZW50ID0KNSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NSIgTmFtZT0zRCJNZWRpdW0gTGlzdCAxIEFjY2VudCA1Ii89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjYiIE5hbWU9M0QiTWVkaXVtIExpc3QgMiBBY2NlbnQgNSIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY3IiBOYW1lPTNEIk1lZGl1bSBHcmlkIDEgQWNjZW50IDUiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2OCIgTmFtZT0zRCJNZWRpdW0gR3JpZCAyIEFjY2VudCA1Ii89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjkiIE5hbWU9M0QiTWVkaXVtIEdyaWQgMyBBY2NlbnQgNSIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjcwIiBOYW1lPTNEIkRhcmsgTGlzdCBBY2NlbnQgNSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI3MSIgTmFtZT0zRCJDb2xvcmZ1bCBTaGFkaW5nIEFjY2VudCA9CjUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNzIiIE5hbWU9M0QiQ29sb3JmdWwgTGlzdCBBY2NlbnQgNSIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjczIiBOYW1lPTNEIkNvbG9yZnVsIEdyaWQgQWNjZW50IDUiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MCIgTmFtZT0zRCJMaWdodCBTaGFkaW5nIEFjY2VudCA2Ii89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjEiIE5hbWU9M0QiTGlnaHQgTGlzdCBBY2NlbnQgNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2MiIgTmFtZT0zRCJMaWdodCBHcmlkIEFjY2VudCA2Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjYzIiBOYW1lPTNEIk1lZGl1bSBTaGFkaW5nIDEgQWNjZW50ID0KNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NCIgTmFtZT0zRCJNZWRpdW0gU2hhZGluZyAyIEFjY2VudCA9CjYiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjUiIE5hbWU9M0QiTWVkaXVtIExpc3QgMSBBY2NlbnQgNiIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY2IiBOYW1lPTNEIk1lZGl1bSBMaXN0IDIgQWNjZW50IDYiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI2NyIgTmFtZT0zRCJNZWRpdW0gR3JpZCAxIEFjY2VudCA2Ii89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNjgiIE5hbWU9M0QiTWVkaXVtIEdyaWQgMiBBY2NlbnQgNiIvPQo+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjY5IiBOYW1lPTNEIk1lZGl1bSBHcmlkIDMgQWNjZW50IDYiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI3MCIgTmFtZT0zRCJEYXJrIExpc3QgQWNjZW50IDYiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNzEiIE5hbWU9M0QiQ29sb3JmdWwgU2hhZGluZyBBY2NlbnQgPQo2Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjcyIiBOYW1lPTNEIkNvbG9yZnVsIExpc3QgQWNjZW50IDYiLz0KPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI3MyIgTmFtZT0zRCJDb2xvcmZ1bCBHcmlkIEFjY2VudCA2Ii89Cj4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMTkiIFFGb3JtYXQ9M0QidHJ1ZSIgTmFtZT0zRCJTdWJ0bGUgRW09CnBoYXNpcyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIyMSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEIkludGVuc2UgRT0KbXBoYXNpcyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIzMSIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEIlN1YnRsZSBSZT0KZmVyZW5jZSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIzMiIgUUZvcm1hdD0zRCJ0cnVlIiBOYW1lPTNEIkludGVuc2UgUj0KZWZlcmVuY2UiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMzMiIFFGb3JtYXQ9M0QidHJ1ZSIgTmFtZT0zRCJCb29rIFRpdGw9CmUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiMzciIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzPQplZD0zRCJ0cnVlIiBOYW1lPTNEIkJpYmxpb2dyYXBoeSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCIzOSIgU2VtaUhpZGRlbj0zRCJ0cnVlIiBVbmhpZGVXaGVuVXM9CmVkPTNEInRydWUiIFFGb3JtYXQ9M0QidHJ1ZSIgTmFtZT0zRCJUT0MgSGVhZGluZyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0MSIgTmFtZT0zRCJQbGFpbiBUYWJsZSAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQyIiBOYW1lPTNEIlBsYWluIFRhYmxlIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDMiIE5hbWU9M0QiUGxhaW4gVGFibGUgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NCIgTmFtZT0zRCJQbGFpbiBUYWJsZSA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ1IiBOYW1lPTNEIlBsYWluIFRhYmxlIDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDAiIE5hbWU9M0QiR3JpZCBUYWJsZSBMaWdodCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NiIgTmFtZT0zRCJHcmlkIFRhYmxlIDEgTGlnaHQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDciIE5hbWU9M0QiR3JpZCBUYWJsZSAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ4IiBOYW1lPTNEIkdyaWQgVGFibGUgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OSIgTmFtZT0zRCJHcmlkIFRhYmxlIDQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTAiIE5hbWU9M0QiR3JpZCBUYWJsZSA1IERhcmsiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTEiIE5hbWU9M0QiR3JpZCBUYWJsZSA2IENvbG9yZnVsIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUyIiBOYW1lPTNEIkdyaWQgVGFibGUgNyBDb2xvcmZ1bCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NiIgTmFtZT0zRCJHcmlkIFRhYmxlIDEgTGlnaHQgQWNjZW49CnQgMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NyIgTmFtZT0zRCJHcmlkIFRhYmxlIDIgQWNjZW50IDEiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDgiIE5hbWU9M0QiR3JpZCBUYWJsZSAzIEFjY2VudCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ5IiBOYW1lPTNEIkdyaWQgVGFibGUgNCBBY2NlbnQgMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MCIgTmFtZT0zRCJHcmlkIFRhYmxlIDUgRGFyayBBY2NlbnQ9CiAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUxIiBOYW1lPTNEIkdyaWQgVGFibGUgNiBDb2xvcmZ1bCBBYz0KY2VudCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUyIiBOYW1lPTNEIkdyaWQgVGFibGUgNyBDb2xvcmZ1bCBBYz0KY2VudCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ2IiBOYW1lPTNEIkdyaWQgVGFibGUgMSBMaWdodCBBY2Nlbj0KdCAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ3IiBOYW1lPTNEIkdyaWQgVGFibGUgMiBBY2NlbnQgMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OCIgTmFtZT0zRCJHcmlkIFRhYmxlIDMgQWNjZW50IDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDkiIE5hbWU9M0QiR3JpZCBUYWJsZSA0IEFjY2VudCAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUwIiBOYW1lPTNEIkdyaWQgVGFibGUgNSBEYXJrIEFjY2VudD0KIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTEiIE5hbWU9M0QiR3JpZCBUYWJsZSA2IENvbG9yZnVsIEFjPQpjZW50IDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTIiIE5hbWU9M0QiR3JpZCBUYWJsZSA3IENvbG9yZnVsIEFjPQpjZW50IDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDYiIE5hbWU9M0QiR3JpZCBUYWJsZSAxIExpZ2h0IEFjY2VuPQp0IDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDciIE5hbWU9M0QiR3JpZCBUYWJsZSAyIEFjY2VudCAzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ4IiBOYW1lPTNEIkdyaWQgVGFibGUgMyBBY2NlbnQgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OSIgTmFtZT0zRCJHcmlkIFRhYmxlIDQgQWNjZW50IDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTAiIE5hbWU9M0QiR3JpZCBUYWJsZSA1IERhcmsgQWNjZW50PQogMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MSIgTmFtZT0zRCJHcmlkIFRhYmxlIDYgQ29sb3JmdWwgQWM9CmNlbnQgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MiIgTmFtZT0zRCJHcmlkIFRhYmxlIDcgQ29sb3JmdWwgQWM9CmNlbnQgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NiIgTmFtZT0zRCJHcmlkIFRhYmxlIDEgTGlnaHQgQWNjZW49CnQgNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NyIgTmFtZT0zRCJHcmlkIFRhYmxlIDIgQWNjZW50IDQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDgiIE5hbWU9M0QiR3JpZCBUYWJsZSAzIEFjY2VudCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ5IiBOYW1lPTNEIkdyaWQgVGFibGUgNCBBY2NlbnQgNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MCIgTmFtZT0zRCJHcmlkIFRhYmxlIDUgRGFyayBBY2NlbnQ9CiA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUxIiBOYW1lPTNEIkdyaWQgVGFibGUgNiBDb2xvcmZ1bCBBYz0KY2VudCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUyIiBOYW1lPTNEIkdyaWQgVGFibGUgNyBDb2xvcmZ1bCBBYz0KY2VudCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ2IiBOYW1lPTNEIkdyaWQgVGFibGUgMSBMaWdodCBBY2Nlbj0KdCA1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ3IiBOYW1lPTNEIkdyaWQgVGFibGUgMiBBY2NlbnQgNSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OCIgTmFtZT0zRCJHcmlkIFRhYmxlIDMgQWNjZW50IDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDkiIE5hbWU9M0QiR3JpZCBUYWJsZSA0IEFjY2VudCA1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUwIiBOYW1lPTNEIkdyaWQgVGFibGUgNSBEYXJrIEFjY2VudD0KIDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTEiIE5hbWU9M0QiR3JpZCBUYWJsZSA2IENvbG9yZnVsIEFjPQpjZW50IDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTIiIE5hbWU9M0QiR3JpZCBUYWJsZSA3IENvbG9yZnVsIEFjPQpjZW50IDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDYiIE5hbWU9M0QiR3JpZCBUYWJsZSAxIExpZ2h0IEFjY2VuPQp0IDYiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDciIE5hbWU9M0QiR3JpZCBUYWJsZSAyIEFjY2VudCA2Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ4IiBOYW1lPTNEIkdyaWQgVGFibGUgMyBBY2NlbnQgNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OSIgTmFtZT0zRCJHcmlkIFRhYmxlIDQgQWNjZW50IDYiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTAiIE5hbWU9M0QiR3JpZCBUYWJsZSA1IERhcmsgQWNjZW50PQogNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MSIgTmFtZT0zRCJHcmlkIFRhYmxlIDYgQ29sb3JmdWwgQWM9CmNlbnQgNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MiIgTmFtZT0zRCJHcmlkIFRhYmxlIDcgQ29sb3JmdWwgQWM9CmNlbnQgNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NiIgTmFtZT0zRCJMaXN0IFRhYmxlIDEgTGlnaHQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDciIE5hbWU9M0QiTGlzdCBUYWJsZSAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ4IiBOYW1lPTNEIkxpc3QgVGFibGUgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OSIgTmFtZT0zRCJMaXN0IFRhYmxlIDQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTAiIE5hbWU9M0QiTGlzdCBUYWJsZSA1IERhcmsiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTEiIE5hbWU9M0QiTGlzdCBUYWJsZSA2IENvbG9yZnVsIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUyIiBOYW1lPTNEIkxpc3QgVGFibGUgNyBDb2xvcmZ1bCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NiIgTmFtZT0zRCJMaXN0IFRhYmxlIDEgTGlnaHQgQWNjZW49CnQgMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NyIgTmFtZT0zRCJMaXN0IFRhYmxlIDIgQWNjZW50IDEiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDgiIE5hbWU9M0QiTGlzdCBUYWJsZSAzIEFjY2VudCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ5IiBOYW1lPTNEIkxpc3QgVGFibGUgNCBBY2NlbnQgMSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MCIgTmFtZT0zRCJMaXN0IFRhYmxlIDUgRGFyayBBY2NlbnQ9CiAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUxIiBOYW1lPTNEIkxpc3QgVGFibGUgNiBDb2xvcmZ1bCBBYz0KY2VudCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUyIiBOYW1lPTNEIkxpc3QgVGFibGUgNyBDb2xvcmZ1bCBBYz0KY2VudCAxIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ2IiBOYW1lPTNEIkxpc3QgVGFibGUgMSBMaWdodCBBY2Nlbj0KdCAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ3IiBOYW1lPTNEIkxpc3QgVGFibGUgMiBBY2NlbnQgMiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OCIgTmFtZT0zRCJMaXN0IFRhYmxlIDMgQWNjZW50IDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDkiIE5hbWU9M0QiTGlzdCBUYWJsZSA0IEFjY2VudCAyIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUwIiBOYW1lPTNEIkxpc3QgVGFibGUgNSBEYXJrIEFjY2VudD0KIDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTEiIE5hbWU9M0QiTGlzdCBUYWJsZSA2IENvbG9yZnVsIEFjPQpjZW50IDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTIiIE5hbWU9M0QiTGlzdCBUYWJsZSA3IENvbG9yZnVsIEFjPQpjZW50IDIiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDYiIE5hbWU9M0QiTGlzdCBUYWJsZSAxIExpZ2h0IEFjY2VuPQp0IDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDciIE5hbWU9M0QiTGlzdCBUYWJsZSAyIEFjY2VudCAzIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ4IiBOYW1lPTNEIkxpc3QgVGFibGUgMyBBY2NlbnQgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OSIgTmFtZT0zRCJMaXN0IFRhYmxlIDQgQWNjZW50IDMiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTAiIE5hbWU9M0QiTGlzdCBUYWJsZSA1IERhcmsgQWNjZW50PQogMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MSIgTmFtZT0zRCJMaXN0IFRhYmxlIDYgQ29sb3JmdWwgQWM9CmNlbnQgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MiIgTmFtZT0zRCJMaXN0IFRhYmxlIDcgQ29sb3JmdWwgQWM9CmNlbnQgMyIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NiIgTmFtZT0zRCJMaXN0IFRhYmxlIDEgTGlnaHQgQWNjZW49CnQgNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0NyIgTmFtZT0zRCJMaXN0IFRhYmxlIDIgQWNjZW50IDQiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDgiIE5hbWU9M0QiTGlzdCBUYWJsZSAzIEFjY2VudCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ5IiBOYW1lPTNEIkxpc3QgVGFibGUgNCBBY2NlbnQgNCIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MCIgTmFtZT0zRCJMaXN0IFRhYmxlIDUgRGFyayBBY2NlbnQ9CiA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUxIiBOYW1lPTNEIkxpc3QgVGFibGUgNiBDb2xvcmZ1bCBBYz0KY2VudCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUyIiBOYW1lPTNEIkxpc3QgVGFibGUgNyBDb2xvcmZ1bCBBYz0KY2VudCA0Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ2IiBOYW1lPTNEIkxpc3QgVGFibGUgMSBMaWdodCBBY2Nlbj0KdCA1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ3IiBOYW1lPTNEIkxpc3QgVGFibGUgMiBBY2NlbnQgNSIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OCIgTmFtZT0zRCJMaXN0IFRhYmxlIDMgQWNjZW50IDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDkiIE5hbWU9M0QiTGlzdCBUYWJsZSA0IEFjY2VudCA1Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjUwIiBOYW1lPTNEIkxpc3QgVGFibGUgNSBEYXJrIEFjY2VudD0KIDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTEiIE5hbWU9M0QiTGlzdCBUYWJsZSA2IENvbG9yZnVsIEFjPQpjZW50IDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTIiIE5hbWU9M0QiTGlzdCBUYWJsZSA3IENvbG9yZnVsIEFjPQpjZW50IDUiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDYiIE5hbWU9M0QiTGlzdCBUYWJsZSAxIExpZ2h0IEFjY2VuPQp0IDYiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNDciIE5hbWU9M0QiTGlzdCBUYWJsZSAyIEFjY2VudCA2Ii8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFByaW9yaXR5PTNEIjQ4IiBOYW1lPTNEIkxpc3QgVGFibGUgMyBBY2NlbnQgNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI0OSIgTmFtZT0zRCJMaXN0IFRhYmxlIDQgQWNjZW50IDYiLz4KPHc6THNkRXhjZXB0aW9uIExvY2tlZD0zRCJmYWxzZSIgUHJpb3JpdHk9M0QiNTAiIE5hbWU9M0QiTGlzdCBUYWJsZSA1IERhcmsgQWNjZW50PQogNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MSIgTmFtZT0zRCJMaXN0IFRhYmxlIDYgQ29sb3JmdWwgQWM9CmNlbnQgNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBQcmlvcml0eT0zRCI1MiIgTmFtZT0zRCJMaXN0IFRhYmxlIDcgQ29sb3JmdWwgQWM9CmNlbnQgNiIvPgo8dzpMc2RFeGNlcHRpb24gTG9ja2VkPTNEImZhbHNlIiBTZW1pSGlkZGVuPTNEInRydWUiIFVuaGlkZVdoZW5Vc2VkPTNEInRydWUiIE5hbWU9Cj0zRCJNZW50aW9uIi8+Cjx3OkxzZEV4Y2VwdGlvbiBMb2NrZWQ9M0QiZmFsc2UiIFNlbWlIaWRkZW49M0QidHJ1ZSIgVW5oaWRlV2hlblVzZWQ9M0QidHJ1ZSIgTmFtZT0KPTNEIlNtYXJ0IEh5cGVybGluayIvPgo8L3c6TGF0ZW50U3R5bGVzPgo8L3htbD48IVtlbmRpZl0tLT48c3R5bGU+PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseToiQ2FtYnJpYSBNYXRoIjsKCXBhbm9zZS0xOjAgMCAwIDAgMCAwIDAgMCAwIDA7Cgltc28tZm9udC1jaGFyc2V0OjE7Cgltc28tZ2VuZXJpYy1mb250LWZhbWlseTpyb21hbjsKCW1zby1mb250LWZvcm1hdDpvdGhlcjsKCW1zby1mb250LXBpdGNoOnZhcmlhYmxlOwoJbXNvLWZvbnQtc2lnbmF0dXJlOjAgMCAwIDAgMCAwO30KQGZvbnQtZmFjZQoJe2ZvbnQtZmFtaWx5OkNhbGlicmk7CglwYW5vc2UtMToyIDE1IDUgMiAyIDIgNCAzIDIgNDsKCW1zby1mb250LWNoYXJzZXQ6MDsKCW1zby1nZW5lcmljLWZvbnQtZmFtaWx5OnN3aXNzOwoJbXNvLWZvbnQtcGl0Y2g6dmFyaWFibGU7Cgltc28tZm9udC1zaWduYXR1cmU6LTUzNjg3MDE0NSAxMDczNzg2MTExIDEgMCA0MTUgMDt9Ci8qIFN0eWxlIERlZmluaXRpb25zICovCnAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWwsIGRpdi5Nc29Ob3JtYWwKCXttc28tc3R5bGUtdW5oaWRlOm5vOwoJbXNvLXN0eWxlLXFmb3JtYXQ6eWVzOwoJbXNvLXN0eWxlLXBhcmVudDoiIjsKCW1hcmdpbjowY207CgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7Cgltc28tcGFnaW5hdGlvbjp3aWRvdy1vcnBoYW47Cglmb250LXNpemU6MTIuMHB0OwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLHNhbnMtc2VyaWY7Cgltc28tZmFyZWFzdC1mb250LWZhbWlseTpDYWxpYnJpOwoJbXNvLWJpZGktZm9udC1mYW1pbHk6IlRpbWVzIE5ldyBSb21hbiI7fQphOmxpbmssIHNwYW4uTXNvSHlwZXJsaW5rCgl7bXNvLXN0eWxlLW5vc2hvdzp5ZXM7Cgltc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xvcjojMDU2M0MxOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTsKCXRleHQtdW5kZXJsaW5lOnNpbmdsZTt9CmE6dmlzaXRlZCwgc3Bhbi5Nc29IeXBlcmxpbmtGb2xsb3dlZAoJe21zby1zdHlsZS1ub3Nob3c6eWVzOwoJbXNvLXN0eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6Izk1NEY3MjsKCXRleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7Cgl0ZXh0LXVuZGVybGluZTpzaW5nbGU7fQpzcGFuLkVtYWlsU3R5bGUxNwoJe21zby1zdHlsZS10eXBlOnBlcnNvbmFsOwoJbXNvLXN0eWxlLW5vc2hvdzp5ZXM7Cgltc28tc3R5bGUtdW5oaWRlOm5vOwoJbXNvLWFuc2ktZm9udC1zaXplOjExLjBwdDsKCW1zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQ7Cglmb250LWZhbWlseToiQ2FsaWJyaSIsc2Fucy1zZXJpZjsKCW1zby1hc2NpaS1mb250LWZhbWlseTpDYWxpYnJpOwoJbXNvLWZhcmVhc3QtZm9udC1mYW1pbHk6Q2FsaWJyaTsKCW1zby1oYW5zaS1mb250LWZhbWlseTpDYWxpYnJpOwoJbXNvLWJpZGktZm9udC1mYW1pbHk6IlRpbWVzIE5ldyBSb21hbiI7Cgljb2xvcjp3aW5kb3d0ZXh0O30Kc3Bhbi5FbWFpbFN0eWxlMTgKCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1jb21wb3NlOwoJbXNvLXN0eWxlLW5vc2hvdzp5ZXM7Cgltc28tc3R5bGUtdW5oaWRlOm5vOwoJbXNvLWFuc2ktZm9udC1zaXplOjExLjBwdDsKCW1zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQ7Cglmb250LWZhbWlseToiQ2FsaWJyaSIsc2Fucy1zZXJpZjsKCW1zby1hc2NpaS1mb250LWZhbWlseTpDYWxpYnJpOwoJbXNvLWZhcmVhc3QtZm9udC1mYW1pbHk6Q2FsaWJyaTsKCW1zby1oYW5zaS1mb250LWZhbWlseTpDYWxpYnJpOwoJbXNvLWJpZGktZm9udC1mYW1pbHk6IlRpbWVzIE5ldyBSb21hbiI7Cgljb2xvcjp3aW5kb3d0ZXh0O30Kc3Bhbi5tc29JbnMKCXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsKCW1zby1zdHlsZS1uYW1lOiIiOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTsKCXRleHQtdW5kZXJsaW5lOnNpbmdsZTsKCWNvbG9yOnRlYWw7fQouTXNvQ2hwRGVmYXVsdAoJe21zby1zdHlsZS10eXBlOmV4cG9ydC1vbmx5OwoJbXNvLWRlZmF1bHQtcHJvcHM6eWVzOwoJZm9udC1zaXplOjEwLjBwdDsKCW1zby1hbnNpLWZvbnQtc2l6ZToxMC4wcHQ7Cgltc28tYmlkaS1mb250LXNpemU6MTAuMHB0OwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLHNhbnMtc2VyaWY7Cgltc28tYXNjaWktZm9udC1mYW1pbHk6Q2FsaWJyaTsKCW1zby1mYXJlYXN0LWZvbnQtZmFtaWx5OkNhbGlicmk7Cgltc28taGFuc2ktZm9udC1mYW1pbHk6Q2FsaWJyaTt9CkBwYWdlIFdvcmRTZWN0aW9uMQoJe3NpemU6NTk1LjBwdCA4NDIuMHB0OwoJbWFyZ2luOjcyLjBwdCA3Mi4wcHQgNzIuMHB0IDcyLjBwdDsKCW1zby1oZWFkZXItbWFyZ2luOjM1LjRwdDsKCW1zby1mb290ZXItbWFyZ2luOjM1LjRwdDsKCW1zby1wYXBlci1zb3VyY2U6MDt9CmRpdi5Xb3JkU2VjdGlvbjEKCXtwYWdlOldvcmRTZWN0aW9uMTt9Ci0tPjwvc3R5bGU+PCEtLVtpZiBndGUgbXNvIDEwXT48c3R5bGU+LyogU3R5bGUgRGVmaW5pdGlvbnMgKi8KdGFibGUuTXNvTm9ybWFsVGFibGUKCXttc28tc3R5bGUtbmFtZToiVGFibGUgTm9ybWFsIjsKCW1zby10c3R5bGUtcm93YmFuZC1zaXplOjA7Cgltc28tdHN0eWxlLWNvbGJhbmQtc2l6ZTowOwoJbXNvLXN0eWxlLW5vc2hvdzp5ZXM7Cgltc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgltc28tc3R5bGUtcGFyZW50OiIiOwoJbXNvLXBhZGRpbmctYWx0OjBjbSA1LjRwdCAwY20gNS40cHQ7Cgltc28tcGFyYS1tYXJnaW46MGNtOwoJbXNvLXBhcmEtbWFyZ2luLWJvdHRvbTouMDAwMXB0OwoJbXNvLXBhZ2luYXRpb246d2lkb3ctb3JwaGFuOwoJZm9udC1zaXplOjEwLjBwdDsKCWZvbnQtZmFtaWx5OiJDYWxpYnJpIixzYW5zLXNlcmlmO30KPC9zdHlsZT48IVtlbmRpZl0tLT48IS0tW2lmIGd0ZSBtc28gOV0+PHhtbD4KPG86c2hhcGVkZWZhdWx0cyB2OmV4dD0zRCJlZGl0IiBzcGlkbWF4PTNEIjEwMjciLz4KPC94bWw+PCFbZW5kaWZdLS0+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlbGF5b3V0IHY6ZXh0PTNEImVkaXQiPgo8bzppZG1hcCB2OmV4dD0zRCJlZGl0IiBkYXRhPTNEIjEiLz4KPC9vOnNoYXBlbGF5b3V0PjwveG1sPjwhW2VuZGlmXS0tPjwvaGVhZD48Ym9keSBiZ2NvbG9yPTNEd2hpdGUgbGFuZz0zREVOLVVTIGxpbj0Kaz0zRCIjMDU2M0MxIiB2bGluaz0zRCIjOTU0RjcyIiBzdHlsZT0zRCd0YWItaW50ZXJ2YWw6MzYuMHB0Jz48ZGl2IGNsYXNzPTNEV29yZFNlY3RpPQpvbjE+PHAgY2xhc3M9M0RNc29Ob3JtYWw+PHNwYW4gc3R5bGU9M0QnZm9udC1zaXplOjExLjBwdDttc28tYXNjaWktZm9udC1mYW1pbHk6Qz0KYWxpYnJpO21zby1mYXJlYXN0LWZvbnQtZmFtaWx5OkNhbGlicmk7bXNvLWhhbnNpLWZvbnQtZmFtaWx5OkNhbGlicmk7bXNvLWJpZD0KaS1mb250LWZhbWlseToiVGltZXMgTmV3IFJvbWFuIic+CkNyZWF0ZSBkcmFmdCB3aXRoIHN1YmplY3QgY29udGVudC1jb250ZW50PG86cD48L286cD48L3NwYW4+PC9wPjwvZGl2PjwvYm9keT48L2h0bWw+CgotLUJfMzU4ODY4NDc1Ml8xMTQwNzQwODUyLS0KCg==</t:MimeContent>
+									<t:Sensitivity>Normal</t:Sensitivity>
+									<t:Importance>Normal</t:Importance>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+										<t:Value>12</t:Value>
+									</t:ExtendedProperty>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI PropertyTag="0x1090" PropertyType="Integer"/>
+										<t:Value>0</t:Value>
+									</t:ExtendedProperty>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34051" PropertyType="Boolean"/>
+										<t:Value>false</t:Value>
+									</t:ExtendedProperty>													         
+							         <t:From>
+							            <t:Mailbox>
+							              <t:Name>${test_account1.username}</t:Name>
+							              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+							            </t:Mailbox>
+							         </t:From>
+									<t:IsRead>false</t:IsRead>
+								</t:Message>
+							</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail02.id" />
+			</t:response>
+		</t:test>
+			<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="6" />
+							</SyncFolderId>
+							<SyncState>${SyncState02}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="Id" set="mail02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="ChangeKey" set="mail02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState02_EWS" />
+			</t:response>		
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject1}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject1}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail02_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail02_id_wc}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+			 	 <t:select path="//mail:GetMsgResponse//mail:su"  contains="${message.subject1}"/>
+			 	 <t:select path="//mail:GetMsgResponse//mail:content"  contains="${message.content1}"/> 			 	 
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SaveDraftRequest xmlns="urn:zimbraMail">
+					<m>		
+						<id>${mail02_id_wc}</id>													
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>${message.content2}</content>
+						</mp>
+					</m>
+				</SaveDraftRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SaveDraftResponse/mail:m" attr="id"
+					set="message1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="drafts">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="6" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="drafts2.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Drafts" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${drafts2.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState02_EWS}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Update//ewstype:ItemId"
+					attr="Id" set="mail03_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Update//ewstype:ItemId"
+					attr="ChangeKey" set="mail03_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState03" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="message:ToRecipients" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail03_id}" ChangeKey="${mail03_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject1}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"
+					match="${message.content2}" />
+								
+			</t:response>
+		</t:test>				
+		
+	</t:test_case>	
+	
+	
+	
+</t:tests>

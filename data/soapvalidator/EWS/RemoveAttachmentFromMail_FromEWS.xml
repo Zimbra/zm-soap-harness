@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?><t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:property name="test_account1.username" value="test1${TIME}.${COUNTER}" />
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	
+	<t:property name="test_account2.username"
+		value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+	<t:property name="atch1.file" value="${testMailRaw.root}/zcs2622/file1.pdf" />	
+	<t:property name="message.subject1" value="Message test Subject1" />
+	<t:property name="message.content1" value="Message test Content1" />
+
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+			3. Create a test_account2
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="RemoveAttachment_FromEWS" type="bhr">
+		<t:objective>Remove single attachment from mail using EWS and sync on Server.
+		</t:objective>
+		<t:steps>1. Send mail with attachments from Server and sync on EWS
+			2. Remove single attachment from EWS and sync on Server
+		</t:steps>
+		
+		<!-- Send an email with attachment from user1 to user2 using Server -->
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${atch1.file}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="attach1.aid" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+		
+		<!-- Send mail from user1 to user2 with attachment from Server -->
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account2.name}' />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>${message.content1}</content>
+						</mp>
+						<attach aid="${attach1.aid}" />
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message1.id" />
+			</t:response>
+		</t:test>
+	
+		<!-- Sync on EWS for received email -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState01" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+							          <t:FieldURI FieldURI="item:Body"/>
+							          <t:ExtendedFieldURI PropertyTag="0x7D" PropertyType="String"/>
+							          <t:FieldURI FieldURI="item:Attachments"/>
+							          <t:FieldURI FieldURI="item:Subject"/>
+							          <t:FieldURI FieldURI="item:Size"/>
+							          <t:FieldURI FieldURI="message:From"/>
+							          <t:FieldURI FieldURI="message:Sender"/>
+							           <t:FieldURI FieldURI="item:HasAttachments"/> 
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail01_id}" ChangeKey="${mail01_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject1}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments" match="true" />	
+				<t:select
+					path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments/ewstype:FileAttachment/ewstype:AttachmentId"
+					attr="Id" set="attach.id_ews" />	
+			</t:response>
+		</t:test>
+		
+		<!-- Remove attachment from above mail using EWS -->
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+					<soap:Body>
+						<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" ConflictResolution="AutoResolve" MessageDisposition="SaveOnly">					
+							<ItemChanges>
+								<t:ItemChange>
+									<t:ItemId Id="${mail01_id}" ChangeKey="${mail01_changeKey}"/>
+									<t:Updates>
+										<t:SetItemField>
+											<t:FieldURI FieldURI="item:MimeContent"/>
+											<t:Message>
+												<t:MimeContent CharacterSet="UTF-8">U3ViamVjdDogTWVzc2FnZSB0ZXN0IFN1YmplY3QxClRocmVhZC1Ub3BpYzogTWVzc2FnZSB0ZXN0IFN1YmplY3QxCk1pbWUtdmVyc2lvbjogMS4wCkNvbnRlbnQtdHlwZTogbXVsdGlwYXJ0L21peGVkOwoJYm91bmRhcnk9IkJfMzU5NDgwMzYzMl8xMTg1MDg3MjgxIgoKPiBUaGlzIG1lc3NhZ2UgaXMgaW4gTUlNRSBmb3JtYXQuIFNpbmNlIHlvdXIgbWFpbCByZWFkZXIgZG9lcyBub3QgdW5kZXJzdGFuZAp0aGlzIGZvcm1hdCwgc29tZSBvciBhbGwgb2YgdGhpcyBtZXNzYWdlIG1heSBub3QgYmUgbGVnaWJsZS4KCi0tQl8zNTk0ODAzNjMyXzExODUwODcyODEKQ29udGVudC10eXBlOiBtdWx0aXBhcnQvYWx0ZXJuYXRpdmU7Cglib3VuZGFyeT0iQl8zNTk0ODAzNjMyXzE4MjAyMjM1NzIiCgoKLS1CXzM1OTQ4MDM2MzJfMTgyMDIyMzU3MgpDb250ZW50LXR5cGU6IHRleHQvcGxhaW47CgljaGFyc2V0PSJVVEYtOCIKQ29udGVudC10cmFuc2Zlci1lbmNvZGluZzogN2JpdAoKTWVzc2FnZSB0ZXN0IENvbnRlbnQx</t:MimeContent>
+											</t:Message>
+										</t:SetItemField>										
+									</t:Updates>
+								</t:ItemChange>
+							</ItemChanges>
+						</UpdateItem>
+				</soap:Body>
+				</soap:Envelope>
+			</t:request>			
+		</t:test>
+		<t:delay msec="3000"/>
+		<!-- Verify on EWS that attachment is deleted -->
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="2" />
+							</SyncFolderId>
+							<SyncState>${SyncState01}</SyncState>
+							<Ignore>
+        						<t:ItemId Id="${mail01_id}" ChangeKey="${mail01_changeKey}"/>
+      						</Ignore>
+							<MaxChangesReturned>512</MaxChangesReturned>
+							<SyncScope>NormalAndAssociatedItems</SyncScope>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState03" />
+			</t:response>		
+		</t:test>		
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+							          <t:FieldURI FieldURI="item:Body"/>
+							          <t:ExtendedFieldURI PropertyTag="0x7D" PropertyType="String"/>
+							          <t:FieldURI FieldURI="item:Attachments"/>
+							          <t:FieldURI FieldURI="item:Subject"/>
+							          <t:FieldURI FieldURI="item:Size"/>
+							          <t:FieldURI FieldURI="message:From"/>
+							          <t:FieldURI FieldURI="message:Sender"/>
+							          <t:FieldURI FieldURI="item:HasAttachments"/> 
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail02_id}" ChangeKey="${mail02_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject1}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments" match="true" emptyset="1" />				
+			</t:response>
+		</t:test>	
+		
+		<!-- Verify on Server that attachment is deleted -->
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject1}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject1}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail_id_wc}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetMsgResponse//mail:su"  contains="${message.subject1}"/>
+			 	<t:select path="//mail:GetMsgResponse//mail:content"  contains="${message.content1}"/>	
+			 	<t:select path="//mail:GetMsgResponse//mail:mp" attr="cd" match="attachment" emptyset="1" />              
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+</t:tests>
+	
+	
+	

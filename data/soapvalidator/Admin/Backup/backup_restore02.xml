@@ -1,0 +1,252 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    
+<t:property name="test_account1.name" value="backup-restore1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="backup-restore2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="uploadFile.name" value="${testMailRaw.root}/contacts.csv"/>   
+<t:property name="folder.custom" value="/tmp/BACKUP-Restore.${TIME}.${COUNTER}"/>
+
+<t:property name="account1.dir" value="${testMailRaw.root}/user1"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup01_backup_restore" type="always">
+    <t:objective>login as the admin</t:objective>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${folder.custom}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${folder.custom}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+           </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+		    <foldername>${account1.dir}</foldername>
+		    <to>${test_account1.name}</to>
+		    <from>${nonZimbraUser.name}</from>
+		    <server>${test_acct1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Backup-Restore01" type="functional" areas="backup">
+    <t:objective> Restore backup of an account to verify mail details are proper </t:objective>
+    <t:steps> 1. Login to account
+              2. Take backup of that account
+              3. Search some message and delete them
+              4. Restore backup
+              5. Verify deleted mails are present
+    </t:steps>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+<t:property name="server.zimbraAdmin" value="${test_acct1.server}"/>
+
+	<t:test>
+		<t:request>
+			<BackupRequest xmlns="urn:zimbraAdmin">
+				<backup method="full" target="${folder.custom}" sync="1">
+					<account name="${test_account1.name}"/>
+				</backup>
+			</BackupRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:BackupResponse/admin:backup" attr="label" set="label.id1"/>
+		</t:response>
+	</t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+				<query>subject:(AdminGuide)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="msg.id1"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<MsgActionRequest xmlns = "urn:zimbraMail">
+				<action id ="${msg.id1}" op="delete"/>
+			</MsgActionRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "delete"/>
+			<t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${msg.id1}"/>
+		</t:response>
+	</t:test>  
+
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+				<query>attachment:"text/x-java"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="msg.id2"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<MsgActionRequest xmlns = "urn:zimbraMail">
+				<action id ="${msg.id2}" op="delete"/>
+			</MsgActionRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "delete"/>
+			<t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${msg.id2}"/>
+		</t:response>
+	</t:test>  
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+<t:property name="server.zimbraAdmin" value="${test_acct1.server}"/>
+
+	<t:test>
+		<t:request>
+			<RestoreRequest xmlns="urn:zimbraAdmin">
+				<restore includeIncrementals="0" target="${folder.custom}" method="mb">
+				<account name="${test_account1.name}"/>                    
+				</restore>
+			</RestoreRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:RestoreResponse"/>
+		</t:response>
+	</t:test> 
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+				<query>subject:(AdminGuide)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match=".*AdminGuide.*"/>
+		</t:response>
+	</t:test>
+
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+				<query>attachment:"text/x-java"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match=".*RE: deep equals implementation?.*"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+    
+</t:tests>
+

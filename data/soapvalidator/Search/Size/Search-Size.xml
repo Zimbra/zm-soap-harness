@@ -362,34 +362,6 @@
 </t:test_case>
 
 
-<!-- bug 2827 - GB no longer supported -->
-<t:test_case testcaseid="size_SearchRequest7" type="deprecated" bugids="2827, 4987">
-    <t:objective> Verify that a search for size larger than 1GB returns the correct email (for type message/conversation) </t:objective>
-
-    <t:test>
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> larger:1gb </query>
-            </SearchRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
-        </t:response>
-    </t:test>
-
-    <t:test>
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> larger:1gb </query>
-            </SearchRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
 
 <t:test_case testcaseid="size_SearchRequest8" type="functional" bugids="2696">
     <t:objective> Verify that a search for smaller than 0 (bytes/KB/MB/GB) doesnot return any mail </t:objective>

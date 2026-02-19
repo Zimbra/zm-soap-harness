@@ -878,59 +878,6 @@
 
 </t:test_case>
 
-<!-- Here the request fired has cond as 'description' bug entered and correct attr used -->
-<t:test_case testcaseid="resource_search12" type="deprecated" bugids="7842" >
-    <t:objective>Search by zimbraNotes. </t:objective>
-
-    <t:test>
-        <t:request>
-			<SearchCalendarResourcesRequest xmlns="urn:zimbraAccount" attrs="zimbraNotes" offset="0" limit="50" applycos="1">
-				<searchFilter>
-					<conds>
-						<cond attr="zimbraNotes" op="has" value="${testnotes}"/>
-					</conds>
-				</searchFilter>
-			</SearchCalendarResourcesRequest>
-		</t:request>
-        <t:response>
-	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource/acct:a[@n='zimbraNotes']" match="${testnotes}"/>
-        </t:response>
-    </t:test>
-
-    <t:test>
-        <t:request>
-			<SearchCalendarResourcesRequest xmlns="urn:zimbraAccount" attrs="zimbraNotes" offset="0" limit="25" applycos="1">
-				<searchFilter>
-					<conds>
-						<cond attr="zimbraCalResType" op="eq" value="${Resource.location}"/>
-						<cond attr="zimbraNotes" op="has" value="${testnotes}"/>
-					</conds>
-				</searchFilter>
-			</SearchCalendarResourcesRequest>
-		</t:request>
-        <t:response>
-	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource/acct:a[@n='zimbraNotes']" match="${testnotes}"/>
-        </t:response>
-    </t:test>
-
-    <t:test>
-        <t:request>
-			<SearchCalendarResourcesRequest xmlns="urn:zimbraAccount" attrs="zimbraNotes" offset="0" limit="25" applycos="1">
-				<searchFilter>
-					<conds>
-						<cond attr="zimbraCalResType" op="eq" value="${Resource.equipment}"/>
-						<cond attr="zimbraNotes" op="has" value="${testnotes}"/>
-					</conds>
-				</searchFilter>
-			</SearchCalendarResourcesRequest>
-		</t:request>
-        <t:response>
-	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource/acct:a[@n='zimbraNotes']" match="${testnotes}"/>
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
 
 <t:test_case testcaseid="resource_search13" type="functional" >
     <t:objective>Search by Site</t:objective>

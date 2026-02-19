@@ -1,0 +1,108 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="AD.zimbraAuthLdapURL" value="ldap://${AD.url}:${AD.port}/"/>
+<t:property name="AD.bindDN" value="%u@${AD.domain}"/>
+<t:property name="AD.bindDN1" value="${AD.userName}@${AD.domain}"/>
+<t:property name="zimbraAuthMech.ad" value="ad"/>
+
+<t:property name="AD.zimbraGalLdapFilter" value="ad"/>
+<t:property name="AD.searchQuery.basic" value="${AD.account01.user}"/>
+<t:property name="AD.zimbraGalLdapURL" value="ldap://${AD.url}:${AD.port}/"/> 
+
+
+<t:test_case testcaseid="CheckHostnameResolveRequest_01" type="sanity" >
+    <t:objective>Sanity test for CheckHostnameResolveRequest </t:objective>    
+    
+     <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CheckHostnameResolveRequest xmlns="urn:zimbraAdmin">
+                <hostname>${LOCALHOST}</hostname>    
+            </CheckHostnameResolveRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckHostnameResolveResponse/admin:code" match="check.OK" />
+        </t:response>
+    </t:test>
+ 
+</t:test_case>
+
+
+<t:test_case testcaseid="CheckAuthConfigRequest_01" type="sanity" >
+    <t:objective>Sanity test for CheckAuthConfigRequest  for AD server</t:objective>    
+    
+     <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+				<password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.OK$"/>
+        </t:response>
+    </t:test>
+ 
+</t:test_case>
+
+<t:test_case testcaseid="CheckGalConfigRequest_01" type="sanity" >
+    <t:objective>Sanity test for CheckGalConfigRequest for AD server</t:objective>    
+    
+     <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+                <a n='zimbraGalMode'>ldap</a>
+                <a n='zimbraGalLdapURL'>${AD.zimbraGalLdapURL}</a>
+                <a n='zimbraGalLdapSearchBase'>${AD.LDAPSearchBase}</a>
+                <a n='zimbraGalLdapFilter'>${AD.zimbraGalLdapFilter}</a>
+                <a n='zimbraGalLdapBindDn'>${AD.bindDN1}</a>
+                <a n='zimbraGalLdapBindPassword'>${AD.password}</a> 
+                <query limit="2">${AD.searchQuery.basic}</query> 
+            </CheckGalConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CheckGalConfigResponse/admin:code" match="check.OK" />
+        </t:response>
+    </t:test>
+ 
+</t:test_case>
+
+</t:tests>

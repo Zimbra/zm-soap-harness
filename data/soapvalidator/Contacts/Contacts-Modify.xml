@@ -552,59 +552,6 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "ModifyContactRequest4" bugids="2532" type="deprecated">
-    <t:objective>Modify a contact: verify functioning of force attribute = 0/1 </t:objective>
-    <t:steps>1. Create a new contact with email address A
-             2. Modify the contact with force = 0
-             3. Modify the contact with force = 1
-    </t:steps>
-
-    <t:test id = "modifycontactrequest4a">
-        <t:request>
-            <CreateContactRequest xmlns = "urn:zimbraMail">
-                <cn>
-                    <a n = "firstName">First${TIME}${COUNTER}</a>
-                    <a n = "lastName">Last${TIME}${COUNTER}</a>
-                    <a n = "email">mail${TIME}${COUNTER}@example.com</a>
-                </cn>
-            </CreateContactRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//mail:CreateContactResponse/mail:cn">
-            <t:select attr = "id" set="contact5a.id"/>
-            </t:select>
-        </t:response>
-    </t:test>
-
-    <t:test id = "modifycontactrequest4b" depends = "modifycontactrequest4a">
-        <t:request>
-            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "0">
-                <cn id = "${contact5a.id}" md = "${TIME}">
-                    <a n = "email">NewMail${TIME}${COUNTER}@persistent.co.in</a>
-                </cn>
-            </ModifyContactRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//zimbra:Code" match="mail.MODIFY_CONFLICT"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "modifycontactrequest4c" depends = "modifycontactrequest4a">
-        <t:request>
-            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
-                <cn id = "${contact5a.id}" md = "${TIME}">
-                    <a n = "email">NewMail${TIME}${COUNTER}@persistent.co.in</a>
-                </cn>
-            </ModifyContactRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
-
 <t:test_case testcaseid = "ModifyContactRequest5" type="regression">
     <t:objective> Modify a contact and delete all the info of contact </t:objective>
 

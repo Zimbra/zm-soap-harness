@@ -1,0 +1,168 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    
+<t:property name="account.name1" value="backup-restore1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="folder.custom" value="/tmp/bug13456/backup${TIME}.${COUNTER}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup01_bug13456" type="always">
+    <t:objective>login as the admin</t:objective>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${folder.custom}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${folder.custom}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.name1}</name>
+                <password>${defaultpassword.value}</password>
+           </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="acct.server1"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id1"/>
+        </t:response>
+    </t:test>  
+
+   
+   </t:test_case>
+
+   
+<t:test_case testcaseid="BackupRestore01" type="functional" areas="backup" bugids="13456">
+    <t:objective> Verify Admin Restore:  restore member-of distribution list info </t:objective>
+    <t:steps> 1. Create few DLs and add one account in it.
+              2. Take full backup of that account
+              3. Delete that account
+			  4. Restore that account
+			  5. Verify account is still member of DLs
+    </t:steps>
+	
+	<t:property name="server.zimbraAdmin" value="${acct.server1}"/>    
+
+	<t:test_loop count="5">
+    <t:test>
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>DL${COUNTER}${TIME}@${defaultdomain.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id" />
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list1.name" />
+        </t:response>
+    </t:test>
+    
+           
+	<t:test>
+		<t:request>
+			<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+				<id>${list1.id}</id>
+				<dlm>${account.name1}</dlm>
+			</AddDistributionListMemberRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AddDistributionListMemberResponse" />
+		</t:response>               
+	</t:test>    
+      
+    </t:test_loop>    
+
+	<t:property name="server.zimbraAdmin" value="${acct.server1}"/>	
+
+    <t:test>
+           <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" target="${folder.custom}" sync="1">
+                    <account name="${account.name1}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="label.id1"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account.id1}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAdmin" value="${acct.server1}"/>
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" target="${folder.custom}" label="${label.id1}" method="mb">
+                    <account name="${account.name1}"/>
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account.id1}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1.name}"/>        
+		</t:response>
+    </t:test>
+
+</t:test_case>
+	
+
+</t:tests>
+

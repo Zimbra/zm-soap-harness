@@ -1,0 +1,538 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="ldap.zimbraAuthMech" value="ldap"/>
+<t:property name="ldap.zimbraAuthLdapURL" value="ldap://${LDAP.url}:${LDAP.port}/"/>
+<t:property name="ldap.admin.name" value="${LDAP.bindDN}"/>
+<t:property name="ldap.admin.password" value="${LDAP.bindPassword}"/>
+
+
+<t:property name="zimbraPassword.value" value="zimbra123"/>
+
+<t:property name="domain1.name" value="${COUNTER}.${TIME}.com"/>
+<t:property name="account1.user" value="${LDAP.account01.user}"/>
+<t:property name="account1.name" value="${account1.user}@${domain1.name}"/>
+<t:property name="account2.user" value="${LDAP.account02.user}"/>
+<t:property name="account2.name" value="${account2.user}@${domain1.name}"/>
+
+<t:property name="domain2.name" value="${COUNTER}.${TIME}.com"/>
+<t:property name="account3.user" value="${LDAP.account01.user}"/>
+<t:property name="account3.name" value="${account3.user}@${domain2.name}"/>
+<t:property name="account4.user" value="${LDAP.account02.user}"/>
+<t:property name="account4.name" value="${account4.user}@${domain2.name}"/>
+
+<t:property name="domain3.name" value="${COUNTER}.${TIME}.com"/>
+<t:property name="account5.user" value="${LDAP.account01.user}"/>
+<t:property name="account5.name" value="${account5.user}@${domain3.name}"/>
+
+<t:property name="domain6.name" value="${COUNTER}.${TIME}.com"/>
+<t:property name="account6.user" value="${AD.account01.user}"/>
+<t:property name="account6.name" value="${account6.user}@${domain6.name}"/>
+<t:property name="account6.alias.user" value="alias${TIME}${COUNTER}"/>
+<t:property name="account6.alias" value="${account6.alias.user}@${domain6.name}"/>
+
+
+
+<t:test_case testcaseid="ExternalLDAPAuth_AccountSetup" type="always" >
+    <t:objective>basic system check and setup</t:objective>
+    <t:steps>
+    	1. Create domain1, which external authenticates against LDAP
+    	2. Create the two default accounts on domain1
+    	3. Create domain2, which external authenticates against LDAP and falls back to local
+    	4. Create the two default accounts on domain2
+    	3. Create domain3, which external authenticates against LDAP and falls back to local = false
+    	4. Create on account on domain3
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+
+
+	<t:test required="true" >
+        <t:request>
+			<CreateDomainRequest xmlns="urn:zimbraAdmin">
+				<name >${domain1.name}</name>
+				<a n="zimbraNotes"/>
+				<a n="description"/>
+                <a n="zimbraAuthMech">${ldap.zimbraAuthMech}</a>
+                <a n="zimbraAuthLdapURL">${ldap.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapSearchBindDn">${LDAP.bindDN}</a>
+                <a n="zimbraAuthLdapSearchBindPassword">${LDAP.bindPassword}</a>
+				<a n="zimbraAuthLdapSearchFilter">${LDAP.LDAPfilter}</a>                
+                <a n="zimbraAuthLdapSearchBase">${LDAP.LDAPsearchBase}</a>
+			</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${zimbraPassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:test required="true" >
+        <t:request>
+			<CreateDomainRequest xmlns="urn:zimbraAdmin">
+				<name >${domain2.name}</name>
+				<a n="zimbraNotes"/>
+				<a n="description"/>
+                <a n="zimbraAuthMech">${ldap.zimbraAuthMech}</a>
+                <a n="zimbraAuthLdapURL">${ldap.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapSearchBindDn">${LDAP.bindDN}</a>
+                <a n="zimbraAuthLdapSearchBindPassword">${LDAP.bindPassword}</a>
+				<a n="zimbraAuthLdapSearchFilter">${LDAP.LDAPfilter}</a>                
+                <a n="zimbraAuthLdapSearchBase">${LDAP.LDAPsearchBase}</a>
+				<a n="zimbraAuthFallbackToLocal">${globals.true}</a>
+			</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${zimbraPassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:test required="true" >
+        <t:request>
+			<CreateDomainRequest xmlns="urn:zimbraAdmin">
+				<name >${domain3.name}</name>
+				<a n="zimbraNotes"/>
+				<a n="description"/>
+                <a n="zimbraAuthMech">${ldap.zimbraAuthMech}</a>
+                <a n="zimbraAuthLdapURL">${ldap.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapSearchBindDn">${LDAP.bindDN}</a>
+                <a n="zimbraAuthLdapSearchBindPassword">${LDAP.bindPassword}</a>
+				<a n="zimbraAuthLdapSearchFilter">${LDAP.LDAPfilter}</a>                
+                <a n="zimbraAuthLdapSearchBase">${LDAP.LDAPsearchBase}</a>
+				<a n="zimbraAuthFallbackToLocal">${globals.false}</a>
+			</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain3.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${zimbraPassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:test required="true" >
+        <t:request>
+			<CreateDomainRequest xmlns="urn:zimbraAdmin">
+				<name >${domain6.name}</name>
+				<a n="zimbraNotes"/>
+				<a n="description"/>
+                <a n="zimbraAuthMech">${ldap.zimbraAuthMech}</a>
+                <a n="zimbraAuthLdapURL">${ldap.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapSearchBindDn">${LDAP.bindDN}</a>
+                <a n="zimbraAuthLdapSearchBindPassword">${LDAP.bindPassword}</a>
+				<a n="zimbraAuthLdapSearchFilter">${LDAP.LDAPfilter}</a>                
+                <a n="zimbraAuthLdapSearchBase">${LDAP.LDAPsearchBase}</a>
+			</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain6.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account6.name}</name>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${account6.id}</id>
+                <alias>${account6.alias}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_01" type="bhr" >
+    <t:objective> Authenticate as an account with external LDAP authentication </t:objective>
+    <t:steps>
+    	1. Create an account (without a password) on a domain with external LDAP authentication.
+    	2. Set up account auth query to the hardcoded account on the LDAP
+    	3. Auth using the new account using the LDAP password. 
+    </t:steps>
+  
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${LDAP.account01.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+    
+
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_02" type="bhr" >
+    <t:objective>External LDAP Authentication: Verify an invalid password is denied.</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>invalidPassword</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+    
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_03" type="bhr" >
+    <t:objective>External LDAP Authentication (zimbraAuthMech=ldap): Verify the internal Zimbra password is denied</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${zimbraPassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+    
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_04" type="bhr" >
+    <t:objective>External LDAP Authentication: Verify the external LDAP password is still valid</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${LDAP.account02.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+    
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_05" type="bhr" >
+    <t:objective>External LDAP Authentication: Verify an invalid password is denied.</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>invalidPassword</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+    
+
+    
+
+
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_10" type="bhr" >
+    <t:objective> Authenticate as an account with External LDAP Authentication (fallback to local = TRUE)</t:objective>
+    <t:steps>
+    	1. Create an account (without a password) on a domain with external LDAP authentication.
+    	2. Set up account auth query to the hardcoded account on the LDAP
+    	3. Auth using the new account using the LDAP password. 
+    </t:steps>
+  
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${LDAP.account01.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+    
+
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_11" type="bhr" >
+    <t:objective>External LDAP Authentication: Verify an invalid password is denied (fallback to local = TRUE)</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>invalidPassword</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+    
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_12" type="bhr" >
+    <t:objective>External LDAP Authentication: Verify the internal Zimbra password is accepted (fallback to local = TRUE)</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${zimbraPassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+    
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_13" type="bhr" >
+    <t:objective>External LDAP Authentication: Verify the external LDAP password is still valid (fallback to local = TRUE)</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${LDAP.account02.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+    
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_14" type="bhr" >
+    <t:objective>External LDAP Authentication: Verify an invalid password is denied (fallback to local = TRUE)</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>invalidPassword</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+
+
+
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_21" type="functional" >
+    <t:objective>External LDAP Authentication (zimbraAuthMech=ldap, fallback to local = false): Verify the internal Zimbra password is denied</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account5.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account5.name}</account>
+				<password>${zimbraPassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+    
+
+<t:test_case testcaseid="ExternalLDAPAuth_AuthBasic_22" type="bhr" bugids="25641">
+    <t:objective>External LDAP Authentication: Verify the internal Zimbra account is not shown in AUTH_FAILED</t:objective>
+  
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account6.user}</account>
+				<password>wrong password</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^account.AUTH_FAILED$"/>
+			<t:select path="//zimbra:Trace" match="(?s).*${domain6.name}.*" emptyset="1"/>
+			<t:select path="//soap:Text" match="(?s).*${domain6.name}.*" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account6.alias}</account>
+				<password>wrong password</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^account.AUTH_FAILED$"/>
+			<t:select path="//zimbra:Trace" match="(?s).*${account6.user}.*" emptyset="1"/>
+			<t:select path="//soap:Text" match="(?s).*${account6.user}.*" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account6.alias.user}</account>
+				<password>wrong password</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^account.AUTH_FAILED$"/>
+			<t:select path="//zimbra:Trace" match="(?s).*${account6.user}.*" emptyset="1"/>
+			<t:select path="//soap:Text" match="(?s).*${account6.user}.*" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+	
+</t:test_case>
+    
+
+</t:tests>
+

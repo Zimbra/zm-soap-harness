@@ -1,0 +1,629 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <t:property name="test_account1.name" value="user1@zcs-105.com" />
+    <t:property name="test_account2.name" value="user2@zcs-105.com" />
+    <t:property name="uploadCert.name1" value="${testMailRaw.root}/ZCS-105/user1_digital.p12" />
+    <t:property name="uploadCert.name2" value="${testMailRaw.root}/ZCS-105/user2_digital.p12" />
+    <t:property name="uploadPubCert.name2" value="${testMailRaw.root}/ZCS-105/user2.cer" />
+    <t:property name="domain_name" value="zcs-105.com" />
+    <t:property name="compose.subject1" value="Subject test1" />
+    <t:property name="compose.subject2" value="Subject test2" />
+    <t:property name="compose.content" value="Content in the message is contents..." />
+    <t:property name="password_for_certs" value="zimbra" />
+    <t:property name="account1.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+
+    <t:test_case testcaseid="zcs105_CreateAndSetupAccounts" type="always" bugids="zcs-105">
+        <t:objective>
+            1. Create domain
+            2. Create account 1
+            3. Create account 2
+            4. Add certificate for account 1
+            5. Create contact in account 1 for account 2 with public cert.
+        </t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmimeOCSPEnabled">FALSE</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+    
+    <!-- ADDED WAIT FOR CONFIG PROPAGATION -->
+    <t:delay sec="30"/>
+
+            
+        <!-- create domain -->
+        <t:test required="true">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain_name}</name>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse//admin:domain" attr="id" set="domain1.id" />
+            </t:response>
+        </t:test>
+        
+        <!-- create account 1 -->
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraFeatureSMIMEEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server" />
+            </t:response>
+        </t:test>
+        
+        <!-- create account 2 -->
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraFeatureSMIMEEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server" />
+            </t:response>
+        </t:test>
+        
+        <!-- setup certificate for account 1 -->
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadCert.name1}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="StatusCode" match="200" />
+                <t:select attr="id" set="uploadFileId_1" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+        
+        <t:test>
+            <t:request>
+                <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+                    <upload id="${uploadFileId_1}"></upload>
+                    <password>${password_for_certs}</password>
+                </SaveSmimeCertificateRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pubCertId" set="pubCertId" />
+                <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pvtKeyId" set="pvtKeyId" />
+                <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:emailAddress" match="${test_account1.name}" />
+            </t:response>
+        </t:test>
+        
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>            
+        </t:test>
+        
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadCert.name2}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="StatusCode" match="200" />
+                <t:select attr="id" set="uploadFileId_2" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+        
+        <t:test>
+            <t:request>
+                <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+                    <upload id="${uploadFileId_2}"></upload>
+                    <password>${password_for_certs}</password>
+                </SaveSmimeCertificateRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pubCertId" set="pubCertId2" />
+                <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pvtKeyId" set="pvtKeyId2" />
+                <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:emailAddress" match="${test_account2.name}" />
+            </t:response>
+        </t:test>
+        
+        <t:delay sec="30"/>
+
+                
+        <!-- create contact with userCertificate in account 1 -->
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadPubCert.name2}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="StatusCode" match="200" />
+                <t:select attr="id" set="aid.pub.cert" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+        
+        <t:test id="create_contact_request">
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">test_2</a>
+                        <a n="lastName">zcs105_2</a>
+                        <a n="email">${test_account2.name}</a>
+                        <a n="userCertificate" aid="${aid.pub.cert}" />
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='userCertificate']" />
+                <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="zcs105_SendSignEncrypt" type="bhr" bugids="zcs-105">
+        <t:objective>
+            1. Send encrypted msg from account1 to account2
+            2. GetConversation, SearchConversation and GetMessage on account 2 and verify encryption is true and signed is true. 
+        </t:objective>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        
+        <t:test>
+            <t:request>
+                <SendSecureMsgRequest sign="true" encrypt="true" xmlns="urn:zimbraMail">
+                    <m>
+                        <e t="t" a='${test_account2.name}' />
+                        <su>${compose.subject1}</su>
+                        <mp ct="text/plain">
+                            <content> ${compose.content} </content>
+                        </mp>
+                    </m>
+                </SendSecureMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendSecureMsgResponse" />
+            </t:response>
+        </t:test>
+
+<t:delay sec="30"/>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <!-- RETRY LOOP FOR SEARCH 1 -->
+        <t:test id="search_retry_1">
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>subject:${compose.subject1}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m[1]//mail:su" match="${compose.subject1}"/>
+                <t:select path="//mail:SearchResponse/mail:m[1]" attr="cid" set="conv.id2"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetConvRequest xmlns="urn:zimbraMail">
+                    <c id="${conv.id2}" fetch="1" max="10" />
+                </GetConvRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetConvResponse/mail:c" attr="id" match="${conv.id2}"/>
+                <t:select path="//mail:GetConvResponse/mail:c//mail:su" match="${compose.subject1}"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]" attr="isSigned" match="true"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]" attr="isEncrypted" match="true"/>
+            </t:response>
+        </t:test>
+        
+        <t:test>
+            <t:request>
+                <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv.id2}" sortBy="dateDesc" offset="0" limit="25" fetch="u">
+                    <query>in:inbox</query>
+                </SearchConvRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="isSigned" match="true"/>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="isEncrypted" match="true"/>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="decryptionErrorCode" emptyset="1"/>
+                </t:response>
+        </t:test>
+        
+        <!-- RETRY LOOP FOR SEARCH 2 -->
+        <t:test id="search_retry_2">
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>subject:${compose.subject1}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${compose.subject1}" />
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetMsgRequest xmlns="urn:zimbraMail">
+                    <m id="${msg1.id}" />
+                </GetMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetMsgResponse/mail:m" attr="isSigned" match="true" />
+                <t:select path="//mail:GetMsgResponse/mail:m" attr="isEncrypted" match="true" />
+                <t:select path="//mail:GetMsgResponse/mail:m" attr="decryptionErrorCode" emptyset="1" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="zcs105_SendSignOnly" type="bhr" bugids="zcs-105">
+        <t:objective>
+            1. Send signed only msg from account1 to account2
+            2. GetConversation, SearchConversation and GetMessage on account 2 and verify encryption is false and signed is true. 
+        </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendSecureMsgRequest sign="true" xmlns="urn:zimbraMail">
+                    <m>
+                        <e t="t" a='${test_account2.name}' />
+                        <su>${compose.subject2}</su>
+                        <mp ct="text/plain">
+                            <content> ${compose.content} </content>
+                        </mp>
+                    </m>
+                </SendSecureMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendSecureMsgResponse" />
+            </t:response>
+        </t:test>
+
+<t:delay sec="30"/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <!-- RETRY LOOP FOR SEARCH 3 -->
+        <t:test id="search_retry_3">
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>subject:${compose.subject2}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m[1]//mail:su" match="${compose.subject2}"/>
+                <t:select path="//mail:SearchResponse/mail:m[1]" attr="cid" set="conv.id2"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetConvRequest xmlns="urn:zimbraMail">
+                    <c id="${conv.id2}" fetch="1" max="10" />
+                </GetConvRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetConvResponse/mail:c" attr="id" match="${conv.id2}"/>
+                <t:select path="//mail:GetConvResponse/mail:c//mail:su" match="${compose.subject2}"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]//mail:mp" attr="ct" match="multipart/signed"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]" attr="isSigned" match="true"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]/acct:certificate//acct:issuedTo//acct:emailAddress" match="${test_account1.name}" />
+                </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv.id2}" sortBy="dateDesc" offset="0" limit="25" fetch="u">
+                    <query>in:inbox</query>
+                </SearchConvRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]//mail:mp" attr="ct" match="multipart/signed"/>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="isSigned" match="true"/>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]/acct:certificate//acct:issuedTo//acct:emailAddress" match="${test_account1.name}" />
+                <t:select path="//mail:SearchConvResponse/mail:m[1]/acct:certificate//acct:errorCode" emptyset="1" />
+                <t:select path="//mail:SearchConvResponse/mail:m[1]/acct:certificate//acct:errorDetail" emptyset="1" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="zcs105_Search_InShared_Folder" type="bhr" bugids="zcs-105">
+        <t:objective> 
+        1. user2 shares inbox with user1. 
+        2. Verify encrypted  messages cannot be read/encrypted by user1 in the shared folder
+        3. Verify signed message can be read by user1 in the shared folder
+        </t:objective>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFolderRequest xmlns="urn:zimbraMail"/>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account2.inbox.id"/>
+            </t:response>
+        </t:test>
+
+        <t:test >
+            <t:request>
+                <FolderActionRequest xmlns="urn:zimbraMail">
+                    <action op="grant" id="${account2.inbox.id}">
+                        <grant gt="usr" d="${test_account1.name}" perm="r"/>
+                    </action>
+                </FolderActionRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:FolderActionResponse/mail:action"/>
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFolderRequest xmlns="urn:zimbraMail"/>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account1.inbox.id"/>
+            </t:response>
+        </t:test>
+
+        <t:test >
+            <t:request>
+                <CreateMountpointRequest xmlns="urn:zimbraMail">
+                    <link l="${account1.inbox.id}" name="${account1.folder.shared.name}" zid="${test_account2.id}" rid="${account2.inbox.id}" view="message"/>
+                </CreateMountpointRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account1.folder.shared.id"/>
+            </t:response>
+        </t:test>
+
+        <t:test >
+            <t:request>
+                <GetFolderRequest xmlns="urn:zimbraMail">
+                    <folder l="${account1.folder.shared.id}"/>
+                </GetFolderRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetFolderResponse"/>
+            </t:response>
+        </t:test>
+
+        <!-- RETRY LOOP FOR SEARCH 4 -->
+        <t:test id="search_retry_4">
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:"${globals.inbox}/${account1.folder.shared.name}" ${compose.subject1}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su"
+                    match="${compose.subject1}" />
+                <t:select path="//mail:SearchResponse/mail:m" attr="cid" set="remote.conv.id"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetConvRequest xmlns="urn:zimbraMail">
+                    <c id="${remote.conv.id}" fetch="1" max="10" />
+                </GetConvRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetConvResponse/mail:c" attr="id" match="${remote.conv.id}"/>
+                <t:select path="//mail:GetConvResponse/mail:c//mail:su" match="${compose.subject1}"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]//mail:mp" attr="ct" match="application/pkcs7-mime"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]" attr="isSigned" match="false"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]" attr="isEncrypted" match="true"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]/acct:certificate//acct:issuedTo//acct:emailAddress" emptyset="1" />
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]/acct:certificate//acct:errorCode" emptyset="1" />
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]/acct:certificate//acct:errorDetail" emptyset="1" />
+                </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SearchConvRequest xmlns="urn:zimbraMail" cid="${remote.conv.id}" sortBy="dateDesc" offset="0" limit="25" fetch="u">
+                    <query>in:"${globals.inbox}/${account1.folder.shared.name}" ${compose.subject1}</query>
+                </SearchConvRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]//mail:mp" attr="ct" match="application/pkcs7-mime"/>
+                <t:select path="//mail:SearchConvResponse/mail:m/mail:mp" attr="filename" match="smime.p7m"/>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="isSigned" match="false"/>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="isEncrypted" match="true"/>
+                <t:select path="//mail:SearchConvResponse/mail:m[1]/acct:certificate//acct:issuedTo//acct:emailAddress" emptyset="1" /> 
+                <t:select path="//mail:SearchConvResponse/mail:m[1]/acct:certificate//acct:errorCode" emptyset="1" />
+                <t:select path="//mail:SearchConvResponse/mail:m[1]/acct:certificate//acct:errorDetail" emptyset="1" />
+            </t:response>
+        </t:test>
+        
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:"${globals.inbox}/${account1.folder.shared.name}" ${compose.subject2}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su"
+                    match="${compose.subject2}" />
+                <t:select path="//mail:SearchResponse/mail:m" attr="cid" set="remote.conv.id2"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetConvRequest xmlns="urn:zimbraMail">
+                    <c id="${remote.conv.id2}" fetch="1" max="10" />
+                </GetConvRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetConvResponse/mail:c" attr="id" match="${remote.conv.id2}"/>
+                <t:select path="//mail:GetConvResponse/mail:c//mail:su" match="${compose.subject2}"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]//mail:mp" attr="ct" match="multipart/signed"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]" attr="isSigned" match="true"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]" attr="isEncrypted" match="false"/>
+                <t:select path="//mail:GetConvResponse/mail:c/mail:m[1]/acct:certificate//acct:issuedTo//acct:emailAddress" match="${test_account1.name}" />
+                </t:response>
+        </t:test>                
+    </t:test_case>
+
+    <t:finally>
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test required="false">
+            <t:request>
+                <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                </DeleteAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteAccountResponse" />
+            </t:response>
+        </t:test>
+
+        <t:test required="false">
+            <t:request>
+                <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account2.id}</id>
+                </DeleteAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteAccountResponse" />
+            </t:response>
+        </t:test>
+        
+        <t:test>
+            <t:request>
+                <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                    <id>${domain1.id}</id>
+                </DeleteDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteDomainResponse" />
+            </t:response>
+        </t:test>
+    </t:finally> 
+
+</t:tests>

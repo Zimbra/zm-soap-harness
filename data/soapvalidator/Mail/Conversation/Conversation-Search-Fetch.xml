@@ -699,23 +699,6 @@
 
 </t:test_case>
 
-<!-- fetch=0 and read=0 have the same functionality as not specifying the attribute -->
-<t:test_case testcaseid="SearchConvRequest_fetch5" type="deprecated" bugids="4926">
-    <t:objective>Verify that a search for a conversation with fetch=0 returns INVALID_REQUEST - read=0 is invalid</t:objective>
-
-    <t:test>
-        <t:request>
-            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="0">
-                <query>subject:(${message.subject1})</query>
-            </SearchConvRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
 
 <t:test_case testcaseid="SearchConvRequest_read6" type="regression" >
     <t:objective>Search for a conversation with invalid values(blank,text,integer,long positive/negative integer,spaces,decimal number,special characters).</t:objective>
@@ -822,23 +805,6 @@
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="${read_spchar}">
-                <query>subject:(${message.subject1})</query>
-            </SearchConvRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
-<!-- fetch=0 and read=0 have the same functionality as not specifying the attribute -->
-<t:test_case testcaseid="SearchConvRequest_read7" type="deprecated" bugids="4926">
-    <t:objective>Verify that a search for a conversation with fetch=1 and read=0 returns INVALID_REQUEST - read=0 is invalid</t:objective>
-
-    <t:test>
-        <t:request>
-            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="0">
                 <query>subject:(${message.subject1})</query>
             </SearchConvRequest>
         </t:request>

@@ -1,0 +1,1245 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="volume_spchar" value="!@^*()_+"/>
+<t:property name="volume_alpha" value="abcd"/>
+<t:property name="volume_number" value="1234"/>
+<t:property name="volume_negative" value="-2"/>
+<t:property name="volume_zero" value="0"/>
+<t:property name="volume_blank" value=""/>
+
+<t:property name="tempdir" value="/tmp/volumes"/>
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "mkdir -p ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "chmod 777 ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+<t:property name="basedir" value="${tempdir}/volumeRoot${COUNTER}${TIME}"/>
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "mkdir -p ${basedir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "chmod 777 ${basedir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+<t:property name="type" value="1"/>
+
+<t:property name="bits_starting-with-zero" value="0012"/>
+<t:property name="mgbits_default" value="8"/>
+<t:property name="mbits_default" value="12"/>
+<t:property name="fgbits_default" value="8"/>
+<t:property name="fbits_default" value="12"/>
+<t:property name="compressBlobs_default" value="0"/>
+<t:property name="compressionThreshold_default" value="4096"/>
+
+
+<t:property name="name_long" value="Volume.Volume${COUNTER}Volume${COUNTER}Volume${COUNTER}Volume${COUNTER}Volume${COUNTER}Volume${COUNTER}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup_block_extension01" type="always">
+    <t:objective>Create test account and modify settings.</t:objective>
+ 
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest01" type="bhr">
+    <t:objective> Create a new volume </t:objective>
+     
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type}" name= "${name}" rootpath= "${rootpath}" mgbits= "${mgbits_default}" mbits= "${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest02" type="bhr">
+    <t:objective> Create a volume with duplicate name </t:objective>
+     
+	<t:property name="rootpath1" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:property name="rootpath2" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath1}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath1}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath2}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath2}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type}" name= "${name}" rootpath= "${rootpath1}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type}" name= "${name}" rootpath= "${rootpath2}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^volume.ALREADY_EXISTS$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest03" type="negative">
+    <t:objective> Try to create a new volume, but with incomplete request (missing attributes) </t:objective>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume name= "${name}" rootpath="${rootpath}" mgbits="${mgbits_default}" fgbits="${fgbits_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+        </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest04" type="functional" bugids="3855">
+    <t:objective> Create a new volume with type as (alpha/spchar/negative/zero/blank) </t:objective>
+     
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${volume_alpha}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${volume_spchar}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${volume_negative}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="volume.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${volume_zero}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="volume.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${volume_blank}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest05" type="functional" bugids="3908">
+    <t:objective> Create a new volume with name as (long/spchar/number/blank) </t:objective>
+     
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name_long}${TIME}${COUNTER}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${volume_spchar}${TIME}${COUNTER}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+   <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${volume_number}${TIME}${COUNTER}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${volume_blank}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="volume.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest06" type="functional" bugids="3908">
+    <t:objective> Create a new volume with rootpath as (spchar/number/negative/blank) </t:objective>
+     
+    
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${volume_spchar}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^volume.NOT_ABSOLUTE_PATH$"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/${volume_number}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${volume_negative}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^volume.NOT_ABSOLUTE_PATH$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${volume_blank}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="volume.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest07" type="functional" bugids="3855">
+    <t:objective> Create a new volume with mgbits as (alpha/spchar/negative/zero/starting-with-zero/blank) </t:objective>
+     
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${volume_alpha}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${volume_spchar}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+ 	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${volume_negative}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${volume_zero}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${bits_starting-with-zero}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${volume_blank}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest08" type="functional" bugids="3855">
+    <t:objective> Create a new volume with mbits as (alpha/spchar/negative/zero/starting-with-zero/blank) </t:objective>
+     
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${volume_alpha}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${volume_spchar}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${volume_negative}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${volume_zero}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${bits_starting-with-zero}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${volume_blank}" fgbits="${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest09" type="functional" bugids="3855">
+    <t:objective> Create a new volume with fgbits as (alpha/spchar/negative/zero/starting-with-zero/blank) </t:objective>
+     
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${volume_alpha}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${volume_spchar}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${volume_negative}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${volume_zero}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${bits_starting-with-zero}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${volume_blank}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateVolumeRequest10" type="functional" bugids="3855">
+    <t:objective> Create a new volume with fbits as (alpha/spchar/negative/zero/starting-with-zero/blank) </t:objective>
+     
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${volume_alpha}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${volume_spchar}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${volume_negative}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${volume_zero}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${bits_starting-with-zero}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="${type}" name="${name}" rootpath= "${rootpath}" mgbits="${mgbits_default}" mbits="${mbits_default}" fgbits="${fgbits_default}" fbits="${volume_blank}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>
+
+

@@ -1,0 +1,93 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.name}" urlencode="true"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+	  		</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureCalendarEnabled">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_AccountFeatures_GetCalendar_01" type="functional" bugids="38982">
+	<t:objective>Verify calendar folder is not returned when the Calendar feature is disabled</t:objective>
+	<t:steps>
+	1. Create a new account with Calendar feature disabled
+	2. Send PROPFIND for root - verify Calendar folder is not returned
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/Calendar/" depth="1">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x0:displayname/>
+					<x0:resourcetype/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/Calendar/']">
+				<t:select path="//D:resourcetype">
+					<t:select path="//C:calendar" emptyset="1"/>
+				</t:select>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+
+</t:test_case>
+
+
+
+</t:tests>

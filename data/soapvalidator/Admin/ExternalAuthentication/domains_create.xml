@@ -1,0 +1,167 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="ad.admin.name" value="${AD.userName}@${AD.domain}"/>
+<t:property name="ad.admin.password" value="${AD.password}"/>
+
+<t:property name="ad.zimbraAuthMech" value="ad"/>
+<t:property name="ad.zimbraAuthLdapURL" value="ldap://${AD.url}:${AD.port}/"/>
+<t:property name="ad.zimbraAuthLdapBindDn" value="%u@${AD.domain}"/>
+
+<t:property name="ad.zimbraGalMode" value="ldap"/>
+<t:property name="ad.zimbraGalLdapURL" value="${ad.zimbraAuthLdapURL}"/>
+<t:property name="ad.zimbraGalLdapFilter" value="ad"/>
+<t:property name="ad.zimbraGalAutoCompleteLdapFilter" value="adAutoComplete"/>
+<t:property name="ad.zimbraGalLdapSearchBase" value="cn=users,dc=zimbraqa,dc=com"/>
+<t:property name="ad.zimbraGalLdapBindDn" value="%u@${AD.domain}"/>
+<t:property name="ad.zimbraGalLdapBindPassword" value="${AD.password}"/>
+
+<t:property name="ldap.zimbraAuthMech" value="ldap"/>
+<t:property name="ldap.zimbraAuthLdapURL" value="ldap://${LDAP.url}:${LDAP.port}/"/>
+<t:property name="ldap.admin.name" value="${LDAP.bindDN}"/>
+<t:property name="ldap.admin.password" value="${LDAP.bindPassword}"/>
+
+<t:property name="ldap.zimbraGalMode" value="ldap"/>
+<t:property name="ldap.zimbraGalLdapURL" value="${ldap.zimbraAuthLdapURL}"/>
+
+<t:property name="domain1.name" value="${COUNTER}.${TIME}.com"/>
+<t:property name="domain2.name" value="${COUNTER}.${TIME}.com"/>
+<t:property name="domain3.name" value="${COUNTER}.${TIME}.com"/>
+<t:property name="domain4.name" value="${COUNTER}.${TIME}.com"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ExternalAuthentication_CreateDomain_01" type="bhr" >
+    <t:objective> Create a domain with external AD Authentication </t:objective>
+  
+    <t:test >
+        <t:request>
+			<CreateDomainRequest xmlns="urn:zimbraAdmin">
+				<name >${domain1.name}</name>
+				<a n="zimbraNotes"/>
+				<a n="description"/>
+				<a n="zimbraAuthMech">${ad.zimbraAuthMech}</a>
+				<a n="zimbraAuthLdapURL">${ad.zimbraAuthLdapURL}</a>
+				<a n="zimbraAuthLdapBindDn">${ad.admin.name}</a>
+			</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+
+<t:test_case testcaseid="ExternalAuthentication_CreateDomain_02" type="bhr" >
+    <t:objective> Create a domain with external LDAP Authentication </t:objective>
+  
+    <t:test >
+        <t:request>
+			<CreateDomainRequest xmlns="urn:zimbraAdmin">
+				<name >${domain2.name}</name>
+				<a n="zimbraNotes"/>
+				<a n="description"/>
+				<a n="zimbraAuthMech">${ldap.zimbraAuthMech}</a>
+				<a n="zimbraAuthLdapURL">${ldap.zimbraAuthLdapURL}</a>
+				<a n="zimbraAuthLdapSearchFilter">${LDAP.LDAPfilter}</a>
+				<a n="zimbraAuthLdapSearchBase">${LDAP.LDAPsearchBase}</a>
+				<a n="zimbraAuthLdapSearchBindDn">${ldap.admin.name}</a>
+				<a n="zimbraAuthLdapSearchBindPassword">${ldap.admin.password}</a>
+			</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain2.id"/>
+        </t:response>
+    </t:test>
+    
+    
+    
+</t:test_case>
+    
+<t:test_case testcaseid="ExternalAuthentication_CreateDomain_03" type="bhr" >
+    <t:objective> Create a domain with external AD GAL </t:objective>
+  
+    <t:test >
+        <t:request>
+			<CreateDomainRequest xmlns="urn:zimbraAdmin">
+				<name >${domain3.name}</name>
+				<a n="zimbraNotes"/>
+				<a n="description"/>
+				<a n="zimbraGalMode">${ad.zimbraGalMode}</a>
+				<a n="zimbraGalMaxResults">100</a>
+				<a n="zimbraGalLdapURL">${ad.zimbraGalLdapURL}</a>
+				<a n="zimbraGalLdapSearchBase">${ad.zimbraGalLdapSearchBase}</a>
+				<a n="zimbraGalLdapBindDn">${ad.zimbraGalLdapBindDn}</a>
+				<a n="zimbraGalLdapBindPassword">${ad.zimbraGalLdapBindPassword}</a>
+				<a n="zimbraGalLdapFilter">${ad.zimbraGalLdapFilter}</a>
+				<a n="zimbraGalAutoCompleteLdapFilter">${ad.zimbraGalAutoCompleteLdapFilter}</a>
+			</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain2.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="ExternalAuthentication_CreateDomain_04" type="bhr" >
+    <t:objective> Create a domain with external LDAP GAL </t:objective>
+  
+    <t:test >
+        <t:request>
+			<CreateDomainRequest xmlns="urn:zimbraAdmin">
+				<name >${domain4.name}</name>
+				<a n="zimbraNotes"/>
+				<a n="description"/>
+				<a n="zimbraGalMode">${ldap.zimbraGalMode}</a>
+				<a n="zimbraGalMaxResults">100</a>
+				<a n="zimbraGalLdapURL">${ldap.zimbraGalLdapURL}</a>
+				<a n="zimbraGalLdapSearchBase">${LDAP.LDAPsearchBase}</a>
+				<a n="zimbraGalLdapFilter">${LDAP.LDAPfilter}</a>
+				<a n="zimbraGalLdapBindDn">${ldap.admin.name}</a>
+				<a n="zimbraGalLdapBindPassword">${ldap.admin.password}</a>
+			</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain4.id"/>
+        </t:response>
+    </t:test>
+
+    
+</t:test_case>
+    
+    
+
+    
+</t:tests>
+

@@ -1,0 +1,2616 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- Following bug are included as part of this testcase -->
+<!-- zcs-1445:- Fix EWS automation failures and push to stash -->
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:property name="test_account1.username"
+		value="test1${TIME}.${COUNTER}" />		
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />		
+	<t:property name="test_account1.password" value="test123" />
+	
+	<t:property name="test_account2.username"
+		value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+	<t:property name="test_acct.server" value="NOT_DEFINED" />
+	<t:property name="folder1.name" value="folder${TIME}${COUNTER}" />
+	<t:property name="folder2.name" value="folder${TIME}${COUNTER}" />
+	<t:property name="root_folder" value="msgfolderroot" />
+	<t:property name="message.subject" value="subject${TIME}.${COUNTER}" />
+	<t:property name="message.subject1" value="subject1${TIME}.${COUNTER}" />
+	<t:property name="message.subject2" value="subject2${TIME}.${COUNTER}" />
+	<t:property name="message.subject3" value="subject3${TIME}.${COUNTER}" />
+	<t:property name="message.subject4" value="subject4${TIME}.${COUNTER}" />
+	<t:property name="message.subject5" value="subject5${TIME}.${COUNTER}" />
+	<t:property name="message.subject6" value="subject6${TIME}.${COUNTER}" />
+	<t:property name="message.subject7" value="subject7${TIME}.${COUNTER}" />
+	<t:property name="message.subject8" value="subject8${TIME}.${COUNTER}" />
+	<t:property name="message.subject9" value="subject9${TIME}.${COUNTER}" />
+	<t:property name="message.subject10" value="go man" />
+	<t:property name="message.subject11" value="html mail test1" />
+	<t:property name="message.subject12" value="html with attachment test 1" />
+	<t:property name="message.subject13" value="high priority mail" />
+	<t:property name="message.subject14" value="low priority mail" />
+	<t:property name="message.subject15" value="subject15${TIME}.${COUNTER}" />
+	<t:property name="message.subject16" value="subject15${TIME}.${COUNTER}" />
+	<t:property name="message.subject17" value="subject15${TIME}.${COUNTER}" />
+		
+	<t:property name="message.content" value="Message test content" />
+	<t:property name="message.content1" value="Message 1 test content" />
+	<t:property name="message.content2" value="Message 2 test content" />
+	<t:property name="message.content3" value="Message 3 test content" />
+	<t:property name="message.content4" value="Message 4 test content" />
+	<t:property name="message.content5" value="Message 5 test content" />
+	<t:property name="message.content6" value="Message 6 test content" />
+	<t:property name="message.content7" value="Message 7 test content" />
+	<t:property name="message.content8" value="Message 8 test content" />
+	<t:property name="message.content9" value="Message 9 test content" />
+	<t:property name="message.content10" value="Mail with high priority" />
+	<t:property name="message.content11" value="Mail with low priority" />
+	<t:property name="message.content15" value="Message 15 test content" />
+	<t:property name="message.content16" value="Message 16 test content" />
+	<t:property name="message.content17" value="Message 17 test content" />
+	
+	<t:property name="folder.name.ews" value="folder${TIME}${COUNTER}" />
+	<t:property name="sub.folder1.name" value="folder${TIME}${COUNTER}" />
+	<t:property name="sub.folder2.name" value="folder${TIME}${COUNTER}" />
+	<t:property name="sub.folder2.rename" value="folder${TIME}${COUNTER}" />
+	<t:property name="sub.folder2.rename.ZWC" value="folder${TIME}${COUNTER}" />
+	
+	<t:property name="upload.filename" value="${testMailRaw.root}/ews/image1.jpg"/>
+	<t:property name="upload.filename_png" value="${testMailRaw.root}/ews/image2.png"/>
+	<t:property name="upload.filename_bmp" value="${testMailRaw.root}/ews/image3.bmp"/>
+	<t:property name="upload.filename_pdf" value="${testMailRaw.root}/ews/file1.pdf"/>
+	
+	<t:property name="uploadFile1.cid" value="DWT${COUNTER}"/>
+	<t:property name="uploadFile2.cid" value="DWT2${COUNTER}"/>
+	
+	<t:property name="content2" value="&lt;html&gt;&lt;body&gt;&lt;div style=\\'font-family: arial, helvetica, sans-serif; font-size: 12pt; color: #000000\\'&gt;&lt;div&gt;&lt;em&gt;&lt;strong&gt;asdasd&lt;/strong&gt;&lt;/em&gt;&lt;br data-mce-bogus=\\'1\\'&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt; "/>
+
+
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+		
+   
+	<t:test_case testcaseid="SendMailRequest1" type="bhr">
+		<t:objective>Send plain text mail from zwc to ews client. </t:objective>
+		<t:steps>1. Send a plain text mail from zwc to ews client user
+		2. Verify on EWS client the mail received
+		</t:steps>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+			
+			
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject}</su>
+						<mp ct="text/plain">
+							<content>${message.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState01" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail01_id}" ChangeKey="${mail01_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"  contains="${message.content}" />
+			</t:response>
+		</t:test>
+				
+	</t:test_case>
+			
+	<t:test_case testcaseid="SendMailRequest2" type="bhr">
+		<t:objective>Send html text mail from zwc to ews client. </t:objective>
+		<t:steps>1. Send a html text mail from zwc to ews client user
+		2. Verify on EWS client the mail received
+		</t:steps>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>			
+			
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject1}</su>
+						<mp ct="text/html">
+							<content>${content2}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message2.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState01}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState02" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail02_id}" ChangeKey="${mail02_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject1}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body" attr="BodyType" match="HTML" />
+			</t:response>
+		</t:test>
+				
+	</t:test_case>
+	 				
+	<t:test_case testcaseid="SendMailRequest3" type="bhr">
+			<t:objective>Send an html mail with attachment from ZWC to EWS client
+			</t:objective>
+			<t:steps>1. Compose and send a html mail with attachment from ZWC to EWS client.
+			2. Sync on EWS client attachment recieved.
+			</t:steps>
+	
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+			
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${upload.filename}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="upload.aid"/>
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+			
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject3}</su>
+						<mp ct="text/html">
+							<content>${message.content3}</content>
+						</mp>
+						<attach aid="${upload.aid}"/>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message3.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState02}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail03_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail03_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState03" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+							          <t:FieldURI FieldURI="item:Body"/>
+							          <t:ExtendedFieldURI PropertyTag="0x7D" PropertyType="String"/>
+							          <t:FieldURI FieldURI="item:Attachments"/>
+							          <t:FieldURI FieldURI="item:Subject"/>
+							          <t:FieldURI FieldURI="item:Size"/>
+							          <t:FieldURI FieldURI="message:From"/>
+							          <t:FieldURI FieldURI="message:Sender"/>
+							           <t:FieldURI FieldURI="item:HasAttachments"/> 
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail03_id}" ChangeKey="${mail03_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject3}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body" attr="BodyType" match="HTML" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:ContentType" match="image/jpeg" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments" match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:Name" match="image1.jpg" />
+			</t:response>
+		</t:test>
+	
+	</t:test_case>
+	
+	<t:test_case testcaseid="SendMailRequest4" type="bhr">
+			<t:objective>Send an html mail with attachment from EWS to ZWC client
+			</t:objective>
+			<t:steps>1. Compose and send a html mail with attachment from EWS to ZWC client.
+			2. Sync on ZWC client attachment recieved in mail.
+			</t:steps>
+			
+			<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+				      <SavedItemFolderId>
+				        <t:FolderId Id="5"/>
+				      </SavedItemFolderId>
+				      <Items>
+				        <t:Message>
+				          <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xNi4wLjE2MDUwNgpEYXRlOiBUdWUsIDIwIERlYyAyMDE2IDIyOjMyOjEzICswNTMwClN1YmplY3Q6IGRkCk1lc3NhZ2UtSUQ6IDxGM0UzRDc1Mi1CMUE2LTQ5QzUtQUZFMy0wREU0Q0Q0QjU1QkJAZXhhbXBsZS5jb20+ClRocmVhZC1Ub3BpYzogZGQKTWltZS12ZXJzaW9uOiAxLjAKQ29udGVudC10eXBlOiBtdWx0aXBhcnQvbWl4ZWQ7Cglib3VuZGFyeT0iQl8zNTY1MTE3OTMzXzE4NzcwOTEwNjEiCgo+IFRoaXMgbWVzc2FnZSBpcyBpbiBNSU1FIGZvcm1hdC4gU2luY2UgeW91ciBtYWlsIHJlYWRlciBkb2VzIG5vdCB1bmRlcnN0YW5kCnRoaXMgZm9ybWF0LCBzb21lIG9yIGFsbCBvZiB0aGlzIG1lc3NhZ2UgbWF5IG5vdCBiZSBsZWdpYmxlLgoKLS1CXzM1NjUxMTc5MzNfMTg3NzA5MTA2MQpDb250ZW50LXR5cGU6IG11bHRpcGFydC9hbHRlcm5hdGl2ZTsKCWJvdW5kYXJ5PSJCXzM1NjUxMTc5MzNfODQ3MDg5MzA3IgoKCi0tQl8zNTY1MTE3OTMzXzg0NzA4OTMwNwpDb250ZW50LXR5cGU6IHRleHQvcGxhaW47CgljaGFyc2V0PSJVVEYtOCIKQ29udGVudC10cmFuc2Zlci1lbmNvZGluZzogN2JpdAoKZGRkCgoKLS1CXzM1NjUxMTc5MzNfODQ3MDg5MzA3CkNvbnRlbnQtdHlwZTogdGV4dC9odG1sOwoJY2hhcnNldD0iVVRGLTgiCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IHF1b3RlZC1wcmludGFibGUKCjxodG1sIHhtbG5zOm89M0QidXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6b2ZmaWNlIiB4bWxuczp3PTNEInVybjpzY2hlbWE9CnMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0zRCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL29mZmljZS8yMD0KMDQvMTIvb21tbCIgeG1sbnM9M0QiaHR0cDovL3d3dy53My5vcmcvVFIvUkVDLWh0bWw0MCI+PGhlYWQ+PG1ldGEgbmFtZT0zRFRpdGxlIGM9Cm9udGVudD0zRCIiPjxtZXRhIG5hbWU9M0RLZXl3b3JkcyBjb250ZW50PTNEIiI+PG1ldGEgaHR0cC1lcXVpdj0zRENvbnRlbnQtVHlwZSBjb250ZT0KbnQ9M0QidGV4dC9odG1sOyBjaGFyc2V0PTNEdXRmLTgiPjxtZXRhIG5hbWU9M0RHZW5lcmF0b3IgY29udGVudD0zRCJNaWNyb3NvZnQgV29yZCAxPQo1IChmaWx0ZXJlZCBtZWRpdW0pIj48c3R5bGU+PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseToiQ2FtYnJpYSBNYXRoIjsKCXBhbm9zZS0xOjAgMCAwIDAgMCAwIDAgMCAwIDA7fQpAZm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6Q2FsaWJyaTsKCXBhbm9zZS0xOjIgMTUgNSAyIDIgMiA0IDMgMiA0O30KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8KcC5Nc29Ob3JtYWwsIGxpLk1zb05vcm1hbCwgZGl2Lk1zb05vcm1hbAoJe21hcmdpbjowY207CgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7Cglmb250LXNpemU6MTIuMHB0OwoJZm9udC1mYW1pbHk6Q2FsaWJyaTt9CmE6bGluaywgc3Bhbi5Nc29IeXBlcmxpbmsKCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xvcjojMDU2M0MxOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9CmE6dmlzaXRlZCwgc3Bhbi5Nc29IeXBlcmxpbmtGb2xsb3dlZAoJe21zby1zdHlsZS1wcmlvcml0eTo5OTsKCWNvbG9yOiM5NTRGNzI7Cgl0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lO30Kc3Bhbi5FbWFpbFN0eWxlMTcKCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1jb21wb3NlOwoJZm9udC1mYW1pbHk6Q2FsaWJyaTsKCWNvbG9yOndpbmRvd3RleHQ7fQpzcGFuLm1zb0lucwoJe21zby1zdHlsZS10eXBlOmV4cG9ydC1vbmx5OwoJbXNvLXN0eWxlLW5hbWU6IiI7Cgl0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lOwoJY29sb3I6dGVhbDt9Ci5Nc29DaHBEZWZhdWx0Cgl7bXNvLXN0eWxlLXR5cGU6ZXhwb3J0LW9ubHk7Cglmb250LWZhbWlseTpDYWxpYnJpO30KQHBhZ2UgV29yZFNlY3Rpb24xCgl7c2l6ZTo1OTUuMHB0IDg0Mi4wcHQ7CgltYXJnaW46NzIuMHB0IDcyLjBwdCA3Mi4wcHQgNzIuMHB0O30KZGl2LldvcmRTZWN0aW9uMQoJe3BhZ2U6V29yZFNlY3Rpb24xO30KLS0+PC9zdHlsZT48L2hlYWQ+PGJvZHkgYmdjb2xvcj0zRHdoaXRlIGxhbmc9M0RFTi1VUyBsaW5rPTNEIiMwNTYzQzEiIHZsaW5rPTNEIiM5NTQ9CkY3MiI+PGRpdiBjbGFzcz0zRFdvcmRTZWN0aW9uMT48cCBjbGFzcz0zRE1zb05vcm1hbD48c3BhbiBzdHlsZT0zRCdmb250LXNpemU6MTEuMHA9CnQnPmRkZDxvOnA+PC9vOnA+PC9zcGFuPjwvcD48L2Rpdj48L2JvZHk+PC9odG1sPgoKLS1CXzM1NjUxMTc5MzNfODQ3MDg5MzA3LS0KCgotLUJfMzU2NTExNzkzM18xODc3MDkxMDYxCkNvbnRlbnQtdHlwZTogaW1hZ2UvcG5nOyBuYW1lPSJub3RpZmljYXRpb25faWNvbi5wbmciCkNvbnRlbnQtZGlzcG9zaXRpb246IGF0dGFjaG1lbnQ7CglmaWxlbmFtZT0ibm90aWZpY2F0aW9uX2ljb24ucG5nIgpDb250ZW50LXRyYW5zZmVyLWVuY29kaW5nOiBiYXNlNjQKCgppVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBRU1BQUFCRENBWUFBQURIeXJoekFBQUFHWFJGV0hSVGIyWjBkMkZ5WlFCQlpHOWkKWlNCSmJXRm5aVkpsWVdSNWNjbGxQQUFBQXlCcFZGaDBXRTFNT21OdmJTNWhaRzlpWlM1NGJYQUFBQUFBQUR3L2VIQmhZMnRsCmRDQmlaV2RwYmowaTc3dS9JaUJwWkQwaVZ6Vk5NRTF3UTJWb2FVaDZjbVZUZWs1VVkzcHJZemxrSWo4K0lEeDRPbmh0Y0cxbApkR0VnZUcxc2JuTTZlRDBpWVdSdlltVTZibk02YldWMFlTOGlJSGc2ZUcxd2RHczlJa0ZrYjJKbElGaE5VQ0JEYjNKbElEVXUKTUMxak1EWXdJRFl4TGpFek5EYzNOeXdnTWpBeE1DOHdNaTh4TWkweE56b3pNam93TUNBZ0lDQWdJQ0FnSWo0Z1BISmtaanBTClJFWWdlRzFzYm5NNmNtUm1QU0pvZEhSd09pOHZkM2QzTG5jekxtOXlaeTh4T1RrNUx6QXlMekl5TFhKa1ppMXplVzUwWVhndApibk1qSWo0Z1BISmtaanBFWlhOamNtbHdkR2x2YmlCeVpHWTZZV0p2ZFhROUlpSWdlRzFzYm5NNmVHMXdQU0pvZEhSd09pOHYKYm5NdVlXUnZZbVV1WTI5dEwzaGhjQzh4TGpBdklpQjRiV3h1Y3pwNGJYQk5UVDBpYUhSMGNEb3ZMMjV6TG1Ga2IySmxMbU52CmJTOTRZWEF2TVM0d0wyMXRMeUlnZUcxc2JuTTZjM1JTWldZOUltaDBkSEE2THk5dWN5NWhaRzlpWlM1amIyMHZlR0Z3THpFdQpNQzl6Vkhsd1pTOVNaWE52ZFhKalpWSmxaaU1pSUhodGNEcERjbVZoZEc5eVZHOXZiRDBpUVdSdlltVWdVR2h2ZEc5emFHOXcKSUVOVE5TQlhhVzVrYjNkeklpQjRiWEJOVFRwSmJuTjBZVzVqWlVsRVBTSjRiWEF1YVdsa09qbEdRVFUwTkVORU5UTTJNVEV4ClJUTTRNamRCUkVFeE16STFPREk1T1VJMElpQjRiWEJOVFRwRWIyTjFiV1Z1ZEVsRVBTSjRiWEF1Wkdsa09qbEdRVFUwTkVORgpOVE0yTVRFeFJUTTRNamRCUkVFeE16STFPREk1T1VJMElqNGdQSGh0Y0UxTk9rUmxjbWwyWldSR2NtOXRJSE4wVW1WbU9tbHUKYzNSaGJtTmxTVVE5SW5odGNDNXBhV1E2T1VaQk5UUTBRMEkxTXpZeE1URkZNemd5TjBGRVFURXpNalU0TWprNVFqUWlJSE4wClVtVm1PbVJ2WTNWdFpXNTBTVVE5SW5odGNDNWthV1E2T1VaQk5UUTBRME0xTXpZeE1URkZNemd5TjBGRVFURXpNalU0TWprNQpRalFpTHo0Z1BDOXlaR1k2UkdWelkzSnBjSFJwYjI0K0lEd3ZjbVJtT2xKRVJqNGdQQzk0T25odGNHMWxkR0UrSUR3L2VIQmgKWTJ0bGRDQmxibVE5SW5JaVB6N1RBY014QUFBSU4wbEVRVlI0MnR4Y0NXd1VaUlIrTzN0MGU3RlFXMmdwMEpNQ0xaVWlCQ3hxCmdFYUlCRUZKT0F4R3hBdENCRUVxYURuVW9BVVN0RFJBUkpzUVVlSkJZb1EyRXRUR0F5R2dRSkFDTFlkQUVRTUZLNjFBWTl0dAp0L1c5K2YvWkxNdHVPek83TXp2TFMxNm11NTN6bSs5LzczdnZuMWtUN0w0Sk9sZ2tlajU2SnZvSXZuVHcveVdqeDZDZjVaK2QKNkNmUmE5RFBveDlDYjlEakpFMGFncEdOUGd0OUxQckQ2T1lBOW5VY3ZSSzlBdjFBdUlCQmQvc0Y5Tm1jQVZwWUxmb085QzNvCjlVWUVJdzU5S2ZwQ0QvcHJiYzNvMjlCTE9FQUJteERnOWtUOXhlZ1gwVmZxQ0lRVWh3ajhNK2pyZU53SkdSaWowSStpbCtvTQpncmZaME45QXIwYWZHZ293YUVqc1I4OEQ0OWdBOUhMMHpSd2d6Y0VnS242RC9yN2FBK3BnTkhRT2NuQTBBeU9SczJFeUdOOUcKY0VCeXRRQWpqZTg4RDhMSFNNejl6TVZlME1BZ1JuelBBUWszbzVTL1Z5NUR1Z1BEd1lISWhQQTFCd2NrTTFBd3ZsUTY3Z3c4ClpNcTVObEVGeGpMMHg1UWVkZGVvS0hoclVJUVJBYUZhNlNNMVlPUnpWYWNzaFBjMHc1TkpGdWdkWVRJcVE1N2hMaHNNa3RnZgpxS2t5TitYYXhlVXJKMXZFNVp6K1ZxZ1lIUVVSZ3FFQUtlV0JWUllZeTlTazBBUmt3NWc0TTN4OHVRMWNuZXk3SlJrMm1KSm8KZ1ZNRk1mQlFuTmtvWUJBUTc4b0JJNEVYWElydG5jRXNUaFRWTUZhTXhDRXozTUVBeUl3VzRNQWowYkFpeXpDeFpJR3ZGb1BnCm8rWlFYUDFSaEppZmFvUERqUzY0M3Nwb3NjcEhFQzBlRWdHVlk2SWdKY29RNDJabFYyQTRPR0tLN2FWVVZxWXNPY1ZZMFM5UwpnQ2R3ZVBpeVJ4TXNjSEo4Tk16dVp3MDFHTk40aHZFSnhqeTFwZmhhdk9NTnprNDQxT0FTUDcrVzJYVU5GMnN4d1djaklxRXMKenc3VzBKSmttVDh3NXFyWld6NEd4dnRzSmlnNjNTcCtqaktieENFamkxRXBOamd4UGtiY1I0aHN1cWNRRXp5cXZHdzFlOXZNCjAyblpKU2VMVEdsV3NDdTQyNE5qQkRpSXdiVm9ZRWlDYXd3ZkxuZUFNVjNObnBMc0psRm9iYTExdXI4cnpGQjNVV3V6SStDNwovQ2d4M3Voc3M3M0JtS0JtTCt1eUdTdFduMkZEWkVaZnF3aVFXcHZZR3pVSkJ0ZVp5Ym9HVi9jMGhzQkZpR0tSaFRFUW5rV0YKdWYrR0MyNDRXVHBkbVJWNDg4dGhOY0hPa1pIdzRUQTdtUFZSOVpRMFJrbGc1S3VSM2d2VGVUcmwwdnZCWG1ZWTVnaGVJS1FnClhJWEJsY1NiVHV3UXdWRFZ2VnFEaXBNRTFyR2JMcjhpSzFETGlSWGd5TmhvVWRacmJMa1NHSU9VYmprKzNpSnFoZVhWakJVRApNT2hON21QUjdFdzNEcldMclFGSzRScFpwZ1NHNGk2V1ZKMSsrbGVidUh4OW9QYU5jbW9OMUdEQk55VlJFOUFIU1dBa0tObUsKNm9xaFBRUW91ZUIwaTZ3WFUvU1pOYUErQ2JVRWlDa2FWTEppVWxja3dUZmtzTml3NWl4THB5K2p5TExwTEEwb2hod2JGdzE1CmpxQUcxemhCU1pWS3lwSzBSR1Y5Tzl4c1krbTBNRE0wWlRtMUIzNUhRQmFuQjQyVjRqMlZ2VGZwd3FWME9ndkZVWjhRdC9oSwpNWDd0eHFHVEVQaDVtQW1NSnJscnY0bnA4OC8vT3FEbWRnY1hXY1pvMWxDN29CbzF5ZFRBZ21zVGdTSHJBWTNIOFVERW82V24KV0t5Z0ZsOXVEK00wTjRrWjVjaVE5M0xzMm9OQkVaeDZtMS9Yc1hTNktzdVEwd0U0bEcxaXoxVmhOODBsZ1NIcnFSZnFZeGFmClk2eEl3d05OMGxCa0JVTzV0blYwS3Rua3NxUXp6c3BaKzZ1cmJiQUZTM1VLVTU4OEVBbEd0blYvdE1MVmxrNHh1RzhiTHV0YwpheVV3enN0WmU4YVJacWpIV2tSQU5LcHV1ZUFYckZiUE5YVkFhNGZ4d0NqbGduQVJwdDNuQjhocUJ4d1hLM0gwdzRvR0Y3SnYKMFlrVzkrZStkaE82QUtrNGRJWWdQWlB3Ymd6R1pYL1VjOVRiaURicm0zcDNYbW1EdjNtSG5ycG5kTU5rMkdFSkRIb0F0UUg4CnpESjFaMFRIcXkwdU9QcXY2NjcvRVUwcHZwQ003bWsxUVZhTUFLT3gxTS9BK0JPUFJSY1ZlOEVmSW93VjFDQWlGa3NkKzI2cwpVZ0tEcnVKSFVObjY2OHFveEwvZXlrQ0t3UXR2YXUrOEl4VlNVRTZLRUVRbXBTTm8vU0laWUFSY0w2dHlvSDVyZEVFVmJ5bVUKWVBhakliejNlbnQzbTBsa0FDa2xWR2dCaGx2MEl3dHVUSXFGV2hSczZaVk00MUg4cVJlQlFxKzdleHNhWnRRMUoyWlIwNWlHClhKYTRGUHcybk5meGJFZE5wbVJjZjBWTnE1elRxM0IzNzZSa0FXeXlPVVlMTUc3eE9pWk5adTdmanRtcXJxVURpcnd1aHNJUApEUy9hVDNvMFkxSjJyRmxrRlIyaC9Gbzdad1hUUUJzdnlBSmpoemNZelJ5UXVWcUFRYU9ENkVyYVpGcVNCWGJWK2FmdXVIaUwKMkZ1bFNTbHZNQ2g0UzBQdjEwYVh6KzBwSGhYRXMyTzBkTWdLbkc1cDRYbXJ5clNNOG0vemtwL3l2cjhPT3NXSkwwWXlYVER6CmFMTTZGaUx5cTArM3VpZkF1N0d0bmgrOG54My9BYjFBSzBBb3FMMmFZUk5QZUVGVmk4aVdSaHhDRkRBbkpGaGcwLzEyU01UQQpTaE5TODZ0YVFHTWoxVGtRMkNzZFBzRW80SUJvWmxSSUZYck14VjVEMmlkNmxOK2JMenJkRDd0b2JJdUF2Wm5nbHhsazlBU3cKcGcrKzByVEN2RlNiV0hKVGsvYzJNbVVQc3FUc1Vodjg5RSs3SGtDUTZzN3haSVUvTUtoQlhBM0dmUnc2R0RZSi9WdnZMd1UvCnFLMi9oNEg0M0JjUS9zQWdLd1lOWDM4S29WM21zUUtVZ0VGajZXblE2VVU1bll5dTZhbXVya25vQnNVNTNrRW1qRzBKc0RjaApRUTBZWkh2UW43c0hnRmp2TGJEVWdDRUZuT1ZoRE1SMmFtM0lXVkZ1MTNRRCtueGU3b2VUbFNoaHRwSVdNdFV1TTNoUkZ3NUcKYkM1VXNvSFNpWTlkNkdOQVp0ODBSRVl2L2s3a2JBWXR3U0NqNXVsd3p6NkFnV3dmUDdkS05SdXJuUkpyNG1sM29rRllVczlqCnd6ajBLMnAzRXVqOFlDVXZlQW9oeU8rbEs3Z3BKYndVM3g3b3pvSXhXZXJrSjVUQ3BXNnRUa3dvNXNla0d4R1VGL3ExK3NrSQorcG1JdWNDZXZnM1dxK0ZPWG1CdDQySXc2R25lcE1PUGllUnpjTWJ5OW9EY1o4aXU4SGkwanhlTis3UXVEVXc2L2JLS3Qwa3YKdnRBN3M4bjg3d2FQSVZZVENqM3p2d0FEQUJnaERCWVF4V1BUQUFBQUFFbEZUa1N1UW1DQwotLUJfMzU2NTExNzkzM18xODc3MDkxMDYxLS0KCg==</t:MimeContent>				          				          
+				          <t:Importance>Normal</t:Importance>
+				          <t:ExtendedProperty>
+				            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+				            <t:Value>12</t:Value>
+				          </t:ExtendedProperty>
+				          <t:ExtendedProperty>
+				            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+				            <t:Values>
+				              <t:Value>:R:0</t:Value>
+				            </t:Values>
+          				</t:ExtendedProperty>
+				          <t:ToRecipients>
+				            <t:Mailbox>
+				              <t:Name>${test_account2.username}</t:Name>
+				              <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+				            </t:Mailbox>
+				          </t:ToRecipients>
+				          <t:From>
+				            <t:Mailbox>
+				              <t:Name>${test_account1.username}</t:Name>
+				              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+				            </t:Mailbox>
+				          </t:From>
+				          <t:IsRead>false</t:IsRead>
+				        </t:Message>
+				      </Items>
+				    </CreateItem>
+				</soap:Body>
+				</soap:Envelope>
+				</t:request>
+				<t:response>
+					<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				</t:response>	
+			</t:test>
+			
+			<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState/>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="Id" set="mail04_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="ChangeKey" set="mail04_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState01_EWS" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+							          <t:FieldURI FieldURI="item:Sensitivity"/>
+							          <t:ExtendedFieldURI PropertyTag="0x10F4" PropertyType="Boolean"/>
+							          <t:FieldURI FieldURI="item:Categories"/>
+							          <t:FieldURI FieldURI="item:Body"/>
+							          <t:ExtendedFieldURI PropertyTag="0x7D" PropertyType="String"/>
+							          <t:FieldURI FieldURI="item:Attachments"/>
+							          <t:FieldURI FieldURI="item:Subject"/>
+							          <t:FieldURI FieldURI="item:Size"/>
+							          <t:FieldURI FieldURI="message:From"/>
+							          <t:FieldURI FieldURI="message:Sender"/>
+							          <t:FieldURI FieldURI="item:DisplayTo"/>
+							          <t:FieldURI FieldURI="message:InternetMessageId"/>
+							          <t:FieldURI FieldURI="message:ReplyTo"/>
+							          <t:FieldURI FieldURI="message:ToRecipients"/>
+							          <t:FieldURI FieldURI="message:CcRecipients"/>
+							          <t:FieldURI FieldURI="message:BccRecipients"/>
+							          <t:FieldURI FieldURI="message:References"/>
+							          <t:FieldURI FieldURI="item:HasAttachments"/>
+							          <t:FieldURI FieldURI="message:ConversationIndex"/>
+							          <t:FieldURI FieldURI="message:ConversationTopic"/>
+							          <t:FieldURI FieldURI="item:DateTimeReceived"/>
+							          <t:FieldURI FieldURI="item:DateTimeSent"/>
+							          <t:FieldURI FieldURI="item:Importance"/>
+							          <t:FieldURI FieldURI="item:InReplyTo"/>
+							          <t:FieldURI FieldURI="item:IsDraft"/>
+							          <t:FieldURI FieldURI="message:IsRead"/>
+							          <t:FieldURI FieldURI="item:ConversationId"/>
+							          <t:FieldURI FieldURI="item:DateTimeCreated"/>
+							          <t:FieldURI FieldURI="item:LastModifiedTime"/>
+							          <t:FieldURI FieldURI="item:ItemClass"/>
+							          <t:FieldURI FieldURI="message:ReceivedBy"/>
+							          <t:FieldURI FieldURI="message:ReceivedRepresenting"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Appointment" PropertyId="33336" PropertyType="String"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="PublicStrings" PropertyName="http://schemas.microsoft.com/entourage/entouragesentitem" PropertyType="Boolean"/>
+							          <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+							          <t:FieldURI FieldURI="message:IsReadReceiptRequested"/>
+							          <t:ExtendedFieldURI PropertySetId="00020386-0000-0000-C000-000000000046" PropertyName="content-class" PropertyType="String"/>
+							          <t:ExtendedFieldURI PropertyTag="0x1090" PropertyType="Integer"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Task" PropertyId="33029" PropertyType="SystemTime"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Task" PropertyId="33028" PropertyType="SystemTime"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Task" PropertyId="33039" PropertyType="SystemTime"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34229" PropertyType="Boolean"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34230" PropertyType="String"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34231" PropertyType="String"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34234" PropertyType="Boolean"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34144" PropertyType="SystemTime"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34050" PropertyType="SystemTime"/>
+							          <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34051" PropertyType="Boolean"/>
+							          <t:ExtendedFieldURI PropertyTag="0x1081" PropertyType="Integer"/>
+							          <t:ExtendedFieldURI PropertyTag="0x1082" PropertyType="SystemTime"/>
+							          <t:ExtendedFieldURI PropertyTag="0x1213" PropertyType="Integer"/>
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail04_id}" ChangeKey="${mail04_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="dd" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body" attr="BodyType" match="HTML" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:ContentType" match="image/png" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments" match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:Name" match="notification_icon.png" />
+			</t:response>
+		</t:test>			
+			
+	</t:test_case>
+	
+	<t:test_case testcaseid="SendMailRequest5" type="bhr">
+			<t:objective>Send an html mail with png attachment from zwc to ews client
+			</t:objective>
+			<t:steps>1. Compose and send a html mail with png attachment from zwc to ews client.
+			2. Sync on EWS client png attachment recieved in mail.
+			</t:steps>
+			
+			<t:set name="authToken" value="" />
+		
+		<t:test id="login_test_account2">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+			
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${upload.filename_png}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="upload_png.aid"/>
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+			
+		<t:test name="send_message5" depends="login_test_account2">
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject5}</su>
+						<mp ct="text/html">
+							<content>${message.content5}</content>
+						</mp>
+						<attach aid="${upload_png.aid}"/>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message5.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState03}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail05_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail05_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState04" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+							          <t:FieldURI FieldURI="item:Body"/>
+							          <t:ExtendedFieldURI PropertyTag="0x7D" PropertyType="String"/>
+							          <t:FieldURI FieldURI="item:Attachments"/>
+							          <t:FieldURI FieldURI="item:Subject"/>
+							          <t:FieldURI FieldURI="item:Size"/>
+							          <t:FieldURI FieldURI="message:From"/>
+							          <t:FieldURI FieldURI="message:Sender"/>
+							          <t:FieldURI FieldURI="item:HasAttachments"/> 
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail05_id}" ChangeKey="${mail05_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject5}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body" attr="BodyType" match="HTML" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:ContentType" match="image/png" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments" match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:Name" match="image2.png" />
+			</t:response>
+		</t:test>
+	
+	
+	</t:test_case>
+	
+	<t:test_case testcaseid="SendMailRequest6" type="bhr">
+			<t:objective>Send an html mail with bmp attachment from zwc to ews client
+			</t:objective>
+			<t:steps>1. Compose and send a html mail with bmp attachment from zwc to ews client.
+			2. Sync on EWS client bmp attachment recieved in mail.
+			</t:steps>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+			
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${upload.filename_bmp}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="upload_bmp.aid"/>
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+			
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject6}</su>
+						<mp ct="text/html">
+							<content>${message.content6}</content>
+						</mp>
+						<attach aid="${upload_bmp.aid}"/>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message6.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState04}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail06_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail06_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState05" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+							          <t:FieldURI FieldURI="item:Body"/>
+							          <t:ExtendedFieldURI PropertyTag="0x7D" PropertyType="String"/>
+							          <t:FieldURI FieldURI="item:Attachments"/>
+							          <t:FieldURI FieldURI="item:Subject"/>
+							          <t:FieldURI FieldURI="item:Size"/>
+							          <t:FieldURI FieldURI="message:From"/>
+							          <t:FieldURI FieldURI="message:Sender"/>
+							          <t:FieldURI FieldURI="item:HasAttachments"/> 
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail06_id}" ChangeKey="${mail06_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject6}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body" attr="BodyType" match="HTML" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:ContentType" match="image/bmp" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments" match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:Name" match="image3.bmp" />
+			</t:response>
+		</t:test>
+	
+	
+	</t:test_case>
+	
+	<t:test_case testcaseid="SendMailRequest7" type="bhr">
+			<t:objective>Send an html mail with pdf attachment from zwc to ews client
+			</t:objective>
+			<t:steps>1. Compose and send a html mail with pdf attachment from zwc to ews client.
+			2. Sync on EWS client pdf attachment received in mail.
+			</t:steps>	
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+			
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${upload.filename_pdf}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="upload_pdf.aid"/>
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+			
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject7}</su>
+						<mp ct="text/html">
+							<content>${message.content7}</content>
+						</mp>
+						<attach aid="${upload_pdf.aid}"/>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message7.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState05}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail07_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail07_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState06" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+							          <t:FieldURI FieldURI="item:Body"/>
+							          <t:ExtendedFieldURI PropertyTag="0x7D" PropertyType="String"/>
+							          <t:FieldURI FieldURI="item:Attachments"/>
+							          <t:FieldURI FieldURI="item:Subject"/>
+							          <t:FieldURI FieldURI="item:Size"/>
+							          <t:FieldURI FieldURI="message:From"/>
+							          <t:FieldURI FieldURI="message:Sender"/>
+							          <t:FieldURI FieldURI="item:HasAttachments"/> 
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail07_id}" ChangeKey="${mail07_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject7}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body" attr="BodyType" match="HTML" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:ContentType" match="application/pdf" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments" match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:Name" match="file1.pdf" />
+			</t:response>
+		</t:test>
+	
+	
+	</t:test_case>   
+	
+	<t:test_case testcaseid="SendMailRequest8" type="bhr">
+			<t:objective>Send an html mail with inline attachment from zwc to ews client
+			</t:objective>
+			<t:steps>1. Compose and send a html mail with inline attachment from zwc to ews client.
+			2. Sync on EWS client inline attachment received in mail.
+			</t:steps>
+	
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+ 	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${upload.filename}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id"  set="inline1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <t:test required="true">
+        <t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${test_account1.name}"/>
+					<su>${message.subject8}</su>
+					<mp ct="multipart/alternative">
+						<mp ct="text/plain">
+							<content>${message.content8}</content>
+						</mp>
+						<mp ct="multipart/related">
+							<mp ct="text/html">
+							<content>
+									&lt;html&gt;
+										&lt;head&gt;
+											&lt;style type='text/css'&gt;body { font-family: 'Times New Roman'; font-size: 12pt; color: #000000}
+											&lt;/style&gt;
+										&lt;/head&gt;
+										&lt;body&gt;
+										&lt;P&gt;Text before image.&lt;/P&gt; 
+										&lt;P&gt;&lt;IMG src="cid:${uploadFile1.cid}"&gt;&lt;/IMG&gt;
+										Text after image.&lt;/P&gt;
+										&lt;/body&gt;
+									&lt;/html&gt;
+							</content>
+ 							</mp>
+ 							<mp ci="${uploadFile1.cid}"> 
+								<attach aid="${inline1.aid}"/>
+							</mp>
+						</mp>
+					</mp>	
+				</m>
+			</SendMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m"/>
+		</t:response>
+	</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState06}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail08_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail08_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState07" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+							          <t:FieldURI FieldURI="item:Body"/>
+							          <t:ExtendedFieldURI PropertyTag="0x7D" PropertyType="String"/>
+							          <t:FieldURI FieldURI="item:Attachments"/>
+							          <t:FieldURI FieldURI="item:Subject"/>
+							          <t:FieldURI FieldURI="item:Size"/>
+							          <t:FieldURI FieldURI="message:From"/>
+							          <t:FieldURI FieldURI="message:Sender"/>
+							          <t:FieldURI FieldURI="item:HasAttachments"/> 
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail08_id}" ChangeKey="${mail08_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject8}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body" attr="BodyType" match="HTML" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:ContentType" match="image/jpeg" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments" match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:Name" match="image1.jpg" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:IsInline" match="true" />
+			</t:response>
+		</t:test>
+	
+	
+	</t:test_case>
+	
+	<t:test_case testcaseid="SendMailRequest9" type="bhr">
+			<t:objective>Send an html mail with png inline attachment from zwc to ews client
+			</t:objective>
+			<t:steps>1. Compose and send a html mail with png inline attachment from zwc to ews client.
+			2. Sync on EWS client png inline attachment received in mail.
+			</t:steps>
+	
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+ 	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${upload.filename_png}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id"  set="inline2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <t:test required="true">
+        <t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${test_account1.name}"/>
+					<su>${message.subject9}</su>
+					<mp ct="multipart/alternative">
+						<mp ct="text/plain">
+							<content>${message.content9}</content>
+						</mp>
+						<mp ct="multipart/related">
+							<mp ct="text/html">
+							<content>
+									&lt;html&gt;
+										&lt;head&gt;
+											&lt;style type='text/css'&gt;body { font-family: 'Times New Roman'; font-size: 12pt; color: #000000}
+											&lt;/style&gt;
+										&lt;/head&gt;
+										&lt;body&gt;
+										&lt;P&gt;Text before image.&lt;/P&gt; 
+										&lt;P&gt;&lt;IMG src="cid:${uploadFile2.cid}"&gt;&lt;/IMG&gt;
+										Text after image.&lt;/P&gt;
+										&lt;/body&gt;
+									&lt;/html&gt;
+							</content>
+ 							</mp>
+ 							<mp ci="${uploadFile2.cid}"> 
+								<attach aid="${inline2.aid}"/>
+							</mp>
+						</mp>
+					</mp>	
+				</m>
+			</SendMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m"/>
+		</t:response>
+	</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState07}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail09_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail09_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState08" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+							          <t:FieldURI FieldURI="item:Body"/>
+							          <t:ExtendedFieldURI PropertyTag="0x7D" PropertyType="String"/>
+							          <t:FieldURI FieldURI="item:Attachments"/>
+							          <t:FieldURI FieldURI="item:Subject"/>
+							          <t:FieldURI FieldURI="item:Size"/>
+							          <t:FieldURI FieldURI="message:From"/>
+							          <t:FieldURI FieldURI="message:Sender"/>
+							          <t:FieldURI FieldURI="item:HasAttachments"/> 
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail09_id}" ChangeKey="${mail09_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject9}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body" attr="BodyType" match="HTML" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:ContentType" match="image/png" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments" match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:Name" match="image2.png" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:IsInline" match="true" />
+			</t:response>
+		</t:test>
+	
+	
+	</t:test_case> 
+		
+	<t:test_case testcaseid="SendMailRequest10" type="bhr">
+			<t:objective>Send a  mail from ews to zwc client
+			</t:objective>
+			<t:steps>1. Compose and send a plain mail from ews to zwc client.
+			2. Sync on ZWC client mail received on receiver.
+			</t:steps>
+			
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+					      <SavedItemFolderId>
+					        <t:FolderId Id="5"/>
+					      </SavedItemFolderId>
+					      <Items>
+					        <t:Message>
+					          <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xNi4wLjE2MDUwNg0KRGF0ZTogVGh1LCAwNSBKYW4gMjAxNyAxNzo0ODoyMyArMDUzMA0KU3ViamVjdDogZ28gbWFuDQpNZXNzYWdlLUlEOiA8MTRDNkMwNTgtNDM2Mi00OTFDLTk4MDktMTg1OTFFQUQyRjIyQHpkZXYtdm0wMDkuZW5nLnppbWJyYS5jb20+DQpUaHJlYWQtVG9waWM6IGdvIG1hbg0KTWltZS12ZXJzaW9uOiAxLjANCkNvbnRlbnQtdHlwZTogdGV4dC9wbGFpbjsNCgljaGFyc2V0PSJVVEYtOCINCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IDdiaXQNCg0KDQphc2Rhc2Rhc2RhZA0KDQo=</t:MimeContent>
+					          <t:Sensitivity>Normal</t:Sensitivity>
+					          <t:Importance>Normal</t:Importance>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+					            <t:Value>12</t:Value>
+					          </t:ExtendedProperty>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+					            <t:Values>
+					              <t:Value>:R:0</t:Value>
+					            </t:Values>
+					          </t:ExtendedProperty>
+					          <t:ToRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account2.username}</t:Name>
+					              <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:ToRecipients>
+					          <t:From>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:From>
+					          <t:IsRead>false</t:IsRead>
+					        </t:Message>
+					      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail09.id" />
+			</t:response>
+		</t:test>
+	
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState>${SyncState01_EWS}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail09_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail09_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState02_EWS" />
+			</t:response>		
+		</t:test>	
+		
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject10}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject10}" />	            
+	        </t:response>
+	     </t:test>		
+			
+	</t:test_case>
+	
+	<t:test_case testcaseid="SendMailRequest11" type="bhr">
+			<t:objective>Send a  html mail from ews to zwc client
+			</t:objective>
+			<t:steps>1. Compose and send an html mail from ews to zwc client.
+			2. Sync on ZWC client mail received on receiver.
+			</t:steps>
+			
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+					      <SavedItemFolderId>
+					        <t:FolderId Id="5"/>
+					      </SavedItemFolderId>
+					      <Items>
+					        <t:Message>
+					          <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xNi4wLjE2MDUwNg0KRGF0ZTogU3VuLCAwOCBKYW4gMjAxNyAxNDoyMDoyMyArMDUzMA0KU3ViamVjdDogaHRtbCBtYWlsIHRlc3QxDQpNZXNzYWdlLUlEOiA8M0I3QTExQUMtN0ZFMS00QjEyLTg5NDAtRTdDODlDRTk4NjU4QHpkZXYtdm0wMDkuZW5nLnppbWJyYS5jb20+DQpUaHJlYWQtVG9waWM6IGh0bWwgbWFpbCB0ZXN0MQ0KTWltZS12ZXJzaW9uOiAxLjANCkNvbnRlbnQtdHlwZTogbXVsdGlwYXJ0L2FsdGVybmF0aXZlOw0KCWJvdW5kYXJ5PSJCXzM1NjY3MzAwMjNfMTU1NTU4NDkzNyINCg0KPiBUaGlzIG1lc3NhZ2UgaXMgaW4gTUlNRSBmb3JtYXQuIFNpbmNlIHlvdXIgbWFpbCByZWFkZXIgZG9lcyBub3QgdW5kZXJzdGFuZA0KdGhpcyBmb3JtYXQsIHNvbWUgb3IgYWxsIG9mIHRoaXMgbWVzc2FnZSBtYXkgbm90IGJlIGxlZ2libGUuDQoNCi0tQl8zNTY2NzMwMDIzXzE1NTU1ODQ5MzcNCkNvbnRlbnQtdHlwZTogdGV4dC9wbGFpbjsNCgljaGFyc2V0PSJVVEYtOCINCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IDdiaXQNCg0KVGhpcyBpcyBodG1sIG1haWwgdGVzdA0KDQoNCi0tQl8zNTY2NzMwMDIzXzE1NTU1ODQ5MzcNCkNvbnRlbnQtdHlwZTogdGV4dC9odG1sOw0KCWNoYXJzZXQ9IlVURi04Ig0KQ29udGVudC10cmFuc2Zlci1lbmNvZGluZzogcXVvdGVkLXByaW50YWJsZQ0KDQo8aHRtbCB4bWxuczpvPTNEInVybjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0zRCJ1cm46c2NoZW1hPQ0Kcy1taWNyb3NvZnQtY29tOm9mZmljZTp3b3JkIiB4bWxuczptPTNEImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vb2ZmaWNlLzIwPQ0KMDQvMTIvb21tbCIgeG1sbnM9M0QiaHR0cDovL3d3dy53My5vcmcvVFIvUkVDLWh0bWw0MCI+PGhlYWQ+PG1ldGEgbmFtZT0zRFRpdGxlIGM9DQpvbnRlbnQ9M0QiIj48bWV0YSBuYW1lPTNES2V5d29yZHMgY29udGVudD0zRCIiPjxtZXRhIGh0dHAtZXF1aXY9M0RDb250ZW50LVR5cGUgY29udGU9DQpudD0zRCJ0ZXh0L2h0bWw7IGNoYXJzZXQ9M0R1dGYtOCI+PG1ldGEgbmFtZT0zREdlbmVyYXRvciBjb250ZW50PTNEIk1pY3Jvc29mdCBXb3JkIDE9DQo1IChmaWx0ZXJlZCBtZWRpdW0pIj48c3R5bGU+PCEtLQ0KLyogRm9udCBEZWZpbml0aW9ucyAqLw0KQGZvbnQtZmFjZQ0KCXtmb250LWZhbWlseToiQ2FtYnJpYSBNYXRoIjsNCglwYW5vc2UtMTowIDAgMCAwIDAgMCAwIDAgMCAwO30NCkBmb250LWZhY2UNCgl7Zm9udC1mYW1pbHk6Q2FsaWJyaTsNCglwYW5vc2UtMToyIDE1IDUgMiAyIDIgNCAzIDIgNDt9DQovKiBTdHlsZSBEZWZpbml0aW9ucyAqLw0KcC5Nc29Ob3JtYWwsIGxpLk1zb05vcm1hbCwgZGl2Lk1zb05vcm1hbA0KCXttYXJnaW46MGNtOw0KCW1hcmdpbi1ib3R0b206LjAwMDFwdDsNCglmb250LXNpemU6MTIuMHB0Ow0KCWZvbnQtZmFtaWx5OkNhbGlicmk7fQ0KYTpsaW5rLCBzcGFuLk1zb0h5cGVybGluaw0KCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7DQoJY29sb3I6IzA1NjNDMTsNCgl0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lO30NCmE6dmlzaXRlZCwgc3Bhbi5Nc29IeXBlcmxpbmtGb2xsb3dlZA0KCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7DQoJY29sb3I6Izk1NEY3MjsNCgl0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lO30NCnNwYW4uRW1haWxTdHlsZTE3DQoJe21zby1zdHlsZS10eXBlOnBlcnNvbmFsLWNvbXBvc2U7DQoJZm9udC1mYW1pbHk6Q2FsaWJyaTsNCgljb2xvcjp3aW5kb3d0ZXh0O30NCnNwYW4ubXNvSW5zDQoJe21zby1zdHlsZS10eXBlOmV4cG9ydC1vbmx5Ow0KCW1zby1zdHlsZS1uYW1lOiIiOw0KCXRleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7DQoJY29sb3I6dGVhbDt9DQouTXNvQ2hwRGVmYXVsdA0KCXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsNCglmb250LWZhbWlseTpDYWxpYnJpO30NCkBwYWdlIFdvcmRTZWN0aW9uMQ0KCXtzaXplOjU5NS4wcHQgODQyLjBwdDsNCgltYXJnaW46NzIuMHB0IDcyLjBwdCA3Mi4wcHQgNzIuMHB0O30NCmRpdi5Xb3JkU2VjdGlvbjENCgl7cGFnZTpXb3JkU2VjdGlvbjE7fQ0KLS0+PC9zdHlsZT48L2hlYWQ+PGJvZHkgYmdjb2xvcj0zRHdoaXRlIGxhbmc9M0RFTi1VUyBsaW5rPTNEIiMwNTYzQzEiIHZsaW5rPTNEIiM5NTQ9DQpGNzIiPjxkaXYgY2xhc3M9M0RXb3JkU2VjdGlvbjE+PHAgY2xhc3M9M0RNc29Ob3JtYWw+PGI+PHNwYW4gc3R5bGU9M0QnZm9udC1zaXplOjExPQ0KLjBwdCc+VGhpcyBpcyBodG1sIG1haWwgdGVzdDxvOnA+PC9vOnA+PC9zcGFuPjwvYj48L3A+PC9kaXY+PC9ib2R5PjwvaHRtbD4NCg0KLS1CXzM1NjY3MzAwMjNfMTU1NTU4NDkzNy0tDQoNCg==</t:MimeContent>
+					          <t:Sensitivity>Normal</t:Sensitivity>
+					          <t:Importance>Normal</t:Importance>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+					            <t:Value>12</t:Value>
+					          </t:ExtendedProperty>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+					            <t:Values>
+					              <t:Value>:R:0</t:Value>
+					            </t:Values>
+					          </t:ExtendedProperty>
+					          <t:ToRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account2.username}</t:Name>
+					              <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:ToRecipients>
+					          <t:From>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:From>
+					          <t:IsRead>false</t:IsRead>
+					        </t:Message>
+					      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail10_id" />
+			</t:response>
+		</t:test>
+	
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState>${SyncState02_EWS}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail10_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail10_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState03_EWS" />
+			</t:response>		
+		</t:test>	
+		
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject11}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail10_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	     <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail10_id_wc}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				 <t:select path="//mail:GetMsgResponse//mail:mp" attr="ct" match="text/html"/>	            
+			</t:response>
+		</t:test>
+			
+			
+	</t:test_case>
+		
+	<t:test_case testcaseid="SendMailRequest12" type="bhr">
+			<t:objective>Send a  html mail with attachment from ews to zwc client
+			</t:objective>
+			<t:steps>1. Compose and send an html mail from ews to zwc client.
+			2. Sync on ZWC client mail received on receiver.
+			</t:steps>
+			
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+					      <SavedItemFolderId>
+					        <t:FolderId Id="5"/>
+					      </SavedItemFolderId>
+					      <Items>
+					        <t:Message>
+					        <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xNi4wLjE2MDUwNg0KRGF0ZTogU3VuLCAwOCBKYW4gMjAxNyAxNDo1MTo0MyArMDUzMA0KU3ViamVjdDogaHRtbCB3aXRoIGF0dGFjaG1lbnQgdGVzdCAxDQpNZXNzYWdlLUlEOiA8NUU4NjZGQkYtREJCNS00QzM4LTkxRDUtNzlEQ0NCNjg5OEQ3QHpkZXYtdm0wMDkuZW5nLnppbWJyYS5jb20+DQpUaHJlYWQtVG9waWM6IGh0bWwgd2l0aCBhdHRhY2htZW50IHRlc3QgMQ0KTWltZS12ZXJzaW9uOiAxLjANCkNvbnRlbnQtdHlwZTogbXVsdGlwYXJ0L21peGVkOw0KCWJvdW5kYXJ5PSJCXzM1NjY3MzE5MDNfMTM4MzM4NTYwMiINCg0KPiBUaGlzIG1lc3NhZ2UgaXMgaW4gTUlNRSBmb3JtYXQuIFNpbmNlIHlvdXIgbWFpbCByZWFkZXIgZG9lcyBub3QgdW5kZXJzdGFuZA0KdGhpcyBmb3JtYXQsIHNvbWUgb3IgYWxsIG9mIHRoaXMgbWVzc2FnZSBtYXkgbm90IGJlIGxlZ2libGUuDQoNCi0tQl8zNTY2NzMxOTAzXzEzODMzODU2MDINCkNvbnRlbnQtdHlwZTogbXVsdGlwYXJ0L2FsdGVybmF0aXZlOw0KCWJvdW5kYXJ5PSJCXzM1NjY3MzE5MDNfODgxMjEzMTcxIg0KDQoNCi0tQl8zNTY2NzMxOTAzXzg4MTIxMzE3MQ0KQ29udGVudC10eXBlOiB0ZXh0L3BsYWluOw0KCWNoYXJzZXQ9IlVURi04Ig0KQ29udGVudC10cmFuc2Zlci1lbmNvZGluZzogN2JpdA0KDQpUZXN0IG1haWwgd2l0aCBhdHRhY2htZW50DQoNCg0KLS1CXzM1NjY3MzE5MDNfODgxMjEzMTcxDQpDb250ZW50LXR5cGU6IHRleHQvaHRtbDsNCgljaGFyc2V0PSJVVEYtOCINCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IHF1b3RlZC1wcmludGFibGUNCg0KPGh0bWwgeG1sbnM6bz0zRCJ1cm46c2NoZW1hcy1taWNyb3NvZnQtY29tOm9mZmljZTpvZmZpY2UiIHhtbG5zOnc9M0QidXJuOnNjaGVtYT0NCnMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0zRCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL29mZmljZS8yMD0NCjA0LzEyL29tbWwiIHhtbG5zPTNEImh0dHA6Ly93d3cudzMub3JnL1RSL1JFQy1odG1sNDAiPjxoZWFkPjxtZXRhIG5hbWU9M0RUaXRsZSBjPQ0Kb250ZW50PTNEIiI+PG1ldGEgbmFtZT0zREtleXdvcmRzIGNvbnRlbnQ9M0QiIj48bWV0YSBodHRwLWVxdWl2PTNEQ29udGVudC1UeXBlIGNvbnRlPQ0KbnQ9M0QidGV4dC9odG1sOyBjaGFyc2V0PTNEdXRmLTgiPjxtZXRhIG5hbWU9M0RHZW5lcmF0b3IgY29udGVudD0zRCJNaWNyb3NvZnQgV29yZCAxPQ0KNSAoZmlsdGVyZWQgbWVkaXVtKSI+PHN0eWxlPjwhLS0NCi8qIEZvbnQgRGVmaW5pdGlvbnMgKi8NCkBmb250LWZhY2UNCgl7Zm9udC1mYW1pbHk6IkNhbWJyaWEgTWF0aCI7DQoJcGFub3NlLTE6MCAwIDAgMCAwIDAgMCAwIDAgMDt9DQpAZm9udC1mYWNlDQoJe2ZvbnQtZmFtaWx5OkNhbGlicmk7DQoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQ0KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8NCnAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWwsIGRpdi5Nc29Ob3JtYWwNCgl7bWFyZ2luOjBjbTsNCgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7DQoJZm9udC1zaXplOjEyLjBwdDsNCglmb250LWZhbWlseTpDYWxpYnJpO30NCmE6bGluaywgc3Bhbi5Nc29IeXBlcmxpbmsNCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCWNvbG9yOiMwNTYzQzE7DQoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9DQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQNCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCWNvbG9yOiM5NTRGNzI7DQoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9DQpzcGFuLkVtYWlsU3R5bGUxNw0KCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1jb21wb3NlOw0KCWZvbnQtZmFtaWx5OkNhbGlicmk7DQoJY29sb3I6d2luZG93dGV4dDt9DQpzcGFuLm1zb0lucw0KCXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsNCgltc28tc3R5bGUtbmFtZToiIjsNCgl0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lOw0KCWNvbG9yOnRlYWw7fQ0KLk1zb0NocERlZmF1bHQNCgl7bXNvLXN0eWxlLXR5cGU6ZXhwb3J0LW9ubHk7DQoJZm9udC1mYW1pbHk6Q2FsaWJyaTt9DQpAcGFnZSBXb3JkU2VjdGlvbjENCgl7c2l6ZTo1OTUuMHB0IDg0Mi4wcHQ7DQoJbWFyZ2luOjcyLjBwdCA3Mi4wcHQgNzIuMHB0IDcyLjBwdDt9DQpkaXYuV29yZFNlY3Rpb24xDQoJe3BhZ2U6V29yZFNlY3Rpb24xO30NCi0tPjwvc3R5bGU+PC9oZWFkPjxib2R5IGJnY29sb3I9M0R3aGl0ZSBsYW5nPTNERU4tVVMgbGluaz0zRCIjMDU2M0MxIiB2bGluaz0zRCIjOTU0PQ0KRjcyIj48ZGl2IGNsYXNzPTNEV29yZFNlY3Rpb24xPjxwIGNsYXNzPTNETXNvTm9ybWFsPjxzcGFuIHN0eWxlPTNEJ2ZvbnQtc2l6ZToxMS4wcD0NCnQnPlRlc3QgbWFpbCB3aXRoIGF0dGFjaG1lbnQ8bzpwPjwvbzpwPjwvc3Bhbj48L3A+PC9kaXY+PC9ib2R5PjwvaHRtbD4NCg0KLS1CXzM1NjY3MzE5MDNfODgxMjEzMTcxLS0NCg0KDQotLUJfMzU2NjczMTkwM18xMzgzMzg1NjAyDQpDb250ZW50LXR5cGU6IGltYWdlL3BuZzsgbmFtZT0ibm90aWZpY2F0aW9uX2ljb24ucG5nIg0KQ29udGVudC1kaXNwb3NpdGlvbjogYXR0YWNobWVudDsNCglmaWxlbmFtZT0ibm90aWZpY2F0aW9uX2ljb24ucG5nIg0KQ29udGVudC10cmFuc2Zlci1lbmNvZGluZzogYmFzZTY0DQoNCg0KaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQUVNQUFBQkRDQVlBQUFESHlyaHpBQUFBR1hSRldIUlRiMlowZDJGeVpRQkJaRzlpDQpaU0JKYldGblpWSmxZV1I1Y2NsbFBBQUFBeUJwVkZoMFdFMU1PbU52YlM1aFpHOWlaUzU0YlhBQUFBQUFBRHcvZUhCaFkydGwNCmRDQmlaV2RwYmowaTc3dS9JaUJwWkQwaVZ6Vk5NRTF3UTJWb2FVaDZjbVZUZWs1VVkzcHJZemxrSWo4K0lEeDRPbmh0Y0cxbA0KZEdFZ2VHMXNibk02ZUQwaVlXUnZZbVU2Ym5NNmJXVjBZUzhpSUhnNmVHMXdkR3M5SWtGa2IySmxJRmhOVUNCRGIzSmxJRFV1DQpNQzFqTURZd0lEWXhMakV6TkRjM055d2dNakF4TUM4d01pOHhNaTB4Tnpvek1qb3dNQ0FnSUNBZ0lDQWdJajRnUEhKa1pqcFMNClJFWWdlRzFzYm5NNmNtUm1QU0pvZEhSd09pOHZkM2QzTG5jekxtOXlaeTh4T1RrNUx6QXlMekl5TFhKa1ppMXplVzUwWVhndA0KYm5NaklqNGdQSEprWmpwRVpYTmpjbWx3ZEdsdmJpQnlaR1k2WVdKdmRYUTlJaUlnZUcxc2JuTTZlRzF3UFNKb2RIUndPaTh2DQpibk11WVdSdlltVXVZMjl0TDNoaGNDOHhMakF2SWlCNGJXeHVjenA0YlhCTlRUMGlhSFIwY0RvdkwyNXpMbUZrYjJKbExtTnYNCmJTOTRZWEF2TVM0d0wyMXRMeUlnZUcxc2JuTTZjM1JTWldZOUltaDBkSEE2THk5dWN5NWhaRzlpWlM1amIyMHZlR0Z3THpFdQ0KTUM5elZIbHdaUzlTWlhOdmRYSmpaVkpsWmlNaUlIaHRjRHBEY21WaGRHOXlWRzl2YkQwaVFXUnZZbVVnVUdodmRHOXphRzl3DQpJRU5UTlNCWGFXNWtiM2R6SWlCNGJYQk5UVHBKYm5OMFlXNWpaVWxFUFNKNGJYQXVhV2xrT2psR1FUVTBORU5FTlRNMk1URXgNClJUTTRNamRCUkVFeE16STFPREk1T1VJMElpQjRiWEJOVFRwRWIyTjFiV1Z1ZEVsRVBTSjRiWEF1Wkdsa09qbEdRVFUwTkVORg0KTlRNMk1URXhSVE00TWpkQlJFRXhNekkxT0RJNU9VSTBJajRnUEhodGNFMU5Pa1JsY21sMlpXUkdjbTl0SUhOMFVtVm1PbWx1DQpjM1JoYm1ObFNVUTlJbmh0Y0M1cGFXUTZPVVpCTlRRMFEwSTFNell4TVRGRk16Z3lOMEZFUVRFek1qVTRNams1UWpRaUlITjANClVtVm1PbVJ2WTNWdFpXNTBTVVE5SW5odGNDNWthV1E2T1VaQk5UUTBRME0xTXpZeE1URkZNemd5TjBGRVFURXpNalU0TWprNQ0KUWpRaUx6NGdQQzl5WkdZNlJHVnpZM0pwY0hScGIyNCtJRHd2Y21SbU9sSkVSajRnUEM5NE9uaHRjRzFsZEdFK0lEdy9lSEJoDQpZMnRsZENCbGJtUTlJbklpUHo3VEFjTXhBQUFJTjBsRVFWUjQydHhjQ1d3VVpSUitPM3QwZTdGUVcyZ3AwSk1DTFpVaUJDeHENCmdFYUlCRUZKT0F4R3hBdENCRUVxYURuVW9BVVN0RFJBUkpzUVVlSkJZb1EyRXRUR0F5R2dRSkFDTFlkQUVRTUZLNjFBWTl0dA0KdC9XOStmL1pMTXR1T3pPN016dkxTMTZtdTUzem0rOS83M3Z2bjFrVDdMNEpPbGdrZWo1Nkp2b0l2blR3L3lXang2Q2Y1WitkDQo2Q2ZSYTlEUG94OUNiOURqSkUwYWdwR05QZ3Q5TFByRDZPWUE5blVjdlJLOUF2MUF1SUJCZC9zRjlObWNBVnBZTGZvTzlDM28NCjlVWUVJdzU5S2ZwQ0QvcHJiYzNvMjlCTE9FQUJteERnOWtUOXhlZ1gwVmZxQ0lRVWh3ajhNK2pyZU53SkdSaWowSStpbCtvTQ0KZ3JmWjBOOUFyMGFmR2dvd2FFanNSODhENDlnQTlITDB6UndnemNFZ0tuNkQvcjdhQStwZ05IUU9jbkEwQXlPUnMyRXlHTjlHDQpjRUJ5dFFBamplODhEOExIU016OXpNVmUwTUFnUm56UEFRazNvNVMvVnk1RHVnUER3WUhJaFBBMUJ3Y2tNMUF3dmxRNjdndzgNClpNcTVObEVGeGpMMHg1UWVkZGVvS0hoclVJUVJBYUZhNlNNMVlPUnpWYWNzaFBjMHc1TkpGdWdkWVRJcVE1N2hMaHNNa3RnZg0KcUtreU4rWGF4ZVVySjF2RTVaeitWcWdZSFFVUmdxRUFLZVdCVlJZWXk5U2swQVJrdzVnNE0zeDh1UTFjbmV5N0pSazJtSkpvDQpnVk1GTWZCUW5Oa29ZQkFRNzhvQkk0RVhYSXJ0bmNFc1RoVFZNRmFNeENFejNNRUF5SXdXNE1BajBiQWl5ekN4WklHdkZvUGcNCm8rWlFYUDFSaEppZmFvUERqUzY0M3Nwb3NjcEhFQzBlRWdHVlk2SWdKY29RNDJabFYyQTRPR0tLN2FWVVZxWXNPY1ZZMFM5Uw0KZ0Nkd2VQaXlSeE1zY0hKOE5NenVadzAxR05ONGh2RUp4ankxcGZoYXZPTU56azQ0MU9BU1A3K1cyWFVORjJzeHdXY2pJcUVzDQp6dzdXMEpKa21UOHc1cXJaV3o0R3h2dHNKaWc2M1NwK2pqS2J4Q0VqaTFFcE5qZ3hQa2JjUjRoc3VxY1FFenlxdkd3MWU5dk0NCjAyblpKU2VMVEdsV3NDdTQyNE5qQkRpSXdiVm9ZRWlDYXd3ZkxuZUFNVjNObnBMc0psRm9iYTExdXI4cnpGQjNVV3V6SStDNw0KL0NneDN1aHNzNzNCbUtCbUwrdXlHU3RXbjJGRFpFWmZxd2lRV3B2WUd6VUpCdGVaeWJvR1YvYzBoc0JGaUdLUmhURVFua1dGDQp1ZitHQzI0NFdUcGRtUlY0ODh0aE5jSE9rWkh3NFRBN21QVlI5WlEwUmtsZzVLdVIzZ3ZUZVRybDB2dkJYbVlZNWdoZUlLUWcNClhJWEJsY1NiVHV3UXdWRFZ2VnFEaXBNRTFyR2JMcjhpSzFETGlSWGd5TmhvVWRacmJMa1NHSU9VYmprKzNpSnFoZVhWakJVRA0KTU9oTjdtUFI3RXczRHJXTHJRRks0UnBacGdTRzRpNldWSjErK2xlYnVIeDlvUGFOY21vTjFHREJOeVZSRTlBSFNXQWtLTm1LDQo2b3FoUFFRb3VlQjBpNndYVS9TWk5hQStDYlVFaUNrYVZMSmlVbGNrd1Rma3NOaXc1aXhMcHkranlMTHBMQTBvaGh3YkZ3MTUNCmpxQUcxemhCU1pWS3lwSzBSR1Y5Tzl4c1krbTBNRE0wWlRtMUIzNUhRQmFuQjQyVjRqMlZ2VGZwd3FWME9ndkZVWjhRdC9oSw0KTVg3dHhxR1RFUGg1bUFtTUpybHJ2NG5wODgvL09xRG1kZ2NYV2NabzFsQzdvQm8xeWRUQWdtc1RnU0hyQVkzSDhVREVvNlduDQpXS3lnRmw5dUQrTTBONGtaNWNpUTkzTHMyb05CRVp4Nm0xL1hzWFM2S3N1UTB3RTRsRzFpejFWaE44MGxnU0hycVJmcVl4YWYNClk2eEl3d05OMGxCa0JVTzV0blYwS3Rua3NxUXp6c3BaKzZ1cmJiQUZTM1VLVTU4OEVBbEd0blYvdE1MVmxrNHh1RzhiTHV0Yw0KYXlVd3pzdFplOGFSWnFqSFdrUkFOS3B1dWVBWHJGYlBOWFZBYTRmeHdDamxnbkFScHQzbkI4aHFCeHdYSzNIMHc0b0dGN0p2DQowWWtXOStlK2RoTzZBS2s0ZElZZ1BaUHdiZ3pHWlgvVWM5VGJpRGJybTNwM1htbUR2M21IbnJwbmRNTmsyR0VKREhvQXRRSDgNCnpESjFaMFRIcXkwdU9QcXY2NjcvRVUwcHZwQ003bWsxUVZhTUFLT3gxTS9BK0JPUFJSY1ZlOEVmSW93VjFDQWlGa3NkKzI2cw0KVWdLRHJ1SkhVTm42Njhxb3hML2V5a0NLd1F0dmF1KzhJeFZTVUU2S0VFUW1wU05vL1NJWllBUmNMNnR5b0g1cmRFRVZieW1VDQpZUGFqSWJ6M2VudDNtMGxrQUNrbFZHZ0JobHYwSXd0dVRJcUZXaFJzNlpWTTQxSDhxUmVCUXErN2V4c2FadFExSjJaUjA1aUcNClhKYTRGUHcybk5meGJFZE5wbVJjZjBWTnE1elRxM0IzNzZSa0FXeXlPVVlMTUc3eE9pWk5adTdmanRtcXJxVURpcnd1aHNJUA0KRFMvYVQzbzBZMUoyckZsa0ZSMmgvRm83WndYVFFCc3Z5QUpqaHpjWXpSeVF1VnFBUWFPRDZFcmFaRnFTQlhiVithZnV1SGlMDQoyRnVsU1Nsdk1DaDRTMFB2MTBhWHorMHBIaFhFczJPMGRNZ0tuRzVwNFhtcnlyU004bS96a3AveXZyOE9Pc1dKTDBZeVhURHoNCmFMTTZGaUx5cTArM3VpZkF1N0d0bmgrOG54My9BYjFBSzBBb3FMMmFZUk5QZUVGVmk4aVdSaHhDRkRBbkpGaGcwLzEyU01UQQ0KU2hOUzg2dGFRR01qMVRrUTJDc2RQc0VvNElCb1psUklGWHJNeFY1RDJpZDZsTitiTHpyZEQ3dG9iSXVBdlpuZ2x4bGs5QVN3DQpwZysrMHJUQ3ZGU2JXSEpUay9jMk1tVVBzcVRzVWh2ODlFKzdIa0NRNnM3eFpJVS9NS2hCWEEzR2ZSdzZHRFlKL1Z2dkx3VS8NCnFLMi9oNEg0M0JjUS9zQWdLd1lOWDM4S29WM21zUUtVZ0VGajZXblE2VVU1bll5dTZhbXVya25vQnNVNTNrRW1qRzBKc0RjaA0KUVEwWVpIdlFuN3NIZ0ZqdkxiRFVnQ0VGbk9WaERNUjJhbTNJV1ZGdTEzUUQrbnhlN29lVGxTaGh0cElXTXRVdU0zaFJGdzVHDQpiQzVVc29IU2lZOWQ2R05BWnQ4MFJFWXYvazdrYkFZdHdTQ2o1dWx3eno2QWdXd2ZQN2RLTlJ1cm5SSnI0bWwzb2tGWVVzOWoNCnd6ajBLMnAzRXVqOFlDVXZlQW9oeU8rbEs3Z3BKYndVM3g3b3pvSXhXZXJrSjVUQ3BXNnRUa3dvNXNla0d4R1VGL3ExK3NrSQ0KK3BtSXVjQ2V2ZzNXcStGT1htQnQ0Mkl3NkduZXBNT1BpZVJ6Y01ieTlvRGNaOGl1OEhpMGp4ZU4rN1F1RFV3Ni9iS0t0MGt2DQp2dEE3czhuODd3YVBJVllUQ2ozenZ3QURBQmdoREJZUXhXUFRBQUFBQUVsRlRrU3VRbUNDDQotLUJfMzU2NjczMTkwM18xMzgzMzg1NjAyLS0NCg0K</t:MimeContent>
+					          <t:Sensitivity>Normal</t:Sensitivity>
+					          <t:Importance>Normal</t:Importance>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+					            <t:Value>12</t:Value>
+					          </t:ExtendedProperty>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+					            <t:Values>
+					              <t:Value>:R:0</t:Value>
+					            </t:Values>
+					          </t:ExtendedProperty>
+					          <t:ToRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account2.username}</t:Name>
+					              <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:ToRecipients>
+					          <t:From>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:From>
+					          <t:IsRead>false</t:IsRead>
+					        </t:Message>
+					      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail11_id" />
+			</t:response>
+		</t:test>
+	
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState>${SyncState03_EWS}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail11_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail11_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState04_EWS" />
+			</t:response>		
+		</t:test>	
+		
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject12}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail11_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	     <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail11_id_wc}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				 <t:select path="//mail:GetMsgResponse//mail:mp" attr="ct" match="text/html"/>
+				 <t:select path="//mail:GetMsgResponse//mail:mp" attr="ct" match="image/png"/>
+				 <t:select path="//mail:GetMsgResponse//mail:mp" attr="cd" match="attachment"/>			            
+			</t:response>
+		</t:test>
+			
+			
+	</t:test_case>
+	
+	<t:test_case testcaseid="SendMailRequest13" type="bhr">
+			<t:objective>Send a  high priority mail  from ews to zwc client
+			</t:objective>
+			<t:steps>1. Compose and send a high priority mail from ews to zwc client.
+			2. Sync on ZWC client mail received on receiver should be high priority.
+			</t:steps>
+			
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+					      <SavedItemFolderId>
+					        <t:FolderId Id="5"/>
+					      </SavedItemFolderId>
+					      <Items>
+					        <t:Message>
+					        <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xNi4wLjE2MDUwNg0KRGF0ZTogU3VuLCAwOCBKYW4gMjAxNyAxNToyOToxMyArMDUzMA0KU3ViamVjdDogaGlnaCBwcmlvcml0eSBtYWlsDQpNZXNzYWdlLUlEOiA8RDA5NUEyMTYtNDZFOS00MkI0LUEwMUYtQTBEN0RCNkQ0OENFQHpkZXYtdm0wMDkuZW5nLnppbWJyYS5jb20+DQpUaHJlYWQtVG9waWM6IGhpZ2ggcHJpb3JpdHkgbWFpbA0KWC1Qcmlvcml0eTogMg0KTWltZS12ZXJzaW9uOiAxLjANCkNvbnRlbnQtdHlwZTogbXVsdGlwYXJ0L2FsdGVybmF0aXZlOw0KCWJvdW5kYXJ5PSJCXzM1NjY3MzQxNTNfMzUxODQ1Nzc5Ig0KDQo+IFRoaXMgbWVzc2FnZSBpcyBpbiBNSU1FIGZvcm1hdC4gU2luY2UgeW91ciBtYWlsIHJlYWRlciBkb2VzIG5vdCB1bmRlcnN0YW5kDQp0aGlzIGZvcm1hdCwgc29tZSBvciBhbGwgb2YgdGhpcyBtZXNzYWdlIG1heSBub3QgYmUgbGVnaWJsZS4NCg0KLS1CXzM1NjY3MzQxNTNfMzUxODQ1Nzc5DQpDb250ZW50LXR5cGU6IHRleHQvcGxhaW47DQoJY2hhcnNldD0iVVRGLTgiDQpDb250ZW50LXRyYW5zZmVyLWVuY29kaW5nOiA3Yml0DQoNCk1haWwgd2l0aCBoaWdoIHByaW9yaXR5DQoNCg0KLS1CXzM1NjY3MzQxNTNfMzUxODQ1Nzc5DQpDb250ZW50LXR5cGU6IHRleHQvaHRtbDsNCgljaGFyc2V0PSJVVEYtOCINCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IHF1b3RlZC1wcmludGFibGUNCg0KPGh0bWwgeG1sbnM6bz0zRCJ1cm46c2NoZW1hcy1taWNyb3NvZnQtY29tOm9mZmljZTpvZmZpY2UiIHhtbG5zOnc9M0QidXJuOnNjaGVtYT0NCnMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0zRCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL29mZmljZS8yMD0NCjA0LzEyL29tbWwiIHhtbG5zPTNEImh0dHA6Ly93d3cudzMub3JnL1RSL1JFQy1odG1sNDAiPjxoZWFkPjxtZXRhIG5hbWU9M0RUaXRsZSBjPQ0Kb250ZW50PTNEIiI+PG1ldGEgbmFtZT0zREtleXdvcmRzIGNvbnRlbnQ9M0QiIj48bWV0YSBodHRwLWVxdWl2PTNEQ29udGVudC1UeXBlIGNvbnRlPQ0KbnQ9M0QidGV4dC9odG1sOyBjaGFyc2V0PTNEdXRmLTgiPjxtZXRhIG5hbWU9M0RHZW5lcmF0b3IgY29udGVudD0zRCJNaWNyb3NvZnQgV29yZCAxPQ0KNSAoZmlsdGVyZWQgbWVkaXVtKSI+PHN0eWxlPjwhLS0NCi8qIEZvbnQgRGVmaW5pdGlvbnMgKi8NCkBmb250LWZhY2UNCgl7Zm9udC1mYW1pbHk6IkNhbWJyaWEgTWF0aCI7DQoJcGFub3NlLTE6MCAwIDAgMCAwIDAgMCAwIDAgMDt9DQpAZm9udC1mYWNlDQoJe2ZvbnQtZmFtaWx5OkNhbGlicmk7DQoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQ0KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8NCnAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWwsIGRpdi5Nc29Ob3JtYWwNCgl7bWFyZ2luOjBjbTsNCgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7DQoJZm9udC1zaXplOjEyLjBwdDsNCglmb250LWZhbWlseTpDYWxpYnJpO30NCmE6bGluaywgc3Bhbi5Nc29IeXBlcmxpbmsNCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCWNvbG9yOiMwNTYzQzE7DQoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9DQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQNCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCWNvbG9yOiM5NTRGNzI7DQoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9DQpzcGFuLkVtYWlsU3R5bGUxNw0KCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1jb21wb3NlOw0KCWZvbnQtZmFtaWx5OkNhbGlicmk7DQoJY29sb3I6d2luZG93dGV4dDt9DQpzcGFuLm1zb0lucw0KCXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsNCgltc28tc3R5bGUtbmFtZToiIjsNCgl0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lOw0KCWNvbG9yOnRlYWw7fQ0KLk1zb0NocERlZmF1bHQNCgl7bXNvLXN0eWxlLXR5cGU6ZXhwb3J0LW9ubHk7DQoJZm9udC1mYW1pbHk6Q2FsaWJyaTt9DQpAcGFnZSBXb3JkU2VjdGlvbjENCgl7c2l6ZTo1OTUuMHB0IDg0Mi4wcHQ7DQoJbWFyZ2luOjcyLjBwdCA3Mi4wcHQgNzIuMHB0IDcyLjBwdDt9DQpkaXYuV29yZFNlY3Rpb24xDQoJe3BhZ2U6V29yZFNlY3Rpb24xO30NCi0tPjwvc3R5bGU+PC9oZWFkPjxib2R5IGJnY29sb3I9M0R3aGl0ZSBsYW5nPTNERU4tVVMgbGluaz0zRCIjMDU2M0MxIiB2bGluaz0zRCIjOTU0PQ0KRjcyIj48ZGl2IGNsYXNzPTNEV29yZFNlY3Rpb24xPjxwIGNsYXNzPTNETXNvTm9ybWFsPjxzcGFuIHN0eWxlPTNEJ2ZvbnQtc2l6ZToxMS4wcD0NCnQnPk1haWwgd2l0aCBoaWdoIHByaW9yaXR5PG86cD48L286cD48L3NwYW4+PC9wPjwvZGl2PjwvYm9keT48L2h0bWw+DQoNCi0tQl8zNTY2NzM0MTUzXzM1MTg0NTc3OS0tDQoNCg==</t:MimeContent> 
+					          <t:Sensitivity>Normal</t:Sensitivity>
+					          <t:Importance>High</t:Importance>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+					            <t:Value>12</t:Value>
+					          </t:ExtendedProperty>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+					            <t:Values>
+					              <t:Value>:R:0</t:Value>
+					            </t:Values>
+					          </t:ExtendedProperty>
+					          <t:ToRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account2.username}</t:Name>
+					              <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:ToRecipients>
+					          <t:From>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:From>
+					          <t:IsRead>false</t:IsRead>
+					        </t:Message>
+					      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail12_id" />
+			</t:response>
+		</t:test>
+	
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState>${SyncState04_EWS}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail12_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail12_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState05_EWS" />
+			</t:response>		
+		</t:test>	
+		
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject13}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail12_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	     <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail12_id_wc}" />
+				</GetMsgRequest>
+			</t:request>				
+			<t:response>
+				 <t:select path="//mail:GetMsgResponse//mail:m" attr="f" match="u!"/>  
+				 <t:select path="//mail:GetMsgResponse//mail:content"  contains="${message.content10}"/>         
+			</t:response>
+		</t:test>
+			
+			
+	</t:test_case>
+	
+	<t:test_case testcaseid="SendMailRequest14" type="bhr">
+			<t:objective>Send a  low priority mail  from ews to zwc client
+			</t:objective>
+			<t:steps>1. Compose and send a low priority mail from ews to zwc client.
+			2. Sync on ZWC client mail received on receiver should be low priority.
+			</t:steps>
+			
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+					      <SavedItemFolderId>
+					        <t:FolderId Id="5"/>
+					      </SavedItemFolderId>
+					      <Items>
+					        <t:Message>
+					          <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xNi4wLjE2MDUwNg0KRGF0ZTogU3VuLCAwOCBKYW4gMjAxNyAxNTo1NToxMSArMDUzMA0KU3ViamVjdDogbG93IHByaW9yaXR5IG1haWwNCk1lc3NhZ2UtSUQ6IDxDMEIyNTVDQi03QkIyLTRDMkQtQjJFNC01RTRDMjczQUU4NEJAemRldi12bTAwOS5lbmcuemltYnJhLmNvbT4NClRocmVhZC1Ub3BpYzogbG93IHByaW9yaXR5IG1haWwNClgtUHJpb3JpdHk6IDQNCk1pbWUtdmVyc2lvbjogMS4wDQpDb250ZW50LXR5cGU6IG11bHRpcGFydC9hbHRlcm5hdGl2ZTsNCglib3VuZGFyeT0iQl8zNTY2NzM1NzExXzE3NDk3MjM3NjciDQoNCj4gVGhpcyBtZXNzYWdlIGlzIGluIE1JTUUgZm9ybWF0LiBTaW5jZSB5b3VyIG1haWwgcmVhZGVyIGRvZXMgbm90IHVuZGVyc3RhbmQNCnRoaXMgZm9ybWF0LCBzb21lIG9yIGFsbCBvZiB0aGlzIG1lc3NhZ2UgbWF5IG5vdCBiZSBsZWdpYmxlLg0KDQotLUJfMzU2NjczNTcxMV8xNzQ5NzIzNzY3DQpDb250ZW50LXR5cGU6IHRleHQvcGxhaW47DQoJY2hhcnNldD0iVVRGLTgiDQpDb250ZW50LXRyYW5zZmVyLWVuY29kaW5nOiA3Yml0DQoNCk1haWwgd2l0aCBsb3cgcHJpb3JpdHkNCg0KDQotLUJfMzU2NjczNTcxMV8xNzQ5NzIzNzY3DQpDb250ZW50LXR5cGU6IHRleHQvaHRtbDsNCgljaGFyc2V0PSJVVEYtOCINCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IHF1b3RlZC1wcmludGFibGUNCg0KPGh0bWwgeG1sbnM6bz0zRCJ1cm46c2NoZW1hcy1taWNyb3NvZnQtY29tOm9mZmljZTpvZmZpY2UiIHhtbG5zOnc9M0QidXJuOnNjaGVtYT0NCnMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0zRCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL29mZmljZS8yMD0NCjA0LzEyL29tbWwiIHhtbG5zPTNEImh0dHA6Ly93d3cudzMub3JnL1RSL1JFQy1odG1sNDAiPjxoZWFkPjxtZXRhIG5hbWU9M0RUaXRsZSBjPQ0Kb250ZW50PTNEIiI+PG1ldGEgbmFtZT0zREtleXdvcmRzIGNvbnRlbnQ9M0QiIj48bWV0YSBodHRwLWVxdWl2PTNEQ29udGVudC1UeXBlIGNvbnRlPQ0KbnQ9M0QidGV4dC9odG1sOyBjaGFyc2V0PTNEdXRmLTgiPjxtZXRhIG5hbWU9M0RHZW5lcmF0b3IgY29udGVudD0zRCJNaWNyb3NvZnQgV29yZCAxPQ0KNSAoZmlsdGVyZWQgbWVkaXVtKSI+PHN0eWxlPjwhLS0NCi8qIEZvbnQgRGVmaW5pdGlvbnMgKi8NCkBmb250LWZhY2UNCgl7Zm9udC1mYW1pbHk6IkNhbWJyaWEgTWF0aCI7DQoJcGFub3NlLTE6MCAwIDAgMCAwIDAgMCAwIDAgMDt9DQpAZm9udC1mYWNlDQoJe2ZvbnQtZmFtaWx5OkNhbGlicmk7DQoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQ0KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8NCnAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWwsIGRpdi5Nc29Ob3JtYWwNCgl7bWFyZ2luOjBjbTsNCgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7DQoJZm9udC1zaXplOjEyLjBwdDsNCglmb250LWZhbWlseTpDYWxpYnJpO30NCmE6bGluaywgc3Bhbi5Nc29IeXBlcmxpbmsNCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCWNvbG9yOiMwNTYzQzE7DQoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9DQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQNCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCWNvbG9yOiM5NTRGNzI7DQoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9DQpzcGFuLkVtYWlsU3R5bGUxNw0KCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1jb21wb3NlOw0KCWZvbnQtZmFtaWx5OkNhbGlicmk7DQoJY29sb3I6d2luZG93dGV4dDt9DQpzcGFuLm1zb0lucw0KCXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsNCgltc28tc3R5bGUtbmFtZToiIjsNCgl0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lOw0KCWNvbG9yOnRlYWw7fQ0KLk1zb0NocERlZmF1bHQNCgl7bXNvLXN0eWxlLXR5cGU6ZXhwb3J0LW9ubHk7DQoJZm9udC1mYW1pbHk6Q2FsaWJyaTt9DQpAcGFnZSBXb3JkU2VjdGlvbjENCgl7c2l6ZTo1OTUuMHB0IDg0Mi4wcHQ7DQoJbWFyZ2luOjcyLjBwdCA3Mi4wcHQgNzIuMHB0IDcyLjBwdDt9DQpkaXYuV29yZFNlY3Rpb24xDQoJe3BhZ2U6V29yZFNlY3Rpb24xO30NCi0tPjwvc3R5bGU+PC9oZWFkPjxib2R5IGJnY29sb3I9M0R3aGl0ZSBsYW5nPTNERU4tVVMgbGluaz0zRCIjMDU2M0MxIiB2bGluaz0zRCIjOTU0PQ0KRjcyIj48ZGl2IGNsYXNzPTNEV29yZFNlY3Rpb24xPjxwIGNsYXNzPTNETXNvTm9ybWFsPjxzcGFuIHN0eWxlPTNEJ2ZvbnQtc2l6ZToxMS4wcD0NCnQnPk1haWwgd2l0aCBsb3cgcHJpb3JpdHk8bzpwPjwvbzpwPjwvc3Bhbj48L3A+PC9kaXY+PC9ib2R5PjwvaHRtbD4NCg0KLS1CXzM1NjY3MzU3MTFfMTc0OTcyMzc2Ny0tDQoNCg==</t:MimeContent>
+					          <t:Sensitivity>Normal</t:Sensitivity>
+					          <t:Importance>Low</t:Importance>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+					            <t:Value>12</t:Value>
+					          </t:ExtendedProperty>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+					            <t:Values>
+					              <t:Value>:R:0</t:Value>
+					            </t:Values>
+					          </t:ExtendedProperty>
+					          <t:ToRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account2.username}</t:Name>
+					              <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:ToRecipients>
+					          <t:From>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:From>
+					          <t:IsRead>false</t:IsRead>
+					        </t:Message>
+					      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail13_id" />
+			</t:response>
+		</t:test>
+	
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState>${SyncState05_EWS}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail13_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail13_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState06_EWS" />
+			</t:response>		
+		</t:test>	
+		
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject14}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail13_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	     <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail13_id_wc}" />
+				</GetMsgRequest>
+			</t:request>				
+			<t:response>
+				 <t:select path="//mail:GetMsgResponse//mail:m" attr="f" contains="u?"/>   
+				 <t:select path="//mail:GetMsgResponse//mail:content"  contains="${message.content11}"/>         
+			</t:response>
+		</t:test>
+			
+			
+	</t:test_case>  
+	
+	<t:test_case testcaseid="SendMailRequest15" type="bhr">
+		<t:objective>Send high priority mail from zwc to ews client. </t:objective>
+		<t:steps>1. Send a high priority mail from zwc to ews client user
+		2. Verify on EWS client the mail received is high priority.
+		</t:steps>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+			
+			
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="!">
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject15}</su>
+						<mp ct="text/plain">
+							<content>${message.content15}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message15.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState08}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail015_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail015_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState09" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+									<t:FieldURI FieldURI="item:Importance"/>
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail015_id}" ChangeKey="${mail015_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject15}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Importance"  match="High" />
+			</t:response>
+		</t:test>
+				
+	</t:test_case>
+		
+	<t:test_case testcaseid="SendMailRequest16" type="bhr">
+		<t:objective>Send low priority mail from zwc to ews client. </t:objective>
+		<t:steps>1. Send a low priority mail from zwc to ews client user
+		2. Verify on EWS client the mail received is low priority.
+		</t:steps>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>			
+			
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="?">
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject16}</su>
+						<mp ct="text/plain">
+							<content>${message.content16}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message16.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState09}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail016_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail016_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState10" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+									<t:FieldURI FieldURI="item:Importance"/>
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail016_id}" ChangeKey="${mail016_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject16}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Importance"  match="Low" />
+			</t:response>
+		</t:test>
+				
+	</t:test_case>
+		
+</t:tests>

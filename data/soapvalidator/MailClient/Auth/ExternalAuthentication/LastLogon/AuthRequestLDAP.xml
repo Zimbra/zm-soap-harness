@@ -1,0 +1,142 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="ldap.zimbraAuthMech" value="ldap"/>
+<t:property name="ldap.zimbraAuthLdapURL" value="ldap://${LDAP.url}:${LDAP.port}/"/>
+<t:property name="ldap.admin.name" value="${LDAP.bindDN}"/>
+<t:property name="ldap.admin.password" value="${LDAP.bindPassword}"/>
+
+
+<t:property name="zimbraPassword.value" value="zimbra123"/>
+
+<t:property name="domain1.name" value="${COUNTER}.${TIME}.com"/>
+<t:property name="account1.user" value="${LDAP.account01.user}"/>
+<t:property name="account1.name" value="${account1.user}@${domain1.name}"/>
+<t:property name="account2.user" value="${LDAP.account02.user}"/>
+<t:property name="account2.name" value="${account2.user}@${domain1.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="LastLogon_AuthRequest_Setup_01" type="always" >
+ <t:objective>Find the current zimbraLastLogonTimestampFrequency</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+        <t:request>
+			<CreateDomainRequest xmlns="urn:zimbraAdmin">
+				<name >${domain1.name}</name>
+				<a n="zimbraNotes"/>
+				<a n="description"/>
+                <a n="zimbraAuthMech">${ldap.zimbraAuthMech}</a>
+                <a n="zimbraAuthLdapURL">${ldap.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapSearchBindDn">${LDAP.bindDN}</a>
+                <a n="zimbraAuthLdapSearchBindPassword">${LDAP.bindPassword}</a>
+				<a n="zimbraAuthLdapSearchFilter">${LDAP.LDAPfilter}</a>                
+                <a n="zimbraAuthLdapSearchBase">${LDAP.LDAPsearchBase}</a>
+			</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="ExternalAuth_LDAP_LastLogon_AuthRequest_01" type="functional" bugids="24012">
+	<t:objective>AuthRequest to external LDAP - verify zimbraLastLogonTimestamp is updated</t:objective>
+	<t:steps>
+	1. Create domain with external LDAP authentication
+	2. Login as account1
+	3. Verify that the zimbraLastLogonTimestamp is updated 
+	</t:steps>
+
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account1.id}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account">
+				<t:select path="//admin:a[@n='zimbraLastLogonTimestamp']" set="account1.zimbraLastLogonTimestamp"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	
+</t:test_case>
+
+
+
+</t:tests>

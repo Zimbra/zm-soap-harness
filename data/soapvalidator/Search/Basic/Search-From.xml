@@ -126,45 +126,6 @@
 
 </t:test_case>
 
-<!-- Per bug 583, searches "from:()" must include the @ symbol -->
-<t:test_case testcaseid="from_SearchRequest4" type="deprecated" bugids="583">
- <t:objective>
-	Verify that a search for from:(partial address) returns the correct email meessage
- </t:objective>
- <t:steps>
-	email is sent to acct01 in the body of the message
-	Search for from:(origination_domain)
-	Search for from:(origination_domain.com)
- </t:steps>
-
-	<t:test>
-	 <t:request>
-	   <SearchRequest xmlns="urn:zimbraMail" types="message">
-		   <query>from:(origination_domain)</query>
-	   </SearchRequest>
-	 </t:request>
-	  <t:response>
-		<t:select path="//mail:SearchResponse/mail:m">
-			<t:select attr="su" match="^email01E$"/>
-		</t:select>
-	 </t:response>
-	</t:test>
-
-	<t:test>
-	 <t:request>
-	   <SearchRequest xmlns="urn:zimbraMail" types="message">
-		   <query>from:(origination_domain.com)</query>
-	   </SearchRequest>
-	 </t:request>
-	  <t:response>
-		<t:select path="//mail:SearchResponse/mail:m">
-			<t:select attr="su" match="^email01E$"/>
-		</t:select>
-	 </t:response>
-	</t:test>
-
-</t:test_case>
-
 
 <t:test_case testcaseid="from_SearchRequest3" type="functional">
      <t:objective> Verify that a search for from:(@origination_domain.com) returns the correct email meessage </t:objective>

@@ -1,0 +1,39 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:test_case testcaseid="restricted_attribute_verification" type="bhr" bugids="ZCS-4012">
+		<t:objective>Verify server requests for restricted attributes</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="verify_GetAllServersRequest">
+			<t:request>
+				<GetAllServersRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path='//admin:GetAllServersResponse/admin:server[admin:a[@n="zimbraServiceEnabled"]="mailbox"][1]' attr="id" set="server.id1" />
+				<t:select path='//admin:GetAllServersResponse/admin:server[admin:a[@n="zimbraSSLPrivateKey"]="VALUE-BLOCKED"]' />
+			</t:response>
+		</t:test>
+
+		<t:test id="verify_GetServerRequest">
+			<t:request>
+				<GetServerRequest xmlns="urn:zimbraAdmin">
+					<server by="id">${server.id1}</server>
+				</GetServerRequest>
+			</t:request>
+			<t:response>
+				<t:select path='//admin:GetServerResponse/admin:server[admin:a[@n="zimbraSSLPrivateKey"]="VALUE-BLOCKED"]' />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+</t:tests>

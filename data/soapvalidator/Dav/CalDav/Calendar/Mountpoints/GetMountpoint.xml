@@ -1,0 +1,1221 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+ 
+<t:property name="account1.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account1.name" value="${account1.user}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.user}%40${defaultdomain.name}"/>
+<t:property name="account2.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account2.name" value="${account2.user}@${defaultdomain.name}"/>
+
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.read"			value="read"/>
+<t:property name="op.unread"		value="!read"/>
+<t:property name="op.flag"			value="flag"/>
+<t:property name="op.unflag"		value="!flag"/>
+<t:property name="op.tag"			value="tag"/>
+<t:property name="op.untag"			value="!tag"/>
+<t:property name="op.move"			value="move"/>
+<t:property name="op.delete"		value="delete"/>
+
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.grp"			value="grp"/>
+<t:property name="grant.dom"			value="dom"/>
+<t:property name="grant.cos"			value="cos"/>
+<t:property name="grant.all"			value="all"/>
+<t:property name="grant.pub"			value="pub"/>
+<t:property name="grant.guest"			value="guest"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="view.conversation"	value="conversation"/>
+<t:property name="view.message"			value="message"/>
+<t:property name="view.contact"			value="contact"/>
+<t:property name="view.appointment"		value="appointment"/>
+<t:property name="view.note"			value="note"/>
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Basic_AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>
+        1. Login to admin.
+        2. Create accounts
+        3. Account1 shares calendar with account2 (manager rights)
+    </t:steps>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="displayName">${account1.user}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="displayName">${account2.user}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_GetMountpointRequest_Basic_01" type="bhr">
+    <t:objective>Verify a shared calendar can be mounted</t:objective>
+    <t:steps>
+        1. Login as account2.  Share calendar with account1.
+        2. Login as account1.
+        3. Accept and mount the shared calendar
+        4. Use CalDav to view the mounted calendar
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account2.folder.calendar}" op="${op.grant}">
+                    <grant d="${account1.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mountpoint.name" value="Calendar${TIME}${COUNTER}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account1.folder.root}" name="${mountpoint.name}" view="appointment" rid="${account2.folder.calendar}" zid="${account2.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/" depth="1">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+					<x2:calendar-description/>
+					<x3:calendar-color/>
+					<x3:calendar-order/>
+					<x0:resourcetype/>
+  					<x2:calendar-free-busy-set/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint.name}/']">
+            	<t:select path="//D:displayname" match="${mountpoint.name}"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+    
+<t:test_case testcaseid="CalDav_GetMountpointRequest_Basic_02" type="bhr">
+    <t:objective>Verify a shared calendar's data</t:objective>
+    <t:steps>
+        1. Login as account2.  Share calendar with account1.
+        2. Login as account1.
+        3. Accept and mount the shared calendar
+        4. Use CalDav to view the mounted calendar - verify folder data
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<!-- Remove existing ACL -->
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account2.folder.calendar}" op="update">
+                    <acl />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account2.folder.calendar}" op="${op.grant}">
+                    <grant d="${account1.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mountpoint.name" value="Calendar${TIME}${COUNTER}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account1.folder.root}" name="${mountpoint.name}" view="appointment" rid="${account2.folder.calendar}" zid="${account2.id}" color="1"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/" depth="1">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+					<x2:calendar-description/>
+					<x3:calendar-color/>
+					<x3:calendar-order/>
+					<x0:resourcetype/>
+  					<x2:calendar-free-busy-set/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint.name}/']">
+            	<t:select path="//D:displayname" match="${mountpoint.name}"/>
+            	<t:select path="//C:calendar-description" match="${account1.user}’s ${mountpoint.name}"/>
+            	<t:select path="//D:resourcetype">
+            		<t:select path="//D:collection"/>
+            		<t:select path="//C:calendar"/>
+            		<t:select path="//Y:mountpoint"/>
+            	</t:select>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_GetMountpointRequest_Basic_03" type="bhr">
+    <t:objective>Verify getctag Calendar folder is changed after appointment create (shared folder)</t:objective>
+    <t:steps>
+        1. Login as account2.  Share calendar with account1.
+        2. Login as account1.
+        3. Accept and mount the shared calendar
+        4. Use CalDav to view the mounted calendar - verify folder ctag
+        5. account2 creates an appointment
+        6. Account Use CalDav to view the mounted calendar - verify folder ctag has changed
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="folder3.name" value="calendar${TIME}${COUNTER}"/>
+	
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${account2.folder.calendar}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
+        </t:response>
+	</t:test>
+	<!-- Remove existing ACL -->
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="update">
+                    <acl />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="${op.grant}">
+                    <grant d="${account1.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder3.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder3.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mountpoint3.name" value="Mountpoint${TIME}${COUNTER}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account1.folder3.root}" name="${mountpoint3.name}" view="appointment" rid="${folder3.id}" zid="${account2.id}" color="1"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/${mountpoint3.name}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x0:displayname/>
+  					<x1:getctag/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint3.name}/']">
+				<t:select path="//CS:getctag" set="account1.Mountpoint3.ctag"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content${TIME}.${COUNTER}"/>
+	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m l="${folder3.id}">
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <or a="${account2.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment3.invId"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/${mountpoint3.name}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x0:displayname/>
+  					<x1:getctag/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint3.name}/']">
+				<t:select path="//CS:getctag"/>
+				<t:select path="//CS:getctag" match="${account1.Mountpoint3.ctag}" emptyset="1"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_GetMountpointRequest_Basic_05" type="bhr">
+    <t:objective>Verify getctag Calendar folder is changed after appointment delete (shared folder)</t:objective>
+    <t:steps>
+        1. Login as account2.  Share calendar with account1.
+        5. account2 creates an appointment
+        2. Login as account1.
+        3. Accept and mount the shared calendar
+        4. Use CalDav to view the mounted calendar - verify folder ctag
+        4. account2 modifies the appointment
+        6. Account Use CalDav to view the mounted calendar - verify folder ctag has changed
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="folder3.name" value="calendar${TIME}${COUNTER}"/>
+	
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${account2.folder.calendar}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
+        </t:response>
+	</t:test>
+
+	<t:property name="appointment.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content${TIME}.${COUNTER}"/>
+	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m l="${folder3.id}">
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <or a="${account2.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment.invId"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="uid" set="appointment.uid"/>
+            	<t:select path="//mail:comp" attr="compNum" set="appointment.compNum"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!-- Remove existing ACL -->
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="update">
+                    <acl />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="${op.grant}">
+                    <grant d="${account1.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder3.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder3.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mountpoint3.name" value="Mountpoint${TIME}${COUNTER}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account1.folder3.root}" name="${mountpoint3.name}" view="appointment" rid="${folder3.id}" zid="${account2.id}" color="1"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/${mountpoint3.name}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x0:displayname/>
+  					<x1:getctag/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint3.name}/']">
+				<t:select path="//CS:getctag" set="account1.Mountpoint3.ctag"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.invId}" comp="${appointment.compNum}">
+                <m>
+                   <su>Cancelled: ${appointment.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled ${appointment.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/${mountpoint3.name}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x0:displayname/>
+  					<x1:getctag/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint3.name}/']">
+				<t:select path="//CS:getctag"/>
+				<t:select path="//CS:getctag" match="${account1.Mountpoint3.ctag}" emptyset="1"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_GetMountpointRequest_Basic_05" type="bhr">
+    <t:objective>Verify getctag Calendar folder is changed after rename of remote folder (shared folder)</t:objective>
+    <t:steps>
+        1. Login as account2.  Share calendar with account1.
+        2. Login as account1.
+        3. Accept and mount the shared calendar
+        4. Use CalDav to view the mounted calendar - verify folder ctag
+        4. account2 renames the calendar folder the appointment
+        6. Account Use CalDav to view the mounted calendar - verify folder ctag has changed
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="folder3.name" value="calendar${TIME}${COUNTER}"/>
+	
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${account2.folder.calendar}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
+        </t:response>
+	</t:test>
+	<!-- Remove existing ACL -->
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="update">
+                    <acl />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="${op.grant}">
+                    <grant d="${account1.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder3.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder3.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mountpoint3.name" value="Mountpoint${TIME}${COUNTER}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account1.folder3.root}" name="${mountpoint3.name}" view="appointment" rid="${folder3.id}" zid="${account2.id}" color="1"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/${mountpoint3.name}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x0:displayname/>
+  					<x1:getctag/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint3.name}/']">
+				<t:select path="//CS:getctag" set="account1.Mountpoint3.ctag"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="folder3.newname" value="folder${TIME}${COUNTER}"/>
+
+    <t:test id="itemActionRequest1c" depends="itemActionRequest1a,itemActionRequest1b">
+         <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action op="rename" id="${folder3.id}" name="${folder3.newname}" />
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+          	<t:select path="//mail:ItemActionResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/${mountpoint3.name}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x0:displayname/>
+  					<x1:getctag/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint3.name}/']">
+				<t:select path="//CS:getctag"/>
+				<t:select path="//CS:getctag" match="${account1.Mountpoint3.ctag}" emptyset="1"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_GetMountpointRequest_Basic_06" type="bhr">
+    <t:objective>Verify getctag Calendar folder is changed after permission change on remote folder (shared folder)</t:objective>
+    <t:steps>
+        1. Login as account2.  Share calendar with account1.
+        2. Login as account1.
+        3. Accept and mount the shared calendar
+        4. Use CalDav to view the mounted calendar - verify folder ctag
+        4. account2 changes the share permissions on the calendar folder 
+        6. Account Use CalDav to view the mounted calendar - verify folder ctag has changed
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="folder3.name" value="calendar${TIME}${COUNTER}"/>
+	
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${account2.folder.calendar}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
+        </t:response>
+	</t:test>
+    
+    <!-- Remove existing ACL -->
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="update">
+                    <acl />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="${op.grant}">
+                    <grant d="${account1.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder3.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder3.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mountpoint3.name" value="Mountpoint${TIME}${COUNTER}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account1.folder3.root}" name="${mountpoint3.name}" view="appointment" rid="${folder3.id}" zid="${account2.id}" color="1"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/${mountpoint3.name}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x0:displayname/>
+  					<x1:getctag/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint3.name}/']">
+				<t:select path="//CS:getctag" set="account1.Mountpoint3.ctag"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Remove existing ACL -->
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="update">
+                    <acl />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder3.id}" op="${op.grant}">
+                    <grant d="${account1.name}" gt="${grant.usr}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder3.zid"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/${mountpoint3.name}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x0:displayname/>
+  					<x1:getctag/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${mountpoint3.name}/']">
+				<t:select path="//CS:getctag"/>
+				<t:select path="//CS:getctag" match="${account1.Mountpoint3.ctag}" emptyset="1"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+
+</t:tests>

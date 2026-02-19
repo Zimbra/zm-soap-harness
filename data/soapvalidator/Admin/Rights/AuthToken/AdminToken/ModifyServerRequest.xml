@@ -124,42 +124,4 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AuthToken_Admin_ModifyServerRequest_Basic01" type="deprecated" >
-    <t:objective>Use an admin token to ModifyServerRequest</t:objective>
-    <t:steps>
-    1. Login as admin
-	2. Use admin authtoken to ModifyServerRequest  - Success
-	</t:steps>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
-	<t:test >
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAdmin">
-				<name>${admin.user}</name>
-				<password>${admin.password}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-
-		</t:response>
-	</t:test>
-
-    <t:test>
-        <t:request>
-            <ModifyServerRequest  xmlns="urn:zimbraAdmin">
-                <id>${server1.id}</id>
-                <a n="zimbraHsmAge">29d</a>
-            </ModifyServerRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:ModifyServerResponse"/>
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
-
-
 </t:tests>

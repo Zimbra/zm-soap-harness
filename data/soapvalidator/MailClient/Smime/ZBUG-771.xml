@@ -1,0 +1,322 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="user1@zbug771.com"/>
+<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="uploadCert.name1" value="${testMailRaw.root}/zbug771/user1_zbug771_com_cert1.p12"/>
+<t:property name="domain_name" value="zbug771.com"/>
+<t:property name="compose.subject" value="Subject of the message is testing"/>
+<t:property name="compose.content" value="Content in the message is contents..."/>
+<t:property name="password_testcase1" value="zimbra"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="acctSetup1" type="always">
+    <t:objective>create test account</t:objective>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+        </t:response>
+    </t:test>
+
+     <t:test required="true" >
+        <t:request>
+          <CreateDomainRequest xmlns="urn:zimbraAdmin">
+              <name>${domain_name}</name>
+          </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse//admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmimeOCSPEnabled">FALSE</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+	<t:delay sec="30"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureSMIMEEnabled">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test> 
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test> 
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test> 
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:test_case testcaseid="ZBUG-771_BCC_TEST" type="bhr" bugids="ZBUG-771">
+    <t:objective> Verify signed mail is sent successfully and BCC header is not visible</t:objective>
+    <t:property name="uploadServletServer" value="${test_acct1.server}"/>
+    <t:test required="true">
+     <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account1.name}</account>
+            <password>${defaultpassword.value}</password>
+        </AuthRequest>
+     </t:request>
+     <t:response>
+       <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+     </t:response>
+    </t:test>
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${uploadCert.name1}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:select attr="id" set="uploadFileId"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+            <upload id="${uploadFileId}"></upload>
+      </SaveSmimeCertificateRequest>
+     </t:request>
+     <t:response>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pubCertId" set="pubCertId"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pvtKeyId" set="pvtKeyId"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:emailAddress" match="${test_account1.name}"/>
+     </t:response>
+     </t:test>
+	 <t:delay sec="30"/>
+
+   <t:test >
+     <t:request>
+      <SendSecureMsgRequest sign="true" xmlns="urn:zimbraMail">
+        <m>
+          <e t="t" a='${test_account2.name}'/>
+          <e t="b" a='${test_account3.name}'/>
+          <su>${compose.subject}</su>
+          <mp ct="text/plain">
+             <content> ${compose.content} </content>
+          </mp>
+        </m>
+      </SendSecureMsgRequest>
+     </t:request>
+     <t:response>
+        <t:select path="//mail:SendSecureMsgResponse"/>
+     </t:response>
+   </t:test>
+    <t:delay sec="30"/>
+    <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account2.name}</account>
+           <password>${defaultpassword.value}</password>
+           </AuthRequest>
+         </t:request>
+        <t:response>
+           <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+           <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+             <query>subject:${compose.subject}</query>
+           </SearchRequest>
+       </t:request>
+       <t:response>
+          <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${compose.subject}"/>
+          <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+          <t:select path='//mail:SearchResponse/mail:m/mail:e[@t="f"]' emptyset="0"/>
+       </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/signed"/>
+            <!--  bcc check goes here -->
+            <t:select path='//mail:SearchResponse/mail:m/mail:e[@t="b"]' emptyset="1"/>
+        </t:response>
+    </t:test>
+    <t:delay sec="30"/>
+    <t:test required="true">
+        <t:request>
+         <AuthRequest xmlns="urn:zimbraAccount">
+          <account by="name">${test_account3.name}</account>
+          <password>${defaultpassword.value}</password>
+          </AuthRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+           <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    <t:test>
+        <t:request>
+          <SearchRequest xmlns="urn:zimbraMail" types="message">
+            <query>subject:${compose.subject}</query>
+          </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${compose.subject}"/>
+          <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id"/>
+        </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/signed"/>
+            <!--  bcc check goes here -->
+            <t:select path='//mail:SearchResponse/mail:m/mail:e[@t="b"]' emptyset="1"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="ZBUG-771_BCC_RestServlet_TEST" type="bhr" >
+    <t:objective>Verify that bcc is not present in rest response - get a message by id</t:objective>
+    <t:steps>
+    1. Use the rest servlet to get the message contents using the ID
+    2. Verify that BCC is not present in the rest response.
+    </t:steps>
+    <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account2.name}</account>
+           <password>${defaultpassword.value}</password>
+           </AuthRequest>
+         </t:request>
+        <t:response>
+           <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+           <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:property name="server.restServlet" value="${test_acct2.server}"/>
+    <t:resttest>
+        <t:restServletRequest>
+          <id>${msg1.id}</id>
+        </t:restServletRequest>
+        <t:restServletResponse>
+          <t:select attr="StatusCode" match="200"/>
+          <t:select attr="To" match="${test_account2.name}" />
+          <t:select attr="Bcc" emptyset="1" />
+          <t:select attr="Subject" match="${compose.subject}"/>
+        </t:restServletResponse>
+    </t:resttest>
+	<t:delay sec="30"/>
+
+    <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+    <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account3.name}</account>
+           <password>${defaultpassword.value}</password>
+           </AuthRequest>
+         </t:request>
+        <t:response>
+           <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+           <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:property name="server.restServlet" value="${test_acct3.server}"/>
+    <t:resttest>
+        <t:restServletRequest>
+          <id>${msg2.id}</id>
+        </t:restServletRequest>
+        <t:restServletResponse>
+          <t:select attr="StatusCode" match="200"/>
+          <t:select attr="To" match="${test_account2.name}" />
+          <t:select attr="Bcc" emptyset="1" />
+          <t:select attr="Subject" match="${compose.subject}"/>
+        </t:restServletResponse>
+    </t:resttest>
+</t:test_case>
+<t:finally>
+    <t:test id="admin_login" required="true" >
+    <t:request>
+      <AuthRequest xmlns="urn:zimbraAdmin">
+        <name>${admin.user}</name>
+        <password>${admin.password}</password>
+      </AuthRequest>
+     </t:request>
+     <t:response>
+      <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+      </t:response>
+    </t:test>
+    <t:test required="false">
+     <t:request>
+      <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+           <id>${test_account1.id}</id>
+       </DeleteAccountRequest>
+     </t:request>
+     <t:response>
+        <t:select path="//admin:DeleteAccountResponse"/>
+     </t:response>
+   </t:test>
+    <t:test >
+        <t:request>
+            <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain1.id}</id>
+            </DeleteDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDomainResponse" />
+        </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmimeOCSPEnabled">TRUE</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+</t:finally>
+
+</t:tests>

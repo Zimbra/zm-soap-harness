@@ -1,0 +1,96 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <namespace prefix="admin" uri="urn:zimbraAdmin"/>
+    <t:property name="domain0.name" value="${TIME}${COUNTER}"/>
+    <t:test_case testcaseid="Ping" type="chat" >
+        <t:objective>basic system check</t:objective>
+        <t:test id="ping">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin"/>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse"/>
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+    <t:test_case testcaseid="admin_login" type="chat" >
+        <t:objective>Login to Admin Account</t:objective>
+
+        <t:test id="admin_login" required="true" >
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="Setup_test_case" type="chat">
+        <t:objective>Setup test case to create a domain and account</t:objective>
+        <t:test id="CreateDomainRequest0a">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>domain${domain0.name}.com</name>
+                    <a n="zimbraFeatureZulipChatEnabled">TRUE</a>
+                    <a n="zimbraChatJwtSecret">zimbra123</a>
+                    <a n="zimbraZulipChatDomainId">domain${domain0.name}com</a>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain0.id"/>
+            </t:response>
+        </t:test>
+        <t:test id="Create_Account">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>test@domain${domain0.name}.com</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraFeatureZulipChatEnabled">FALSE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account.id"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account.name"/>
+            </t:response>
+        </t:test>
+        <t:test id="Modify_Account">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account.id}</id>
+                    <a n="zimbraFeatureZulipChatEnabled">TRUE</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+        <t:test id="Prov_Account">
+            <t:request>
+                <ProvChatAccountsRequest xmlns="urn:zimbraAdmin">
+                    <domain by="id">${domain0.id}</domain>
+                    <account xmlns="" by="name">${test_account.name}</account>
+                </ProvChatAccountsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ProvChatAccountsResponse/admin:numSucceeded" match="1"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="VerifyAccountOnChatServer" type="chat" depends="Setup_test_case">
+        <t:objective>Verify Account on chat server</t:objective>
+        <t:test>
+            <t:request chat="true" action="getUsers" jwt="zimbra123" domainId="domain${domain0.name}com">
+
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ChatResponse/admin:members/admin:member/admin:email" match="test@domain${domain0.name}.com"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+</t:tests>

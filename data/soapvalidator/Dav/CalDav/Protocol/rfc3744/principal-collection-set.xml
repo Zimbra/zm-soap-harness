@@ -1,0 +1,117 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account1.name" value="${account1.user}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.name}" urlencode="true"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+	  		</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Protocol_Principal-Collection-Set_01" type="functional" bugids="38994">
+	<t:objective>Verify basic rfc3744 compliance - principal-collection-set </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/" depth="0">
+			<propfind xmlns="DAV:">
+				<prop>
+					<current-user-principal/>
+					<principal-collection-set/>
+				</prop>
+			</propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response">
+				<t:select path="//D:principal-collection-set">
+					<t:select path="//D:href" set="principal-collection-set.url"/>
+				</t:select>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="${principal-collection-set.url}" >
+			<propfind xmlns="DAV:" xmlns:I="urn:ietf:params:xml:ns:caldav" xmlns:C="urn:ietf:params:xml:ns:carddav" xmlns:G="http://groupdav.org/" xmlns:A="http://calendarserver.org/ns/">
+				<prop>
+					<displayname/>
+					<resourcetype/>
+					<getetag/>
+					<getcontenttype/>
+					<current-user-privilege-set/>
+					<G:component-set/>
+					<I:supported-calendar-component-set/>
+					<I:supported-calendar-data/>
+					<I:calendar-description/>
+					<C:supported-address-data/>
+					<C:addressbook-description/>
+					<A:getctag/>
+				</prop>
+			</propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response">
+                <t:select path="//D:propstat">
+                    <t:select path="//D:prop">
+                        <t:select path="//D:resourcetype"/>
+                    </t:select>
+                </t:select>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+
+</t:tests>

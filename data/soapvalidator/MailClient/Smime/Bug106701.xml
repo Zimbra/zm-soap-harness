@@ -1,0 +1,334 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="test_account1.name" value="user1_106701@bug106701.com" />
+	<t:property name="test_acct.server" value="${zimbraServer.name}" />
+	<t:property name="uploadCert.name1" value="${testMailRaw.root}/bug106701/bug106701_com.p12" />
+	<t:property name="certId" value="258" />
+	<t:property name="default" value="1" />
+	<t:property name="country" value="IN" />
+	<t:property name="state" value="MH" />
+	<t:property name="dns.name1" value="kb.example.com" />
+	<t:property name="dns.name2" value="systems.example.net" />
+	<t:property name="ipAddress1" value="192.168.1.1" />
+	<t:property name="ipAddress2" value="192.168.69.14" />
+	<t:property name="org" value="Zimbra" />
+	<t:property name="algorithm" value="SHA1withRSA" />
+	<t:property name="serialNumber" value="10975063840498649205" />
+	<t:property name="domain_name" value="bug106701.com" />
+	<t:property name="password_testcase1" value="zimbra" />
+	
+	<t:test_case testcaseid="bug106701_AccountSetup" type="always">
+		<t:objective> Create test account </t:objective>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmimeOCSPEnabled">FALSE</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+	
+	 <t:delay sec="30"/>
+    
+		<t:test required="true">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain_name}</name>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse//admin:domain"
+					attr="id" set="domain1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraFeatureSMIMEEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+
+	<t:test_case testcaseid="bug106701_GetSmimeCertificateInfo_TestCase1"
+		type="bhr" bugids="106701">
+		<t:objective> Get smime certificate info </t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadCert.name1}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="StatusCode" match="200" />
+				<t:select attr="id" set="uploadFileId" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+
+		<t:test>
+			<t:request>
+				<SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+					<upload id="${uploadFileId}"></upload>
+					<password>${password_testcase1}</password>
+				</SaveSmimeCertificateRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate"
+					attr="pubCertId" set="pubCertId" />
+				<t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate"
+					attr="pvtKeyId" set="pvtKeyId" />
+			</t:response>
+		</t:test>
+		
+		 <t:delay sec="30"/>
+
+		<t:test>
+			<t:request>
+				<GetSmimeCertificateInfoRequest
+					certId="${certId}" xmlns="urn:zimbraAccount">
+				</GetSmimeCertificateInfoRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetSmimeCertificateInfoResponse/acct:certificate"
+					attr="pubCertId" match="${pubCertId}" />
+				<t:select path="//acct:GetSmimeCertificateInfoResponse/acct:certificate"
+					attr="pvtKeyId" match="${pvtKeyId}" />
+				<t:select path="//acct:GetSmimeCertificateInfoResponse/acct:certificate"
+					attr="default" match="${default}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:emailAddress"
+					match="${test_account1.name}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedTo/acct:st"
+					match="${state}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedTo/acct:c"
+					match="${country}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedTo/acct:o"
+					match="${org}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedBy/acct:st"
+					match="${state}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedBy/acct:c"
+					match="${country}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedBy/acct:o"
+					match="${org}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:signature/acct:serialNo"
+					match="${serialNumber}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:signature/acct:algorithm"
+					match="${algorithm}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:rfc822Name"
+					match="${test_account1.name}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:dNSName[1]"
+					match="${dns.name1}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:iPAddress[1]"
+					match="${ipAddress1}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:dNSName[2]"
+					match="${dns.name2}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:iPAddress[2]"
+					match="${ipAddress2}" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="bug106701_GetSmimeCertificateInfo_TestCase2"
+		type="bhr" bugids="106701">
+		<t:objective> Get smime certificate info even if certId is not passed
+			in request
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetSmimeCertificateInfoRequest
+					xmlns="urn:zimbraAccount">
+				</GetSmimeCertificateInfoRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetSmimeCertificateInfoResponse/acct:certificate"
+					attr="pubCertId" match="${pubCertId}" />
+				<t:select path="//acct:GetSmimeCertificateInfoResponse/acct:certificate"
+					attr="pvtKeyId" match="${pvtKeyId}" />
+				<t:select path="//acct:GetSmimeCertificateInfoResponse/acct:certificate"
+					attr="default" match="${default}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:emailAddress"
+					match="${test_account1.name}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedTo/acct:st"
+					match="${state}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedTo/acct:c"
+					match="${country}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedTo/acct:o"
+					match="${org}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedBy/acct:st"
+					match="${state}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedBy/acct:c"
+					match="${country}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:issuedBy/acct:o"
+					match="${org}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:signature/acct:serialNo"
+					match="${serialNumber}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:signature/acct:algorithm"
+					match="${algorithm}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:rfc822Name"
+					match="${test_account1.name}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:dNSName[1]"
+					match="${dns.name1}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:iPAddress[1]"
+					match="${ipAddress1}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:dNSName[2]"
+					match="${dns.name2}" />
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse/acct:certificate/acct:subjectAltName/acct:iPAddress[2]"
+					match="${ipAddress2}" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="bug106701_GetSmimeCertificateInfo_TestCase3"
+		type="bhr" bugids="106701">
+		<t:objective> Check the number of certificates returned
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetSmimeCertificateInfoRequest
+					xmlns="urn:zimbraAccount">
+				</GetSmimeCertificateInfoRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:GetSmimeCertificateInfoResponse[count(acct:certificate)=1]" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:finally>
+		<t:objective> Delete domain and account created during the test
+		</t:objective>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="false">
+			<t:request>
+				<DeleteAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${test_account1.id}</id>
+				</DeleteAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<DeleteDomainRequest xmlns="urn:zimbraAdmin">
+					<id>${domain1.id}</id>
+				</DeleteDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteDomainResponse" />
+			</t:response>
+		</t:test>
+		
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmimeOCSPEnabled">TRUE</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>		
+	</t:finally>
+</t:tests>

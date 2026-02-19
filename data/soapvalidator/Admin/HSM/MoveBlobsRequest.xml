@@ -1,0 +1,948 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="tempdir" value="/tmp/volumes"/>
+<t:property name="basedir" value="${tempdir}/volumeRoot${COUNTER}${TIME}"/>
+<t:property name="type" value="2"/>
+
+<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+<t:property name="mgbits_default" value="8"/>
+<t:property name="mbits_default" value="12"/>
+<t:property name="fgbits_default" value="8"/>
+<t:property name="fbits_default" value="12"/>
+<t:property name="compressBlobs_default" value="1"/>
+<t:property name="compressionThreshold_default" value="4096"/>
+
+<t:property name="timezone.pst" value="America/Los_Angeles"/>
+<t:property name="timezone.pst.regex" value="America\\/Los_Angeles"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="AccountSetup" type="always" >
+    <t:objective>basic system check</t:objective>
+	<t:steps>
+		1. Login as the admin.
+		2. Verify that no HSM blob is currently in progress
+		3. Create a valid Secondary Volume. 
+	</t:steps>
+	
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MoveBlobsRequest_Setup" type="bhr" areas="HSM" >
+    <t:objective>Setup HSM and volumes for MoveBlobs test cases</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<GetHsmStatusRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:GetHsmStatusResponse" />
+        </t:response>
+    </t:test>
+
+	<!-- Clean up for the next test case -->
+	<t:test >
+		<t:request depends="GetHsmStatus_HsmRequest01" >
+			<AbortHsmRequest  xmlns="urn:zimbraAdmin" action="cancel"/>
+		</t:request>
+	</t:test>
+
+	<t:for start="1" end="180" break="response">
+		<t:delay msec="1000"/>
+		<t:test >
+			<t:request>
+				<GetHsmStatusRequest xmlns="urn:zimbraAdmin"/>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetHsmStatusResponse[@running='0']" query="response" />
+			</t:response>
+		</t:test>
+	</t:for>
+
+    <t:test required="true">
+        <t:request>
+			<GetCurrentVolumesRequest xmlns="urn:zimbraAdmin">
+			</GetCurrentVolumesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCurrentVolumesResponse">
+            	<t:select path="//admin:volume[@type='1']" attr="id" set="volume.primary.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+    <t:test required="true">
+        <t:request>
+			<CreateVolumeRequest xmlns="urn:zimbraAdmin">
+				<volume 
+					type="${type}" 
+					name="${name}" 
+					rootpath="${rootpath}" 
+					mgbits="${mgbits_default}" 
+					mbits="${mbits_default}" 
+					fgbits="${fgbits_default}" 
+					fbits="${fbits_default}" 
+					compressBlobs="${compressBlobs_default}" 
+					compressionThreshold="${compressionThreshold_default}"/>
+			</CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"	attr="id" set="volume.secondary.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MoveBlobsRequest_01" type="bhr" areas="HSM" >
+    <t:objective>Verify basic MoveBlobsRequest. </t:objective>
+	<t:steps>
+		1. Send basic MoveBlobsRequest - verify response attributes
+	</t:steps>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="all" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>subject:(subject${TIME}${COUNTER})</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="totalMailboxes" match="^\d+$"/>
+            	<t:select attr="numBytesMoved" match="^\d+$"/>
+            	<t:select attr="numBlobsMoved" match="^\d+$"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MoveBlobsRequest_02" type="bhr" areas="HSM" >
+    <t:objective>Verify MoveBlobsRequest moves blobs when requested. </t:objective>
+	<t:steps>
+		1. Inject a message into the account
+		2. Send MoveBlobsRequest - verify the message blob is moved
+	</t:steps>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${testMailRaw.root}/email01/msg01.txt</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${message.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="all" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>subject:(${message.subject})</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="1"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MoveBlobsRequest_03" type="bhr" areas="HSM" >
+    <t:objective>Verify MoveBlobsRequest moves message blobs when requested. </t:objective>
+	<t:steps>
+		1. Inject a message into the account
+		2. Send MoveBlobsRequest - verify the message blob is moved
+	</t:steps>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${testMailRaw.root}/email01/msg01.txt</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${message.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="message" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>subject:(${message.subject})</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="1"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MoveBlobsRequest_04" type="bhr" areas="HSM" >
+    <t:objective>Verify MoveBlobsRequest moves appointment blobs when requested. </t:objective>
+	<t:steps>
+		1. Inject an appointment into the account
+		2. Send MoveBlobsRequest - verify the message blob is moved
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="uploadServletServer" value="${account1.server}"/>
+	<t:property name="appointment.attachment.filename" value="${testMailRaw.root}/reindex/103"/>
+
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${appointment.attachment.filename}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="appointment.attachment.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+    
+	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="appointment.content" value="content${TIME}${COUNTER}"/>
+	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <su>${appointment.subject}</su>
+                   	<mp ct="text/plain">
+                   		<content>${appointment.content}</content>
+                  	</mp>
+                  	<attach aid="${appointment.attachment.aid}"/>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="appointment" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>${appointment.content}</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="1"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MoveBlobsRequest_05" type="bhr" areas="HSM" bugids="38486" >
+    <t:objective>Verify MoveBlobsRequest moves contact blobs when requested. </t:objective>
+	<t:steps>
+		1. Inject an appointment into the account
+		2. Send MoveBlobsRequest - verify the message blob is moved
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="contact.email" value="email${TIME}${COUNTER}@domain.com"/>
+	<t:property name="contact.image.file" value="${testMailRaw.root}/contact/image1.jpg"/>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${contact.image.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="contact.image.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+   
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First${TIME}${COUNTER}</a>
+                    <a n="lastName">Last${TIME}${COUNTER}</a>
+                    <a n="email">${contact.email}</a>
+					<a n="image" aid="${contact.image.aid}"/>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+	  		<SearchRequest xmlns="urn:zimbraMail" types="contact">
+	   			<query>${contact.email}</query>
+	   		</SearchRequest>
+	 	</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse/mail:cn"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="contact" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>${contact.email}</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="1"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MoveBlobsRequest_06" type="bhr" areas="HSM" >
+    <t:objective>Verify MoveBlobsRequest moves task blobs when requested. </t:objective>
+	<t:steps>
+		1. Inject an task into the account
+		2. Send MoveBlobsRequest - verify the message blob is moved
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="uploadServletServer" value="${account1.server}"/>
+	<t:property name="appointment.attachment.filename" value="${testMailRaw.root}/reindex/103"/>
+
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${appointment.attachment.filename}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="appointment.attachment.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+    
+	<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
+
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account1.name}"/>
+							<recur>
+								<add>
+									<rule freq="DAI">
+										<interval ival="1"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+                  	<attach aid="${appointment.attachment.aid}"/>
+				</m>
+			</CreateTaskRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTaskResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="task" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>${appointment.subject}</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="1"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MoveBlobsRequest_09" type="bhr" areas="HSM" >
+    <t:objective>Verify MoveBlobsRequest moves document blobs when requested. </t:objective>
+	<t:steps>
+		1. Inject an document into the account
+		2. Send MoveBlobsRequest - verify the message blob is moved
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="notbook.folder.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="uploadServletServer" value="${account1.server}"/>
+	<t:property name="account1.document1.content" value="content124406444267611"/>
+	<t:property name="account1.document1.filename" value="${testMailRaw.root}/wiki02/basic.html"/>
+
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document1.filename}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${notbook.folder.id}">
+			    <upload id="${document1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="document" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>${account1.document1.content}</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="1"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MoveBlobsRequest_10" type="functional" areas="HSM" bugids="38485" >
+    <t:objective>Verify MoveBlobsRequest types is a required attribute. </t:objective>
+	<t:steps>
+		1. Send MoveBlobsRequest without "types" attribute - verify error response </t:steps>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${testMailRaw.root}/email01/msg01.txt</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${message.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>subject:(${message.subject})</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>            	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MoveBlobsRequest_11" type="bhr" areas="HSM" >
+    <t:objective>Verify MoveBlobsRequest does not move messages if types="appointment" is used. </t:objective>
+	<t:steps>
+		1. Inject an document into the account
+		2. Send MoveBlobsRequest - verify the message blob is moved
+	</t:steps>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${testMailRaw.root}/email01/msg01.txt</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${message.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="appointment" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>subject:(${message.subject})</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="0"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MoveBlobsRequest_12" type="bhr" areas="HSM" >
+    <t:objective>Verify MoveBlobsRequest moves dupe'ed messages. </t:objective>
+	<t:steps>
+		1. Login to account1
+		2. Send a message to account2 and account3
+		2. Send MoveBlobsRequest - verify the message blobs are moved
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="message.content" value="content${TIME}${COUNTER}"/>
+
+	<t:test >
+  		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a="${account2.name}"/>
+					<e t="t" a="${account3.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+	    				<content>${message.content}</content>
+					</mp>
+     			</m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+      		<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="all" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" >
+  				<query>subject:(${message.subject})</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="3"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MoveBlobsRequest_13" type="bhr" areas="HSM" >
+    <t:objective>Verify MoveBlobsRequest maxBytes attribute. </t:objective>
+	<t:steps>
+		1. Inject several messages into account1
+		2. Send MoveBlobsRequest - verify the message blobs are moved
+	</t:steps>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${testMailRaw.root}/email45</foldername>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${message.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin"  maxBytes="30000" types="all" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}">
+  				<query>subject:(${message.subject})</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="8"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MoveBlobsRequest_14" type="bhr" areas="HSM" bugids="38385" >
+    <t:objective>Verify MoveBlobsRequest maxBytes attribute. </t:objective>
+	<t:steps>
+		1. Inject several messages into account1
+		2. Send MoveBlobsRequest - verify the message blobs are moved
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: ${message.subject}
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse">
+            	<t:select path="//mail:m" attr="id" set="message.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<MoveBlobsRequest xmlns="urn:zimbraAdmin" types="all" sourceVolumeIds="${volume.primary.id}" destVolumeId="${volume.secondary.id}" maxBytes="20000">
+  				<query>subject:(${message.subject})</query>
+			</MoveBlobsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MoveBlobsResponse">
+            	<t:select attr="numBlobsMoved" match="1"/>            	
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

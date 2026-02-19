@@ -1,0 +1,188 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.name}" urlencode="true"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+	  		</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Calendar_CreateAppointment_01" type="bhr">
+	<t:objective>Create an appointment using CalDav</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="appointment.uid" value="${UUID}"/>
+
+	<t:caldav >
+		<t:request method="PUT" uri="/dav/${account1.name.encoded}/Calendar/${appointment.uid}.ics" >
+			<ical>BEGIN:VCALENDAR
+PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:America/Los_Angeles
+X-LIC-LOCATION:America/Los_Angeles
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0800
+TZOFFSETTO:-0700
+TZNAME:PDT
+DTSTART:19700308T020000
+RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=2SU;BYMONTH=3
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0700
+TZOFFSETTO:-0800
+TZNAME:PST
+DTSTART:19701101T020000
+RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=1SU;BYMONTH=11
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+CREATED:20090508T191255Z
+LAST-MODIFIED:20090508T191308Z
+DTSTAMP:20090508T191308Z
+UID:${appointment.uid}
+SUMMARY:${appointment.subject}
+DTSTART;TZID=America/Los_Angeles:20090511T130000
+DTEND;TZID=America/Los_Angeles:20090511T140000
+LOCATION:ApptLocation
+DESCRIPTION:ApptDescription
+X-MOZ-GENERATION:1
+END:VEVENT
+END:VCALENDAR
+</ical>
+	 	</t:request>
+	 	<t:response>
+	 		<t:status code="201"/>
+	 	</t:response>
+	</t:caldav>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+	   		<SearchRequest xmlns="urn:zimbraMail" types="message, appointment">
+	   			<query>${appointment.subject}</query>
+	   		</SearchRequest>
+	 	</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:appt[@uid='${appointment.uid}']"/>
+			</t:select>
+	 	</t:response>
+	</t:test>
+
+	<t:caldav required="true">
+		<t:request method="REPORT" uri="/dav/${account1.name}/Calendar/" depth="1">
+			<calendar-multiget xmlns:D="DAV:" xmlns="urn:ietf:params:xml:ns:caldav">
+  				<D:prop>
+    				<D:getetag/>
+    				<calendar-data/>
+  				</D:prop>
+  				<D:href>/dav/${account1.name}/Calendar/${appointment.uid}.ics</D:href>
+			</calendar-multiget>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response">
+				<t:select path="//D:href" match=".*${appointment.uid}.*" set="appointment.href"/>
+				<t:select path="//D:getetag" set="appointment.etag"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+
+</t:test_case>
+
+
+</t:tests>

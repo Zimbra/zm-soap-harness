@@ -1,0 +1,120 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <namespace prefix="admin" uri="urn:zimbraAdmin"/>
+    <t:property name="domain0.name" value="${TIME}${COUNTER}"/>
+    <t:test_case testcaseid="Ping" type="chat" >
+        <t:objective>basic system check</t:objective>
+        <t:test id="ping">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin"/>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse"/>
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+    <t:test_case testcaseid="admin_login" type="chat" >
+        <t:objective>Login to Admin Account</t:objective>
+
+        <t:test id="admin_login" required="true" >
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="Setup_TestCase" type="chat">
+        <t:objective>Setup test case to create domain and account</t:objective>
+        <t:test id="CreateDomainRequest0a">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>domain${domain0.name}.com</name>
+                    <a n="zimbraFeatureZulipChatEnabled">TRUE</a>
+                    <a n="zimbraChatJwtSecret">zimbra123</a>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain0.id"/>
+            </t:response>
+        </t:test>
+
+        <t:test >
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>test@domain${domain0.name}.com</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraFeatureZulipChatEnabled">FALSE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account.id"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account.name"/>
+            </t:response>
+        </t:test>
+
+        <t:test >
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account.id}</id>
+                    <a n="zimbraFeatureZulipChatEnabled">TRUE</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+
+    <t:test_case testcaseid="ProvChatAccount_01" type="chat" depends="Setup_TestCase">
+        <t:objective>Provision an account for Chat</t:objective>
+        <t:test >
+            <t:request>
+                <ProvChatAccountsRequest xmlns="urn:zimbraAdmin">
+                    <domain by="id">${domain0.id}</domain>
+                    <name>${test_account.name}</name>
+                </ProvChatAccountsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ProvChatAccountsResponse/admin:numSucceeded" match="1"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+
+    <t:test_case testcaseid="Deactivate_Account" type="chat" depends="Setup_TestCase">
+        <t:objective>Deactivate an account on Chat Server</t:objective>
+        <t:test >
+            <t:request>
+                <ManageChatAccountRequest xmlns="urn:zimbraAdmin" action="deactivate">
+                    <account xmlns="" by="name">${test_account.name}</account>
+                </ManageChatAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ManageChatAccountResponse/admin:a[@n='is_active']" match="false"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+
+    <t:test_case testcaseid="Activate_Account" type="chat" depends="Setup_TestCase">
+        <t:objective>Activate an account on Chat Server</t:objective>
+        <t:test >
+            <t:request>
+                <ManageChatAccountRequest xmlns="urn:zimbraAdmin" action="activate">
+                    <account xmlns="" by="name">${test_account.name}</account>
+                </ManageChatAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ManageChatAccountResponse/admin:a[@n='is_active']" match="true"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+</t:tests>

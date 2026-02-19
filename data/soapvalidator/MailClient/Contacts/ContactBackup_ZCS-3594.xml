@@ -1,0 +1,222 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="account1.name" value="test${TIME}@${defaultdomain.name}" />
+	<t:property name="account1.password" value="${defaultpassword.value}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>Basic system check</t:objective>
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="Account_Setup" type="always">
+		<t:objective>Create user account</t:objective>
+		<t:steps>1. Login to admin.
+				 2. Create test accounts
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${admin.user}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_testAccount" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${account1.password}</password>
+					<a n="zimbraFeatureContactBackupEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="Verify_ContactBackup_Flow" type="bhr" bugids="ZCS-3594">
+		<t:objective>Backup and restore contacts</t:objective>
+		<t:steps>1. Log in as account 1.
+			2. Add few contacts
+			3. Log in as admin
+			4. Run contact backup
+			5. Log in as account 1.
+			6. Delete one of the contacts
+			7. Log in as admin
+			8. Restore
+			contacts using latest backup
+			9. Log in as account 1 and verify contact that was deleted after backup has been
+			restored.
+		</t:steps>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateContactRequest1">
+			<t:request>
+				<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">First1</a>
+						<a n="lastName">Last1</a>
+						<a n="email">email1@domain.com</a>
+					</cn>
+				</CreateContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateContactResponse/mail:cn">
+					<t:select attr="id" set="contact1.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateContactRequest2">
+			<t:request>
+				<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">First2</a>
+						<a n="lastName">Last2</a>
+						<a n="email">email2@domain.com</a>
+					</cn>
+				</CreateContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateContactResponse/mail:cn">
+					<t:select attr="id" set="contact2.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateContactRequest3">
+			<t:request>
+				<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">First3</a>
+						<a n="lastName">Last3</a>
+						<a n="email">email3@domain.com</a>
+					</cn>
+				</CreateContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateContactResponse/mail:cn">
+					<t:select attr="id" set="contact3.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:property name="server.zimbraAccount" value="${admin.server}" />
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="contactBackup">
+			<t:request>
+				<ContactBackupRequest xmlns="urn:zimbraAdmin" op="start" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ContactBackupResponse/admin:servers/admin:server[@name='${admin.server}']" attr="status" match="started" />
+			</t:response>
+		</t:test>
+
+		<t:delay sec="60"/>
+
+		<t:property name="server.zimbraAccount" value="${admin.server}" />
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="deleteContact">
+			<t:request>
+				<ContactActionRequest xmlns="urn:zimbraMail">
+					<action id="${contact2.id}" op="delete" />
+				</ContactActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ContactActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+        <t:delay sec="30"/>
+		<t:test id="get_Contact_backupFile">
+			<t:request>
+				<GetContactBackupListRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetContactBackupListResponse/mail:backups/mail:backup[1]" set="backup.file" />
+			</t:response>
+		</t:test>
+
+		<t:test id="restore_contact_Backup">
+			<t:request>
+				<RestoreContactsRequest contactsBackupFileName="${backup.file}" xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select path="//mail:RestoreContactsResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="search_Restored_contact">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>in:contacts</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="First1" />
+				<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="First2" />
+				<t:select path="//mail:SearchResponse//mail:cn//mail:a[contains(@n,'firstName')]" match="First3" />
+			</t:response>
+		</t:test>	
+	</t:test_case>
+</t:tests>

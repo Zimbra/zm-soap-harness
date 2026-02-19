@@ -1,0 +1,407 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="test_account1.username"
+		value="test1${TIME}.${COUNTER}" />		
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />		
+	<t:property name="test_account1.password" value="test123" />	
+	<t:property name="test_account2.username"
+		value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+	<t:property name="test_account3.username"
+		value="test3${TIME}.${COUNTER}" />		
+	<t:property name="test_account3.name"
+		value="${test_account3.username}@${defaultdomain.name}" />		
+	<t:property name="test_account3.password" value="test123" />	
+	<t:property name="test_acct.server" value="NOT_DEFINED" />	
+	<t:property name="message.subject" value="test forward subject" />	
+	<t:property name="message.content" value=" test forward content" />	
+	<t:property name="message.forward_subject" value="test forward subject" />		
+	<t:property name="message.subject1" value="FW: test forward subject" />	
+	<t:property name="message.content1" value="Test forward content1" />	
+	<t:property name="message.forward_subject1" value="FW: test forward subject" />
+	<t:property name="upload.filename" value="${testMailRaw.root}/ews/image1.jpg"/>	
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account3" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account3.name}</name>
+					<password>${test_account3.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+		
+	
+		
+	<t:test_case testcaseid="Forward_AttachmentMail_From_EWS" type="bhr">
+			<t:objective>Send mail with attachment from user1 To user2 from ZWC and sync on EWS. Then forward same mail to user3 from EWS.
+			</t:objective>
+			<t:steps>1. Compose and send mail with attachment from user1 from ZWC
+					2. Sync on EWS client for received mail.
+					3. Forward same mail to user3 from EWS
+			</t:steps>
+	
+			
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>	
+			
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${upload.filename}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="upload.aid"/>
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+			
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account2.name}' />						
+						<su>${message.subject}</su>
+						<mp ct="text/plain">
+							<content>${message.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState0" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+									<t:FieldURI FieldURI="message:ToRecipients" />								
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail_id}" ChangeKey="${mail_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"  contains="${message.content}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:ToRecipients//ewstype:EmailAddress" match="${test_account2.name}" />			
+			</t:response>
+		</t:test>
+			
+	<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>				
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+							<SavedItemFolderId>
+								<t:FolderId Id="5"/>
+							</SavedItemFolderId>
+								<Items>
+									<t:Message>
+										<t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xZi4wLjE3MDIxNgpTdWJqZWN0OiBGVzogdGVzdCBmb3J3YXJkIHN1YmplY3QKVGhyZWFkLVRvcGljOiB0ZXN0IGZvcndhcmQgc3ViamVjdApNaW1lLXZlcnNpb246IDEuMApDb250ZW50LXR5cGU6IG11bHRpcGFydC9taXhlZDsKCWJvdW5kYXJ5PSJCXzM1ODczOTI0NzVfMTM3Mzc2OTI3OSIKCj4gVGhpcyBtZXNzYWdlIGlzIGluIE1JTUUgZm9ybWF0LiBTaW5jZSB5b3VyIG1haWwgcmVhZGVyIGRvZXMgbm90IHVuZGVyc3RhbmQKdGhpcyBmb3JtYXQsIHNvbWUgb3IgYWxsIG9mIHRoaXMgbWVzc2FnZSBtYXkgbm90IGJlIGxlZ2libGUuCgotLUJfMzU4NzM5MjQ3NV8xMzczNzY5Mjc5CkNvbnRlbnQtdHlwZTogbXVsdGlwYXJ0L2FsdGVybmF0aXZlOwoJYm91bmRhcnk9IkJfMzU4NzM5MjQ3NV8yMTE3MjA3Njc1IgoKCi0tQl8zNTg3MzkyNDc1XzIxMTcyMDc2NzUKQ29udGVudC10eXBlOiB0ZXh0L3BsYWluOwoJY2hhcnNldD0iVVRGLTgiCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IDdiaXQKClRlc3QgZm9yd2FyZCBjb250ZW50MQoKIAoKU3ViamVjdDogdGVzdCBmb3J3YXJkIHN1YmplY3QKCiAKCnRlc3QgZm9yd2FyZCBjb250ZW50CgoKLS1CXzM1ODczOTI0NzVfMjExNzIwNzY3NQpDb250ZW50LXR5cGU6IHRleHQvaHRtbDsKCWNoYXJzZXQ9IlVURi04IgpDb250ZW50LXRyYW5zZmVyLWVuY29kaW5nOiBxdW90ZWQtcHJpbnRhYmxlCgo8aHRtbCB4bWxuczpvPTNEInVybjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0zRCJ1cm46c2NoZW1hPQpzLW1pY3Jvc29mdC1jb206b2ZmaWNlOndvcmQiIHhtbG5zOm09M0QiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9vZmZpY2UvMjA9CjA0LzEyL29tbWwiIHhtbG5zPTNEImh0dHA6Ly93d3cudzMub3JnL1RSL1JFQy1odG1sNDAiPjxoZWFkPjxtZXRhIG5hbWU9M0RUaXRsZSBjPQpvbnRlbnQ9M0QiIj48bWV0YSBuYW1lPTNES2V5d29yZHMgY29udGVudD0zRCIiPjxtZXRhIGh0dHAtZXF1aXY9M0RDb250ZW50LVR5cGUgY29udGU9Cm50PTNEInRleHQvaHRtbDsgY2hhcnNldD0zRHV0Zi04Ij48bWV0YSBuYW1lPTNER2VuZXJhdG9yIGNvbnRlbnQ9M0QiTWljcm9zb2Z0IFdvcmQgMT0KNSAoZmlsdGVyZWQgbWVkaXVtKSI+PHN0eWxlPjwhLS0KLyogRm9udCBEZWZpbml0aW9ucyAqLwpAZm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6QXJpYWw7CglwYW5vc2UtMToyIDExIDYgNCAyIDIgMiAyIDIgNDt9CkBmb250LWZhY2UKCXtmb250LWZhbWlseToiQ2FtYnJpYSBNYXRoIjsKCXBhbm9zZS0xOjAgMCAwIDAgMCAwIDAgMCAwIDA7fQpAZm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6Q2FsaWJyaTsKCXBhbm9zZS0xOjIgMTUgNSAyIDIgMiA0IDMgMiA0O30KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8KcC5Nc29Ob3JtYWwsIGxpLk1zb05vcm1hbCwgZGl2Lk1zb05vcm1hbAoJe21hcmdpbjowY207CgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7Cglmb250LXNpemU6MTIuMHB0OwoJZm9udC1mYW1pbHk6IlRpbWVzIE5ldyBSb21hbiI7fQphOmxpbmssIHNwYW4uTXNvSHlwZXJsaW5rCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6IzA1NjNDMTsKCXRleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7fQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQKCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xvcjojOTU0RjcyOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9CnNwYW4uRW1haWxTdHlsZTE3Cgl7bXNvLXN0eWxlLXR5cGU6cGVyc29uYWwtcmVwbHk7Cglmb250LWZhbWlseTpDYWxpYnJpOwoJY29sb3I6d2luZG93dGV4dDt9CnNwYW4ubXNvSW5zCgl7bXNvLXN0eWxlLXR5cGU6ZXhwb3J0LW9ubHk7Cgltc28tc3R5bGUtbmFtZToiIjsKCXRleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7Cgljb2xvcjp0ZWFsO30KLk1zb0NocERlZmF1bHQKCXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsKCWZvbnQtc2l6ZToxMC4wcHQ7fQpAcGFnZSBXb3JkU2VjdGlvbjEKCXtzaXplOjU5NS4wcHQgODQyLjBwdDsKCW1hcmdpbjo3Mi4wcHQgNzIuMHB0IDcyLjBwdCA3Mi4wcHQ7fQpkaXYuV29yZFNlY3Rpb24xCgl7cGFnZTpXb3JkU2VjdGlvbjE7fQotLT48L3N0eWxlPjwvaGVhZD48Ym9keSBiZ2NvbG9yPTNEd2hpdGUgbGFuZz0zREVOLVVTIGxpbms9M0QiIzA1NjNDMSIgdmxpbms9M0QiIzk1ND0KRjcyIj48ZGl2IGNsYXNzPTNEV29yZFNlY3Rpb24xPjxwIGNsYXNzPTNETXNvTm9ybWFsPjxzcGFuIHN0eWxlPTNEJ2ZvbnQtc2l6ZToxMS4wcD0KdDtmb250LWZhbWlseTpDYWxpYnJpJz5UZXN0IGZvcndhcmQgY29udGVudDE8bzpwPjwvbzpwPjwvc3Bhbj48L3A+PHAgY2xhc3M9M0RNPQpzb05vcm1hbD48c3BhbiBzdHlsZT0zRCdmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFtaWx5OkNhbGlicmknPjxvOnA+Jm5ic3A7PC9vOnA9Cj48L3NwYW4+PC9wPjxkaXYgc3R5bGU9M0QnYm9yZGVyOm5vbmU7Ym9yZGVyLXRvcDpzb2xpZCAjQjVDNERGIDEuMHB0O3BhZGRpbmc6Mz0KLjBwdCAwY20gMGNtIDBjbSc+PGJyPjxiPlN1YmplY3Q6IDwvYj50PQplc3QgZm9yd2FyZCBzdWJqZWN0PG86cD48L286cD48L3NwYW4+PC9wPjwvZGl2PjxkaXY+PHAgY2xhc3M9M0RNc29Ob3JtYWw+PG86cD49CiZuYnNwOzwvbzpwPjwvcD48L2Rpdj48ZGl2PjxkaXY+PHAgY2xhc3M9M0RNc29Ob3JtYWw+PHNwYW4gc3R5bGU9M0QnZm9udC1mYW1pbHk6PQpBcmlhbDtjb2xvcjpibGFjayc+dGVzdCBmb3J3YXJkIGNvbnRlbnQ8bzpwPjwvbzpwPjwvc3Bhbj48L3A+PC9kaXY+PC9kaXY+PC9kPQppdj48L2JvZHk+PC9odG1sPgoKLS1CXzM1ODczOTI0NzVfMjExNzIwNzY3NS0tCgoKLS1CXzM1ODczOTI0NzVfMTM3Mzc2OTI3OQpDb250ZW50LXR5cGU6IHRleHQvcGxhaW47IG5hbWU9ImltYXBkbG9nLnR4dCIKQ29udGVudC1kaXNwb3NpdGlvbjogYXR0YWNobWVudDsKCWZpbGVuYW1lPSJpbWFwZGxvZy50eHQiCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IGJhc2U2NAoKCk1qQXhOeTB3T0Mwd01TQXdNem93TWpveE5pdzFORGdnU1U1R1R5QWdXMGx0WVhCVFUweFRaWEoyWlhJdE4xMGdXMjVoYldVOQphVEZBZW5GaExUSTRNaTVsYm1jdWVtbHRZbkpoTG1OdmJUdHBjRDB4TUM0eE16a3VNalExTGpJM08yOXBjRDB4TUM0eE5TNHoKTWk0eE56TTdkbWxoUFUxaFl5QlBVeUJZSUUxaGFXd3ZPUzR6SUNnek1USTBLU3d4TUM0eE16a3VNalExTGpJM0tHNW5hVzU0Ckx6RXVOeTR4S1R0MVlUMWFhVzFpY21Fdk9DNDRMakZmUjBGZk1UYzRNanRkSUdsdFlYQWdMU0JYWVdsMFUyVjBVbVZ4ZFdWegpkQ0IzWVhNZ1kyRnVZMlZzYkdWa0RRb3lNREUzTFRBNExUQXhJREF6T2pBeU9qRTJMRFUzT0NCSlRrWlBJQ0JiU1cxaGNGTlQKVEZObGNuWmxjaTAzWFNCYmJtRnRaVDFwTVVCNmNXRXRNamd5TG1WdVp5NTZhVzFpY21FdVkyOXRPMmx3UFRFd0xqRXpPUzR5Ck5EVXVNamM3YjJsd1BURXdMakUxTGpNeUxqRTNNenQyYVdFOVRXRmpJRTlUSUZnZ1RXRnBiQzg1TGpNZ0tETXhNalFwTERFdwpMakV6T1M0eU5EVXVNamNvYm1kcGJuZ3ZNUzQzTGpFcE8zVmhQVnBwYldKeVlTODRMamd1TVY5SFFWOHhOemd5TzEwZ2FXMWgKY0NBdElITmxiR1ZqZEdWa0lHWnZiR1JsY2lCSlRrSlBXQTBLTWpBeE55MHdPQzB3TVNBd016b3dNam94Tml3MU56a2dTVTVHClR5QWdXMGx0WVhCVFUweFRaWEoyWlhJdE4xMGdXMjVoYldVOWFURkFlbkZoTFRJNE1pNWxibWN1ZW1sdFluSmhMbU52YlR0cApjRDB4TUM0eE16a3VNalExTGpJM08yOXBjRDB4TUM0eE5TNHpNaTR4TnpNN2RtbGhQVTFoWXlCUFV5QllJRTFoYVd3dk9TNHoKSUNnek1USTBLU3d4TUM0eE16a3VNalExTGpJM0tHNW5hVzU0THpFdU55NHhLVHQxWVQxYWFXMWljbUV2T0M0NExqRmZSMEZmCk1UYzRNanRkSUdsdFlYQWdMU0JUUlV4RlExUWdaV3hoY0hObFpEMHhOREVOQ2pJd01UY3RNRGd0TURFZ01ETTZNREk2TVRZcwpPREF3SUVsT1JrOGdJRnRKYldGd1UxTk1VMlZ5ZG1WeUxUWmRJRnR1WVcxbFBXa3hRSHB4WVMweU9ESXVaVzVuTG5wcGJXSnkKWVM1amIyMDdhWEE5TVRBdU1UTTVMakkwTlM0eU56dHZhWEE5TVRBdU1UVXVNekl1TVRjek8zWnBZVDFOWVdNZ1QxTWdXQ0JOCllXbHNMemt1TXlBb016RXlOQ2tzTVRBdU1UTTVMakkwTlM0eU55aHVaMmx1ZUM4eExqY3VNU2s3ZFdFOVdtbHRZbkpoTHpndQpPQzR4WDBkQlh6RTNPREk3WFNCcGJXRndJQzBnU1VSTVJTQmxiR0Z3YzJWa1BUQU5Dakl3TVRjdE1EZ3RNREVnTURNNk1ESTYKTVRjc01ERTNJRWxPUms4Z0lGdEpiV0Z3VTFOTVUyVnlkbVZ5TFRSZElGdHVZVzFsUFdreFFIcHhZUzB5T0RJdVpXNW5MbnBwCmJXSnlZUzVqYjIwN2FYQTlNVEF1TVRNNUxqSTBOUzR5Tnp0dmFYQTlNVEF1TVRVdU16SXVNVGN6TzNacFlUMU5ZV01nVDFNZwpXQ0JOWVdsc0x6a3VNeUFvTXpFeU5Da3NNVEF1TVRNNUxqSTBOUzR5TnlodVoybHVlQzh4TGpjdU1TazdkV0U5V21sdFluSmgKTHpndU9DNHhYMGRCWHpFM09ESTdYU0JwYldGd0lDMGdTVVJNUlNCbGJHRndjMlZrUFRBTkNqSXdNVGN0TURndE1ERWdNRE02Ck1ESTZNVGNzTmpReklFbE9SazhnSUZ0SmJXRndVMU5NVTJWeWRtVnlMVGRkSUZ0dVlXMWxQV2t4UUhweFlTMHlPREl1Wlc1bgpMbnBwYldKeVlTNWpiMjA3YVhBOU1UQXVNVE01TGpJME5TNHlOenR2YVhBOU1UQXVNVFV1TXpJdU1UY3pPM1pwWVQxTllXTWcKVDFNZ1dDQk5ZV2xzTHprdU15QW9NekV5TkNrc01UQXVNVE01TGpJME5TNHlOeWh1WjJsdWVDOHhMamN1TVNrN2RXRTlXbWx0ClluSmhMemd1T0M0eFgwZEJYekUzT0RJN1hTQnBiV0Z3SUMwZ1JrVlVRMGdnWld4aGNITmxaRDAwTURnTkNqSXdNVGN0TURndApNREVnTURNNk1ESTZNVGdzTURVM0lFbE9SazhnSUZ0SmJXRndVMU5NVTJWeWRtVnlMVFpkSUZ0dVlXMWxQV2t4UUhweFlTMHkKT0RJdVpXNW5MbnBwYldKeVlTNWpiMjA3YVhBOU1UQXVNVE01TGpJME5TNHlOenR2YVhBOU1UQXVNVFV1TXpJdU1UY3pPM1pwCllUMU5ZV01nVDFNZ1dDQk5ZV2xzTHprdU15QW9NekV5TkNrc01UQXVNVE01TGpJME5TNHlOeWh1WjJsdWVDOHhMamN1TVNrNwpkV0U5V21sdFluSmhMemd1T0M0eFgwZEJYekUzT0RJN1hTQnBiV0Z3SUMwZ1RGTlZRaUJsYkdGd2MyVmtQVGtOQ2pJd01UY3QKTURndE1ERWdNRE02TURJNk1UZ3NNekUwSUVsT1JrOGdJRnRKYldGd1UxTk1VMlZ5ZG1WeUxUUmRJRnR1WVcxbFBXa3hRSHB4CllTMHlPREl1Wlc1bkxucHBiV0p5WVM1amIyMDdhWEE5TVRBdU1UTTVMakkwTlM0eU56dHZhWEE5TVRBdU1UVXVNekl1TVRjegpPM1pwWVQxTllXTWdUMU1nV0NCTllXbHNMemt1TXlBb016RXlOQ2tzTVRBdU1UTTVMakkwTlM0eU55aHVaMmx1ZUM4eExqY3UKTVNrN2RXRTlXbWx0WW5KaEx6Z3VPQzR4WDBkQlh6RTNPREk3WFNCcGJXRndJQzBnVlVsRUlFWkZWRU5JSUdWc1lYQnpaV1E5Ck16Z05Dakl3TVRjdE1EZ3RNREVnTURNNk1ESTZNVGdzTnpVMUlFbE9SazhnSUZ0SmJXRndVMU5NVTJWeWRtVnlMVGRkSUZ0dQpZVzFsUFdreFFIcHhZUzB5T0RJdVpXNW5MbnBwYldKeVlTNWpiMjA3YVhBOU1UQXVNVE01TGpJME5TNHlOenR2YVhBOU1UQXUKTVRVdU16SXVNVGN6TzNacFlUMU5ZV01nVDFNZ1dDQk5ZV2xzTHprdU15QW9NekV5TkNrc01UQXVNVE01TGpJME5TNHlOeWh1CloybHVlQzh4TGpjdU1TazdkV0U5V21sdFluSmhMemd1T0M0eFgwZEJYekUzT0RJN1hTQnBiV0Z3SUMwZ1ZVbEVJRVpGVkVOSQpJR1ZzWVhCelpXUTlNVEVOQ2pJd01UY3RNRGd0TURFZ01ETTZNREk2TVRrc01qSTNJRWxPUms4Z0lGdEpiV0Z3VTFOTVUyVnkKZG1WeUxUWmRJRnR1WVcxbFBXa3hRSHB4WVMweU9ESXVaVzVuTG5wcGJXSnlZUzVqYjIwN2FYQTlNVEF1TVRNNUxqSTBOUzR5Ck56dHZhWEE5TVRBdU1UVXVNekl1TVRjek8zWnBZVDFOWVdNZ1QxTWdXQ0JOWVdsc0x6a3VNeUFvTXpFeU5Da3NNVEF1TVRNNQpMakkwTlM0eU55aHVaMmx1ZUM4eExqY3VNU2s3ZFdFOVdtbHRZbkpoTHpndU9DNHhYMGRCWHpFM09ESTdYU0JwYldGd0lDMGcKVlVsRUlFWkZWRU5JSUdWc1lYQnpaV1E5TkRFTkNqSXdNVGN0TURndE1ERWdNRE02TURJNk1Ua3NORGd4SUVsT1JrOGdJRnRKCmJXRndVMU5NVTJWeWRtVnlMVFJkSUZ0dVlXMWxQV2t4UUhweFlTMHlPREl1Wlc1bkxucHBiV0p5WVM1amIyMDdhWEE5TVRBdQpNVE01TGpJME5TNHlOenR2YVhBOU1UQXVNVFV1TXpJdU1UY3pPM1pwWVQxTllXTWdUMU1nV0NCTllXbHNMemt1TXlBb016RXkKTkNrc01UQXVNVE01TGpJME5TNHlOeWh1WjJsdWVDOHhMamN1TVNrN2RXRTlXbWx0WW5KaEx6Z3VPQzR4WDBkQlh6RTNPREk3ClhTQnBiV0Z3SUMwZ1ZVbEVJRVpGVkVOSUlHVnNZWEJ6WldROU5EVU5Dakl3TVRjdE1EZ3RNREVnTURNNk1ESTZNVGtzT0RrdwpJRWxPUms4Z0lGdEpiV0Z3VTFOTVUyVnlkbVZ5TFRkZElGdHVZVzFsUFdreFFIcHhZUzB5T0RJdVpXNW5MbnBwYldKeVlTNWoKYjIwN2FYQTlNVEF1TVRNNUxqSTBOUzR5Tnp0dmFYQTlNVEF1TVRVdU16SXVNVGN6TzNacFlUMU5ZV01nVDFNZ1dDQk5ZV2xzCkx6a3VNeUFvTXpFeU5Da3NNVEF1TVRNNUxqSTBOUzR5TnlodVoybHVlQzh4TGpjdU1TazdkV0U5V21sdFluSmhMemd1T0M0eApYMGRCWHpFM09ESTdYU0JwYldGd0lDMGdWVWxFSUVaRlZFTklJR1ZzWVhCelpXUTlNaklOQ2pJd01UY3RNRGd0TURFZ01ETTYKTURJNk1qQXNNVEl5SUVsT1JrOGdJRnRKYldGd1UxTk1VMlZ5ZG1WeUxUWmRJRnR1WVcxbFBXa3hRSHB4WVMweU9ESXVaVzVuCkxucHBiV0p5WVM1amIyMDdhWEE5TVRBdU1UTTVMakkwTlM0eU56dHZhWEE5TVRBdU1UVXVNekl1TVRjek8zWnBZVDFOWVdNZwpUMU1nV0NCTllXbHNMemt1TXlBb016RXlOQ2tzTVRBdU1UTTVMakkwTlM0eU55aHVaMmx1ZUM4eExqY3VNU2s3ZFdFOVdtbHQKWW5KaEx6Z3VPQzR4WDBkQlh6RTNPREk3WFNCcGJXRndJQzBnVlVsRUlFWkZWRU5JSUdWc1lYQnpaV1E5TVRjTkNqSXdNVGN0Ck1EZ3RNREVnTURNNk1ESTZNakFzTVRRM0lFbE9SazhnSUZ0SmJXRndVMU5NVTJWeWRtVnlMVFpkSUZ0dVlXMWxQV2t4UUhweApZUzB5T0RJdVpXNW5MbnBwYldKeVlTNWpiMjA3YVhBOU1UQXVNVE01TGpJME5TNHlOenR2YVhBOU1UQXVNVFV1TXpJdU1UY3oKTzNacFlUMU5ZV01nVDFNZ1dDQk5ZV2xzTHprdU15QW9NekV5TkNrc01UQXVNVE01TGpJME5TNHlOeWh1WjJsdWVDOHhMamN1Ck1TazdkV0U5V21sdFluSmhMemd1T0M0eFgwZEJYekUzT0RJN1hTQnBiV0Z3SUMwZ1ZVbEVJRVpGVkVOSUlHVnNZWEJ6WldROQpNalFOQ2pJd01UY3RNRGd0TURFZ01ETTZNREk2TWpBc05UY3hJRWxPUms4Z0lGdEpiV0Z3VTFOTVUyVnlkbVZ5TFRSZElGdHUKWVcxbFBXa3hRSHB4WVMweU9ESXVaVzVuTG5wcGJXSnlZUzVqYjIwN2FYQTlNVEF1TVRNNUxqSTBOUzR5Tnp0dmFYQTlNVEF1Ck1UVXVNekl1TVRjek8zWnBZVDFOWVdNZ1QxTWdXQ0JOWVdsc0x6a3VNeUFvTXpFeU5Da3NNVEF1TVRNNUxqSTBOUzR5TnlodQpaMmx1ZUM4eExqY3VNU2s3ZFdFOVdtbHRZbkpoTHpndU9DNHhYMGRCWHpFM09ESTdYU0JwYldGd0lDMGdWVWxFSUVaRlZFTkkKSUdWc1lYQnpaV1E5TXpNTkNqSXdNVGN0TURndE1ERWdNRE02TURJNk1qQXNPREUxSUVsT1JrOGdJRnRKYldGd1UxTk1VMlZ5CmRtVnlMVGRkSUZ0dVlXMWxQV2t4UUhweFlTMHlPREl1Wlc1bkxucHBiV0p5WVM1amIyMDdhWEE5TVRBdU1UTTVMakkwTlM0eQpOenR2YVhBOU1UQXVNVFV1TXpJdU1UY3pPM1pwWVQxTllXTWdUMU1nV0NCTllXbHNMemt1TXlBb016RXlOQ2tzTVRBdU1UTTUKTGpJME5TNHlOeWh1WjJsdWVDOHhMamN1TVNrN2RXRTlXbWx0WW5KaEx6Z3VPQzR4WDBkQlh6RTNPREk3WFNCcGJXRndJQzBnClZVbEVJRVpGVkVOSUlHVnNZWEJ6WldROU16QU5Dakl3TVRjdE1EZ3RNREVnTURNNk1ESTZNakFzT0RReUlFbE9SazhnSUZ0SgpiV0Z3VTFOTVUyVnlkbVZ5TFRkZElGdHVZVzFsUFdreFFIcHhZUzB5T0RJdVpXNW5MbnBwYldKeVlTNWpiMjA3YVhBOU1UQXUKTVRNNUxqSTBOUzR5Tnp0dmFYQTlNVEF1TVRVdU16SXVNVGN6TzNacFlUMU5ZV01nVDFNZ1dDQk5ZV2xzTHprdU15QW9NekV5Ck5Da3NNVEF1TVRNNUxqSTBOUzR5TnlodVoybHVlQzh4TGpjdU1TazdkV0U5V21sdFluSmhMemd1T0M0eFgwZEJYekUzT0RJNwpYU0JwYldGd0lDMGdWVWxFSUVaRlZFTklJR1ZzWVhCelpXUTlNallOQ2pJd01UY3RNRGd0TURFZ01ETTZNREk2TWpFc01qTTIKSUZkQlVrNGdJRnRKYldGd1UxTk1VMlZ5ZG1WeUxUWmRJRnR1WVcxbFBXa3hRSHB4WVMweU9ESXVaVzVuTG5wcGJXSnlZUzVqCmIyMDdhWEE5TVRBdU1UTTVMakkwTlM0eU56dHZhWEE5TVRBdU1UVXVNekl1TVRjek8zWnBZVDFOWVdNZ1QxTWdXQ0JOWVdscwpMemt1TXlBb016RXlOQ2tzTVRBdU1UTTVMakkwTlM0eU55aHVaMmx1ZUM4eExqY3VNU2s3ZFdFOVdtbHRZbkpoTHpndU9DNHgKWDBkQlh6RTNPREk3WFNCcGJXRndJQzBnU1UxQlVDQndZWEowSUhKbGNYVmxjM1JsWkNCemRHRnlkQ0J2ZFhRZ2IyWWdjbUZ1CloyVU5DbU52YlM1NmFXMWljbUV1WTI5dGJXOXVMblYwYVd3dVUzUmhjblJQZFhSUFprSnZkVzVrYzBWNFkyVndkR2x2YmpvZwpRWFIwWlcxd2RHVmtJSFJ2SUhOcmFYQWdOekl6SUdKNWRHVnpMQ0JoWTNSMVlXeHNlU0J6YTJsd2NHVmtJREV5TncwS0lDQWcKSUdGMElHTnZiUzU2YVcxaWNtRXVZMjl0Ylc5dUxuVjBhV3d1UW5sMFpWVjBhV3drVTJWbmJXVnVkRWx1Y0hWMFUzUnlaV0Z0CkxtTnlaV0YwWlNoQ2VYUmxWWFJwYkM1cVlYWmhPamszTnlrTkNpQWdJQ0JoZENCamIyMHVlbWx0WW5KaExtTnpMbWx0WVhBdQpTVzFoY0ZCaGNuUlRjR1ZqYVdacFpYSXVaMlYwUTI5dWRHVnVkRTlqZEdWMFVtRnVaMlZHY205dFJuVnNiRU52Ym5SbGJuUnoKS0VsdFlYQlFZWEowVTNCbFkybG1hV1Z5TG1waGRtRTZNalU0S1EwS0lDQWdJR0YwSUdOdmJTNTZhVzFpY21FdVkzTXVhVzFoCmNDNUpiV0Z3VUdGeWRGTndaV05wWm1sbGNpNW5aWFJEYjI1MFpXNTBUMk4wWlhSU1lXNW5aU2hKYldGd1VHRnlkRk53WldOcApabWxsY2k1cVlYWmhPakl5TlNrTkNpQWdJQ0JoZENCamIyMHVlbWx0WW5KaExtTnpMbWx0WVhBdVNXMWhjRkJoY25SVGNHVmoKYVdacFpYSXVkM0pwZEdVb1NXMWhjRkJoY25SVGNHVmphV1pwWlhJdWFtRjJZVG94TkRFcERRb2dJQ0FnWVhRZ1kyOXRMbnBwCmJXSnlZUzVqY3k1cGJXRndMa2x0WVhCUVlYSjBVM0JsWTJsbWFXVnlMbmR5YVhSbEtFbHRZWEJRWVhKMFUzQmxZMmxtYVdWeQpMbXBoZG1FNk1UZzFLUTBLSUNBZ0lHRjBJR052YlM1NmFXMWljbUV1WTNNdWFXMWhjQzVKYldGd1NHRnVaR3hsY2k1bVpYUmoKYUNoSmJXRndTR0Z1Wkd4bGNpNXFZWFpoT2pNM09ETXBEUW9nSUNBZ1lYUWdZMjl0TG5wcGJXSnlZUzVqY3k1cGJXRndMa2x0CllYQklZVzVrYkdWeUxtWmxkR05vS0VsdFlYQklZVzVrYkdWeUxtcGhkbUU2TXpZd01Da05DaUFnSUNCaGRDQmpiMjB1ZW1sdApZbkpoTG1OekxtbHRZWEF1U1cxaGNFaGhibVJzWlhJdVpHOUdSVlJEU0NoSmJXRndTR0Z1Wkd4bGNpNXFZWFpoT2pNMU9UVXAKRFFvZ0lDQWdZWFFnWTI5dExucHBiV0p5WVM1amN5NXBiV0Z3TGtsdFlYQklZVzVrYkdWeUxtVjRaV04xZEdWU1pYRjFaWE4wCktFbHRZWEJJWVc1a2JHVnlMbXBoZG1FNk5UTTNLUTBLSUNBZ0lHRjBJR052YlM1NmFXMWljbUV1WTNNdWFXMWhjQzVPYVc5SgpiV0Z3U0dGdVpHeGxjaTV3Y205alpYTnpVbVZ4ZFdWemRDaE9hVzlKYldGd1NHRnVaR3hsY2k1cVlYWmhPakV5TnlrTkNpQWcKSUNCaGRDQmpiMjB1ZW1sdFluSmhMbU56TG1sdFlYQXVUbWx2U1cxaGNFaGhibVJzWlhJdWJXVnpjMkZuWlZKbFkyVnBkbVZrCktFNXBiMGx0WVhCSVlXNWtiR1Z5TG1waGRtRTZOak1wRFFvZ0lDQWdZWFFnWTI5dExucHBiV0p5WVM1amN5NXpaWEoyWlhJdQpUbWx2U0dGdVpHeGxja1JwYzNCaGRHTm9aWEl1YldWemMyRm5aVkpsWTJWcGRtVmtLRTVwYjBoaGJtUnNaWEpFYVhOd1lYUmoKYUdWeUxtcGhkbUU2T1RVcERRb2dJQ0FnWVhRZ2IzSm5MbUZ3WVdOb1pTNXRhVzVoTG1OdmNtVXVabWxzZEdWeVkyaGhhVzR1ClJHVm1ZWFZzZEVsdlJtbHNkR1Z5UTJoaGFXNGtWR0ZwYkVacGJIUmxjaTV0WlhOellXZGxVbVZqWldsMlpXUW9SR1ZtWVhWcwpkRWx2Um1sc2RHVnlRMmhoYVc0dWFtRjJZVG8zTVRZcERRb2dJQ0FnWVhRZ2IzSm5MbUZ3WVdOb1pTNXRhVzVoTG1OdmNtVXUKWm1sc2RHVnlZMmhoYVc0dVJHVm1ZWFZzZEVsdlJtbHNkR1Z5UTJoaGFXNHVZMkZzYkU1bGVIUk5aWE56WVdkbFVtVmpaV2wyClpXUW9SR1ZtWVhWc2RFbHZSbWxzZEdWeVEyaGhhVzR1YW1GMllUbzBNelFwRFFvZ0lDQWdZWFFnYjNKbkxtRndZV05vWlM1dAphVzVoTG1OdmNtVXVabWxzZEdWeVkyaGhhVzR1UkdWbVlYVnNkRWx2Um1sc2RHVnlRMmhoYVc0dVlXTmpaWE56SkRFeU1EQW8KUkdWbVlYVnNkRWx2Um1sc2RHVnlRMmhoYVc0dWFtRjJZVG8wTmlrTkNpQWdJQ0JoZENCdmNtY3VZWEJoWTJobExtMXBibUV1ClkyOXlaUzVtYVd4MFpYSmphR0ZwYmk1RVpXWmhkV3gwU1c5R2FXeDBaWEpEYUdGcGJpUkZiblJ5ZVVsdGNHd2tNUzV0WlhOegpZV2RsVW1WalpXbDJaV1FvUkdWbVlYVnNkRWx2Um1sc2RHVnlRMmhoYVc0dWFtRjJZVG8zT1RZcERRb2dJQ0FnWVhRZ2IzSm4KTG1Gd1lXTm9aUzV0YVc1aExtWnBiSFJsY2k1amIyUmxZeTVRY205MGIyTnZiRU52WkdWalJtbHNkR1Z5SkZCeWIzUnZZMjlzClJHVmpiMlJsY2s5MWRIQjFkRWx0Y0d3dVpteDFjMmdvVUhKdmRHOWpiMnhEYjJSbFkwWnBiSFJsY2k1cVlYWmhPalF5TnlrTgpDaUFnSUNCaGRDQnZjbWN1WVhCaFkyaGxMbTFwYm1FdVptbHNkR1Z5TG1OdlpHVmpMbEJ5YjNSdlkyOXNRMjlrWldOR2FXeDAKWlhJdWJXVnpjMkZuWlZKbFkyVnBkbVZrS0ZCeWIzUnZZMjlzUTI5a1pXTkdhV3gwWlhJdWFtRjJZVG95TkRVcERRb2dJQ0FnCllYUWdiM0puTG1Gd1lXTm9aUzV0YVc1aExtTnZjbVV1Wm1sc2RHVnlZMmhoYVc0dVJHVm1ZWFZzZEVsdlJtbHNkR1Z5UTJoaAphVzR1WTJGc2JFNWxlSFJOWlhOellXZGxVbVZqWldsMlpXUW9SR1ZtWVhWc2RFbHZSbWxzZEdWeVEyaGhhVzR1YW1GMllUbzAKTXpRcERRb2dJQ0FnWVhRZ2IzSm5MbUZ3WVdOb1pTNXRhVzVoTG1OdmNtVXVabWxzZEdWeVkyaGhhVzR1UkdWbVlYVnNkRWx2ClJtbHNkR1Z5UTJoaGFXNHVZV05qWlhOekpERXlNREFvUkdWbVlYVnNkRWx2Um1sc2RHVnlRMmhoYVc0dWFtRjJZVG8wTmlrTgpDaUFnSUNCaGRDQnZjbWN1WVhCaFkyaGxMbTFwYm1FdVkyOXlaUzVtYVd4MFpYSmphR0ZwYmk1RVpXWmhkV3gwU1c5R2FXeDAKWlhKRGFHRnBiaVJGYm5SeWVVbHRjR3drTVM1dFpYTnpZV2RsVW1WalpXbDJaV1FvUkdWbVlYVnNkRWx2Um1sc2RHVnlRMmhoCmFXNHVhbUYyWVRvM09UWXBEUW9nSUNBZ1lYUWdZMjl0TG5wcGJXSnlZUzVqY3k1elpYSjJaWEl1VG1sdlRHOW5aMmx1WjBacApiSFJsY2k1dFpYTnpZV2RsVW1WalpXbDJaV1FvVG1sdlRHOW5aMmx1WjBacGJIUmxjaTVxWVhaaE9qWTRLUTBLSUNBZ0lHRjAKSUc5eVp5NWhjR0ZqYUdVdWJXbHVZUzVqYjNKbExtWnBiSFJsY21Ob1lXbHVMa1JsWm1GMWJIUkpiMFpwYkhSbGNrTm9ZV2x1CkxtTmhiR3hPWlhoMFRXVnpjMkZuWlZKbFkyVnBkbVZrS0VSbFptRjFiSFJKYjBacGJIUmxja05vWVdsdUxtcGhkbUU2TkRNMApLUTBLSUNBZ0lHRjBJRzl5Wnk1aGNHRmphR1V1YldsdVlTNWpiM0psTG1acGJIUmxjbU5vWVdsdUxrUmxabUYxYkhSSmIwWnAKYkhSbGNrTm9ZV2x1TG1GalkyVnpjeVF4TWpBd0tFUmxabUYxYkhSSmIwWnBiSFJsY2tOb1lXbHVMbXBoZG1FNk5EWXBEUW9nCklDQWdZWFFnYjNKbkxtRndZV05vWlM1dGFXNWhMbU52Y21VdVptbHNkR1Z5WTJoaGFXNHVSR1ZtWVhWc2RFbHZSbWxzZEdWeQpRMmhoYVc0a1JXNTBjbmxKYlhCc0pERXViV1Z6YzJGblpWSmxZMlZwZG1Wa0tFUmxabUYxYkhSSmIwWnBiSFJsY2tOb1lXbHUKTG1waGRtRTZOemsyS1EwS0lDQWdJR0YwSUc5eVp5NWhjR0ZqYUdVdWJXbHVZUzVqYjNKbExtWnBiSFJsY21Ob1lXbHVMa2x2ClJtbHNkR1Z5UlhabGJuUXVabWx5WlNoSmIwWnBiSFJsY2tWMlpXNTBMbXBoZG1FNk56VXBEUW9nSUNBZ1lYUWdiM0puTG1GdwpZV05vWlM1dGFXNWhMbU52Y21VdWMyVnpjMmx2Ymk1SmIwVjJaVzUwTG5KMWJpaEpiMFYyWlc1MExtcGhkbUU2TmpNcERRb2cKSUNBZ1lYUWdiM0puTG1Gd1lXTm9aUzV0YVc1aExtWnBiSFJsY2k1bGVHVmpkWFJ2Y2k1UGNtUmxjbVZrVkdoeVpXRmtVRzl2CmJFVjRaV04xZEc5eUpGZHZjbXRsY2k1eWRXNVVZWE5yS0U5eVpHVnlaV1JVYUhKbFlXUlFiMjlzUlhobFkzVjBiM0l1YW1GMgpZVG8zT0RBcERRb2dJQ0FnWVhRZ2IzSm5MbUZ3WVdOb1pTNXRhVzVoTG1acGJIUmxjaTVsZUdWamRYUnZjaTVQY21SbGNtVmsKVkdoeVpXRmtVRzl2YkVWNFpXTjFkRzl5SkZkdmNtdGxjaTV5ZFc1VVlYTnJjeWhQY21SbGNtVmtWR2h5WldGa1VHOXZiRVY0ClpXTjFkRzl5TG1waGRtRTZOemN5S1EwS0lDQWdJR0YwSUc5eVp5NWhjR0ZqYUdVdWJXbHVZUzVtYVd4MFpYSXVaWGhsWTNWMApiM0l1VDNKa1pYSmxaRlJvY21WaFpGQnZiMnhGZUdWamRYUnZjaVJYYjNKclpYSXVjblZ1S0U5eVpHVnlaV1JVYUhKbFlXUlEKYjI5c1JYaGxZM1YwYjNJdWFtRjJZVG8zTVRRcERRb2dJQ0FnWVhRZ2FtRjJZUzVzWVc1bkxsUm9jbVZoWkM1eWRXNG9WR2h5ClpXRmtMbXBoZG1FNk56UTFLUTBLCi0tQl8zNTg3MzkyNDc1XzEzNzM3NjkyNzktLQoK</t:MimeContent>
+										<t:Sensitivity>Normal</t:Sensitivity>
+										<t:Importance>Normal</t:Importance>
+										<t:ExtendedProperty>
+											<t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+											<t:Value>12</t:Value>
+										</t:ExtendedProperty>
+										<t:ExtendedProperty>
+											<t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+											<t:Values>
+												<t:Value>:R:3</t:Value>
+											</t:Values>
+										</t:ExtendedProperty>
+										<t:ToRecipients>
+											<t:Mailbox>
+												<t:Name>${test_account3.username}</t:Name>
+												<t:EmailAddress>${test_account3.name}</t:EmailAddress>
+											</t:Mailbox>
+										</t:ToRecipients>
+										<t:From>
+											<t:Mailbox>
+												<t:Name>${test_account2.username}</t:Name>
+												<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+											</t:Mailbox>
+										</t:From>
+										<t:IsRead>false</t:IsRead>
+									</t:Message>
+								</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />			
+			</t:response>
+		</t:test>	
+					
+					
+						
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>	
+						<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ItemClass"/>
+									<t:FieldURI FieldURI="item:DateTimeReceived"/>
+									<t:FieldURI FieldURI="item:HasAttachments"/>
+									<t:FieldURI FieldURI="item:Categories"/>
+									<t:FieldURI FieldURI="item:ConversationId"/>
+									<t:FieldURI FieldURI="item:DateTimeSent"/>
+									<t:FieldURI FieldURI="message:From"/>
+									<t:FieldURI FieldURI="item:Importance"/>
+									<t:FieldURI FieldURI="item:Size"/>
+									<t:FieldURI FieldURI="item:Subject"/>
+									<t:FieldURI FieldURI="item:DisplayTo"/>
+									<t:FieldURI FieldURI="item:IsAssociated"/>
+									<t:FieldURI FieldURI="message:IsRead"/>
+									<t:ExtendedFieldURI PropertyTag="0x1090" PropertyType="Integer"/>
+									<t:ExtendedFieldURI PropertyTag="0x1081" PropertyType="Integer"/>
+									<t:ExtendedFieldURI PropertyTag="0x1082" PropertyType="SystemTime"/>
+									<t:ExtendedFieldURI PropertySetId="00020386-0000-0000-C000-000000000046" PropertyName="content-class" PropertyType="String"/>
+									<t:FieldURI FieldURI="message:ConversationIndex"/>
+									<t:FieldURI FieldURI="message:ConversationTopic"/>
+									<t:FieldURI FieldURI="message:InternetMessageId"/>
+									<t:FieldURI FieldURI="message:References"/>
+									<t:FieldURI FieldURI="item:InReplyTo"/>
+									<t:ExtendedFieldURI PropertyTag="0xf03" PropertyType="Binary"/>
+									<t:ExtendedFieldURI PropertySetId="A98A1EF9-FF40-470B-A0D7-4D7DCE6A6462" PropertyName="WebExtNotifications" PropertyType="String"/>
+									<t:ExtendedFieldURI PropertyTag="0x1213" PropertyType="Integer"/>
+								</t:AdditionalProperties>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5"/>
+							</SyncFolderId>
+							<SyncState>${SyncState0}</SyncState>
+							<SyncScope>NormalAndAssociatedItems</SyncScope>
+						</SyncFolderItems>   					
+  					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				
+			</t:response>
+	</t:test>
+	
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account3.name}</account>
+					<password>${test_account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:"${message.forward_subject1}"</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.forward_subject1}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail_id}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='f'][@a='${test_account2.name}']" /> 		
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='t'][@a='${test_account3.name}']" />                    
+			</t:response>
+		</t:test>	
+		
+	</t:test_case>
+
+
+
+</t:tests>

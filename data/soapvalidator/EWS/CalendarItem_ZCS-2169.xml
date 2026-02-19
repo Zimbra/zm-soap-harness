@@ -1,0 +1,158 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<!-- Following bug is included as part of this test case -->
+	<!-- ZCS-2169:- EWS: Creating recurring appointments from outlook 2016 does 
+		not show the last instance in ZWC -->
+
+	<t:property name="test_account1.username" value="test1${TIME}.${COUNTER}" />
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	<t:property name="message.subject1" value="subject1${TIME}.${COUNTER}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-2169_Testcase" type="bhr"
+		bugids="ZCS-2169">
+		<t:objective>Creating recurring appointments from outlook 2016 should
+			show all instances including last instance in ZWC
+		</t:objective>
+		<t:steps>
+		    1. Create a recurring meeting request with reminder not set.
+			2. SyncFolder Items to get the newly created item id.
+			3. GetMsgRequest to verify the until date is correct
+		</t:steps>
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:CreateItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+							SendMeetingInvitations="SendToAllAndSaveCopy">
+							<m:SavedItemFolderId>
+								<t:FolderId Id="10" />
+							</m:SavedItemFolderId>
+							<m:Items>
+								<t:CalendarItem>
+									<t:Subject>${message.subject1}</t:Subject>
+									<t:ReminderIsSet>false</t:ReminderIsSet>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI PropertyName="CalendarTimeZone"
+											PropertySetId="A7B529B5-4B75-47A7-A24F-20743D6C55CD"
+											PropertyType="String" />
+										<t:Value>Asia/Kolkata</t:Value>
+									</t:ExtendedProperty>
+									<t:UID>147EA834-D714-429E-94D7-80A1A975F61E</t:UID>
+									<t:Start>2017-09-03T09:00:00+05:30</t:Start>
+									<t:End>2017-09-03T10:00:00+05:30</t:End>
+									<t:LegacyFreeBusyStatus>Busy</t:LegacyFreeBusyStatus>
+									<t:Recurrence>
+										<t:DailyRecurrence>
+											<t:Interval>1</t:Interval>
+										</t:DailyRecurrence>
+										<t:EndDateRecurrence>
+											<t:StartDate>2017-09-03</t:StartDate>
+											<t:EndDate>2017-09-06</t:EndDate>
+										</t:EndDateRecurrence>
+									</t:Recurrence>
+									<t:MeetingTimeZone TimeZoneName="India Standard Time" />
+								</t:CalendarItem>
+							</m:Items>
+						</m:CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				    <query>subject:${message.subject1}</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="inv.id"/>
+		    </t:response>
+	    </t:test>
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until"
+					attr="d" match="20170906T182959Z" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+</t:tests>

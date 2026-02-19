@@ -1,0 +1,114 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="ldap.zimbraAuthLdapURL" value="ldap://${LDAP.url}:${LDAP.port}/"/>
+<t:property name="ldap.admin.name" value="${LDAP.bindDN}"/>
+<t:property name="ldap.admin.password" value="${LDAP.bindPassword}"/>
+
+<t:property name="ldap.zimbraAuthMech" value="ldap"/>
+<t:property name="ad.zimbraAuthMech" value="ad"/>
+<t:property name="domain1.name" value="autoprov${COUNTER}.${TIME}.com"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>Login to the account </t:objective>
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+            	<name >${domain1.name}</name>
+                <a n="zimbraAuthMech">${ldap.zimbraAuthMech}</a>
+                <a n="zimbraAutoProvLdapURL">${ldap.zimbraAuthLdapURL}</a>
+                <a n="zimbraAutoProvLdapAdminBindDn">${LDAP.bindDN}</a>
+                <a n="zimbraAutoProvLdapAdminBindPassword">${LDAP.bindPassword}</a>
+				<a n="zimbraAutoProvLdapSearchFilter">${LDAP.LDAPfilter}</a>                
+                <a n="zimbraAutoProvLdapSearchBase">${LDAP.LDAPsearchBase}</a>
+                <a n="zimbraAutoProvAccountNameMap">uid</a>
+                <a  n="zimbraAutoProvAttrMap">userPassword=userPassword</a>
+            </CreateDomainRequest>
+        </t:request>            
+        <t:response>
+              <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAutoProvDirectoryRequest_01" type="bhr" >
+    <t:objective> SearchAutoProvDirectoryRequest External LDAP  by username</t:objective>
+
+      <t:test>
+        <t:request>
+            <SearchAutoProvDirectoryRequest xmlns="urn:zimbraAdmin" keyAttr="name">
+            	<domain by="name" >${domain1.name}</domain>
+            	<query>(cn=${LDAP.account01.user})</query>
+            </SearchAutoProvDirectoryRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//admin:SearchAutoProvDirectoryResponse/admin:entry" attr="dn" match="${LDAP.account01.id}" />
+        </t:response>
+     </t:test>	
+ </t:test_case>
+
+
+<t:test_case testcaseid="SearchAutoProvDirectoryRequest_02" type="bhr" >
+    <t:objective> SearchAutoProvDirectoryRequest External LDAP  by email</t:objective>
+
+      <t:test>
+        <t:request>
+            <SearchAutoProvDirectoryRequest xmlns="urn:zimbraAdmin" keyAttr="name">
+            	<domain by="name" >${domain1.name}</domain>
+            	<query>(mail=${LDAP.account01.user}*)</query>
+            </SearchAutoProvDirectoryRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//admin:SearchAutoProvDirectoryResponse/admin:entry" attr="dn" match="${LDAP.account01.id}" />
+        </t:response>
+     </t:test>	
+ </t:test_case>
+
+<t:test_case testcaseid="SearchAutoProvDirectoryRequest_03" type="bhr" >
+    <t:objective> SearchAutoProvDirectoryRequest External LDAP  by cn</t:objective>
+
+      <t:test>
+        <t:request>
+            <SearchAutoProvDirectoryRequest xmlns="urn:zimbraAdmin" keyAttr="name">
+            	<domain by="id" >${domain1.id}</domain>
+            	<query>(cn=authaccount*)</query>
+            </SearchAutoProvDirectoryRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//admin:SearchAutoProvDirectoryResponse/admin:entry" attr="dn" match="${LDAP.account01.id}" />
+        	<t:select path="//admin:SearchAutoProvDirectoryResponse/admin:entry" attr="dn" match="${LDAP.account02.id}" />
+        	<t:select path="//admin:SearchAutoProvDirectoryResponse/admin:entry" attr="dn" match="${LDAP.account03.id}" />
+        </t:response>
+     </t:test>	
+ </t:test_case>
+
+
+</t:tests>

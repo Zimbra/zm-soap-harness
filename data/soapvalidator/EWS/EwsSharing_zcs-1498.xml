@@ -1,0 +1,346 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<!-- Following bug is included as part of this testcase -->
+	<!-- zcs-1498:- EWS: User's name gets disappeared in sharing permissions 
+		window on Outlook 16 -->
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:property name="test_account1.username" value="test1${TIME}.${COUNTER}" />
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+
+	<t:property name="test_account2.username" value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+
+	<t:property name="test_account3.username" value="test3${TIME}.${COUNTER}" />
+	<t:property name="test_account3.name"
+		value="${test_account3.username}@${defaultdomain.name}" />
+	<t:property name="test_account3.password" value="test123" />
+
+
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account3" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account3.name}</name>
+					<password>${test_account3.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1498_TC1" type="bhr" bugids="1498">
+		<t:objective>Getting DisplayName of user in GetFolderResponse once the
+			share is created
+		</t:objective>
+		<t:steps>1. Fire Getfolder for user1's inbox to get the sharing
+			permissions. Currently none.
+			2. User 1 adds a user and assigns owner permission for inbox folder.
+			3. Fire Getfolder for user1's inbox to get the sharing permissions.
+			DisplayName of user should be present in response.
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:PermissionSet" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<FolderIds>
+								<t:FolderId Id="2" />
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage//ewstype:FolderId"
+					attr="Id" set="id_01" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage//ewstype:FolderId"
+					attr="ChangeKey" set="ck_01" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<UpdateFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderChanges>
+								<t:FolderChange>
+									<t:FolderId Id="${id_01}" ChangeKey="${ck_01}" />
+									<t:Updates>
+										<t:SetFolderField>
+											<t:FieldURI FieldURI="folder:PermissionSet" />
+											<t:Folder>
+												<t:PermissionSet>
+													<t:Permissions>
+														 <t:Permission>
+									                      <t:UserId>
+									                        <t:PrimarySmtpAddress>${test_account2.name}</t:PrimarySmtpAddress>
+									                        <t:DisplayName>${test_account2.name}</t:DisplayName>
+									                      </t:UserId>
+									                      <t:PermissionLevel>Owner</t:PermissionLevel>
+									                    </t:Permission>
+													</t:Permissions>
+												</t:PermissionSet>
+											</t:Folder>
+										</t:SetFolderField>
+									</t:Updates>
+								</t:FolderChange>
+							</FolderChanges>
+						</UpdateFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:UpdateFolderResponse//ewstype:FolderId"
+					attr="Id" set="id_02" />
+				<t:select path="//ewsmsg:UpdateFolderResponse//ewstype:FolderId"
+					attr="ChangeKey" set="ck_02" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+					      <FolderShape>
+					        <t:BaseShape>IdOnly</t:BaseShape>
+					        <t:AdditionalProperties>
+					          <t:FieldURI FieldURI="folder:PermissionSet"/>
+					        </t:AdditionalProperties>
+					      </FolderShape>
+					      <FolderIds>
+					        <t:FolderId Id="2"/>
+					      </FolderIds>
+					    </GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage//ewstype:Permission//ewstype:DisplayName"
+					match="${test_account2.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1498_TC2" type="bhr" bugids="1498">
+		<t:objective>Getting DisplayName of multiple users in
+			GetFolderResponse once the share is created
+		</t:objective>
+		<t:steps>1. Fire Getfolder for user1's inbox to get the sharing
+			permissions. Currently none.
+			2. User 1 adds two user and assigns owner permission for inbox folder.
+			3. Fire Getfolder for user1's inbox to get the sharing permissions.
+			DisplayName of users should be present in response.
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:PermissionSet" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<FolderIds>
+								<t:FolderId Id="5" />
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage//ewstype:FolderId"
+					attr="Id" set="id_03" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage//ewstype:FolderId"
+					attr="ChangeKey" set="ck_03" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<UpdateFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderChanges>
+								<t:FolderChange>
+									<t:FolderId Id="${id_03}" ChangeKey="${ck_03}" />
+									<t:Updates>
+										<t:SetFolderField>
+											<t:FieldURI FieldURI="folder:PermissionSet" />
+											<t:Folder>
+												<t:PermissionSet>
+													<t:Permissions>
+														<t:Permission>
+									                      <t:UserId>
+									                        <t:PrimarySmtpAddress>${test_account2.name}</t:PrimarySmtpAddress>
+									                        <t:DisplayName>${test_account2.name}</t:DisplayName>
+									                      </t:UserId>
+									                      <t:PermissionLevel>Owner</t:PermissionLevel>
+									                    </t:Permission>
+														<t:Permission>
+									                      <t:UserId>
+									                        <t:PrimarySmtpAddress>${test_account3.name}</t:PrimarySmtpAddress>
+									                        <t:DisplayName>${test_account3.name}</t:DisplayName>
+									                      </t:UserId>
+									                      <t:PermissionLevel>Reviewer</t:PermissionLevel>
+									                    </t:Permission>
+													</t:Permissions>
+												</t:PermissionSet>
+											</t:Folder>
+										</t:SetFolderField>
+									</t:Updates>
+								</t:FolderChange>
+							</FolderChanges>
+						</UpdateFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:UpdateFolderResponse//ewstype:FolderId"
+					attr="Id" set="id_04" />
+				<t:select path="//ewsmsg:UpdateFolderResponse//ewstype:FolderId"
+					attr="ChangeKey" set="ck_04" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:PermissionSet" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<FolderIds>
+								<t:FolderId Id="5" />
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage//ewstype:Permission[1]//ewstype:DisplayName"
+					match="${test_account2.name}" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage//ewstype:Permission[2]//ewstype:DisplayName"
+					match="${test_account3.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>

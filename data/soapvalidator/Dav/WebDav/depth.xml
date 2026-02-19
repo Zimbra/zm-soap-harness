@@ -1,0 +1,168 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.name}" urlencode="true"/>
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="WEBDAV_depth_setup" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="name">${account1.server}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraMailMode"]' set="account1.server.mode"/>
+            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraMailPort"]' set="account1.server.port"/>
+        </t:response>
+    </t:test>  
+    
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.restServlet" value="${account1.server}"/>
+
+    <t:resttest>
+        <t:restServletRequest method="POST">
+            <filename>${soapxml.root}/Dav/CardDav/vcard1.vcf</filename>
+            <folder>Contacts</folder>
+            <fmt>vcf</fmt>
+        </t:restServletRequest>
+        <t:restServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+        </t:restServletResponse>
+    </t:resttest>
+    
+    <t:property name="caldav.user" value="${account1.name}"/>
+    <t:property name="caldav.password" value="${defaultpassword.value}"/>
+    <t:property name="caldav.server" value="${account1.server}"/>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="WebDAV_depth_one" type="bhr" >
+    <t:objective>Propfind operation with depth=1</t:objective>
+
+    <t:caldav >
+        <t:request method="PROPFIND" uri="/dav/${account1.name}/Contacts/" depth="1">
+            <propfind xmlns="DAV:">
+                <prop>
+                    <getctag xmlns="http://calendarserver.org/ns/"/>
+                    <getetag/>
+                </prop>
+            </propfind>
+        </t:request>
+        <t:response>
+            <t:select path="//D:href[ends-with(text(), 'vcf')]" set="vcard1.uri"/>
+        </t:response>
+    </t:caldav>
+   
+    <t:caldav >
+        <t:request method="PROPFIND" uri="/dav/${account1.name}/Contacts/" depth="1">
+            <propfind xmlns="DAV:">
+                <prop>
+                    <getctag xmlns="http://calendarserver.org/ns/"/>
+                    <getetag/>
+                </prop>
+            </propfind>
+        </t:request>
+        <t:response>
+            <t:select path="//D:href[ends-with(text(), 'vcf')]"/>
+        </t:response>
+    </t:caldav>
+
+</t:test_case>
+
+<t:test_case testcaseid="WebDAV_depth_zero" type="bhr" >
+    <t:objective>Propfind operation with depth=0</t:objective>
+
+    <t:caldav >
+        <t:request method="PROPFIND" uri="/dav/${account1.name}/Contacts/" depth="0">
+            <propfind xmlns="DAV:">
+                <prop>
+                    <getctag xmlns="http://calendarserver.org/ns/"/>
+                    <getetag/>
+                </prop>
+            </propfind>
+        </t:request>
+        <t:response>
+            <t:select path="//D:href[ends-with(text(), 'vcf')]" emptyset="1"/>
+        </t:response>
+    </t:caldav>
+
+</t:test_case>
+
+<t:test_case testcaseid="WebDAV_depth_infinite" type="bhr" >
+    <t:objective>Propfind operation with depth=infinity</t:objective>
+
+    <t:caldav >
+        <t:request method="PROPFIND" uri="/dav/${account1.name}/Contacts/" depth="infinity">
+            <propfind xmlns="DAV:">
+                <prop>
+                    <getctag xmlns="http://calendarserver.org/ns/"/>
+                    <getetag/>
+                </prop>
+            </propfind>
+        </t:request>
+        <t:response>
+           <t:status code="403"/>
+        </t:response>
+    </t:caldav>
+
+</t:test_case>
+
+
+</t:tests>

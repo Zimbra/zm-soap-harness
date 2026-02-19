@@ -1,0 +1,461 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<!-- ZCS:3545- API to add user profile image and return it -->
+
+	<t:property name="account1.name"
+		value="profile_user3575.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account1.alias"
+		value="profile_user3575_alias.${TIME}.${COUNTER}@${defaultdomain.name}" />
+		
+
+	<t:property name="uploadFile.jpg" value="${testMailRaw.root}/zcs3545/image.jpg" />
+	<t:property name="uploadFile.png" value="${testMailRaw.root}/zcs3545/image.png" />
+	<t:property name="uploadFile.bmp" value="${testMailRaw.root}/zcs3545/image4.bmp" />
+	<t:property name="uploadFile.pdf" value="${testMailRaw.root}/zcs3545/test1.pdf" />
+	<t:property name="uploadFile.bigfile" value="${testMailRaw.root}/zcs3545/image5.jpg" />
+	<t:property name="resource1.name" value="profilePic_resource${TIME}@${defaultdomain.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test id="ping" required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="acct_setup_ProfilePic" type="always">
+		<t:objective>Create test accounts</t:objective>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+					<name>${resource1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraCalResType">Location</a>
+					<a n="displayName">Location resource</a>
+				</CreateCalendarResourceRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource"
+					attr="id" set="resource1.id" />
+				<t:select
+					path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]'
+					set="resource1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<alias>${account1.alias}</alias>
+				</AddAccountAliasRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddAccountAliasResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ProfilePic_test1" type="bhr"
+		bugids="zcs3545">
+		<t:objective>Set a profile pic for account and retrieve it
+		</t:objective>
+		<t:steps>1. Account 1 user uploads a profile pic in jpg format using
+			ModifyProfileImageRequest.
+			2. Verify in GetInfo response profile pic id
+			of the saved image is returned.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadFile.jpg}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="image1.aid" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+		<t:delay sec="10"/>
+
+		<t:test>
+			<t:request>
+				<ModifyProfileImageRequest xmlns="urn:zimbraMail">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ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=
+				</ModifyProfileImageRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyProfileImageResponse" attr="itemId"
+					set="itemId" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetInfoRequest xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetInfoResponse//acct:profileImageId"
+					match="${itemId}">
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ProfilePic_test2" type="bhr"
+		bugids="zcs3545">
+		<t:objective>Set a png profile pic for account and retrieve it
+		</t:objective>
+		<t:steps>1. Account 1 user uploads a profile pic in png format using
+			ModifyProfileImageRequest.
+			2. Verify in GetInfo response profile pic id
+			of uploaded png is returned
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadFile.png}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="image2.aid" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+
+		<t:test>
+			<t:request>
+				<ModifyProfileImageRequest xmlns="urn:zimbraMail"
+					uid="${image2.aid}"></ModifyProfileImageRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyProfileImageResponse" attr="itemId"
+					set="itemId2" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetInfoRequest xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetInfoResponse//acct:profileImageId"
+					match="${itemId2}">
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ProfilePic_test3" type="bhr"
+		bugids="zcs3545">
+		<t:objective>Set a pdf profile pic for account and retrieve it
+		</t:objective>
+		<t:steps>1. Account 1 user uploads and saves a profile pic in pdf
+			format using
+			ModifyProfileImageRequest.
+			2. Verify response of
+			ModifyProfileImageRequest is error message.
+			3. Verify response of
+			GetInfo returns profile pic id of previous image.
+		</t:steps>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadFile.pdf}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="pdf.aid" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+
+		<t:test>
+			<t:request>
+				<ModifyProfileImageRequest xmlns="urn:zimbraMail"
+					uid="${pdf.aid}"></ModifyProfileImageRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^mail.INVALID_IMAGE" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetInfoRequest xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetInfoResponse//acct:profileImageId"
+					match="${itemId2}">
+				</t:select>
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ProfilePic_test4" type="bhr"
+		bugids="zcs3545">
+		<t:objective>User 1 views the profile pic using it's alias
+		</t:objective>
+		<t:steps>1.Account 1 user logins using it's alias.
+			2. Verify in GetInfo
+			response previously added profile pic id is returned
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.alias}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetInfoRequest xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetInfoResponse//acct:profileImageId"
+					match="${itemId2}">
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ProfilePic_test5" type="bhr"
+		bugids="zcs3545">
+		<t:objective>Set a profile pic to account 1 user for a file greater
+			than 2mb
+		</t:objective>
+		<t:steps>1. Account 1 user uploads and saves a profile pic greater
+			than 2mb using
+			ModifyProfileImageRequest.
+			2. Verify
+			ModifyProfileImageResponse should give error.
+			3. Verify in GetInfo the
+			previous profile pic id should be returned.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.alias}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadFile.bigfile}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="bigfile.aid" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+		<t:delay sec="10"/>
+
+		<t:test>
+			<t:request>
+				<ModifyProfileImageRequest xmlns="urn:zimbraMail"
+					uid="${bigfile.aid}"></ModifyProfileImageRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^mail.INVALID_IMAGE" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetInfoRequest xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetInfoResponse//acct:profileImageId"
+					match="${itemId2}">
+				</t:select>
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ProfilePic_test6" type="bhr"
+		bugids="zcs3545">
+		<t:objective>Set a profile pic to account 1 user in bmp format.
+		</t:objective>
+		<t:steps>1. Account 1 user uploads and saves a profile pic in bmp
+			format using
+			ModifyProfileImageRequest.
+			2. Verify in GetInfo response pic
+			id is received in profileImageId attribute
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.alias}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadFile.bmp}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="image5.aid" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+
+		<t:test>
+			<t:request>
+				<ModifyProfileImageRequest xmlns="urn:zimbraMail"
+					uid="${image5.aid}"></ModifyProfileImageRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyProfileImageResponse" attr="itemId"
+					set="itemId5" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetInfoRequest xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetInfoResponse//acct:profileImageId"
+					match="${itemId5}">
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ProfilePic_test7" type="bhr"
+		bugids="zcs3545">
+		<t:objective>Set a profile pic using a resource account.
+		</t:objective>
+		<t:steps>1. Resource 1 user uploads and saves a profile pic in jpg
+			format using
+			ModifyProfileImageRequest.
+			2. Verify in GetInfo response pic
+			id is recieved in profileImageId attribute
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${resource1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadFile.jpg}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="image6.aid" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+
+		<t:test>
+			<t:request>
+				<ModifyProfileImageRequest xmlns="urn:zimbraMail"
+					uid="${image6.aid}">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ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=
+				</ModifyProfileImageRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyProfileImageResponse" attr="itemId"
+					set="itemId6" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetInfoRequest xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetInfoResponse//acct:profileImageId"
+					match="${itemId6}">
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>

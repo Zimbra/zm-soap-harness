@@ -1,0 +1,696 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="domain0.name" value="${TIME}.${COUNTER}.${defaultdomain.name}"/>
+
+<t:property name="domain1.name" value="${TIME}.${COUNTER}.${defaultdomain.name}"/>
+<t:property name="domain1.admin.name" value="domainadmin.${TIME}.${COUNTER}@${domain1.name}"/>
+
+<t:property name="domain2.name" value="${TIME}.${COUNTER}.${defaultdomain.name}"/>
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="rights.read"			value="r"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DelegateAuth_basic_Account_Setup" type="always">
+    <t:objective>Create a test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create accounts
+    </steps>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DelegateAuthRequest_01" type="bhr" >
+    <t:objective>Verify that the authToken returned by DelegateAuthRequest is valid</t:objective>
+    <t:steps>
+    1. Login to admin 
+    2. Create account1
+    3. Add a message to account1
+    4. Send DelegateAuthRequest for account1
+    5. Search the mailbox for the message
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+        
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>                
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="server.zimbraMail" value="${account1.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account1.message1.subject" value="Subject.${TIME}.${COUNTER}"/>
+	<t:property name="account1.message1.content" value="Content.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>To: ${account1.name}
+From: foo@example.com
+Subject: ${account1.message1.subject}
+Date: Tue, 17 Jul 2007 14:30:20 -0500
+
+
+${account1.message1.content}
+
+					</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+        
+    <t:test >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${account1.name}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${account1.message1.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="su" match="^${account1.message1.subject}$"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case> 
+
+
+<t:test_case testcaseid="DelegateAuthRequest_02" type="functional" >
+    <t:objective>Verify that the authToken returned by DelegateAuthRequest can access ACLs</t:objective>
+    <t:steps>
+    1. Login to admin 
+    2. Create account2 and account3
+    3. Login as account2
+    4. Add a message to account2
+    5. Share folder with account3
+    6. Login as admin
+    7. Send DelegateAuthRequest for account3
+    8. Get the message from account2.
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+        
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>                
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>                
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="server.zimbraMail" value="${account2.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account2.message1.subject" value="Subject.${TIME}.${COUNTER}"/>
+	<t:property name="account2.message1.content" value="Content.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>To: ${account2.name}
+From: foo@example.com
+Subject: ${account2.message1.subject}
+Date: Tue, 17 Jul 2007 14:30:20 -0500
+
+
+${account2.message1.content}
+
+					</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account2.message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${inboxFolder.id}">
+					<grant gt="${grant.usr}" d="${account3.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+        
+    <t:test >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${account3.name}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account2.id}:${account2.message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:m/mail:su" match="${account2.message1.subject}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+<t:test_case testcaseid="DelegateAuthRequest_03" type="functional" >
+    <t:objective>Use DelegateAuthRequest to get the global admin's authToken - only user rights should be accessible</t:objective>
+    <t:steps>
+    1. Login to admin 
+    3. Send DelegateAuthRequest for admin
+    5. Send GetConfigRequest (PERM_DENIED)
+    4. Send AddMsgRequest (Success)
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+        
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain0.name}</name>
+                <a n="zimbraNotes">${domain0.name} Notes</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain0.id"/>
+        </t:response>        
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${admin.user}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain0.id}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraMail" value="${zimbraServer.name}"/>
+
+    <t:test >
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="admin.message1.subject" value="Subject.${TIME}.${COUNTER}"/>
+	<t:property name="admin.message1.content" value="Content.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>To: ${admin.user}
+From: foo@example.com
+Subject: ${admin.message1.subject}
+Date: Tue, 17 Jul 2007 14:30:20 -0500
+
+
+${admin.message1.content}
+
+					</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="admin.message1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+<t:test_case testcaseid="DelegateAuthRequest_04" type="functional" >
+    <t:objective>Use DelegateAuthRequest to get the domain admin's authToken - only user rights should be accessible</t:objective>
+    <t:steps>
+    1. Login to admin 
+    2. Create domain1.admin.user (a domain admin)
+    3. Send DelegateAuthRequest for domain1.admin.user
+    4. Send GetConfigRequest (PERM_DENIED)
+    5. Send GetDomainRequest (PERM_DENIED)
+    5. Send AddMsgRequest (success)
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+        
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+                <a n="zimbraNotes">${domain1.name} Notes</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
+        </t:response>        
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.admin.name}</name>
+                <password>${defaultpassword.value}</password>                
+                <a n="zimbraIsDomainAdminAccount">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="domain1.admin.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.admin.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${domain1.admin.name}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain1.id}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${domain1.admin.server}"/>
+	<t:property name="server.zimbraMail" value="${domain1.admin.server}"/>
+
+    <t:test >
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="domain1.admin.message1.subject" value="Subject.${TIME}.${COUNTER}"/>
+	<t:property name="domain1.admin.message1.content" value="Content.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>To: ${domain1.admin.name}
+From: foo@example.com
+Subject: ${domain1.admin.message1.subject}
+Date: Tue, 17 Jul 2007 14:30:20 -0500
+
+
+${domain1.admin.message1.content}
+
+					</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="domain1.admin.message1.id"/>
+        </t:response>
+    </t:test>
+
+        
+</t:test_case> 
+
+<t:test_case testcaseid="DelegateAuthRequest_05" type="functional" >
+    <t:objective>Use DelegateAuthRequest to get the user's authToken - only user rights should be accessible</t:objective>
+    <t:steps>
+    1. Login to admin 
+    2. Create account4 (a normal user)
+    3. Send DelegateAuthRequest for account4
+    4. Send GetConfigRequest (PERM_DENIED)
+    5. Send GetDomainRequest (PERM_DENIED)
+    5. Send AddMsgRequest (success)
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+        
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain2.name}</name>
+                <a n="zimbraNotes">${domain2.name} Notes</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain2.id"/>
+        </t:response>        
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>                
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${account4.name}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain2.id}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	<t:property name="server.zimbraMail" value="${account4.server}"/>
+
+    <t:test >
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account4.message1.subject" value="Subject.${TIME}.${COUNTER}"/>
+	<t:property name="account4.message1.content" value="Content.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>To: ${account4.name}
+From: foo@example.com
+Subject: ${account4.message1.subject}
+Date: Tue, 17 Jul 2007 14:30:20 -0500
+
+
+${account4.message1.content}
+
+					</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account4.message1.id"/>
+        </t:response>
+    </t:test>
+
+        
+</t:test_case> 
+
+</t:tests>
+

@@ -1,0 +1,393 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- Following bug are included as part of this testcase -->
+<!-- zcs-1445:- Fix EWS automation failures and push to stash -->
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="test_account1.name"
+		value="test${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	<t:property name="inbox_id" value="2" />
+	<t:property name="message.content" value="Message 1 test content" />
+	<t:property name="message.content1" value="Message 2 test content" />
+	<t:property name="message.content2" value="Message 3 test content" />
+
+	<t:property name="message.subject" value="subject${TIME}.${COUNTER}" />
+	<t:property name="message.subject1" value="subject${TIME}.${COUNTER}" />
+	<t:property name="message.subject2" value="subject${TIME}.${COUNTER}" />
+
+
+
+	<t:test_case testcaseid="acct_setup" type="bhr" areas="network">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${message.subject}</su>
+						<mp ct="text/plain">
+							<content>${message.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>${message.content1}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message2.id" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+
+		<t:test required="true">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m[1]" attr="id" set="Inbox_message1.id" />
+					<t:select path="//mail:m[2]" attr="id" set="Inbox_message2.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="GetFolderRequest" type="bhr"
+		areas="network">
+		<t:objective>Execute GetFolder request for inbox, perform initial sync and then delta sync  </t:objective>
+		<t:steps>1. Create a GetFolder request for all folders .
+		 2. Perform SyncFolderItems request and capture response.
+		 3. Perform GetItems and sync the mails from Inbox.
+		 4. Send a mail from to user account.
+		 5. Perform delta sync on EWS client.
+		</t:steps>
+
+		<!--Get Folder request fire for EWS for all folders. -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponse" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="${inbox_id}" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="account1_inbox_id" />
+
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox_id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage//ewsmsg:SyncState"
+					set="SyncState_Inbox" />
+				<t:select path="//ewstype:Create[1]//ewstype:ItemId" attr="ChangeKey"
+					set="ChangeKey_Msg1" />
+				<t:select path="//ewstype:Create[2]//ewstype:ItemId" attr="ChangeKey"
+					set="ChangeKey_Msg2" />
+				<t:select path="//ewstype:Create[1]//ewstype:ItemId" attr="Id"
+					set="Id_Msg1" />
+				<t:select path="//ewstype:Create[2]//ewstype:ItemId" attr="Id"
+					set="Id_Msg2" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${Id_Msg1}" ChangeKey="${ChangeKey_Msg1}" />
+								<t:ItemId Id="${Id_Msg2}" ChangeKey="${ChangeKey_Msg2}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<select path="//ewstype:Items[1]//ewstype:ItemId" attr="ChangeKey"
+					match="${ChangeKey_Msg1}" />
+				<select path="//ewstype:Items[1]//ewstype:ItemId" attr="Id"
+					match="${Inbox_message1.id}" />
+				<select path="//ewstype:Items[2]//ewstype:ItemId" attr="Id"
+					match="${Inbox_message2.id}" />
+				<select path="//ewstype:Items[2]//ewstype:ItemId" attr="ChangeKey"
+					match="${ChangeKey_Msg2}" />
+				<select path="//ewstype:Items[1]//ewstype:Body" match="${message.content}" />
+				<select path="//ewstype:Items[2]//ewstype:Body" match="${message.content1}" />
+			</t:response>
+		</t:test>
+
+		<!-- Send a mail again to user account inbox and execute a delta sync -->
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${message.subject2}</su>
+						<mp ct="text/plain">
+							<content>${message.content2}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox_id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState_Inbox}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage//ewsmsg:SyncState"
+					set="SyncState_Inbox_1" />
+				<t:select path="//ewstype:Create[1]//ewstype:ItemId" attr="ChangeKey"
+					set="ChangeKey_Msg3" />
+				<t:select path="//ewstype:Create[1]//ewstype:ItemId" attr="Id"
+					set="Id_Msg3" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="item:Size" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:To" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Importance" />
+									<t:FieldURI FieldURI="item:InReplyTo" />
+									<t:FieldURI FieldURI="message:IsRead" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${Id_Msg3}" ChangeKey="${ChangeKey_Msg3}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<select path="//ewstype:Items[1]//ewstype:ItemId" attr="ChangeKey"
+					match="${ChangeKey_Msg3}" />
+				<select path="//ewstype:Items[1]//ewstype:ItemId" attr="Id"
+					match="${Id_Msg3}" />
+				<select path="//ewstype:Items[1]//ewstype:Body" match="${message.content2}" />
+			</t:response>
+		</t:test>
+
+		<!-- Read the above message on UI and sync on EWS -->
+		<t:test required="true">
+			<t:request>
+				<MsgActionRequest xmlns="urn:zimbraMail">
+					<action id="${Id_Msg3}" op="read" />
+				</MsgActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:MsgActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox_id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState_Inbox_1}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage//ewsmsg:SyncState"
+					set="SyncState_Inbox_2" />
+				<t:select path="//ewstype:Update[1]//ewstype:ItemId" attr="Id"
+					match="${Id_Msg3}" />
+				<t:select path="//ewstype:Update[1]//ewstype:IsRead" match="true" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+</t:tests>
+
+
+

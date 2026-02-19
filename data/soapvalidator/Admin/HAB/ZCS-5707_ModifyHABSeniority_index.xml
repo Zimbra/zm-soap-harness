@@ -1,0 +1,352 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <t:property name="domain.name" value="test${TIME}${COUNTER}.com" />
+    <t:property name="acct1.name" value="test1${TIME}.${COUNTER}@${domain.name}" />
+    <t:property name="ou1.name" value="ZimbraOU${COUNTER}" />
+    <t:property name="hab.notes" value="Group created notes" />
+    
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="CreateAccount/Domain" type="always">
+        <t:objective>Account Setup</t:objective>
+        <t:steps> 1. Login into admin. 2. Create test accounts.
+        </t:steps>
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test required="true">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain.name}</name>
+                    <a n="zimbraNotes">test of adding an OU1</a>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${acct1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account1.server" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="CreateOUAndHABGroups" type="bhr" bugids="ZCS-5707">
+        <t:objective>Create a new HAB group and link it to existing OU
+        </t:objective>
+        <t:steps> 1. Create a new HAB OU under domain ${domain.name}. 2. Fire CreateHABGroupRequest to create a new HAB non root group in above OU. 3.
+            Verify request should succeed.
+        </t:steps>
+        <t:test>
+            <t:request>
+                <HABOrgUnitRequest op="create" name="${ou1.name}" xmlns="urn:zimbraAdmin">
+                    <domain by="name">${domain.name}</domain>
+                </HABOrgUnitRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName" match="${ou1.name}" />
+            </t:response>
+        </t:test>
+        <t:property name="hab.group1_name" value="myorg${TIME}" />
+        <t:property name="hab.group1" value="${hab.group1_name}@${domain.name}" />
+        <t:property name="hab.group2_name" value="dev${TIME}" />
+        <t:property name="hab.group2" value="${hab.group2_name}@${domain.name}" />
+        <t:property name="hab.group3_name" value="qa${TIME}" />
+        <t:property name="hab.group3" value="${hab.group3_name}@${domain.name}" />
+        <t:test>
+            <t:request>
+                <CreateHABGroupRequest habDisplayName="${hab.group1_name}" habOrgUnit="${ou1.name}" name="${hab.group1}" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraNotes">${hab.notes}</a>
+                </CreateHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl" attr="name" match="${hab.group1}" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl" attr="id" set="hab.group1_id" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']" match="${hab.group1_name}" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateHABGroupRequest habDisplayName="${hab.group2_name}" habOrgUnit="${ou1.name}" name="${hab.group2}" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraNotes">${hab.notes}</a>
+                </CreateHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl" attr="name" match="${hab.group2}" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl" attr="id" set="hab.group2_id" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']" match="${hab.group2_name}" />
+            </t:response>
+        </t:test>
+        <t:property name="member_url" value="ldap:///??sub?(mail=*alias@${domain.name})" />
+        <t:test>
+            <t:request>
+                <CreateHABGroupRequest habDisplayName="${hab.group3_name}" habOrgUnit="${ou1.name}" name="${hab.group3}"
+                    dynamic="1" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraNotes">${hab.notes}</a>
+                    <a n="memberURL">${member_url}</a>
+                </CreateHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl" attr="name" match="${hab.group3}" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl" attr="id" set="hab.group3_id" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']" match="${hab.group3_name}" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                    <id>${hab.group1_id}</id>
+                    <dlm>${hab.group2}</dlm>
+                    <dlm>${hab.group3}</dlm>
+                </AddDistributionListMemberRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AddDistributionListMemberResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="ModifyGroup1-SeniorityIndex" type="bhr" bugids="ZCS-5707">
+        <t:objective>Modify the seniority index of HAB Group3 to some value
+        </t:objective>
+        <t:steps> 1. Trigger modifyHabrequest to assign seniority index to hab group3 
+         2. Verify request should succeed. 
+         3. Fire GetHABGroupsRequest to verify seniority index assigned.
+        </t:steps>
+        <t:test>
+            <t:request>
+                <ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
+                    <habGroupOperation habGroupId="${hab.group3_id}" seniorityIndex="100" op="assignSeniority" />
+                </ModifyHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyHABGroupResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GetHABRequest habRootGroupId="${hab.group1_id}" xmlns="urn:zimbraAccount" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup" attr="name" match="${hab.group1}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='mail']" match="${hab.group1}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='displayName']" match="${hab.group1_name}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]" attr="name" match="${hab.group3}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]" attr="id" set="group3_id" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]" attr="name" match="${hab.group2}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]" attr="id" set="group2_id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="ModifyGroup2-SeniorityIndex" type="bhr" bugids="ZCS-5707">
+        <t:objective>Modify the seniority index of an invalid group id
+        </t:objective>
+        <t:steps> 1. Trigger modifyHabrequest to assign seniority index to an invalid group id 
+        2. Verify request should fail.
+        </t:steps>
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
+                    <habGroupOperation habGroupId="invalid-id" seniorityIndex="50" op="assignSeniority" />
+                </ModifyHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="ModifyGroup3-SeniorityIndex" type="bhr" bugids="ZCS-5707">
+        <t:objective>Modify the seniority index of an blank group id
+        </t:objective>
+        <t:steps> 1. Trigger modifyHabrequest to assign seniority index to a blank group id 
+        2. Verify request should fail.
+        </t:steps>
+        <t:test>
+            <t:request>
+                <ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
+                    <habGroupOperation habGroupId="" seniorityIndex="50" op="assignSeniority" />
+                </ModifyHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="ModifyGroup4-SeniorityIndex" type="bhr" bugids="ZCS-5707">
+        <t:objective>Trigger ModifyHABGroupRequest with assign seniority index operation for alpha numeric value
+        </t:objective>
+        <t:steps> 1. Trigger modifyHabrequest to assign alpha numeric seniority index to a group 
+        2. Verify request should fail with error.
+        </t:steps>
+        <t:test>
+            <t:request>
+                <ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
+                    <habGroupOperation habGroupId="" seniorityIndex="45fhg" op="assignSeniority" />
+                </ModifyHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.FAILURE" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="ModifyGroup5-SeniorityIndex" type="bhr" bugids="ZCS-5707">
+        <t:objective>Trigger ModifyHABGroupRequest with move operation and with seniorityIndex attribute
+        </t:objective>
+        <t:steps> 1. Trigger modifyHabrequest with move operation and seniorityIndex attribute 
+        2. Verify request should fail with error.
+        </t:steps>
+        <t:test>
+            <t:request>
+                <ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
+                    <habGroupOperation habGroupId="${hab.group3_id}" seniorityIndex="65" op="move" />
+                </ModifyHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="ModifyGroup6-SeniorityIndex" type="bhr" bugids="ZCS-5707">
+        <t:objective>Trigger ModifyHABGroupRequest to assign seniority index to a non HAB group
+        </t:objective>
+        <t:steps> 1. Trigger modifyHabrequest to assign seniority index to non HAB group 
+        2. Verify request should fail with error.
+        </t:steps>
+        <t:property name="test_list1.name" value="normalDL${TIME}@${defaultdomain.name}" />
+        <t:test required="true">
+            <t:request>
+                <CreateDistributionListRequest xmlns="urn:zimbraAdmin" dynamic="0">
+                    <name>${test_list1.name}</name>
+                </CreateDistributionListRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="test_list1.id" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
+                    <habGroupOperation habGroupId="${test_list1.id}" seniorityIndex="40" op="assignSeniority" />
+                </ModifyHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="ModifyGroup7-SeniorityIndex" type="bhr" bugids="ZCS-5707">
+        <t:objective>Trigger ModifyHABGroupRequest to assign seniority index in account namespace
+        </t:objective>
+        <t:steps> 1. Trigger modifyHabrequest to assign seniority index to HAB group in account namespace 
+        2. Verify request should fail with error as unknown document.
+        </t:steps>
+        <t:test id="auth_testAccount" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${acct1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyHABGroupRequest xmlns="urn:zimbraAccount">
+                    <habGroupOperation habGroupId="${test_list1.id}" seniorityIndex="40" op="assignSeniority" />
+                </ModifyHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.UNKNOWN_DOCUMENT" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="ModifyGroup8-SeniorityIndex" type="bhr" bugids="ZCS-5707">
+        <t:objective>Modify seniority index of an HAB group already having a seniority index
+        </t:objective>
+        <t:steps> 1. Trigger modifyHabrequest to assign seniority index of HAB group 8 to '0' 
+          2. Verify request should succeed. 
+          3. Fire GetHABRequest to verify the hab group8 is now at bottom in hierarchy
+        </t:steps>
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
+                    <habGroupOperation habGroupId="${hab.group3_id}" seniorityIndex="0" op="assignSeniority" />
+                </ModifyHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyHABGroupResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GetHABRequest habRootGroupId="${hab.group1_id}" xmlns="urn:zimbraAccount" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup" attr="name" match="${hab.group1}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='mail']" match="${hab.group1}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='displayName']" match="${hab.group1_name}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]" attr="name" match="${hab.group2}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]" attr="id" set="group2_id" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]" attr="name" match="${hab.group3}" />
+                <t:select path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]" attr="id" set="group3_id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+</t:tests>

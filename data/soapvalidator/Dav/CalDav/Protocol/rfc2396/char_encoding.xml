@@ -1,0 +1,125 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account1.name" value="${account1.user}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.name}" urlencode="true"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+	  		</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Protocols_RFC2396_CharEncoding_01" type="functional" bugids="40365">
+	<t:objective>Verify basic RFC 2396 compliance - char encoding @,{}|\\^[]` </t:objective>
+	<t:steps>
+	1. Create a calendar with various characters
+	2. @ , should not be encoded
+	3. {}|\\^[]` should be encoded
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="folder.chars" value="@,{}|\\^[]`"/>
+	<t:property name="folder.unique" value="folder${TIME}${COUNTER}"/>
+	<t:property name="folder.regex" value="${folder.unique}@,%7B%7D%7C%5C%5E%5B%5D%60"/>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.unique}${folder.chars}" l="${account1.folder.root}" view="appointment" />
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
+        </t:response>
+	</t:test>
+
+    
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.user}/" depth="1">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response/D:href" match="/dav/${account1.user}/${folder.regex}/"/>
+	 	</t:response>
+	</t:caldav>
+
+
+</t:test_case>
+
+
+</t:tests>

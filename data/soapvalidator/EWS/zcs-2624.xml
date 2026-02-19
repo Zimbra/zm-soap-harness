@@ -1,0 +1,449 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="test_account1.username" value="test1${TIME}.${COUNTER}" />
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+
+	<t:property name="test_account2.username" value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+
+	<t:property name="test_account3.username" value="test3${TIME}.${COUNTER}" />
+	<t:property name="test_account3.name"
+		value="${test_account3.username}@${defaultdomain.name}" />
+	<t:property name="test_account3.password" value="test123" />
+
+	<t:property name="message.subject1" value="subject1${TIME}.${COUNTER}" />
+	
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+			3. Create a test_account2
+			4. Create a test_account3
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account3" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account3.name}</name>
+					<password>${test_account3.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs2624_Testcase" type="bhr"
+		bugids="zcs2624">
+		<t:objective>
+		    Verify response of an attendee to instances of recurring meeting when new attendee added to the instances
+		</t:objective>
+		<t:steps>
+		    1. User1 sends recurring appointment(daily end after 5 instances) to user2 from OLK16
+            2. User2 accepts series
+            3. User1 edits 2nd instance and add user3 as attendee from OLK16
+            4. User3 accepts invite
+            5. User1 checks 2nd instance status on OLK16
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:CreateItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+							SendMeetingInvitations="SendToAllAndSaveCopy">
+							<m:SavedItemFolderId>
+								<t:FolderId Id="10" />
+							</m:SavedItemFolderId>
+							<m:Items>
+								<t:CalendarItem>
+									<t:Subject>${message.subject1}</t:Subject>
+									<t:Sensitivity>Normal</t:Sensitivity>
+                                    <t:ExtendedProperty>
+                                        <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34144" PropertyType="SystemTime"/>
+                                        <t:Value>2018-10-10T06:15:00Z</t:Value>
+                                    </t:ExtendedProperty>
+                                    <t:ExtendedProperty>
+                                        <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34050" PropertyType="SystemTime"/>
+                                        <t:Value>2018-10-10T06:30:00Z</t:Value>
+                                    </t:ExtendedProperty>
+                                    <t:ExtendedProperty>
+                                        <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34051" PropertyType="Boolean"/>
+                                        <t:Value>true</t:Value>
+                                    </t:ExtendedProperty>
+                                    <t:ExtendedProperty>
+                                        <t:ExtendedFieldURI DistinguishedPropertySetId="Common" PropertyId="34049" PropertyType="Integer"/>
+                                        <t:Value>15</t:Value>
+                                    </t:ExtendedProperty>									
+                                    <t:UID>131F747D-DAB7-4A67-88A6-AA1BA877B987</t:UID>
+                                    <t:Start>2018-10-10T13:30:00+07:00</t:Start>
+                                    <t:End>2018-10-10T14:00:00+07:00</t:End>
+                                    <t:IsAllDayEvent>false</t:IsAllDayEvent>
+                                    <t:LegacyFreeBusyStatus>Busy</t:LegacyFreeBusyStatus>
+                                    <t:Location>Dgdgfd</t:Location>
+                                    <t:IsResponseRequested>true</t:IsResponseRequested>									
+									<t:RequiredAttendees>
+										<t:Attendee>
+											<t:Mailbox>
+												<t:Name>${test_account2.username}</t:Name>
+												<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+											</t:Mailbox>
+										</t:Attendee>
+									</t:RequiredAttendees>
+                                    <t:Recurrence>
+                                        <t:DailyRecurrence>
+                                            <t:Interval>1</t:Interval>
+                                        </t:DailyRecurrence>
+                                        <t:EndDateRecurrence>
+                                            <t:StartDate>2018-10-10</t:StartDate>
+                                            <t:EndDate>2018-10-15</t:EndDate>
+                                        </t:EndDateRecurrence>
+                                    </t:Recurrence>
+                                    <t:StartTimeZone Id="SE Asia Standard Time"/>
+                                    <t:EndTimeZone Id="SE Asia Standard Time"/>
+                                    <t:AllowNewTimeProposal>false</t:AllowNewTimeProposal>
+								</t:CalendarItem>
+							</m:Items>
+						</m:CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+			    <t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="cal01.id" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="ChangeKey" set="cal01.changeKey" />
+			</t:response>
+		</t:test>
+		
+  <t:delay sec="10" />
+		
+		<t:test id="auth1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail"/>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetFolderResponse">
+					<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="test_account2.calendar.folder.id"/>
+				</t:select>
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" subject="${message.subject1}" types="appointment">
+               <query>subject:${message.subject1}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>      
+				<t:select path="//mail:SearchResponse/mail:appt">
+					<t:select attr="invId" set="test_account2.appt1.invId"/>
+					<t:select attr="compNum" set="test_account2.appt1.compNum"/>
+					<t:select attr="name" set="test_account2.appt1.name"/>
+					<t:select path="//mail:or" attr="a" set="test_account2.appt1.or"/>
+				</t:select> 
+			</t:response>
+		</t:test>
+		  <t:delay sec="10" />
+		<t:test>
+			<t:request>
+				<SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account2.appt1.invId}" compNum="${test_account2.appt1.compNum}" verb="ACCEPT" updateOrganizer="TRUE">
+					<m rt="r">
+						<e t="t" a="${test_account2.appt1.or}"/>
+						<su>Accept: ${test_account2.appt1.name}</su>
+						<mp ct="text/plain">
+							<content>Accept: ${test_account2.appt1.name}</content>
+						</mp>
+					</m>
+				</SendInviteReplyRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendInviteReplyResponse"/>
+			</t:response>
+		</t:test>
+		<t:delay sec="10" />
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal02_changeKey" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal02_id}" ChangeKey="${cal02_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attendee//ewstype:EmailAddress"
+					match="${test_account2.name}" emptyset="0"/>
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attendee//ewstype:ResponseType"
+					match="Accept" emptyset="0"/>
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:UpdateItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							ConflictResolution="AutoResolve" SendMeetingInvitationsOrCancellations="SendToChangedAndSaveCopy">
+							  <m:ItemChanges>
+								<t:ItemChange>
+								  <t:OccurrenceItemId RecurringMasterId="${cal02_id}" ChangeKey="cal02_changeKey" InstanceIndex="2"/>
+								  <t:Updates>
+									<t:SetItemField>
+									  <t:FieldURI FieldURI="calendar:RequiredAttendees"/>
+									  <t:CalendarItem>
+										<t:RequiredAttendees>
+										  <t:Attendee>
+											<t:Mailbox>
+											  <t:Name>${test_account3.username}</t:Name>
+											  <t:EmailAddress>${test_account3.name}</t:EmailAddress>
+											</t:Mailbox>
+											<t:ResponseType>NoResponseReceived</t:ResponseType>
+										  </t:Attendee>
+                      <t:Attendee>
+                    <t:Mailbox>
+                      <t:Name>${test_account2.username}</t:Name>
+                      <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+                    </t:Mailbox>
+                    <t:ResponseType>Accept</t:ResponseType>
+                     </t:Attendee>
+										</t:RequiredAttendees>
+									  </t:CalendarItem>
+									</t:SetItemField>
+								  </t:Updates>
+								</t:ItemChange>
+							  </m:ItemChanges>
+						</m:UpdateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:UpdateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select
+					path="//ewsmsg:UpdateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="cal03_id" />
+				<t:select
+					path="//ewsmsg:UpdateItemResponseMessage//ewstype:ItemId"
+					attr="ChangeKey" set="cal03_changeKey" />
+			</t:response>
+		</t:test>		
+        <t:delay sec="10" />
+		
+		<t:test id="auth2" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account3.name}</account>
+					<password>${test_account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail"/>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetFolderResponse">
+					<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="test_account3.calendar.folder.id"/>
+				</t:select>
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" subject="${message.subject1}" types="appointment">
+					<query>subject:${message.subject1}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>      
+				<t:select path="//mail:SearchResponse/mail:appt">
+					<t:select attr="invId" set="test_account3.appt1.invId"/>
+					<t:select attr="compNum" set="test_account3.appt1.compNum"/>
+					<t:select attr="name" set="test_account3.appt1.name"/>
+					<t:select path="//mail:or" attr="a" set="test_account3.appt1.or"/>
+				</t:select> 
+			</t:response>
+		</t:test>
+		<t:delay sec="10" />
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal03_id}" ChangeKey="${cal03_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attendee//ewstype:EmailAddress"
+					match="${test_account2.name}" emptyset="0"/>
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attendee//ewstype:EmailAddress"
+					match="${test_account3.name}" emptyset="0"/>
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attendee//ewstype:ResponseType"
+                    match="Accept" emptyset="0"/>
+            </t:response>
+		</t:test>		
+	</t:test_case>
+</t:tests>

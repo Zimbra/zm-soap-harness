@@ -1,0 +1,228 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+    <t:property name="localPart" value="delAccount1.${COUNTER}${TIME}"/>
+    <t:property name="domainVar" value="dom1${COUNTER}${TIME}" />
+    <t:property name="domain.name1" value="${domainVar}.com" />
+    <t:property name="grantee.account1" value="${localPart}@${domain.name1}" />
+    <t:property name="dn" value="uid=${localPart},ou=people,dc=${domainVar},dc=com" />
+    <t:property name="user.account1" value="account1.${COUNTER}${TIME}@${domain.name1}" />
+    <t:property name="domain.name2" value="dom2${COUNTER}${TIME}.com" />
+    <t:property name="grantee.account2" value="delAccount2.${COUNTER}${TIME}@${domain.name2}" />
+    <t:property name="user.account2" value="account2.${COUNTER}${TIME}@${domain.name2}" />
+    <t:test_case testcaseid="setup" type="q4fix">
+        <t:objective> Account setup</t:objective>
+        <t:test>
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <!-- Domain1 delegated admin account 1 and user account 1 -->
+        <t:test id="CreateDomainRequest">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain.name1}</name>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"
+                    set="domain1.id" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${grantee.account1}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraIsDelegatedAdminAccount">${globals.true}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="grantee1.id" />
+                <t:select
+                    path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"
+                    set="grantee.server" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${user.account1}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account1.id" />
+                <t:select
+                    path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"
+                    set="grantee.server" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GrantRightRequest xmlns="urn:zimbraAdmin">
+                    <target type="domain" by="name">${domain.name1}</target>
+                    <grantee type="usr" by="name">${grantee.account1}</grantee>
+                    <right>domainAdminConsoleRights</right>
+                </GrantRightRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GrantRightResponse" />
+            </t:response>
+        </t:test>
+        <!-- Domain2 delegated admin account 2 and user account 2 -->
+        <t:test id="CreateDomainRequest">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain.name2}</name>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"
+                    set="domain2.id" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${grantee.account2}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraIsDelegatedAdminAccount">${globals.true}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="grantee2.id" />
+                <t:select
+                    path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"
+                    set="grantee.server" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${user.account2}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account2.id" />
+                <t:select
+                    path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"
+                    set="grantee.server" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GrantRightRequest xmlns="urn:zimbraAdmin">
+                    <target type="domain" by="name">${domain.name2}</target>
+                    <grantee type="usr" by="name">${grantee.account2}</grantee>
+                    <right>domainAdminConsoleRights</right>
+                </GrantRightRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GrantRightResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case id="GetLDAPEntriesRequest02" type="q4fix" testcaseid="zbug-1075">
+        <t:objective>Verify all accounts are returned</t:objective>
+        <t:steps> 
+            1.Log in with admin
+            2. Trigger GetLDAPEntriesRequest
+            3. Validate that the accounts that belong to domain1 and domain2 are being returned.
+        </t:steps>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GetLDAPEntriesRequest  query="sn=*" xmlns="urn:zimbraAdmin">
+                    <ldapSearchBase>dc=com</ldapSearchBase>
+                </GetLDAPEntriesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetLDAPEntriesResponse//admin:LDAPEntry//admin:a[@n='mail']" equals="${user.account1}"/>
+                <t:select path="//admin:GetLDAPEntriesResponse//admin:LDAPEntry//admin:a[@n='mail']" equals="${user.account2}"/>
+                <t:select path="//admin:GetLDAPEntriesResponse//admin:LDAPEntry//admin:a[@n='userPassword']" equals="VALUE-BLOCKED"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+    <t:test_case id="GetLDAPEntriesRequest03" type="q4fix" testcaseid="zbug-1075">
+        <t:objective>Verify delegated admin can not promote himself to global admin</t:objective>
+        <t:steps> 
+            1. Log in with delAdmin1
+            2. Trigger ModifyLDAPEntriesRequest to mark 'zimbraIsAdminAccount' as true
+            3. Validate error is thrown.
+        </t:steps>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${grantee.account1}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyLDAPEntryRequest  dn="${dn}" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraIsAdminAccount">TRUE</a>
+                </ModifyLDAPEntryRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+            </t:response>
+        </t:test>
+                <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${grantee.account2}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyLDAPEntryRequest  dn="${dn}" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraIsAdminAccount">TRUE</a>
+                </ModifyLDAPEntryRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+            </t:response>
+        </t:test>
+        
+    </t:test_case>
+
+</t:tests>

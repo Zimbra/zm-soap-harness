@@ -1,0 +1,744 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="folder.custom" value="/tmp/backup${TIME}.${COUNTER}"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+
+<t:property name="test_account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.password" value="test123"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="q4fix" >
+    <t:objective>Account Setup</t:objective>
+    <t:steps> 1. Login to the admin account
+              2. Create few test accounts
+    </t:steps>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${folder.custom}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${folder.custom}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>    
+				<a n="zimbraMailHost">${adminServer.name}</a>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="create_test_account2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account2.password}</password>  
+				<a n="zimbraMailHost">${adminServer.name}</a>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account2.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="create_test_account3" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${test_account3.password}</password>  
+				<a n="zimbraMailHost">${adminServer.name}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account3.server"/>
+        </t:response>
+    </t:test> 
+    
+    
+	<!-- Login to each account to create the mailbox -->
+	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				 <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>               
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_account2.server}"/>
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account2.password}</password>               
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_account3.server}"/>
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${test_account3.password}</password>               
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse"/>
+		</t:response>
+	</t:test>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="acct2_setup" type="functional" areas="backup">
+    <t:objective> Take a full backup in a custom folder and default folder </t:objective>
+    
+    <t:test required="true">
+           <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" target="${folder.custom}" sync="1">
+                    <account name="all"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="label.id1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+           <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1">
+                    <account name="all"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="label.id2"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="RestoreRequest1" type="functional"  areas="backup" bugids="2223">
+    <t:objective>Restore the full backup from custom folder </t:objective>
+
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore  target="${folder.custom}" includeIncrementals="0" method="mb"> 
+                    <account name="all"/>               
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test>      
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="RestoreRequest2" type="functional" areas="backup" bugids="2223">
+    <t:objective> Restore the full backup from default folder </t:objective>
+    
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" method="mb">
+                    <account name="all"/>
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+ 
+<t:test_case testcaseid="RestoreRequest3" type="functional" areas="backup" bugids="2223">
+    <t:objective> Restore the full backup of a particular label from custom folder </t:objective>
+    
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" target="${folder.custom}" label="${label.id1}" method="mb">
+                    <account name="all"/>
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestoreRequest4" type="functional" areas="backup" bugids="2223">
+    <t:objective> Restore the full backup of a particular label from default folder </t:objective>
+    
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" label="${label.id2}" method="mb">
+                    <account name="all"/>
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct3_setup" type="functional" areas="backup">
+    <t:objective> Take a full backup of account in a default folder </t:objective>
+
+    <t:test require="true">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1">
+                    <account name="${test_account1.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup"/>
+        </t:response>
+    </t:test>
+    
+    <t:test require="true">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1">
+                    <account name="${test_account2.name}"/>
+                    <account name="${test_account3.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>  
+ 
+
+<t:test_case testcaseid="RestoreRequest5" type="functional" areas="backup">
+    <t:objective> Restore the full backup of an account from default folder with method=ra\mb. </t:objective>
+
+    <t:steps>1. Take backup of account2
+             2. Restore backup of account2
+    </t:steps>
+
+    <t:test id="restoreRequest5a">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1">
+                    <account name="${test_account2.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="restoreRequest5a">
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" method="ra">
+                    <account name="${test_account1.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+
+    <t:test depends="restoreRequest5a">
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" method="mb">
+                    <account name="${test_account2.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case> 
+
+
+<t:test_case testcaseid="RestoreRequest6" type="functional" areas="backup" bugids="2403">
+    <t:objective> Restore the full backup of multiple accounts from default folder with method=ra\mb </t:objective>
+   
+<!-- First take backup of account3 -->
+    <t:test>
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1">
+                    <account name="${test_account3.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+           <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" method="ra">
+                    <account name="${test_account2.name}"/>
+                    <account name="${test_account3.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" method="mb">
+                    <account name="${test_account2.name}"/>
+                    <account name="${test_account3.name}"/>
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="RestoreRequest7" type="functional" areas="backup" bugids="10224">
+    <t:objective> Restore the full backup of an account from default folder with method=ca (Create account) and a new prefix.</t:objective>
+
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="newAcct${TIME}" method="ca">
+                    <account name="${test_account1.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+        
+</t:test_case> 
+
+
+<t:test_case testcaseid="RestoreRequest8" type="negative" areas="backup" bugids="2613">
+    <t:objective> Restore the full backup of an account from default folder with method=ca (Create account) and an existing prefix.</t:objective>
+    <t:steps> 1. Restore the full backup of an account from default folder and create a new account with some prefix
+              2. Restore the full backup of an account from default folder and create a new account with existing prefix
+    </t:steps>    
+
+    <t:test id="restoreRequest8a">
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="newAcct" method="ca">
+                    <account name="${test_account2.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/> 
+        </t:response>
+    </t:test> 
+        
+    <t:test depends="restoreRequest8a">
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="newAcct" method="ca">
+                    <account name="${test_account2.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case> 
+
+
+<t:test_case testcaseid="RestoreRequest9" type="negative" areas="backup" bugids="2404, 2613">
+    <t:objective> Restore the full backup of an account from default folder and create a new account with blank\No prefix for it</t:objective> 
+
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="" method="ca">
+                    <account name="${test_account1.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS$"/>
+        </t:response>
+    </t:test> 
+        
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" method="ca">
+                    <account name="${test_account1.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>     
+
+
+<t:test_case testcaseid="acct4_setup" type="functional" areas="backup">
+    <t:objective> Take a full backup of account in a custom folder</t:objective>
+
+    <t:test require="true">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1" target="${folder.custom}">
+                    <account name="${test_account1.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup"/>
+        </t:response>
+    </t:test>
+    
+    <t:test require="true">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1" target="${folder.custom}">
+                    <account name="${test_account2.name}"/>
+                    <account name="${test_account3.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup"/>
+        </t:response>
+    </t:test>
+ 
+
+</t:test_case> 
+
+
+<t:test_case testcaseid="RestoreRequest10" type="functional" areas="backup">
+    <t:objective> Restore the full backup of an account from custom folder with method=mb\ra  </t:objective>
+
+    <t:steps>1. First take back-up of account2
+             2. Restore request for account1
+             3. Restore request for account2
+    </t:steps>
+
+    <t:test id="restoreRequest10a">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1" target="${folder.custom}">
+                    <account name="${test_account2.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" target="${folder.custom}" method="ra">
+                    <account name="${test_account1.name}" />                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+
+    <t:test depends="restoreRequest10a">
+           <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" target="${folder.custom}" method="mb">
+                    <account name="${test_account2.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case> 
+
+ 
+ <t:test_case testcaseid="RestoreRequest11" type="functional" areas="backup" bugids="2403">
+    <t:objective> Restore the full backup of multiple accounts from custom folder with method=ra\mb </t:objective>
+    
+    <t:test id="restoreRequest11a">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="full" sync="1" target="${folder.custom}">
+                    <account name="${test_account3.name}"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse/admin:backup"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test depends="restoreRequest11a">
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" target="${folder.custom}" method="ra">
+                    <account name="${test_account2.name}"/>
+                    <account name="${test_account3.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+
+    <t:test depends="restoreRequest11a">
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" target="${folder.custom}" method="mb">
+                    <account name="${test_account2.name}"/>
+                    <account name="${test_account3.name}"/>
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="RestoreRequest12" type="functional" areas="backup" bugids="10224">
+    <t:objective> Restore the full backup of an account from custom folder with method=ca (Create account) and a new prefix</t:objective>
+
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="customAcct${TIME}" target="${folder.custom}" method="ca">
+                    <account name="${test_account1.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+        
+</t:test_case> 
+
+
+<t:test_case testcaseid="RestoreRequest13" type="negative" areas="backup" bugids="2613">
+    <t:objective> Restore the full backup of an account from custom folder with method=ca (Create account) and an existing prefix</t:objective>
+    <t:steps> 1. Restore the full backup of an account from default folder and create a new account with some prefix
+              2. Restore the full backup of an account from default folder and create a new account with existing prefix
+    </t:steps>    
+
+    <t:test id="restoreRequest13a">
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="customAcct" target="${folder.custom}" method="ca">
+                    <account name="${test_account2.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/> 
+        </t:response>
+    </t:test> 
+        
+    <t:test depends="restoreRequest13a">
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="customAcct" target="${folder.custom}" method="ca">
+                    <account name="${test_account2.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case> 
+
+
+<t:test_case testcaseid="RestoreRequest14" type="negative" areas="backup" bugids="2404, 2613">
+    <t:objective> Restore the full backup of an account from custom folder and create a new account with blank\No prefix for it</t:objective>
+
+    <t:test>
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" prefix="" target="${folder.custom}" method="ca">
+                    <account name="${test_account1.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS$"/>
+        </t:response>
+    </t:test> 
+        
+    <t:test>
+    <t:request>
+        <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="0" target="${folder.custom}" method="ca">
+                    <account name="${test_account1.name}"/>                    
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>     
+
+ 
+<t:test_case testcaseid="RestoreRequest16" type="functional" areas="backup" bugids="5696">
+    <t:objective> Take a incremental backup in a default folder and restore it </t:objective>
+    <t:steps> 1. Take incremental backup
+              2. Restore it
+    </t:steps>
+
+    <t:test id="backupRequest16a">
+        <t:request>
+            <BackupRequest xmlns="urn:zimbraAdmin">
+                <backup method="incremental" sync="1">
+                    <account name="all"/>
+                </backup>
+            </BackupRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:BackupResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test delay="30000" depends="backupRequest16a">
+        <t:request>
+            <RestoreRequest xmlns="urn:zimbraAdmin">
+                <restore includeIncrementals="1" method="mb">
+                    <account name="all"/>
+                </restore>
+            </RestoreRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RestoreResponse"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case> 
+
+ 
+</t:tests>
+

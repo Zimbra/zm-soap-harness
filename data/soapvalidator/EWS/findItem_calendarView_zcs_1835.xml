@@ -1,0 +1,530 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+ <!-- Following bug is included as part of this testcase -->
+ <!-- zcs-:- EWS: Implement FindItem with calendar view -->
+
+ <t:property name="test_account1.name"
+  value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+ <t:property name="test_account2.name"
+  value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+
+ <t:property name="appointment.subject" value="subject-${TIME}.${COUNTER}" />
+ <t:property name="appointment.subject1" value="subject1-${TIME}.${COUNTER}" />
+ <t:property name="appointment.subject2" value="subject2-${TIME}.${COUNTER}" />
+ <t:property name="appointment.subject3" value="subject3-${TIME}.${COUNTER}" />
+ <t:property name="appointment.subject4" value="subject4-${TIME}.${COUNTER}" />
+ <t:property name="appointment.subject5" value="subject5-${TIME}.${COUNTER}" />
+
+ <t:property name="appointment.content" value="Appointment test content" />
+ <t:property name="appointment.content1" value="Appointment 1 test content" />
+ <t:property name="appointment.content2" value="Appointment 2 test content" />
+ <t:property name="appointment.content3" value="Appointment 3 test content" />
+ <t:property name="appointment.content4" value="Appointment 4 test content" />
+ <t:property name="appointment.content5" value="Appointment 5 test content" />
+
+ <t:property name="CurrentTime" value="${GENTIME}" />
+ <t:property name="startTime" value="${XMLTIME(-10d)}" />
+ <t:property name="endTime" value="${XMLTIME(+10d)}" />
+ 
+ <t:property name="startTime2" value="${XMLTIME(-2h)}" />
+ <t:property name="endTime2" value="${XMLTIME(+3d)}" />
+ 
+ <t:property name="appt1STime" value="${GMTTIME(+30m)}" />
+ <t:property name="appt1ETime" value="${GMTTIME(+1h)}" />
+ 
+ <t:property name="appt2STime" value="${GMTTIME(+1d)(+30m)}" />
+ <t:property name="appt2ETime" value="${GMTTIME(+1d)(+1h)}" />
+ 
+ <t:property name="appt3STime" value="${GMTTIME(+2d)(+30m)}" />
+ <t:property name="appt3ETime" value="${GMTTIME(+2d)(+1h)}" />
+ 
+ <t:property name="appt4STime" value="${GMTTIME(+3d)(+30m)}" />
+ <t:property name="appt4ETime" value="${GMTTIME(+3d)(+1h)}" />
+ 
+  <t:property name="appt5STime" value="${GMTTIME(+4d)(+30m)}" />
+ <t:property name="appt5ETime" value="${GMTTIME(+4d)(+1h)}" />
+ 
+ <t:property name="apptRSTime" value="${GMTTIME(+7d)(+30m)}" />
+ <t:property name="apptRETime" value="${GMTTIME(+7d)(+1h)}" />
+ 
+ <t:property name="apptAD1STime" value="${GMTTIME(+5d)}" />
+ <t:property name="apptAD1ETime" value="${GMTTIME(+5d)}" />
+ 
+ <t:property name="apptAD2STime" value="${GMTTIME(+6d)}" />
+ <t:property name="apptAD2ETime" value="${GMTTIME(+6d)}" />
+
+
+ <t:test_case testcaseid="Ping" type="always">
+  <t:objective>basic system check</t:objective>
+
+  <t:test required="true">
+   <t:request>
+    <PingRequest xmlns="urn:zimbraAdmin" />
+   </t:request>
+   <t:response>
+    <t:select path="//admin:PingResponse" />
+   </t:response>
+  </t:test>
+
+ </t:test_case>
+
+ <t:test_case testcaseid="acctSetup1" type="always">
+  <t:objective>create test account</t:objective>
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${test_account1.name}</name>
+     <password>${defaultpassword.value}</password>
+     <a n="zimbraFeatureEwsEnabled">TRUE</a>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="test_account1.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="test_acct1.server" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${test_account2.name}</name>
+     <password>${defaultpassword.value}</password>
+     <a n="zimbraFeatureEwsEnabled">TRUE</a>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="test_account2.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="test_acct2.server" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${test_account1.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <CreateAppointmentRequest xmlns="urn:zimbraMail">
+     <m>
+      <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+       name="${appointment.subject}" >
+       <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}" />
+       <s d="${appt1STime}" />
+       <e d="${appt1ETime}" />
+       <or a="${test_account1.name}" />
+      </inv>
+      <e a="${test_account2.name}" t="t" />
+      <mp content-type="text/plain">
+       <content>${appointment.content}</content>
+      </mp>
+      <su>${appointment.subject}</su>
+     </m>
+    </CreateAppointmentRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:CreateAppointmentResponse" />
+   </t:response>
+  </t:test>
+  
+  <t:test>
+   <t:request>
+    <CreateAppointmentRequest xmlns="urn:zimbraMail">
+     <m>
+      <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+       name="${appointment.subject1}" >
+       <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}" />
+        <s d="${appt2STime}" />
+       <e d="${appt2ETime}" />
+       <or a="${test_account1.name}" />
+      </inv>
+      <e a="${test_account2.name}" t="t" />
+      <mp content-type="text/plain">
+       <content>${appointment.content}</content>
+      </mp>
+      <su>${appointment.subject1}</su>
+     </m>
+    </CreateAppointmentRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:CreateAppointmentResponse" />
+   </t:response>
+  </t:test>
+  
+   <t:test>
+   <t:request>
+    <CreateAppointmentRequest xmlns="urn:zimbraMail">
+     <m>
+      <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+       name="${appointment.subject2}" >
+       <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}" />
+        <s d="${appt3STime}" />
+       <e d="${appt3ETime}" />
+       <or a="${test_account1.name}" />
+      </inv>
+      <e a="${test_account2.name}" t="t" />
+      <mp content-type="text/plain">
+       <content>${appointment.content}</content>
+      </mp>
+      <su>${appointment.subject2}</su>
+     </m>
+    </CreateAppointmentRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:CreateAppointmentResponse" />
+   </t:response>
+  </t:test>
+  
+   <t:test>
+   <t:request>
+    <CreateAppointmentRequest xmlns="urn:zimbraMail">
+     <m>
+      <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+       name="${appointment.subject3}" >
+       <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}" />
+        <s d="${appt4STime}" />
+       <e d="${appt4ETime}" />
+       <or a="${test_account1.name}" />
+      </inv>
+      <e a="${test_account2.name}" t="t" />
+      <mp content-type="text/plain">
+       <content>${appointment.content}</content>
+      </mp>
+      <su>${appointment.subject3}</su>
+     </m>
+    </CreateAppointmentRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:CreateAppointmentResponse" />
+   </t:response>
+  </t:test>
+  
+   <t:test>
+   <t:request>
+    <CreateAppointmentRequest xmlns="urn:zimbraMail">
+     <m>
+      <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+       name="${appointment.subject4}" >
+       <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}" />
+        <s d="${appt5STime}" />
+       <e d="${appt5ETime}" />
+       <or a="${test_account1.name}" />
+      </inv>
+      <e a="${test_account2.name}" t="t" />
+      <mp content-type="text/plain">
+       <content>${appointment.content}</content>
+      </mp>
+      <su>${appointment.subject4}</su>
+     </m>
+    </CreateAppointmentRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:CreateAppointmentResponse" />
+   </t:response>
+  </t:test>
+  
+  <t:test>
+   <t:request>
+    <CreateAppointmentRequest xmlns="urn:zimbraMail">
+     <m>
+      <inv method="REQUEST" type="event" fb="B" transp="O" allDay="1"
+       name="AD 1" >
+       <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}" />
+        <s d="${apptAD1STime}" />
+       <e d="${apptAD1ETime}" />
+       <or a="${test_account1.name}" />
+      </inv>
+      <e a="${test_account2.name}" t="t" />
+      <mp content-type="text/plain">
+       <content>${appointment.content}</content>
+      </mp>
+      <su>AD 1</su>
+     </m>
+    </CreateAppointmentRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:CreateAppointmentResponse" />
+   </t:response>
+  </t:test>
+  
+  <t:test>
+   <t:request>
+    <CreateAppointmentRequest xmlns="urn:zimbraMail">
+     <m>
+      <inv method="REQUEST" type="event" fb="B" transp="O" allDay="1"
+       name="AD 2" >
+       <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}" />
+        <s d="${apptAD2STime}" />
+       <e d="${apptAD2ETime}" />
+       <or a="${test_account1.name}" />
+      </inv>
+      <e a="${test_account2.name}" t="t" />
+      <mp content-type="text/plain">
+       <content>${appointment.content}</content>
+      </mp>
+      <su>AD 2</su>
+     </m>
+    </CreateAppointmentRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:CreateAppointmentResponse" />
+   </t:response>
+  </t:test>
+  <t:delay sec="10"/>
+  
+  <t:test>
+   <t:request>
+    <CreateAppointmentRequest xmlns="urn:zimbraMail">
+     <m>
+      <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+       name="${appointment.subject5}" >
+       <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}" />
+        <s d="${apptRSTime}" />
+       <e d="${apptRETime}" />
+       <or a="${test_account1.name}" />
+       <recur>
+            <add>
+                <rule freq="DAI">
+                    <interval ival="1"/>
+                    <count num="10"/>
+                </rule>
+            </add>
+        </recur>
+      </inv>
+      <e a="${test_account2.name}" t="t" />
+      <mp content-type="text/plain">
+       <content>${appointment.content}</content>
+      </mp>
+      <su>${appointment.subject5}</su>
+     </m>
+    </CreateAppointmentRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:CreateAppointmentResponse" />
+   </t:response>
+  </t:test>
+  <t:delay sec="30"/>
+ </t:test_case>
+
+
+ <t:test_case testcaseid="FindItem01_calItemView" type="bhr" bugids="ZCS-1835">
+  <t:objective>FindItem request for calendar folder
+  </t:objective>
+  <t:steps>1. Fire FindItem request for calendar folder with CalendarView
+   2. Verify all appts in the date range are returned.
+  </t:steps>
+  
+   <t:delay sec="20"/>
+
+  <t:test required="true">
+   <t:request ews="true" username="${test_account1.name}"
+    password="${defaultpassword.value}">
+    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+     xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+     xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+     <soap:Body>
+      <FindItem
+       xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+       Traversal="Shallow">
+       <ItemShape>
+        <t:BaseShape>Default</t:BaseShape>
+       </ItemShape>
+       <CalendarView MaxEntriesReturned="5" EndDate="${endTime}" StartDate="${startTime}" />
+       <ParentFolderIds>
+        <t:FolderId Id="10" />
+       </ParentFolderIds>
+      </FindItem>
+     </soap:Body>
+    </soap:Envelope>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem[1]//ewstype:Subject"
+     match="${appointment.subject}" />
+     
+     
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem[2]//ewstype:Subject"
+     match="${appointment.subject1}" />
+     
+      <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem[3]//ewstype:Subject"
+     match="${appointment.subject2}" />
+     
+      <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem[4]//ewstype:Subject"
+     match="${appointment.subject3}" />
+ 
+	<t:select
+		path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem//ewstype:Subject"
+		match="AD 1"/>
+
+ 
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+
+ <t:test_case testcaseid="FindItem02_calItemView" type="bhr" bugids="ZCS-1835">
+  <t:objective>FindItem request for Folder ID for calendar</t:objective>
+  <t:steps>1. Fire FindItem request for calendar folder with CalendarView
+   2. Verify all appts in the date range are returned and limited to MaxEntriesReturned=7. This should include 2 All day instances
+  </t:steps>
+
+
+  <t:test required="true">
+   <t:request ews="true" username="${test_account1.name}"
+    password="${defaultpassword.value}">
+    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+     xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+     xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+     <soap:Body>
+      <FindItem
+       xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+       Traversal="Shallow">
+       <ItemShape>
+        <t:BaseShape>Default</t:BaseShape>
+       </ItemShape>
+       <CalendarView MaxEntriesReturned="7" EndDate="${endTime}" StartDate="${startTime}" />
+       <ParentFolderIds>
+        <t:FolderId Id="10" />
+       </ParentFolderIds>
+      </FindItem>
+     </soap:Body>
+    </soap:Envelope>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem[1]//ewstype:Subject"
+     match="${appointment.subject}" />
+
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem[7]//ewstype:Subject"
+     match="AD 2" />
+     
+     
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+
+ <t:test_case testcaseid="FindItem03_calItemView" type="bhr" bugids="ZCS-1835">
+  <t:objective>FindItem request with Folder ID for calendar
+  </t:objective>
+  <t:steps>1. Fire FindItem request for calendar folder with CalendarView
+   2. Verify all appts in the date range are returned when MaxEntriesReturned is not provided.
+  </t:steps>
+
+
+  <t:test required="true">
+   <t:request ews="true" username="${test_account1.name}"
+    password="${defaultpassword.value}">
+    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+     xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+     xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+     <soap:Body>
+      <FindItem
+       xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+       Traversal="Shallow">
+       <ItemShape>
+        <t:BaseShape>Default</t:BaseShape>
+       </ItemShape>
+       <CalendarView  EndDate="${endTime}" StartDate="${startTime}" />
+       <ParentFolderIds>
+        <t:FolderId Id="10" />
+       </ParentFolderIds>
+      </FindItem>
+     </soap:Body>
+    </soap:Envelope>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewsmsg:RootFolder" attr="TotalItemsInView"
+      match="10" />
+    
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+
+ <t:test_case testcaseid="FindItem04_calItemView" type="bhr" bugids="ZCS-1835">
+  <t:objective>FindItem request for Shallow traversal with Folder ID for calendar
+  </t:objective>
+  <t:steps>1. Fire FindItem request for calendar folder with CalendarView
+   2. Verify only 3 appts which are in the date range are returned.
+  </t:steps>
+ 
+
+  <t:test required="true">
+   <t:request ews="true" username="${test_account1.name}"
+    password="${defaultpassword.value}">
+    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+     xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+     xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+     <soap:Body>
+      <FindItem
+       xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+       Traversal="Shallow">
+       <ItemShape>
+        <t:BaseShape>Default</t:BaseShape>
+       </ItemShape>
+       <CalendarView MaxEntriesReturned="7" EndDate="${endTime2}" StartDate="${startTime2}" />
+       <ParentFolderIds>
+        <t:FolderId Id="10" />
+       </ParentFolderIds>
+      </FindItem>
+     </soap:Body>
+    </soap:Envelope>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem[1]//ewstype:Subject"
+     match="${appointment.subject}" />
+     
+     
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem[2]//ewstype:Subject"
+     match="${appointment.subject1}" />
+     
+      <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewstype:CalendarItem[3]//ewstype:Subject"
+     match="${appointment.subject2}" />
+    <t:select
+     path="//ewsmsg:FindItemResponseMessage//ewsmsg:RootFolder" attr="TotalItemsInView"
+     match="3" />
+     
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+
+</t:tests>

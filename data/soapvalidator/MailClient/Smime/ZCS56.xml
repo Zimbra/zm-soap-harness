@@ -1,0 +1,419 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="user1@zcs-56.com"/>
+<t:property name="test_account2.name" value="user2@zcs-56.com"/>
+<t:property name="test_account3.name" value="user3@zcs-56.com"/>
+<t:property name="domain_name" value="zcs-56.com"/>
+<t:property name="alias.name" value="user2alias@zcs-56.com"/>
+<t:property name="uploadCert.name1" value="${testMailRaw.root}/zcs-56/user1.p12"/>
+<t:property name="cert.password" value="test123"/>
+<t:property name="user2_tc1_cert" value="MIID8zCCAtugAwIBAgIJAOk+n7MgtFouMA0GCSqGSIb3DQEBBQUAMHkxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJNTjEUMBIGA1UEBxMLTWlubmVhcG9saXMxITAfBgNVBAsTGERvbWFpbiBDb250cm9sIFZhbGlkYXRlZDEkMCIGCSqGSIb3DQEJARYVdXNlcjJhbGlhc0B6Y3MtNTYuY29tMB4XDTE3MTIxNDA5MjQyNFoXDTI3MTIxMjA5MjQyNFoweTELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAk1OMRQwEgYDVQQHEwtNaW5uZWFwb2xpczEhMB8GA1UECxMYRG9tYWluIENvbnRyb2wgVmFsaWRhdGVkMSQwIgYJKoZIhvcNAQkBFhV1c2VyMmFsaWFzQHpjcy01Ni5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDci4lO51jMWSFStsBRdWCXsuxsm9sMk5Ga15L/rvGpMMv+d8lqteNDDpgG5nq/HnM2U1zo3z76D2Wh8iRpr8oaz3Ywb5eRf5dV6KLNNhyQnkRf9g8Gw+hGgc48UymJVXdiHO/XNkJv4DQG8jT83dXak/LoPfujKJQZUiIhuhud2Ack/0c6DRY7tINQEurhcB/HvcsIWOcWJjEzJYDntZjWncD5dFbKxvw97wB/29eFa82cvpr6QWU/4ARaV0ZzcWkHfgLvLwhroF3BU/+gVday7K6FQv7cfBDtLrq6lm6HZP1yJSGx+T0gKKNjdQbtldWnftSvFGNNgouGs+oVXBxTAgMBAAGjfjB8MAkGA1UdEwQCMAAwCwYDVR0PBAQDAgXgMGIGA1UdEQRbMFmCDmtiLmV4YW1wbGUuY29tghRoZWxwZGVzay5leGFtcGxlLm9yZ4ITc3lzdGVtcy5leGFtcGxlLm5ldIcEwKgBAYcEwKhFDoEQdXNlcjJAemNzLTU2LmNvbTANBgkqhkiG9w0BAQUFAAOCAQEAI2EufJ6ksM2BykBvLve/2ckOt2iHsEGamCtSGjikz3QCl8+thR52UKpU2HeZQvL6H//T2e3yTrUcdTAzlZxHzIk8zagsXE51I16lje8b4Q9tDKVVY43vMG3PX3hg63H1cfeTyWQa1s9H883wgQJRt7LivflCrV7aL1fW4RUBLMd12sCBtnAJYxf54CaoEi/gtabAwzYejmYsTbjGAs+gRrdtH7TXtRXF/XrfHbe1pFAqqONSiOev32E1ePIY6Xc9oRfV5mT6+6XSoghxHh/hH7dDxPGLorY6mOKGqBkgSnPVsueyIV97bmIt5Pye+LrxcDGU8dtr11ffwobfqwbX0g=="/>
+<t:property name="user2_tc2_cert" value="MIIDrjCCApagAwIBAgIJAPz1CZ29inZgMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJNTjEUMBIGA1UEBxMLTWlubmVhcG9saXMxITAfBgNVBAsTGERvbWFpbiBDb250cm9sIFZhbGlkYXRlZDAeFw0xNzEyMTQwOTMxMzhaFw0yNzEyMTIwOTMxMzhaMFMxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJNTjEUMBIGA1UEBxMLTWlubmVhcG9saXMxITAfBgNVBAsTGERvbWFpbiBDb250cm9sIFZhbGlkYXRlZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALA+y/UozEs9NvPBCkd/3pPpcFZQ15bV6sdv16bV/be0njttbiSOotf9IVtpBrhMqKPD3WTxW5snnLIIe4tF4UorWrrW61urOVkqJ5CpLZjmbhVYlHmusmnmR9ZCAMho4qnDPZtBrCpSU+HODvlwmJKcrXJ1wh0hj5awp+CCRhAvVH64WB7GVv/1M8msp5QaVi+yCYqfYL5hghDQRHSRVq/RjrB6azubyk/L6yknzdZS/+gictViJRRm3PoOmFkpuJIbSkoBnj2MF+4PxfWV2kOETvjDXMXbcnzYGcvAxlqvnQp1AkZr5JtbgmTYuV2nUQOpSTh6BicDWuVX+zTX5QUCAwEAAaOBhDCBgTAJBgNVHRMEAjAAMAsGA1UdDwQEAwIF4DBnBgNVHREEYDBegg5rYi5leGFtcGxlLmNvbYIUaGVscGRlc2suZXhhbXBsZS5vcmeCE3N5c3RlbXMuZXhhbXBsZS5uZXSHBMCoAQGHBMCoRQ6BFXVzZXIyYWxpYXNAemNzLTU2LmNvbTANBgkqhkiG9w0BAQUFAAOCAQEAg8XSun6aDH/cYlTvNvbxAcF5zPzS6kAcMszR1WNDEN0s0dZaNVmHgFFziwUnEC13BSqBsV9/bEcmDk2FWcKK5QVh2Sr5nyVgye+cTqTSL7uC5etI57TSM7yuPRxVjvn+0P3tgO+PuZx2eUf9t5VMi/h1nkqQ2Ip6qLhvrixxxvLCjfm1DBq48SaFsSu/pCR2ltqm1W8XeYOw3xS0Y1mWIgpI5q5p0t28rd7r6GAdxr4FtviAT2IRA0gc/0IVOLQXMxF8axVTFIgCFqJnFkrfnseYxNWpe+zLiLall1haJR0QhzolHPQacrJIGvvVJILF7GxDJ2iFcystzY1AawB3gw=="/>
+<t:property name="user2_tc3_cert" value="MIIDpzCCAo+gAwIBAgIJAIJQZvRhWXjoMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJNTjEUMBIGA1UEBxMLTWlubmVhcG9saXMxITAfBgNVBAsTGERvbWFpbiBDb250cm9sIFZhbGlkYXRlZDAeFw0xNzEyMTQwOTM3MDVaFw0yNzEyMTIwOTM3MDVaMFMxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJNTjEUMBIGA1UEBxMLTWlubmVhcG9saXMxITAfBgNVBAsTGERvbWFpbiBDb250cm9sIFZhbGlkYXRlZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALw3+L0HAdX0ZiqmeZ2P/qrmHDNFvV8cAM/qDejUUY1ecJR14dpOjhJrpXlixsMi+oAtFPvWAF1PVAUN0gjARFsEkBxwf1VNHxQeJMJXdFShSY18uH3hGErrTAy3gMSO5G2a6zELc+7IC8JvLy7T6AClGoMxh6WJaEF1WhjaaFOee49f2fbeCu4zKZ0cIHE+anGqD87SgqUN1bD8LvhauHHYN+wzsMUFHxh/UuSBOF7xNdsRCrIi2Q8E1fpE1dN1bD3ntjqBhhfiU3+ev99uYCDSht1/RNpi5nlysM0W1pTdSQbXqzpyz98lCtJVh+HYFkJggVIzXwjWjfxx4X3X9yMCAwEAAaN+MHwwCQYDVR0TBAIwADALBgNVHQ8EBAMCBeAwYgYDVR0RBFswWYIOa2IuZXhhbXBsZS5jb22CFGhlbHBkZXNrLmV4YW1wbGUub3JnghNzeXN0ZW1zLmV4YW1wbGUubmV0hwTAqAEBhwTAqEUOgRB1c2VyM0B6Y3MtNTYuY29tMA0GCSqGSIb3DQEBBQUAA4IBAQAmcadmxAFXzAoIsX0a5BdppC5z4M85AQR40/0JW7jrXEwJMTzTG8JZPf+PmD2yXvOmzIujP0G3jBWGflr66CYl/vHyPZfLLWQOEhr6g88rlRK6nx1S7u7O3/Nh2j3i74FHrihZxOtQUfnuHmL8829o1Rf78mShucpAayeQQjtQ+fJ355a9HwVboeNIaJgdyphht8T0ftZAPb+Ti8k5JiBeJwY/Agcy6LzsTFnoQiqC3ox4+PF8Nhtfp14brPa6/jAWgoBpL727FhrExZw29Ldw8bjb0zOrGM3J0JB9gqcwSakB/OOzU+JkgQyDE9qe6kiqO3Nf92DyI3EsXAWezLYR"/>
+
+<t:property name="compose.subject.tc1" value="TC1"/>
+<t:property name="compose.subject.tc2" value="TC2"/>
+<t:property name="compose.subject.tc3" value="TC3"/>
+<t:property name="compose.content" value="Content in the message is contents..."/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="acctSetup1" type="always">
+    <t:objective>create test account</t:objective>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+        </t:response>
+    </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+	                <a n="zimbraSmimeOCSPEnabled">FALSE</a>
+	            </ModifyConfigRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyConfigResponse"/>
+	        </t:response>
+	    </t:test>
+		
+		<t:delay sec="10"/>
+	    
+	 <t:test required="true" >
+        <t:request>
+          <CreateDomainRequest xmlns="urn:zimbraAdmin">
+              <name>${domain_name}</name>
+          </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse//admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureSMIMEEnabled">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test> 
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account2.id}</id>
+                <alias>${alias.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account1.name}</account>
+           <password>${defaultpassword.value}</password>  
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+
+    <t:property name="uploadServletServer" value="${test_acct1.server}"/>
+
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${uploadCert.name1}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:select attr="id" set="uploadFileId"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+	
+	<t:delay sec="10"/>
+
+
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+            <upload id="${uploadFileId}"></upload>
+            <password>${cert.password}</password>
+      </SaveSmimeCertificateRequest>
+     </t:request>
+     <t:response>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:emailAddress" match="${test_account1.name}"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="TC1" type="bhr" bugids="ZCS56">
+ <t:objective>user1 creates a contact for user2 and uploads public certificate which has user2
+ alias email address in subject and user2 primary email address in subjectAltName.
+ User1 is able to send encrypted mail to user2</t:objective>
+
+    <t:test required="true">
+      <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account1.name}</account>
+            <password>${defaultpassword.value}</password>
+        </AuthRequest>
+      </t:request>
+      <t:response> 
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+      </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">User</a>
+                    <a n = "lastName">Two</a>
+                    <a n = "email">${test_account2.name}</a>
+                    <a n = "userCertificate">${user2_tc1_cert}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact1.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+	
+	<t:delay sec="10"/>
+
+    <t:test >
+     <t:request>
+      <SendSecureMsgRequest sign="true" encrypt="true" xmlns="urn:zimbraMail">
+        <m>
+          <e t="t" a='${test_account2.name}'/>
+          <su>${compose.subject.tc1}</su>
+          <mp ct="text/plain">
+             <content> ${compose.content} </content>
+          </mp>
+        </m>
+      </SendSecureMsgRequest >
+     </t:request>
+     <t:response>
+        <t:select path="//mail:SendSecureMsgResponse"/>
+     </t:response>
+    </t:test>
+
+	<t:delay sec="10"/>
+	
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account2.name}</account>
+           <password>${defaultpassword.value}</password>
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+
+     <t:test>
+        <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+             <query>subject:${compose.subject.tc1}</query>
+           </SearchRequest>
+       </t:request>
+       <t:response>
+          <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${compose.subject.tc1}"/>
+       </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="TC2" type="bhr" bugids="ZCS56">
+ <t:objective>user1 modifies contact for user2 and uploads public certificate which has no
+ email address in subject and user2 alias email address in subjectAltName.
+ User1 is able to send encrypted mail to user2</t:objective>
+
+    <t:test required="true">
+      <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account1.name}</account>
+            <password>${defaultpassword.value}</password>
+        </AuthRequest>
+      </t:request>
+      <t:response> 
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+      </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
+                <cn id = "${contact1.id}">
+                    <a n = "firstName">User</a>
+                    <a n = "lastName">Two</a>
+                    <a n = "email">${test_account2.name}</a>
+                    <a n = "userCertificate">${user2_tc2_cert}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse"/>
+        </t:response>
+    </t:test>
+	
+	<t:delay sec="10"/>
+
+
+    <t:test >
+     <t:request>
+      <SendSecureMsgRequest sign="true" encrypt="true" xmlns="urn:zimbraMail">
+        <m>
+          <e t="t" a='${test_account2.name}'/>
+          <su>${compose.subject.tc2}</su>
+          <mp ct="text/plain">
+             <content> ${compose.content} </content>
+          </mp>
+        </m>
+      </SendSecureMsgRequest >
+     </t:request>
+     <t:response>
+        <t:select path="//mail:SendSecureMsgResponse"/>
+     </t:response>
+    </t:test>
+
+	<t:delay sec="10"/>
+	
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account2.name}</account>
+           <password>${defaultpassword.value}</password>
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+
+     <t:test>
+        <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+             <query>subject:${compose.subject.tc2}</query>
+           </SearchRequest>
+       </t:request>
+       <t:response>
+          <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${compose.subject.tc2}"/>
+       </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="TC3" type="bhr" bugids="ZCS56">
+ <t:objective>user1 modifies contact for user2 and uploads public certificate which has no
+ email address in subject and user3 email address in subjectAltName.
+ User1 should not able to send encrypted mail to user2 and get error that recipient certificate not found. </t:objective>
+
+    <t:test required="true">
+      <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account1.name}</account>
+            <password>${defaultpassword.value}</password>
+        </AuthRequest>
+      </t:request>
+      <t:response> 
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+      </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
+                <cn id = "${contact1.id}">
+                    <a n = "firstName">User</a>
+                    <a n = "lastName">Two</a>
+                    <a n = "email">${test_account2.name}</a>
+                    <a n = "userCertificate">${user2_tc3_cert}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse"/>
+        </t:response>
+    </t:test>
+	
+	<t:delay sec="10"/>
+
+    <t:test >
+     <t:request>
+      <SendSecureMsgRequest sign="true" encrypt="true" xmlns="urn:zimbraMail">
+        <m>
+          <e t="t" a='${test_account2.name}'/>
+          <su>${compose.subject.tc3}</su>
+          <mp ct="text/plain">
+             <content> ${compose.content} </content>
+          </mp>
+        </m>
+      </SendSecureMsgRequest >
+     </t:request>
+     <t:response>
+        <t:select path="//zimbra:Code" match="smime.RECIPIENT_SMIME_CERT_NOT_FOUND"/>
+     </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:finally>
+    <t:test id="admin_login" required="true" >
+    <t:request>
+      <AuthRequest xmlns="urn:zimbraAdmin">
+        <name>${admin.user}</name>
+        <password>${admin.password}</password>
+      </AuthRequest>
+     </t:request>
+     <t:response>
+      <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+      </t:response>
+    </t:test>
+
+   <t:test required="false">
+     <t:request>
+      <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+           <id>${test_account1.id}</id>
+       </DeleteAccountRequest>
+     </t:request>
+     <t:response>
+        <t:select path="//admin:DeleteAccountResponse"/>
+     </t:response>
+   </t:test>
+
+   <t:test required="false">
+     <t:request>
+      <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+           <id>${test_account2.id}</id>
+       </DeleteAccountRequest>
+     </t:request>
+     <t:response>
+        <t:select path="//admin:DeleteAccountResponse"/>
+     </t:response>
+   </t:test>
+
+    <t:test >
+        <t:request>
+            <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain1.id}</id>
+            </DeleteDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDomainResponse" />
+        </t:response>
+    </t:test>	
+
+	    <t:test>
+	        <t:request>
+	            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+	                <a n="zimbraSmimeOCSPEnabled">TRUE</a>
+	            </ModifyConfigRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyConfigResponse"/>
+	        </t:response>
+	    </t:test>
+	        
+    </t:finally>
+
+</t:tests>

@@ -1,0 +1,446 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}.@${defaultdomain.name}"/>
+<t:property name="uploadCert.name1" value="${testMailRaw.root}/certs/cert_wpasswd.p12"/>
+<t:property name="uploadCert.name2" value="${testMailRaw.root}/certs/cert_wopasswd.p12"/>
+<t:property name="uploadCert.name3" value="${testMailRaw.root}/certs/certindex.txt"/>
+
+
+<!-- values sent in the dummy response -->
+<t:property name="password_testcase1" value="test456"/>
+<t:property name="password_testcase3" value="123456"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="acctSetup1_bug106454" type="always" >
+ <t:objective>create test account</t:objective>
+    <t:test id="admin_login" required="true" >
+    <t:request>
+      <AuthRequest xmlns="urn:zimbraAdmin">
+        <name>${admin.user}</name>
+        <password>${admin.password}</password>
+      </AuthRequest>
+     </t:request>
+     <t:response>
+      <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+      </t:response>
+    </t:test>
+
+	    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmimeOCSPEnabled">FALSE</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+	 <t:delay sec="30"/>
+    
+    <t:test required="true" >
+      <t:request>
+      <CreateAccountRequest xmlns="urn:zimbraAdmin">
+        <name>${test_account1.name}</name>
+        <password>${defaultpassword.value}</password>
+        <a n="zimbraFeatureSMIMEEnabled">TRUE</a>
+      </CreateAccountRequest>
+      </t:request>
+      <t:response>
+           <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+           <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+      </t:response>
+    </t:test>
+
+    <t:test required="true" >
+      <t:request>
+       <CreateAccountRequest xmlns="urn:zimbraAdmin">
+        <name>${test_account2.name}</name>
+        <password>${defaultpassword.value}</password>
+        <a n="zimbraFeatureSMIMEEnabled">FALSE</a>
+       </CreateAccountRequest>
+     </t:request>
+     <t:response>
+        <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+        <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="SaveCertificate1" type="bhr" bugids="106503_1">
+ <t:objective> Save Certificate: Certificate with password</t:objective>
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account1.name}</account>
+           <password>${defaultpassword.value}</password>  
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+      
+      <t:property name="uploadServletServer" value="${test_acct1.server}"/>
+    
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${uploadCert.name1}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:select attr="id" set="uploadFileId"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+            <upload id="${uploadFileId}"></upload>
+            <password>${password_testcase1}</password>
+      </SaveSmimeCertificateRequest>
+     </t:request>
+     <t:response>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pubCertId" set="pubCertId"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate" attr="pvtKeyId" set="pvtKeyId"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:issuedTo/acct:cn"  match="Synacor"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:issuedBy/acct:emailAddress"  match="admin@eng.zimbra.com"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:validity/acct:startDate" match="1511865523000"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:validity/acct:endDate" match="1827225523000"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:signature/acct:serialNo"  match="1048577"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse/acct:certificate/acct:signature/acct:algorithm"  match="SHA256withRSA"/>
+      </t:response>
+     </t:test>
+	 
+	  <t:delay sec="30"/>
+
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${pubCertId}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse"/>
+         </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${pvtKeyId}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse"/>
+         </t:response>
+    </t:test>
+</t:test_case>
+
+ 
+<t:test_case testcaseid="SaveCertificate2" type="bhr" bugids="106503_2">
+ <t:objective> Save Certificate : No password sent</t:objective>
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account1.name}</account>
+           <password>${defaultpassword.value}</password>  
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+
+     <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${uploadCert.name1}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:select attr="id" set="uploadFileId"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+            <upload id="${uploadFileId}"></upload>
+      </SaveSmimeCertificateRequest>
+     </t:request>
+       <t:response>
+         <t:select path="//zimbra:Code" match="smime.PASSWORD_REQUIRED" />
+     </t:response>
+     </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="SaveCertificate3" type="bhr" bugids="106503_3">
+ <t:objective> Save Certificate : Invalid password sent</t:objective>
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account1.name}</account>
+           <password>${defaultpassword.value}</password>  
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+
+     <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${uploadCert.name1}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:select attr="id" set="uploadFileId"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+	
+	 <t:delay sec="30"/>
+
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+            <upload id="${uploadFileId}"></upload>
+            <password>invalidPassword</password>
+      </SaveSmimeCertificateRequest>
+     </t:request>
+       <t:response>
+         <t:select path="//zimbra:Code" match="smime.INVALID_PASSWORD" />
+     </t:response>
+     </t:test>
+</t:test_case>
+
+
+
+<t:test_case testcaseid="SaveCertificate4" type="bhr" bugids="106503_4">
+ <t:objective> Save Certificate: Certificate with no password</t:objective>
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account1.name}</account>
+           <password>${defaultpassword.value}</password>  
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+      
+      <t:property name="uploadServletServer" value="${test_acct1.server}"/>
+    
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${uploadCert.name2}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:select attr="id" set="uploadFileId"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+            <upload id="${uploadFileId}"></upload>
+      </SaveSmimeCertificateRequest>
+     </t:request>
+     <t:response>
+         <t:select path="//acct:SaveSmimeCertificateResponse//acct:certificate" attr="pubCertId" set="pubCertId"/>
+         <t:select path="//acct:SaveSmimeCertificateResponse//acct:certificate" attr="pvtKeyId" set="pvtKeyId"/>
+      </t:response>
+     </t:test>
+
+ <t:delay sec="30"/>
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${pubCertId}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse"/>
+         </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${pvtKeyId}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse"/>
+         </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="SaveCertificate5" type="bhr" bugids="106503_5">
+ <t:objective> Save Certificate Negative Scenario-Mandatory Input not sent</t:objective>
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account1.name}</account>
+           <password>${defaultpassword.value}</password>  
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+            <password>test123</password>
+      </SaveSmimeCertificateRequest>
+     </t:request>
+     <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST*" />
+      </t:response>
+     </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="SaveCertificate6" type="bhr" bugids="106503_6">
+ <t:objective> Save Certificate Negative Scenario-User SMIME Feature not enabled</t:objective>
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account2.name}</account>
+           <password>${defaultpassword.value}</password>  
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+         <upload id="266"></upload>
+     </SaveSmimeCertificateRequest>
+     </t:request>
+     <t:response>
+         <t:select path="//zimbra:Code" match="service.FORBIDDEN*" />
+     </t:response>
+     </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="SaveCertificate7" type="bhr" bugids="106503_7">
+ <t:objective> Save Certificate: Invalid certificate file</t:objective>
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account1.name}</account>
+           <password>${defaultpassword.value}</password>  
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+      
+      <t:property name="uploadServletServer" value="${test_acct1.server}"/>
+    
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${uploadCert.name3}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:select attr="id" set="uploadFileId"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+            <upload id="${uploadFileId}"></upload>
+            <password>${password_testcase1}</password>
+      </SaveSmimeCertificateRequest>
+     </t:request>
+     <t:response>
+         <t:select path="//zimbra:Code" match="smime.INVALID_CERTIFICATE" />
+      </t:response>
+     </t:test>
+
+  
+</t:test_case>
+
+
+<t:test_case testcaseid="SaveCertificate8" type="bhr" bugids="106503_8">
+ <t:objective> Save Certificate :NO password sent with request and password is required</t:objective>
+     <t:test required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+           <account by="name">${test_account1.name}</account>
+           <password>${defaultpassword.value}</password>  
+           </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+      </t:test>
+
+     <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${uploadCert.name1}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="StatusCode" match="200"/>
+            <t:select attr="id" set="uploadFileId"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:test >
+     <t:request>
+      <SaveSmimeCertificateRequest xmlns="urn:zimbraAccount">
+            <upload id="${uploadFileId}"></upload>
+      </SaveSmimeCertificateRequest>
+     </t:request>
+       <t:response>
+         <t:select path="//zimbra:Code" match="smime.PASSWORD_REQUIRED" />
+     </t:response>
+     </t:test>
+</t:test_case>
+
+<t:finally>
+    <t:test id="admin_login" required="true" >
+    <t:request>
+      <AuthRequest xmlns="urn:zimbraAdmin">
+        <name>${admin.user}</name>
+        <password>${admin.password}</password>
+      </AuthRequest>
+     </t:request>
+     <t:response>
+      <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+      </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmimeOCSPEnabled">TRUE</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+    </t:finally> 
+</t:tests>

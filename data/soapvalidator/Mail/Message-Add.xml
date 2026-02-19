@@ -415,67 +415,6 @@
 </t:test_case>
 
 
-<!-- 'l' attribute cannot be used to specify names, only ID numbers -->
-<t:test_case testcaseid="AddMsgRequest6" type="deprecated" >
-    <t:objective> Adding a message in a sub folder.</t:objective>
-    <t:steps>1.create a folder.
-             2.create a sub folder for that.
-             3.add the mail to the subfolder giving path.
-    </t:steps>
-
-    <!-- Create a folder.-->
-    <t:test id="AddMsgRequest6a">
-        <t:request>
-            <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder name="${folder4.name}" l="${folder.pname}"/>
-            </CreateFolderRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
-        </t:response>
-    </t:test>
-
-    <!-- Create a sub folder for the above created folder.-->
-    <t:test id="AddMsgRequest6b" depends="AddMsgRequest6a">
-        <t:request>
-            <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder name="${subfolder4.name}" l="${folder4.id}"/>
-            </CreateFolderRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="subfolder4.id"/>
-        </t:response>
-    </t:test>
-
-    <!-- Add a mail to the sub folder.-->
-    <t:test id="AddMsgRequest6c" depends="AddMsgRequest6b">
-        <t:request>
-            <AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="/${folder4.name}/${subfolder4.name}">
-                     <content>"${message.content1}"</content>
-                </m>
-            </AddMsgRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message8.id"/>
-        </t:response>
-    </t:test>
-
-    <!-- Search the mail in the sub folder.-->
-    <t:test depends="AddMsgRequest6c">
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail">
-                <query>in:"${folder4.name}/${subfolder4.name}"</query>
-            </SearchRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message8.id}']" />
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
-
 <t:test_case testcaseid="AddMsgRequest7" type="regression" >
     <t:objective> Adding a message in inbox giving an invalid path of folder.</t:objective>
 

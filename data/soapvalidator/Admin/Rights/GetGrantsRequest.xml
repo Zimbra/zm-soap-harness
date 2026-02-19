@@ -63,7 +63,7 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin1.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin1.server"/>
         </t:response>
-    </t:test>
+    </t:test>  
 
     <t:test required="true">
         <t:request>
@@ -78,19 +78,19 @@
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin2.id"/>
 			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin2.server"/>
         </t:response>
-    </t:test>
+    </t:test>  
 
 </t:test_case>
 
 
-<t:test_case testcaseid="GetGrantsRequest01" type="smoke">
+<t:test_case testcaseid="GetGrantsRequest01" type="bhr" >
  <t:objective>basic request check</t:objective>
 
 	<t:test>
 		<t:request>
 			<GetGrantsRequest xmlns="urn:zimbraAdmin">
 				<target type="domain" by="name">${defaultdomain.name}</target>
-			</GetGrantsRequest>
+			</GetGrantsRequest>    
 		</t:request>
 		<t:response>
             <t:select path="//admin:GetGrantsResponse"/>
@@ -101,7 +101,7 @@
 		<t:request>
 			<GetGrantsRequest xmlns="urn:zimbraAdmin">
 				<target type="domain" by="id">${defaultdomain.id}</target>
-			</GetGrantsRequest>
+			</GetGrantsRequest>    
 		</t:request>
 		<t:response>
             <t:select path="//admin:GetGrantsResponse"/>
@@ -111,7 +111,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetGrantsRequest02" type="sanity">
+<t:test_case testcaseid="GetGrantsRequest02" type="bhr" >
  <t:objective> Test after assigning "viewGrants" right </t:objective>
 
 	<t:steps>
@@ -126,7 +126,7 @@
 				<target type="domain" by="name">${defaultdomain.name}</target>
 				<grantee type="usr" by="name">${admin1.fullName}</grantee>
 				<right>viewGrants</right>
-			</GrantRightRequest>
+			</GrantRightRequest>    
 		</t:request>
 		<t:response>
             <t:select path="//admin:GrantRightResponse"/>
@@ -149,7 +149,7 @@
 		<t:request>
 			<GetGrantsRequest xmlns="urn:zimbraAdmin">
 				<target type="domain" by="name">${defaultdomain.name}</target>
-			</GetGrantsRequest>
+			</GetGrantsRequest>    
 		</t:request>
 		<t:response>
             <t:select path="//admin:GetGrantsResponse"/>
@@ -158,7 +158,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetGrantsRequest03" type="smoke">
+<t:test_case testcaseid="GetGrantsRequest03" type="bhr" >
  <t:objective> admin2 don't have "viewGrants" rights hence it should get "PERM_DENIED"</t:objective>
 
 	<t:test>
@@ -177,7 +177,7 @@
 		<t:request>
 			<GetGrantsRequest xmlns="urn:zimbraAdmin">
 				<target type="domain" by="name">${defaultdomain.name}</target>
-			</GetGrantsRequest>
+			</GetGrantsRequest>    
 		</t:request>
 		<t:response>
 			<t:select path="//zimbra:Code" match="^service.PERM_DENIED" />

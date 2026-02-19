@@ -1,0 +1,434 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="domain1${COUNTER}.${TIME}.com"/>
+<t:property name="domain1.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="domain1.galaccount.datasource.name" value="name${TIME}${COUNTER}"/>
+<t:property name="domain1.account1.name" value="account1${COUNTER}${TIME}@${domain1.name}"/>
+<t:property name="domain1.account2.name" value="account2${COUNTER}${TIME}@${domain1.name}"/>
+<t:property name="domain1.account2.displayname" value="account2${COUNTER}${TIME}"/>
+<t:property name="domain1.account3.name" value="account3${COUNTER}${TIME}@${domain1.name}"/>
+<t:property name="account1.name" value="user1_${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="ou1.name" value="ZimbraOU${COUNTER}" />
+
+    <t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin"/>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="acct_setup" type="always">
+    <t:objective>Set up test case.</t:objective>
+     <steps>1. Login to admin account  
+            2. Create the domain
+            3. Create a test accounts
+            4. Create gal sync account
+    </steps>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:test required="true">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain1.name}</name>
+                    <a n="zimbraGalSyncInternalSearchBase">SUBDOMAINS</a>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse"/>
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account1.server"/>
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain1.account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account1.server"/>
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain1.account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account2.server"/>
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain1.galaccount.datasource.name}" type="zimbra" domain="${domain1.name}" server="${domain1.account2.server}">
+                    <account by="name">${domain1.galaccount.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </CreateGalSyncAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id"/>
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GetAccountRequest xmlns="urn:zimbraAdmin">
+                    <account by="id">${domain1.galaccount.id}</account>
+                </GetAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetAccountResponse">
+                    <t:select path="//admin:a[@n='zimbraMailHost']" set="domain1.galaccount.server"/>
+                </t:select>
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SyncGalAccountRequest xmlns="urn:zimbraAdmin" >
+                    <account id="${domain1.galaccount.id}">
+                        <datasource by="name" forceSync="true">${domain1.galaccount.datasource.name}</datasource>
+                    </account>
+                </SyncGalAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:SyncGalAccountResponse"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="SyncHABToGal_01" type="bhr" bugids="ZCS-5824">
+    <t:objective>Verify SearchGal request returns the HAB group synced in gal</t:objective>
+    <t:steps>
+        1. Create a new HAB under "domain1.name"
+        2. Send SearchGalRequest for account2
+    </t:steps>
+        <t:test>
+            <t:request>
+                <HABOrgUnitRequest op="create" name="${ou1.name}"
+                    xmlns="urn:zimbraAdmin">
+                    <domain by="name">${domain1.name}</domain>
+                </HABOrgUnitRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+                    match="${ou1.name}"/>
+            </t:response>
+        </t:test>
+        <t:property name="hab.group1_name" value="grouphab1${TIME}" />
+        <t:property name="hab.group1" value="${hab.group1_name}@${domain1.name}" />
+        <t:property name="hab.notes" value="test notes" />
+        <t:test>
+            <t:request>
+                <CreateHABGroupRequest habDisplayName="${hab.group1_name}"
+                    habOrgUnit="${ou1.name}" name="${hab.group1}" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraNotes">${hab.notes}</a>
+                </CreateHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl"
+                    attr="name" match="${hab.group1}" />
+                <t:select
+                    path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+                    match="${hab.group1_name}" />
+                <t:select
+                    path="//admin:CreateHABGroupResponse//admin:a[@n='objectClass']"
+                    match="zimbraHabGroup" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:a[@n='mail']"
+                    match="${hab.group1}" />
+            </t:response>
+        </t:test>
+        <t:test>
+                <t:request>
+                    <SyncGalAccountRequest xmlns="urn:zimbraAdmin" >
+                        <account id="${domain1.galaccount.id}">
+                            <datasource by="name" fullSync="true" reset="true">${domain1.galaccount.datasource.name}</datasource>
+                        </account>
+                    </SyncGalAccountRequest>
+                </t:request>
+                <t:response>
+                    <t:select path="//admin:SyncGalAccountResponse"/>
+                </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${domain1.account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:delay sec="15"/>
+        <t:test>
+            <t:request>
+               <SearchGalRequest xmlns="urn:zimbraAccount" name="" type="all">
+                    <searchFilter>
+                        <conds>
+                           <cond attr="objectClass" op="eq" value="zimbraHabGroup"/>
+                        </conds>
+                    </searchFilter>
+                </SearchGalRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SearchGalResponse//acct:a[@n='objectClass']" match="zimbraHabGroup" />
+                <t:select path="//acct:SearchGalResponse//acct:cn//acct:a[@n='fullName']" match="${hab.group1_name}" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="SyncHABToGal_02" type="bhr" bugids="ZCS-5824">
+    <t:objective>Verify SearchGal request does not returns the deleted HAB groups</t:objective>
+    <t:steps>
+        1. Create a new HAB group under "domain1.name"
+        2. Send SearchGalRequest for account2 and get the HAB group synced to gal.
+        3. Delete the HAB group
+        4. Perform fullSync in gal.
+        5. Fire SearchGalRequest to verify deleted HAB group is not shown.
+    </t:steps>
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:property name="hab.group2_name" value="grouphab2${TIME}" />
+    <t:property name="hab.group2" value="${hab.group2_name}@${domain1.name}" />
+        <t:test>
+            <t:request>
+                <CreateHABGroupRequest habDisplayName="${hab.group2_name}"
+                    habOrgUnit="${ou1.name}" name="${hab.group2}" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraNotes">${hab.notes}</a>
+                </CreateHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl"
+                    attr="name" match="${hab.group2}" />
+                <t:select
+                    path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+                    match="${hab.group2_name}" />
+                <t:select
+                    path="//admin:CreateHABGroupResponse//admin:a[@n='objectClass']"
+                    match="zimbraHabGroup" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:a[@n='mail']"
+                    match="${hab.group2}" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl"
+                    attr="id" set="hab.group2_id" />
+            </t:response>
+        </t:test>
+        <t:test>
+                <t:request>
+                    <SyncGalAccountRequest xmlns="urn:zimbraAdmin" >
+                        <account id="${domain1.galaccount.id}">
+                            <datasource by="name" fullSync="true" reset="true">${domain1.galaccount.datasource.name}</datasource>
+                        </account>
+                    </SyncGalAccountRequest>
+                </t:request>
+                <t:response>
+                    <t:select path="//admin:SyncGalAccountResponse"/>
+                </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${domain1.account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:delay sec="7" />
+        <t:test>
+            <t:request>
+               <SearchGalRequest xmlns="urn:zimbraAccount" name="" type="all">
+                    <searchFilter>
+                        <conds>
+                           <cond attr="objectClass" op="has" value="zimbraHABGroup"/>
+                        </conds>
+                    </searchFilter>
+                </SearchGalRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SearchGalResponse//acct:a[@n='objectClass']" match="zimbraHabGroup" />
+                <t:select path="//acct:SearchGalResponse//acct:cn//acct:a[@n='fullName']" match="${hab.group2_name}" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:test>
+                <t:request>
+                    <DeleteDistributionListRequest id="${hab.group2_id}"
+                        cascadeDelete="true" xmlns="urn:zimbraAdmin" />
+                </t:request>
+                <t:response>
+                    <t:select path="//admin:DeleteDistributionListResponse" />
+                </t:response>
+        </t:test>
+        <t:test>
+                <t:request>
+                    <SyncGalAccountRequest xmlns="urn:zimbraAdmin" >
+                        <account id="${domain1.galaccount.id}">
+                            <datasource by="name" fullSync="true" reset="true">${domain1.galaccount.datasource.name}</datasource>
+                        </account>
+                    </SyncGalAccountRequest>
+                </t:request>
+                <t:response>
+                    <t:select path="//admin:SyncGalAccountResponse"/>
+                </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${domain1.account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:delay sec="15" />
+        <t:test>
+            <t:request>
+               <SearchGalRequest xmlns="urn:zimbraAccount" name="" type="all">
+                    <searchFilter>
+                        <conds>
+                           <cond attr="objectClass" op="has" value="zimbraHabGroup"/>
+                        </conds>
+                    </searchFilter>
+                </SearchGalRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SearchGalResponse//acct:a[@n='objectClass']" match="zimbraHabGroup" />
+                <t:select path="//acct:SearchGalResponse//acct:cn//acct:a[@n='fullName']" match="${hab.group2_name}" emptyset="1" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="SyncHABToGal_03" type="bhr" bugids="ZCS-5824">
+    <t:objective>Verify SearchGal request returns the HAB group based on HAB group name</t:objective>
+    <t:steps>
+        1. Create a new HAB group under "domain1.name"
+        2. Send SearchGalRequest for HAB group on basis of ref filter having hab group name.
+    </t:steps>
+    <t:property name="hab.group3_name" value="grouphab3${TIME}" />
+    <t:property name="hab.group3" value="${hab.group3_name}@${domain1.name}" />
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <CreateHABGroupRequest habDisplayName="${hab.group3_name}"
+                    habOrgUnit="${ou1.name}" name="${hab.group3}" xmlns="urn:zimbraAdmin">
+                    <a n="zimbraNotes">${hab.notes}</a>
+                </CreateHABGroupRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateHABGroupResponse//admin:dl"
+                    attr="name" match="${hab.group3}" />
+                <t:select
+                    path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+                    match="${hab.group3_name}" />
+                <t:select
+                    path="//admin:CreateHABGroupResponse//admin:a[@n='objectClass']"
+                    match="zimbraHabGroup" />
+                <t:select path="//admin:CreateHABGroupResponse//admin:a[@n='mail']"
+                    match="${hab.group3}" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SyncGalAccountRequest xmlns="urn:zimbraAdmin" >
+                    <account id="${domain1.galaccount.id}">
+                        <datasource by="name" fullSync="true" reset="true">${domain1.galaccount.datasource.name}</datasource>
+                    </account>
+                </SyncGalAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:SyncGalAccountResponse"/>
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${domain1.account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:delay sec="15" />
+        <t:test>
+            <t:request>
+               <SearchGalRequest ref="cn=${hab.group3_name}*" xmlns="urn:zimbraAccount" name="" type="all">
+                    <searchFilter>
+                        <conds>
+                           <cond attr="objectClass" op="eq" value="zimbraHabGroup"/>
+                        </conds>
+                    </searchFilter>
+                </SearchGalRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SearchGalResponse//acct:a[@n='objectClass']" match="zimbraHabGroup" />
+                <t:select path="//acct:SearchGalResponse//acct:cn" attr="fileAsStr" contains="${hab.group3_name}" />
+                <t:select path="//acct:SearchGalResponse//acct:cn//acct:a[@n='fullName']" match="${hab.group1_name}" emptyset="1"/> 
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+</t:tests>

@@ -1,0 +1,176 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account1.name" value="${account1.user}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.user}%40${defaultdomain.name}"/>
+
+<t:property name="domain2.name" value="domain${TIME}${COUNTER}.${defaultdomain.name}"/>
+<t:property name="account2.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account2.name" value="${account2.user}@${domain2.name}"/>
+<t:property name="account2.name.encoded" value="${account2.user}%40${domain2.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+	  		</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain2.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Folders_01" type="bhr" >
+	<t:objective>Verify basic href path only includes user name part if user is in default domain</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+		
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.user}/" depth="1">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+					<x2:calendar-description/>
+					<x3:calendar-color/>
+					<x3:calendar-order/>
+					<x0:resourcetype/>
+  					<x2:calendar-free-busy-set/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response/D:href" match="/dav/${account1.user}/Inbox/"/>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_Folders_02" type="bhr" >
+	<t:objective>Verify basic href path includes user name part if user is in default domain and request is made with full address</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+	
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/" depth="1">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+					<x2:calendar-description/>
+					<x3:calendar-color/>
+					<x3:calendar-order/>
+					<x0:resourcetype/>
+  					<x2:calendar-free-busy-set/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response/D:href" match="/dav/${account1.name.encoded}/Inbox/"/>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_Folders_04" type="bhr" >
+	<t:objective>Verify user that is not in the default domain is returned correctly</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:property name="caldav.user" value="${account2.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account2.server}"/>
+		
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account2.name}/" depth="1">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+					<x2:calendar-description/>
+					<x3:calendar-color/>
+					<x3:calendar-order/>
+					<x0:resourcetype/>
+  					<x2:calendar-free-busy-set/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response/D:href" match="/dav/${account2.name.encoded}/Inbox/"/>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+
+</t:tests>

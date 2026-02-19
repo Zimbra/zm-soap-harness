@@ -1,0 +1,200 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="compose.subject" value="Subject of the message is testing dumpster"/>
+<t:property name="compose.content" value="Content in the message is contents dumpstertest"/>
+
+
+<t:test_case testcaseid="RecoverFromDumpster_Setup" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                 <a n="zimbraDumpsterEnabled">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                 <a n="zimbraDumpsterEnabled">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>	
+
+ </t:test_case>  
+ 
+ <t:test_case testcaseid="RecoverFromDumpster_Search_01" type="bhr" bugids="61989,62101,63815" >
+    <t:objective>Verify that recovered message from dumpsrer is searchable by subject or content </t:objective>
+    
+    <t:steps>
+	    1. Login to account1
+	    2. Send message to account2
+	    3. account2 moves the new message to trash and immediately empty trash.
+	    4. account2 recovers the message from dumpster
+	    5. Search for the subject of the message
+	    6. Search for a content's word
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+    <t:test>
+	 <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+		<m>
+		   <e t="t" a='${account2.name}'/>
+		   <su>${compose.subject}</su>
+		   <mp ct="text/plain">
+		       <content> ${compose.content} </content>
+		   </mp>
+		</m>
+	    </SendMsgRequest>
+	 </t:request>
+	 <t:response>
+	       <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>	       
+	 </t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+	<t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+       
+    <t:test id="getFolderRequest">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>	  
+        </t:response>
+    </t:test>
+    
+   	
+	<t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id}" op = "trash"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "trash"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <FolderActionRequest  xmlns = "urn:zimbraMail">               
+                <action op="empty" id="${folder.trash}" recursive="true"/>                
+            </FolderActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:FolderActionResponse/mail:action" attr = "op" match = "empty"/>
+            <t:select path = "//mail:FolderActionResponse/mail:action" attr = "id" match = "${folder.trash}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <MsgActionRequest  xmlns = "urn:zimbraMail">               
+                <action op="recover" id="${message.id}" l="${folder.inbox}"/>                
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "recover"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+			   <query>(dumpstertest)</query>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m">
+				<t:select attr="id" set="message.id"/>
+			</t:select>
+		 </t:response>
+	</t:test>
+	
+	<t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+			   <query>subject:(${compose.subject})</query>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m">	
+				<t:select attr="su" match="^${compose.subject}"/>			
+			</t:select>
+		 </t:response>
+	</t:test>
+    
+    <t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>(dumpstertest)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^${compose.subject}"/>				
+		</t:select>
+	 </t:response>
+	</t:test>
+	
+</t:test_case> 
+    
+</t:tests>

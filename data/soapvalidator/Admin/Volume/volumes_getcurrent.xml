@@ -1,0 +1,55 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+ 
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_volume_getCurrent" type="always" >
+    <t:objective>Create test account and modify settings</t:objective>    
+ 
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="GetCurrentVolumesRequest" type="bhr">
+    <t:objective>Get all current volumes </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetCurrentVolumesRequest xmlns="urn:zimbraAdmin"/>            
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCurrentVolumesResponse/admin:volume" attr="id"/>
+            <t:select path="//admin:GetCurrentVolumesResponse/admin:volume" attr="type"/>
+        </t:response>
+    </t:test>    
+    
+</t:test_case>     
+
+
+</t:tests>
+

@@ -1,0 +1,1142 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="test_account1.username"
+		value="test1${TIME}.${COUNTER}" />		
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />		
+	<t:property name="test_account1.password" value="test123" />	
+	<t:property name="test_account2.username"
+		value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />	
+			
+	<t:property name="test_acct.server" value="NOT_DEFINED" />	
+	<t:property name="message.subject" value="subject${TIME}.${COUNTER}" />	
+	<t:property name="message.content" value="Message test content" />	
+	<t:property name="message.subject1" value="Message 1 test subject" />	
+	<t:property name="message.content1" value="Message 1 test content" />	
+	<t:property name="message.subject2" value="Message 2 test subject" />	
+	<t:property name="message.content2" value="Message 2 test content" />	
+	<t:property name="message.subject3" value="Message 3 test subject" />	
+	<t:property name="message.content3" value="Message 3 test content" />		
+	<t:property name="sub.folder1.name" value="sub1_folder${TIME}${COUNTER}" />
+	<t:property name="sub.folder2.name" value="sub2_folder${TIME}${COUNTER}" />
+	
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1, test_account2
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>		
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+					<a n="zimbraDumpsterEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+	
+	<t:test_case testcaseid="RecoverMail_ToInbox" type="bhr">
+		<t:objective>Hard delete email and verify it is not present in Trash in EWS client and verify on server. Recover mail from dumpster to inbox from Server and verify in EWS.
+			</t:objective>
+			<t:steps>1.Send mail from user1 to user2 from Server and sync to EWS
+			2. Hard delete email and verify it is not present in trash in EWS
+			3. Sync on Server and verify email is not present in trash
+			4. Recover mail from dumpster to inbox from Server and verify in EWS.
+			</t:steps>		
+		
+		<!-- Send mail using EWS client from user1 to user2 and sync on Server -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+					      <SavedItemFolderId>
+					        <t:FolderId Id="5"/>
+					      </SavedItemFolderId>
+					      <Items>
+					        <t:Message>
+					          <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xZi4wLjE3MDIxNgpEYXRlOiBUdWUsIDggQXVnIDIwMTcgMDQ6NDc6MDEgLTA0MDAgKEVEVCkKU3ViamVjdDogTWVzc2FnZSAxIHRlc3Qgc3ViamVjdApNZXNzYWdlLUlEOiA8MTcwNTkzMTIwMy4yNTkuMTUwMjE4MjAyMTQ0OS5KYXZhTWFpbC56aW1icmFAenFhLTI4Mi5lbmcuemltYnJhLmNvbT4KVGhyZWFkLVRvcGljOiBNZXNzYWdlIDEgdGVzdCBzdWJqZWN0Ck1pbWUtdmVyc2lvbjogMS4wCkNvbnRlbnQtdHlwZTogdGV4dC9wbGFpbjsKCWNoYXJzZXQ9IlVURi04IgpDb250ZW50LXRyYW5zZmVyLWVuY29kaW5nOiA3Yml0CgpNZXNzYWdlIDEgdGVzdCBjb250ZW50</t:MimeContent>
+					          <t:Sensitivity>Normal</t:Sensitivity>
+					          <t:Importance>Normal</t:Importance>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+					            <t:Value>12</t:Value>
+					          </t:ExtendedProperty>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+					            <t:Values>
+					              <t:Value>:R:0</t:Value>
+					            </t:Values>
+					          </t:ExtendedProperty>
+					          <t:ToRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account2.username}</t:Name>
+					              <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:ToRecipients>					         
+					          <t:From>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:From>
+					          <t:IsRead>false</t:IsRead>
+					        </t:Message>
+					      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail01.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState/>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="Id" set="mail01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState01" />
+			</t:response>		
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject1}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject1}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc1" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail_id_wc1}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+			     <t:select path="//mail:GetMsgResponse//mail:su"  contains="${message.subject1}"/>
+			     <t:select path="//mail:GetMsgResponse//mail:content"  contains="${message.content1}"/>         
+			</t:response>
+		</t:test>
+		
+		<!-- Hard delete mail from Server for Dumpster enabled user -->
+		<t:test>
+	        <t:request>
+	            <MsgActionRequest xmlns = "urn:zimbraMail">
+	                <action id = "${mail_id_wc1}" op = "delete"/>
+	            </MsgActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "delete"/>
+	            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${mail_id_wc1}"/>
+	        </t:response>
+    	</t:test>
+		
+		<!-- Verify on EWS that hard deleted mail is not present in inbox and trash folders -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox2.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox2.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />			
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes"
+				    match="" />								
+			</t:response>		
+		</t:test>	
+    
+		  <t:test required="true">
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="deleteditems">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="3" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="trash2.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Trash" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${trash2.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />			
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes"
+				    match="" />								
+			</t:response>		
+		</t:test>	
+
+		<!-- Verify on Server that hard deleted mail is present in Dumpster folder -->		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+ 
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+	                <query>-in:/Junk subject:${message.subject1}</query>
+	                <inDumpster>1</inDumpster>	              
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject1}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc3" />	            
+	        </t:response>
+	     </t:test>
+		<!-- Recover hard deleted mail from Dumpster to Inbox from Server -->
+	     <t:test>
+	        <t:request>
+	            <ItemActionRequest xmlns = "urn:zimbraMail">
+	                <action id = "${mail_id_wc3}" op = "recover" l = "${inbox2.id}"/>
+	            </ItemActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "recover"/>
+	            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${mail_id_wc3}"/>
+	        </t:response>
+    	</t:test>
+	    <!-- Verify on EWS client that mail is recovered in Inbox -->
+	   	<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox2.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />			
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState02" />						
+			</t:response>		
+		</t:test>	  	 
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+									<t:FieldURI FieldURI="message:ToRecipients" />
+									<t:FieldURI FieldURI="message:CcRecipients" />
+									<t:FieldURI FieldURI="message:BccRecipients" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail02_id}" ChangeKey="${mail02_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject1}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"  contains="${message.content1}" />			
+			</t:response>
+		</t:test>   
+
+	</t:test_case>	
+		
+	<t:test_case testcaseid="RecoverMail_ToOriginalSubfolder" type="bhr">
+		<t:objective>Create a new sub folder from EWS and sync on server. Hard delete subfolder email and then Recover deleted mail from dumpster to subfolder.
+				</t:objective>
+		<t:steps>1. Create a new sub folder from EWS client.
+			2. Sync the folder on server
+			3. Hard delete subfolder email from server
+			4. Recover deleted mail from dumpster to subfolder and verify in EWS
+		</t:steps>
+		
+	<!-- Create a sub folder under inbox on ews client -->
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}"
+				password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ParentFolderId>
+								<t:FolderId Id="2" />
+							</ParentFolderId>
+							<Folders>
+								<t:Folder>
+									<t:FolderClass>IPF.Note</t:FolderClass>
+									<t:DisplayName>${sub.folder1.name}</t:DisplayName>
+								</t:Folder>
+							</Folders>
+						</CreateFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateFolderResponseMessage//ewstype:FolderId"
+					attr="Id" set="sub.folder1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<!-- Send mail to this user -->
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account2.name}" />
+						<su>${message.subject2}</su>
+						<mp ct="text/plain">
+							<content>${message.content2}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	   <t:test required="true">
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox2.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox2.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail03_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail03_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState03" />
+			</t:response>		
+		</t:test>
+			
+		<!-- Move mail to Subfolder1 -->
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+			<t:request>
+				<MsgActionRequest xmlns="urn:zimbraMail">
+					<action op="move" id="${Sent_message1.id}" l="${sub.folder1.id}" />
+				</MsgActionRequest>
+			</t:request>
+			<t:response>
+			<t:select path="//mail:MsgActionResponse/mail:action" attr="id"
+					match="${Sent_message1.id}" />	
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder//mail:folder[@name='${sub.folder1.name}']"
+					attr="id" set="sub.folder1.id.zwc" />
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder//mail:folder[@name='${sub.folder1.name}']"
+					attr="l" match="2" />
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder//mail:folder[@name='${sub.folder1.name}']"
+					attr="absFolderPath" match="/Inbox/${sub.folder1.name}" />
+			</t:response>
+		</t:test>
+		
+		<!-- Verify on Server that mail is moved to Subfolder1 -->
+		<t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>in:inbox/${sub.folder1.name} subject:${message.subject2}</query>	              
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject2}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc4" />	            
+	        </t:response>
+	     </t:test>
+	     
+	     <!-- Hard delete mail from Server for Dumpster enabled user -->
+	     <t:test>
+	        <t:request>
+	            <MsgActionRequest xmlns = "urn:zimbraMail">
+	                <action id = "${mail_id_wc4}" op = "delete"/>
+	            </MsgActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "delete"/>
+	            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${mail_id_wc4}"/>
+	        </t:response>
+    	</t:test>
+    	
+    	<!-- Verify from Server that hard deleted mail is present in Dumpster folder -->
+    	<t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+	                <query>-in:/Junk subject:${message.subject2}</query>
+	                <inDumpster>1</inDumpster>	              
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject2}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc4" />	            
+	        </t:response>
+	     </t:test>
+	     
+    	<!-- Recover hard deleted mail from Dumpster to Original folder say Subfolder1 from Server -->
+    	<t:test>
+	        <t:request>
+	            <ItemActionRequest xmlns = "urn:zimbraMail">
+	                <action id = "${mail_id_wc4}" op = "recover" l = "${sub.folder1.id}"/>
+	            </ItemActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "recover"/>
+	            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${mail_id_wc4}"/>
+	        </t:response>
+    	</t:test>
+    	
+		<!-- Verify on EWS client that mail is recovered in Original folder that is Subfolder1 -->
+	  	<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${sub.folder1.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail04_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail04_changeKey" />		
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState04" />	
+			</t:response>
+		</t:test>
+		
+    	<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />									
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail04_id}" ChangeKey="${mail04_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject2}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"  contains="${message.content2}" />			
+			</t:response>
+		</t:test>   
+    	
+	</t:test_case>
+
+	<t:test_case testcaseid="RecoverMail_ToDifferentSubfolder" type="bhr">
+		<t:objective>Create a new sub folder-subfolder2 from EWS and sync on server. Hard delete subfolder2 email and then Recover deleted mail from dumpster to different subfolder say subfolder1.
+				</t:objective>
+		<t:steps>1. Create a new sub folder from EWS client.
+			2. Sync the folder on server
+			3. Hard delete subfolder email from server
+			4. Recover deleted mail from dumpster to different subfolder and verify in EWS
+		</t:steps>
+		
+	<!-- Create a sub folder under inbox on ews client -->
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}"
+				password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ParentFolderId>
+								<t:FolderId Id="2" />
+							</ParentFolderId>
+							<Folders>
+								<t:Folder>
+									<t:FolderClass>IPF.Note</t:FolderClass>
+									<t:DisplayName>${sub.folder2.name}</t:DisplayName>
+								</t:Folder>
+							</Folders>
+						</CreateFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateFolderResponseMessage//ewstype:FolderId"
+					attr="Id" set="sub.folder2.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<!-- Send mail to this user -->
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account2.name}" />
+						<su>${message.subject3}</su>
+						<mp ct="text/plain">
+							<content>${message.content3}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message2.id" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	   <t:test required="true">
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox3.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox3.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail05_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail05_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState05" />
+			</t:response>		
+		</t:test>	
+		
+		<!-- Move mail to Subfolder2 -->
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+			<t:request>
+				<MsgActionRequest xmlns="urn:zimbraMail">
+					<action op="move" id="${Sent_message2.id}" l="${sub.folder2.id}" />
+				</MsgActionRequest>
+			</t:request>
+			<t:response>
+			<t:select path="//mail:MsgActionResponse/mail:action" attr="id"
+					match="${Sent_message2.id}" />	
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder//mail:folder[@name='${sub.folder2.name}']"
+					attr="id" set="sub.folder2.id.zwc" />
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder//mail:folder[@name='${sub.folder2.name}']"
+					attr="l" match="2" />
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder//mail:folder[@name='${sub.folder2.name}']"
+					attr="absFolderPath" match="/Inbox/${sub.folder2.name}" />
+			</t:response>
+		</t:test>
+		
+			<!-- Verify on Server that mail is moved to Subfolder2 -->
+		<t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>in:inbox/${sub.folder2.name} subject:${message.subject3}</query>	              
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject3}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc5" />	            
+	        </t:response>
+	     </t:test>
+	     
+	     <!-- Hard delete mail from Server for Dumpster enabled user -->
+	     <t:test>
+	        <t:request>
+	            <MsgActionRequest xmlns = "urn:zimbraMail">
+	                <action id = "${mail_id_wc5}" op = "delete"/>
+	            </MsgActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "delete"/>
+	            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${mail_id_wc5}"/>
+	        </t:response>
+    	</t:test>
+    	
+    	<!-- Verify from Server that hard deleted mail is present in Dumpster folder -->
+    	<t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+	                <query>-in:/Junk subject:${message.subject3}</query>
+	                <inDumpster>1</inDumpster>	              
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject3}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc5" />	            
+	        </t:response>
+	     </t:test>
+	     
+    	<!-- Recover hard deleted mail from Dumpster to Different folder say Subfolder1 from Server -->
+    	<t:test>
+	        <t:request>
+	            <ItemActionRequest xmlns = "urn:zimbraMail">
+	                <action id = "${mail_id_wc5}" op = "recover" l = "${sub.folder1.id}"/>
+	            </ItemActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "recover"/>
+	            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${mail_id_wc5}"/>
+	        </t:response>
+    	</t:test>
+
+		<!-- Verify on EWS client that mail is recovered in Different folder that is Subfolder1 -->
+	  	<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${sub.folder1.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState04}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail06_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail06_changeKey" />			
+			</t:response>
+		</t:test>
+		
+    	<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />									
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail06_id}" ChangeKey="${mail06_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject3}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"  contains="${message.content3}" />			
+			</t:response>
+		</t:test>  
+		
+		<!-- Verify on EWS client that mail is not present in Original folder that is Subfolder2 -->
+	  	<t:test>
+			<t:request ews="true" username="${test_account2.name}" password="${test_account2.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${sub.folder2.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:Create[2]//ewstype:Subject"
+					match="${message.subject3}" emptyset="1" />			
+			</t:response>
+		</t:test>
+		
+    	
+	</t:test_case>	
+</t:tests>

@@ -1,0 +1,498 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	
+	<t:property name="name1" value="OpenioVolume1${COUNTER}${TIME}" />
+	<t:property name="name2" value="OpenioVolume2${COUNTER}${TIME}" />
+	<t:property name="name3" value="OpenioVolume3${COUNTER}${TIME}" />
+	<t:property name="name4" value="OpenioVolume3${COUNTER}${TIME}" />
+	<t:property name="name5" value="OpenioVolume3${COUNTER}${TIME}" />
+	<t:property name="name5_updated" value="Volume5_updated${COUNTER}${TIME}" />
+	<t:property name="name6" value="OpenioVolume3${COUNTER}${TIME}" />
+	<t:property name="name6_updated" value="Volume6_updated${COUNTER}${TIME}" />
+	<t:property name="type_primary" value="1" />
+	<t:property name="type_secondary" value="2" />	
+	<t:property name="storeType_internal" value="1" />
+	<t:property name="storeType_external" value="2" />
+	<t:property name="storageType" value="OPENIO" />
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateVolumeRequest_01" type="bhr" areas="StorageManagement">
+		<t:objective>Verify user should be able to create primary volume of OpenIO storage provider</t:objective>
+		<t:steps>
+			1. Login as the Admin
+			2. Create a valid primary volume of Storage Type = OpenIO
+			3. Verify volume details by GetVolumeRequest
+			4. Verify volume ID is returning in GetAllVolumesRequest
+		</t:steps>
+
+		<t:test id="Login01" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateVolume01" depends="Login01" required="true">
+			<t:request>
+				  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+        				 <volume name="${name1}" type="${type_primary}" storeType="${storeType_external}">
+        				 <volumeExternalInfo storageType="${storageType}"/>
+          			  			<volumeExternalOpenIoInfo storageType="${storageType}" url="${SM.OPENIO.URL}" account="${SM.OPENIO.ACCOUNT}" nameSpace="${SM.OPENIO.NAMESPACE}" proxyPort="${SM.OPENIO.PROXY.PORT}" accountPort="${SM.OPENIO.ACCOUNT.PORT}" />
+         				</volume>
+    			  </CreateVolumeRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume1.id" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="name" match="${name1}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="type" match="${type_primary}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="storeType" match="${storeType_external}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+		<!-- Get the volume just created. -->
+		<t:test depends="CreateVolume01">
+			<t:request>
+				<GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume1.id}" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" match="${volume1.id}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="name" match="${name1}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="type" match="${type_primary}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+		<!-- Show all currently defined volumes. The new volume should be present. -->
+		<t:test depends="CreateVolume01">
+			<t:request>
+				<GetAllVolumesRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${volume1.id}" />	
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+<t:test_case testcaseid="CreateVolumeRequest_02" type="bhr" areas="StorageManagement">
+		<t:objective>Verify user should be able to create secondary volume of OpenIO storage provider</t:objective>
+		<t:steps>
+			1. Login as the Admin
+			2. Create a valid secondary volume of Storage Type = OpenIO
+			3. Verify volume details by GetVolumeRequest
+			4. Verify volume ID is returning in GetAllVolumesRequest
+		</t:steps>
+
+		<t:test id="Login01" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateVolume02" depends="Login01" required="true">
+			<t:request>
+				  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+        				 <volume name="${name2}" type="${type_secondary}" storeType="${storeType_external}">
+        				 <volumeExternalInfo storageType="${storageType}"/>
+          			  			<volumeExternalOpenIoInfo storageType="${storageType}" url="${SM.OPENIO.URL}" account="${SM.OPENIO.ACCOUNT}" nameSpace="${SM.OPENIO.NAMESPACE}" proxyPort="${SM.OPENIO.PROXY.PORT}" accountPort="${SM.OPENIO.ACCOUNT.PORT}" />
+         				</volume>
+    			  </CreateVolumeRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume2.id" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="name" match="${name2}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="type" match="${type_secondary}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="storeType" match="${storeType_external}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+		<!-- Get the volume just created. -->
+		<t:test depends="CreateVolume02">
+			<t:request>
+				<GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume2.id}" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" match="${volume2.id}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="name" match="${name2}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="type" match="${type_secondary}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+		<!-- Show all currently defined volumes. The new volume should be present. -->
+		<t:test depends="CreateVolume01">
+			<t:request>
+				<GetAllVolumesRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${volume2.id}" />	
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+<t:test_case testcaseid="ModifyVolumeRequest_01" type="bhr" areas="StorageManagement">
+		<t:objective>Verify user should be able to edit primary volume of OpenIO storage provider</t:objective>
+		<t:steps>
+			1. Login as the Admin
+			2. Create a valid primary volume of Storage Type = OpenIO
+			3. Verify volume details by GetVolumeRequest
+			4. Verify user should be able to edit volume using ModifyVolumeRequest
+		</t:steps>
+
+		<t:test id="Login01" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateVolume03" depends="Login01" required="true">
+			<t:request>
+				  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+        				 <volume name="${name5}" type="${type_primary}" storeType="${storeType_external}">
+        				 <volumeExternalInfo storageType="${storageType}"/>
+          			  			<volumeExternalOpenIoInfo storageType="${storageType}" url="${SM.OPENIO.URL}" account="${SM.OPENIO.ACCOUNT}" nameSpace="${SM.OPENIO.NAMESPACE}" proxyPort="${SM.OPENIO.PROXY.PORT}" accountPort="${SM.OPENIO.ACCOUNT.PORT}" />
+         				</volume>
+    			  </CreateVolumeRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume5.id" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="name" match="${name5}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="type" match="${type_primary}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="storeType" match="${storeType_external}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+		<!-- Show all currently defined volumes. The new volume should be present. -->
+		<t:test depends="CreateVolume03">
+			<t:request>
+				<GetAllVolumesRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${volume5.id}" />	
+			</t:response>
+		</t:test>
+		
+		<t:test depends="ModifyVolume01">
+			<t:request>
+				<ModifyVolumeRequest xmlns="urn:zimbraAdmin" id="${volume5.id}"> 
+					<volume name="${name5_updated}"/>
+				</ModifyVolumeRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyVolumeResponse" />
+			</t:response>
+		</t:test>
+		
+		<!-- Get the volume just modified. -->
+		<t:test depends="CreateVolume05">
+			<t:request>
+				<GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume5.id}" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" match="${volume5.id}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="name" match="${name5_updated}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="type" match="${type_primary}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+<t:test_case testcaseid="ModifyVolumeRequest_02" type="bhr" areas="StorageManagement">
+		<t:objective>Verify user should be able to edit secondary volume of OpenIO storage provider</t:objective>
+		<t:steps>
+			1. Login as the Admin
+			2. Create a valid secondary volume of Storage Type = OpenIO
+			3. Verify volume details by GetVolumeRequest
+			4. Verify user should be able to edit volume using ModifyVolumeRequest
+		</t:steps>
+
+		<t:test id="Login01" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateVolume04" depends="Login01" required="true">
+			<t:request>
+				  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+        				 <volume name="${name6}" type="${type_secondary}" storeType="${storeType_external}">
+        				 <volumeExternalInfo storageType="${storageType}"/>
+          			  			<volumeExternalOpenIoInfo storageType="${storageType}" url="${SM.OPENIO.URL}" account="${SM.OPENIO.ACCOUNT}" nameSpace="${SM.OPENIO.NAMESPACE}" proxyPort="${SM.OPENIO.PROXY.PORT}" accountPort="${SM.OPENIO.ACCOUNT.PORT}" />
+         				</volume>
+    			  </CreateVolumeRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume6.id" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="name" match="${name6}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="type" match="${type_secondary}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="storeType" match="${storeType_external}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+		<t:test depends="CreateVolume04">
+			<t:request>
+				<GetAllVolumesRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${volume6.id}" />	
+			</t:response>
+		</t:test>
+		
+		<t:test depends="CreateVolume04">
+			<t:request>
+				<ModifyVolumeRequest xmlns="urn:zimbraAdmin" id="${volume6.id}"> 
+					<volume name="${name6_updated}"/>
+				</ModifyVolumeRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyVolumeResponse" />
+			</t:response>
+		</t:test>
+		
+		<!-- Get the volume just modified. -->
+		<t:test depends="CreateVolume04">
+			<t:request>
+				<GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume6.id}" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" match="${volume6.id}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="name" match="${name6_updated}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="type" match="${type_secondary}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:GetVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+<t:test_case testcaseid="DeleteVolumeRequest_01" type="bhr" areas="StorageManagement">
+		<t:objective>Verify user should be able to delete primary volume of OpenIO storage provider</t:objective>
+		<t:steps>
+			1. Login as the Admin
+			2. Create a valid primary volume of Storage Type = OpenIO
+			3. Verify volume details by GetVolumeRequest
+			4. Verify user should be able to delete volume using DeleteVolumeRequest
+		</t:steps>
+
+		<t:test id="Login01" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateVolume05" depends="Login01" required="true">
+			<t:request>
+				  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+        				 <volume name="${name3}" type="${type_primary}" storeType="${storeType_external}">
+        				 <volumeExternalInfo storageType="${storageType}"/>
+          			  			<volumeExternalOpenIoInfo storageType="${storageType}" url="${SM.OPENIO.URL}" account="${SM.OPENIO.ACCOUNT}" nameSpace="${SM.OPENIO.NAMESPACE}" proxyPort="${SM.OPENIO.PROXY.PORT}" accountPort="${SM.OPENIO.ACCOUNT.PORT}" />
+         				</volume>
+    			  </CreateVolumeRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume3.id" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="name" match="${name3}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="type" match="${type_primary}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="storeType" match="${storeType_external}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+		<!-- Show all currently defined volumes. The new volume should be present. -->
+		<t:test depends="CreateVolume05">
+			<t:request>
+				<GetAllVolumesRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${volume3.id}" />	
+			</t:response>
+		</t:test>
+		
+		<t:test depends="DeleteVolume01" id="DeleteVolume01">
+			<t:request>
+				<DeleteVolumeRequest xmlns="urn:zimbraAdmin" id="${volume3.id}"/>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteVolumeResponse"/>
+			</t:response>
+		</t:test>
+		
+		<!-- Get the volume just deleted. -->
+		<t:test depends="DeleteVolume01">
+			<t:request>
+				<GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume3.id}" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" emptyset="1" />
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+<t:test_case testcaseid="DeleteVolumeRequest_02" type="bhr" areas="StorageManagement">
+		<t:objective>Verify user should be able to delete secondary volume of OpenIO storage provider</t:objective>
+		<t:steps>
+			1. Login as the Admin
+			2. Create a valid secondary volume of Storage Type = OpenIO
+			3. Verify volume details by GetVolumeRequest
+			4. Verify user should be able to delete volume using DeleteVolumeRequest
+		</t:steps>
+
+		<t:test id="Login01" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateVolume06" depends="Login01" required="true">
+			<t:request>
+				  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+        				 <volume name="${name4}" type="${type_secondary}" storeType="${storeType_external}">
+        				 <volumeExternalInfo storageType="${storageType}"/>
+          			  			<volumeExternalOpenIoInfo storageType="${storageType}" url="${SM.OPENIO.URL}" account="${SM.OPENIO.ACCOUNT}" nameSpace="${SM.OPENIO.NAMESPACE}" proxyPort="${SM.OPENIO.PROXY.PORT}" accountPort="${SM.OPENIO.ACCOUNT.PORT}" />
+         				</volume>
+    			  </CreateVolumeRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume4.id" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="name" match="${name4}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="type" match="${type_secondary}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="storeType" match="${storeType_external}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="storageType" match="${storageType}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="url" match="${SM.OPENIO.URL}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="account" match="${SM.OPENIO.ACCOUNT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="nameSpace" match="${SM.OPENIO.NAMESPACE}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="proxyPort" match="${SM.OPENIO.PROXY.PORT}" />
+				<t:select path="//admin:CreateVolumeResponse/admin:volume/admin:volumeExternalOpenIoInfo" attr="accountPort" match="${SM.OPENIO.ACCOUNT.PORT}" />
+			</t:response>
+		</t:test>
+		
+		<!-- Show all currently defined volumes. The new volume should be present. -->
+		<t:test depends="CreateVolume06">
+			<t:request>
+				<GetAllVolumesRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${volume4.id}" />	
+			</t:response>
+		</t:test>
+		
+		<t:test depends="CreateVolume04" id="DeleteVolume04">
+			<t:request>
+				<DeleteVolumeRequest xmlns="urn:zimbraAdmin" id="${volume4.id}"/>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteVolumeResponse"/>
+			</t:response>
+		</t:test>
+		
+		<!-- Get the volume just deleted. -->
+		<t:test depends="DeleteVolume06">
+			<t:request>
+				<GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume4.id}" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" emptyset="1" />
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+</t:tests>

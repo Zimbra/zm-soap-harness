@@ -1,0 +1,417 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="volume1.name" value="New volume 1"/>
+<t:property name="volume2.name" value="New volume 2"/>
+
+<t:property name="volume.space" value=" "/>
+<t:property name="volume.blank" value=""/>
+<t:property name="volume.spchar" value="*/+-"/>
+<t:property name="volume.negative" value="-123"/>
+<t:property name="volume.largenumber" value="1234567890"/>
+<t:property name="volume.zero" value="0"/>
+
+
+<t:property name="tempdir" value="/tmp/volumes"/>
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "mkdir -p ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "chmod 777 ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+<t:property name="basedir" value="${tempdir}/volumeRoot${COUNTER}${TIME}"/>
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "mkdir -p ${basedir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "chmod 777 ${basedir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+
+<t:property name="fgbits" value="4"/>
+<t:property name="mgbits" value="6"/>
+<t:property name="mbits" value="14"/>
+<t:property name="fbits" value="16"/>
+<t:property name="compressBlobs_default" value="0"/>
+<t:property name="compressionThreshold_default" value="4096"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test>
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_volume_get" type="always">
+    <t:objective>Login to admin</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAllVolumesRequest1" type="bhr">
+    <t:objective>Show all currently defined volumes.</t:objective>
+
+    <t:test>
+        <t:request>
+            <GetAllVolumesRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllVolumesResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetVolumeRequest1" type="bhr">
+    <t:objective>Create a new volume and get it.</t:objective>
+    <t:steps> 1.Create a new volume.
+              2.Get the volume just created. 
+              3.Show all currently defined volumes. The new volume should be present.
+    </t:steps>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <!-- Create a new volume. -->
+    <t:test id="getVolumeRequest1a">
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="1" name="${name}" rootpath="${rootpath}" mgbits="${mgbits}" mbits="${mbits}" fgbits="${fgbits}" fbits="${fbits}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume1.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume just created. -->
+    <t:test depends="getVolumeRequest1a">
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume1.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" match="${volume1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!-- Show all currently defined volumes.  The new volume should be present. -->
+    <t:test depends="getVolumeRequest1a">
+        <t:request>
+            <GetAllVolumesRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${volume1.id}"/>
+        </t:response>
+        </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="GetVolumeRequest2" type="negative">
+    <t:objective>Delete volume and try to get it.</t:objective>
+    <t:steps> 1.Delete a volume.
+              2.Get the volume just deleted. 
+              3.Show all currently defined volumes.
+    </t:steps>
+
+    <!-- Delete the newly created volume. -->
+    <t:test id="getVolumeRequest2a">
+        <t:request>
+            <DeleteVolumeRequest xmlns="urn:zimbraAdmin" id="${volume1.id}" deleteFiles="0"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteVolumeResponse" id="${volume1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume just deleted. -->
+    <t:test depends="getVolumeRequest2a">
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume1.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Show all currently defined volumes.  The new volume should not be present. -->
+    <t:test depends="getVolumeRequest2a">
+        <t:request>
+            <GetAllVolumesRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${volume1.id}" emptyset="1"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="GetVolumeRequest3" type="negative">
+    <t:objective>Get volume giving single attribute at a time</t:objective>
+    <t:steps> 1.Create a new volume.
+              2.Get the volume just created giving single attribute at a time.
+    </t:steps>
+
+	<t:property name="rootpath" value="${basedir}/rootpath${COUNTER}${TIME}"/>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	<t:property name="name" value="Volume${COUNTER}${TIME}"/>
+
+    <!-- Create a new volume. -->
+    <t:test required="true">
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type="1" name="${name}" rootpath="${rootpath}" mgbits="${mgbits}" mbits="${mbits}" fgbits="${fgbits}" fbits="${fbits}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume2.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with id-->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume2.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" match="${volume2.id}"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with type-->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" type="1"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+				<t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with name-->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" name="${volume2.name}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with rootpath-->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" rootpath="volume.rootpath"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with mgbits-->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" mgbits="${mgbits}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with mbits-->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" mbits="${mbits}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with fgbits-->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" fgbits="${fgbits}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with fbits-->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" fbits="${fbits}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>   
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetVolumeRequest4" type="negative">
+    <t:objective>Get volume with non numeric invalid id(space/blank/spchar).</t:objective>
+
+    <!-- Get the volume with id = space. -->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume.space}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with id = blank. -->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume.blank}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with id = spchar. -->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume.spchar}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="GetVolumeRequest5" type="negative">
+    <t:objective>Get volume with numeric invalid id(negative/largenumber/zero).</t:objective>
+
+    <!-- Get the volume with id = negative number. -->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume.negative}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="volume.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with id = largenumber. -->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume.largenumber}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="volume.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the volume with id = zero. -->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume.zero}"/>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="volume.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetVolumeRequest6" type="negative">
+    <t:objective>Get volume with out giving id.</t:objective>
+
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" />
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+
+

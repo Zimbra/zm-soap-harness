@@ -1,0 +1,1455 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="compose.subject" value="Subject of the message is testing dumpster"/>
+<t:property name="compose.content" value="Content in the message is contents dumpstertest"/>
+
+<t:property name = "message.subject1" value = "Subject${TIME}.${COUNTER}"/>
+<t:property name = "message.content1" value = "content of the message${TIME}.${COUNTER}"/>
+
+<t:property name = "message.subject2" value = "Subject${TIME}.${COUNTER}"/>
+<t:property name = "message.content2" value = "content of the message${TIME}.${COUNTER}"/>
+
+<t:property name = "message.subject3" value = "Subject dumpster delete${TIME}.${COUNTER}"/>
+<t:property name = "message.content3" value = "content of the message${TIME}.${COUNTER}"/>
+
+<t:property name = "message.subject4" value = "Subject${TIME}.${COUNTER}"/>
+<t:property name = "message.content4" value = "content of the message${TIME}.${COUNTER}"/>
+
+<t:property name = "message.subject5" value = "Subject${TIME}.${COUNTER}"/>
+<t:property name = "message.content5" value = "content of the message${TIME}.${COUNTER}"/>
+
+<t:property name = "op.delete" value = "delete"/>
+<t:property name = "op.recover" value = "recover"/>
+
+<t:test_case testcaseid="DumpsterTest_Setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                 <a n="zimbraDumpsterEnabled">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+			<t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account1.id"/>
+        </t:response>
+    </t:test>  
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                 <a n="zimbraDumpsterEnabled">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+			<t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+                 <a n="zimbraDumpsterEnabled">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+			<t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account3.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+                 <a n="zimbraDumpsterEnabled">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+			<t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account4.id"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <a n = "zimbraDumpsterEnabled">TRUE</a>                
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <a n = "zimbraDumpsterEnabled">TRUE</a>                
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account4.id}</id>
+                <a n = "zimbraDumpsterEnabled">FALSE</a>                
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+ </t:test_case>
+ 
+ <t:test_case testcaseid = "DumpsterMessage_01" type="bhr">
+    <t:objective>Verify the deleted message is available in dumpster </t:objective>
+    <t:steps>1. Login as Account1
+             2. Send message1 to Account2(zimbraDumpsterEnabled=True)
+             3. Hard delete a message from account3
+             4. Verify that message is available in dumpster when you are searching  using inDumpster = 1
+             5. Verify that message is not available in dumpster when you are searching using inDumpster = 0         
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns = "urn:zimbraMail">
+                <m>
+                    <e t = "t" a = "${account2.name}"/>
+                    <su>${message.subject1}</su>
+                    <mp ct = "text/plain">
+                        <content>${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "message.id1"/>
+        </t:response>
+    </t:test>
+    
+    <t:delay msec="2000"/>
+    
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject1}</query>
+		   		 <types>message</types>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id1"/>
+		 </t:response>
+	</t:test>
+	
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.delete}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   		<query>in:"inbox" ${message.subject1}</query>
+		   		<types>message</types>		  
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="1"/>
+		 </t:response>
+	</t:test>
+   
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject1}</query>
+		   		 <types>message</types>
+		 		 <inDumpster>1</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id1"/>
+		 </t:response>
+	 </t:test>
+	
+	 <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject1}</query>
+		   		 <types>message</types>
+		 		 <inDumpster>0</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="1"/>
+		 </t:response>
+	</t:test>	
+	
+</t:test_case> 
+
+<t:property name="contact1.firstname" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact1.lastname" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact1.mailid" value="email.${TIME}.${COUNTER}@domain.com"/>
+
+<t:test_case testcaseid = "DumpsterContacts_01" type="bhr">
+    <t:objective>Verify the deleted contact is available in dumpster </t:objective>
+    <t:steps>1. Login as Account1(zimbraDumpsterEnabled=True )            
+             2. Create a contact
+             3. Hard delete the contact
+             4. Verify that contact is available  in dumpster  
+             5. Recover the contact from dumpster            
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+	 <t:request>
+	   <CreateContactRequest xmlns="urn:zimbraMail">
+	     <cn>
+	     	<a n="firstName">${contact1.firstname}</a>
+	     	<a n="lastName">${contact1.lastname}</a>
+	     	<a n="email">${contact1.mailid}</a>
+	     </cn>     
+	   </CreateContactRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateContactResponse/mail:cn">
+		  <t:select attr="id" set="contact.id"/>
+		</t:select>	
+	 </t:response>
+	</t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="contact">
+		  		 <query>${contact1.firstname}</query>
+		   		 <types>contact</types>		 		 
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:cn" attr="id" match="${contact.id}"/>
+		 </t:response>
+	 </t:test>
+    
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${contact.id}" op = "${op.delete}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${contact.id}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="contact">
+		  		 <query>${contact1.firstname}</query>
+		   		 <types>contact</types>		 		 
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:cn" attr="id" match="${contact.id}" emptyset="1"/>
+		 </t:response>
+	 </t:test>
+   
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="contact">
+		  		 <query>${contact1.firstname}</query>
+		   		 <types>contact</types>
+		 		 <inDumpster>1</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:cn" attr="id" match="${contact.id}"/>
+		 </t:response>
+	 </t:test>
+	 
+	 <!-- find out which folder ID is the inbox -->
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="contactFolder.id"/>
+        </t:response>
+    </t:test>
+       
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${contact.id}" op = "${op.recover}" l="${contactFolder.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.recover}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${contact.id}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="contact">
+		  		 <query>${contact1.firstname}</query>
+		   		 <types>contact</types>		 		
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:cn" attr="id" emptyset="0"/>
+		 </t:response>
+	 </t:test>
+		
+</t:test_case> 
+
+<t:property name="task1.subject" value="Subject of task${TIME}.${COUNTER}"/>
+<t:property name="task1.location" value="Location of task${TIME}.${COUNTER}"/>
+<t:property name="task1.content" value="Content of the task${TIME}.${COUNTER}"/>
+
+<t:property name="CurrentTime" value="${GENTIME}"/>
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+
+<t:test_case testcaseid = "DumpsterTask_01" type="bhr">
+    <t:objective>Verify the deleted task is available in dumpster </t:objective>
+    <t:steps>1. Login as Account1(zimbraDumpsterEnabled=True )            
+             2. Create a task
+             3. Hard delete the task
+             4. Verify that task is available in dumpster
+             5. Recover the task from dumpster             
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+     <!-- find out which folder ID is the task -->
+    <t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.tasks}']" attr="id" set="account1.folder.task.id"/>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.task.id}">
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="75" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
+							<s d="${Time1}"/>
+							<e d="${Time2}"/>
+							<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>${task1.content}</content>
+					</mp>
+					<su>${task1.subject}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="invId" set ="task.id"/>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="task">
+		  		 <query>${task1.subject}</query>
+		   		 <types>task</types>		 		 
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:task" attr="invId" match="${task.id}"/>
+		 </t:response>
+	 </t:test>
+    
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${task.id}" op = "${op.delete}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr="id" emptyset="0"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="task">
+		  		 <query>${task1.subject}</query>
+		   		 <types>task</types>		 		 
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:task" attr="invId" match="${task.id}" emptyset="1"/>
+		 </t:response>
+	 </t:test>
+   
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="task">
+		  		 <query>${task1.subject}</query>
+		   		 <types>task</types>
+		 		 <inDumpster>1</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:task" attr="invId"  match="${task.id}"/>
+		 </t:response>
+	</t:test>	 
+	       
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${task.id}" op = "${op.recover}" l="${account1.folder.task.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.recover}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr="id"  emptyset="0"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="task">
+		  		 <query>${task1.subject}</query>
+		   		 <types>task</types>		 		
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:task" attr="invId"  emptyset="0"/>
+		 </t:response>
+	 </t:test>
+		
+</t:test_case> 
+
+<t:property name="account1.document.textfile" value="${testMailRaw.root}/contact/contact1.txt"/>
+
+<t:test_case testcaseid = "DumpsterDocument_01" type="bhr">
+    <t:objective>Verify the deleted document is available in dumpster </t:objective>
+    <t:steps>1. Login as Account1(zimbraDumpsterEnabled=True )            
+             2. Upload  a document
+             3. Hard delete the document
+             4. Verify that document is available in dumpster
+             5. Recover the document from dumpster             
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <!-- find out which folder ID is the briefcase -->
+    <t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attachfile.id"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}">
+			    <upload id="${document.attachfile.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document1.attachfile.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">
+				<query>contact1.txt </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc" attr="name" match="contact1.txt"/>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${document1.attachfile.id}" op = "${op.delete}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr="id" emptyset="0"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">
+				<query>contact1.txt </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc" attr="name" match="contact1.txt" emptyset="1"/>
+		</t:response>
+	</t:test>   
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">
+				<query>contact1.txt </query>
+				<inDumpster>1</inDumpster>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc" attr="name" match="contact1.txt" />
+		</t:response>
+	</t:test>   
+   	       
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${document1.attachfile.id}" op = "${op.recover}" l="${account1.folder.briefcase.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.recover}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr="id"  emptyset="0"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">
+				<query>contact1.txt </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc" attr="name" match="contact1.txt" />
+		</t:response>
+	</t:test>  
+		
+</t:test_case> 
+
+<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+<t:test_case testcaseid = "DumpsterCalendar_01" type="bhr">
+    <t:objective>Verify the deleted appointment is available in dumpster </t:objective>
+    <t:steps>1. Login as Account1(zimbraDumpsterEnabled=True )            
+             2. Create an appointment
+             3. Hard delete the appointment
+             4. Verify that appointment is available in dumpster
+             5. Recover the appointment from dumpster             
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- find out which folder ID is the calendar -->
+    <t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account1.folder.calendar.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" match="^\d+$"/>
+            <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" match="^\d+$"/>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" match="^\d+-\d+$"/>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:appt" attr="invId" match="${appointment1.id}"/>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${appointment1.id}" op = "${op.delete}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr="id" emptyset="0"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:appt" attr="invId" match="${appointment1.id}" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>${appointment.subject}</query>
+				<inDumpster>1</inDumpster>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:appt" attr="invId" match="${appointment1.id}" />
+		</t:response>
+	</t:test>   
+   	       
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${appointment1.id}" op = "${op.recover}" l="${account1.folder.calendar.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.recover}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr="id"  emptyset="0"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:appt" attr="invId"  emptyset="0"/>
+		</t:response>
+	</t:test>
+		
+</t:test_case> 
+
+<t:test_case testcaseid = "recoverFromDumpster_01" type="bhr" bugids="45284">
+
+    <t:objective>Verify the deleted message is viewable by Account3 after recovery</t:objective>
+    <t:steps>1. Login as Account1(zimbraDumpsterEnabled=True)
+             2. Send message1 to Account3 (zimbraDumpsterEnabled=True)
+             3. Hard delete a message from account3
+             4. Recover deleted message 
+             5. Verify the deleted message is viewable by Account3 after recovery
+    </t:steps>
+    
+       
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns = "urn:zimbraMail">
+                <m>
+                    <e t = "t" a = "${account3.name}"/>
+                    <su>${message.subject2}</su>
+                    <mp ct = "text/plain">
+                        <content>${message.content2}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "acct1.message.id2"/>
+        </t:response>
+    </t:test>
+    
+    <t:delay msec="2000"/>
+    
+    <t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject2}</query>
+		   		 <types>message</types>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="acct3.message.id1"/>
+		 </t:response>
+	</t:test>
+	
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${acct3.message.id1}" op = "${op.delete}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${acct3.message.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   		<query>in:"inbox" ${message.subject2}</query>
+		   		<types>message</types>		  
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="1"/>
+		 </t:response>
+	</t:test>
+   
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject2}</query>
+		   		 <types>message</types>
+		 		 <inDumpster>1</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="0"/>
+		 </t:response>
+	</t:test>
+	
+		
+	<!-- find out which folder ID is the inbox -->
+    <t:test>
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+       
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${acct3.message.id1}" op = "${op.recover}" l="${inboxFolder.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.recover}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${acct3.message.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>in:inbox</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>		
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${message.subject2}"/>
+		</t:response>
+	</t:test>
+		
+</t:test_case> 
+
+<t:test_case testcaseid = "deleteFromDumpster_01" type="bhr" bugids="45284">
+    <t:objective>Verify the deleted message from dumpster is not recoverable if the message is deleted also from dumpster</t:objective>
+    <t:steps>1. Login as Account1            
+             2. Send message1 to Account3(zimbraDumpsterEnabled=True)
+             3. Hard delete a message from account3
+             4. Delete the message from dumpster also using dumpsterdelete
+             5. Verify the deleted message is not recoverable by Account3 anymore
+    </t:steps>
+    
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns = "urn:zimbraMail">
+                <m>
+                    <e t = "t" a = "${account3.name}"/>
+                    <su>${message.subject3}</su>
+                    <mp ct = "text/plain">
+                        <content>${message.content3}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "acct1.message.id2"/>
+        </t:response>
+    </t:test>
+    
+    <t:delay msec="2000"/>    
+    
+    <t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject3}</query>
+		   		 <types>message</types>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="acct3.message.id2"/>
+		 </t:response>
+	</t:test>
+	
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${acct3.message.id2}" op = "${op.delete}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${acct3.message.id2}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   	<query>in:"inbox" ${message.subject3}</query>
+		   	<types>message</types>		  
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="1"/>
+		 </t:response>
+	</t:test>
+   
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject3}</query>
+		   		 <types>message</types>
+		 		 <inDumpster>1</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="acct3.dumpsterMessage.id2"/>
+		 </t:response>
+	</t:test>	
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken.admin"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+    	<t:requestContext>
+			<authToken>${authToken.admin}</authToken>
+			<account by="id">${account3.id}</account>
+		</t:requestContext>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject3}</query>
+		   		 <types>message</types>
+		 		 <inDumpster>1</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="dumpsterMessage.id2"/>
+		 </t:response>
+	</t:test>	
+	 
+	<t:test >
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${dumpsterMessage.id2}" op = "dumpsterdelete"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "dumpsterdelete"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${dumpsterMessage.id2}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject3}</query>
+		   		 <types>message</types>
+		 		 <inDumpster>1</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id"  emptyset="1"/>
+		 </t:response>
+	</t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+		
+	<!-- find out which folder ID is the inbox -->
+    <t:test>
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+       
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${acct3.message.id2}" op = "${op.recover}" l="${inboxFolder.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_ITEM"/>          
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>in:inbox</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>		
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${message.subject3}" emptyset="1"/>
+		</t:response>
+	</t:test>	
+</t:test_case> 
+    
+ <t:test_case testcaseid = "hardDeleteDumpsterDisabledAccount_01" type="bhr" bugids="45284">
+    <t:objective>Verify the deleted message from dumpster is not recoverable if the account has zimbraDumpsterEnabled=False</t:objective>
+    <t:steps>1. Login as Account1            
+             2. Send message1 to Account4(zimbraDumpsterEnabled=False)
+             3. Hard delete a message from account4             
+             4. Verify the deleted message is not available in dumpster
+    </t:steps>
+    
+   
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns = "urn:zimbraMail">
+                <m>
+                    <e t = "t" a = "${account4.name}"/>
+                    <su>${message.subject4}</su>
+                    <mp ct = "text/plain">
+                        <content>${message.content4}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "acct1.message.id3"/>
+        </t:response>
+    </t:test>
+    
+    <t:delay msec="2000"/>
+    
+    <t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+     <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject4}</query>
+		   		 <types>message</types>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="acct4.message.id1"/>
+		 </t:response>
+	</t:test>
+	
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${acct4.message.id1}" op = "${op.delete}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${acct4.message.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   	<query>in:"inbox" ${message.subject4}</query>
+		   	<types>message</types>		  
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="1"/>
+		 </t:response>
+	</t:test>
+   
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject4}</query>
+		   		 <types>message</types>
+		 		 <inDumpster>1</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="1"/>
+		 </t:response>
+	</t:test>	
+	  
+</t:test_case> 
+
+
+<t:test_case testcaseid = "EnableDisableDumpster_01" type="bhr" bugids="45284">
+
+    <t:objective>Verify the deleted message is viewable by Account3 after disabling  followed by enabling dumpster</t:objective>
+    <t:steps>1. Login as Account1(zimbraDumpsterEnabled=True)
+             2. Send message1 to Account3 (zimbraDumpsterEnabled=True)
+             3. Hard delete a message from account3
+             4. Disable dumpster for account3
+             5. Enable dumpster for account3
+             6. Check that account3 is able to recover deleted message 
+             5. Verify the deleted message is viewable by Account3 after recovery
+    </t:steps>
+    
+     
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns = "urn:zimbraMail">
+                <m>
+                    <e t = "t" a = "${account3.name}"/>
+                    <su>${message.subject5}</su>
+                    <mp ct = "text/plain">
+                        <content>${message.content5}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "acct1.message.id2"/>
+        </t:response>
+    </t:test>
+    
+    <t:delay msec="2000"/>
+    
+    <t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject5}</query>
+		   		 <types>message</types>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="acct3.message.id2"/>
+		 </t:response>
+	</t:test>
+	
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${acct3.message.id2}" op = "${op.delete}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${acct3.message.id2}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>in:"inbox" ${message.subject5}</query>
+		   <types>message</types>
+		  
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="1"/>
+		 </t:response>
+	</t:test>
+   
+   <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  		 <query>${message.subject5}</query>
+		   		 <types>message</types>
+		 		 <inDumpster>1</inDumpster>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="0"/>
+		 </t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <a n = "zimbraDumpsterEnabled">FALSE</a>                
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <a n = "zimbraDumpsterEnabled">TRUE</a>                
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+		
+	<t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+	<!-- find out which folder ID is the inbox -->
+    <t:test>
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+       
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${acct3.message.id2}" op = "${op.recover}" l="${inboxFolder.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.recover}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${acct3.message.id2}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>in:inbox</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>		
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${message.subject5}"/>
+		</t:response>
+	</t:test>
+		
+</t:test_case> 
+       
+</t:tests>

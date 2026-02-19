@@ -1,0 +1,526 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="AD.zimbraAuthLdapURL" value="ldap://${AD.url}:${AD.port}/"/>
+<t:property name="AD.bindDN" value="%u@${AD.domain}"/>
+<t:property name="AD.alias" value="account04"/>
+<t:property name="Spaceinname" value="auth authaccount03"/>
+<t:property name="AD.DL" value="authDL"/>
+
+
+<t:property name="AD.passwordInvalid" value="InvalidPassoword"/>
+<t:property name="AD.userNameInvalid" value="InvalidUser"/>
+
+<t:property name="AD.bindDNInvalid1" value="%u@"/>
+<t:property name="AD.bindDNInvalid2" value="%u${AD.domain}"/>
+<t:property name="AD.bindDNInvalid3" value="@${AD.domain}"/>
+<t:property name="AD.bindDNInvalid4" value="u@${AD.domain}"/> 
+
+<t:property name="AD.zimbraAuthLdapURLInvalid1" value="http://${AD.url}:${AD.port}/"/> <!-- Wrong protocol -->
+<t:property name="AD.zimbraAuthLdapURLInvalid2" value="http://100.100.100.100:${AD.port}/"/> <!-- Wrong url -->
+<t:property name="AD.zimbraAuthLdapURLInvalid3" value="http://${AD.url}:80/"/> <!-- Wrong port -->
+
+<t:property name="zimbraAuthMech.ad" value="ad"/>
+
+<t:property name="check.blank" value=""/>
+<t:property name="check.space" value="      "/>
+<t:property name="check.sometext" value="some text"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>Login to the account </t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest1" type="functional" bugids="7356" >
+    <t:objective> CheckAuthConfigRequest for AD server with valid parameters </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+				<password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.OK$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest2" type="functional" >
+    <t:objective> CheckAuthConfigRequest for AD server with valid username and valid password in upper case</t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.passwordChangeCase}</password>
+            </CheckAuthConfigRequest>
+        </t:request>           
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest3" type="functional" >
+    <t:objective> CheckAuthConfigRequest for AD server with valid username and Invalid password </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.passwordInvalid}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest4" type="functional" >
+    <t:objective> CheckAuthConfigRequest for AD server with Invalid username and valid password </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userNameInvalid}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest5" type="functional" >
+    <t:objective> CheckAuthConfigRequest for AD server with blank username or password </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${check.blank}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${check.blank}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest6" type="negative">
+    <t:objective> CheckAuthConfigRequest for AD server with Invalid value for zimbraAuthLdapBindDn</t:objective>
+
+    <t:test id="checkAuthConfigRequest6a">
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDNInvalid1}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="checkAuthConfigRequest6b">
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDNInvalid2}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="checkAuthConfigRequest6c">
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDNInvalid3}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="checkAuthConfigRequest6d">
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDNInvalid4}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="checkAuthConfigRequest6e">
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${check.space}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest7" type="negative" >
+    <t:objective> CheckAuthConfigRequest for AD server with wrong protocol at zimbraAuthLdapURL </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURLInvalid1}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest8" type="negative" >
+    <t:objective> CheckAuthConfigRequest for AD server with wrong URL at zimbraAuthLdapURL </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURLInvalid2}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest9" type="negative" >
+    <t:objective> CheckAuthConfigRequest for AD server with wrong port at zimbraAuthLdapURL </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURLInvalid3}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest10" type="functional" Bugid="7356">
+    <t:objective> CheckAuthConfigRequest for AD server with zimbraAuthMech = ldap(other valid value except ad)</t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">ldap</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.OK$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest11" type="negative" >
+    <t:objective> CheckAuthConfigRequest for AD server with zimbraAuthMech = Invalid value (Some text)/blank </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${check.sometext}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${check.blank}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest12" type="negative" >
+    <t:objective> CheckAuthConfigRequest with missing mandatory element</t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">                
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>                
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>                
+                <name>${AD.userName}</name>
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.AUTH_FAILED$"/>
+        </t:response>
+   </t:test>
+
+   <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>                
+                <password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.userName}</name>                
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest13" type="functional" >
+    <t:objective> CheckAuthConfigRequest for AD server with valid alias </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.alias}</name>
+				<password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+<!--             <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.OK$"/>
+ -->        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!--
+<t:test_case testcaseid="AD_CheckAuthConfigRequest14" type="functional" >
+    <t:objective> CheckAuthConfigRequest for AD server with a valid name having, but having space in middle. </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.Spaceinname}</name>
+				<password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+             <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.OK$"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>-->
+
+
+<t:test_case testcaseid="AD_CheckAuthConfigRequest15" type="functional" >
+    <t:objective> CheckAuthConfigRequest for AD server with a valid DL. </t:objective>
+
+    <t:test>
+        <t:request>
+            <CheckAuthConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthMech">${zimbraAuthMech.ad}</a>
+                <a n="zimbraAuthLdapURL">${AD.zimbraAuthLdapURL}</a>
+                <a n="zimbraAuthLdapBindDn">${AD.bindDN}</a>
+                <name>${AD.DL}</name>
+				<password>${AD.password}</password>
+            </CheckAuthConfigRequest>
+        </t:request>            
+        <t:response>
+<!--             <t:select path="//admin:CheckAuthConfigResponse/admin:code" match="^check.OK$"/>
+ -->        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+
+

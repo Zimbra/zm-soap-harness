@@ -1,0 +1,213 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<!-- ZCS:3870- GAL support for profile image ID -->
+
+	<t:property name="uploadFile.thumbnail" value="${testMailRaw.root}/zcs3870/download.png" />
+
+	<t:test_case testcaseid="ThumnailPhoto_Testcase01" type="bhr"
+		bugids="zcs3870">
+		<t:objective>Set a thumbnail image to user and verify it gets saved in Ldap and synced to Gal.
+		</t:objective>
+		<t:steps>1. Account 1 user uploads a profile pic in png format using
+			ModifyProfileImageRequest.
+			2. Verify in GetAccountRequest, SyncGalRequest and SearchGal request the thumbnail image base 64 is returned
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<!--  Create a custom domain to have a separate galsync account. -->
+		
+		<t:property name="domain1.name" value="zcs3870${TIME}.com" />
+		<t:property name="domain1.galaccount.name" value="galaccount${TIME}@${domain1.name}" />
+
+		<t:test required="true">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain1.name}</name>
+					<a n="zimbraGalMode">zimbra</a>
+					<a n="zimbraGalMaxResults">100</a>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${domain1.galaccount.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="domain1.galaccount.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="domain.galaccount.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin"
+					name="galname${TIME}${COUNTER}" type="zimbra" domain="${domain1.name}"
+					server="${domain.galaccount.server}">
+					<account by="id">${domain1.galaccount.id}</account>
+				</CreateGalSyncAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateGalSyncAccountResponse/admin:account"
+					attr="id" set="domain1.galaccount.id" />
+			</t:response>
+		</t:test>
+
+		<t:property name="account1.name" value="user1${TIME}@${domain1.name}" />
+		<t:property name="account2.name" value="user2${TIME}@${domain1.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account2.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadFile.thumbnail}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="id" set="image1.aid" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+		<t:delay sec="10"/>
+
+		<t:test>
+			<t:request>
+				<ModifyProfileImageRequest xmlns="urn:zimbraMail"
+					uid="${image1.aid}"></ModifyProfileImageRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyProfileImageResponse" attr="itemId"
+					set="itemId" />
+			</t:response>
+		</t:test>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:property name="mime" value="iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAACgElEQVR42u2aQWsTQRTHp+jND9BTZtGDuhsaiRRBiBoPXnppD0oVPPVYVGj1ZFEo7Umkx+ZgbXY3iBJoS1tDDqVRD0LAY2l7q4I3C3pIMA3J5jlvYpc0m61p09aZZR68S0hm3o95781m35+QFgaEdNmR7jN2RDtrGdoD06BLlq5tWTotmLpWPgnHvXBP3Dtp0IcYC8aEsZF2LH2HnLLDNMYWm2aLbZs6BRG8Hos2nTRC1zDGfSE+xOOnTT00wn64wdwRBaLBHfMi3TTDoRGM1R/CCL2sp49wAM1eZKcz5YHBo8KTkATChWFpNuqmGS9sXhM8nUAqZ2mGNcMbAHYCLCJBa+KfNZPUaQIZCG+xAnWnw3SzNz30HOH3hKQQrhv0EcELR3oQnS4TfntKDoIMRLKW61cnBVJ/tjn6xTN3B2Ddeg0b9qzr68lX8C52+RhgtPKxgKSi52FtJgHN5lQqsNB3Ux6Qz2NPYOfXT7lAUtELkL7eC5l7A/DlxSRsZRbh9/YPaGVCg3xbyUK1VIJqeQdq1QpArQZ+JjTI9085aNcUiAI5gL+9egnSN67s8ez92+Bgvcjefuf74jxoBaJAFIgCUSAKRIEoEAXSGcj7wX7IDQ/t8fz4U/Ynq+oBwc/y42Oe78/disn1GO9n+cnnCkSBeEA+rrLkdzry/MSzzkEC88o0CC+x2Yl8Dc5YAYfxgRj0BGb0Jvsw1NwdhuJoF0e8XFEgX0ptpnbH065gIMylG0WZBAOmoT326FLqOhRtShKYot1KwtEIg7KIv2kmpqiGpROehC9Eoy4FawYVBeLJnGgi1Y7MqVl4hm0NezReOP9DeIY3Nu6NMWAs+wnP/gDmjb3ogAVaDgAAAABJRU5ErkJggg==" />
+
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+				<t:select path="//admin:GetAccountResponse//admin:a[@n='thumbnailPhoto']"
+					contains="${mime}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>10</limit>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:SyncGalResponse//acct:cn//acct:a[text()='${account1.name}'][1]//preceding-sibling::acct:a[@n='thumbnailPhoto']"
+					contains="${mime}" />
+			</t:response>
+		</t:test>
+		<t:delay sec="10"/>
+
+		<t:test id="SearchGal1">
+			<t:request>
+				<SearchGalRequest xmlns="urn:zimbraAccount">
+					<name>${account1.name}</name>
+				</SearchGalRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:SearchGalResponse//acct:cn//acct:a[text()='${account1.name}'][1]//preceding-sibling::acct:a[@n='thumbnailPhoto']"
+					contains="${mime}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>

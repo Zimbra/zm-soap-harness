@@ -675,57 +675,6 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="MsgActionRequest29" type="deprecated">
-    <t:objective>Use MsgActionRequest to change an existing message's importance to important</t:objective>
-
-    <t:test>
-        <t:request>
-            <AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="1">
-                    <content>To: foo@example.com
-From: bar@example.com
-Subject: Subject${TIME}${COUNTER}
-Date: Fri, 28 Dec 2007 09:38:56 -0800
-
-
-Content${TIME}${COUNTER}
-
-
-                    </content>
-                </m>
-            </AddMsgRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message29.id"/>
-        </t:response>
-    </t:test>
-
-    <t:test >
-        <t:request>
-            <MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message29.id}" f="!"/>
-            </MsgActionRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:MsgActionResponse"/>
-        </t:response>
-    </t:test>
-
-    <t:test >
-        <t:request>
-            <GetMsgRequest xmlns="urn:zimbraMail">
-                <m id="${message29.id}"/>
-            </GetMsgRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:GetMsgResponse">
-            	<t:select path="//mail:m" attr="f" match=".*!.*"/>
-            </t:select>
-        </t:response>
-    </t:test>
-
-</t:test_case>
-
 <t:test_case testcaseid="MsgActionRequest30" type="sanity" bugids="28207">
     <t:objective>Verify the MsgActionRequest(delete) after SyncRequest</t:objective>
 	<t:steps>
