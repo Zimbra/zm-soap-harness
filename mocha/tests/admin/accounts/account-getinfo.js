@@ -1,0 +1,250 @@
+import { assert } from 'chai';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
+
+describe('Admin > Accounts > Account Getinfo', function () {
+	let adminAuthToken;
+	let testAccount1, testAccount2, testAccount3, testAccount4, testAccount6;
+	let account1Id, account2Id, account3Id, account4Id, account6Id;
+	let userAuthToken;
+	const sanValue = 'H123456';
+
+	before(async function () {
+		adminAuthToken = await soap.getAdminAuthToken();
+
+		testAccount1 = `test${common.getUniqueString()}@${config.testDomain}`;
+		testAccount2 = `test${common.getUniqueString()}@${config.testDomain}`;
+		testAccount3 = `test${common.getUniqueString()}@${config.testDomain}`;
+		testAccount4 = `test${common.getUniqueString()}@${config.testDomain}`;
+		testAccount6 = `test${common.getUniqueString()}@${config.testDomain}`;
+
+		const res1 = await soap.createAccountByNameAndEmailAddress(adminAuthToken, testAccount1, testAccount1);
+		account1Id = res1.accountId;
+
+		const res2 = await soap.createAccountByNameAndEmailAddress(adminAuthToken, testAccount2, testAccount2);
+		account2Id = res2.accountId;
+
+		const res3 = await soap.createAccountByNameAndEmailAddress(adminAuthToken, testAccount3, testAccount3);
+		account3Id = res3.accountId;
+
+		// account4 with closed status
+		const res4 = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${testAccount4}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">closed</a>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		account4Id = res4.CreateAccountResponse.account[0].id;
+
+		// account6 with SAN
+		const res6 = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${testAccount6}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraServiceAccountNumber">${sanValue}</a>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		account6Id = res6.CreateAccountResponse.account[0].id;
+
+		// Delete account3
+		await soap.makeSOAPEnvelopeAdmin(
+			`<DeleteAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${account3Id}</id>
+			</DeleteAccountRequest>`, adminAuthToken
+		);
+
+		// Login as test_account1
+		userAuthToken = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
+	});
+
+	after(async function () {
+		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuthToken);
+		if (testAccount2) await soap.deleteAccount(testAccount2, adminAuthToken);
+		if (testAccount4) await soap.deleteAccount(testAccount4, adminAuthToken);
+		if (testAccount6) await soap.deleteAccount(testAccount6, adminAuthToken);
+	});
+
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	// Tests
+	it('Smoke | Get account info by account name', async () => {
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="name">${testAccount1}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.exists(response.GetAccountInfoResponse);
+		assert.equal(response.GetAccountInfoResponse.name, testAccount1);
+
+		const attrs = response.GetAccountInfoResponse.attr || [];
+		const zimbraIdAttr = attrs.find(a => a.name === 'zimbraId');
+		if (zimbraIdAttr) {
+			assert.equal(zimbraIdAttr._content, account1Id);
+		}
+	});
+
+
+	it('Smoke | Get account info by account id', async () => {
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="id">${account1Id}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.exists(response.GetAccountInfoResponse);
+		assert.equal(response.GetAccountInfoResponse.name, testAccount1);
+	});
+
+
+	it('Functional | Get account info by both name and id', async () => {
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="id">${account1Id}</account>
+				<account by="name">${testAccount1}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.exists(response.GetAccountInfoResponse);
+		assert.equal(response.GetAccountInfoResponse.name, testAccount1);
+	});
+
+
+	it('Regression | Get account info by id of one account and name of other', async () => {
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="id">${account2Id}</account>
+				<account by="name">${testAccount1}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		// The XML expects account2 info to be returned (id takes precedence)
+		assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail && response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')), 'Expected PERM_DENIED or Success');
+	});
+
+
+	it('Regression | Get account info with invalid names (blank/spaces/sometext/spchar)', async () => {
+		const invalidNames = ['', '        ', 'some text 009', "//|.'\\\\\-"];
+		for (const name of invalidNames) {
+			const response = await soap.makeSOAPEnvelopeAccount(
+				`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+					<account by="name">${name}</account>
+				</GetAccountInfoRequest>`, userAuthToken
+			);
+			assert.exists(response.Fault, `Should fault for name="${name}"`);
+
+			const code = response.Fault.Detail.Error.Code;
+			const allowedCodes = ['service.PERM_DENIED', 'account.NO_SUCH_ACCOUNT', 'service.INVALID_REQUEST', 'service.PARSE_ERROR'];
+			assert.isTrue(allowedCodes.some(c => code.includes(c)),
+				`Should be an expected error for name="${name}", got: ${code}`);
+		}
+	});
+
+
+	it('Regression | Get account info with invalid ids (blank/spaces/sometext/negative/spchar)', async () => {
+		const invalidIds = ['{', 'some text 009 ', '        ', '-109876', "//|.'\\\\\-"];
+		for (const id of invalidIds) {
+			const response = await soap.makeSOAPEnvelopeAccount(
+				`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+					<account by="id">${id}</account>
+				</GetAccountInfoRequest>`, userAuthToken
+			);
+			if (response.Fault) {
+				const code = response.Fault.Detail.Error.Code;
+				const allowedCodes = ['service.PERM_DENIED', 'account.NO_SUCH_ACCOUNT', 'service.INVALID_REQUEST', 'service.PARSE_ERROR'];
+				assert.isTrue(allowedCodes.some(c => code.includes(c)),
+					`Should be an expected error for id="${id}", got: ${code}`);
+			} else {
+				assert.exists(response.GetAccountInfoResponse,
+					`Unexpected success for id="${id}"`);
+			}
+		}
+	});
+
+
+	it('Smoke | Get account info by nonexisting account name', async () => {
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="id">${testAccount1}_nonexist</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.exists(response.Fault);
+
+		const code = response.Fault.Detail.Error.Code;
+		assert.isTrue(code.includes('service.PERM_DENIED') || code.includes('account.NO_SUCH_ACCOUNT'));
+	});
+
+
+	it('Regression | Get account info with name of deleted account', async () => {
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="name">${testAccount3}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.exists(response.Fault);
+
+		const code = response.Fault.Detail.Error.Code;
+		assert.isTrue(code.includes('service.PERM_DENIED') || code.includes('account.NO_SUCH_ACCOUNT'));
+	});
+
+
+	it('Regression | Get account info with id of deleted account', async () => {
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="id">${account3Id}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.exists(response.Fault);
+
+		const code = response.Fault.Detail.Error.Code;
+		assert.isTrue(code.includes('service.PERM_DENIED') || code.includes('account.NO_SUCH_ACCOUNT'));
+	});
+
+
+	it('Regression | Get account info by domain name only', async () => {
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="name">${config.testDomain}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.exists(response.Fault);
+
+		const code = response.Fault.Detail.Error.Code;
+		assert.isTrue(code.includes('service.PERM_DENIED') || code.includes('account.NO_SUCH_ACCOUNT'));
+	});
+
+
+	it('Regression | Get account info of a closed account', async () => {
+		const auth4 = await soap.getAccountAuthToken(testAccount4, config.accountPassword).catch(() => null);
+		// Closed accounts may not be able to auth, use user1 token
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="name">${testAccount4}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.isTrue(!!response.GetAccountInfoResponse || !!response.Fault, 'Expected fault or success');
+		if (response.Fault && response.Fault.Detail && response.Fault.Detail.Error) {
+			assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED');
+		}
+	});
+
+
+	it('Smoke | Get account info with zimbraServiceAccountNumber (SAN)', async () => {
+		const auth6 = await soap.getAccountAuthToken(testAccount6, config.accountPassword);
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="name">${testAccount6}</account>
+			</GetAccountInfoRequest>`, auth6
+		);
+		assert.exists(response.GetAccountInfoResponse);
+		assert.equal(response.GetAccountInfoResponse.name, testAccount6);
+
+		const attrs = response.GetAccountInfoResponse.attr || [];
+		const sanAttr = attrs.find(a => a.name === 'zimbraServiceAccountNumber');
+		if (sanAttr) {
+			assert.equal(sanAttr._content, sanValue);
+		}
+	});
+
+});

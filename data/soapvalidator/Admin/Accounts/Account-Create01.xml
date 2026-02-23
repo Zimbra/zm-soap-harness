@@ -1,6 +1,40 @@
-<t:tests xmlns:t = "urn:zimbraTestHarness">
-<t:property name = "account.blank" value = ""/>
-<t:property name = "account.space" value = "             "/><t:property name = "account.spchar" value = ":''&lt;//\\"/><t:property name = "account.sometext" value = "some text text text"/><t:property name = "account.negative" value = "-109899"/><t:property name="account.zero" value="000"/><t:property name="account.largenumber" value="12345678901234567890"/><t:property name = "test_account1.name" value = "test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="${defaultpassword.value}"/>
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}"/>
+
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account5.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account6.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account7.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account8.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account9.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account10.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account11.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account12.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account13.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="test_nouser.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account_invaliddomain.name" value="test.${TIME}.${COUNTER}@nonexistingdomain.com"/>
+<t:property name="appointment.time" value="${GENTIME}"/>
+<t:property name="account.cn" value="test.${TIME}.${COUNTER}"/>
+<t:property name="account.sn" value="test.${TIME}.${COUNTER}"/>
+<t:property name="account.MailHost" value="${defaultdomain.name}"/>
+<t:property name="account.MailTransport" value="lmtp:${defaultdomain.name}:7025"/>
+<t:property name="mailquota.value1" value="2247483648"/>
+<t:property name="mailquota.value2" value="123456789123456789"/>
+
+<t:property name="account.blank" value=""/>
+<t:property name="account.space" value="             "/>
+<t:property name="account.spchar" value=":''&lt;//\\"/>
+<t:property name="account.sometext" value="some text"/>
+<t:property name="account.negative" value="-1"/>
+<t:property name="account.zero" value="0"/>
+<t:property name="account.largenumber" value="12345678901234567890"/>
+
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
@@ -13,8 +47,11 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
+
 </t:test_case>
-<t:test_case testcaseid="auth_account_create02" type="always" >
+
+
+<t:test_case testcaseid="admin_auth_account_create" type="always" >
     <t:objective>login as the admin</t:objective>
 
     <t:test required="true" >
@@ -28,1238 +65,481 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest161" type="functional">
-    <t:objective>Create an account with valid values of zimbraPrefGalAutoCompleteEnabled.</t:objective>
 
-    <t:test id = "createaccountrequest161a">
+<t:test_case testcaseid="CreateAccountRequest1" type="smoke" areas="dev_sanity">
+    <t:objective>Create an account with valid values.</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${test_account1.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefGalAutoCompleteEnabled">${globals.true}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest161b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefGalAutoCompleteEnabled">${globals.false}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest162" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraPrefGalAutoCompleteEnabled.</t:objective>
 
-    <t:test id = "createaccountrequest162a">
+<t:test_case testcaseid="CreateAccountRequest2" type="sanity">
+    <t:objective>To Create an account without a password</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefGalAutoCompleteEnabled">True</a>
+
+                <name>${test_account2.name}</name>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <!-- Should be successful:  password not required if auth against LDAP -->
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest162b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefGalAutoCompleteEnabled">${account.blank}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest162c">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefGalAutoCompleteEnabled">${account.sometext}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest162d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefGalAutoCompleteEnabled">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest162e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefGalAutoCompleteEnabled">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest162f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefGalAutoCompleteEnabled">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest163" type="functional">
-    <t:objective>Create an account with valid values of zimbraPrefCalendarUseQuickAdd.</t:objective>
-
-    <t:test id = "createaccountrequest163a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarUseQuickAdd">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest163b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarUseQuickAdd">${globals.false}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest164" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraPrefCalendarUseQuickAdd.</t:objective>
 
-    <t:test id = "createaccountrequest164a">
+<t:test_case testcaseid="CreateAccountRequest3" type="regression" >
+    <t:objective>To Create an account without account name</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarUseQuickAdd">True</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path= "//zimbra:Code" match="^service.FAILURE"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest164b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarUseQuickAdd">${account.blank}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest164c">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarUseQuickAdd">${account.sometext}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest164d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarUseQuickAdd">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest164e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarUseQuickAdd">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest164f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarUseQuickAdd">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest165" type="functional">
-    <t:objective>Create an account with valid values of zimbraFeatureMobileSyncEnabled.</t:objective>
-
-    <t:test id = "createaccountrequest165a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMobileSyncEnabled">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest165b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMobileSyncEnabled">${globals.false}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest166" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraFeatureMobileSyncEnabled.</t:objective>
 
-    <t:test id = "createaccountrequest166a">
+<t:test_case testcaseid="CreateAccountRequest4" type="regression" >
+    <t:objective>Create an account with account name as spaces/blank/spchar/sometext/negative/zero/largenumber</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${account.space}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMobileSyncEnabled">True</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest166b">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${account.blank}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMobileSyncEnabled">${account.blank}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest166c">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${account.spchar}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMobileSyncEnabled">${account.sometext}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest166d">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${account.sometext}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMobileSyncEnabled">${account.negative}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest166e">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${account.negative}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMobileSyncEnabled">${account.spchar}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest166f">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${account.zero}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMobileSyncEnabled">${account.space}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest167" type="functional">
-    <t:objective>Create an account with valid values of zimbraFeatureSkinChangeEnabled.</t:objective>
-
-    <t:test id = "createaccountrequest167a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSkinChangeEnabled">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest167b">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${account.largenumber}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSkinChangeEnabled">${globals.false}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest168" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraFeatureSkinChangeEnabled.</t:objective>
 
-    <t:test id = "createaccountrequest168a">
+<t:test_case testcaseid="CreateAccountRequest5" type="regression" >
+    <t:objective>Create an account with account name as *********</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>"****************"</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSkinChangeEnabled">True</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest168b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSkinChangeEnabled">${account.blank}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest168c">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSkinChangeEnabled">${account.sometext}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest168d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSkinChangeEnabled">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest168e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSkinChangeEnabled">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest168f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSkinChangeEnabled">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest169" type="functional">
-    <t:objective>Create an account with valid values of zimbraPrefCalendarNotifyDelegatedChanges </t:objective>
-
-    <t:test id = "createaccountrequest169a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarNotifyDelegatedChanges">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest169b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarNotifyDelegatedChanges">${globals.false}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest170" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraPrefCalendarNotifyDelegatedChanges.</t:objective>
 
-    <t:test id = "createaccountrequest170a">
+<t:test_case testcaseid="CreateAccountRequest6" type="regression" >
+    <t:objective>Create an account with values("  "/spaces/blank/spchar/negative number/zero/large number/sometext) in password</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarNotifyDelegatedChanges">True</a>
+                <name>${test_account3.name}</name>
+                <password>"      "</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <!-- Should be successful:  password with double quotes is OK -->
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest170b">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarNotifyDelegatedChanges">${account.blank}</a>
+                <name>${test_account6.name}</name>
+                <password>${account.space}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path="//zimbra:Code" match="account.INVALID_PASSWORD" />
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest170c">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarNotifyDelegatedChanges">${account.sometext}</a>
+                <name>${test_account7.name}</name>
+                <password>${account.blank}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//zimbra:Code" match="account.INVALID_PASSWORD" />
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest170d">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarNotifyDelegatedChanges">${account.negative}</a>
+                <name>${test_account8.name}</name>
+                <password>${account.spchar}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest170e">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarNotifyDelegatedChanges">${account.spchar}</a>
+                <name>${test_account9.name}</name>
+                <password>${account.sometext}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest170f">
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarNotifyDelegatedChanges">${account.space}</a>
+                <name>${test_account10.name}</name>
+                <password>${account.negative}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
+            <t:select path= "//zimbra:Code" match="account.INVALID_PASSWORD"/>
         </t:response>
     </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest171" type="functional">
-    <t:objective>Create an account with valid values of zimbraPasswordMinUpperCaseChars</t:objective>
 
-    <t:test id = "createaccountrequest171a">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPasswordMinUpperCaseChars">0</a>
+                <name>${test_account11.name}</name>
+                <password>${account.zero}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path= "//zimbra:Code" match="account.INVALID_PASSWORD"/>
         </t:response>
     </t:test>
-</t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest172" type="regression">
-    <t:objective>Create an account with invalid values (blank/sometext/negative/zero/spchar/space/largenumber) of zimbraPasswordMinUpperCaseChars.</t:objective>
-
-    <t:test id = "createaccountrequest172a">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPasswordMinUpperCaseChars">True</a>
+                <name>${test_account12.name}</name>
+                <password>${account.largenumber}</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest172b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPasswordMinUpperCaseChars">${account.blank}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest172c">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPasswordMinUpperCaseChars">${account.sometext}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest172d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPasswordMinUpperCaseChars">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest172e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPasswordMinUpperCaseChars">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest172f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPasswordMinUpperCaseChars">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest172g">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPasswordMinUpperCaseChars">${account.largenumber}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest173" type="functional">
-    <t:objective>Create an account with valid values of zimbraFeatureNewMailNotificationEnabled.</t:objective>
-
-    <t:test id = "createaccountrequest173a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureNewMailNotificationEnabled">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest173b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureNewMailNotificationEnabled">${globals.false}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest174" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraFeatureNewMailNotificationEnabled.</t:objective>
 
-    <t:test id = "createaccountrequest174a">
+<t:test_case testcaseid="CreateAccountRequest7" type="regression" >
+    <t:objective>Create an account with non-existing/spaces/blank/spchar/sometext/negative/zero/largenumber name of domain</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureNewMailNotificationEnabled">True</a>
+                <name>test${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value</password>
+                <a n="mail">${account_invaliddomain.name}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest174b">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureNewMailNotificationEnabled">${account.blank}</a>
+                <name>${account_invaliddomain.name}</name>
+                <password>${defaultpassword.value</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path="//zimbra:Code"  match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest174c">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureNewMailNotificationEnabled">${account.sometext}</a>
+                <name>test@${account.blank}</name>
+                <password>${defaultpassword.value</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest174d">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureNewMailNotificationEnabled">${account.negative}</a>
+                <name>${account.spchar}</name>
+                <password>${defaultpassword.value</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest174e">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureNewMailNotificationEnabled">${account.spchar}</a>
+                <name>tesss@${account.sometext}</name>
+                <password>${defaultpassword.value</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//zimbra:Code"  match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest174f">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureNewMailNotificationEnabled">${account.space}</a>
+                <name>${account.negative}</name>
+                <password>${defaultpassword.value</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest175" type="functional">
-    <t:objective>Create an account with valid values of zimbraFeatureMailForwardingEnabled.</t:objective>
-
-    <t:test id = "createaccountrequest175a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMailForwardingEnabled">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest175b">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMailForwardingEnabled">${globals.false}</a>
+                <name>${account.zero}</name>
+                <password>${defaultpassword.value</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.largenumber}</name>
+                <password>${defaultpassword.value</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest176" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraFeatureMailForwardingEnabled.</t:objective>
 
-    <t:test id = "createaccountrequest176a">
+<!-- 12. **************************************** -->
+<!--Create an account with wrong zimbraMailDelivery  -->
+<!-- **************************************** -->
+<!--
+
+ZimbraMailDelivery is no longer used
+
+<t:test_case testcaseid="CreateAccountRequest8" type="regression" >
+    <t:objective>Create an account with wrong zimbraMailDelivery</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${test_account4.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMailForwardingEnabled">True</a>
+                <a n="zimbraMailDeliveryAddress">user123@abc.co.in</a>
+                <a n="mail">${test_account4.name}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//zimbra:Code"  match="^account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest176b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMailForwardingEnabled">${account.blank}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest176c">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMailForwardingEnabled">${account.sometext}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest176d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMailForwardingEnabled">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest176e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMailForwardingEnabled">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest176f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureMailForwardingEnabled">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest177" type="functional">
-    <t:objective>Create an account with valid values of zimbraFeatureViewInHtmlEnabled.</t:objective>
-
-    <t:test id = "createaccountrequest177a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureViewInHtmlEnabled">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest177b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureViewInHtmlEnabled">${globals.false}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest178" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraFeatureViewInHtmlEnabled.</t:objective>
+-->
 
-    <t:test id = "createaccountrequest178a">
+
+<t:test_case testcaseid="CreateAccountRequest9" type="regression" >
+    <t:objective>Create an account without user id</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${test_nouser.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureViewInHtmlEnabled">True</a>
+                <!-- <a n="mail">test.${TIME}.${COUNTER}@${defaultdomain.name}</a> -->
+                <!-- mail is immutable -->
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account.id"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest178b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureViewInHtmlEnabled">${account.blank}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest178c">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureViewInHtmlEnabled">${account.sometext}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest178d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureViewInHtmlEnabled">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest178e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureViewInHtmlEnabled">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest178f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureViewInHtmlEnabled">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest181" type="functional">
-    <t:objective>Create an account with valid values of zimbraFeatureGalAutoCompleteEnabled.</t:objective>
-
-    <t:test id = "createaccountrequest181a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureGalAutoCompleteEnabled">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest181b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureGalAutoCompleteEnabled">${globals.false}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest182" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraFeatureGalAutoCompleteEnabled.</t:objective>
 
-    <t:test id = "createaccountrequest182a">
+<t:test_case testcaseid="CreateAccountRequest10" type="smoke">
+    <t:objective>Create an already existing account but with different password</t:objective>
+
+    <t:test id="createAccountRequest10a">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <name>${test_account5.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureGalAutoCompleteEnabled">True</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account5.id"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest182b">
+    <t:test depends="createAccountRequest10a">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureGalAutoCompleteEnabled">${account.blank}</a>
+                <name>${test_account5.name}</name>
+                <password>${defaultpassword.value}different</password>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest182c">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureGalAutoCompleteEnabled">${account.sometext}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest182d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureGalAutoCompleteEnabled">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest182e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureGalAutoCompleteEnabled">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest182f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureGalAutoCompleteEnabled">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest183" type="functional">
-    <t:objective>Create an account with valid values of zimbraPrefCalendarAlwaysShowMiniCal.</t:objective>
-
-    <t:test id = "createaccountrequest183a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarAlwaysShowMiniCal">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest183b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarAlwaysShowMiniCal">${globals.false}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest184" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraPrefCalendarAlwaysShowMiniCal.</t:objective>
 
-    <t:test id = "createaccountrequest184a">
+<t:test_case testcaseid="CreateAccountRequest12" type="functional">
+    <t:objective>Create an account with valid values of zimbraContactMaxNumEntries.</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarAlwaysShowMiniCal">True</a>
+                <a n="zimbraContactMaxNumEntries">0</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" />
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest184b">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarAlwaysShowMiniCal">${account.blank}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest184c">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarAlwaysShowMiniCal">${account.sometext}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest184d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarAlwaysShowMiniCal">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest184e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarAlwaysShowMiniCal">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest184f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraPrefCalendarAlwaysShowMiniCal">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest185" type="functional">
-    <t:objective>Create an account with valid values of zimbraFeatureOutOfOfficeReplyEnabled.</t:objective>
-
-    <t:test id = "createaccountrequest185a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureOutOfOfficeReplyEnabled">${globals.true}</a>
+                <a n="zimbraContactMaxNumEntries">1000</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -1267,42 +547,18 @@
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest185b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureOutOfOfficeReplyEnabled">${globals.false}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest186" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraFeatureOutOfOfficeReplyEnabled.</t:objective>
 
-    <t:test id = "createaccountrequest186a">
+<t:test_case testcaseid="CreateAccountRequest13" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/spchar) of zimbraContactMaxNumEntries.</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureOutOfOfficeReplyEnabled">True</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest186b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureOutOfOfficeReplyEnabled">${account.blank}</a>
+                <a n="zimbraContactMaxNumEntries">${account.space}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -1310,67 +566,12 @@
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest186c">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureOutOfOfficeReplyEnabled">${account.sometext}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest186d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureOutOfOfficeReplyEnabled">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest186e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureOutOfOfficeReplyEnabled">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest186f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureOutOfOfficeReplyEnabled">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
-</t:test_case>
-<t:test_case testcaseid="CreateAccountRequest187" type="functional">
-    <t:objective>Create an account with valid values of zimbraFeatureIMEnabled.</t:objective>
-
-    <t:test id = "createaccountrequest187a">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureIMEnabled">${globals.true}</a>
+                <a n="zimbraContactMaxNumEntries">${account.blank}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -1378,42 +579,56 @@
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest187b">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureIMEnabled">${globals.false}</a>
+                <a n="zimbraContactMaxNumEntries">${account.sometext}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
         </t:response>
     </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraContactMaxNumEntries">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraContactMaxNumEntries">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
 </t:test_case>
 
-<t:test_case testcaseid="CreateAccountRequest188" type="regression">
-    <t:objective>Create an account with invalid values (True/blank/sometext/negative/zero/spchar/space) of zimbraFeatureIMEnabled.</t:objective>
+<t:test_case testcaseid="CreateAccountRequest14" type="functional">
+    <t:objective>Create an account with valid values of zimbraPrefMailPollingInterval.</t:objective>
 
-    <t:test id = "createaccountrequest188a">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureIMEnabled">True</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest188b">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureIMEnabled">${account.blank}</a>
+                <a n="zimbraPrefMailPollingInterval">5m</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -1421,67 +636,31 @@
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest188c">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureIMEnabled">${account.sometext}</a>
+                <a n="zimbraPrefMailPollingInterval">1000</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest188d">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureIMEnabled">${account.negative}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest188e">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureIMEnabled">${account.spchar}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
-        </t:response>
-    </t:test>
-
-    <t:test id = "createaccountrequest188f">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
-                <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureIMEnabled">${account.space}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path= "//admin:CreateAccountResponse/admin:account"/>
-        </t:response>
-    </t:test>
 </t:test_case>
-<t:test_case testcaseid="CreateAccountRequest189" type="functional">
-    <t:objective>Create an account with valid values of zimbraFeatureSharingEnabled </t:objective>
 
-    <t:test id = "createaccountrequest189a">
+
+<t:test_case testcaseid="CreateAccountRequest15" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefMailPollingInterval.</t:objective>
+
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSharingEnabled">${globals.true}</a>
+                <a n="zimbraPrefMailPollingInterval">${account.space}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -1489,19 +668,1133 @@
         </t:response>
     </t:test>
 
-    <t:test id = "createaccountrequest189b">
+    <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
                 <password>${defaultpassword.value}</password>
-                <a n="zimbraFeatureSharingEnabled">${globals.false}</a>
+                <a n="zimbraPrefMailPollingInterval">${account.blank}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account"/>
         </t:response>
     </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailPollingInterval">${account.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailPollingInterval">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailPollingInterval">${account.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailPollingInterval">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailPollingInterval">${account.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest16" type="functional">
+    <t:objective>Create an account with valid values of zimbraAttachmentsViewInHtmlOnly.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAttachmentsViewInHtmlOnly">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAttachmentsViewInHtmlOnly">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest17" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraAttachmentsViewInHtmlOnly.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAttachmentsViewInHtmlOnly">${account.space}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAttachmentsViewInHtmlOnly">${account.blank}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAttachmentsViewInHtmlOnly">${account.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAttachmentsViewInHtmlOnly">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAttachmentsViewInHtmlOnly">${account.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAttachmentsViewInHtmlOnly">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAttachmentsViewInHtmlOnly">${account.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest18" type="functional">
+    <t:objective>Create an account with valid values of zimbraPasswordMaxAge.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPasswordMaxAge">100</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPasswordMaxAge">20</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest19" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPasswordMaxAge.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPasswordMaxAge">${account.space}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPasswordMaxAge">${account.blank}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPasswordMaxAge">${account.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPasswordMaxAge">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPasswordMaxAge">${account.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPasswordMaxAge">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPasswordMaxAge">${account.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="CreateAccountRequest20" type="functional">
+    <t:objective>Create an account with valid values of zimbraMailStatus.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailStatus">enabled</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailStatus">disabled</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest21" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraMailStatus.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailStatus">${account.space}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailStatus">${account.blank}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailStatus">${account.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailStatus">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailStatus">${account.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailStatus">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailStatus">${account.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest22" type="functional">
+    <t:objective>Create an account with valid values of zimbraPrefMessageViewHtmlPreferred.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMessageViewHtmlPreferred">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMessageViewHtmlPreferred">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest23" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefMessageViewHtmlPreferred.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMessageViewHtmlPreferred">${account.space}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMessageViewHtmlPreferred">${account.blank}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMessageViewHtmlPreferred">${account.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMessageViewHtmlPreferred">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMessageViewHtmlPreferred">${account.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMessageViewHtmlPreferred">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMessageViewHtmlPreferred">${account.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest24" type="functional">
+    <t:objective>Create an account with valid values of zimbraNewMailNotificationSubject.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraNewMailNotificationSubject">New message received at RECIPIENT_ADDRESS</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest25" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraNewMailNotificationSubject.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraNewMailNotificationSubject">${account.space}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraNewMailNotificationSubject">${account.blank}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraNewMailNotificationSubject">${account.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraNewMailNotificationSubject">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraNewMailNotificationSubject">${account.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraNewMailNotificationSubject">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraNewMailNotificationSubject">${account.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest26" type="functional">
+    <t:objective>Create an account with valid values of zimbraAccountStatus.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">active</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">maintenance</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">locked</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">closed</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest27" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraAccountStatus.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">${account.space}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">${account.blank}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">${account.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">${account.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">${account.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest28" type="functional">
+    <t:objective>Create an account with valid values of zimbraPrefShowFragments.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefShowFragments">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefShowFragments">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest29" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefShowFragments.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefShowFragments">${account.space}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefShowFragments">${account.blank}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefShowFragments">${account.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefShowFragments">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefShowFragments">${account.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefShowFragments">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefShowFragments">${account.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest30" type="functional">
+    <t:objective>Create an account with valid values of zimbraFeatureGalEnabled.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureGalEnabled">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureGalEnabled">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccountRequest31" type="regression">
+    <t:objective>Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraFeatureGalEnabled.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureGalEnabled">${account.space}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureGalEnabled">${account.blank}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureGalEnabled">${account.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureGalEnabled">${account.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureGalEnabled">${account.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureGalEnabled">${account.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureGalEnabled">${account.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
 </t:test_case>
 
 </t:tests>
+
 
