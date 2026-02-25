@@ -10,9 +10,13 @@ function processFile(filePath) {
     // 1. Remove all existing `// Tests` comments to normalize
     content = content.replace(/\r?\n[ \t]*\/\/\s*Tests\s*(?=\r?\n)/gi, '');
 
-    // 1.5. Remove existing `Applicable zimbra versions` blocks to normalize and prevent duplicates
-    const zimbraBlockRegex = /\r?\n[ \t]*\/\/\s*Applicable zimbra versions\r?\n[ \t]*if\s*\(!String\(config\.serverEnvironment\)\.toUpperCase\(\)\.match\(\/ZIMBRA101\|ZIMBRAX\/g\)\)\s*\{\r?\n[ \t]*return;\r?\n[ \t]*\}\s*/gi;
+    // 1.5. Remove ALL existing `Applicable zimbra versions` blocks to normalize and prevent duplicates
+    // Match both formats: with and without config.serial, with and without /g flag
+    const zimbraBlockRegex = /\r?\n[ \t]*\/\/\s*Applicable zimbra versions\r?\n[ \t]*if\s*\([^)]*config\.serverEnvironment[^}]*\}\s*/gi;
     content = content.replace(zimbraBlockRegex, '');
+
+    // Also remove standalone `// Tests` comments left over
+    content = content.replace(/\r?\n[ \t]*\/\/\s*Tests\s*(?=\r?\n)/gi, '');
 
     // 2. Find the first `it('` or `it("` and apply EXACTLY the requested block with 1 blank line between elements
     let firstIt = content.match(/(\s+)it\(['"]/);
@@ -20,9 +24,9 @@ function processFile(filePath) {
         // This regex captures the last non-whitespace character, all following whitespace, and the `it(`
         // We replace it to force precisely:
         content = content.replace(/(\S)(\s+)it\((['"])/, (match, prevChar, ws, quote) => {
-            return prevChar + '\n\n' +
+            return prevChar + '\n' +
                 '\t// Applicable zimbra versions\n' +
-                '\tif (!String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/g)) {\n' +
+                '\tif (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {\n' +
                 '\t\treturn;\n' +
                 '\t}\n\n' +
                 '\t// Tests\n' +

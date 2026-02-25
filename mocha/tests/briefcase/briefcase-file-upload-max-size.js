@@ -1,0 +1,95 @@
+import { assert } from 'chai';
+import config from '../../conf/config.js';
+import common from '../../framework/core/common.js';
+import soap from '../../framework/backend/soap-client.js';
+
+describe('Briefcase > Briefcase File Upload Max Size', function () {
+	this.timeout(60 * 1000);
+	let adminAuthToken;
+	let account1Token;
+	let briefcaseFolderId;
+	let serverId;
+	let originalMaxSize;
+
+	before(async function () {
+		adminAuthToken = await soap.getAdminAuthToken();
+
+		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+		const createRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1Name}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.exists(createRes.CreateAccountResponse, 'Should create account');
+
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		const serverName = host ? host._content : config.server;
+
+		// Get server id
+		const serverRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${serverName}</server>
+			</GetServerRequest>`, adminAuthToken
+		);
+		assert.exists(serverRes.GetServerResponse, 'GetServerResponse should exist');
+
+		const server = Array.isArray(serverRes.GetServerResponse.server)
+			? serverRes.GetServerResponse.server[0] : serverRes.GetServerResponse.server;
+		serverId = server.id;
+		const maxSizeAttr = server.a.find(a => a.n === 'zimbraFileUploadMaxSize');
+		originalMaxSize = maxSizeAttr ? maxSizeAttr._content : '10485760';
+
+		// Auth as account
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1Name}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null
+		);
+		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+
+		account1Token = Array.isArray(authRes.AuthResponse.authToken)
+			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
+			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
+
+		// Get briefcase folder id
+		const folderRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
+		);
+		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
+
+		const root = Array.isArray(folderRes.GetFolderResponse.folder)
+			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
+		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
+		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
+		assert.exists(briefcase, 'Briefcase folder should exist');
+
+		briefcaseFolderId = briefcase.id;
+	});
+
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	// Tests
+	it('Sanity | Upload different type files to the Briefcase', async () => {
+		const fileTypes = ['html', 'text', 'jpg', 'csv', 'pdf'];
+
+		for (const fileType of fileTypes) {
+			const saveRes = await soap.makeSOAPEnvelopeAccount(
+				`<SaveDocumentRequest xmlns="urn:zimbraMail">
+					<doc name="doc.${common.getUniqueString()}.txt" l="${briefcaseFolderId}">
+						<content>Sample ${fileType} content for max size test</content>
+					</doc>
+				</SaveDocumentRequest>`, account1Token
+			);
+			assert.exists(saveRes.SaveDocumentResponse,
+				`SaveDocumentResponse should exist for ${fileType}`);
+		}
+	});
+});

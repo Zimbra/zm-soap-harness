@@ -1,0 +1,185 @@
+--------------------------------------------------------------------------------------------
+[32m[2026-02-25T19:15:19.972] [INFO] info - [39mServer Type: CLASSIC
+[32m[2026-02-25T19:15:19.977] [INFO] info - [39mServer Environment: ZIMBRA101_AUTOMATION
+[32m[2026-02-25T19:15:19.978] [INFO] info - [39mServer Node: SINGLENODE
+[32m[2026-02-25T19:15:19.978] [INFO] info - [39mServer Host: automation.zimbradev.com
+[32m[2026-02-25T19:15:19.978] [INFO] info - [39mZimbra Version: 10.1.16_GA_4850.NETWORK
+[32m[2026-02-25T19:15:19.978] [INFO] info - [39mJobs: 20
+[32m[2026-02-25T19:15:19.979] [INFO] info - [39mZimlet: false
+[32m[2026-02-25T19:15:19.988] [INFO] info - [39mChat: false
+[32m[2026-02-25T19:15:19.988] [INFO] info - [39mSerial: false
+[32m[2026-02-25T19:15:19.988] [INFO] info - [39mConfigure Server: false
+[32m[2026-02-25T19:15:19.989] [INFO] info - [39mFresh Setup: false
+[32m[2026-02-25T19:15:19.989] [INFO] info - [39mServer Admin Auth: 0_2a61e9ed3e49138f3f15fc17acb3...
+[32m[2026-02-25T19:15:19.989] [INFO] info - [39mCreate SOAP Domain, COS: SKIPPED
+--------------------------------------------------------------------------------------------
+
+
+  Auth > Bugs > ZCS-5598
+    1) Sanity | Verify WWW-Authenticate: BASIC realm=Zimbra is not returned for non-existent account/ existing account
+
+
+  Auth > Bugs > ZCS-3948
+    2) "before all" hook for "Sanity | Verify basic authentication for guest accounts and validate account enumeration is not possible"
+
+
+  Auth > Multihost > Multihost Auth Basic
+    - Smoke | Verify that an account configured with zimbraMailHost=A can log into host B
+    - Sanity | Verify that an account configured with zimbraMailHost=A can log into host A
+    - Sanity | Verify that an account configured with zimbraMailHost=B can log into host A
+    - Sanity | Verify that an account configured with zimbraMailHost=B can log into host B
+    - Sanity | Verify that an auth token from host A is active on host B
+
+
+  Auth > Preauth > Lockout Password
+    - Sanity | Preauth request - verify account is put into lockout status
+
+
+  Auth > Preauth > Preauth Basic
+    - Smoke | Preauth request - basic test. by=name
+    - Sanity | Preauth request - basic test. by=id
+    - Sanity | Preauth request - basic test. by=foreignPrincipal
+    - Sanity | Preauth request - basic test. preauthkey is only valid for 5 minutes
+    - Sanity | Preauth request - use preauth against a domain that does not have preauth configured
+
+
+  Auth > Preauth > Preauth
+    - Sanity | Preauth request - random preauth key used
+    - Sanity | Preauth request - account2 uses account1s preauthcode
+
+
+  Auth > SMTP > Off Network To Zimbra
+    - Sanity | Verify zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=TRUE settings
+    - Sanity | Verify zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=FALSE settings
+    - Sanity | Verify zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE settings
+    - Sanity | Verify zimbraMtaTlsSecurityLevel=none/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE settings
+
+
+  Auth > JWT > JWT-ZCS-3929
+    3) Smoke | Generate JWT auth token and use it to fire the FileUpload servlet request
+    4) Sanity | Generate normal auth token and use it to fire the FileUpload servlet request
+
+
+  Auth > Auth Refer
+    ✔ Sanity | Verify that AuthRequest to a server that has the users mailbox does not return refer element in the response
+
+
+  Auth > Auth German
+    ✔ Sanity | Test to check the authentication of user names having german characters
+
+
+  Auth > Auth Invalid
+    ✔ Smoke | login with an invalid password
+    5) Sanity | 1. login with no domain 2. auth should succeed, if account is assigned to the default domain
+    ✔ Sanity | login with invalid user name and invalid password
+
+
+  Auth > Bugs > Bug95102
+    ✔ Sanity | preAuthServlet has no checking against the accounts status
+
+
+  Auth > Bugs > Bug65554
+    ✔ Sanity | AuthRequest with authtoken contains verifyAccount=1 should match encoded account name in authtoken
+    ✔ Sanity | AuthRequest with authtoken contains verifyAccount=1 should return AUTH_REQUIRED if account name does not match encoded account name in authtoken
+
+
+  Auth > Auth Alias
+    ✔ Smoke | AuthRequest - log in with alias
+    ✔ Sanity | AuthRequest - verify failed login with alias name does not show real account name
+    6) Sanity | Verify below points when alias_login_enabled local config value is set to false - 1. Alias login will blocked 2. Login with email address would work.
+
+
+  Auth > Auth Passwd
+    ✔ Sanity | Verify complex password works
+    ✔ Sanity | Verify password with spaces works
+    ✔ Sanity | Verify password with accented characters works
+
+
+  Auth > Auth Basic
+    ✔ Smoke | Basic Test: AuthRequest - login to the client using by=name
+    ✔ Smoke | Basic Test: AuthRequest - login to the client using by=id
+    ✔ Sanity | Verify User auth token should not be able to execute RunUnitTestRequest
+    7) Sanity | Verify account AuthRequest support account by syntax and without default domain name
+
+
+  Auth > Auth Basic Multinode
+    ✔ Sanity | Verify that an account configured with zimbraMailHost=A can log into host A
+    ✔ Sanity | Verify that an account configured with zimbraMailHost=A cannot log into host B
+    ✔ Sanity | Verify that an account configured with zimbraMailHost=B cannot log into host A
+    ✔ Sanity | Verify that an account configured with zimbraMailHost=B can log into host B
+
+
+  Auth > VirtualHost > Virtualhost Auth Basic
+    ✔ Smoke | login as the test account using the full email address
+    ✔ Sanity | login as the test account using only the name part of the email address
+
+
+  Auth > ZCS-4904 End All Session
+    ✔ Sanity | End Session Request to end specific active session
+
+
+  Auth > Auth Request Sphchar
+    ✔ Sanity | Tests to check the authentication of user names having special characters and numbers.
+
+
+  Auth > Test Authtoken
+    ✔ Sanity | GetFolderRequest with authtoken and name of first account (using context specified by name)
+    ✔ Sanity | GetFolderRequest with authtoken and name of first account (using context specified by ID)
+    ✔ Sanity | Login to test_account2 with admins authtoken (using context specified by name)
+    ✔ Sanity | Login to test_account2 with admins authtoken (using context specified by id)
+    ✔ Sanity | Login to test_account2 with test_account1s auth token should be denied
+
+
+  Auth > JWT > JWT-ZCS-3676
+    ✔ Sanity | AuthRequest - Generate auth request for user with name with JWT type for token
+    ✔ Sanity | AuthRequest - Generate auth request for user with name with auth type for token
+    ✔ Sanity | AuthRequest - Generate auth request for user with name with no token type specified
+    ✔ Sanity | AuthRequest - Generate auth request for user with id with jwt token type specified
+    ✔ Sanity | AuthRequest - Generate auth request for user with foreign principal with jwt token type specified
+    ✔ Sanity | Auth request as an invalid email account and tokeType as JWT
+    8) Sanity | Auth request for preauth with token type as JWT
+    ✔ Sanity | AuthRequest - Generate JWToken based on auth token
+
+
+  Auth > VirtualHost > Auth Virtualhost
+    ✔ Sanity | Virtual Host Test: AuthRequest - login as from virtual host, no virtual hosts defined Should use test_account1@defaultdomain/password to authenticate
+    ✔ Sanity | Virtual Host Test: AuthRequest - login with virtual host password
+    ✔ Sanity | Virtual Host Test: AuthRequest - login with full account name
+    ✔ Sanity | Virtual Host Test: AuthRequest - login using default/good password
+    - Sanity | Basic Test: AuthRequest - login using default/good password - Adding and removing virtual host
+    ✔ Sanity | Basic Test: AuthRequest - login using default/good password - multiple virtual hosts
+
+
+  Auth > ForgetPassword > Set Recovery Email
+    9) "before all" hook for "Sanity | Set recovery email and send code to that email"
+
+
+  Auth > Auth Expired
+    ✔ Smoke | Test that the Authtoken remains valid within the duration set for expiration
+    10) Sanity | Test the authtoken expiration (Next request is sent after expiration duration)
+    11) Sanity | Test theauthtoken expiration (Two requests is sent- first before expiration and second after expiration)
+
+
+  Auth > ForgetPassword > ZCS-4798
+    ✔ Sanity | Set recovery email and validate it using code (20594ms)
+    ✔ Sanity | Get recovery details for the account.
+    ✔ Sanity | Get recovery details for the account. - Send Recovery Code
+    ✔ Sanity | Verify resend feature of the RecoverAccount API.
+
+
+  Auth > JWT > JWT-ZCS-2478
+    ✔ Sanity | Generate JWT auth token, let it expire and send email using that token. Error should be thrown (65199ms)
+
+
+  Auth > JWT > JWT-ZCS-3258
+    12) Smoke | Generate JWT auth token and send email using that token
+    13) Sanity | Generate JWT auth token and send email using that token - multiple recipients
+    ✔ Sanity | Generate JWT auth token, let it expire and send email using that token. Error should be seen (65144ms)
+
+
+  Auth > ForgetPassword > ZCS-5102
+    ✔ Sanity | Set recovery email and validate it using code - account1
+    ✔ Sanity | Set recovery email and validate it using code - account3
+    ✔ Sanity | Get recovery details for the account and verify account lockout scenario .
+    ✔ Sanity | Get recovery details for the account and verify account lockout scenario . - zimbraPasswordLockoutFailureLifetime honored (30343ms)
+
