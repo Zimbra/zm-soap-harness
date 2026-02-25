@@ -171,5 +171,4 @@ describe('Admin > Accounts > Retention Policy', function () {
 		);
 		assert.exists(getRes.GetSystemRetentionPolicyResponse);
 	});
-
 });

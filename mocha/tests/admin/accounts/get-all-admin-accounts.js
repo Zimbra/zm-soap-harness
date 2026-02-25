@@ -22,5 +22,4 @@ describe('Admin > Accounts > Get All Admin Accounts', function () {
 		assert.exists(response.GetAllAdminAccountsResponse,
 			'GetAllAdminAccountsResponse should exist');
 	});
-
 });

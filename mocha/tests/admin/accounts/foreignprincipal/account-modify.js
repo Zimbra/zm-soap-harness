@@ -140,5 +140,4 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 		const acct2 = Array.isArray(get2.GetAccountResponse.account) ? get2.GetAccountResponse.account[0] : get2.GetAccountResponse.account;
 		assert.equal(acct2.id, acctId);
 	});
-
 });

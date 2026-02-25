@@ -140,5 +140,4 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		);
 		assert.exists(getRes.Fault);
 	});
-
 });

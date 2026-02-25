@@ -442,5 +442,4 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			assert.exists(sendResponse2.SendMsgResponse, "MTA accepted message for bounce");
 		}
 	});
-
 });

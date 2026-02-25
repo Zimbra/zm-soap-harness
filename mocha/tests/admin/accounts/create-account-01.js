@@ -57,13 +57,20 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <name>${test_account1_name}</name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ? res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
+		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
 			let fallbackRes = await soap.makeSOAPEnvelopeAdmin(`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${test_account1_name}</account></GetAccountRequest>`, adminAuth);
-			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
+			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ?
+				fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
 		}
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -73,13 +80,20 @@ describe('Admin > Accounts > Create Account 01', function () {
 
                 <name>${test_account2_name}</name>
             </CreateAccountRequest>`, adminAuth);
-		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ? res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
+		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
 			let fallbackRes = await soap.makeSOAPEnvelopeAdmin(`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${test_account2_name}</account></GetAccountRequest>`, adminAuth);
-			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
+			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ?
+				fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
 		}
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -89,7 +103,11 @@ describe('Admin > Accounts > Create Account 01', function () {
 
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('service.FAILURE') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')), `Expected service.FAILURE or NO_SUCH_DOMAIN, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('service.FAILURE') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')),
+			`Expected service.FAILURE or NO_SUCH_DOMAIN, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -99,49 +117,77 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <name>   </name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>     </name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>:\'\'&lt;//\\\\</name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>some text</name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>-1</name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>0</name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>12345678901234567890</name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -151,7 +197,11 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <name>"****************"</name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -161,80 +211,120 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <name>${test_account3_name}</name>
                 <password>"      "</password>
             </CreateAccountRequest>`, adminAuth);
-		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ? res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
+		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
 			let fallbackRes = await soap.makeSOAPEnvelopeAdmin(`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${test_account3_name}</account></GetAccountRequest>`, adminAuth);
-			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
+			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ?
+				fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
 		}
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account6_name}</name>
                 <password>   </password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'), `Expected fault account.INVALID_PASSWORD, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'),
+			`Expected fault account.INVALID_PASSWORD, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account7_name}</name>
                 <password>     </password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'), `Expected fault account.INVALID_PASSWORD, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'),
+			`Expected fault account.INVALID_PASSWORD, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account8_name}</name>
                 <password>:\'\'&lt;//\\\\</password>
             </CreateAccountRequest>`, adminAuth);
-		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ? res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
+		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
 			let fallbackRes = await soap.makeSOAPEnvelopeAdmin(`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${test_account8_name}</account></GetAccountRequest>`, adminAuth);
-			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
+			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ?
+				fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
 		}
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account9_name}</name>
                 <password>some text</password>
             </CreateAccountRequest>`, adminAuth);
-		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ? res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
+		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
 			let fallbackRes = await soap.makeSOAPEnvelopeAdmin(`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${test_account9_name}</account></GetAccountRequest>`, adminAuth);
-			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
+			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ?
+				fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
 		}
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account10_name}</name>
                 <password>-1</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'), `Expected fault account.INVALID_PASSWORD, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'),
+			`Expected fault account.INVALID_PASSWORD, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account11_name}</name>
                 <password>0</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'), `Expected fault account.INVALID_PASSWORD, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'),
+			`Expected fault account.INVALID_PASSWORD, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account12_name}</name>
                 <password>12345678901234567890</password>
             </CreateAccountRequest>`, adminAuth);
-		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ? res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
+		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
 			let fallbackRes = await soap.makeSOAPEnvelopeAdmin(`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${test_account12_name}</account></GetAccountRequest>`, adminAuth);
-			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
+			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ?
+				fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
 		}
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -245,56 +335,88 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>\${config.accountPassword}</password>
                 <a n="mail">test@invalid.domain.com</a>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test@invalid.domain.com</name>
                 <password>\${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test@     </name>
                 <password>\${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>:\'\'&lt;//\\\\</name>
                 <password>\${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>tesss@some text</name>
                 <password>\${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>-1</name>
                 <password>\${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>0</name>
                 <password>\${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>12345678901234567890</name>
                 <password>\${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -306,13 +428,20 @@ describe('Admin > Accounts > Create Account 01', function () {
                 
                 
             </CreateAccountRequest>`, adminAuth);
-		test_account.id = Array.isArray(res.CreateAccountResponse?.account) ? res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
+		test_account.id = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_account.id) {
 			let fallbackRes = await soap.makeSOAPEnvelopeAdmin(`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${test_nouser_name}</account></GetAccountRequest>`, adminAuth);
-			test_account.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
+			test_account.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ?
+				fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
 		}
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -322,20 +451,30 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <name>${test_account5_name}</name>
                 <password>${config.accountPassword}</password>
             </CreateAccountRequest>`, adminAuth);
-		test_account5.id = Array.isArray(res.CreateAccountResponse?.account) ? res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
+		test_account5.id = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_account5.id) {
 			let fallbackRes = await soap.makeSOAPEnvelopeAdmin(`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${test_account5_name}</account></GetAccountRequest>`, adminAuth);
-			test_account5.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
+			test_account5.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ?
+				fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
 		}
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account5_name}</name>
                 <password>${config.accountPassword}different</password>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS'), `Expected fault account.ACCOUNT_EXISTS, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS'),
+			`Expected fault account.ACCOUNT_EXISTS, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -346,8 +485,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraContactMaxNumEntries">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -355,8 +499,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraContactMaxNumEntries">1000</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -367,8 +516,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraContactMaxNumEntries">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -376,8 +530,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraContactMaxNumEntries">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -385,8 +544,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraContactMaxNumEntries">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -394,8 +557,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraContactMaxNumEntries">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -403,8 +570,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraContactMaxNumEntries">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -415,8 +586,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMailPollingInterval">5m</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -424,8 +600,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMailPollingInterval">1000</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -436,8 +617,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMailPollingInterval">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -445,8 +631,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMailPollingInterval">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -454,8 +645,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMailPollingInterval">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -463,8 +658,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMailPollingInterval">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -472,8 +671,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMailPollingInterval">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -481,8 +685,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMailPollingInterval">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -490,7 +698,11 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMailPollingInterval">12345678901234567890</a>
             </CreateAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('service.FAILURE') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')), `Expected service.FAILURE or NO_SUCH_DOMAIN, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('service.FAILURE') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')),
+			`Expected service.FAILURE or NO_SUCH_DOMAIN, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -501,8 +713,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAttachmentsViewInHtmlOnly">TRUE</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -510,8 +727,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAttachmentsViewInHtmlOnly">FALSE</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -522,8 +744,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAttachmentsViewInHtmlOnly">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -531,8 +758,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAttachmentsViewInHtmlOnly">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -540,8 +772,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAttachmentsViewInHtmlOnly">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -549,8 +785,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAttachmentsViewInHtmlOnly">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -558,8 +798,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAttachmentsViewInHtmlOnly">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -567,8 +811,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAttachmentsViewInHtmlOnly">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -576,8 +824,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAttachmentsViewInHtmlOnly">12345678901234567890</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -588,8 +840,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPasswordMaxAge">100</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -597,8 +854,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPasswordMaxAge">20</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -609,8 +871,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPasswordMaxAge">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -618,8 +885,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPasswordMaxAge">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -627,8 +899,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPasswordMaxAge">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -636,8 +912,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPasswordMaxAge">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -645,8 +925,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPasswordMaxAge">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -654,8 +939,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPasswordMaxAge">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -663,8 +952,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPasswordMaxAge">12345678901234567890</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -675,8 +968,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraMailStatus">enabled</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -684,8 +982,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraMailStatus">disabled</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -696,8 +999,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraMailStatus">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -705,8 +1013,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraMailStatus">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -714,8 +1027,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraMailStatus">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -723,8 +1040,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraMailStatus">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -732,8 +1053,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraMailStatus">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -741,8 +1066,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraMailStatus">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -750,8 +1079,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraMailStatus">12345678901234567890</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -762,8 +1095,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMessageViewHtmlPreferred">TRUE</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -771,8 +1109,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMessageViewHtmlPreferred">FALSE</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -783,8 +1126,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMessageViewHtmlPreferred">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -792,8 +1140,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMessageViewHtmlPreferred">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -801,8 +1154,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMessageViewHtmlPreferred">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -810,8 +1167,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMessageViewHtmlPreferred">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -819,8 +1180,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMessageViewHtmlPreferred">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -828,8 +1193,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMessageViewHtmlPreferred">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -837,8 +1206,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefMessageViewHtmlPreferred">12345678901234567890</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -849,8 +1222,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraNewMailNotificationSubject">New message received at RECIPIENT_ADDRESS</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -861,8 +1239,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraNewMailNotificationSubject">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -870,8 +1253,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraNewMailNotificationSubject">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -879,8 +1267,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraNewMailNotificationSubject">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -888,8 +1281,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraNewMailNotificationSubject">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -897,8 +1295,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraNewMailNotificationSubject">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -906,8 +1309,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraNewMailNotificationSubject">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -915,8 +1323,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraNewMailNotificationSubject">12345678901234567890</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -927,8 +1340,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">active</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -936,8 +1354,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">maintenance</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -945,8 +1368,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">locked</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -954,8 +1382,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">closed</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -966,8 +1399,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -975,8 +1413,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -984,8 +1427,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -993,8 +1440,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1002,8 +1453,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1011,8 +1466,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1020,8 +1479,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraAccountStatus">12345678901234567890</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -1032,8 +1495,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefShowFragments">TRUE</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1041,8 +1509,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefShowFragments">FALSE</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -1053,8 +1526,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefShowFragments">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1062,8 +1540,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefShowFragments">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1071,8 +1554,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefShowFragments">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1080,8 +1567,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefShowFragments">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1089,8 +1580,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefShowFragments">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1098,8 +1593,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefShowFragments">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1107,8 +1606,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraPrefShowFragments">12345678901234567890</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -1119,8 +1622,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraFeatureGalEnabled">TRUE</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1128,8 +1636,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraFeatureGalEnabled">FALSE</a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -1140,8 +1653,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraFeatureGalEnabled">   </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1149,8 +1667,13 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraFeatureGalEnabled">     </a>
             </CreateAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), `Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
+			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1158,8 +1681,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraFeatureGalEnabled">some text</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1167,8 +1694,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraFeatureGalEnabled">-1</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1176,8 +1707,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraFeatureGalEnabled">0</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1185,8 +1720,12 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraFeatureGalEnabled">:\'\'&lt;//\\\\</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1194,7 +1733,11 @@ describe('Admin > Accounts > Create Account 01', function () {
                 <password>${config.accountPassword}</password>
                 <a n="zimbraFeatureGalEnabled">12345678901234567890</a>
             </CreateAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 });

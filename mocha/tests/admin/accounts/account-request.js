@@ -312,5 +312,4 @@ describe('Admin > Accounts > Account Request', function () {
 		// May succeed or fault depending on server support, enforcing strict assertion:
 		assert.exists(response.MigrateAccountResponse);
 	});
-
 });

@@ -94,5 +94,4 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 		);
 		assert.exists(r2.CreateCalendarResourceResponse);
 	});
-
 });

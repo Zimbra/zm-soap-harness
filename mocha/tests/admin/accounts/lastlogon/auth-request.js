@@ -42,5 +42,4 @@ describe('Admin > Accounts > Lastlogon > Auth Request', function () {
 		assert.isNotEmpty(lastLogon._content,
 			'zimbraLastLogonTimestamp should have a value');
 	});
-
 });

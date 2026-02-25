@@ -104,5 +104,4 @@ describe('Admin > Accounts > Reload Account', function () {
 		assert.isTrue(code.includes('service.FAILURE') || code.includes('account.NO_SUCH_ACCOUNT'),
 			'Should return FAILURE or NO_SUCH_ACCOUNT');
 	});
-
 });

@@ -91,5 +91,4 @@ describe('Admin > Accounts > Bug 39720', function () {
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
-
 });

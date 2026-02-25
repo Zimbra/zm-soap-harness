@@ -40,8 +40,6 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 		}
 	};
 
-	// CreateAccountSphchar1
-
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
@@ -141,8 +139,9 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 				<name>.usera${common.getUniqueString()}@${testDomain}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
-		assert.exists(res.CreateAccountResponse,
-			'Zimbra surprisingly allows leading dots in some versions');
+		const account = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
 
@@ -152,7 +151,9 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 				<name>usera${common.getUniqueString()}.@${testDomain}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
-		assert.exists(res.CreateAccountResponse);
+		const account = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
 
@@ -164,7 +165,9 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 				<name>${name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
-		assert.exists(res.CreateAccountResponse);
+		const account = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
 
@@ -181,7 +184,9 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 				<name>()${common.getUniqueString()}@${testDomain}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
-		assert.exists(res.CreateAccountResponse);
+		const account = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
 
@@ -192,7 +197,9 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 				<name>\\\\${common.getUniqueString()}@${testDomain}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
-		assert.exists(res.CreateAccountResponse);
+		const account = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
 
@@ -216,7 +223,9 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 				<name>;${common.getUniqueString()}@${testDomain}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
-		assert.exists(res.CreateAccountResponse);
+		const account = Array.isArray(res.CreateAccountResponse?.account) ?
+			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
 
@@ -248,5 +257,4 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 		assert.exists(aliasRes.Fault);
 		assert.include(aliasRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
-
 });

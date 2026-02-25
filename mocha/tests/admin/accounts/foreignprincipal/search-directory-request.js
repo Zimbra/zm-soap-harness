@@ -81,5 +81,4 @@ describe('Admin > Accounts > Foreignprincipal > Search Directory Request', funct
 		assert.include(fpValues, account2Fp1);
 		assert.include(fpValues, account2Fp2);
 	});
-
 });

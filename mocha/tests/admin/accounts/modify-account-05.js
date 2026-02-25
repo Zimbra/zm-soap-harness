@@ -20,10 +20,12 @@ describe('Admin > Accounts > Modify Account 05', function () {
 				<name>${test_account1_name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
-		test_accountid.id = Array.isArray(setupRes.CreateAccountResponse?.account) ? setupRes.CreateAccountResponse.account[0].id : setupRes.CreateAccountResponse?.account?.id;
+		test_accountid.id = Array.isArray(setupRes.CreateAccountResponse?.account) ?
+			setupRes.CreateAccountResponse.account[0].id : setupRes.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
 			let fallbackRes = await soap.makeSOAPEnvelopeAdmin(`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${test_accountid_name}</account></GetAccountRequest>`, adminAuth);
-			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
+			test_accountid.id = Array.isArray(fallbackRes.GetAccountResponse?.account) ?
+				fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;
 		}
 	});
 
@@ -39,16 +41,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefGalAutoCompleteEnabled">TRUE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefGalAutoCompleteEnabled">FALSE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -58,16 +70,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeInNewWindow">TRUE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeInNewWindow">FALSE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -77,40 +99,61 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeInNewWindow">True</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeInNewWindow">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeInNewWindow">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeInNewWindow">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeInNewWindow">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -120,16 +163,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureSharingEnabled">TRUE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureSharingEnabled">FALSE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -139,40 +192,61 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureSharingEnabled">True</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureSharingEnabled">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureSharingEnabled">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureSharingEnabled">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureSharingEnabled">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -182,24 +256,39 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarApptReminderWarningTime">0</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarApptReminderWarningTime">60</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarApptReminderWarningTime">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -209,24 +298,37 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarApptReminderWarningTime">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarApptReminderWarningTime">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarApptReminderWarningTime">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -236,16 +338,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefImapSearchFoldersEnabled">TRUE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefImapSearchFoldersEnabled">FALSE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -255,40 +367,61 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefImapSearchFoldersEnabled">True</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefImapSearchFoldersEnabled">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefImapSearchFoldersEnabled">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefImapSearchFoldersEnabled">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefImapSearchFoldersEnabled">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -298,16 +431,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureHtmlComposeEnabled">TRUE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureHtmlComposeEnabled">FALSE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -317,40 +460,61 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureHtmlComposeEnabled">True</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureHtmlComposeEnabled">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureHtmlComposeEnabled">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureHtmlComposeEnabled">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraFeatureHtmlComposeEnabled">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -360,7 +524,11 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "mail">${test_account1_name}</a>
             </ModifyAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -370,7 +538,11 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "mail">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), `Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -380,16 +552,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefShowSearchString">TRUE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefShowSearchString">FALSE</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -399,40 +581,61 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefShowSearchString">True</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefShowSearchString">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefShowSearchString">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefShowSearchString">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefShowSearchString">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -442,16 +645,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefSkin">\${theme1}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefSkin">\${theme2}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -461,32 +674,52 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefSkin">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefSkin">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefSkin">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefSkin">\${color}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -496,16 +729,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontColor">\${black}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontColor">\${color1}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -515,48 +758,78 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontColor">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontColor">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontColor">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontColor">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontColor">\${account.number}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontColor">\${color}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -566,16 +839,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontFamily">\${font1}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontFamily">\${font2}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -585,32 +868,52 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontFamily">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontFamily">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontFamily">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontFamily">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -620,16 +923,26 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeFormat">\${text}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeFormat">\${html}</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -639,32 +952,49 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeFormat">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeFormat">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeFormat">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefComposeFormat">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -674,8 +1004,13 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontSize">8</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -685,48 +1020,78 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontSize">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontSize">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontSize">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontSize">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontSize">0</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefHtmlEditorDefaultFontSize">12345678901234567890</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -736,8 +1101,13 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefTimeZoneId">(GMT-08.00) Pacific Time</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -747,56 +1117,91 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefTimeZoneId">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefTimeZoneId">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefTimeZoneId">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefTimeZoneId">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefTimeZoneId">   </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefTimeZoneId">0</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefTimeZoneId">12345678901234567890</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -806,8 +1211,13 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarFirstDayOfWeek">0</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -817,40 +1227,61 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarFirstDayOfWeek">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarFirstDayOfWeek">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarFirstDayOfWeek">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarFirstDayOfWeek">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarFirstDayOfWeek">12345678901234567890</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
@@ -860,8 +1291,13 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarInitialView">workWeek</a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
@@ -871,47 +1307,72 @@ describe('Admin > Accounts > Modify Account 05', function () {
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarInitialView">     </a>
             </ModifyAccountRequest>`, adminAuth);
-		// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10
-		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), `Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault ? JSON.stringify(res.Fault) : 'none'}`);
+		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
+			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarInitialView">some text</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarInitialView">:\'\'&lt;//\\\\</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarInitialView">-1</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarInitialView">0</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
                 <a n = "zimbraPrefCalendarInitialView">12345678901234567890</a>
             </ModifyAccountRequest>`, adminAuth);
-		// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE
-		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse), `Expected INVALID_ATTR_VALUE or success, got: ${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}`);
+		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
+			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
+			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
+			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
+			? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 });

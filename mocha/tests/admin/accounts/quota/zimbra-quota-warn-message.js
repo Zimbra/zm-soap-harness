@@ -98,5 +98,4 @@ ${warnMsg}
 		assert.exists(displayAttr);
 		assert.equal(displayAttr._content, 'があります 作成');
 	});
-
 });

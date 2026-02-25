@@ -38,7 +38,7 @@ describe('Module > Feature Name', function () {
 	});
 
 	// Applicable zimbra versions
-	if (!String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/g)) {
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
@@ -57,21 +57,49 @@ describe('Module > Feature Name', function () {
 ## Formatting Rules
 - Use tabs for indentation
 - **Double blank line** between `it()` blocks
-- **NO blank line** before the closing `});` of the `describe()` block:
+- **100 character line limit** — break long lines at `||`, `&&`, and `?` operators
+- **End-of-file format** — STRICTLY follow this pattern (tab-indented inner `});`, no blank line, no trailing whitespace):
   ```js
-  // CORRECT:
+  // CORRECT — always end files exactly like this:
   	});
   });
   
-  // WRONG:
+  // WRONG — no blank line between closings:
   	});
   
+  });
+  
+  // WRONG — inner closing must have tab:
+  });
   });
   ```
 - Run `npm run format` after all changes
 - Follow rules in `utils/ai/formatting-guidelines.md`
 
+## Test Independence Rules (STRICT)
+- **1:1 XML-to-JS file mapping**: Each XML file → exactly one JS file. Never merge or split.
+- **1:1 test case mapping**: Each XML `<t:test_case>` → exactly one `it()` block. Never merge or split.
+- **Independent tests**: Each `it()` block must be self-contained with ALL its own code (setup, action, assertion).
+- **Minimal `before()` hook**: Only put truly shared, unavoidable setup in `before()` (e.g. `main.before()`, getting admin auth token). All test-specific setup goes INSIDE the `it()` block.
+- **No shared state between tests**: Tests must not depend on state created by other `it()` blocks.
+
 ## Assertion Patterns
+- **Always derive assertions from the XML `t:select` path** — match the exact depth/node:
+  ```js
+  // XML: <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="expected"/>
+  // CORRECT: Check the account level, not just the Response
+  const account = Array.isArray(res.CreateAccountResponse?.account)
+  	? res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+  assert.exists(account, 'CreateAccountResponse should contain account');
+  
+  // XML: <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+  // CORRECT: Check fault code
+  assert.exists(res.Fault, 'Should return Fault');
+  assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
+  
+  // WRONG: Too shallow, doesn't match XML path depth
+  assert.exists(res.CreateAccountResponse);
+  ```
 - **Always use defensive assertions** — never access `.Fault.Reason.Text` or `.Response.action` without null checking:
   ```js
   // CORRECT:

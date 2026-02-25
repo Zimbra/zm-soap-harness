@@ -128,5 +128,4 @@ describe('Admin > Accounts > Foreignprincipal > Resource Modify', function () {
 		);
 		assert.equal(getResId(g2), resId);
 	});
-
 });

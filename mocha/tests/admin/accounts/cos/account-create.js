@@ -48,5 +48,4 @@ describe('Admin > Accounts > Cos > Account Create', function () {
 		assert.exists(batchAttr, 'zimbraBatchedIndexingSize should exist');
 		assert.equal(batchAttr._content, '0');
 	});
-
 });

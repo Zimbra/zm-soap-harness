@@ -368,5 +368,4 @@ describe('Admin > Accounts > Account Getmembership', function () {
 		assert.exists(dl8ByName, `Should be member of ${list8Name}`);
 		assert.equal(dl8ByName.via, list7Name);
 	});
-
 });

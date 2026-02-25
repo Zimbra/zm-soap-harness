@@ -213,5 +213,4 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		assert.exists(cosRes2.Fault,
 			'COS create with zimbraCalendarReminderDeviceEmail should fault');
 	});
-
 });

@@ -141,5 +141,4 @@ describe('Admin > Accounts > Foreignprincipal > Account Getmembership', function
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		assert.equal(dls.length, 0, 'Should not be member of any DL');
 	});
-
 });

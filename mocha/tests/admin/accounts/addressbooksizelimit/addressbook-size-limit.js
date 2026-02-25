@@ -184,5 +184,4 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 		assert.exists(response.CreateContactResponse,
 			'Should be able to add after deleting');
 	});
-
 });

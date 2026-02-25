@@ -246,5 +246,4 @@ describe('Admin > Accounts > Account Getinfo', function () {
 			assert.equal(sanAttr._content, sanValue);
 		}
 	});
-
 });

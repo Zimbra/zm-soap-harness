@@ -124,5 +124,4 @@ describe('Admin > Accounts > Account Logger', function () {
 		assert.exists(response.GetAllAccountLoggersResponse.accountLogger,
 			'accountLogger should exist');
 	});
-
 });

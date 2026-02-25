@@ -301,5 +301,4 @@ describe('Admin > Accounts > Account Get', function () {
 		// Cleanup
 		await soap.deleteAccount(name2, adminAuth);
 	});
-
 });

@@ -402,5 +402,4 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		assert.exists(searchAlias.SearchResponse.m,
 			'Message found in Sent folder via alias');
 	});
-
 });

@@ -144,5 +144,4 @@ describe('Admin > Accounts > Account Delete', function () {
 		assert.exists(res.DeleteAccountResponse || res.Fault,
 			'Should handle invalid attribute');
 	});
-
 });

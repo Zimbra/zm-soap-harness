@@ -235,5 +235,4 @@ describe('Admin > Accounts > Account Count', function () {
 		assert.exists(cDefault, 'default COS should be in response');
 		assert.equal(cDefault._content, '2', 'default COS should have 2 accounts');
 	});
-
 });

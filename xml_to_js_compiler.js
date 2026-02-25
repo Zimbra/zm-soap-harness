@@ -47,9 +47,9 @@ function processXMLFile(xmlFile, outJsFile, descName) {
     for (let i = 1; i <= 10; i++) {
         if (isUsed(`status${i}`)) jsLines.push(`\tlet status${i}_name;`);
     }
-    if (xml.includes('type="always"')) {
-        jsLines.push(`\tlet setupRes;`);
-    }
+    const SETUP_RES_MARKER = '___SETUP_RES_MARKER___';
+    let setupResUsed = false;
+    jsLines.push(SETUP_RES_MARKER);
     jsLines.push(``);
     jsLines.push(`\tbefore(async function () {`);
     jsLines.push(`\t\tawait main.before(this.ctx);`);
@@ -100,6 +100,7 @@ function processXMLFile(xmlFile, outJsFile, descName) {
                     return `\\${match}`;
                 });
 
+                setupResUsed = true;
                 jsLines.push(`\n\t\tsetupRes = await soap.makeSOAPEnvelopeAdmin(\n\t\t\t\`${reqBody}\`, adminAuth);`);
 
                 // Look for t:select attribute extractions
@@ -118,10 +119,10 @@ function processXMLFile(xmlFile, outJsFile, descName) {
                                 if (varName.includes('.')) {
                                     const parts = varName.split('.');
                                     if (attrMatch && attrMatch[1] === 'id') {
-                                        jsLines.push(`\t\t${varName} = Array.isArray(setupRes.CreateAccountResponse?.account) ? setupRes.CreateAccountResponse.account[0].id : setupRes.CreateAccountResponse?.account?.id;`);
+                                        jsLines.push(`\t\t${varName} = Array.isArray(setupRes.CreateAccountResponse?.account) ?\n\t\t\tsetupRes.CreateAccountResponse.account[0].id : setupRes.CreateAccountResponse?.account?.id;`);
                                         jsLines.push(`\t\tif (!${varName}) {`);
                                         jsLines.push(`\t\t\tlet fallbackRes = await soap.makeSOAPEnvelopeAdmin(\`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">\${${varName.split('.')[0]}_name}</account></GetAccountRequest>\`, adminAuth);`);
-                                        jsLines.push(`\t\t\t${varName} = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;`);
+                                        jsLines.push(`\t\t\t${varName} = Array.isArray(fallbackRes.GetAccountResponse?.account) ?\n\t\t\t\tfallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;`);
                                         jsLines.push(`\t\t}`);
                                     } else {
                                         jsLines.push(`\t\t${varName} = "placeholder_value"; // Extracted ${attrMatch ? attrMatch[1] : 'node'}`);
@@ -135,10 +136,20 @@ function processXMLFile(xmlFile, outJsFile, descName) {
         }
     }
 
+    // Replace setupRes marker
+    const markerIdx = jsLines.indexOf(SETUP_RES_MARKER);
+    if (markerIdx !== -1) {
+        if (setupResUsed) {
+            jsLines[markerIdx] = `\tlet setupRes;`;
+        } else {
+            jsLines.splice(markerIdx, 1);
+        }
+    }
+
     jsLines.push(`\t});`);
     jsLines.push(``);
     jsLines.push(`\t// Applicable zimbra versions`);
-    jsLines.push(`\tif (!String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/g)) {`);
+    jsLines.push(`\tif (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {`);
     jsLines.push(`\t\treturn;`);
     jsLines.push(`\t}`);
     jsLines.push(``);
@@ -257,13 +268,13 @@ function processXMLFile(xmlFile, outJsFile, descName) {
                             if (varName.includes('.') && attrMatch && attrMatch[1] === 'id') {
                                 const reqTag = reqBody.match(/<([A-Za-z0-9_]+Request)/)[1];
                                 const respName = reqTag.replace('Request', 'Response');
-                                jsLines.push(`\t\t${varName} = Array.isArray(res.${respName}?.account) ? res.${respName}.account[0].id : res.${respName}?.account?.id;`);
+                                jsLines.push(`\t\t${varName} = Array.isArray(res.${respName}?.account) ?\n\t\t\tres.${respName}.account[0].id : res.${respName}?.account?.id;`);
                                 if (reqTag === 'CreateAccountRequest') {
                                     const nameMatch = reqBody.match(/<name>(.*?)<\/name>/);
                                     const nameVal = nameMatch ? nameMatch[1] : `\${${varName.split('.')[0]}_name}`;
                                     jsLines.push(`\t\tif (!${varName}) {`);
                                     jsLines.push(`\t\t\tlet fallbackRes = await soap.makeSOAPEnvelopeAdmin(\`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${nameVal}</account></GetAccountRequest>\`, adminAuth);`);
-                                    jsLines.push(`\t\t\t${varName} = Array.isArray(fallbackRes.GetAccountResponse?.account) ? fallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;`);
+                                    jsLines.push(`\t\t\t${varName} = Array.isArray(fallbackRes.GetAccountResponse?.account) ?\n\t\t\t\tfallbackRes.GetAccountResponse.account[0].id : fallbackRes.GetAccountResponse?.account?.id;`);
                                     jsLines.push(`\t\t}`);
                                 }
                             }
@@ -281,47 +292,79 @@ function processXMLFile(xmlFile, outJsFile, descName) {
                     sel.match = sel.match.replace(/\$\{([^}]+)\}/g, '\\${$1}');
                     let matchStr = sel.match.replace(/^\^|\$$/g, '');
                     if (matchStr === 'account.NO_SUCH_DOMAIN' || matchStr === 'service.INVALID_REQUEST') {
-                        jsLines.push(`\t\tassert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')), \`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: \${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}\`);`);
+                        jsLines.push(`\t\tassert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                        jsLines.push(`\t\t\t(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),`);
+                        jsLines.push(`\t\t\t\`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: \${res.Fault`);
+                        jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'no fault'}\`);`);
                     } else if (matchStr === 'account.INVALID_ATTR_VALUE') {
                         const reqTag = reqBody.match(/<([A-Za-z0-9_]+Request)/)[1];
                         const respName = reqTag.replace('Request', 'Response');
                         jsLines.push(`\t\t// In ZCS 10, some invalid attributes silently succeed or return ldap.INVALID_ATTR_VALUE`);
-                        jsLines.push(`\t\tassert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) || !!res.${respName} || (res.Body && res.Body.${respName}), \`Expected INVALID_ATTR_VALUE or success, got: \${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}\`);`);
+                        jsLines.push(`\t\tassert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                        jsLines.push(`\t\t\t(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||`);
+                        jsLines.push(`\t\t\t!!res.${respName} || (res.Body && res.Body.${respName}),`);
+                        jsLines.push(`\t\t\t\`Expected INVALID_ATTR_VALUE or success, got: \${res.Fault`);
+                        jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'no fault'}\`);`);
                     } else if (matchStr === 'account.NO_SUCH_ACCOUNT') {
-                        jsLines.push(`\t\t// ZCS 10 may silently succeed empty modifications against invalid IDs instead of throwing NO_SUCH_ACCOUNT`);
-                        jsLines.push(`\t\tassert.isTrue(!res.Fault || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT')), \`Expected NO_SUCH_ACCOUNT or success, got: \${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}\`);`);
+                        jsLines.push(`\t\t// ZCS 10 may silently succeed empty modifications against invalid IDs`);
+                        jsLines.push(`\t\tassert.isTrue(!res.Fault || (res.Fault && res.Fault.Detail &&`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error &&`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT')),`);
+                        jsLines.push(`\t\t\t\`Expected NO_SUCH_ACCOUNT or success, got: \${res.Fault`);
+                        jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'no fault'}\`);`);
                     } else if (matchStr.includes('service.FAILURE')) {
-                        jsLines.push(`\t\tassert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('service.FAILURE') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')), \`Expected service.FAILURE or NO_SUCH_DOMAIN, got: \${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}\`);`);
+                        jsLines.push(`\t\tassert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                        jsLines.push(`\t\t\t(res.Fault.Detail.Error.Code.includes('service.FAILURE') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')),`);
+                        jsLines.push(`\t\t\t\`Expected service.FAILURE or NO_SUCH_DOMAIN, got: \${res.Fault`);
+                        jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'no fault'}\`);`);
                     } else if (matchStr.includes('|')) {
                         if (matchStr === 'account.MAINTENANCE_MODE|service.AUTH_EXPIRED') matchStr += '|service.AUTH_REQUIRED';
-                        jsLines.push(`\t\tassert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.match(/${matchStr}/) !== null, \`Expected fault to match ${matchStr}, got: \${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}\`);`);
+                        jsLines.push(`\t\tassert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.match(/${matchStr}/) !== null,`);
+                        jsLines.push(`\t\t\t\`Expected fault to match ${matchStr}, got: \${res.Fault`);
+                        jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'no fault'}\`);`);
                     } else {
-                        jsLines.push(`\t\tassert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('${matchStr}'), \`Expected fault ${matchStr}, got: \${res.Fault ? JSON.stringify(res.Fault) : 'no fault'}\`);`);
+                        jsLines.push(`\t\tassert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('${matchStr}'),`);
+                        jsLines.push(`\t\t\t\`Expected fault ${matchStr}, got: \${res.Fault`);
+                        jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'no fault'}\`);`);
                     }
                     break;
                 } else if (sel.path && sel.path.includes('Response')) {
                     const reqTag = reqBody.match(/<([A-Za-z0-9_]+Request)/)[1];
                     const respName = reqTag.replace('Request', 'Response');
-                    // Assuming isDeleteAndExpectedToFail is defined elsewhere if needed, otherwise this block is new.
-                    // The instruction implies adding this block, so I'll add it as provided.
-                    // Note: The original code had a generic `assert.isTrue` for `Response` path.
-                    // The instruction replaces that with a more specific one.
-                    // The `isDeleteAndExpectedToFail` variable is not defined in the provided context,
-                    // but I will insert the code as given, assuming it's either defined or a placeholder.
-                    // The instruction also has a syntax error with `}    wroteAssert = true;`, which I will fix.
-                    // The original code had:
-                    // jsLines.push(`\t\t// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10`);
-                    // jsLines.push(`\t\tassert.isTrue(!!res.${respName} || (res.Body && res.Body.${respName}) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE')), \`Expected ${respName} or INVALID_ATTR_VALUE, got: \${res.Fault ? JSON.stringify(res.Fault) : 'none'}\`);`);
-                    // wroteAssert = true;
-                    // break;
-                    // This is being replaced by the new conditional logic.
                     jsLines.push(`\t\t// Some attributes previously returned success in ZCS 8/9 but now return ldap.INVALID_ATTR_VALUE in ZCS 10`);
                     if (reqTag === 'CreateAccountRequest') {
-                        jsLines.push(`\t\tassert.isTrue(!!res.${respName} || (res.Body && res.Body.${respName}) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))), \`Expected ${respName} or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: \${res.Fault ? JSON.stringify(res.Fault) : 'none'}\`);`);
+                        jsLines.push(`\t\tassert.isTrue(!!res.${respName} || (res.Body && res.Body.${respName}) ||`);
+                        jsLines.push(`\t\t\t(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                        jsLines.push(`\t\t\t(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),`);
+                        jsLines.push(`\t\t\t\`Expected ${respName} or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: \${res.Fault`);
+                        jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'none'}\`);`);
                     } else if (reqTag === 'AuthRequest' || reqTag === 'GetInfoRequest') {
-                        jsLines.push(`\t\tassert.isTrue(!!res.${respName} || (res.Body && res.Body.${respName}) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.MAINTENANCE_MODE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_INACTIVE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_LOCKED') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_CLOSED') || res.Fault.Detail.Error.Code.includes('service.AUTH_EXPIRED') || res.Fault.Detail.Error.Code.includes('account.AUTH_FAILED') || res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED'))), \`Expected ${respName} or MAINTENANCE_MODE/INACTIVE/LOCKED/CLOSED/AUTH_FAILED/AUTH_REQUIRED, got: \${res.Fault ? JSON.stringify(res.Fault) : 'none'}\`);`);
+                        jsLines.push(`\t\tassert.isTrue(!!res.${respName} || (res.Body && res.Body.${respName}) ||`);
+                        jsLines.push(`\t\t\t(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                        jsLines.push(`\t\t\t(res.Fault.Detail.Error.Code.includes('account.MAINTENANCE_MODE') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.ACCOUNT_INACTIVE') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.ACCOUNT_LOCKED') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.ACCOUNT_CLOSED') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('service.AUTH_EXPIRED') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.AUTH_FAILED') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED'))),`);
+                        jsLines.push(`\t\t\t\`Expected ${respName} or MAINTENANCE_MODE/INACTIVE/LOCKED/CLOSED/AUTH_FAILED/AUTH_REQUIRED, got: \${res.Fault`);
+                        jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'none'}\`);`);
                     } else {
-                        jsLines.push(`\t\tassert.isTrue(!!res.${respName} || (res.Body && res.Body.${respName}) || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') || res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') || res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))), \`Expected ${respName} or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: \${res.Fault ? JSON.stringify(res.Fault) : 'none'}\`);`);
+                        jsLines.push(`\t\tassert.isTrue(!!res.${respName} || (res.Body && res.Body.${respName}) ||`);
+                        jsLines.push(`\t\t\t(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                        jsLines.push(`\t\t\t(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||`);
+                        jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),`);
+                        jsLines.push(`\t\t\t\`Expected ${respName} or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: \${res.Fault`);
+                        jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'none'}\`);`);
                     }
                     wroteAssert = true;
                     break;
@@ -330,13 +373,30 @@ function processXMLFile(xmlFile, outJsFile, descName) {
 
             if (!wroteAssert) {
                 if (reqBody.includes('CreateAccountRequest')) {
-                    jsLines.push(`\t\tassert.isTrue(!!res.CreateAccountResponse || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE')), \`Expected CreateAccountResponse or INVALID_ATTR_VALUE, got fault: \${res.Fault ? JSON.stringify(res.Fault) : 'none'}\`);`);
+                    jsLines.push(`\t\tassert.isTrue(!!res.CreateAccountResponse ||`);
+                    jsLines.push(`\t\t\t(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                    jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE')),`);
+                    jsLines.push(`\t\t\t\`Expected CreateAccountResponse or INVALID_ATTR_VALUE, got fault: \${res.Fault`);
+                    jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'none'}\`);`);
                 } else if (reqBody.includes('ModifyAccountRequest')) {
-                    jsLines.push(`\t\tassert.isTrue(!!res.ModifyAccountResponse || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE')), \`Expected ModifyAccountResponse or INVALID_ATTR_VALUE, got fault: \${res.Fault ? JSON.stringify(res.Fault) : 'none'}\`);`);
+                    jsLines.push(`\t\tassert.isTrue(!!res.ModifyAccountResponse ||`);
+                    jsLines.push(`\t\t\t(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                    jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE')),`);
+                    jsLines.push(`\t\t\t\`Expected ModifyAccountResponse or INVALID_ATTR_VALUE, got fault: \${res.Fault`);
+                    jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'none'}\`);`);
                 } else if (reqBody.includes('AuthRequest')) {
-                    jsLines.push(`\t\tassert.isTrue(!!res.AuthResponse || (res.Fault && res.Fault.Detail && res.Fault.Detail.Error && (res.Fault.Detail.Error.Code.includes('account.AUTH_FAILED') || res.Fault.Detail.Error.Code.includes('account.MAINTENANCE_MODE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_INACTIVE') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_LOCKED') || res.Fault.Detail.Error.Code.includes('account.ACCOUNT_CLOSED'))), \`Expected AuthResponse or AUTH_FAILED/LOCKED/CLOSED/INACTIVE/MAINTENANCE, got fault: \${res.Fault ? JSON.stringify(res.Fault) : 'none'}\`);`);
+                    jsLines.push(`\t\tassert.isTrue(!!res.AuthResponse ||`);
+                    jsLines.push(`\t\t\t(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&`);
+                    jsLines.push(`\t\t\t(res.Fault.Detail.Error.Code.includes('account.AUTH_FAILED') ||`);
+                    jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.MAINTENANCE_MODE') ||`);
+                    jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.ACCOUNT_INACTIVE') ||`);
+                    jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.ACCOUNT_LOCKED') ||`);
+                    jsLines.push(`\t\t\tres.Fault.Detail.Error.Code.includes('account.ACCOUNT_CLOSED'))),`);
+                    jsLines.push(`\t\t\t\`Expected AuthResponse or AUTH_FAILED/LOCKED/CLOSED/INACTIVE/MAINTENANCE, got fault: \${res.Fault`);
+                    jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'none'}\`);`);
                 } else {
-                    jsLines.push(`\t\tassert.isTrue(!res.Fault, \`Expected no fault, got: \${res.Fault ? JSON.stringify(res.Fault) : 'none'}\`);`);
+                    jsLines.push(`\t\tassert.isTrue(!res.Fault, \`Expected no fault, got: \${res.Fault`);
+                    jsLines.push(`\t\t\t? JSON.stringify(res.Fault) : 'none'}\`);`);
                 }
             }
         }

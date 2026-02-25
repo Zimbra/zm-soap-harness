@@ -103,5 +103,4 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 			);
 		}
 	});
-
 });

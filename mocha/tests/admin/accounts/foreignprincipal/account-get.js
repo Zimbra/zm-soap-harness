@@ -190,5 +190,4 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 		assert.exists(getRes.Fault,
 			'Should return fault for duplicate foreign principal');
 	});
-
 });

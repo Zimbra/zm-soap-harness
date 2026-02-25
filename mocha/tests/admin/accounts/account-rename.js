@@ -159,5 +159,4 @@ describe('Admin > Accounts > Account Rename', function () {
 		assert.exists(renameRes.RenameAccountResponse,
 			'Account should be renamed with mail host');
 	});
-
 });

@@ -208,5 +208,4 @@ describe('Admin > Accounts > Accounts Loop', function () {
 		const accounts = response.GetAllAdminAccountsResponse.account || [];
 		assert.isAbove(accounts.length, 0, 'Should return at least one admin account');
 	});
-
 });

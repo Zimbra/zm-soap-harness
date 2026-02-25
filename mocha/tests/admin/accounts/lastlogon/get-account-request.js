@@ -66,5 +66,4 @@ describe('Admin > Accounts > Lastlogon > Get Account Request', function () {
 		assert.exists(lastLogon, 'zimbraLastLogonTimestamp should be set after login');
 		assert.include(lastLogon._content, 'Z', 'Timestamp should contain Z');
 	});
-
 });
