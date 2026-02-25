@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 class ServerCommand {
 	execShellJsAsync(command, opts = {}, skipError = false) {
-		let showProcessing = false;
+		const showProcessing = false;
 		return new Promise((resolve, reject) => {
 			if (showProcessing === true) {
 				console.log(command);
@@ -62,7 +62,7 @@ class ServerCommand {
 
 	// Get mailbox pod for zimbrax backend
 	async getMailboxPod(account) {
-		let mailboxPod = await this.execShellJsAsync(`bash ${path.join(__dirname, '..//..//framework/zimbrax/kubectl.sh')} \
+		const mailboxPod = await this.execShellJsAsync(`bash ${path.join(__dirname, '..//..//framework/zimbrax/kubectl.sh')} \
 SERVER_USER=${config.serverUser} SERVER_HOST=${config.serverHost} POD_TYPE=zmc-mailbox ACCOUNT_EMAIL_ADDRESS=${account}`);
 		mailboxPod = `${String(mailboxPod).split(' ')[0].trim()}`;
 		return mailboxPod;
@@ -178,8 +178,8 @@ SERVER_USER=${config.serverUser} SERVER_HOST=${config.serverHost} POD_TYPE=zmc-m
 	}
 
 	async getClientHostFQDN() {
-		let regex = /http[s]?:\/\/([^\s:]*)/;
-		let found = config.clientHostURL.match(regex);
+		const regex = /http[s]?:\/\/([^\s:]*)/;
+		const found = config.clientHostURL.match(regex);
 		return found ? found[1] : '';
 	}
 
@@ -195,7 +195,7 @@ SERVER_USER=${config.serverUser} SERVER_HOST=${config.serverHost} POD_TYPE=zmc-m
 
 		// nslookup does not work when a host is added to hosts file on a local machine which executes testcafe
 		// Use "ping -c" on Linux, or "ping -n" for Mac and Windows
-		let regex = /\d+\.\d+\.\d+\.\d+/;
+		const regex = /\d+\.\d+\.\d+\.\d+/;
 		let ipAddress;
 
 		// Linux

@@ -50,7 +50,7 @@ if (process.argv[2] && !process.argv[2].startsWith('--')) {
 } else {
 	TEST_REPORT_XML = resolveLatestXml(TEST_REPORTS_DIR);
 }
-let TEST_REPORT_HTML = path.join(
+const TEST_REPORT_HTML = path.join(
 	path.dirname(TEST_REPORT_XML),
 	`${path.basename(TEST_REPORT_XML, path.extname(TEST_REPORT_XML))}.html`
 );
@@ -58,7 +58,7 @@ let TEST_REPORT_HTML = path.join(
 const automationArg = process.argv.find(arg => arg.startsWith('--AUTOMATION_TYPE='));
 let AUTOMATION_TYPE = automationArg ? automationArg.split('=')[1] : undefined;
 if (!AUTOMATION_TYPE) {
-	AUTOMATION_TYPE = repoName === 'zm-temp-automation' ? 'Active Sync' : 'SOAP';
+	AUTOMATION_TYPE = repoName === 'zm-mobile-automation' ? 'Active Sync Mobile' : 'SOAP API';
 }
 
 const serverArg = process.argv.find(arg => arg.startsWith('--SERVER_ENVRIONMENT='));
@@ -88,8 +88,8 @@ process.on('warning', warning => {
 		console.warn(warning);
 	}
 });
-let adminAuthToken = await soap.getAdminAuthToken(config.adminEmailAddress, config.adminPassword);
-let ZIMBRA_VERSION = String(await soap.getVersionInfo(adminAuthToken));
+const adminAuthToken = await soap.getAdminAuthToken(config.adminEmailAddress, config.adminPassword);
+const ZIMBRA_VERSION = String(await soap.getVersionInfo(adminAuthToken));
 
 // Parsing
 const xml = fs.readFileSync(TEST_REPORT_XML, 'utf-8');

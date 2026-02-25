@@ -83,10 +83,13 @@ const common = {
 		await ctx.logger.info(`Server Environment: ${config.serverEnvironment}`);
 		await ctx.logger.info(`Server Node: ${config.serverNode}`);
 		await ctx.logger.info(`Server Host: ${config.serverHost}`);
+		await ctx.logger.info(`Zimbra Version: ${this.zimbraVersion}`);
+		await ctx.logger.info(`Jobs: ${config.jobs ?? 20}`);
+		await ctx.logger.info(`Zimlet: ${config.zimlet}`);
+		await ctx.logger.info(`Chat: ${config.chat}`);
 		if (config.chat === true) {
 			await ctx.logger.info(`Zulip Server: ${config.zulipServer}`);
 		}
-		await ctx.logger.info(`Zimbra Version: ${this.zimbraVersion}`);
 		await ctx.logger.info(`Serial: ${config.serial}`);
 		await ctx.logger.info(`Configure Server: ${config.configure}`);
 		await ctx.logger.info(`Fresh Setup: ${config.freshSetup}`);
@@ -159,6 +162,7 @@ const common = {
 	getUniqueString: utils.getUniqueString,
 	getDateyyyymmdd: utils.getDateyyyymmdd,
 	getClientMachineTodayDate: utils.getClientMachineTodayDate,
+	retryUntil: utils.retryUntil,
 
 	convertDateTime(date) {
 		let convertedDate;

@@ -6,7 +6,6 @@
 	"type": "module",
 	"main": "index.js",
 	"scripts": {
-		"format": "node utils/ai/format-master.cjs",
 		"test:Smoke": "cross-env mocha tests -g Smoke --recursive --parallel --retries 2 --timeout 10000 --slow 1000 --reporter xunit",
 		"test:Smoke:mochawesome": "cross-env mocha tests -g Smoke --recursive --parallel --retries 2 --timeout 10000 --slow 1000 --reporter mochawesome --reporter-options inline,cdn,saveJson,reportDir=test-reports,reportFilename=smoke-report,reportTitle=smoke-report,reportPageTitle=smoke-report | tee test-reports/smoke-report.txt"
 	},
@@ -42,6 +41,6 @@
 		"yargs": "^17.7.2"
 	},
 	"devDependencies": {
-		"@zimbra/soap-client": "file:../../zm-soap-client"
+		"@zimbra/soap-client": "file:../zm-soap-client"
 	}
 }

@@ -44,15 +44,6 @@ class SoapClient extends SoapClientCore {
 		return this.searchAndGetAppointment(accountAuthToken, subject);
 	}
 
-	async getAccountId(account) {
-		const adminAuthToken = await this.getAdminAuthToken();
-		const response = await this.getAccount(adminAuthToken, account);
-		if (response && response.GetAccountResponse && response.GetAccountResponse.account && response.GetAccountResponse.account[0]) {
-			return response.GetAccountResponse.account[0].id;
-		}
-		throw new Error(`Could not get account ID for ${account}`);
-	}
-
 	async createAlias(adminAuthToken, account, aliasEmailAddress) {
 		return this.addAccountAlias(adminAuthToken, account, aliasEmailAddress);
 	}

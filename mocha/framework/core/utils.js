@@ -1,4 +1,5 @@
 import config from '../../conf/config.js';
+import { randomBytes } from 'node:crypto';
 
 export function log(log) {
 	if (config.showConsoleLog) {
@@ -25,7 +26,7 @@ export function sleepJs(ms) {
 }
 
 export function getUniqueString() {
-	return String(Date.now() + Math.floor(Math.random() * 90 + 10));
+	return String(Date.now()).slice(-8) + randomBytes(2).toString('hex');
 }
 
 export function getClientMachineTodayDate() {
@@ -36,24 +37,22 @@ export function getClientMachineTodayDate() {
 }
 
 export function convertDateTime(date) {
-	let convertedDate;
-	let currentDate = new Date(date);
-	let dd = currentDate.getDate() < 10 ? '0' + currentDate.getDate() : currentDate.getDate();
-	let mm = currentDate.getMonth() + 1 < 10 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
-	let yyyy = currentDate.getFullYear().toString();
-	let hours = currentDate.getHours() < 10 ? '0' + currentDate.getHours() : currentDate.getHours();
-	let minute = currentDate.getMinutes() < 10 ? '0' + currentDate.getMinutes() : currentDate.getMinutes();
-	convertedDate = yyyy + mm + dd + 'T' + hours + minute + '00';
+		const currentDate = new Date(date);
+		let dd = currentDate.getDate() < 10 ? '0' + currentDate.getDate() : currentDate.getDate();
+		let mm = currentDate.getMonth() + 1 < 10 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
+		const yyyy = currentDate.getFullYear().toString();
+		const hours = currentDate.getHours() < 10 ? '0' + currentDate.getHours() : currentDate.getHours();
+		const minute = currentDate.getMinutes() < 10 ? '0' + currentDate.getMinutes() : currentDate.getMinutes();
+		const convertedDate = yyyy + mm + dd + 'T' + hours + minute + '00';
 	return convertedDate;
 }
 
 export function getDateyyyymmdd(day) {
-	let todayDate = new Date(getClientMachineTodayDate());
-	todayDate.setDate(todayDate.getDate() + Number(day));
-	let dd = todayDate.getUTCDate();
-	let mm = todayDate.getMonth() + 1; // January is 0!
-	let yyyy = todayDate.getFullYear();
-
+		const todayDate = new Date(getClientMachineTodayDate());
+		todayDate.setDate(todayDate.getDate() + Number(day));
+		let dd = todayDate.getUTCDate();
+		let mm = todayDate.getMonth() + 1; // January is 0!
+		const yyyy = todayDate.getFullYear();
 	if (dd < 10) {
 		dd = '0' + dd;
 	}
@@ -68,6 +67,23 @@ export async function getEmailUserName(contactEmail) {
 	return contactEmail.substring(0, contactEmail.indexOf('@'));
 }
 
+export async function retryUntil(fn, condition, maxRetries = 5, delayMs = 3000, throwOnTimeout = false) {
+    let result;
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            result = await fn();
+            if (condition(result)) return result;
+        } catch (err) {
+            console.error(`retryUntil: attempt ${i + 1} failed with error: ${err.message}`);
+        }
+        if (i < maxRetries - 1) await new Promise(res => setTimeout(res, delayMs));
+    }
+    if (throwOnTimeout) {
+        throw new Error(`Condition not met after ${maxRetries} retries`);
+    }
+    return result;
+}
+
 // Default export for backward compatibility
 export default {
 	log,
@@ -78,5 +94,6 @@ export default {
 	getClientMachineTodayDate,
 	convertDateTime,
 	getDateyyyymmdd,
-	getEmailUserName
+	getEmailUserName,
+	retryUntil
 };

@@ -1,15 +1,32 @@
 /*
 This utility runs mocha tests based on test filter passed in cli.
+
+Examples:
 node mocha-run.js // npx mocha tests
 node mocha-run.js -g "Smoke" // npx mocha tests -g "Smoke"
 node mocha-run.js tests/mail -g "Smoke" // npx mocha tests/mail -g "Smoke"
-node mocha-run.js tests/protocol/rest tests/mail -g "Smoke"
+node mocha-run.js tests/mail/message tests/mail/folder -g "Smoke" // npx mocha tests/mail -g "Smoke"
+node mocha-run.js tests -g "Serial" --serial true
 */
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { runSetupOnce } from './framework/core/setup.js';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+const argv = yargs(hideBin(process.argv)).argv;
+
+// Jobs or workers
+const parsedWorkers = Number(argv.jobs ?? argv.j ?? argv.workers);
+const workers = Number.isInteger(parsedWorkers) && parsedWorkers > 0 ? parsedWorkers : null;
+
+// CLI environment variables
+process.env.ENV = argv.env?.toUpperCase();
+process.env.ZIMLET = argv.zimlet;
+process.env.CHAT = argv.chat;
+process.env.SERIAL = argv.serial ?? process.env.SERIAL;
+const isSerial = String(process.env.SERIAL).toUpperCase() === 'TRUE';
 
 // Reports
 const TEST_REPORTS_DIR_NAME = 'test-reports';
@@ -18,6 +35,8 @@ const TEST_REPORT_XML_FILE_NAME = 'test-report.xml';
 // Paths
 const cwd = process.cwd();
 const xmlReportPath = path.join(cwd, TEST_REPORTS_DIR_NAME, TEST_REPORT_XML_FILE_NAME);
+
+// Remove old report
 if (fs.existsSync(xmlReportPath)) {
 	fs.unlinkSync(xmlReportPath);
 }
@@ -25,20 +44,11 @@ if (fs.existsSync(xmlReportPath)) {
 // Setup
 await runSetupOnce();
 
-// Grep
+// Build mocha args
 const mochaArgs = [];
 const grepIndex = process.argv.indexOf('-g');
 if (grepIndex !== -1) {
 	mochaArgs.push('-g', process.argv[grepIndex + 1]);
-}
-
-// Forward CLI config args via env vars (inherited by mocha parallel workers)
-const cliConfigEnv = {};
-for (const key of ['env', 'serverNode', 'serverType', 'serial', 'chat', 'configure', 'freshSetup', 'showConsoleLog']) {
-	const idx = process.argv.indexOf('--' + key);
-	if (idx !== -1 && idx + 1 < process.argv.length) {
-		cliConfigEnv['ZM_CLI_' + key.toUpperCase()] = process.argv[idx + 1];
-	}
 }
 
 // Test paths
@@ -49,18 +59,27 @@ if (testPaths.length > 0) {
 	mochaArgs.push('tests');
 }
 
-
-// Tests grep
+// Validate matched tests
 if (grepIndex !== -1) {
+	const listArgs = [
+		'node_modules/mocha/bin/mocha.js',
+		'--config',
+		'.mocharc.json',
+		'--list-tests'
+	];
+
+	// Force serial mode override
+	if (isSerial) {
+		listArgs.push('--no-parallel');
+		listArgs.push('--jobs', '1');
+	} else if (workers !== null) {
+		listArgs.push('--jobs', String(workers));
+	}
+
+	listArgs.push(...mochaArgs);
 	const listResult = spawnSync(
 		process.execPath,
-		[
-			'node_modules/mocha/bin/mocha.js',
-			'--config',
-			'.mocharc.json',
-			'--list-tests',
-			...mochaArgs
-		],
+		listArgs,
 		{
 			cwd,
 			encoding: 'utf8',
@@ -74,37 +93,50 @@ if (grepIndex !== -1) {
 	}
 }
 
-// Mocha run
+// Build mocha run args
+const mochaRunArgs = [
+	'node_modules/mocha/bin/mocha.js',
+	'--config',
+	'.mocharc.json',
+	'--reporter',
+	'mocha-multi-reporters',
+	'--reporter-options',
+	'configFile=multi-reporters.json'
+];
+
+// Force serial mode override
+if (isSerial) {
+	mochaRunArgs.push('--no-parallel');
+	mochaRunArgs.push('--jobs', '1');
+} else if (workers !== null) {
+	mochaRunArgs.push('--jobs', String(workers));
+}
+mochaRunArgs.push(...mochaArgs);
+
+// Run mocha
 const result = spawnSync(
 	process.execPath,
-	[
-		'node_modules/mocha/bin/mocha.js',
-		'--config',
-		'.mocharc.json',
-		'--reporter',
-		'mocha-multi-reporters',
-		'--reporter-options',
-		'configFile=multi-reporters.json',
-		...mochaArgs
-	],
+	mochaRunArgs,
 	{
 		stdio: 'inherit',
 		cwd,
 		env: {
 			...process.env,
-			...cliConfigEnv,
 			NODE_TLS_REJECT_UNAUTHORIZED: '0',
 			NODE_OPTIONS: '--no-warnings'
 		}
 	}
 );
 
-// Test report
+// Generate html report
 if (fs.existsSync(xmlReportPath)) {
 	spawnSync(
 		process.execPath,
 		['framework/report/xml-to-html-report.js', xmlReportPath],
-		{ stdio: 'inherit', cwd }
+		{
+			stdio: 'inherit',
+			cwd
+		}
 	);
 }
 
@@ -116,9 +148,11 @@ if (fs.existsSync(xmlReportPath)) {
 	const errorMatches = [...xml.matchAll(/errors="(\d+)"/g)];
 	const testMatches = [...xml.matchAll(/tests="(\d+)"/g)];
 	const timeMatch = xml.match(/time="([\d.]+)"/);
+
 	const failures = failureMatches.reduce((sum, m) => sum + Number(m[1]), 0);
 	const errors = errorMatches.reduce((sum, m) => sum + Number(m[1]), 0);
 	const tests = testMatches.reduce((sum, m) => sum + Number(m[1]), 0);
+
 	const failedCount = failures + errors;
 	const totalTimeSeconds = timeMatch ? Number(timeMatch[1]) : 0;
 	const totalTimeMinutes = (totalTimeSeconds / 60).toFixed(2);
@@ -137,4 +171,5 @@ if (fs.existsSync(xmlReportPath)) {
 	console.log(`Exit code = ${exitCode}`);
 	console.log('=============================================');
 }
+
 process.exit(exitCode);

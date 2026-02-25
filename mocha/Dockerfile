@@ -44,7 +44,7 @@ RUN npm install --no-audit && \
 LABEL org.label-schema.version="1.0.0" \
 	org.label-schema.build-date="${BUILD_DATE}" \
 	org.label-schema.name="${REPO_NAME}" \
-	org.label-schema.description="Zimbra X Protocol Automation Docker Image" \
+	org.label-schema.description="Zimbra X API Automation Docker Image" \
 	org.label-schema.url="https://zimbra.org" \
 	org.label-schema.vcs-url="https://github.com/Zimbra/${REPO_NAME}" \
 	org.label-schema.vendor="Synacor Inc."

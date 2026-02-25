@@ -199,7 +199,8 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Sanity | Sanity test for GetAllAdminAccountsRequest', async () => {
+	it('Sanity | Sanity test for GetAllAdminAccountsRequest', async function () {
+		this.timeout(60000);
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);

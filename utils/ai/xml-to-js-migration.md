@@ -15,6 +15,17 @@ description: How to migrate XML SOAP test cases to JavaScript (mocha) with 1:1 p
 - **Never merge** multiple XML test cases into one `it()` block
 - **Never split** one XML test case into multiple `it()` blocks (unless it's a loop creating multiple distinct operations)
 - XML `type` maps to JS test name prefix: `smoke` → `Smoke |`, `sanity` → `Sanity |`, `functional/bhr` → `Functional |`, `regression` → `Regression |`
+- **STRICT: Use the exact `<t:objective>` text** as the `it()` description after the type prefix. Do NOT paraphrase, summarize, or add redundant info (e.g. request name that's already in the filename). Example:
+  ```xml
+  <t:test_case testcaseid="CountAccountRequest_01" type="sanity">
+      <t:objective>Sanity test for CountAccountRequest</t:objective>
+  ```
+  ```js
+  // CORRECT — use exact objective text:
+  it('Sanity | Sanity test for CountAccountRequest', async () => {
+  // WRONG — paraphrased/redundant:
+  it('Sanity | CountAccountRequest - verify count per COS', async () => {
+  ```
 - **NEVER** count or create `it()` blocks for `type="always"` setup/ping tests. These are NOT real tests.
 - If setup test code is needed (create accounts, get auth tokens, etc.) → put it in the `before()` hook, NOT as a separate `it()` block
 - Sanity-type tests that are really setup (e.g. "basic system check", "create test account", "login") should also be treated as setup → `before()` hook
@@ -57,9 +68,9 @@ describe('Module > Feature Name', function () {
 ## Formatting Rules
 - Use tabs for indentation
 - **Double blank line** between `it()` blocks
-- **100 character line limit** — STRICTLY break long lines at `||`, `&&`, and `?` operators. Examples:
+- **120 character line limit** — STRICTLY break long lines at `||`, `&&`, and `?` operators. Examples:
   ```js
-  // WRONG — exceeds 100 chars:
+  // WRONG — exceeds 120 chars:
   assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail && response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')), 'Expected PERM_DENIED or Success');
 
   // CORRECT — broken at && and after closing paren:

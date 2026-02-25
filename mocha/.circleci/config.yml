@@ -62,6 +62,12 @@ references:
         only:
           - master
 
+  release-branch: &release-branch
+    filters:
+      branches:
+        only:
+          - /(custom_)?release\/.*/
+
 ############################################################################
 
 commands:
@@ -74,7 +80,7 @@ commands:
       - run:
           name: Clone zimbra repositories
           command: |
-            set -e
+            set -eo pipefail
             mkdir -p ~/.ssh
             ssh-keyscan github.com >> ~/.ssh/known_hosts
 
@@ -83,20 +89,27 @@ commands:
               echo -e "\n++++++++++++++++++++++++++++++++++++++++"
               cd "${HOME}"
 
-              git clone --depth 1 --progress git@github.com:Zimbra/${REPO_NAME}
-              cd "${HOME}/${REPO_NAME}"
-              git checkout master -f
-              git pull origin master -f
-              git remote prune origin
-
-              if git ls-remote --exit-code --heads origin "${CIRCLE_BRANCH}" >/dev/null 2>&1; then
-                git fetch origin "${CIRCLE_BRANCH}:${CIRCLE_BRANCH}"
-                git checkout "${CIRCLE_BRANCH}" -f
-                git pull origin "${CIRCLE_BRANCH}" -f
-                echo "Checked out ${CIRCLE_BRANCH} branch in ${REPO_NAME}"
-              else
-                echo "Branch ${CIRCLE_BRANCH} does not exist in ${REPO_NAME}, staying on master"
+              if [ ! -d "${HOME}/${REPO_NAME}/.git" ]; then
+                echo "Cloning ${REPO_NAME}"
+                git clone --depth 1 --no-single-branch git@github.com:Zimbra/${REPO_NAME}.git
               fi
+
+              cd "${HOME}/${REPO_NAME}"
+              echo "Fetching latest refs"
+              git fetch --prune --depth 1 origin \
+                "+refs/heads/${CIRCLE_BRANCH}:refs/remotes/origin/${CIRCLE_BRANCH}" \
+                "+refs/heads/master:refs/remotes/origin/master" || true
+
+              if git show-ref --verify --quiet "refs/remotes/origin/${CIRCLE_BRANCH}"; then
+                git checkout -B "${CIRCLE_BRANCH}" "origin/${CIRCLE_BRANCH}"
+                echo "Checked out ${CIRCLE_BRANCH}"
+              else
+                git checkout -B master origin/master
+                echo "Branch ${CIRCLE_BRANCH} not found, using master"
+              fi
+
+              git reset --hard HEAD
+              git clean -fd
             done
 
   run-automation:
@@ -105,7 +118,15 @@ commands:
     parameters:
       SERVER_ENVIRONMENT:
         type: string
-        default: ZIMBRA101_AUTOMATION
+        default: ZIMBRA101
+
+      SERVER_TYPE:
+        type: string
+        default: CLASSIC
+
+      SERVER_NODE:
+        type: string
+        default: SINGLENODE
 
       TESTS_PATH:
         type: string
@@ -114,6 +135,18 @@ commands:
       TEST_SUITE:
         type: string
         default: Smoke
+
+      MOCHA_WORKERS:
+        type: integer
+        default: 20
+
+      ZIMLET:
+        type: boolean
+        default: false
+
+      CHAT:
+        type: boolean
+        default: false
 
       SERIAL:
         type: boolean
@@ -126,10 +159,11 @@ commands:
     steps:
       - checkout
 
-      - run:
-          name: Clone zm-soap-client repo
-          command: |
-            git clone git@github.com:Zimbra/zm-soap-client.git ~/zm-soap-client
+      - add_ssh_keys:
+          fingerprints: 2d:35:2b:4d:d6:b2:06:00:46:c2:87:b7:71:81:32:4e
+
+      - clone-zimbra-repos:
+          repos: zm-soap-client
 
       - *restore-dependencies-cache
 
@@ -148,12 +182,19 @@ commands:
             ./.circleci/configuration.sh CONFIG_TYPE="PRE_CONFIG" SERVER_ENVIRONMENT="<< parameters.SERVER_ENVIRONMENT >>" REPORT_PATH="<< parameters.REPORT_PATH >>"
 
       - run:
-          name: Run automation tests -g "<< parameters.TEST_SUITE >>" --env "<< parameters.SERVER_ENVIRONMENT >>"
+          name: Run automation tests -g "<< parameters.TEST_SUITE >>" --workers << parameters.MOCHA_WORKERS >> --env "<< parameters.SERVER_ENVIRONMENT >>" --serverType "<< parameters.SERVER_TYPE >>" --serverNode "<< parameters.SERVER_NODE >>" --zimlet "<< parameters.ZIMLET >>" --chat "<< parameters.CHAT >>" --serial "<< parameters.SERIAL >>"
           no_output_timeout: 1h
           command: |
+            set -eo pipefail
+
+            # Split test files
+            TEST_FILES=$(circleci tests glob "<< parameters.TESTS_PATH >>" | circleci tests split --split-by=timings)
+
             # Run tests
-            TEST_FILES=$(circleci tests glob "<< parameters.TESTS_PATH >>" | circleci tests split)
-            echo "${TEST_FILES}" | xargs node mocha-run.js -g "<< parameters.TEST_SUITE >>"
+            echo "${TEST_FILES}" | \
+            xargs -r node mocha-run.js --workers "<< parameters.MOCHA_WORKERS >>" -g "<< parameters.TEST_SUITE >>" \
+              --env "<< parameters.SERVER_ENVIRONMENT >>" --serverType "<< parameters.SERVER_TYPE >>" --serverNode "<< parameters.SERVER_NODE >>" \
+              --zimlet "<< parameters.ZIMLET >>" --chat "<< parameters.CHAT >>" --serial "<< parameters.SERIAL >>"
 
             # export serverEnvironment="<< parameters.SERVER_ENVIRONMENT >>" && \
             # export serverHost="${SERVER_HOST}" && \
@@ -205,12 +246,16 @@ commands:
   # --------------------------------------------------
 
   prepare-report:
-    description: Prepare backend automation report
+    description: Prepare automation report
 
     parameters:
       SERVER_ENVIRONMENT:
         type: string
         default: ZIMBRA101
+
+      REPORT_PATH:
+        type: string
+        default: test-reports/${CIRCLE_JOB}
 
     steps:
       - checkout
@@ -223,8 +268,8 @@ commands:
           command: npm install --no-audit
 
       - run:
-          name: Protocol automation report
-          command: node framework/report/circleci-report.js --SERVER_ENVIRONMENT="ZIMBRA101" REPORT_PATH=test-reports
+          name: Automation report
+          command: node framework/report/circleci-report.js --SERVER_ENVIRONMENT="<<parameters.SERVER_ENVIRONMENT>>" REPORT_PATH="<<parameters.REPORT_PATH>>"
 
   # --------------------------------------------------
 
@@ -314,31 +359,114 @@ commands:
 ############################################################################
 
 jobs:
+  # Smoke
   smoke-zimbra101:
     executor: node-executor
     parallelism: 2
     steps:
       - run-automation:
           TEST_SUITE: Smoke
+          MOCHA_WORKERS: 20
 
+  smoke-zimbra101-multinode:
+    executor: node-executor
+    parallelism: 2
+    steps:
+      - run-automation:
+          SERVER_ENVIRONMENT: ZIMBRA101_MULTINODE
+          SERVER_NODE: MULTINODE
+          TEST_SUITE: Smoke
+          MOCHA_WORKERS: 20
+
+  # Sanity
+  sanity-zimbra101:
+    executor: node-executor
+    parallelism: 1
+    steps:
+      - run-automation:
+          TEST_SUITE: Sanity
+          MOCHA_WORKERS: 20
+
+  sanity-zimbra101-multinode:
+    executor: node-executor
+    parallelism: 1
+    steps:
+      - run-automation:
+          SERVER_ENVIRONMENT: ZIMBRA101_MULTINODE
+          SERVER_NODE: MULTINODE
+          TEST_SUITE: Sanity
+          MOCHA_WORKERS: 20
+
+  # Functional
+  functional-zimbra101:
+    executor: node-executor
+    parallelism: 1
+    steps:
+      - run-automation:
+          TEST_SUITE: Functional
+          MOCHA_WORKERS: 20
+
+  functional-zimbra101-multinode:
+    executor: node-executor
+    parallelism: 1
+    steps:
+      - run-automation:
+          SERVER_ENVIRONMENT: ZIMBRA101_MULTINODE
+          SERVER_NODE: MULTINODE
+          TEST_SUITE: Functional
+          MOCHA_WORKERS: 20
+
+  # Regression
+  regression-zimbra101:
+    executor: node-executor
+    parallelism: 1
+    steps:
+      - run-automation:
+          TEST_SUITE: Regression
+          MOCHA_WORKERS: 20
+
+  regression-zimbra101-multinode:
+    executor: node-executor
+    parallelism: 1
+    steps:
+      - run-automation:
+          SERVER_ENVIRONMENT: ZIMBRA101_MULTINODE
+          SERVER_NODE: MULTINODE
+          TEST_SUITE: Regression
+          MOCHA_WORKERS: 20
+
+  # Serial
   serial-zimbra101:
     executor: node-executor
     parallelism: 1
     steps:
       - run-automation:
           SERIAL: true
-          TEST_SUITE: Smoke
+          TEST_SUITE: Serial
+          MOCHA_WORKERS: 1
 
+  # Report
   report-zimbra101:
     executor: node-executor
     parallelism: 1
     steps:
       - *attach-workspace
       - prepare-report:
-          SERVER_ENVIRONMENT: ZIMBRA101_AUTOMATION
+          SERVER_ENVIRONMENT: ZIMBRA101
       - *store-artifacts
       - *store-results
 
+  report-zimbra101-multinode:
+    executor: node-executor
+    parallelism: 1
+    steps:
+      - *attach-workspace
+      - prepare-report:
+          SERVER_ENVIRONMENT: ZIMBRA101_MULTINODE
+      - *store-artifacts
+      - *store-results
+
+  # Build docker image
   build-docker-image:
     executor: node-executor
     steps:
@@ -354,6 +482,9 @@ workflows:
   # Feature/bug branch workflow
   commit-workflow:
     jobs:
+      # Zimbra 10.1 automation run
+
+      # Smoke
       - smoke-zimbra101-approval:
           type: approval
           <<: *feature-branch
@@ -363,6 +494,37 @@ workflows:
             - smoke-zimbra101-approval
           <<: *feature-branch
 
+      # Sanity
+      - sanity-zimbra101-approval:
+          type: approval
+          <<: *feature-branch
+
+      - sanity-zimbra101:
+          requires:
+            - sanity-zimbra101-approval
+          <<: *feature-branch
+
+      # Functional
+      - functional-zimbra101-approval:
+          type: approval
+          <<: *feature-branch
+
+      - functional-zimbra101:
+          requires:
+            - functional-zimbra101-approval
+          <<: *feature-branch
+
+      # Regressuion
+      - regression-zimbra101-approval:
+          type: approval
+          <<: *feature-branch
+
+      - regression-zimbra101:
+          requires:
+            - regression-zimbra101-approval
+          <<: *feature-branch
+
+      # Serial
       - serial-zimbra101-approval:
           type: approval
           <<: *feature-branch
@@ -372,6 +534,7 @@ workflows:
             - serial-zimbra101-approval
           <<: *feature-branch
 
+      # Report
       - report-zimbra101-approval:
           type: approval
           <<: *feature-branch
@@ -381,12 +544,87 @@ workflows:
             - report-zimbra101-approval
           <<: *feature-branch
 
-  ######################################
+      ######################################
+
+      # Zimbra 10.1 multinode automation run
+      - run-zimbra101-multinode-approval:
+          type: approval
+          <<: *feature-branch
+
+      # Smoke
+      - smoke-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *feature-branch
+
+      - smoke-zimbra101-multinode:
+          requires:
+            - smoke-zimbra101-multinode-approval
+          <<: *feature-branch
+
+      # Sanity
+      - sanity-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *feature-branch
+
+      - sanity-zimbra101-multinode:
+          requires:
+            - sanity-zimbra101-multinode-approval
+          <<: *feature-branch
+
+      # Functional
+      - functional-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *feature-branch
+
+      - functional-zimbra101-multinode:
+          requires:
+            - functional-zimbra101-multinode-approval
+          <<: *feature-branch
+
+      # Regression
+      - regression-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *feature-branch
+
+      - regression-zimbra101-multinode:
+          requires:
+            - regression-zimbra101-multinode-approval
+          <<: *feature-branch
+
+      # Report
+      - report-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *feature-branch
+
+      - report-zimbra101-multinode:
+          requires:
+            - report-zimbra101-multinode-approval
+          <<: *feature-branch
+
+  ############################################################################
 
   # Master branch workflow
   master-workflow:
     jobs:
+      # Zimbra 10.1 automation run
+      - run-zimbra101-approval:
+          type: approval
+          <<: *master-branch
+
+      # Smoke
       - smoke-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
           type: approval
           <<: *master-branch
 
@@ -395,7 +633,46 @@ workflows:
             - smoke-zimbra101-approval
           <<: *master-branch
 
+      # Sanity
+      - sanity-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
+          type: approval
+          <<: *master-branch
+
+      - sanity-zimbra101:
+          requires:
+            - sanity-zimbra101-approval
+          <<: *master-branch
+
+      # Functional
+      - functional-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
+          type: approval
+          <<: *master-branch
+
+      - functional-zimbra101:
+          requires:
+            - functional-zimbra101-approval
+          <<: *master-branch
+
+      # Regression
+      - regression-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
+          type: approval
+          <<: *master-branch
+
+      - regression-zimbra101:
+          requires:
+            - regression-zimbra101-approval
+          <<: *master-branch
+
+      # Serial
       - serial-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
           type: approval
           <<: *master-branch
 
@@ -404,7 +681,10 @@ workflows:
             - serial-zimbra101-approval
           <<: *master-branch
 
+      # Report
       - report-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
           type: approval
           <<: *master-branch
 
@@ -412,5 +692,284 @@ workflows:
           requires:
             - report-zimbra101-approval
           <<: *master-branch
+
+      ######################################
+
+      # Zimbra 10.1 multinode automation run
+      - run-zimbra101-multinode-approval:
+          type: approval
+          <<: *master-branch
+
+      # Smoke
+      - smoke-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *master-branch
+
+      - smoke-zimbra101-multinode:
+          requires:
+            - smoke-zimbra101-multinode-approval
+          <<: *master-branch
+
+      # Sanity
+      - sanity-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *master-branch
+
+      - sanity-zimbra101-multinode:
+          requires:
+            - sanity-zimbra101-multinode-approval
+          <<: *master-branch
+
+      # Functional
+      - functional-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *master-branch
+
+      - functional-zimbra101-multinode:
+          requires:
+            - functional-zimbra101-multinode-approval
+          <<: *master-branch
+
+      # Regression
+      - regression-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *master-branch
+
+      - regression-zimbra101-multinode:
+          requires:
+            - regression-zimbra101-multinode-approval
+          <<: *master-branch
+
+      # Report
+      - report-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *master-branch
+
+      - report-zimbra101-multinode:
+          requires:
+            - report-zimbra101-multinode-approval
+          <<: *master-branch
+
+  ############################################################################
+
+  # Release branch workflow
+  release-workflow:
+    jobs:
+      # Zimbra 10.1 automation run
+      - run-zimbra101-approval:
+          type: approval
+          <<: *release-branch
+
+      # Smoke
+      - smoke-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
+          type: approval
+          <<: *release-branch
+
+      - smoke-zimbra101:
+          requires:
+            - smoke-zimbra101-approval
+          <<: *release-branch
+
+      # Sanity
+      - sanity-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
+          type: approval
+          <<: *release-branch
+
+      - sanity-zimbra101:
+          requires:
+            - sanity-zimbra101-approval
+          <<: *release-branch
+
+      # Functional
+      - functional-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
+          type: approval
+          <<: *release-branch
+
+      - functional-zimbra101:
+          requires:
+            - functional-zimbra101-approval
+          <<: *release-branch
+
+      # Regression
+      - regression-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
+          type: approval
+          <<: *release-branch
+
+      - regression-zimbra101:
+          requires:
+            - regression-zimbra101-approval
+          <<: *release-branch
+
+      # Serial
+      - serial-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
+          type: approval
+          <<: *release-branch
+
+      - serial-zimbra101:
+          requires:
+            - serial-zimbra101-approval
+          <<: *release-branch
+
+      # Report
+      - report-zimbra101-approval:
+          requires:
+            - run-zimbra101-approval
+          type: approval
+          <<: *release-branch
+
+      - report-zimbra101:
+          requires:
+            - report-zimbra101-approval
+          <<: *release-branch
+
+      ######################################
+
+      # Zimbra 10.1 multinode automation run
+      - run-zimbra101-multinode-approval:
+          type: approval
+          <<: *release-branch
+
+      # Smoke
+      - smoke-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *release-branch
+
+      - smoke-zimbra101-multinode:
+          requires:
+            - smoke-zimbra101-multinode-approval
+          <<: *release-branch
+
+      # Sanity
+      - sanity-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *release-branch
+
+      - sanity-zimbra101-multinode:
+          requires:
+            - sanity-zimbra101-multinode-approval
+          <<: *release-branch
+
+      # Functional
+      - functional-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *release-branch
+
+      - functional-zimbra101-multinode:
+          requires:
+            - functional-zimbra101-multinode-approval
+          <<: *release-branch
+
+      # Regression
+      - regression-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *release-branch
+
+      - regression-zimbra101-multinode:
+          requires:
+            - regression-zimbra101-multinode-approval
+          <<: *release-branch
+
+      # Report
+      - report-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+          <<: *release-branch
+
+      - report-zimbra101-multinode:
+          requires:
+            - report-zimbra101-multinode-approval
+          <<: *release-branch
+
+  ############################################################################
+
+  # Scheduled branch workflow
+  scheduled-workflow:
+    triggers:
+      - schedule:
+          # Everyday 6 AM IST
+          cron: '30 0 * * *'
+          <<: *master-branch
+
+    jobs:
+      # Zimbra 10.1 automation run
+      - smoke-zimbra101
+      - sanity-zimbra101
+      - functional-zimbra101
+      - regression-zimbra101
+
+      # Serial
+      - serial-zimbra101-approval:
+          type: approval
+
+      - serial-zimbra101:
+          requires:
+            - serial-zimbra101-approval
+
+      # Report
+      - report-zimbra101-approval:
+          type: approval
+
+      - report-zimbra101:
+          requires:
+            - report-zimbra101-approval
+
+      ######################################
+
+      # Zimbra 10.1 multinode automation run
+      - run-zimbra101-multinode-approval:
+          type: approval
+
+      # jobs
+      - smoke-zimbra101-multinode:
+          requires:
+            - run-zimbra101-multinode-approval
+      - sanity-zimbra101-multinode:
+          requires:
+            - run-zimbra101-multinode-approval
+      - functional-zimbra101-multinode:
+          requires:
+            - run-zimbra101-multinode-approval
+      - regression-zimbra101-multinode:
+          requires:
+            - run-zimbra101-multinode-approval
+
+      # Report
+      - report-zimbra101-multinode-approval:
+          requires:
+            - run-zimbra101-multinode-approval
+          type: approval
+
+      - report-zimbra101-multinode:
+          requires:
+            - report-zimbra101-multinode-approval
 
 ############################################################################

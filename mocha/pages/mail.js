@@ -23,4 +23,4 @@ class Mail {
 	};
 }
 
-export let mail = new Mail();
+export const mail = new Mail();

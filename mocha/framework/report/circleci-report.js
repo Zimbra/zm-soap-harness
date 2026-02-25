@@ -87,7 +87,7 @@ const JOBS = {
 
 // Main
 const downloadedArtifactUrls = new Set();
-let downloadedXmlFiles = [];
+const downloadedXmlFiles = [];
 (async function run() {
 	if (!fs.existsSync(TEST_REPORTS_DIR)) {
 		fs.mkdirSync(TEST_REPORTS_DIR, { recursive: true });

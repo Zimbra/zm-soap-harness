@@ -50,26 +50,57 @@ main() {
 # Pre configuration
 function PRE_CONFIG() {
 	# Get server environment
-	if [[ "${SERVER_ENVIRONMENT}" = "ZIMBRA101"* ]] || [[ "${SERVER_ENVIRONMENT}" = "ZIMBRAX"* ]]; then
-		SERVER_ENVIRONMENT="${SERVER_ENVIRONMENT}"
-		[[ "${CIRCLE_BRANCH}" = "master" ]] && SERVER_ENVIRONMENT="${SERVER_ENVIRONMENT}_MASTER"
-		[[ "${CIRCLE_BRANCH}" = "release/"* ]] && SERVER_ENVIRONMENT="${SERVER_ENVIRONMENT}_RELEASE"
+	if [[ "${SERVER_ENVIRONMENT}" = "ZIMBRA10"* ]] || [[ "${SERVER_ENVIRONMENT}" = "ZIMBRAX"* ]]; then
+		if [[ "${CIRCLE_PROJECT_REPONAME}" = "zm-continuous-integration" ]]; then
+			SERVER_ENVIRONMENT="${SERVER_ENVIRONMENT}"
 
+		else
+			# Append suffix only for single node environment
+			if [[ "${SERVER_ENVIRONMENT}" != *"MULTINODE"* ]] && [[ "${SERVER_ENVIRONMENT}" != *"FOSS"* ]]; then
+				if [[ "${CIRCLE_BRANCH}" = "master" ]]; then
+					SERVER_ENVIRONMENT="${SERVER_ENVIRONMENT}_MASTER"
+				elif [[ "${CIRCLE_BRANCH}" = release/* ]]; then
+					SERVER_ENVIRONMENT="${SERVER_ENVIRONMENT}_RELEASE"
+				fi
+			fi
+		fi
+
+		# Environment details
 		echo -e "++++++++++++++++++++++++++++++++++++++++"
 		echo -e "SERVER_ENVIRONMENT: ${SERVER_ENVIRONMENT}"
 		echo "export SERVER_ENVIRONMENT=${SERVER_ENVIRONMENT}" >> $BASH_ENV
+		echo -e "CIRCLE_PROJECT_REPONAME: ${CIRCLE_PROJECT_REPONAME}"
+		echo -e "CIRCLE_BRANCH: ${CIRCLE_BRANCH}"
 	fi
 
 	# Config
 	SERVER_CONFIG="$HOME/${PROJECT_NAME}/conf/environment.json"
+	echo "export SERVER_CONFIG=${SERVER_CONFIG}" >> $BASH_ENV
 	SERVER_HOST=$(cat ${SERVER_CONFIG} | jq -r ".${SERVER_ENVIRONMENT}.serverHost")
-	SERVER_USER=$(cat ${SERVER_CONFIG} | jq -r ".${SERVER_ENVIRONMENT}.serverUser")
-	echo -e "SERVER_HOST: ${SERVER_HOST}"
-	echo -e "SERVER_USER: ${SERVER_USER}"
 	echo "export SERVER_USER=${SERVER_USER}" >> $BASH_ENV
+	SERVER_USER=$(cat ${SERVER_CONFIG} | jq -r ".${SERVER_ENVIRONMENT}.serverUser")
 	echo "export SERVER_HOST=${SERVER_HOST}" >> $BASH_ENV
 
-	if [[ "${SERVER_ENVIRONMENT}" = "ZIMBRAX"* ]]; then
+	if [[ "${SERVER_ENVIRONMENT}" = "ZIMBRA10"* ]]; then
+		if [[ "${SERVER_ENVIRONMENT}" = "ZIMBRA101_MULTINODE" ]]; then
+			MULTINODE_STORES=("STORE1" "STORE2")
+			echo "export TOTAL_MAILBOX_NODES=${#MULTINODE_STORES[@]}" >> $BASH_ENV
+
+			for (( MAILBOX_POD=0; MAILBOX_POD<${#MULTINODE_STORES[@]}; MAILBOX_POD++ )); do
+				SERVER_USER=$(cat ${SERVER_CONFIG} | jq -r ".${SERVER_ENVIRONMENT}.${MULTINODE_STORES[$MAILBOX_POD]}.serverUser")
+				SERVER_HOST=$(cat ${SERVER_CONFIG} | jq -r ".${SERVER_ENVIRONMENT}.${MULTINODE_STORES[$MAILBOX_POD]}.serverHost")
+
+				echo -e "\n++++++++++++++++++++++++++++++++++++++++"
+				echo -e "SERVER_USER: ${SERVER_USER}"
+				echo -e "SERVER_HOST: ${SERVER_HOST}"
+			done
+		else
+			echo -e "\n++++++++++++++++++++++++++++++++++++++++"
+			echo -e "SERVER_USER: ${SERVER_USER}"
+			echo -e "SERVER_HOST: ${SERVER_HOST}"
+		fi
+
+	elif [[ "${SERVER_ENVIRONMENT}" = "ZIMBRAX"* ]]; then
 		# Get SMTP port
 		echo -e "\n++++++++++++++++++++++++++++++++++++++++"
 		SMTP_PORT=$(ssh -qo "StrictHostKeyChecking no" ${SERVER_USER}@${SERVER_HOST} \
