@@ -86,7 +86,7 @@ describe('Admin > Accounts > Modify Account 03', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${status2_name}</name>
 				<password>${config.accountPassword}</password>
-                <a n="zimbraIsAdminAccount">TRUE</a>
+				<a n="zimbraIsAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuth);
 		status2.server = "placeholder_value"; // Extracted node
 		status2.id = Array.isArray(setupRes.CreateAccountResponse?.account) ?
@@ -101,7 +101,7 @@ describe('Admin > Accounts > Modify Account 03', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${status3_name}</name>
 				<password>${config.accountPassword}</password>
-                <a n="zimbraIsDomainAdminAccount">TRUE</a>
+				<a n="zimbraIsDomainAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuth);
 		status3.server = "placeholder_value"; // Extracted node
 		status3.id = Array.isArray(setupRes.CreateAccountResponse?.account) ?
@@ -116,7 +116,7 @@ describe('Admin > Accounts > Modify Account 03', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${status4_name}</name>
 				<password>${config.accountPassword}</password>
-                <a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuth);
 		status4.id = Array.isArray(setupRes.CreateAccountResponse?.account) ?
 			setupRes.CreateAccountResponse.account[0].id : setupRes.CreateAccountResponse?.account?.id;
@@ -145,7 +145,7 @@ describe('Admin > Accounts > Modify Account 03', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${status6_name}</name>
 				<password>${config.accountPassword}</password>
-                <a n="zimbraIsDomainAdminAccount">TRUE</a>
+				<a n="zimbraIsDomainAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuth);
 		status6.id = Array.isArray(setupRes.CreateAccountResponse?.account) ?
 			setupRes.CreateAccountResponse.account[0].id : setupRes.CreateAccountResponse?.account?.id;
@@ -166,1434 +166,1454 @@ describe('Admin > Accounts > Modify Account 03', function () {
 	it('Functional | Modify an account and set zimbraMailQuota to some invalid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailQuota">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailQuota">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Functional | Modify an account and set zimbraMailQuota to some invalid number', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailQuota">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailQuota">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set givenName to some valid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "givenName">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "givenName">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Functional | Modify an account and set givenName to some invalid values negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "givenName">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "givenName">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraMailMessageLifetime to some valid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMessageLifetime">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMessageLifetime">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraMailMessageLifetime to some invalid values  negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMessageLifetime">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMessageLifetime">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMessageLifetime">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMessageLifetime">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMessageLifetime">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMessageLifetime">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMessageLifetime">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMessageLifetime">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraFeatureChangePasswordEnabled to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureChangePasswordEnabled">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureChangePasswordEnabled">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureChangePasswordEnabled">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureChangePasswordEnabled">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraFeatureChangePasswordEnabled to True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureChangePasswordEnabled">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureChangePasswordEnabled">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureChangePasswordEnabled">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureChangePasswordEnabled">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureChangePasswordEnabled">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureChangePasswordEnabled">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureChangePasswordEnabled">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureChangePasswordEnabled">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraMailMinPollingInterval to some valid values/', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMinPollingInterval">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMinPollingInterval">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraMailMinPollingInterval to some invalid values negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMinPollingInterval">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMinPollingInterval">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMinPollingInterval">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMinPollingInterval">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMinPollingInterval">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMinPollingInterval">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailMinPollingInterval">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailMinPollingInterval">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Sanity | Attempt to set userPassword using ModifyAccountRequest - success', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "userPassword">\${password.new}</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "userPassword">\${password.new}</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set userPassword to some invalid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "userPassword">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "userPassword">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set uid to some invalid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "uid">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "uid">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+				res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
 			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraPrefReplyIncludeOriginalText to some valid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefReplyIncludeOriginalText">includeBody</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefReplyIncludeOriginalText">includeBody</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefReplyIncludeOriginalText">includeAsAttachment</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefReplyIncludeOriginalText">includeAsAttachment</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefReplyIncludeOriginalText">includeBodyWithPrefix</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefReplyIncludeOriginalText">includeBodyWithPrefix</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefReplyIncludeOriginalText">includeNone</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefReplyIncludeOriginalText">includeNone</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefReplyIncludeOriginalText">includeSmart</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefReplyIncludeOriginalText">includeSmart</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraPrefReplyIncludeOriginalText to some invalid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefReplyIncludeOriginalText">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefReplyIncludeOriginalText">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraId to 100/negative/some-text', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraId">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraId">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+				res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
 			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraId">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraId">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+				res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
 			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraId">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraId">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+				res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
 			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Attempt to set zimbraMailDeliveryAddress using ModifyAccountRequest - zimbraMailDeliveryAddress is immutable', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailDeliveryAddress">${test_account1_name}</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailDeliveryAddress">${test_account1_name}</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+				res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
 			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraMailDeliveryAddress to some invalid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailDeliveryAddress">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailDeliveryAddress">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
+				res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
 			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraFeatureFiltersEnabled to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureFiltersEnabled">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureFiltersEnabled">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureFiltersEnabled">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureFiltersEnabled">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraFeatureFiltersEnabled to True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureFiltersEnabled">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureFiltersEnabled">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureFiltersEnabled">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureFiltersEnabled">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureFiltersEnabled">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureFiltersEnabled">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureFiltersEnabled">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureFiltersEnabled">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraPrefSaveToSent to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSaveToSent">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSaveToSent">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSaveToSent">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSaveToSent">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraPrefSaveToSent to True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSaveToSent">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSaveToSent">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSaveToSent">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSaveToSent">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSaveToSent">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSaveToSent">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSaveToSent">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSaveToSent">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraAdminAuthTokenLifetime to valid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n="zimbraAdminAuthTokenLifetime">10d</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n="zimbraAdminAuthTokenLifetime">10d</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraAdminAuthTokenLifetime to invalid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAdminAuthTokenLifetime">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAdminAuthTokenLifetime">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraAttachmentsViewInHtmlOnly to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsViewInHtmlOnly">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsViewInHtmlOnly">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsViewInHtmlOnly">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsViewInHtmlOnly">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraAttachmentsViewInHtmlOnly to True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsViewInHtmlOnly">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsViewInHtmlOnly">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsViewInHtmlOnly">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsViewInHtmlOnly">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsViewInHtmlOnly">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsViewInHtmlOnly">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsViewInHtmlOnly">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsViewInHtmlOnly">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraAttachmentsBlocked to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsBlocked">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsBlocked">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsBlocked">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsBlocked">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraAttachmentsBlocked to True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsBlocked">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsBlocked">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsBlocked">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsBlocked">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsBlocked">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsBlocked">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraAttachmentsBlocked">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraAttachmentsBlocked">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraPrefMessageViewHtmlPreferred to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMessageViewHtmlPreferred">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMessageViewHtmlPreferred">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMessageViewHtmlPreferred">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMessageViewHtmlPreferred">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraPrefMessageViewHtmlPreferred to True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMessageViewHtmlPreferred">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMessageViewHtmlPreferred">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMessageViewHtmlPreferred">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMessageViewHtmlPreferred">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMessageViewHtmlPreferred">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMessageViewHtmlPreferred">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMessageViewHtmlPreferred">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMessageViewHtmlPreferred">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraFeatureSavedSearchesEnabled to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureSavedSearchesEnabled">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureSavedSearchesEnabled">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureSavedSearchesEnabled">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureSavedSearchesEnabled">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraFeatureSavedSearchesEnabled to True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureSavedSearchesEnabled">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureSavedSearchesEnabled">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureSavedSearchesEnabled">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureSavedSearchesEnabled">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureSavedSearchesEnabled">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureSavedSearchesEnabled">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureSavedSearchesEnabled">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureSavedSearchesEnabled">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set displayName to some valid name', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "displayName">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "displayName">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Functional | Modify an account and set displayName to', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "displayName">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "displayName">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraMailHost to some invalid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailHost">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailHost">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_SERVER'),
 			`Expected fault account.NO_SUCH_SERVER, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraFeatureContactsEnabled to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureContactsEnabled">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureContactsEnabled">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureContactsEnabled">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureContactsEnabled">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraFeatureContactsEnabled to True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureContactsEnabled">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureContactsEnabled">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureContactsEnabled">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureContactsEnabled">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureContactsEnabled">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureContactsEnabled">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureContactsEnabled">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureContactsEnabled">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set objectClass to organizationalPerson/zimbraAccount - should return objectclass is immutable', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "objectClass">organizationalPerson</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "objectClass">organizationalPerson</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.match(/service.*$|^account.INVALID_ATTR_VALUE/) !== null,
 			`Expected fault to match service.*$|^account.INVALID_ATTR_VALUE, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "objectClass">zimbraAccount</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "objectClass">zimbraAccount</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.match(/service.*$|^account.INVALID_ATTR_VALUE/) !== null,
 			`Expected fault to match service.*$|^account.INVALID_ATTR_VALUE, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Regression | Modify an account and set objectClass to sometext', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "objectClass">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "objectClass">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.match(/service.INVALID_REQUEST$|^account.INVALID_ATTR_VALUE/) !== null,
 			`Expected fault to match service.INVALID_REQUEST$|^account.INVALID_ATTR_VALUE, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraPrefIncludeSpamInSearch to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefIncludeSpamInSearch">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefIncludeSpamInSearch">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefIncludeSpamInSearch">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefIncludeSpamInSearch">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraPrefIncludeSpamInSearch to True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefIncludeSpamInSearch">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefIncludeSpamInSearch">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefIncludeSpamInSearch">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefIncludeSpamInSearch">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefIncludeSpamInSearch">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefIncludeSpamInSearch">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefIncludeSpamInSearch">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefIncludeSpamInSearch">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraPrefMailItemsPerPage to some valid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailItemsPerPage">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailItemsPerPage">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraPrefMailItemsPerPage to some invalid value negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailItemsPerPage">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailItemsPerPage">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailItemsPerPage">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailItemsPerPage">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailItemsPerPage">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailItemsPerPage">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailItemsPerPage">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailItemsPerPage">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraPasswordMinAge to some valid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinAge">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinAge">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraPasswordMinAge to some invalid value negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinAge">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinAge">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinAge">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinAge">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinAge">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinAge">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinAge">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinAge">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 
 
 	it('Sanity | Modify an account and set zimbraPrefContactsPerPage to some valid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefContactsPerPage">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefContactsPerPage">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 	});
 
 
 	it('Regression | Modify an account and set zimbraPrefContactsPerPage to some invalid value negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefContactsPerPage">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefContactsPerPage">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
-			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
+				(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
+					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
+					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'none'}`);
+				? JSON.stringify(res.Fault) : 'none'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefContactsPerPage">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefContactsPerPage">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefContactsPerPage">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefContactsPerPage">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefContactsPerPage">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefContactsPerPage">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
-			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
+				res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
 			!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
-			? JSON.stringify(res.Fault) : 'no fault'}`);
+				? JSON.stringify(res.Fault) : 'no fault'}`);
+	});
+
+
+	it('Sanity | Set zimbraMailHost to some valid name', async () => {
+		// First get the account's current mailbox host
+		const getRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${test_accountid.id}</account>
+			</GetAccountRequest>`, adminAuth);
+		const attrs = getRes.GetAccountResponse.account[0].a;
+		const currentHost = attrs.find(a => a.n === 'zimbraMailHost')._content;
+
+		const res = await soap.makeSOAPEnvelopeAdmin(
+			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailHost">${currentHost}</a>
+			</ModifyAccountRequest>`, adminAuth);
+		assert.exists(res.ModifyAccountResponse,
+			`Expected ModifyAccountResponse, got: ${res.Fault
+				? JSON.stringify(res.Fault) : 'no fault'}`);
 	});
 });

@@ -54,7 +54,12 @@ describe('Admin > Accounts > Accounts Loop', function () {
 				<account by="id">${acctId}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountResponse);
+		assert.exists(response.GetAccountResponse,
+			'GetAccountResponse should exist');
+		const account = Array.isArray(response.GetAccountResponse.account)
+			? response.GetAccountResponse.account[0]
+			: response.GetAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 		assert.equal(response.GetAccountResponse.account[0].id, acctId);
 	});
 
@@ -82,7 +87,12 @@ describe('Admin > Accounts > Accounts Loop', function () {
 				<a n="zimbraAccountStatus">active</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.ModifyAccountResponse);
+		assert.exists(response.ModifyAccountResponse,
+			'ModifyAccountResponse should exist');
+		const account = Array.isArray(response.ModifyAccountResponse.account)
+			? response.ModifyAccountResponse.account[0]
+			: response.ModifyAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 		assert.equal(response.ModifyAccountResponse.account[0].id, acctId);
 	});
 
@@ -102,7 +112,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 				<id>${acctId}</id>
 			</DeleteAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.DeleteAccountResponse);
+		assert.exists(response.DeleteAccountResponse,
+			'DeleteAccountResponse should exist');
 	});
 
 
@@ -123,7 +134,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 				<newName>${newName}</newName>
 			</RenameAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.RenameAccountResponse);
+		assert.exists(response.RenameAccountResponse,
+			'RenameAccountResponse should exist');
 	});
 
 
@@ -144,7 +156,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 				<alias>${aliasName}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
-		assert.exists(response.AddAccountAliasResponse);
+		assert.exists(response.AddAccountAliasResponse,
+			'AddAccountAliasResponse should exist');
 	});
 
 
@@ -172,7 +185,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 				<alias>${aliasName}</alias>
 			</RemoveAccountAliasRequest>`, adminAuthToken
 		);
-		assert.exists(response.RemoveAccountAliasResponse);
+		assert.exists(response.RemoveAccountAliasResponse,
+			'RemoveAccountAliasResponse should exist');
 	});
 
 
@@ -191,7 +205,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 				<query>zimbraId=${acctId}</query>
 			</SearchAccountsRequest>`, adminAuthToken
 		);
-		assert.exists(response.SearchAccountsResponse);
+		assert.exists(response.SearchAccountsResponse,
+			'SearchAccountsResponse should exist');
 
 		const accounts = response.SearchAccountsResponse.account || [];
 		const found = accounts.find(a => a.id === acctId);
@@ -204,7 +219,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
-		assert.exists(response.GetAllAdminAccountsResponse);
+		assert.exists(response.GetAllAdminAccountsResponse,
+			'GetAllAdminAccountsResponse should exist');
 
 		const accounts = response.GetAllAdminAccountsResponse.account || [];
 		assert.isAbove(accounts.length, 0, 'Should return at least one admin account');

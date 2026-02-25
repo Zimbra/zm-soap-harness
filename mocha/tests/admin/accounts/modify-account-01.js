@@ -86,7 +86,7 @@ describe('Admin > Accounts > Modify Account 01', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${status2_name}</name>
 				<password>${config.accountPassword}</password>
-                <a n="zimbraIsAdminAccount">TRUE</a>
+				<a n="zimbraIsAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuth);
 		status2.server = "placeholder_value"; // Extracted node
 		status2.id = Array.isArray(setupRes.CreateAccountResponse?.account) ?
@@ -101,7 +101,7 @@ describe('Admin > Accounts > Modify Account 01', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${status3_name}</name>
 				<password>${config.accountPassword}</password>
-                <a n="zimbraIsDomainAdminAccount">TRUE</a>
+				<a n="zimbraIsDomainAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuth);
 		status3.server = "placeholder_value"; // Extracted node
 		status3.id = Array.isArray(setupRes.CreateAccountResponse?.account) ?
@@ -116,7 +116,7 @@ describe('Admin > Accounts > Modify Account 01', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${status4_name}</name>
 				<password>${config.accountPassword}</password>
-                <a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuth);
 		status4.id = Array.isArray(setupRes.CreateAccountResponse?.account) ?
 			setupRes.CreateAccountResponse.account[0].id : setupRes.CreateAccountResponse?.account?.id;
@@ -145,7 +145,7 @@ describe('Admin > Accounts > Modify Account 01', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${status6_name}</name>
 				<password>${config.accountPassword}</password>
-                <a n="zimbraIsDomainAdminAccount">TRUE</a>
+				<a n="zimbraIsDomainAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuth);
 		status6.id = Array.isArray(setupRes.CreateAccountResponse?.account) ?
 			setupRes.CreateAccountResponse.account[0].id : setupRes.CreateAccountResponse?.account?.id;
@@ -166,74 +166,74 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Smoke | Modify an account with all valid details', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-      <id>${test_accountid.id}</id>
-        <a n="zimbraFeatureCalendarEnabled">TRUE</a>
-        <a n="zimbraPasswordModifiedTime">20050529053842Z</a>
-        <a n="zimbraPrefMailInitialSearch">in:inbox</a>
-        <a n="zimbraPop3Enabled">TRUE</a>
-        <a n="zimbraImapEnabled">TRUE</a>
-        <a n="zimbraContactMaxNumEntries">0</a>
-        <a n="zimbraNewMailNotificationBody">New message received at \${RECIPIENT_ADDRESS}.\${NEWLINE}Sender: \${SENDER_ADDRESS}\${NEWLINE}Subject: \${SUBJECT}</a>
-        <a n="zimbraFeatureGalEnabled">TRUE</a>
-        <a n="zimbraPrefSentMailFolder">sent</a>
-        <a n="zimbraPasswordMaxAge">0</a>
-        <a n="zimbraNewMailNotificationSubject">New message received at \${RECIPIENT_ADDRESS}</a>
-        <a n="zimbraPasswordEnforceHistory">0</a>
-        <a n="zimbraMailStatus">enabled</a>
-        <a n="zimbraPasswordMinLength">6</a>
-        <a n="zimbraMailTrashLifetime">7d</a>
-        <a n="zimbraMailIdleSessionTimeout">0</a>
-        <a n="zimbraFeatureTaggingEnabled">TRUE</a>
-        <a n="zimbraMailQuota">0</a>
-        <a n="givenName">yttyy</a>
-        <a n="zimbraMailMessageLifetime">0</a>
-        <a n="zimbraFeatureChangePasswordEnabled">TRUE</a>
-        <a n="zimbraMailMinPollingInterval">2m</a>
-        
-        
-        <a n="zimbraPrefReplyIncludeOriginalText">includeBody</a>
-        
-        <a n="zimbraPrefForwardIncludeOriginalText">includeBody</a>
-        
-        
-        <a n="zimbraFeatureFiltersEnabled">TRUE</a>
-        <a n="zimbraPrefSaveToSent">TRUE</a>
-        <a n="zimbraAdminAuthTokenLifetime">12h</a>
-        <a n="zimbraAttachmentsViewInHtmlOnly">FALSE</a>
-        <a n="zimbraAttachmentsBlocked">FALSE</a>
-        <a n="zimbraPrefMessageViewHtmlPreferred">TRUE</a>
-        <a n="zimbraFeatureSavedSearchesEnabled">TRUE</a>
-        <a n="displayName">yttyy admin</a>
-        
-        <a n="zimbraFeatureContactsEnabled">TRUE</a>
-        
-        
-        <a n="zimbraPrefIncludeSpamInSearch">FALSE</a>
-        <a n="zimbraPrefMailItemsPerPage">25</a>
-        <a n="zimbraPasswordMinAge">0</a>
-        <a n="zimbraPrefContactsPerPage">25</a>
-        <a n="zimbraAccountStatus">active</a>
-        <a n="zimbraMailSpamLifetime">7d</a>
-        <a n="zimbraPrefAutoAddAddressEnabled">FALSE</a>
-        <a n="zimbraPrefMailSignatureStyle">internet</a>
-        <a n="zimbraFeatureConversationsEnabled">TRUE</a>
-        <a n="zimbraFeatureAdvancedSearchEnabled">TRUE</a>
-        <a n="zimbraPasswordLocked">FALSE</a>
-        <a n="zimbraPrefGroupMailBy">conversation</a>
-        <a n="zimbraPrefIncludeTrashInSearch">FALSE</a>
-        <a n="zimbraFeatureInitialSearchPreferenceEnabled">TRUE</a>
-        <a n="zimbraAuthTokenLifetime">12h</a>
-        <a n="zimbraAttachmentsIndexingEnabled">TRUE</a>
-        <a n="zimbraPasswordMaxLength">64</a>
-        <a n="zimbraPrefDedupeMessagesSentToSelf">dedupeNone</a>
-        <a n="zimbraPrefForwardReplyPrefixChar">&gt;</a>
-        <a n="zimbraPrefMailPollingInterval">5m</a>
-        <a n="sn">test.1117345120686.1</a>
-        <a n="cn">test.1117345120686.1</a>
-        <a n="zimbraPrefUseKeyboardShortcuts">FALSE</a>
-        <a n="zimbraNewMailNotificationFrom">Notification &lt;notify@\${RECIPIENT_DOMAIN}&gt;</a>
+	  <id>${test_accountid.id}</id>
+		<a n="zimbraFeatureCalendarEnabled">TRUE</a>
+		<a n="zimbraPasswordModifiedTime">20050529053842Z</a>
+		<a n="zimbraPrefMailInitialSearch">in:inbox</a>
+		<a n="zimbraPop3Enabled">TRUE</a>
+		<a n="zimbraImapEnabled">TRUE</a>
+		<a n="zimbraContactMaxNumEntries">0</a>
+		<a n="zimbraNewMailNotificationBody">New message received at \${RECIPIENT_ADDRESS}.\${NEWLINE}Sender: \${SENDER_ADDRESS}\${NEWLINE}Subject: \${SUBJECT}</a>
+		<a n="zimbraFeatureGalEnabled">TRUE</a>
+		<a n="zimbraPrefSentMailFolder">sent</a>
+		<a n="zimbraPasswordMaxAge">0</a>
+		<a n="zimbraNewMailNotificationSubject">New message received at \${RECIPIENT_ADDRESS}</a>
+		<a n="zimbraPasswordEnforceHistory">0</a>
+		<a n="zimbraMailStatus">enabled</a>
+		<a n="zimbraPasswordMinLength">6</a>
+		<a n="zimbraMailTrashLifetime">7d</a>
+		<a n="zimbraMailIdleSessionTimeout">0</a>
+		<a n="zimbraFeatureTaggingEnabled">TRUE</a>
+		<a n="zimbraMailQuota">0</a>
+		<a n="givenName">yttyy</a>
+		<a n="zimbraMailMessageLifetime">0</a>
+		<a n="zimbraFeatureChangePasswordEnabled">TRUE</a>
+		<a n="zimbraMailMinPollingInterval">2m</a>
+		
+		
+		<a n="zimbraPrefReplyIncludeOriginalText">includeBody</a>
+		
+		<a n="zimbraPrefForwardIncludeOriginalText">includeBody</a>
+		
+		
+		<a n="zimbraFeatureFiltersEnabled">TRUE</a>
+		<a n="zimbraPrefSaveToSent">TRUE</a>
+		<a n="zimbraAdminAuthTokenLifetime">12h</a>
+		<a n="zimbraAttachmentsViewInHtmlOnly">FALSE</a>
+		<a n="zimbraAttachmentsBlocked">FALSE</a>
+		<a n="zimbraPrefMessageViewHtmlPreferred">TRUE</a>
+		<a n="zimbraFeatureSavedSearchesEnabled">TRUE</a>
+		<a n="displayName">yttyy admin</a>
+		
+		<a n="zimbraFeatureContactsEnabled">TRUE</a>
+		
+		
+		<a n="zimbraPrefIncludeSpamInSearch">FALSE</a>
+		<a n="zimbraPrefMailItemsPerPage">25</a>
+		<a n="zimbraPasswordMinAge">0</a>
+		<a n="zimbraPrefContactsPerPage">25</a>
+		<a n="zimbraAccountStatus">active</a>
+		<a n="zimbraMailSpamLifetime">7d</a>
+		<a n="zimbraPrefAutoAddAddressEnabled">FALSE</a>
+		<a n="zimbraPrefMailSignatureStyle">internet</a>
+		<a n="zimbraFeatureConversationsEnabled">TRUE</a>
+		<a n="zimbraFeatureAdvancedSearchEnabled">TRUE</a>
+		<a n="zimbraPasswordLocked">FALSE</a>
+		<a n="zimbraPrefGroupMailBy">conversation</a>
+		<a n="zimbraPrefIncludeTrashInSearch">FALSE</a>
+		<a n="zimbraFeatureInitialSearchPreferenceEnabled">TRUE</a>
+		<a n="zimbraAuthTokenLifetime">12h</a>
+		<a n="zimbraAttachmentsIndexingEnabled">TRUE</a>
+		<a n="zimbraPasswordMaxLength">64</a>
+		<a n="zimbraPrefDedupeMessagesSentToSelf">dedupeNone</a>
+		<a n="zimbraPrefForwardReplyPrefixChar">&gt;</a>
+		<a n="zimbraPrefMailPollingInterval">5m</a>
+		<a n="sn">test.1117345120686.1</a>
+		<a n="cn">test.1117345120686.1</a>
+		<a n="zimbraPrefUseKeyboardShortcuts">FALSE</a>
+		<a n="zimbraNewMailNotificationFrom">Notification &lt;notify@\${RECIPIENT_DOMAIN}&gt;</a>
 
-    </ModifyAccountRequest>`, adminAuth);
+	</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -247,9 +247,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account with zimbraFeatureCalendarEnabled TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -260,9 +260,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -276,9 +276,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraFeatureCalendarEnabled = Invalid values - True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -288,9 +288,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -301,9 +301,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -313,9 +313,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -325,9 +325,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -340,9 +340,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraPasswordModifiedTime to some valid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordModifiedTime">20050601053842Z</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordModifiedTime">20050601053842Z</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -356,9 +356,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraPasswordModifiedTime to invalid values negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordModifiedTime">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordModifiedTime">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -368,9 +368,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordModifiedTime">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordModifiedTime">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -380,9 +380,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordModifiedTime">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordModifiedTime">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -392,9 +392,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordModifiedTime">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordModifiedTime">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -407,9 +407,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraPrefMailInitialSearch to inbox/sent/trash/', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailInitialSearch">\${inbox}</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailInitialSearch">\${inbox}</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -420,9 +420,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailInitialSearch">\${sent}</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailInitialSearch">\${sent}</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -433,9 +433,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailInitialSearch">\${trash}</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailInitialSearch">\${trash}</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -449,9 +449,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraPrefMailInitialSearch to contacts/spchar/sometext/negative', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailInitialSearch">in:contacts</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailInitialSearch">in:contacts</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -462,9 +462,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailInitialSearch">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailInitialSearch">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -475,9 +475,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailInitialSearch">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailInitialSearch">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -488,9 +488,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefMailInitialSearch">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefMailInitialSearch">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -504,9 +504,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraPop3Enabled to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPop3Enabled">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPop3Enabled">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -517,9 +517,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPop3Enabled">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPop3Enabled">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -533,9 +533,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraPop3Enabled Invalid values - True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPop3Enabled">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPop3Enabled">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -545,9 +545,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPop3Enabled">{account.sometext}</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPop3Enabled">{account.sometext}</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -557,9 +557,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPop3Enabled">{account.spchar}</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPop3Enabled">{account.spchar}</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -572,9 +572,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraImapEnabled to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraImapEnabled">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraImapEnabled">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -585,9 +585,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraImapEnabled">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraImapEnabled">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -601,9 +601,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraImapEnabled Invalid values - True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraImapEnabled">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraImapEnabled">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -613,9 +613,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraImapEnabled">{account.sometext}</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraImapEnabled">{account.sometext}</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -625,9 +625,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraImapEnabled">{account.spchar}</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraImapEnabled">{account.spchar}</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -640,9 +640,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraContactMaxNumEntries to some valid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraContactMaxNumEntries">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraContactMaxNumEntries">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -656,9 +656,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraContactMaxNumEntries to negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraContactMaxNumEntries">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraContactMaxNumEntries">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -668,9 +668,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraContactMaxNumEntries">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraContactMaxNumEntries">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -680,9 +680,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraContactMaxNumEntries">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraContactMaxNumEntries">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -692,9 +692,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraContactMaxNumEntries">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraContactMaxNumEntries">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -707,9 +707,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraFeatureGalEnabled to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureGalEnabled">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureGalEnabled">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -720,9 +720,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureGalEnabled">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureGalEnabled">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -736,9 +736,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraFeatureCalendarEnabled = Invalid values - True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -748,9 +748,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -761,9 +761,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -773,9 +773,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureCalendarEnabled">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureCalendarEnabled">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -788,9 +788,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraPrefSentMailFolder to inbox/sent/trash', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSentMailFolder">inbox</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSentMailFolder">inbox</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -801,9 +801,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSentMailFolder">sent</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSentMailFolder">sent</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -814,9 +814,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSentMailFolder">trash</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSentMailFolder">trash</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -830,9 +830,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraPrefSentMailFolder to contacts/spchar/sometext/negative', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSentMailFolder">contacts</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSentMailFolder">contacts</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -843,9 +843,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSentMailFolder">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSentMailFolder">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -856,9 +856,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSentMailFolder">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSentMailFolder">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -869,9 +869,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPrefSentMailFolder">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPrefSentMailFolder">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -885,9 +885,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraPasswordMaxAge to valid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMaxAge">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMaxAge">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -901,9 +901,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraPasswordMaxAge = Invalid values negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMaxAge">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMaxAge">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -913,9 +913,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMaxAge">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMaxAge">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -925,9 +925,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMaxAge">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMaxAge">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -937,9 +937,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMaxAge">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMaxAge">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -952,9 +952,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraPasswordEnforceHistory to some valid value', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordEnforceHistory">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordEnforceHistory">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -968,9 +968,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraPasswordEnforceHistory  = Invalid values negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordEnforceHistory">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordEnforceHistory">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -980,9 +980,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordEnforceHistory">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordEnforceHistory">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -992,9 +992,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordEnforceHistory">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordEnforceHistory">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1004,9 +1004,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordEnforceHistory">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordEnforceHistory">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1019,9 +1019,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraMailStatus enabled/disabled', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailStatus">enabled</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailStatus">enabled</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1032,9 +1032,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailStatus">disabled</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailStatus">disabled</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1048,9 +1048,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraMailStatus Invalid values - ENABLED/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailStatus">ENABLED</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailStatus">ENABLED</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1060,9 +1060,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailStatus">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailStatus">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1073,9 +1073,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailStatus">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailStatus">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1085,9 +1085,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailStatus">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailStatus">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1100,9 +1100,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraPasswordMinLength to some valid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinLength">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinLength">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1116,9 +1116,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraPasswordMinLength = Invalid values negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinLength">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinLength">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1128,9 +1128,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinLength">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinLength">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1140,9 +1140,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinLength">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinLength">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1152,9 +1152,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraPasswordMinLength">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraPasswordMinLength">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1167,9 +1167,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraMailTrashLifetime to some valid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailTrashLifetime">40</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailTrashLifetime">40</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1183,9 +1183,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraMailTrashLifetime to some invalid values negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailTrashLifetime">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailTrashLifetime">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1195,9 +1195,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailTrashLifetime">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailTrashLifetime">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1207,9 +1207,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailTrashLifetime">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailTrashLifetime">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1219,9 +1219,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailTrashLifetime">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailTrashLifetime">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1235,9 +1235,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraMailIdleSessionTimeout to some valid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailIdleSessionTimeout">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailIdleSessionTimeout">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1251,9 +1251,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraMailIdleSessionTimeout to some invalid values negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailIdleSessionTimeout">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailIdleSessionTimeout">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1263,9 +1263,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailIdleSessionTimeout">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailIdleSessionTimeout">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1275,9 +1275,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailIdleSessionTimeout">1a2b</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailIdleSessionTimeout">1a2b</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1287,9 +1287,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailIdleSessionTimeout">0123</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailIdleSessionTimeout">0123</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1303,9 +1303,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraFeatureTaggingEnabled to TRUE/FALSE', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureTaggingEnabled">TRUE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureTaggingEnabled">TRUE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1316,9 +1316,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureTaggingEnabled">FALSE</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureTaggingEnabled">FALSE</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1332,9 +1332,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraFeatureTaggingEnabled to invalid values like True/blank/sometext/special character', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureTaggingEnabled">True</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureTaggingEnabled">True</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1344,9 +1344,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureTaggingEnabled">     </a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureTaggingEnabled">     </a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1357,9 +1357,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureTaggingEnabled">some text</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureTaggingEnabled">some text</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1369,9 +1369,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraFeatureTaggingEnabled">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraFeatureTaggingEnabled">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1384,9 +1384,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Sanity | Modify an account and set zimbraMailQuota to some valid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailQuota">100</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailQuota">100</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1400,9 +1400,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 	it('Regression | Modify an account and set zimbraMailQuota to some Invalid values negative/spchar/invalid number/starting-with-zero', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailQuota">-1</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailQuota">-1</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.ModifyAccountResponse || (res.Body && res.Body.ModifyAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1413,9 +1413,9 @@ describe('Admin > Accounts > Modify Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_accountid.id}</id>
-                <a n = "zimbraMailQuota">:\'\'&lt;//\\\\</a>
-            </ModifyAccountRequest>`, adminAuth);
+				<id>${test_accountid.id}</id>
+				<a n = "zimbraMailQuota">:\'\'&lt;//\\\\</a>
+			</ModifyAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||

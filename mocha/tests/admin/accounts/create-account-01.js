@@ -54,9 +54,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Smoke | Create an account with valid values', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account1_name}</name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account1_name}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
@@ -78,8 +78,8 @@ describe('Admin > Accounts > Create Account 01', function () {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 
-                <name>${test_account2_name}</name>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account2_name}</name>
+			</CreateAccountRequest>`, adminAuth);
 		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
@@ -101,8 +101,8 @@ describe('Admin > Accounts > Create Account 01', function () {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('service.FAILURE') ||
 			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')),
@@ -114,9 +114,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with account name as spaces/blank/spchar/sometext/negative/zero/largenumber', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>   </name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>   </name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -125,9 +125,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>     </name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>     </name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -136,9 +136,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>:\'\'&lt;//\\\\</name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>:\'\'&lt;//\\\\</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -147,9 +147,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>some text</name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>some text</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -158,9 +158,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>-1</name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>-1</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -169,9 +169,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>0</name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>0</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -180,9 +180,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>12345678901234567890</name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>12345678901234567890</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -194,9 +194,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with account name as *********', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>"****************"</name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>"****************"</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -208,9 +208,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with values("  "/spaces/blank/spchar/negative number/zero/large number/sometext) in password', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account3_name}</name>
-                <password>"      "</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account3_name}</name>
+				<password>"      "</password>
+			</CreateAccountRequest>`, adminAuth);
 		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
@@ -228,9 +228,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account6_name}</name>
-                <password>   </password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account6_name}</name>
+				<password>   </password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'),
 			`Expected fault account.INVALID_PASSWORD, got: ${res.Fault
@@ -238,9 +238,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account7_name}</name>
-                <password>     </password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account7_name}</name>
+				<password>     </password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'),
 			`Expected fault account.INVALID_PASSWORD, got: ${res.Fault
@@ -248,9 +248,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account8_name}</name>
-                <password>:\'\'&lt;//\\\\</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account8_name}</name>
+				<password>:\'\'&lt;//\\\\</password>
+			</CreateAccountRequest>`, adminAuth);
 		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
@@ -268,9 +268,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account9_name}</name>
-                <password>some text</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account9_name}</name>
+				<password>some text</password>
+			</CreateAccountRequest>`, adminAuth);
 		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
@@ -288,9 +288,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account10_name}</name>
-                <password>-1</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account10_name}</name>
+				<password>-1</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'),
 			`Expected fault account.INVALID_PASSWORD, got: ${res.Fault
@@ -298,9 +298,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account11_name}</name>
-                <password>0</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account11_name}</name>
+				<password>0</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.includes('account.INVALID_PASSWORD'),
 			`Expected fault account.INVALID_PASSWORD, got: ${res.Fault
@@ -308,9 +308,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account12_name}</name>
-                <password>12345678901234567890</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account12_name}</name>
+				<password>12345678901234567890</password>
+			</CreateAccountRequest>`, adminAuth);
 		test_accountid.id = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_accountid.id) {
@@ -331,10 +331,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with non-existing/spaces/blank/spchar/sometext/negative/zero/largenumber name of domain', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>\${config.accountPassword}</password>
-                <a n="mail">test@invalid.domain.com</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>\${config.accountPassword}</password>
+				<a n="mail">test@invalid.domain.com</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -343,9 +343,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test@invalid.domain.com</name>
-                <password>\${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test@invalid.domain.com</name>
+				<password>\${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -354,9 +354,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test@     </name>
-                <password>\${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test@     </name>
+				<password>\${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -365,9 +365,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>:\'\'&lt;//\\\\</name>
-                <password>\${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>:\'\'&lt;//\\\\</name>
+				<password>\${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -376,9 +376,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>tesss@some text</name>
-                <password>\${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>tesss@some text</name>
+				<password>\${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -387,9 +387,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>-1</name>
-                <password>\${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>-1</name>
+				<password>\${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -398,9 +398,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>0</name>
-                <password>\${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>0</name>
+				<password>\${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -409,9 +409,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>12345678901234567890</name>
-                <password>\${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>12345678901234567890</name>
+				<password>\${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN') ||
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
@@ -423,11 +423,11 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account without user id', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_nouser_name}</name>
-                <password>${config.accountPassword}</password>
-                
-                
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_nouser_name}</name>
+				<password>${config.accountPassword}</password>
+				
+				
+			</CreateAccountRequest>`, adminAuth);
 		test_account.id = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_account.id) {
@@ -448,9 +448,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Smoke | Create an already existing account but with different password', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account5_name}</name>
-                <password>${config.accountPassword}</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account5_name}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuth);
 		test_account5.id = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;
 		if (!test_account5.id) {
@@ -468,9 +468,9 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account5_name}</name>
-                <password>${config.accountPassword}different</password>
-            </CreateAccountRequest>`, adminAuth);
+				<name>${test_account5_name}</name>
+				<password>${config.accountPassword}different</password>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.includes('account.ACCOUNT_EXISTS'),
 			`Expected fault account.ACCOUNT_EXISTS, got: ${res.Fault
@@ -481,10 +481,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraContactMaxNumEntries', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraContactMaxNumEntries">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraContactMaxNumEntries">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -495,10 +495,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraContactMaxNumEntries">1000</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraContactMaxNumEntries">1000</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -512,10 +512,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/spchar) of zimbraContactMaxNumEntries', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraContactMaxNumEntries">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraContactMaxNumEntries">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -526,10 +526,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraContactMaxNumEntries">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraContactMaxNumEntries">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -540,10 +540,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraContactMaxNumEntries">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraContactMaxNumEntries">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -553,10 +553,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraContactMaxNumEntries">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraContactMaxNumEntries">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -566,10 +566,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraContactMaxNumEntries">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraContactMaxNumEntries">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -582,10 +582,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraPrefMailPollingInterval', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMailPollingInterval">5m</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMailPollingInterval">5m</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -596,10 +596,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMailPollingInterval">1000</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMailPollingInterval">1000</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -613,10 +613,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefMailPollingInterval', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMailPollingInterval">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMailPollingInterval">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -627,10 +627,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMailPollingInterval">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMailPollingInterval">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -641,10 +641,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMailPollingInterval">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMailPollingInterval">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -654,10 +654,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMailPollingInterval">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMailPollingInterval">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -667,10 +667,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMailPollingInterval">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMailPollingInterval">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -681,10 +681,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMailPollingInterval">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMailPollingInterval">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -694,10 +694,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMailPollingInterval">12345678901234567890</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMailPollingInterval">12345678901234567890</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('service.FAILURE') ||
 			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')),
@@ -709,10 +709,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraAttachmentsViewInHtmlOnly', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAttachmentsViewInHtmlOnly">TRUE</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAttachmentsViewInHtmlOnly">TRUE</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -723,10 +723,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAttachmentsViewInHtmlOnly">FALSE</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAttachmentsViewInHtmlOnly">FALSE</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -740,10 +740,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraAttachmentsViewInHtmlOnly', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAttachmentsViewInHtmlOnly">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAttachmentsViewInHtmlOnly">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -754,10 +754,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAttachmentsViewInHtmlOnly">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAttachmentsViewInHtmlOnly">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -768,10 +768,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAttachmentsViewInHtmlOnly">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAttachmentsViewInHtmlOnly">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -781,10 +781,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAttachmentsViewInHtmlOnly">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAttachmentsViewInHtmlOnly">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -794,10 +794,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAttachmentsViewInHtmlOnly">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAttachmentsViewInHtmlOnly">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -807,10 +807,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAttachmentsViewInHtmlOnly">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAttachmentsViewInHtmlOnly">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -820,10 +820,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAttachmentsViewInHtmlOnly">12345678901234567890</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAttachmentsViewInHtmlOnly">12345678901234567890</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -836,10 +836,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraPasswordMaxAge', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPasswordMaxAge">100</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPasswordMaxAge">100</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -850,10 +850,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPasswordMaxAge">20</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPasswordMaxAge">20</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -867,10 +867,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPasswordMaxAge', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPasswordMaxAge">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPasswordMaxAge">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -881,10 +881,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPasswordMaxAge">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPasswordMaxAge">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -895,10 +895,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPasswordMaxAge">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPasswordMaxAge">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -908,10 +908,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPasswordMaxAge">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPasswordMaxAge">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -921,10 +921,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPasswordMaxAge">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPasswordMaxAge">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -935,10 +935,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPasswordMaxAge">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPasswordMaxAge">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -948,10 +948,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPasswordMaxAge">12345678901234567890</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPasswordMaxAge">12345678901234567890</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -964,10 +964,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraMailStatus', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraMailStatus">enabled</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraMailStatus">enabled</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -978,10 +978,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraMailStatus">disabled</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraMailStatus">disabled</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -995,10 +995,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraMailStatus', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraMailStatus">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraMailStatus">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1009,10 +1009,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraMailStatus">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraMailStatus">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1023,10 +1023,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraMailStatus">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraMailStatus">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1036,10 +1036,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraMailStatus">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraMailStatus">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1049,10 +1049,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraMailStatus">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraMailStatus">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1062,10 +1062,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraMailStatus">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraMailStatus">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1075,10 +1075,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraMailStatus">12345678901234567890</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraMailStatus">12345678901234567890</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1091,10 +1091,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraPrefMessageViewHtmlPreferred', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMessageViewHtmlPreferred">TRUE</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMessageViewHtmlPreferred">TRUE</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1105,10 +1105,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMessageViewHtmlPreferred">FALSE</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMessageViewHtmlPreferred">FALSE</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1122,10 +1122,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefMessageViewHtmlPreferred', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMessageViewHtmlPreferred">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMessageViewHtmlPreferred">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1136,10 +1136,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMessageViewHtmlPreferred">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMessageViewHtmlPreferred">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1150,10 +1150,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMessageViewHtmlPreferred">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMessageViewHtmlPreferred">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1163,10 +1163,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMessageViewHtmlPreferred">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMessageViewHtmlPreferred">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1176,10 +1176,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMessageViewHtmlPreferred">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMessageViewHtmlPreferred">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1189,10 +1189,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMessageViewHtmlPreferred">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMessageViewHtmlPreferred">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1202,10 +1202,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefMessageViewHtmlPreferred">12345678901234567890</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefMessageViewHtmlPreferred">12345678901234567890</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1218,10 +1218,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraNewMailNotificationSubject', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraNewMailNotificationSubject">New message received at RECIPIENT_ADDRESS</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraNewMailNotificationSubject">New message received at RECIPIENT_ADDRESS</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1235,10 +1235,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraNewMailNotificationSubject', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraNewMailNotificationSubject">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraNewMailNotificationSubject">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1249,10 +1249,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraNewMailNotificationSubject">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraNewMailNotificationSubject">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1263,10 +1263,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraNewMailNotificationSubject">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraNewMailNotificationSubject">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1277,10 +1277,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraNewMailNotificationSubject">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraNewMailNotificationSubject">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1291,10 +1291,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraNewMailNotificationSubject">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraNewMailNotificationSubject">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1305,10 +1305,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraNewMailNotificationSubject">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraNewMailNotificationSubject">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1319,10 +1319,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraNewMailNotificationSubject">12345678901234567890</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraNewMailNotificationSubject">12345678901234567890</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1336,10 +1336,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraAccountStatus', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">active</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">active</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1350,10 +1350,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">maintenance</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">maintenance</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1364,10 +1364,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">locked</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">locked</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1378,10 +1378,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">closed</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">closed</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1395,10 +1395,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraAccountStatus', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1409,10 +1409,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1423,10 +1423,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1436,10 +1436,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1449,10 +1449,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1462,10 +1462,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1475,10 +1475,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraAccountStatus">12345678901234567890</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraAccountStatus">12345678901234567890</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1491,10 +1491,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraPrefShowFragments', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefShowFragments">TRUE</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefShowFragments">TRUE</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1505,10 +1505,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefShowFragments">FALSE</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefShowFragments">FALSE</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1522,10 +1522,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefShowFragments', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefShowFragments">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefShowFragments">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1536,10 +1536,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefShowFragments">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefShowFragments">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1550,10 +1550,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefShowFragments">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefShowFragments">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1563,10 +1563,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefShowFragments">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefShowFragments">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1576,10 +1576,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefShowFragments">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefShowFragments">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1589,10 +1589,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefShowFragments">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefShowFragments">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1602,10 +1602,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraPrefShowFragments">12345678901234567890</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefShowFragments">12345678901234567890</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1618,10 +1618,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Functional | Create an account with valid values of zimbraFeatureGalEnabled', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraFeatureGalEnabled">TRUE</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraFeatureGalEnabled">TRUE</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1632,10 +1632,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraFeatureGalEnabled">FALSE</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraFeatureGalEnabled">FALSE</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1649,10 +1649,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraFeatureGalEnabled', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraFeatureGalEnabled">   </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraFeatureGalEnabled">   </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1663,10 +1663,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraFeatureGalEnabled">     </a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraFeatureGalEnabled">     </a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue(!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('INVALID_ATTR_VALUE') ||
@@ -1677,10 +1677,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraFeatureGalEnabled">some text</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraFeatureGalEnabled">some text</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1690,10 +1690,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraFeatureGalEnabled">-1</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraFeatureGalEnabled">-1</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1703,10 +1703,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraFeatureGalEnabled">0</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraFeatureGalEnabled">0</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1716,10 +1716,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraFeatureGalEnabled">:\'\'&lt;//\\\\</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraFeatureGalEnabled">:\'\'&lt;//\\\\</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||
@@ -1729,10 +1729,10 @@ describe('Admin > Accounts > Create Account 01', function () {
 
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
-                <password>${config.accountPassword}</password>
-                <a n="zimbraFeatureGalEnabled">12345678901234567890</a>
-            </CreateAccountRequest>`, adminAuth);
+				<name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraFeatureGalEnabled">12345678901234567890</a>
+			</CreateAccountRequest>`, adminAuth);
 		assert.isTrue((res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.INVALID_ATTR_VALUE') ||
 			res.Fault.Detail.Error.Code.includes('ldap.INVALID_ATTR_VALUE'))) ||

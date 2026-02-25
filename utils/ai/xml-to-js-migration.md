@@ -66,8 +66,21 @@ describe('Module > Feature Name', function () {
 ```
 
 ## Formatting Rules
-- Use tabs for indentation
+- **TABS ONLY for indentation** — NEVER use spaces for indentation. This is a STRICT rule. Every level of indentation MUST use a tab character (`\t`), not spaces. This applies to ALL code: `describe()`, `before()`, `it()`, assertions, SOAP XML inside template literals, etc. Files that use 4-space indentation are WRONG and must be converted to tabs.
 - **Double blank line** between `it()` blocks
+- **SOAP XML must ALWAYS be multi-line** — NEVER condense XML into a single line. Each child element goes on its own indented line:
+  ```js
+  // WRONG — single-line XML:
+  const res = await soap.makeSOAPEnvelopeAdmin(
+  	`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${name}</name><password>${password}</password></CreateAccountRequest>`, adminAuth);
+
+  // CORRECT — multi-line with indented children:
+  const res = await soap.makeSOAPEnvelopeAdmin(
+  	`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+  		<name>${name}</name>
+  		<password>${password}</password>
+  	</CreateAccountRequest>`, adminAuth);
+  ```
 - **120 character line limit** — STRICTLY break long lines at `||`, `&&`, and `?` operators. Examples:
   ```js
   // WRONG — exceeds 120 chars:

@@ -386,7 +386,8 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 				<alias>${aliasName}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
-		assert.exists(response.AddAccountAliasResponse);
+		assert.exists(response.AddAccountAliasResponse,
+			'AddAccountAliasResponse should exist');
 
 		await soap.deleteAccount(`test5.${common.getUniqueString()}@${config.testDomain}`, adminAuthToken);
 	});
@@ -413,7 +414,8 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 				</m>
 			</SendMsgRequest>`, auth2
 		);
-		assert.exists(sendResponse.SendMsgResponse);
+		assert.exists(sendResponse.SendMsgResponse,
+			'SendMsgResponse should exist');
 
 		await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">

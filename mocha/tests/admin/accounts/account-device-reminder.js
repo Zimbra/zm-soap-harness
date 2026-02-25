@@ -57,7 +57,12 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail"></a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
-		assert.exists(modRes.ModifyAccountResponse);
+		assert.exists(modRes.ModifyAccountResponse,
+			'ModifyAccountResponse should exist');
+		const account = Array.isArray(modRes.ModifyAccountResponse.account)
+			? modRes.ModifyAccountResponse.account[0]
+			: modRes.ModifyAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 
 		const modAttrs = modRes.ModifyAccountResponse.account[0].a || [];
 		const cleared = modAttrs.find(a => a.n === 'zimbraCalendarReminderDeviceEmail');
@@ -88,7 +93,12 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail"></a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
-		assert.exists(modRes.ModifyAccountResponse);
+		assert.exists(modRes.ModifyAccountResponse,
+			'ModifyAccountResponse should exist');
+		const account = Array.isArray(modRes.ModifyAccountResponse.account)
+			? modRes.ModifyAccountResponse.account[0]
+			: modRes.ModifyAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 	});
 
 
@@ -125,7 +135,12 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail"></a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
-		assert.exists(modRes.ModifyAccountResponse);
+		assert.exists(modRes.ModifyAccountResponse,
+			'ModifyAccountResponse should exist');
+		const account = Array.isArray(modRes.ModifyAccountResponse.account)
+			? modRes.ModifyAccountResponse.account[0]
+			: modRes.ModifyAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 	});
 
 
@@ -148,7 +163,12 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail"></a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
-		assert.exists(modRes.ModifyAccountResponse);
+		assert.exists(modRes.ModifyAccountResponse,
+			'ModifyAccountResponse should exist');
+		const account = Array.isArray(modRes.ModifyAccountResponse.account)
+			? modRes.ModifyAccountResponse.account[0]
+			: modRes.ModifyAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 	});
 
 

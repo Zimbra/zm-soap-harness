@@ -26,7 +26,12 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 				<a n="zimbraForeignPrincipal">${fp}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.CreateAccountResponse);
+		assert.exists(response.CreateAccountResponse,
+			'CreateAccountResponse should exist');
+		const account = Array.isArray(response.CreateAccountResponse.account)
+			? response.CreateAccountResponse.account[0]
+			: response.CreateAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 	});
 
 
@@ -42,7 +47,12 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 				<a n="zimbraForeignPrincipal">${fp2}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.CreateAccountResponse);
+		assert.exists(response.CreateAccountResponse,
+			'CreateAccountResponse should exist');
+		const account = Array.isArray(response.CreateAccountResponse.account)
+			? response.CreateAccountResponse.account[0]
+			: response.CreateAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 	});
 
 
@@ -58,7 +68,12 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 				<a n="zimbraForeignPrincipal">${fp}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		assert.exists(res1.CreateAccountResponse);
+		assert.exists(res1.CreateAccountResponse,
+			'CreateAccountResponse should exist');
+		const account = Array.isArray(res1.CreateAccountResponse.account)
+			? res1.CreateAccountResponse.account[0]
+			: res1.CreateAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 
 		const res2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -67,7 +82,12 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 				<a n="zimbraForeignPrincipal">${fp}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		assert.exists(res2.CreateAccountResponse);
+		assert.exists(res2.CreateAccountResponse,
+			'CreateAccountResponse should exist');
+		const account2 = Array.isArray(res2.CreateAccountResponse.account)
+			? res2.CreateAccountResponse.account[0]
+			: res2.CreateAccountResponse.account;
+		assert.exists(account2.id, 'Account should have an id');
 	});
 
 

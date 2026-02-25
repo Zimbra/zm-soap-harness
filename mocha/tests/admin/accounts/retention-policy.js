@@ -25,7 +25,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</keep>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		assert.exists(response.CreateSystemRetentionPolicyResponse);
+		assert.exists(response.CreateSystemRetentionPolicyResponse,
+			'CreateSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -38,7 +39,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</purge>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		assert.exists(response.CreateSystemRetentionPolicyResponse);
+		assert.exists(response.CreateSystemRetentionPolicyResponse,
+			'CreateSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -51,7 +53,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</purge>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		assert.exists(response.CreateSystemRetentionPolicyResponse);
+		assert.exists(response.CreateSystemRetentionPolicyResponse,
+			'CreateSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -64,7 +67,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</purge>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		assert.exists(response.CreateSystemRetentionPolicyResponse);
+		assert.exists(response.CreateSystemRetentionPolicyResponse,
+			'CreateSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -100,7 +104,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				<policy id="${policyId}" lifetime="5d" xmlns="urn:zimbraMail"/>
 			</ModifySystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		assert.exists(modRes.ModifySystemRetentionPolicyResponse);
+		assert.exists(modRes.ModifySystemRetentionPolicyResponse,
+			'ModifySystemRetentionPolicyResponse should exist');
 		assert.equal(modRes.ModifySystemRetentionPolicyResponse.policy[0].lifetime, '5d');
 	});
 
@@ -122,7 +127,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				<policy id="${policyId}" name="${newName}" xmlns="urn:zimbraMail"/>
 			</ModifySystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		assert.exists(modRes.ModifySystemRetentionPolicyResponse);
+		assert.exists(modRes.ModifySystemRetentionPolicyResponse,
+			'ModifySystemRetentionPolicyResponse should exist');
 		assert.equal(modRes.ModifySystemRetentionPolicyResponse.policy[0].name, newName);
 	});
 
@@ -142,7 +148,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 			`<GetSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 			</GetSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		assert.exists(getRes.GetSystemRetentionPolicyResponse);
+		assert.exists(getRes.GetSystemRetentionPolicyResponse,
+			'GetSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -162,13 +169,15 @@ describe('Admin > Accounts > Retention Policy', function () {
 				<policy id="${policyId}" xmlns="urn:zimbraMail"/>
 			</DeleteSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		assert.exists(delRes.DeleteSystemRetentionPolicyResponse);
+		assert.exists(delRes.DeleteSystemRetentionPolicyResponse,
+			'DeleteSystemRetentionPolicyResponse should exist');
 
 		// Verify deleted
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 			</GetSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		assert.exists(getRes.GetSystemRetentionPolicyResponse);
+		assert.exists(getRes.GetSystemRetentionPolicyResponse,
+			'GetSystemRetentionPolicyResponse should exist');
 	});
 });

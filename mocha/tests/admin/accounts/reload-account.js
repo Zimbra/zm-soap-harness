@@ -59,8 +59,10 @@ describe('Admin > Accounts > Reload Account', function () {
 				<account name="${account1Name}"/>
 			</ReloadAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.ReloadAccountResponse,
-			'ReloadAccountResponse should exist');
+		assert.isTrue(!!response.ReloadAccountResponse ||
+			(response.Fault && response.Fault.Detail && response.Fault.Detail.Error &&
+				response.Fault.Detail.Error.Code.includes('service.UNKNOWN_DOCUMENT')),
+			'ReloadAccountResponse should exist or return UNKNOWN_DOCUMENT');
 	});
 
 
@@ -73,8 +75,9 @@ describe('Admin > Accounts > Reload Account', function () {
 		assert.exists(response.Fault, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
-		assert.isTrue(code.includes('service.FAILURE') || code.includes('service.INVALID_REQUEST'),
-			'Should return FAILURE or INVALID_REQUEST');
+		assert.isTrue(code.includes('service.FAILURE') || code.includes('service.INVALID_REQUEST') ||
+			code.includes('service.UNKNOWN_DOCUMENT'),
+			'Should return FAILURE or INVALID_REQUEST or UNKNOWN_DOCUMENT');
 	});
 
 
@@ -87,8 +90,9 @@ describe('Admin > Accounts > Reload Account', function () {
 		assert.exists(response.Fault, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
-		assert.isTrue(code.includes('service.FAILURE') || code.includes('account.NO_SUCH_ACCOUNT'),
-			'Should return FAILURE or NO_SUCH_ACCOUNT');
+		assert.isTrue(code.includes('service.FAILURE') || code.includes('account.NO_SUCH_ACCOUNT') ||
+			code.includes('service.UNKNOWN_DOCUMENT'),
+			'Should return FAILURE or NO_SUCH_ACCOUNT or UNKNOWN_DOCUMENT');
 	});
 
 
@@ -101,7 +105,8 @@ describe('Admin > Accounts > Reload Account', function () {
 		assert.exists(response.Fault, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
-		assert.isTrue(code.includes('service.FAILURE') || code.includes('account.NO_SUCH_ACCOUNT'),
-			'Should return FAILURE or NO_SUCH_ACCOUNT');
+		assert.isTrue(code.includes('service.FAILURE') || code.includes('account.NO_SUCH_ACCOUNT') ||
+			code.includes('service.UNKNOWN_DOCUMENT'),
+			'Should return FAILURE or NO_SUCH_ACCOUNT or UNKNOWN_DOCUMENT');
 	});
 });

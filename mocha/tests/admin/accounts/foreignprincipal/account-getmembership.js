@@ -106,7 +106,8 @@ describe('Admin > Accounts > Foreignprincipal > Account Getmembership', function
 			// Server returns service.FAILURE for FP-based membership lookup — skip gracefully
 			return;
 		}
-		assert.exists(response.GetAccountMembershipResponse);
+		assert.exists(response.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const dlNames = dls.map(dl => dl.name);
@@ -120,7 +121,8 @@ describe('Admin > Accounts > Foreignprincipal > Account Getmembership', function
 				<account by="foreignPrincipal">${account2Fp}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountMembershipResponse);
+		assert.exists(response.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const dlNames = dls.map(dl => dl.name);
@@ -136,7 +138,8 @@ describe('Admin > Accounts > Foreignprincipal > Account Getmembership', function
 				<account by="foreignPrincipal">${account3Fp}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountMembershipResponse);
+		assert.exists(response.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		assert.equal(dls.length, 0, 'Should not be member of any DL');

@@ -49,7 +49,8 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 				<calresource by="foreignPrincipal">${fp}</calresource>
 			</GetCalendarResourceRequest>`, adminAuthToken
 		);
-		assert.exists(getRes.GetCalendarResourceResponse);
+		assert.exists(getRes.GetCalendarResourceResponse,
+			'GetCalendarResourceResponse should exist');
 		assert.equal(getRes.GetCalendarResourceResponse.calresource[0].id, res.id);
 	});
 
@@ -105,7 +106,8 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 				<calresource by="foreignPrincipal">${fp}</calresource>
 			</GetCalendarResourceRequest>`, adminAuthToken
 		);
-		assert.exists(getRes.GetCalendarResourceResponse);
+		assert.exists(getRes.GetCalendarResourceResponse,
+			'GetCalendarResourceResponse should exist');
 	});
 
 

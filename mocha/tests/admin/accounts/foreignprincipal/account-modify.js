@@ -35,7 +35,12 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 				<a n="zimbraForeignPrincipal">${fp2}</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
-		assert.exists(modRes.ModifyAccountResponse);
+		assert.exists(modRes.ModifyAccountResponse,
+			'ModifyAccountResponse should exist');
+		const account = Array.isArray(modRes.ModifyAccountResponse.account)
+			? modRes.ModifyAccountResponse.account[0]
+			: modRes.ModifyAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 
 		// Old FP should fail
 		await common.sleep(2000);
@@ -74,7 +79,12 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 				<a n="zimbraForeignPrincipal">${fp}</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
-		assert.exists(modRes.ModifyAccountResponse);
+		assert.exists(modRes.ModifyAccountResponse,
+			'ModifyAccountResponse should exist');
+		const account = Array.isArray(modRes.ModifyAccountResponse.account)
+			? modRes.ModifyAccountResponse.account[0]
+			: modRes.ModifyAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 
 		await common.sleep(2000);
 		const getRes = await soap.makeSOAPEnvelopeAdmin(

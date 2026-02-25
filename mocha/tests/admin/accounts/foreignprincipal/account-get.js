@@ -33,7 +33,12 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 				<account by="foreignPrincipal">${fp}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
-		assert.exists(getRes.GetAccountResponse);
+		assert.exists(getRes.GetAccountResponse,
+			'GetAccountResponse should exist');
+		const account = Array.isArray(getRes.GetAccountResponse.account)
+			? getRes.GetAccountResponse.account[0]
+			: getRes.GetAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 
 		const getAcctId = Array.isArray(getRes.GetAccountResponse?.account) ? getRes.GetAccountResponse.account[0].id : getRes.GetAccountResponse?.account?.id;
 		assert.equal(getAcctId, acctId);
@@ -157,7 +162,9 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 			</GetAccountRequest>`, adminAuthToken
 		);
 		assert.exists(getRes.Fault, 'Should return fault for deleted account');
-		assert.include(getRes.Fault.Detail.Error.Code, 'NO_SUCH_ACCOUNT');
+		assert.isTrue(getRes.Fault.Detail && getRes.Fault.Detail.Error &&
+			getRes.Fault.Detail.Error.Code.includes('NO_SUCH_ACCOUNT'),
+			'Should return NO_SUCH_ACCOUNT');
 	});
 
 

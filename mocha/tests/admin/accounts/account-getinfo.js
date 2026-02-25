@@ -78,7 +78,10 @@ describe('Admin > Accounts > Account Getinfo', function () {
 				<account by="name">${testAccount1}</account>
 			</GetAccountInfoRequest>`, userAuthToken
 		);
-		assert.exists(response.GetAccountInfoResponse);
+		assert.exists(response.GetAccountInfoResponse,
+			'GetAccountInfoResponse should exist');
+		assert.exists(response.GetAccountInfoResponse.name,
+			'GetAccountInfoResponse should have name');
 		assert.equal(response.GetAccountInfoResponse.name, testAccount1);
 
 		const attrs = response.GetAccountInfoResponse.attr || [];
@@ -95,7 +98,10 @@ describe('Admin > Accounts > Account Getinfo', function () {
 				<account by="id">${account1Id}</account>
 			</GetAccountInfoRequest>`, userAuthToken
 		);
-		assert.exists(response.GetAccountInfoResponse);
+		assert.exists(response.GetAccountInfoResponse,
+			'GetAccountInfoResponse should exist');
+		assert.exists(response.GetAccountInfoResponse.name,
+			'GetAccountInfoResponse should have name');
 		assert.equal(response.GetAccountInfoResponse.name, testAccount1);
 	});
 
@@ -107,7 +113,10 @@ describe('Admin > Accounts > Account Getinfo', function () {
 				<account by="name">${testAccount1}</account>
 			</GetAccountInfoRequest>`, userAuthToken
 		);
-		assert.exists(response.GetAccountInfoResponse);
+		assert.exists(response.GetAccountInfoResponse,
+			'GetAccountInfoResponse should exist');
+		assert.exists(response.GetAccountInfoResponse.name,
+			'GetAccountInfoResponse should have name');
 		assert.equal(response.GetAccountInfoResponse.name, testAccount1);
 	});
 
@@ -273,7 +282,10 @@ describe('Admin > Accounts > Account Getinfo', function () {
 				<account by="name">${testAccount6}</account>
 			</GetAccountInfoRequest>`, auth6
 		);
-		assert.exists(response.GetAccountInfoResponse);
+		assert.exists(response.GetAccountInfoResponse,
+			'GetAccountInfoResponse should exist');
+		assert.exists(response.GetAccountInfoResponse.name,
+			'GetAccountInfoResponse should have name');
 		assert.equal(response.GetAccountInfoResponse.name, testAccount6);
 
 		const attrs = response.GetAccountInfoResponse.attr || [];

@@ -31,7 +31,12 @@ describe('Admin > Accounts > Lastlogon > Get Account Request', function () {
 				<account by="id">${acctId}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
-		assert.exists(getRes.GetAccountResponse);
+		assert.exists(getRes.GetAccountResponse,
+			'GetAccountResponse should exist');
+		const account = Array.isArray(getRes.GetAccountResponse.account)
+			? getRes.GetAccountResponse.account[0]
+			: getRes.GetAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 
 		const attrs = getRes.GetAccountResponse.account[0].a || [];
 		const lastLogon = attrs.find(a => a.n === 'zimbraLastLogonTimestamp');
@@ -59,7 +64,12 @@ describe('Admin > Accounts > Lastlogon > Get Account Request', function () {
 				<account by="id">${acctId}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
-		assert.exists(getRes.GetAccountResponse);
+		assert.exists(getRes.GetAccountResponse,
+			'GetAccountResponse should exist');
+		const account = Array.isArray(getRes.GetAccountResponse.account)
+			? getRes.GetAccountResponse.account[0]
+			: getRes.GetAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 
 		const attrs = getRes.GetAccountResponse.account[0].a || [];
 		const lastLogon = attrs.find(a => a.n === 'zimbraLastLogonTimestamp');

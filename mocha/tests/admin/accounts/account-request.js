@@ -24,7 +24,12 @@ describe('Admin > Accounts > Account Request', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.CreateAccountResponse);
+		assert.exists(response.CreateAccountResponse,
+			'CreateAccountResponse should exist');
+		const account = Array.isArray(response.CreateAccountResponse.account)
+			? response.CreateAccountResponse.account[0]
+			: response.CreateAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 		assert.exists(response.CreateAccountResponse.account);
 	});
 
@@ -44,7 +49,12 @@ describe('Admin > Accounts > Account Request', function () {
 				<account by="id">${acctId}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountResponse);
+		assert.exists(response.GetAccountResponse,
+			'GetAccountResponse should exist');
+		const account = Array.isArray(response.GetAccountResponse.account)
+			? response.GetAccountResponse.account[0]
+			: response.GetAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 		assert.exists(response.GetAccountResponse.account);
 	});
 
@@ -65,7 +75,12 @@ describe('Admin > Accounts > Account Request', function () {
 				<a n="zimbraPrefGalAutoCompleteEnabled">TRUE</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.ModifyAccountResponse);
+		assert.exists(response.ModifyAccountResponse,
+			'ModifyAccountResponse should exist');
+		const account = Array.isArray(response.ModifyAccountResponse.account)
+			? response.ModifyAccountResponse.account[0]
+			: response.ModifyAccountResponse.account;
+		assert.exists(account.id, 'Account should have an id');
 		assert.exists(response.ModifyAccountResponse.account);
 	});
 
@@ -87,7 +102,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<newName>${newName}</newName>
 			</RenameAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.RenameAccountResponse);
+		assert.exists(response.RenameAccountResponse,
+			'RenameAccountResponse should exist');
 	});
 
 
@@ -106,7 +122,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<id>${acctId}</id>
 			</DeleteAccountRequest>`, adminAuthToken
 		);
-		assert.exists(response.DeleteAccountResponse);
+		assert.exists(response.DeleteAccountResponse,
+			'DeleteAccountResponse should exist');
 	});
 
 
@@ -126,7 +143,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<password>${config.accountPassword}</password>
 			</CheckPasswordStrengthRequest>`, adminAuthToken
 		);
-		assert.exists(response.CheckPasswordStrengthResponse);
+		assert.exists(response.CheckPasswordStrengthResponse,
+			'CheckPasswordStrengthResponse should exist');
 	});
 
 
@@ -146,7 +164,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<newPassword>test1234</newPassword>
 			</SetPasswordRequest>`, adminAuthToken
 		);
-		assert.exists(response.SetPasswordResponse);
+		assert.exists(response.SetPasswordResponse,
+			'SetPasswordResponse should exist');
 	});
 
 
@@ -167,7 +186,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<alias>${aliasName}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
-		assert.exists(response.AddAccountAliasResponse);
+		assert.exists(response.AddAccountAliasResponse,
+			'AddAccountAliasResponse should exist');
 	});
 
 
@@ -195,7 +215,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<alias>${aliasName}</alias>
 			</RemoveAccountAliasRequest>`, adminAuthToken
 		);
-		assert.exists(response.RemoveAccountAliasResponse);
+		assert.exists(response.RemoveAccountAliasResponse,
+			'RemoveAccountAliasResponse should exist');
 	});
 
 
@@ -204,7 +225,8 @@ describe('Admin > Accounts > Account Request', function () {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
-		assert.exists(response.GetAllAdminAccountsResponse);
+		assert.exists(response.GetAllAdminAccountsResponse,
+			'GetAllAdminAccountsResponse should exist');
 	});
 
 
@@ -224,7 +246,10 @@ describe('Admin > Accounts > Account Request', function () {
 				<account by="name">${acctName}</account>
 			</GetAccountInfoRequest>`, userAuth
 		);
-		assert.exists(response.GetAccountInfoResponse);
+		assert.exists(response.GetAccountInfoResponse,
+			'GetAccountInfoResponse should exist');
+		assert.exists(response.GetAccountInfoResponse.name,
+			'GetAccountInfoResponse should have name');
 		assert.equal(response.GetAccountInfoResponse.name, acctName);
 	});
 
@@ -242,7 +267,8 @@ describe('Admin > Accounts > Account Request', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAvailableSkinsRequest xmlns="urn:zimbraAccount"/>`, userAuth
 		);
-		assert.exists(response.GetAvailableSkinsResponse);
+		assert.exists(response.GetAvailableSkinsResponse,
+			'GetAvailableSkinsResponse should exist');
 	});
 
 
@@ -259,7 +285,8 @@ describe('Admin > Accounts > Account Request', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAvailableCsvFormatsRequest xmlns="urn:zimbraAccount"/>`, userAuth
 		);
-		assert.exists(response.GetAvailableCsvFormatsResponse);
+		assert.exists(response.GetAvailableCsvFormatsResponse,
+			'GetAvailableCsvFormatsResponse should exist');
 	});
 
 
@@ -268,7 +295,8 @@ describe('Admin > Accounts > Account Request', function () {
 			`<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin">
 			</GetAdminConsoleUICompRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAdminConsoleUICompResponse);
+		assert.exists(response.GetAdminConsoleUICompResponse,
+			'GetAdminConsoleUICompResponse should exist');
 	});
 
 
@@ -287,7 +315,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<query>zimbraId=${acctId}</query>
 			</SearchAccountsRequest>`, adminAuthToken
 		);
-		assert.exists(response.SearchAccountsResponse);
+		assert.exists(response.SearchAccountsResponse,
+			'SearchAccountsResponse should exist');
 
 		const accounts = response.SearchAccountsResponse.account || [];
 		const found = accounts.find(a => a.id === acctId);
@@ -311,6 +340,7 @@ describe('Admin > Accounts > Account Request', function () {
 			</MigrateAccountRequest>`, adminAuthToken
 		);
 		// May succeed or fault depending on server support, enforcing strict assertion:
-		assert.exists(response.MigrateAccountResponse);
+		assert.exists(response.MigrateAccountResponse,
+			'MigrateAccountResponse should exist');
 	});
 });

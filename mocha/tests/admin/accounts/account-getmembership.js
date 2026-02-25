@@ -211,7 +211,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 				<account by="id">${account2Id}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountMembershipResponse);
+		assert.exists(response.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const found = dls.find(dl => dl.name === list1Name);
@@ -225,7 +226,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 				<account by="id">${account3Id}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountMembershipResponse);
+		assert.exists(response.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 	});
 
 
@@ -235,7 +237,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 				<account by="name">${account2}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountMembershipResponse);
+		assert.exists(response.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const found = dls.find(dl => dl.name === list1Name);
@@ -249,7 +252,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 				<account by="name">${account3}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountMembershipResponse);
+		assert.exists(response.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 	});
 
 
@@ -295,7 +299,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 				<account by="name">${account4}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountMembershipResponse);
+		assert.exists(response.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const dl4 = dls.find(dl => dl.name === list4Name);
@@ -315,7 +320,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 				<account by="id">${account4Id}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(response.GetAccountMembershipResponse);
+		assert.exists(response.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const dl4 = dls.find(dl => dl.name === list4Name);
@@ -334,7 +340,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 				<account by="id">${account5Id}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(resByid.GetAccountMembershipResponse);
+		assert.exists(resByid.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 
 		let dls = resByid.GetAccountMembershipResponse.dl || [];
 		const dl6ById = dls.find(dl => dl.name === list6Name);
@@ -354,7 +361,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 				<account by="name">${account5}</account>
 			</GetAccountMembershipRequest>`, adminAuthToken
 		);
-		assert.exists(resByName.GetAccountMembershipResponse);
+		assert.exists(resByName.GetAccountMembershipResponse,
+			'GetAccountMembershipResponse should exist');
 
 		dls = resByName.GetAccountMembershipResponse.dl || [];
 		const dl6ByName = dls.find(dl => dl.name === list6Name);

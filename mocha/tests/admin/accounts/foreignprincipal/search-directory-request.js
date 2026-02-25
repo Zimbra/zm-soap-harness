@@ -52,7 +52,8 @@ describe('Admin > Accounts > Foreignprincipal > Search Directory Request', funct
 				<query>(cn=*)</query>
 			</SearchDirectoryRequest>`, adminAuthToken
 		);
-		assert.exists(response.SearchDirectoryResponse);
+		assert.exists(response.SearchDirectoryResponse,
+			'SearchDirectoryResponse should exist');
 
 		const accounts = response.SearchDirectoryResponse.account || [];
 		const found = accounts.find(a => a.id === account1Id);
@@ -70,7 +71,8 @@ describe('Admin > Accounts > Foreignprincipal > Search Directory Request', funct
 				<query>(cn=*)</query>
 			</SearchDirectoryRequest>`, adminAuthToken
 		);
-		assert.exists(response.SearchDirectoryResponse);
+		assert.exists(response.SearchDirectoryResponse,
+			'SearchDirectoryResponse should exist');
 
 		const accounts = response.SearchDirectoryResponse.account || [];
 		const found = accounts.find(a => a.id === account2Id);
