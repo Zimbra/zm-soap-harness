@@ -12,13 +12,7 @@
     <t:property name="password_for_certs" value="test123" />
 
     <t:test_case testcaseid="zcs160_CreateAndSetupAccounts" type="always" bugids="zcs-160">
-        <t:objective>
-            1. Create domain
-            2. Create account 1
-            3. Create account 2
-            4. Add certificate for account 1
-            5. Create contact in account 1 for account 2 with public cert.
-        </t:objective>
+        <t:objective>1. Create domain 2. Create account 1 3. Create account 2 4. Add certificate for account 1 5. Create contact in account 1 for account 2 with public cert.</t:objective>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -170,12 +164,7 @@
 
     <t:test_case testcaseid="zcs160_SingAndEnrypt_LOAD_CERTIFICATE_FAILED"
         type="sanity" bugids="zcs-160">
-        <t:objective>
-            1. Send signed and encrypted message to account 2 from account 1, account 2 will fail to decrypt message as there is no certificate with account 2
-            2. GetConversation on account 2 and verify error code
-            3. SearchConversation on account 2 and verify error code
-            4. GetMessage on account 2 and verify error code
-        </t:objective>
+        <t:objective>1. Send signed and encrypted message to account 2 from account 1, account 2 will fail to decrypt message as there is no certificate with account 2 2. GetConversation on account 2 and verify error code 3. SearchConversation on account 2 and verify error code 4. GetMessage on account 2 and verify error code</t:objective>
 
         <t:test required="true">
             <t:request>
@@ -288,13 +277,7 @@
 
     <t:test_case testcaseid="zcs160_SignAndEncrypt_SuccessTest"
         type="sanity" bugids="zcs-160">
-        <t:objective>
-            1. Add certificate in account 2
-            2. Send signed and encrypted message to account 2 from account 1
-            3. GetConversation on account 2 and verify
-            4. SearchConversation on account 2 and verify
-            5. GetMessage on account 2 and verify
-        </t:objective>
+        <t:objective>1. Add certificate in account 2 2. Send signed and encrypted message to account 2 from account 1 3. GetConversation on account 2 and verify 4. SearchConversation on account 2 and verify 5. GetMessage on account 2 and verify</t:objective>
         <!-- setup certificate for account 2 -->
         <t:test required="true">
             <t:request>
@@ -450,12 +433,7 @@
 
     <t:test_case testcaseid="zcs160_SignAndEncrypt_DECRYPTION_FAILED"
         type="sanity" bugids="zcs-160">
-        <t:objective>
-            1. Inject tampered mime in account 1
-            2. GetConversation on account 1 and verify error code DECRYPTION_FAILED
-            3. SearchConversation on account 1 and verify DECRYPTION_FAILED
-            4. GetMessage on account 1 and verify DECRYPTION_FAILED
-        </t:objective>
+        <t:objective>1. Inject tampered mime in account 1 2. GetConversation on account 1 and verify error code DECRYPTION_FAILED 3. SearchConversation on account 1 and verify DECRYPTION_FAILED 4. GetMessage on account 1 and verify DECRYPTION_FAILED</t:objective>
         <!-- inject email and verify -->
         <t:test required="true">
             <t:request>
@@ -545,12 +523,7 @@
 
     <t:test_case testcaseid="zcs160_SignAndEncrypt_LOAD_PRIVATE_KEY_FAILED"
         type="sanity" bugids="zcs-160">
-        <t:objective>
-            1. Delete private key in account 2
-            2. GetConversation on account 2 and verify error code
-            3. SearchConversation on account 2 and verify error code
-            4. GetMessage on account 2 and verify error code
-        </t:objective>
+        <t:objective>1. Delete private key in account 2 2. GetConversation on account 2 and verify error code 3. SearchConversation on account 2 and verify error code 4. GetMessage on account 2 and verify error code</t:objective>
         <!-- setup certificate for account 2 -->
         <t:test required="true">
             <t:request>

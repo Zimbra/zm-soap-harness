@@ -51,6 +51,12 @@ assert.equal(mailHost._content, expectedHost, 'zimbraMailHost should match');
 ```
 
 ## Other Rules
+- **Sanitize test names from `<t:objective>`** — When migrating XML `<t:objective>` text to JS `it('...')` test names, ensure clean matching:
+  - **Remove**: single quotes `'`, double quotes `"`, smart quotes, backticks `` ` ``, backslashes `\`, acute accents
+  - **Replace**: full-width spaces `U+3000` → regular space, tabs/newlines → single space
+  - **Normalize**: collapse multiple spaces to one, trim leading/trailing whitespace
+  - **Keep**: Japanese/CJK chars, letters, numbers, hyphens, parens, commas, periods, colons, pipes `|`, `=`, `/`, `@`
+  - Run `node utils/ai/fix-objectives.js data/soapvalidator` before migration to pre-clean XML
 - **No XML reference comments** — do NOT add comments like `// XML: t:select path="..."` in JS files. The assertions should be self-explanatory.
 - **Double blank line** between `it()` blocks
 - **120 character line limit** — break long lines at `||`, `&&`, `?` operators
