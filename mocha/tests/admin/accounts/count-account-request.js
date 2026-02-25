@@ -11,13 +11,12 @@ describe('Admin > Accounts > Count Account Request', function () {
         adminAuth = await soap.getAdminAuthToken();
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true ||
-        !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    it('Sanity | CountAccountRequest - verify count per COS', async () => {
+    it('Sanity | Sanity test for CountAccountRequest', async () => {
         const cosName = 'cos' + common.getUniqueString();
         const account1Name = 'test' + common.getUniqueString() +
             '@' + config.testDomain;
@@ -31,7 +30,7 @@ describe('Admin > Accounts > Count Account Request', function () {
 			</CreateCosRequest>`, adminAuth);
         assert.exists(cosRes.CreateCosResponse,
             'CreateCosResponse should exist');
-        const cosId = cosRes.CreateCosResponse.cos.id;
+        const cosId = cosRes.CreateCosResponse.cos[0].id;
 
         // Create account 1 with COS
         const acct1Res = await soap.makeSOAPEnvelopeAdmin(

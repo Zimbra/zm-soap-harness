@@ -11,12 +11,12 @@ describe('Admin > Accounts > Account Migration', function () {
         adminAuth = await soap.getAdminAuthToken();
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    it('Smoke | Create account for migration', async () => {
+    it('Smoke | Create an account with valid values.', async () => {
         const accountName = 'test' + common.getUniqueString() +
             '@' + config.testDomain;
         const response = await soap.makeSOAPEnvelopeAdmin(
@@ -35,7 +35,7 @@ describe('Admin > Accounts > Account Migration', function () {
     });
 
 
-    it('Smoke | ValidateRemoteZimbraConnectionRequest', async () => {
+    it('Smoke | ValidateRemoteZimbraConnection API will connect to source host and validate the admin credentials..', async () => {
         const sourceHost = config.migrationSourceHost ||
             'apps-development.synacor.tk';
         const sourceAdmin = config.migrationSourceAdmin ||
@@ -55,7 +55,7 @@ describe('Admin > Accounts > Account Migration', function () {
     });
 
 
-    it('Smoke | FetchAllRemoteAccountsRequest', async () => {
+    it('Smoke | Fetch all the users from the source zimbra system based on the domain name.', async () => {
         const sourceHost = config.migrationSourceHost ||
             'apps-development.synacor.tk';
         const response = await soap.makeSOAPEnvelopeAdmin(
@@ -69,7 +69,7 @@ describe('Admin > Accounts > Account Migration', function () {
     });
 
 
-    it('Smoke | MigrateUsersDataRequest', async () => {
+    it('Smoke | MigrateUsersData.', async () => {
         const accountName = 'test' + common.getUniqueString() +
             '@' + config.testDomain;
         const sourceUser = config.migrationSourceUser ||
@@ -101,7 +101,7 @@ describe('Admin > Accounts > Account Migration', function () {
     });
 
 
-    it('Smoke | Authenticate with target user after migration', async () => {
+    it('Smoke | Login with Target user', async () => {
         const accountName = 'test' + common.getUniqueString() +
             '@' + config.testDomain;
 
@@ -126,7 +126,7 @@ describe('Admin > Accounts > Account Migration', function () {
     });
 
 
-    it('Smoke | Validate data migration completion - search for migrated mail', async () => {
+    it('Smoke | Vailidate data Migration compeletion.', async () => {
         const accountName = 'test' + common.getUniqueString() +
             '@' + config.testDomain;
         const subject = 'Your email migration is done!';

@@ -42,7 +42,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Modify', function () {
 	}
 
 	// Tests
-	it('Smoke | Modify the foreign principal on a calendar resource', async () => {
+	it('Sanity | Modify the foreign principal attribute', async () => {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const resId = await createResource(fp1);
@@ -74,7 +74,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Modify', function () {
 	});
 
 
-	it('Smoke | Add FP to an existing calendar resource without one', async () => {
+	it('Sanity | Add the foreign principal attribute to an existing account', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const resId = await createResource(null);
 
@@ -95,7 +95,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Modify', function () {
 	});
 
 
-	it('Smoke | Add second FP using + prefix on a calendar resource', async () => {
+	it('Sanity | Add a second foreign principal to the account', async () => {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const resId = await createResource(fp1);

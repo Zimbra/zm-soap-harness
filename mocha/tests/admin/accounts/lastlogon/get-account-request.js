@@ -16,7 +16,7 @@ describe('Admin > Accounts > Lastlogon > Get Account Request', function () {
 	}
 
 	// Tests
-	it('Functional | zimbraLastLogonTimestamp is not set for accounts that have not logged in', async () => {
+	it('Functional | Verify zimbraLastLogonTimestamp is not set for accounts that have not been authenticated', async () => {
 		const acctName = `user${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -40,7 +40,7 @@ describe('Admin > Accounts > Lastlogon > Get Account Request', function () {
 	});
 
 
-	it('Functional | zimbraLastLogonTimestamp is set after account authenticates', async () => {
+	it('Functional | Verify zimbraLastLogonTimestamp is set once the account authenticates', async () => {
 		const acctName = `user${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">

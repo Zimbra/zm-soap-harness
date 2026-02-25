@@ -16,7 +16,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 	}
 
 	// Tests
-	it('Smoke | Create an account with a foreign principal attribute', async () => {
+	it('Sanity | Create an account with a foreign principal attribute', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -30,7 +30,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 	});
 
 
-	it('Smoke | Create an account with two foreign principal attributes', async () => {
+	it('Sanity | Create an account with two foreign principal attributes', async () => {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
@@ -46,7 +46,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 	});
 
 
-	it('Smoke | Create two accounts with the same foreign principal', async () => {
+	it('Sanity | Create two accounts with the same foreign principal attributes', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const acctName1 = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const acctName2 = `fp.${common.getUniqueString()}@${config.testDomain}`;
@@ -71,7 +71,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 	});
 
 
-	it('Regression | Create accounts with various zimbraForeignPrincipal values', async () => {
+	it('Regression | Create an account with zimbraForeignPrincipal as spaces/blank/spchar/sometext/negative/zero/largenumber', async () => {
 		// These values must always succeed
 		const validValues = [":'//\\\\", 'some text', '-1', '0', '12345678901234567890'];
 		for (const val of validValues) {

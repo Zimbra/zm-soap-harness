@@ -11,13 +11,12 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
         adminAuth = await soap.getAdminAuthToken();
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true ||
-        !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    it('Functional | Full backup and restore account with Foreign Principal', async () => {
+    it('Functional | Backup (full) and restore an account with a Foreign Principal. Verify the Foreign Principal value is backed up and restored', async () => {
         const accountName = 'fp' + common.getUniqueString() +
             '@' + config.testDomain;
         const foreignPrincipal = 'test:' + common.getUniqueString();
@@ -77,7 +76,7 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
     });
 
 
-    it('Functional | Incremental backup preserves Foreign Principal added after initial backup', async () => {
+    it('Functional | Backup (incremental) and restore an account with a Foreign Principal. Verify the Foreign Principal value is backed up and restored', async () => {
         const accountName = 'fp' + common.getUniqueString() +
             '@' + config.testDomain;
         const foreignPrincipal = 'test:' + common.getUniqueString();

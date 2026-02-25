@@ -48,7 +48,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	}
 
 	// Tests
-	it('Functional | Create an account with valid values of zimbraMailMinPollingInterval', async () => {
+	it('Functional | Create an account with valid values of zimbraMailMinPollingInterval.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -107,7 +107,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraMailMinPollingInterval', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraMailMinPollingInterval.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -203,7 +203,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraPrefForwardIncludeOriginalText', async () => {
+	it('Functional | Create an account with valid values of zimbraPrefForwardIncludeOriginalText.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -248,7 +248,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefForwardIncludeOriginalText', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefForwardIncludeOriginalText.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -344,7 +344,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraFeatureSavedSearchesEnabled', async () => {
+	it('Functional | Create an account with valid values of zimbraFeatureSavedSearchesEnabled.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -375,7 +375,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraFeatureSavedSearchesEnabled', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraFeatureSavedSearchesEnabled.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -471,7 +471,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraPrefUseKeyboardShortcuts', async () => {
+	it('Functional | Create an account with valid values of zimbraPrefUseKeyboardShortcuts.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -502,7 +502,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefUseKeyboardShortcuts', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefUseKeyboardShortcuts.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -598,7 +598,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraMailTrashLifetime', async () => {
+	it('Functional | Create an account with valid values of zimbraMailTrashLifetime.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -657,7 +657,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraMailTrashLifetime', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraMailTrashLifetime.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -753,7 +753,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of userPassword', async () => {
+	it('Functional | Create an account with valid values of userPassword.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -770,7 +770,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of userPassword', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of userPassword.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -871,7 +871,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraMailIdleSessionTimeout', async () => {
+	it('Functional | Create an account with valid values of zimbraMailIdleSessionTimeout.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -930,7 +930,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraMailIdleSessionTimeout', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraMailIdleSessionTimeout.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1026,7 +1026,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of mail', async () => {
+	it('Functional | Create an account with valid values of mail.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1041,7 +1041,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of mail', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of mail.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1132,7 +1132,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraPrefMailItemsPerPage', async () => {
+	it('Functional | Create an account with valid values of zimbraPrefMailItemsPerPage.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1163,7 +1163,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefMailItemsPerPage', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefMailItemsPerPage.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1261,7 +1261,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraPasswordMinAge', async () => {
+	it('Functional | Create an account with valid values of zimbraPasswordMinAge.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1292,7 +1292,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPasswordMinAge', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPasswordMinAge.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1389,7 +1389,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraPrefContactsPerPage', async () => {
+	it('Functional | Create an account with valid values of zimbraPrefContactsPerPage.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1420,7 +1420,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefContactsPerPage', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefContactsPerPage.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1518,7 +1518,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraFeatureAdvancedSearchEnabled', async () => {
+	it('Functional | Create an account with valid values of zimbraFeatureAdvancedSearchEnabled.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1549,7 +1549,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraFeatureAdvancedSearchEnabled', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraFeatureAdvancedSearchEnabled.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1645,7 +1645,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Functional | Create an account with valid values of zimbraPrefMailSignatureStyle', async () => {
+	it('Functional | Create an account with valid values of zimbraPrefMailSignatureStyle.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>
@@ -1676,7 +1676,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	});
 
 
-	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefMailSignatureStyle', async () => {
+	it('Regression | Create an account with invalid values (spaces/blank/sometext/negative/zero/spchar/largenumber) of zimbraPrefMailSignatureStyle.', async () => {
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}</name>

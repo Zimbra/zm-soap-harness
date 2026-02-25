@@ -15,7 +15,7 @@ describe('Admin > Accounts > Get All Admin Accounts', function () {
 	}
 
 	// Tests
-	it('Smoke | GetAllAdminAccountsRequest', async () => {
+	it('Sanity | Test for GetAllAdminAccountsRequest.', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);

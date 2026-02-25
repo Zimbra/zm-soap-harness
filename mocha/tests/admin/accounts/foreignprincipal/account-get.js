@@ -16,7 +16,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 	}
 
 	// Tests
-	it('Smoke | Get an account by foreignPrincipal', async () => {
+	it('Sanity | Get an account by id = foreign principal attribute', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -40,7 +40,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 	});
 
 
-	it('Smoke | Get account with two foreign principals by either one', async () => {
+	it('Sanity | Get an account with two foreign principal attributes by id = foreign principal', async () => {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
@@ -79,7 +79,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 	});
 
 
-	it('Smoke | Account with foreignPrincipal can still be found by name and id', async () => {
+	it('Sanity | Verify that an account with a foreign principal can still be searched by name and zimbra ID', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -107,7 +107,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 	});
 
 
-	it('Functional | GetAccountRequest by foreignPrincipal with applyCos=1', async () => {
+	it('Functional | GetAccountRequest by "id = foreignPrincipal" and applyCos=1', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
@@ -133,7 +133,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 	});
 
 
-	it('Functional | Get deleted account by foreignPrincipal returns NO_SUCH_ACCOUNT', async () => {
+	it('Functional | Get a deleted account by "id = foreignPrincipal" - should return NO_SUCH_ACCOUNT', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -161,7 +161,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 	});
 
 
-	it('Functional | Get accounts with same foreignPrincipal returns FAILURE', async () => {
+	it('Functional | Get accounts with the same foreign principal attributes', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const acctName1 = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const acctName2 = `fp.${common.getUniqueString()}@${config.testDomain}`;

@@ -16,7 +16,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 	}
 
 	// Tests
-	it('Smoke | Modify the foreign principal attribute', async () => {
+	it('Sanity | Modify the foreign principal attribute', async () => {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
@@ -57,7 +57,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 	});
 
 
-	it('Smoke | Add foreign principal attribute to an existing account', async () => {
+	it('Sanity | Add the foreign principal attribute to an existing account', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -95,7 +95,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 	});
 
 
-	it('Smoke | Add a second foreign principal using + prefix', async () => {
+	it('Sanity | Add a second foreign principal to the account', async () => {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;

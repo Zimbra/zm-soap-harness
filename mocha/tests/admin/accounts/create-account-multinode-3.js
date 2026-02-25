@@ -12,66 +12,67 @@ describe('Admin > Accounts > Create Account Multinode 3', function () {
     });
 
     // Applicable zimbra versions
-    if (config.serial === true ||
-        !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
         return;
     }
 
-    it('Sanity | Accounts with COS pool (A,B) should not be created on server C', async () => {
-        const cosName = 'multihostcos' + common.getUniqueString();
-        const acctAName = 'multihost' + common.getUniqueString() +
-            '@' + config.testDomain;
-        const acctBName = 'multihost' + common.getUniqueString() +
-            '@' + config.testDomain;
-        const acctCName = 'multihost' + common.getUniqueString() +
-            '@' + config.testDomain;
+    it('Sanity | Verify that the accounts with COS having 2 servers(A and B) in the server Pool are getting created on server A or B but not on C.', async function () {
+        if (!config.mailboxServerHost1 || !config.mailboxServerHost2) {
+            this.skip('Requires multinode environment with STORE1 and STORE2');
+        }
 
-        // Get all servers
+        const serverAName = config.mailboxServerHost1;
+        const serverBName = config.mailboxServerHost2;
+        const cosName = 'multihostcos' + common.getUniqueString();
+        const acctNames = [
+            'multihost' + common.getUniqueString() + '@' + config.testDomain,
+            'multihost' + common.getUniqueString() + '@' + config.testDomain,
+            'multihost' + common.getUniqueString() + '@' + config.testDomain
+        ];
+
+        // Get server IDs by name
         const serversRes = await soap.makeSOAPEnvelopeAdmin(
-            `<GetAllServersRequest xmlns="urn:zimbraAdmin"/>`,
-            adminAuth);
-        assert.exists(serversRes.GetAllServersResponse,
-            'GetAllServersResponse should exist');
-        const servers = Array.isArray(
-            serversRes.GetAllServersResponse.server)
+            `<GetAllServersRequest xmlns="urn:zimbraAdmin"/>`, adminAuth);
+        assert.exists(serversRes.GetAllServersResponse, 'GetAllServersResponse should exist');
+        const servers = Array.isArray(serversRes.GetAllServersResponse.server)
             ? serversRes.GetAllServersResponse.server
             : [serversRes.GetAllServersResponse.server];
-        if (servers.length < 3) {
-            this.skip('Requires at least 3 servers');
-        }
-        const serverAId = servers[0].id;
-        const serverBId = servers[1].id;
-        const serverCName = servers[2].name;
+        const serverA = servers.find(s => s.name === serverAName);
+        const serverB = servers.find(s => s.name === serverBName);
+        assert.exists(serverA, `Server A (${serverAName}) should exist`);
+        assert.exists(serverB, `Server B (${serverBName}) should exist`);
+
+        // Find a server C (any server that is not A or B)
+        const serverC = servers.find(s => s.name !== serverAName && s.name !== serverBName);
+        const serverCName = serverC ? serverC.name : 'nonexistent-server';
 
         // Create COS with servers A and B in pool
         const cosRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name>${cosName}</name>
-				<a n="zimbraMailHostPool">${serverAId}</a>
-				<a n="zimbraMailHostPool">${serverBId}</a>
+				<a n="zimbraMailHostPool">${serverA.id}</a>
+				<a n="zimbraMailHostPool">${serverB.id}</a>
 			</CreateCosRequest>`, adminAuth);
-        assert.exists(cosRes.CreateCosResponse,
-            'CreateCosResponse should exist');
-        const cosId = cosRes.CreateCosResponse.cos.id;
+        assert.exists(cosRes.CreateCosResponse, 'CreateCosResponse should exist');
+        const cosId = cosRes.CreateCosResponse.cos[0].id;
 
         // Create 3 accounts and verify none on server C
-        for (const name of [acctAName, acctBName, acctCName]) {
+        for (const name of acctNames) {
             const res = await soap.makeSOAPEnvelopeAdmin(
                 `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${name}</name>
 					<password>${config.accountPassword}</password>
 					<a n="zimbraCOSId">${cosId}</a>
 				</CreateAccountRequest>`, adminAuth);
-            assert.exists(res.CreateAccountResponse,
-                `Should create account ${name}`);
-            const acct = Array.isArray(
-                res.CreateAccountResponse.account)
+            assert.exists(res.CreateAccountResponse, `Should create account ${name}`);
+            const acct = Array.isArray(res.CreateAccountResponse.account)
                 ? res.CreateAccountResponse.account[0]
                 : res.CreateAccountResponse.account;
-            const mailHost = acct.a.find(
-                a => a.n === 'zimbraMailHost');
-            assert.notEqual(mailHost._content, serverCName,
-                `Account should NOT be on server C`);
+            const mailHost = acct.a.find(a => a.n === 'zimbraMailHost');
+            assert.notEqual(mailHost._content, serverCName, 'Account should NOT be on server C');
+            assert.isTrue(
+                mailHost._content === serverAName || mailHost._content === serverBName,
+                `Account should be on server A or B, got: ${mailHost._content}`);
         }
     });
 });

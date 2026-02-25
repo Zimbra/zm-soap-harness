@@ -16,7 +16,7 @@ describe('Admin > Accounts > Quota > Zimbra Quota Warn Message', function () {
 	}
 
 	// Tests
-	it('Smoke | Verify zimbraQuotaWarnMessage can be set on account', async () => {
+	it('Sanity | Verify the Quota Warn Message can be set', async () => {
 		const warnMsg = `text${common.getUniqueString()}`;
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -47,7 +47,7 @@ ${warnMsg}
 	});
 
 
-	it('Smoke | Verify zimbraQuotaWarnMessage can be set with I18N characters', async () => {
+	it('Sanity | Verify the Quota Warn Message can be set to I18N characters', async () => {
 		const warnMsg = `Администратор${common.getUniqueString()}`;
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -78,7 +78,7 @@ ${warnMsg}
 	});
 
 
-	it('Functional | Verify zimbraQuotaWarnMessage with I18N display name', async () => {
+	it('Sanity | Verify the Quota Warn Message can be triggered - lmtp', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -100,7 +100,7 @@ ${warnMsg}
 	});
 
 
-	it('Sanity | Verify quota warn message can be triggered via mail', async () => {
+	it('Functional | Verify the Quota Warn Message can be received, even if the quota message will send the account over quota', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const warnSubject = `subject${common.getUniqueString()}`;
 		const warnMsg = `text${common.getUniqueString()}`;
@@ -143,7 +143,7 @@ ${warnMsg}
 	});
 
 
-	it('Functional | Verify quota warn received even if over quota', async () => {
+	it('Functional | Verify I18N quota warning message can be sent', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const warnSubject = `subject${common.getUniqueString()}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -180,7 +180,7 @@ Your mailbox is nearly full
 	});
 
 
-	it('Functional | Verify I18N quota warn with base64 encoding', async () => {
+	it('Functional | Verify I18N quota warning message can be sent, with standard quota template', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const warnSubject = `subject${common.getUniqueString()}`;
 		const encoded =
@@ -216,7 +216,7 @@ ${encoded}
 	});
 
 
-	it('Functional | Verify custom quota template with display name', async () => {
+	it('Functional | Verify quota warning message can be sent, with Customize quota template', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const displayName = 'TestHarness User';
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -241,7 +241,7 @@ ${encoded}
 	});
 
 
-	it('Functional | Verify I18N custom quota template with display name', async () => {
+	it('Functional | Verify i18n quota warning message can be sent, with Customize quota template', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const displayName = 'があります 作成';
 		const createRes = await soap.makeSOAPEnvelopeAdmin(

@@ -21,7 +21,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 	}
 
 	// Tests
-	it('Smoke | Create a calendar resource with a foreign principal', async () => {
+	it('Sanity | Create an account with a foreign principal attribute', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const resName = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -40,7 +40,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 	});
 
 
-	it('Smoke | Create a calendar resource with two foreign principals', async () => {
+	it('Sanity | Create an account with two foreign principal attributes', async () => {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const resName = `fp.${common.getUniqueString()}@${config.testDomain}`;
@@ -61,7 +61,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 	});
 
 
-	it('Smoke | Create two calendar resources with same foreign principal', async () => {
+	it('Sanity | Create two accounts with the same foreign principal attributes', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const res1Name = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const res2Name = `fp.${common.getUniqueString()}@${config.testDomain}`;

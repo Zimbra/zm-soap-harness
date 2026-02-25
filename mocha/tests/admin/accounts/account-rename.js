@@ -39,7 +39,7 @@ describe('Admin > Accounts > Account Rename', function () {
 	});
 
 
-	it('Regression | Rename an account with blank new-name but correct domain', async () => {
+	it('Regression | Rename an account with in-valid(blank) new-name but correct domain name', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -61,7 +61,7 @@ describe('Admin > Accounts > Account Rename', function () {
 	});
 
 
-	it('Regression | Rename an account with valid name and invalid domain', async () => {
+	it('Regression | Rename an account with valid name and invalid domain name', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -83,7 +83,7 @@ describe('Admin > Accounts > Account Rename', function () {
 	});
 
 
-	it('Regression | Rename an account with invalid name and invalid domain', async () => {
+	it('Regression | Rename an account with valid name and invalid domain name', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -201,7 +201,7 @@ describe('Admin > Accounts > Account Rename', function () {
 	});
 
 
-	it('Regression | Rename an account with sometext in name (by name)', async () => {
+	it('Regression | Rename an account with sometext in name', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -297,7 +297,7 @@ describe('Admin > Accounts > Account Rename', function () {
 	});
 
 
-	it('Smoke | Rename an account along with zimbraMailHost/zimbraMailTransport', async () => {
+	it('Sanity | Rename an account along with zimbraMailHost/zimbraMailTransport', async () => {
 		const acctName = `test14.${common.getUniqueString()}@${config.testDomain}`;
 		const newName = `new14.${common.getUniqueString()}@${config.testDomain}`;
 

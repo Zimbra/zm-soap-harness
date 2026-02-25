@@ -55,7 +55,7 @@ describe('Admin > Accounts > Account Logger', function () {
 	}
 
 	// Tests
-	it('Smoke | AddAccountLoggerRequest', async () => {
+	it('Sanity | Sanity test for AddAccountLoggerRequest', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountLoggerRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -69,7 +69,7 @@ describe('Admin > Accounts > Account Logger', function () {
 	});
 
 
-	it('Smoke | RemoveAccountLoggerRequest', async () => {
+	it('Sanity | Sanity test for RemoveAccountLoggerRequest', async () => {
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountLoggerRequest xmlns="urn:zimbraAdmin">
 				<id>${account2Id}</id>
@@ -88,7 +88,7 @@ describe('Admin > Accounts > Account Logger', function () {
 	});
 
 
-	it('Smoke | GetAccountLoggersRequest', async () => {
+	it('Sanity | Sanity test for GetAccountLoggersRequest', async () => {
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountLoggerRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
@@ -108,7 +108,7 @@ describe('Admin > Accounts > Account Logger', function () {
 	});
 
 
-	it('Smoke | GetAllAccountLoggersRequest', async () => {
+	it('Sanity | Sanity test for GetAllAccountLoggersRequest', async () => {
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountLoggerRequest xmlns="urn:zimbraAdmin">
 				<id>${account4Id}</id>

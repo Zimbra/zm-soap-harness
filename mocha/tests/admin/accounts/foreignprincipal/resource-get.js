@@ -40,7 +40,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 	}
 
 	// Tests
-	it('Smoke | Get a calendar resource by foreignPrincipal', async () => {
+	it('Sanity | Get an calresource by id = foreign principal attribute', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const res = await createResource(fp);
 		await common.sleep(2000);
@@ -54,7 +54,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 	});
 
 
-	it('Smoke | Get resource with two FPs by either one', async () => {
+	it('Sanity | Get an account with two foreign principal attributes by id = foreign principal', async () => {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const res = await createResource(fp1, fp2);
@@ -76,7 +76,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 	});
 
 
-	it('Smoke | Resource with FP can be found by id and name', async () => {
+	it('Sanity | Verify that an account with a foreign principal can still be searched by name and zimbra ID', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const res = await createResource(fp);
 
@@ -96,7 +96,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 	});
 
 
-	it('Functional | Get resource by FP with applyCos=1', async () => {
+	it('Functional | GetCalendarResourceRequest by "id = foreignPrincipal" and applyCos=1', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		await createResource(fp);
 		await common.sleep(2000);
@@ -109,7 +109,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 	});
 
 
-	it('Functional | Get deleted resource by FP returns NO_SUCH_CALENDAR_RESOURCE', async () => {
+	it('Functional | Get a deleted calresource by "id = foreignPrincipal" - should return NO_SUCH_ACCOUNT', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const res = await createResource(fp);
 
@@ -128,7 +128,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 	});
 
 
-	it('Functional | Get resources with same FP returns MULTIPLE_ACCOUNTS_MATCHED', async () => {
+	it('Functional | Get resources with the same foreign principal attributes', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		await createResource(fp);
 		await createResource(fp);

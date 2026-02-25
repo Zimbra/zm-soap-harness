@@ -37,7 +37,7 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 	}
 
 	// Tests
-	it('Smoke | Set zimbraContactMaxNumEntries to 3, add 3 contacts, 4th should fail', async () => {
+	it('Sanity | Verify setting the valid value for "zimbraContactMaxNumEntries" is reflected properly', async () => {
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -77,7 +77,7 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 	});
 
 
-	it('Functional | Reduce zimbraContactMaxNumEntries below existing count - existing contacts should remain', async () => {
+	it('Functional | Verify setting "zimbraContactMaxNumEntries" less than the number of contacts existing in an account', async () => {
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -102,7 +102,7 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 	});
 
 
-	it('Smoke | Set zimbraContactMaxNumEntries to 0 allows unlimited contacts', async () => {
+	it('Sanity | Verify setting the valid value for "zimbraContactMaxNumEntries" to some large value', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		await common.sleep(500);
 		const acctRes = await soap.makeSOAPEnvelopeAdmin(
@@ -139,7 +139,7 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 	});
 
 
-	it('Functional | Delete a contact and add new one when at max limit', async () => {
+	it('Functional | Verify that contacts are not added if AutoAddAddress is enabled and it contains the max nunber of contacts', async () => {
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
@@ -186,7 +186,7 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 	});
 
 
-	it('Sanity | Set zimbraContactMaxNumEntries to large value - 51st should fail', async () => {
+	it('Sanity | Verify setting zimbraContactMaxNumEntries = 0 allows to add infinite contacts', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		await common.sleep(500);
 		const acctRes = await soap.makeSOAPEnvelopeAdmin(
@@ -240,7 +240,7 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 	});
 
 
-	it('Functional | AutoAddAddress blocked when at max contacts', async () => {
+	it('Functional | Verify that a contact can be deleted and added if account has the maximum number of contacts', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const recipientName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		await common.sleep(500);
@@ -325,17 +325,29 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 	});
 
 
-	it('Functional | Modify contact succeeds when at max contacts', async () => {
-		const userAuth = await soap.getAccountAuthToken(
-			account3Name, config.accountPassword);
+	it('Functional | Verify that a contact can be modified if account has the maximum number of contacts', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		await common.sleep(500);
+		const acctRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = (Array.isArray(acctRes.CreateAccountResponse?.account)
+			? acctRes.CreateAccountResponse.account[0].id
+			: acctRes.CreateAccountResponse?.account?.id);
 
 		// Set max to 2
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-				<id>${account3Id}</id>
+				<id>${acctId}</id>
 				<a n="zimbraContactMaxNumEntries">2</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+
+		const userAuth = await soap.getAccountAuthToken(
+			acctName, config.accountPassword);
 
 		// Add 2 contacts
 		let contactId;
@@ -349,6 +361,8 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 					</cn>
 				</CreateContactRequest>`, userAuth
 			);
+			assert.exists(res.CreateContactResponse,
+				`Should create contact ${i + 1}`);
 			const cn = Array.isArray(res.CreateContactResponse?.cn)
 				? res.CreateContactResponse.cn[0]
 				: res.CreateContactResponse?.cn;

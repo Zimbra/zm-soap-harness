@@ -16,7 +16,7 @@ describe('Admin > Accounts > Cos > Account Create', function () {
 	}
 
 	// Tests
-	it('Smoke | Verify COS settings are applied to a new account', async () => {
+	it('Smoke | Verify COS settings are applied to a new account.', async () => {
 		const cosName = `cos${common.getUniqueString()}`;
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">

@@ -16,7 +16,7 @@ describe('Admin > Accounts > Lastlogon > Auth Request', function () {
 	}
 
 	// Tests
-	it('Functional | Verify zimbraLastLogonTimestamp is set after login', async () => {
+	it('Functional | AuthRequest - verify zimbraLastLogonTimestamp is updated', async () => {
 		const acctName = `user${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">

@@ -24,7 +24,7 @@ describe('Admin > Accounts > Accounts Loop', function () {
 	}
 
 	// Tests
-	it('Smoke | Create 10 accounts in a loop', async () => {
+	it('Sanity | Create 1000 account with valid username and password', async () => {
 		for (let i = 0; i < 10; i++) {
 			const acctName = `test.${common.getUniqueString()}@${domainName}`;
 			const response = await soap.makeSOAPEnvelopeAdmin(
@@ -39,7 +39,7 @@ describe('Admin > Accounts > Accounts Loop', function () {
 	});
 
 
-	it('Functional | GetAccountRequest with valid id', async () => {
+	it('Functional | GetAccountRequest with valid value of "id"', async () => {
 		const acctName = `test.${common.getUniqueString()}@${domainName}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -87,7 +87,7 @@ describe('Admin > Accounts > Accounts Loop', function () {
 	});
 
 
-	it('Functional | Delete an account with valid id', async () => {
+	it('Functional | Deleting the account with valid "id/name"', async () => {
 		const acctName = `test.${common.getUniqueString()}@${domainName}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -127,7 +127,7 @@ describe('Admin > Accounts > Accounts Loop', function () {
 	});
 
 
-	it('Functional | Add an alias to an account', async () => {
+	it('Functional | Add an Alias to an account', async () => {
 		const acctName = `test.${common.getUniqueString()}@${domainName}`;
 		const aliasName = `alias.${common.getUniqueString()}@${domainName}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -176,7 +176,7 @@ describe('Admin > Accounts > Accounts Loop', function () {
 	});
 
 
-	it('Functional | SearchAccountsRequest finds created account', async () => {
+	it('Functional | Verify that SearchAccountsRequest receives a response', async () => {
 		const acctName = `test.${common.getUniqueString()}@${domainName}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -199,7 +199,7 @@ describe('Admin > Accounts > Accounts Loop', function () {
 	});
 
 
-	it('Functional | GetAllAdminAccountsRequest returns admin accounts', async () => {
+	it('Functional | Test for GetAllAdminAccountsRequest.', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);

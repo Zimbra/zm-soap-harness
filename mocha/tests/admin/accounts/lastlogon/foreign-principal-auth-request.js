@@ -11,13 +11,12 @@ describe('Admin > Accounts > LastLogon > Foreign Principal Auth Request', functi
         adminAuth = await soap.getAdminAuthToken();
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true ||
-        !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    it('Functional | Verify zimbraLastLogonTimestamp updates on foreign principal auth', async () => {
+    it('Functional | AuthRequest - verify zimbraLastLogonTimestamp is updated', async () => {
         const accountName = 'fp' + common.getUniqueString() +
             '@' + config.testDomain;
         const foreignPrincipal = 'test:' + common.getUniqueString();

@@ -25,7 +25,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 	}
 
 	// Tests
-	it('Smoke | Create account with COS having zimbraCalendarReminderDeviceEmail enabled, then unset', async () => {
+	it('Sanity | Create an account having cos with zimbraCalendarReminderDeviceEmail.', async () => {
 		const cosName = `Cos${common.getUniqueString()}`;
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -66,7 +66,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 	});
 
 
-	it('Smoke | Create account with zimbraCalendarReminderDeviceEmail enabled on account, then unset', async () => {
+	it('Sanity | Create and modify an account with zimbraCalendarReminderDeviceEmail.', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const acctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -92,7 +92,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 	});
 
 
-	it('Smoke | Create account with COS having zimbraCalendarReminderDeviceEmailEnabled FALSE, then unset', async () => {
+	it('Sanity | Create an account having cos with zimbraCalendarReminderDeviceEmailEnabled false.', async () => {
 		const cosName = `Cos${common.getUniqueString()}`;
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
@@ -129,7 +129,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 	});
 
 
-	it('Smoke | Create account with zimbraCalendarReminderDeviceEmailEnabled FALSE on account, then unset', async () => {
+	it('Sanity | Create and modify an account with zimbraCalendarReminderDeviceEmailEnabled FALSE.', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const acctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -152,7 +152,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 	});
 
 
-	it('Regression | zimbraCalendarReminderDeviceEmail should be on account only (not domain/cos)', async () => {
+	it('Sanity | zimbraPrefCalendarReminderDeviceEmail should be on account only', async () => {
 		const domainName = `domain.${common.getUniqueString()}.${config.testDomain}`;
 
 		// Creating domain with zimbraCalendarReminderDeviceEmail should fail

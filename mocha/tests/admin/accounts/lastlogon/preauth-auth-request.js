@@ -11,13 +11,12 @@ describe('Admin > Accounts > LastLogon > Preauth Auth Request', function () {
         adminAuth = await soap.getAdminAuthToken();
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true ||
-        !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    it('Functional | Verify zimbraLastLogonTimestamp updates on preauth login', async () => {
+    it('Functional | AuthRequest - verify zimbraLastLogonTimestamp is updated', async () => {
         const domainName = 'preauth' + common.getUniqueString() + '.com';
         const preauthKey =
             '7c9d4c4372457f2e9df0a681e31559e691199762171b832ec042861bc9b610ba';

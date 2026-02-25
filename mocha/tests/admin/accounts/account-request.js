@@ -16,7 +16,7 @@ describe('Admin > Accounts > Account Request', function () {
 	}
 
 	// Tests
-	it('Smoke | CreateAccountRequest sanity', async () => {
+	it('Sanity | Sanity test for CreateAccountRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -29,7 +29,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | GetAccountRequest sanity', async () => {
+	it('Sanity | Sanity test for GetAccountRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -49,7 +49,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | ModifyAccountRequest sanity', async () => {
+	it('Sanity | Sanity test for ModifyAccountRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -70,7 +70,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | RenameAccountRequest sanity', async () => {
+	it('Sanity | Sanity test for RenameAccountRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const newName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -91,7 +91,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | DeleteAccountRequest sanity', async () => {
+	it('Sanity | Sanity test for DeleteAccountRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -110,7 +110,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | CheckPasswordStrengthRequest sanity', async () => {
+	it('Sanity | Sanity test for CheckPasswordStrengthRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -130,7 +130,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | SetPasswordRequest sanity', async () => {
+	it('Sanity | Sanity test for SetPasswordRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -150,7 +150,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | AddAccountAliasRequest sanity', async () => {
+	it('Sanity | Sanity test for AddAccountAliasRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const aliasName = `alias.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -171,7 +171,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | RemoveAccountAliasRequest sanity', async () => {
+	it('Sanity | Sanity test for RemoveAccountAliasRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const aliasName = `alias.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -199,7 +199,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | GetAllAdminAccountsRequest sanity', async () => {
+	it('Sanity | Sanity test for GetAllAdminAccountsRequest', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
@@ -207,7 +207,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | GetAccountInfoRequest sanity', async () => {
+	it('Sanity | Sanity test for GetAccountInfoRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -228,7 +228,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | GetAvailableSkinsRequest sanity', async () => {
+	it('Sanity | Sanity test for GetAvailableSkinsRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -245,7 +245,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | GetAvailableCsvFormatsRequest sanity', async () => {
+	it('Sanity | Sanity test for GetAvailableCsvFormatsRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -262,7 +262,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | GetAdminConsoleUICompRequest sanity', async () => {
+	it('Sanity | Sanity test for GetAdminConsoleUICompRequest', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAdminConsoleUICompRequest xmlns="urn:zimbraAdmin">
 			</GetAdminConsoleUICompRequest>`, adminAuthToken
@@ -271,7 +271,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | SearchAccountsRequest sanity', async () => {
+	it('Sanity | Sanity test for SearchAccountsRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -294,7 +294,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Smoke | MigrateAccountRequest sanity', async () => {
+	it('Sanity | Sanity test for MigrateAccountRequest', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">

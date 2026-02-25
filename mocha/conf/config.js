@@ -6,11 +6,17 @@ const require = createRequire(import.meta.url);
 const config = require('./environment.json');
 const argv = yargs(hideBin(process.argv)).argv;
 
-// CLI
-const cliString = (key, fallback) =>
-	typeof argv[key] === 'undefined' || argv[key] === ''
-		? String(fallback).toUpperCase()
-		: String(argv[key]).toUpperCase();
+// CLI (check argv first, then ZM_CLI_* env vars from mocha-run.js for parallel workers)
+const cliString = (key, fallback) => {
+	if (typeof argv[key] !== 'undefined' && argv[key] !== '') {
+		return String(argv[key]).toUpperCase();
+	}
+	const envKey = 'ZM_CLI_' + key.toUpperCase();
+	if (process.env[envKey]) {
+		return String(process.env[envKey]).toUpperCase();
+	}
+	return String(fallback).toUpperCase();
+};
 
 const cliBoolean = (key, fallback) =>
 	typeof argv[key] === 'undefined' || argv[key] === ''
@@ -83,7 +89,8 @@ export const {
 	chat, serial, configure, freshSetup, showConsoleLog,
 	adminEmailAddress, adminPassword, accountPassword,
 	zulipServer, zulipSecret, zulipServerIpAddress,
-	testDomain, chatDomain, testCos
+	testDomain, chatDomain, testCos,
+	mailboxServerHost1, mailboxServerHost2
 } = config;
 
 export default {
@@ -92,5 +99,6 @@ export default {
 	chat, serial, configure, freshSetup, showConsoleLog,
 	adminEmailAddress, adminPassword, accountPassword,
 	zulipServer, zulipSecret, zulipServerIpAddress,
-	testDomain, chatDomain, testCos
+	testDomain, chatDomain, testCos,
+	mailboxServerHost1, mailboxServerHost2
 };

@@ -36,7 +36,7 @@ describe('Admin > Accounts > Account Delete', function () {
 	});
 
 
-	it('Regression | Delete two accounts simultaneously', async () => {
+	it('Regression | Delete two accounts simultaneously (cann\'t delete simultaneously two accounts)', async () => {
 		const name1 = `del_sim1_${common.getUniqueString()}@${config.testDomain}`;
 		const name2 = `del_sim2_${common.getUniqueString()}@${config.testDomain}`;
 		const create1 = await soap.makeSOAPEnvelopeAdmin(
@@ -120,7 +120,7 @@ describe('Admin > Accounts > Account Delete', function () {
 	});
 
 
-	it('Regression | Delete an account with spaces/spchar/zero/negative/leading trailing spaces in id', async () => {
+	it('Regression | Delete an account with spaces/Special Character/Zero/Negative numbers/Leading Spaces / Trailling Spaces / Space before and after the id', async () => {
 		const invalidIds = ['   ', '', ":'<//\\\\", '0', '-1', '  sometext  ', ' leading', 'trailing '];
 		for (const id of invalidIds) {
 			const res = await soap.makeSOAPEnvelopeAdmin(
@@ -130,7 +130,7 @@ describe('Admin > Accounts > Account Delete', function () {
 	});
 
 
-	it('Functional | Delete account by parsing invalid attribute', async () => {
+	it('Functional | Delete account by parsing invalid attribute in DeleteAccountRequest', async () => {
 		const accountName = `del_attr_${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountName}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuth);

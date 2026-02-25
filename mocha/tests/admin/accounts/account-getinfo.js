@@ -72,7 +72,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	}
 
 	// Tests
-	it('Smoke | Get account info by account name', async () => {
+	it('Sanity | Get the account information by account name.', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="name">${testAccount1}</account>
@@ -89,7 +89,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Smoke | Get account info by account id', async () => {
+	it('Sanity | Get the account information by account id.', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="id">${account1Id}</account>
@@ -100,7 +100,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Functional | Get account info by both name and id', async () => {
+	it('Functional | Get the account information by both account name and account id.', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="id">${account1Id}</account>
@@ -112,7 +112,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Regression | Get account info by id of one account and name of other', async () => {
+	it('Regression | Get the account information by id of one account and name of other account', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="id">${account2Id}</account>
@@ -126,7 +126,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Regression | Get account info by name of one account and id of other', async () => {
+	it('Regression | Get the account information by name of one account and account id of other account', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="name">${testAccount1}</account>
@@ -143,7 +143,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Regression | Get account info with invalid names (blank/spaces/sometext/spchar)', async () => {
+	it('Regression | Get the account information by invalid values (blank/spaces/sometext/spchar) for name of an account.', async () => {
 		const invalidNames = ['', '        ', 'some text 009', "//|.'\\\\\-"];
 		for (const name of invalidNames) {
 			const response = await soap.makeSOAPEnvelopeAccount(
@@ -161,7 +161,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Regression | Get account info with invalid ids (blank/spaces/sometext/negative/spchar)', async () => {
+	it('Regression | Get the account information by writing invalid (blank/space/sometext/negative/zero/special characters) in account id.', async () => {
 		const invalidIds = ['{', 'some text 009 ', '        ', '-109876', "//|.'\\\\\-"];
 		for (const id of invalidIds) {
 			const response = await soap.makeSOAPEnvelopeAccount(
@@ -182,7 +182,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Smoke | Get account info by nonexisting account name', async () => {
+	it('Sanity | Get the account information by writing nonexisting account name.', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="id">${testAccount1}_nonexist</account>
@@ -195,7 +195,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Regression | Get account info with name of deleted account', async () => {
+	it('Regression | Get the account information with name of deleted account', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="name">${testAccount3}</account>
@@ -208,7 +208,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Regression | Get account info with id of deleted account', async () => {
+	it('Regression | Get the account information with the id of deleted account', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="id">${account3Id}</account>
@@ -221,7 +221,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Regression | Get account info by domain name only', async () => {
+	it('Regression | Get the account information by writing nonexisting account name of an account and existing id of an account.', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="name">${config.testDomain}</account>
@@ -235,7 +235,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Regression | Get account info with nonexisting name and existing id', async () => {
+	it('Regression | Get the account information by writing domain name only', async () => {
 		const nonExistName = 'nonexist' + common.getUniqueString() +
 			'@' + config.testDomain;
 		const response = await soap.makeSOAPEnvelopeAccount(
@@ -251,7 +251,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Regression | Get account info of a closed account', async () => {
+	it('Regression | Get the account information of an account whose status is closed', async () => {
 		const auth4 = await soap.getAccountAuthToken(testAccount4, config.accountPassword).catch(() => null);
 		// Closed accounts may not be able to auth, use user1 token
 		const response = await soap.makeSOAPEnvelopeAccount(
@@ -266,7 +266,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	});
 
 
-	it('Smoke | Get account info with zimbraServiceAccountNumber (SAN)', async () => {
+	it('Sanity | Get the account information by account name.', async () => {
 		const auth6 = await soap.getAccountAuthToken(testAccount6, config.accountPassword);
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">

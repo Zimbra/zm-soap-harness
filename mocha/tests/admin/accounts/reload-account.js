@@ -53,7 +53,7 @@ describe('Admin > Accounts > Reload Account', function () {
 	}
 
 	// Tests
-	it('Smoke | ReloadAccountRequest with valid account', async () => {
+	it('Sanity | Send ReloadAccountRequest to reload account with changes made', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name="${account1Name}"/>
@@ -64,7 +64,7 @@ describe('Admin > Accounts > Reload Account', function () {
 	});
 
 
-	it('Regression | ReloadAccountRequest with blank email address', async () => {
+	it('Regression | Send ReloadAccountRequest with blank email address. - service.FAILURE', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name=""/>
@@ -78,7 +78,7 @@ describe('Admin > Accounts > Reload Account', function () {
 	});
 
 
-	it('Regression | ReloadAccountRequest with invalid email address (alphabets)', async () => {
+	it('Regression | Send ReloadAccountRequest with invalid email address as alphabets. - service.FAILURE', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name="invalid.email"/>
@@ -92,7 +92,7 @@ describe('Admin > Accounts > Reload Account', function () {
 	});
 
 
-	it('Regression | ReloadAccountRequest with invalid address (negative number)', async () => {
+	it('Regression | smoke test for ReloadAccountRequest with invalid address as negative number. - service.FAILURE', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name="-111111"/>

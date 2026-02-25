@@ -32,6 +32,15 @@ if (grepIndex !== -1) {
 	mochaArgs.push('-g', process.argv[grepIndex + 1]);
 }
 
+// Forward CLI config args via env vars (inherited by mocha parallel workers)
+const cliConfigEnv = {};
+for (const key of ['env', 'serverNode', 'serverType', 'serial', 'chat', 'configure', 'freshSetup', 'showConsoleLog']) {
+	const idx = process.argv.indexOf('--' + key);
+	if (idx !== -1 && idx + 1 < process.argv.length) {
+		cliConfigEnv['ZM_CLI_' + key.toUpperCase()] = process.argv[idx + 1];
+	}
+}
+
 // Test paths
 const testPaths = process.argv.filter(arg => arg.startsWith('tests/'));
 if (testPaths.length > 0) {
@@ -39,6 +48,7 @@ if (testPaths.length > 0) {
 } else {
 	mochaArgs.push('tests');
 }
+
 
 // Tests grep
 if (grepIndex !== -1) {
@@ -82,6 +92,7 @@ const result = spawnSync(
 		cwd,
 		env: {
 			...process.env,
+			...cliConfigEnv,
 			NODE_TLS_REJECT_UNAUTHORIZED: '0',
 			NODE_OPTIONS: '--no-warnings'
 		}
@@ -92,7 +103,7 @@ const result = spawnSync(
 if (fs.existsSync(xmlReportPath)) {
 	spawnSync(
 		process.execPath,
-		[ 'framework/report/xml-to-html-report.js', xmlReportPath ],
+		['framework/report/xml-to-html-report.js', xmlReportPath],
 		{ stdio: 'inherit', cwd }
 	);
 }

@@ -46,7 +46,7 @@ describe('Admin > Accounts > Foreignprincipal > Search Directory Request', funct
 	}
 
 	// Tests
-	it('Smoke | Search for account with a foreign principal in domain', async () => {
+	it('Sanity | Search for an account with a foreign principal attribute', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domainName}" attrs="zimbraForeignPrincipal">
 				<query>(cn=*)</query>
@@ -64,7 +64,7 @@ describe('Admin > Accounts > Foreignprincipal > Search Directory Request', funct
 	});
 
 
-	it('Smoke | Search for account with two foreign principals in domain', async () => {
+	it('Sanity | Search for an account with two foreign principal attributes', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domainName}" attrs="zimbraForeignPrincipal">
 				<query>(cn=*)</query>

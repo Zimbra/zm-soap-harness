@@ -31,7 +31,7 @@ describe('Admin > Accounts > Account Get', function () {
 	}
 
 	// Tests
-	it('Smoke | GetAccountRequest with valid value of id', async () => {
+	it('Smoke | GetAccountRequest with valid value of "id"', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${testAccountId}</account>
@@ -42,7 +42,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Smoke | GetAccountRequest with valid value of name', async () => {
+	it('Smoke | GetAccountRequest with valid value of "name"', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${testAccountName}</account>
@@ -53,7 +53,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Sanity | GetAccountRequest by id and applyCos=1', async () => {
+	it('Sanity | GetAccountRequest by "id" and applyCos=1', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="1">
 				<account by="id">${testAccountId}</account>
@@ -65,7 +65,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Sanity | GetAccountRequest by id and applyCos=0', async () => {
+	it('Sanity | GetAccountRequest by "id" and applyCos=0', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="0">
 				<account by="id">${testAccountId}</account>
@@ -74,7 +74,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Regression | GetAccountRequest by id and with invalid applyCos values', async () => {
+	it('Regression | GetAccountRequest by "id" and with value of applyCos as invalid/negative/char/spchar/starting_with_zero', async () => {
 		const invalidValues = ['invalid', '-1', ":'<//\\\\", '01'];
 		for (const val of invalidValues) {
 			const res = await soap.makeSOAPEnvelopeAdmin(
@@ -87,7 +87,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Sanity | GetAccountRequest by name and applyCos=1', async () => {
+	it('Sanity | GetAccountRequest by "name" and value of applyCos=1', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="1">
 				<account by="name">${testAccountName}</account>
@@ -96,7 +96,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Sanity | GetAccountRequest by name and applyCos=0', async () => {
+	it('Sanity | GetAccountRequest by "name" and value of applyCos=0', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="0">
 				<account by="name">${testAccountName}</account>
@@ -105,7 +105,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Regression | GetAccountRequest by name and invalid applyCos values', async () => {
+	it('Regression | GetAccountRequest by "name" and value of cos as invalid/negative/char/spchar/starting_with_zero', async () => {
 		const invalidValues = ['invalid', '-1', ":'<//\\\\", '01'];
 		for (const val of invalidValues) {
 			const res = await soap.makeSOAPEnvelopeAdmin(
@@ -118,7 +118,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Regression | GetAccountRequest by id with leading spaces', async () => {
+	it('Regression | GetAccountRequest by id/name and with leading spaces in id/name', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">  ${testAccountId}</account>
@@ -129,7 +129,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Regression | GetAccountRequest by id with trailing spaces', async () => {
+	it('Regression | GetAccountRequest by id/name and with trailing spaces in id/name', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${testAccountId}  </account>
@@ -139,7 +139,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Regression | GetAccountRequest by id with both leading and trailing spaces', async () => {
+	it('Regression | GetAccountRequest by id/name and with both leading and trailing spaces in id/name', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">  ${testAccountId}  </account>
@@ -149,7 +149,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Regression | GetAccountRequest with invalid by attribute', async () => {
+	it('Regression | GetAccountRequest with value of atrribute "by" as sometext (i.e invalid)', async () => {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="sometext">${testAccountId}</account>
@@ -178,7 +178,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Regression | GetAccountRequest by id of deleted account', async () => {
+	it('Regression | Get account by name of deleted account', async () => {
 		const tempName = `get_del2_${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${tempName}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuth);
@@ -198,7 +198,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Functional | Get account by id of renamed account', async () => {
+	it('Functional | Get account by id of old account', async () => {
 		const origName = `get_rename_${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${origName}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuth);
@@ -220,7 +220,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Functional | Get account by new name of renamed account', async () => {
+	it('Functional | Get account by giving the New name of the renamed account', async () => {
 		const origName = `get_rename2_${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${origName}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuth);
@@ -242,7 +242,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Regression | GetAccountRequest by id of one account and name of another', async () => {
+	it('Regression | GetAccountRequest by id of one account and name of the other account', async () => {
 		const name2 = `get_cross_${common.getUniqueString()}@${config.testDomain}`;
 		const create2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${name2}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuth);
@@ -266,7 +266,7 @@ describe('Admin > Accounts > Account Get', function () {
 	});
 
 
-	it('Regression | GetAccountRequest by multiple ids', async () => {
+	it('Regression | GetAccountRequest by multiple id\'s', async () => {
 		const name2 = `get_multi_${common.getUniqueString()}@${config.testDomain}`;
 		const create2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${name2}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuth);

@@ -57,7 +57,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Add an invalid Alias (without domain name)', async () => {
+	it('Functional | Add an invalid Alias (without domain name) to an account', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -83,7 +83,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Add an Alias with spchar/numbers', async () => {
+	it('Functional | Add an Alias with names as spchar/numbers/spaces', async () => {
 		const aliasSpChar = `:''<//\\@${config.testDomain}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -185,7 +185,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Regression | Add an Alias with name same as account name', async () => {
+	it('Regression | Add an Alias with name same as account name.', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
@@ -198,7 +198,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Add an Alias with name same as any other account name', async () => {
+	it('Functional | Add an Alias with name same as any other account name.', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
@@ -211,7 +211,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Add an Alias with name same as account name in other domain', async () => {
+	it('Functional | Add an Alias to an account with name same as account name same as any other account name in other domain..', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
@@ -224,7 +224,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Smoke | Search a mail (sent to account1) in account1 and in alias of account1', async () => {
+	it('Smoke | Search a mail (sent to account1) in account1 and in alias of account1.', async () => {
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -267,7 +267,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Smoke | Verify From: field when sent from alias', async () => {
+	it('Smoke | Verify that messages sent from the alias shows the From: field as the real acount.', async () => {
 		const aliasToken = await soap.getAccountAuthToken(aliasName, config.accountPassword);
 
 		const subject = `Subject13_${common.getUniqueString()}`;
@@ -298,7 +298,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Delete mail from account, deleted from alias', async () => {
+	it('Functional | Delete a mail from an account.The mail should also get deleted from the alias account.', async () => {
 		const auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
 		const subject = `Subject14_${common.getUniqueString()}`;
 
@@ -339,7 +339,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Delete mail from alias, deleted from account', async () => {
+	it('Functional | Delete a mail from an alias.The mail should also get deleted from the account.', async () => {
 		const auth5 = await soap.getAccountAuthToken(testAccount5, config.accountPassword);
 		const subject = `Subject15_${common.getUniqueString()}`;
 		await soap.makeSOAPEnvelopeAccount(
@@ -379,7 +379,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Check mail sent through account is present in sent folder of alias', async () => {
+	it('Functional | Check if mail sent through an account is also present in sent folder of alias or not.', async () => {
 		const auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
 		const subject = `Subject16_${common.getUniqueString()}`;
 		await soap.makeSOAPEnvelopeAccount(
@@ -404,7 +404,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Check mail sent through alias is present in sent folder of account', async () => {
+	it('Functional | Check if mail sent through an alias is also present in sent folder of account or not.', async () => {
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
 		const subject = `Subject17_${common.getUniqueString()}`;
@@ -432,7 +432,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Tag a mail in account - seen tagged in alias', async () => {
+	it('Functional | Tag a mail in an account. It should be seen tagged in alias too', async () => {
 		const auth1 = await soap.getAccountAuthToken(
 			testAccount1, config.accountPassword);
 		const subject = `Subject18_${common.getUniqueString()}`;
@@ -489,7 +489,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Tag a mail in alias - seen tagged in account', async () => {
+	it('Functional | Tag a mail in an alias. It should be seen tagged in account too', async () => {
 		const auth1 = await soap.getAccountAuthToken(
 			testAccount1, config.accountPassword);
 		const subject = `Subject19_${common.getUniqueString()}`;
@@ -545,7 +545,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Flag a mail in account - seen flagged in alias', async () => {
+	it('Functional | Flag a mail in an account. It should be seen flagged in alias too', async () => {
 		const auth1 = await soap.getAccountAuthToken(
 			testAccount1, config.accountPassword);
 		const subject = `Subject20_${common.getUniqueString()}`;
@@ -591,7 +591,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Flag a mail in alias - seen flagged in account', async () => {
+	it('Functional | Flag a mail in an alias. It should be seen flagged in account too', async () => {
 		const subject = `Subject21_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
@@ -637,7 +637,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Move mail in account to folder - reflected in alias', async () => {
+	it('Functional | Move a mail in an account to another folder. It should be moved in alias too', async () => {
 		const auth1 = await soap.getAccountAuthToken(
 			testAccount1, config.accountPassword);
 		const subject = `Subject22_${common.getUniqueString()}`;
@@ -682,7 +682,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Move mail in alias to folder - reflected in account', async () => {
+	it('Functional | Move a mail in an alias to another folder. It should be moved in account too', async () => {
 		const subject = `Subject23_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
@@ -727,7 +727,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Mark mail as read in account - seen read in alias', async () => {
+	it('Functional | Mark a mail in an account as read. It should be seen read in alias too', async () => {
 		const auth1 = await soap.getAccountAuthToken(
 			testAccount1, config.accountPassword);
 		const subject = `Subject24_${common.getUniqueString()}`;
@@ -771,7 +771,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Mark mail as read in alias - seen read in account', async () => {
+	it('Functional | Mark a mail in an alias as read. It should be seen read in account too', async () => {
 		const subject = `Subject25_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
@@ -815,7 +815,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	});
 
 
-	it('Functional | Add an invalid Alias without domain (second attempt)', async () => {
+	it('Functional | Add an invalid Alias (without domain name) to an account', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>

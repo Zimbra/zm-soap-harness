@@ -16,7 +16,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 	}
 
 	// Tests
-	it('Smoke | Create system retention policy with lifetime in seconds', async () => {
+	it('Sanity | Create System retention policy lifetime in seconds', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
@@ -29,7 +29,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 	});
 
 
-	it('Smoke | Create system retention policy with lifetime in minutes (purge)', async () => {
+	it('Sanity | Create System retention policy lifetime in minutes', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
@@ -42,7 +42,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 	});
 
 
-	it('Smoke | Create system retention policy with lifetime in days', async () => {
+	it('Sanity | Create System retention policy lifetime in days', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
@@ -55,7 +55,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 	});
 
 
-	it('Smoke | Create system retention policy with lifetime in hours', async () => {
+	it('Sanity | Create System retention policy lifetime in hours', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
@@ -68,7 +68,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 	});
 
 
-	it('Regression | Create system retention policy with invalid lifetime values', async () => {
+	it('Regression | Create System retention policy lifetime invalid values', async () => {
 		const invalidValues = ['29h67m', '---2h', '1d25h', '-2h', 'asdash', '1209d25m', '-24d'];
 		for (const val of invalidValues) {
 			const policyName = `policy${common.getUniqueString()}`;
@@ -84,7 +84,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 	});
 
 
-	it('Smoke | Modify system retention policy - change lifetime', async () => {
+	it('Sanity | Modify System retention policies with change lifetime', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
@@ -105,7 +105,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 	});
 
 
-	it('Smoke | Modify system retention policy - change name', async () => {
+	it('Sanity | Modify System retention policies change name', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
@@ -127,7 +127,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 	});
 
 
-	it('Smoke | Get system retention policy', async () => {
+	it('Sanity | Get System retention policy', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
@@ -146,7 +146,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 	});
 
 
-	it('Smoke | Delete system retention policy', async () => {
+	it('Sanity | Delete System retention policy', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
