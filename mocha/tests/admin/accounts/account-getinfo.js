@@ -120,7 +120,26 @@ describe('Admin > Accounts > Account Getinfo', function () {
 			</GetAccountInfoRequest>`, userAuthToken
 		);
 		// The XML expects account2 info to be returned (id takes precedence)
-		assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail && response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')), 'Expected PERM_DENIED or Success');
+		assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail &&
+			response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')),
+			'Expected PERM_DENIED or Success');
+	});
+
+
+	it('Regression | Get account info by name of one account and id of other', async () => {
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="name">${testAccount1}</account>
+				<account by="id">${account2Id}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.isTrue(
+			!!response.GetAccountInfoResponse ||
+			(response.Fault && response.Fault.Detail &&
+				response.Fault.Detail.Error &&
+				response.Fault.Detail.Error.Code.includes(
+					'service.PERM_DENIED')),
+			'Expected PERM_DENIED or Success');
 	});
 
 
@@ -211,7 +230,24 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		assert.exists(response.Fault);
 
 		const code = response.Fault.Detail.Error.Code;
-		assert.isTrue(code.includes('service.PERM_DENIED') || code.includes('account.NO_SUCH_ACCOUNT'));
+		assert.isTrue(code.includes('service.PERM_DENIED') ||
+			code.includes('account.NO_SUCH_ACCOUNT'));
+	});
+
+
+	it('Regression | Get account info with nonexisting name and existing id', async () => {
+		const nonExistName = 'nonexist' + common.getUniqueString() +
+			'@' + config.testDomain;
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="name">${nonExistName}</account>
+				<account by="id">${account1Id}</account>
+			</GetAccountInfoRequest>`, userAuthToken
+		);
+		assert.exists(response.Fault, 'Should return fault');
+		const code = response.Fault.Detail.Error.Code;
+		assert.isTrue(code.includes('service.PERM_DENIED') ||
+			code.includes('account.NO_SUCH_ACCOUNT'));
 	});
 
 

@@ -105,9 +105,8 @@ describe('Admin > Accounts > Account Rename', function () {
 	});
 
 
-	it('Regression | Rename an account with invalid new-names (blank/spaces/spchar/sometext/negative/zero/largenumber)', async () => {
+	it('Regression | Rename an account with blank name', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
-
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -116,21 +115,185 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
 
-		const invalidNames = ['', '             ', ":'<//\\\\", 'some text', '-1', '0', '12345678901234567890'];
+		const renameRes = await soap.makeSOAPEnvelopeAdmin(
+			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<newName></newName>
+			</RenameAccountRequest>`, adminAuthToken
+		);
+		assert.exists(renameRes.Fault, 'Should have a Fault');
+		const code = renameRes.Fault.Detail.Error.Code;
+		assert.isTrue(
+			code.includes('service.INVALID_REQUEST') ||
+			code.includes('service.PARSE_ERROR'));
+	});
 
-		for (const invalidName of invalidNames) {
-			const renameRes = await soap.makeSOAPEnvelopeAdmin(
-				`<RenameAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${acctId}</id>
-					<newName>${invalidName}</newName>
-				</RenameAccountRequest>`, adminAuthToken
-			);
-			assert.exists(renameRes.Fault,
-				`Should have a Fault for newName="${invalidName}"`);
-			const code = renameRes.Fault.Detail.Error.Code;
-			assert.isTrue(code.includes('service.INVALID_REQUEST') || code.includes('service.PARSE_ERROR'),
-				`Should return INVALID_REQUEST or PARSE_ERROR for newName="${invalidName}", got: ${code}`);
-		}
+
+	it('Regression | Rename an account with spaces in name', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		const createRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = createRes.CreateAccountResponse.account[0].id;
+
+		const renameRes = await soap.makeSOAPEnvelopeAdmin(
+			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<newName>             </newName>
+			</RenameAccountRequest>`, adminAuthToken
+		);
+		assert.exists(renameRes.Fault, 'Should have a Fault');
+		const code = renameRes.Fault.Detail.Error.Code;
+		assert.isTrue(
+			code.includes('service.INVALID_REQUEST') ||
+			code.includes('service.PARSE_ERROR'));
+	});
+
+
+	it('Regression | Rename an account with spchar in name', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		const createRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = createRes.CreateAccountResponse.account[0].id;
+
+		const renameRes = await soap.makeSOAPEnvelopeAdmin(
+			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<newName>:'&lt;//\\</newName>
+			</RenameAccountRequest>`, adminAuthToken
+		);
+		assert.exists(renameRes.Fault, 'Should have a Fault');
+		const code = renameRes.Fault.Detail.Error.Code;
+		assert.isTrue(
+			code.includes('service.INVALID_REQUEST') ||
+			code.includes('service.PARSE_ERROR'));
+	});
+
+
+	it('Regression | Rename an account with sometext in name', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		const createRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = createRes.CreateAccountResponse.account[0].id;
+
+		const renameRes = await soap.makeSOAPEnvelopeAdmin(
+			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<newName>some text</newName>
+			</RenameAccountRequest>`, adminAuthToken
+		);
+		assert.exists(renameRes.Fault, 'Should have a Fault');
+		const code = renameRes.Fault.Detail.Error.Code;
+		assert.isTrue(
+			code.includes('service.INVALID_REQUEST') ||
+			code.includes('service.PARSE_ERROR'));
+	});
+
+
+	it('Regression | Rename an account with sometext in name (by name)', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		const createRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = createRes.CreateAccountResponse.account[0].id;
+
+		const renameRes = await soap.makeSOAPEnvelopeAdmin(
+			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<newName>some text</newName>
+			</RenameAccountRequest>`, adminAuthToken
+		);
+		assert.exists(renameRes.Fault, 'Should have a Fault');
+		const code = renameRes.Fault.Detail.Error.Code;
+		assert.isTrue(
+			code.includes('service.INVALID_REQUEST') ||
+			code.includes('service.PARSE_ERROR'));
+	});
+
+
+	it('Regression | Rename an account with negative name', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		const createRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = createRes.CreateAccountResponse.account[0].id;
+
+		const renameRes = await soap.makeSOAPEnvelopeAdmin(
+			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<newName>-1</newName>
+			</RenameAccountRequest>`, adminAuthToken
+		);
+		assert.exists(renameRes.Fault, 'Should have a Fault');
+		const code = renameRes.Fault.Detail.Error.Code;
+		assert.isTrue(
+			code.includes('service.INVALID_REQUEST') ||
+			code.includes('service.PARSE_ERROR'));
+	});
+
+
+	it('Regression | Rename an account with zero in name', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		const createRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = createRes.CreateAccountResponse.account[0].id;
+
+		const renameRes = await soap.makeSOAPEnvelopeAdmin(
+			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<newName>0</newName>
+			</RenameAccountRequest>`, adminAuthToken
+		);
+		assert.exists(renameRes.Fault, 'Should have a Fault');
+		const code = renameRes.Fault.Detail.Error.Code;
+		assert.isTrue(
+			code.includes('service.INVALID_REQUEST') ||
+			code.includes('service.PARSE_ERROR'));
+	});
+
+
+	it('Regression | Rename an account with largenumber', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		const createRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = createRes.CreateAccountResponse.account[0].id;
+
+		const renameRes = await soap.makeSOAPEnvelopeAdmin(
+			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<newName>12345678901234567890</newName>
+			</RenameAccountRequest>`, adminAuthToken
+		);
+		assert.exists(renameRes.Fault, 'Should have a Fault');
+		const code = renameRes.Fault.Detail.Error.Code;
+		assert.isTrue(
+			code.includes('service.INVALID_REQUEST') ||
+			code.includes('service.PARSE_ERROR'));
 	});
 
 

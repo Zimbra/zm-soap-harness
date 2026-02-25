@@ -184,4 +184,201 @@ describe('Admin > Accounts > Addressbooksizelimit > Addressbook Size Limit', fun
 		assert.exists(response.CreateContactResponse,
 			'Should be able to add after deleting');
 	});
+
+
+	it('Sanity | Set zimbraContactMaxNumEntries to large value - 51st should fail', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		await common.sleep(500);
+		const acctRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = (Array.isArray(acctRes.CreateAccountResponse?.account)
+			? acctRes.CreateAccountResponse.account[0].id
+			: acctRes.CreateAccountResponse?.account?.id);
+
+		await soap.makeSOAPEnvelopeAdmin(
+			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<a n="zimbraContactMaxNumEntries">50</a>
+			</ModifyAccountRequest>`, adminAuthToken
+		);
+
+		const userAuth = await soap.getAccountAuthToken(
+			acctName, config.accountPassword);
+
+		// Add 50 contacts
+		for (let i = 0; i < 50; i++) {
+			const res = await soap.makeSOAPEnvelopeAccount(
+				`<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">First${common.getUniqueString()}</a>
+						<a n="lastName">Last${common.getUniqueString()}</a>
+						<a n="email">e${common.getUniqueString()}@foo.com</a>
+					</cn>
+				</CreateContactRequest>`, userAuth
+			);
+			assert.exists(res.CreateContactResponse,
+				`Contact ${i + 1} should be created`);
+		}
+
+		// 51st should fail
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<CreateContactRequest xmlns="urn:zimbraMail">
+				<cn>
+					<a n="firstName">First${common.getUniqueString()}</a>
+					<a n="lastName">Last${common.getUniqueString()}</a>
+					<a n="email">e${common.getUniqueString()}@foo.com</a>
+				</cn>
+			</CreateContactRequest>`, userAuth
+		);
+		assert.exists(response.Fault, '51st contact should fail');
+		assert.include(response.Fault.Detail.Error.Code,
+			'mail.TOO_MANY_CONTACTS');
+	});
+
+
+	it('Functional | AutoAddAddress blocked when at max contacts', async () => {
+		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		const recipientName = `test.${common.getUniqueString()}@${config.testDomain}`;
+		await common.sleep(500);
+
+		const acctRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${acctName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const acctId = (Array.isArray(acctRes.CreateAccountResponse?.account)
+			? acctRes.CreateAccountResponse.account[0].id
+			: acctRes.CreateAccountResponse?.account?.id);
+
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${recipientName}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+
+		// Set max to 2
+		await soap.makeSOAPEnvelopeAdmin(
+			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${acctId}</id>
+				<a n="zimbraContactMaxNumEntries">2</a>
+			</ModifyAccountRequest>`, adminAuthToken
+		);
+
+		const userAuth = await soap.getAccountAuthToken(
+			acctName, config.accountPassword);
+
+		// Add 2 contacts to reach max
+		for (let i = 0; i < 2; i++) {
+			await soap.makeSOAPEnvelopeAccount(
+				`<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">F${common.getUniqueString()}</a>
+						<a n="lastName">L${common.getUniqueString()}</a>
+						<a n="email">e${common.getUniqueString()}@foo.com</a>
+					</cn>
+				</CreateContactRequest>`, userAuth
+			);
+		}
+
+		// Verify can't add more
+		const failRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateContactRequest xmlns="urn:zimbraMail">
+				<cn>
+					<a n="firstName">F${common.getUniqueString()}</a>
+					<a n="lastName">L${common.getUniqueString()}</a>
+					<a n="email">e${common.getUniqueString()}@foo.com</a>
+				</cn>
+			</CreateContactRequest>`, userAuth
+		);
+		assert.exists(failRes.Fault, 'Should be at max contacts');
+
+		// Send mail with add=1 (AutoAddAddress)
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${recipientName}" add="1"/>
+					<su>test subject</su>
+					<mp ct="text/plain">
+						<content>test content</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, userAuth
+		);
+
+		// Verify contact was NOT auto-added
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>${recipientName}</query>
+			</SearchRequest>`, userAuth
+		);
+		if (searchRes.SearchResponse) {
+			const cn = searchRes.SearchResponse.cn;
+			assert.isTrue(!cn || (Array.isArray(cn) && cn.length === 0),
+				'Contact should not be auto-added at max');
+		}
+	});
+
+
+	it('Functional | Modify contact succeeds when at max contacts', async () => {
+		const userAuth = await soap.getAccountAuthToken(
+			account3Name, config.accountPassword);
+
+		// Set max to 2
+		await soap.makeSOAPEnvelopeAdmin(
+			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${account3Id}</id>
+				<a n="zimbraContactMaxNumEntries">2</a>
+			</ModifyAccountRequest>`, adminAuthToken
+		);
+
+		// Add 2 contacts
+		let contactId;
+		for (let i = 0; i < 2; i++) {
+			const res = await soap.makeSOAPEnvelopeAccount(
+				`<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">F${common.getUniqueString()}</a>
+						<a n="lastName">L${common.getUniqueString()}</a>
+						<a n="email">e${common.getUniqueString()}@foo.com</a>
+					</cn>
+				</CreateContactRequest>`, userAuth
+			);
+			const cn = Array.isArray(res.CreateContactResponse?.cn)
+				? res.CreateContactResponse.cn[0]
+				: res.CreateContactResponse?.cn;
+			contactId = cn?.id;
+		}
+
+		// Verify at max — can't add more
+		const failRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateContactRequest xmlns="urn:zimbraMail">
+				<cn>
+					<a n="firstName">F${common.getUniqueString()}</a>
+					<a n="lastName">L${common.getUniqueString()}</a>
+					<a n="email">e${common.getUniqueString()}@foo.com</a>
+				</cn>
+			</CreateContactRequest>`, userAuth
+		);
+		assert.exists(failRes.Fault, 'Should be at max');
+
+		// Modify existing contact — should succeed
+		const modRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyContactRequest xmlns="urn:zimbraMail"
+				replace="0" force="1">
+				<cn id="${contactId}">
+					<a n="firstName">NewF${common.getUniqueString()}</a>
+					<a n="lastName">NewL${common.getUniqueString()}</a>
+					<a n="email">new${common.getUniqueString()}@foo.com</a>
+				</cn>
+			</ModifyContactRequest>`, userAuth
+		);
+		assert.exists(modRes.ModifyContactResponse,
+			'Should be able to modify contact at max');
+	});
 });

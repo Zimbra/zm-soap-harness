@@ -57,7 +57,16 @@ describe('Module > Feature Name', function () {
 ## Formatting Rules
 - Use tabs for indentation
 - **Double blank line** between `it()` blocks
-- **100 character line limit** — break long lines at `||`, `&&`, and `?` operators
+- **100 character line limit** — STRICTLY break long lines at `||`, `&&`, and `?` operators. Examples:
+  ```js
+  // WRONG — exceeds 100 chars:
+  assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail && response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')), 'Expected PERM_DENIED or Success');
+
+  // CORRECT — broken at && and after closing paren:
+  assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail &&
+  			response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')),
+  			'Expected PERM_DENIED or Success');
+  ```
 - **End-of-file format** — STRICTLY follow this pattern (tab-indented inner `});`, no blank line, no trailing whitespace):
   ```js
   // CORRECT — always end files exactly like this:

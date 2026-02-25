@@ -402,4 +402,430 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		assert.exists(searchAlias.SearchResponse.m,
 			'Message found in Sent folder via alias');
 	});
+
+
+	it('Functional | Check mail sent through alias is present in sent folder of account', async () => {
+		const aliasToken = await soap.getAccountAuthToken(
+			aliasName, config.accountPassword);
+		const subject = `Subject17_${common.getUniqueString()}`;
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${testAccount5}"/>
+					<su>${subject}</su>
+					<mp ct="text/plain"><content>Sent from alias</content></mp>
+				</m>
+			</SendMsgRequest>`, aliasToken
+		);
+
+		const auth1 = await soap.getAccountAuthToken(
+			testAccount1, config.accountPassword);
+
+		const search = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject}) in:sent</query>
+			</SearchRequest>`, auth1
+		);
+		assert.exists(search.SearchResponse.m,
+			'Sent mail from alias should be in account sent');
+	});
+
+
+	it('Functional | Tag a mail in account - seen tagged in alias', async () => {
+		const auth1 = await soap.getAccountAuthToken(
+			testAccount1, config.accountPassword);
+		const subject = `Subject18_${common.getUniqueString()}`;
+		const auth5 = await soap.getAccountAuthToken(
+			testAccount5, config.accountPassword);
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${testAccount1}"/>
+					<su>${subject}</su>
+					<mp ct="text/plain"><content>tag test</content></mp>
+				</m>
+			</SendMsgRequest>`, auth5
+		);
+		await common.sleep(4000);
+
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, auth1
+		);
+		const msgId = searchRes.SearchResponse.m[0].id;
+
+		// Create tag and apply
+		const tagRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="tag${common.getUniqueString()}"
+					color="1"/>
+			</CreateTagRequest>`, auth1
+		);
+		const tagId = tagRes.CreateTagResponse.tag[0].id;
+
+		await soap.makeSOAPEnvelopeAccount(
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="tag"
+					tag="${tagId}"/>
+			</MsgActionRequest>`, auth1
+		);
+
+		// Check via alias
+		const aliasToken = await soap.getAccountAuthToken(
+			aliasName, config.accountPassword);
+		const aliasSearch = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, aliasToken
+		);
+		const aliasMsg = aliasSearch.SearchResponse.m[0];
+		assert.exists(aliasMsg, 'Message should exist in alias');
+		assert.include(aliasMsg.t || '', tagId,
+			'Tag should be visible via alias');
+	});
+
+
+	it('Functional | Tag a mail in alias - seen tagged in account', async () => {
+		const auth1 = await soap.getAccountAuthToken(
+			testAccount1, config.accountPassword);
+		const subject = `Subject19_${common.getUniqueString()}`;
+		const auth5 = await soap.getAccountAuthToken(
+			testAccount5, config.accountPassword);
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${testAccount1}"/>
+					<su>${subject}</su>
+					<mp ct="text/plain"><content>tag test</content></mp>
+				</m>
+			</SendMsgRequest>`, auth5
+		);
+		await common.sleep(4000);
+
+		const aliasToken = await soap.getAccountAuthToken(
+			aliasName, config.accountPassword);
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, aliasToken
+		);
+		const msgId = searchRes.SearchResponse.m[0].id;
+
+		const tagRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="tag${common.getUniqueString()}"
+					color="2"/>
+			</CreateTagRequest>`, aliasToken
+		);
+		const tagId = tagRes.CreateTagResponse.tag[0].id;
+
+		await soap.makeSOAPEnvelopeAccount(
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="tag"
+					tag="${tagId}"/>
+			</MsgActionRequest>`, aliasToken
+		);
+
+		// Check via account
+		const acctSearch = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, auth1
+		);
+		const acctMsg = acctSearch.SearchResponse.m[0];
+		assert.exists(acctMsg, 'Message should exist');
+		assert.include(acctMsg.t || '', tagId,
+			'Tag should be visible via account');
+	});
+
+
+	it('Functional | Flag a mail in account - seen flagged in alias', async () => {
+		const auth1 = await soap.getAccountAuthToken(
+			testAccount1, config.accountPassword);
+		const subject = `Subject20_${common.getUniqueString()}`;
+		const auth5 = await soap.getAccountAuthToken(
+			testAccount5, config.accountPassword);
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${testAccount1}"/>
+					<su>${subject}</su>
+					<mp ct="text/plain"><content>flag test</content></mp>
+				</m>
+			</SendMsgRequest>`, auth5
+		);
+		await common.sleep(4000);
+
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, auth1
+		);
+		const msgId = searchRes.SearchResponse.m[0].id;
+
+		await soap.makeSOAPEnvelopeAccount(
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="flag"/>
+			</MsgActionRequest>`, auth1
+		);
+
+		const aliasToken = await soap.getAccountAuthToken(
+			aliasName, config.accountPassword);
+		const aliasSearch = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, aliasToken
+		);
+		const aliasMsg = aliasSearch.SearchResponse.m[0];
+		assert.exists(aliasMsg, 'Should exist in alias');
+		assert.include(aliasMsg.f || '', 'f',
+			'Should be flagged in alias');
+	});
+
+
+	it('Functional | Flag a mail in alias - seen flagged in account', async () => {
+		const subject = `Subject21_${common.getUniqueString()}`;
+		const auth5 = await soap.getAccountAuthToken(
+			testAccount5, config.accountPassword);
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${testAccount1}"/>
+					<su>${subject}</su>
+					<mp ct="text/plain"><content>flag test</content></mp>
+				</m>
+			</SendMsgRequest>`, auth5
+		);
+		await common.sleep(4000);
+
+		const aliasToken = await soap.getAccountAuthToken(
+			aliasName, config.accountPassword);
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, aliasToken
+		);
+		const msgId = searchRes.SearchResponse.m[0].id;
+
+		await soap.makeSOAPEnvelopeAccount(
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="flag"/>
+			</MsgActionRequest>`, aliasToken
+		);
+
+		const auth1 = await soap.getAccountAuthToken(
+			testAccount1, config.accountPassword);
+		const acctSearch = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, auth1
+		);
+		const acctMsg = acctSearch.SearchResponse.m[0];
+		assert.exists(acctMsg, 'Should exist in account');
+		assert.include(acctMsg.f || '', 'f',
+			'Should be flagged in account');
+	});
+
+
+	it('Functional | Move mail in account to folder - reflected in alias', async () => {
+		const auth1 = await soap.getAccountAuthToken(
+			testAccount1, config.accountPassword);
+		const subject = `Subject22_${common.getUniqueString()}`;
+		const auth5 = await soap.getAccountAuthToken(
+			testAccount5, config.accountPassword);
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${testAccount1}"/>
+					<su>${subject}</su>
+					<mp ct="text/plain"><content>move test</content></mp>
+				</m>
+			</SendMsgRequest>`, auth5
+		);
+		await common.sleep(4000);
+
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, auth1
+		);
+		const msgId = searchRes.SearchResponse.m[0].id;
+
+		// Move to Drafts (folder id 6)
+		await soap.makeSOAPEnvelopeAccount(
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="move" l="6"/>
+			</MsgActionRequest>`, auth1
+		);
+
+		const aliasToken = await soap.getAccountAuthToken(
+			aliasName, config.accountPassword);
+		const aliasSearch = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject}) in:drafts</query>
+			</SearchRequest>`, aliasToken
+		);
+		assert.exists(aliasSearch.SearchResponse.m,
+			'Moved message should be in drafts via alias');
+	});
+
+
+	it('Functional | Move mail in alias to folder - reflected in account', async () => {
+		const subject = `Subject23_${common.getUniqueString()}`;
+		const auth5 = await soap.getAccountAuthToken(
+			testAccount5, config.accountPassword);
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${testAccount1}"/>
+					<su>${subject}</su>
+					<mp ct="text/plain"><content>move test</content></mp>
+				</m>
+			</SendMsgRequest>`, auth5
+		);
+		await common.sleep(4000);
+
+		const aliasToken = await soap.getAccountAuthToken(
+			aliasName, config.accountPassword);
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, aliasToken
+		);
+		const msgId = searchRes.SearchResponse.m[0].id;
+
+		// Move to Drafts (folder id 6)
+		await soap.makeSOAPEnvelopeAccount(
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="move" l="6"/>
+			</MsgActionRequest>`, aliasToken
+		);
+
+		const auth1 = await soap.getAccountAuthToken(
+			testAccount1, config.accountPassword);
+		const acctSearch = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject}) in:drafts</query>
+			</SearchRequest>`, auth1
+		);
+		assert.exists(acctSearch.SearchResponse.m,
+			'Moved message should be in drafts via account');
+	});
+
+
+	it('Functional | Mark mail as read in account - seen read in alias', async () => {
+		const auth1 = await soap.getAccountAuthToken(
+			testAccount1, config.accountPassword);
+		const subject = `Subject24_${common.getUniqueString()}`;
+		const auth5 = await soap.getAccountAuthToken(
+			testAccount5, config.accountPassword);
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${testAccount1}"/>
+					<su>${subject}</su>
+					<mp ct="text/plain"><content>read test</content></mp>
+				</m>
+			</SendMsgRequest>`, auth5
+		);
+		await common.sleep(4000);
+
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, auth1
+		);
+		const msgId = searchRes.SearchResponse.m[0].id;
+
+		await soap.makeSOAPEnvelopeAccount(
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="read"/>
+			</MsgActionRequest>`, auth1
+		);
+
+		const aliasToken = await soap.getAccountAuthToken(
+			aliasName, config.accountPassword);
+		const aliasSearch = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject}) is:read</query>
+			</SearchRequest>`, aliasToken
+		);
+		assert.exists(aliasSearch.SearchResponse.m,
+			'Message should be read in alias');
+	});
+
+
+	it('Functional | Mark mail as read in alias - seen read in account', async () => {
+		const subject = `Subject25_${common.getUniqueString()}`;
+		const auth5 = await soap.getAccountAuthToken(
+			testAccount5, config.accountPassword);
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${testAccount1}"/>
+					<su>${subject}</su>
+					<mp ct="text/plain"><content>read test</content></mp>
+				</m>
+			</SendMsgRequest>`, auth5
+		);
+		await common.sleep(4000);
+
+		const aliasToken = await soap.getAccountAuthToken(
+			aliasName, config.accountPassword);
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, aliasToken
+		);
+		const msgId = searchRes.SearchResponse.m[0].id;
+
+		await soap.makeSOAPEnvelopeAccount(
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="read"/>
+			</MsgActionRequest>`, aliasToken
+		);
+
+		const auth1 = await soap.getAccountAuthToken(
+			testAccount1, config.accountPassword);
+		const acctSearch = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="message">
+				<query>subject:(${subject}) is:read</query>
+			</SearchRequest>`, auth1
+		);
+		assert.exists(acctSearch.SearchResponse.m,
+			'Message should be read in account');
+	});
+
+
+	it('Functional | Add an invalid Alias without domain (second attempt)', async () => {
+		const response = await soap.makeSOAPEnvelopeAdmin(
+			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+				<id>${account3Id}</id>
+				<alias>invalidalias</alias>
+			</AddAccountAliasRequest>`, adminAuthToken
+		);
+		assert.exists(response.Fault, 'Should have a Fault');
+		assert.include(
+			response.Fault.Detail.Error.Code,
+			'service.INVALID_REQUEST',
+			'Should return INVALID_REQUEST');
+	});
 });
