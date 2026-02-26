@@ -25,6 +25,7 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 				<a n="zimbraPasswordLocked">FALSE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -47,6 +48,7 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -63,6 +65,7 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 				<password>${account1NewPassword}</password>
 			</ResetPasswordRequest>`, acct1Token
 		);
+		assert.notExists(resetRes.Fault, 'Response should not be a Fault');
 		assert.exists(resetRes.ResetPasswordResponse,
 			'ResetPasswordResponse should exist');
 
@@ -73,6 +76,7 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 				<password>${account1NewPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authResNew.Fault, 'Response should not be a Fault');
 		assert.exists(authResNew.AuthResponse,
 			'AuthResponse with new password should exist');
 		assert.exists(authResNew.AuthResponse.authToken, 'authToken should exist');
@@ -90,7 +94,7 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 	});
 
 
-	it('Sanity | Reset password for password less than min length', async () => {
+	it('Sanity | Reset password based on auth token for password less than min length', async () => {
 		// Auth as account1 with the new password from previous test
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -98,6 +102,7 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 				<password>${account1NewPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -129,6 +134,7 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 				<password>${account1NewPassword || config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');

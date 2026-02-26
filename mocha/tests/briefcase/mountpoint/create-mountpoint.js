@@ -29,6 +29,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -43,6 +44,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Create account3 and account4 for non-shared folder test
@@ -53,6 +55,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
 		assert.exists(createRes3.CreateAccountResponse, 'Should create account3');
 
 		const acct3 = Array.isArray(createRes3.CreateAccountResponse.account)
@@ -67,6 +70,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes4.Fault, 'Response should not be a Fault');
 		assert.exists(createRes4.CreateAccountResponse, 'Should create account4');
 
 		// Get auth tokens
@@ -76,6 +80,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist for account1');
 
 		account1Token = Array.isArray(authRes1.AuthResponse.authToken)
@@ -88,6 +93,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist for account2');
 
 		account2Token = Array.isArray(authRes2.AuthResponse.authToken)
@@ -100,6 +106,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes4.Fault, 'Response should not be a Fault');
 		assert.exists(authRes4.AuthResponse, 'AuthResponse should exist for account4');
 
 		account4Token = Array.isArray(authRes4.AuthResponse.authToken)
@@ -122,6 +129,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<folder l="${briefcaseFolderId}" name="BriefcaseFolder${common.getUniqueString()}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse,
 			'Should create sub-folder under Briefcase');
 		const createdFolder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
@@ -169,6 +177,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${account2BriefcaseId}" name="Mounted.${common.getUniqueString()}" view="document" rid="${bcFolder1Id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
 		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
@@ -177,7 +186,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 	});
 
 
-	it('Regression | Mount a delegated folder with invalid values of view (blank, space, spchar, sometext, negative, zero, largenumber, decimal)', async () => {
+	it('Regression | Mount a delegated folder with invalid values of view(blank,space,spchar,sometext,negative,zero,largenumber,decimal)', async () => {
 		const invalidViews = [
 			'', '            ', ':/.;<*\'\'',
 			'thisisinvalidtexttocheckmountpoint', '-1', '0', '1234567890', '12.34'
@@ -194,6 +203,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 					/service\.PARSE_ERROR|service\.INVALID_REQUEST/,
 					'Should return PARSE_ERROR or INVALID_REQUEST for view: ' + view);
 			} else {
+				assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 				assert.exists(mountRes.CreateMountpointResponse,
 					'CreateMountpointResponse should exist for view: ' + view);
 				const link = Array.isArray(mountRes.CreateMountpointResponse.link)
@@ -206,7 +216,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 	});
 
 
-	it('Regression | Verify that with invalid (blank, space, spchar, sometext, negative, zero, largenumber, decimal) values of rid, a delegated folder cannot be mounted', async () => {
+	it('Regression | Verify that with invalid(blank,space,spchar,sometext,negative,zero,largenumber,decimal) values of rid, a delegated folder cannot be mounted.', async () => {
 		const invalidRids = [
 			'', '            ', ':/.;<*\'\'',
 			'thisisinvalidtexttocheckmountpoint', '-1', '0', '12.34'
@@ -226,7 +236,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 	});
 
 
-	it('Regression | Mount a delegated folder with invalid values of zid (blank, space, spchar, sometext, negative, zero, largenumber, decimal)', async () => {
+	it('Regression | Mount a delegated folder with invalid values of zid(blank,space,spchar,sometext,negative,zero,largenumber,decimal)', async () => {
 		const invalidZids = [
 			'', '            ', ':/.;<*\'\'',
 			'thisisinvalidtexttocheckmountpoint', '-19573920374930', '0',
@@ -247,7 +257,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 	});
 
 
-	it('Regression | Mount a delegated briefcase folder with invalid values of l (blank, space, spchar, sometext, negative, zero, largenumber, decimal)', async () => {
+	it('Regression | Mount a delegated briefcase folder with invalid values of l(blank,space,spchar,sometext,negative,zero,largenumber,decimal)', async () => {
 		const invalidLValues = [
 			{ l: '', code: 'service.INVALID_REQUEST' },
 			{ l: '            ', code: 'service.INVALID_REQUEST' },
@@ -280,6 +290,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<folder l="${briefcaseFolderId}" name="BCFolder${common.getUniqueString()}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse,
 			'Should create sub-folder');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
@@ -302,6 +313,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${account2BriefcaseId}" name="${mountName1}" view="document" rid="${bcFolder2Id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes1.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes1.CreateMountpointResponse,
 			'First CreateMountpointResponse should exist');
 		const link1 = Array.isArray(mountRes1.CreateMountpointResponse.link)
@@ -316,6 +328,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${account2BriefcaseId}" name="${mountName2}" view="document" rid="${bcFolder2Id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes2.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes2.CreateMountpointResponse,
 			'Second CreateMountpointResponse should exist');
 		const link2 = Array.isArray(mountRes2.CreateMountpointResponse.link)
@@ -328,6 +341,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const rootFolder = Array.isArray(getFolderRes.GetFolderResponse.folder)
 			? getFolderRes.GetFolderResponse.folder[0]
@@ -343,6 +357,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<folder l="${briefcaseFolderId}" name="folder${common.getUniqueString()}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse,
 			'Should create sub-folder');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
@@ -370,7 +385,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 	});
 
 
-	it('Regression | Verify that CreateMountpointRequest with missing attribute gives service.INVALID_REQUEST', async () => {
+	it('Regression | Verify that CreateMountpointRequest with missing attribute gives serviceINVALIDREQUEST', async () => {
 		// Without l attribute
 		const mountRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
@@ -397,6 +412,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${account2BriefcaseId}" name="mount.${common.getUniqueString()}" rid="${bcFolder1Id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes3.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes3.CreateMountpointResponse,
 			'CreateMountpointResponse should exist without view (optional)');
 
@@ -440,6 +456,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${account2BriefcaseId}" name="link2" view="appointment" rid="${bcFolder1Id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
 		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
@@ -468,6 +485,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<folder l="${account2BriefcaseId}" name="folder${common.getUniqueString()}"/>
 			</CreateFolderRequest>`, account2Token
 		);
+		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse,
 			'Should create custom folder');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
@@ -480,6 +498,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${folder.id}" name="mount.${common.getUniqueString()}" view="appointment" rid="${bcFolder1Id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
 	});
@@ -495,6 +514,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<folder l="${account2BriefcaseId}" name="${folderName}"/>
 			</CreateFolderRequest>`, account2Token
 		);
+		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse,
 			'Should create folder');
 
@@ -504,6 +524,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${account2BriefcaseId}" name="${mountName}" view="appointment" rid="${bcFolder1Id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes1.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes1.CreateMountpointResponse,
 			'First mountpoint should be created');
 
@@ -536,6 +557,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<folder l="${briefcaseFolderId}" name="folder${common.getUniqueString()}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse,
 			'Should create folder');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
@@ -556,6 +578,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${account2BriefcaseId}" name="mount.${common.getUniqueString()}" view="appointment" rid="${folder.id}" zid="${account1Id}" color="3" flag="urgent"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
 		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
@@ -572,6 +595,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<folder l="${briefcaseFolderId}" name="folder${common.getUniqueString()}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse,
 			'Should create folder with view=document');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
@@ -592,6 +616,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${account2BriefcaseId}" name="mount.${common.getUniqueString()}" rid="${folder.id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
 		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
@@ -606,6 +631,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<folder l="${briefcaseFolderId}" name="folder${common.getUniqueString()}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createFolderRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes2.CreateFolderResponse,
 			'Should create second folder with view=document');
 		const folder2 = Array.isArray(createFolderRes2.CreateFolderResponse.folder)
@@ -625,6 +651,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				<link l="${account2BriefcaseId}" name="mount.${common.getUniqueString()}" rid="${folder2.id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes2.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes2.CreateMountpointResponse,
 			'Second CreateMountpointResponse should exist');
 		const link2 = Array.isArray(mountRes2.CreateMountpointResponse.link)

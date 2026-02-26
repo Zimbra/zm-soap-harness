@@ -21,6 +21,7 @@ describe('Auth > Bugs > Bug 65554', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -37,6 +38,7 @@ describe('Auth > Bugs > Bug 65554', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth as account1 to get authToken
@@ -46,6 +48,7 @@ describe('Auth > Bugs > Bug 65554', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'Should authenticate account1');
 
 		account1AuthToken = Array.isArray(authRes.AuthResponse.authToken)
@@ -59,13 +62,14 @@ describe('Auth > Bugs > Bug 65554', function () {
 	}
 
 	// Tests
-	it('Sanity | AuthRequest with authtoken contains verifyAccount=1 should match encoded account name in authtoken', async () => {
+	it('Sanity | AuthRequest with authtoken contains verifyAccount 1 should match encoded account name in authtoken', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<authToken verifyAccount="1">${account1AuthToken}</authToken>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -73,7 +77,7 @@ describe('Auth > Bugs > Bug 65554', function () {
 	});
 
 
-	it('Sanity | AuthRequest with authtoken contains verifyAccount=1 should return AUTH_REQUIRED if account name does not match encoded account name in authtoken', async () => {
+	it('Sanity | AuthRequest with authtoken contains verifyAccount 1 should return AUTHREQUIRED if account name does not match encoded account name in authtoken', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>

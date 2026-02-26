@@ -146,6 +146,63 @@
 
 
 </t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+<t:test_case testcaseid="mbx_user_SearchRequest1" type="deprecated" bugids="2323" >
+ <t:objective>Testing Search request with mbx parameters (as a standard user)</t:objective>
+ <t:steps>
+	1. Login to account2
+	2. Using account2 authToken, run a search against account1
+	3. The response should contain the correct email
+ </t:steps>
+
+
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account2.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	        <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="Search_Request4">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <mbx id="${test_account1.id}"/> 
+                   <query>subject:(${email_subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//mail:SearchResponse/mail:m">
+                        <t:select attr="su" match="^${email_subject}$"/>
+                </t:select>
+        </t:response>
+    </t:test>  
  
+<!--
+    <t:test id="Search_Request4">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <mbx id="${test_account1.mbxid}"/> 
+                   <query>subject:(${email_subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//mail:SearchResponse/mail:m">
+                        <t:select attr="su" match="^${email_subject}$"/>
+                </t:select>
+        </t:response>
+    </t:test>  
+-->
+ 
+</t:test_case>  
+    
+              
 </t:tests>
 

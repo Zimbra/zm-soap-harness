@@ -23,6 +23,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		// Create account2
@@ -33,6 +34,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
@@ -47,6 +49,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -57,6 +60,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const folders = folderRes.GetFolderResponse.folder;
@@ -83,6 +87,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -95,6 +100,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="watch"/>
 			</DocumentActionRequest>`, account1Token
 		);
+		assert.notExists(watchRes.Fault, 'Response should not be a Fault');
 		assert.exists(watchRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 		const watchAction = Array.isArray(watchRes.DocumentActionResponse.action)
@@ -106,6 +112,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 		const watchItemsRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetWatchingItemsRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+		assert.notExists(watchItemsRes.Fault, 'Response should not be a Fault');
 		assert.exists(watchItemsRes.GetWatchingItemsResponse,
 			'GetWatchingItemsResponse should exist');
 
@@ -115,6 +122,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="!watch"/>
 			</DocumentActionRequest>`, account1Token
 		);
+		assert.notExists(unwatchRes.Fault, 'Response should not be a Fault');
 		assert.exists(unwatchRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 
@@ -122,6 +130,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 		const watchItems2 = await soap.makeSOAPEnvelopeAccount(
 			'<GetWatchingItemsRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+		assert.notExists(watchItems2.Fault, 'Response should not be a Fault');
 		assert.exists(watchItems2.GetWatchingItemsResponse,
 			'GetWatchingItemsResponse should exist');
 	});
@@ -136,6 +145,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -148,6 +158,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetDocumentShareURLRequest>`, account1Token
 		);
+		assert.notExists(shareUrlRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareUrlRes.GetDocumentShareURLResponse,
 			'GetDocumentShareURLResponse should exist');
 
@@ -157,6 +168,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+		assert.notExists(shareDetailsRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareDetailsRes.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const item = Array.isArray(shareDetailsRes.GetShareDetailsResponse.item)
@@ -175,6 +187,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -189,6 +202,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</action>
 			</DocumentActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		assert.exists(grantRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 		const grantAction = Array.isArray(grantRes.DocumentActionResponse.action)
@@ -202,6 +216,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const shareItem = Array.isArray(shareRes.GetShareDetailsResponse.item)
@@ -219,6 +234,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="!grant" zid="${account2Zid}"/>
 			</DocumentActionRequest>`, account1Token
 		);
+		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 
@@ -228,6 +244,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+		assert.notExists(share2Res.Fault, 'Response should not be a Fault');
 		assert.exists(share2Res.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const item2 = Array.isArray(share2Res.GetShareDetailsResponse.item)
@@ -245,6 +262,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -259,6 +277,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</action>
 			</DocumentActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		assert.exists(grantRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 		const grantAction = Array.isArray(grantRes.DocumentActionResponse.action)
@@ -272,6 +291,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const shareItem = Array.isArray(shareRes.GetShareDetailsResponse.item)
@@ -289,6 +309,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="!grant" zid="99999999-9999-9999-9999-999999999999"/>
 			</DocumentActionRequest>`, account1Token
 		);
+		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 
@@ -298,6 +319,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+		assert.notExists(share2Res.Fault, 'Response should not be a Fault');
 		assert.exists(share2Res.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const item2 = Array.isArray(share2Res.GetShareDetailsResponse.item)
@@ -315,6 +337,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -329,6 +352,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</action>
 			</DocumentActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		assert.exists(grantRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 		const grantAction = Array.isArray(grantRes.DocumentActionResponse.action)
@@ -342,6 +366,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const shareItem = Array.isArray(shareRes.GetShareDetailsResponse.item)
@@ -359,6 +384,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="!grant" zid="00000000-0000-0000-0000-000000000000"/>
 			</DocumentActionRequest>`, account1Token
 		);
+		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 
@@ -368,6 +394,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+		assert.notExists(share2Res.Fault, 'Response should not be a Fault');
 		assert.exists(share2Res.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const item2 = Array.isArray(share2Res.GetShareDetailsResponse.item)

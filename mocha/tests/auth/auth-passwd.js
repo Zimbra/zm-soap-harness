@@ -24,6 +24,7 @@ describe('Auth > Auth Passwd', function () {
 				<password>${validPassword1}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create user1');
 
 		// Create account with space in password
@@ -34,6 +35,7 @@ describe('Auth > Auth Passwd', function () {
 				<password>${validPassword2}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create user2');
 
 		// Create account with accented password
@@ -44,6 +46,7 @@ describe('Auth > Auth Passwd', function () {
 				<password>${validPassword3}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
 		assert.exists(createRes3.CreateAccountResponse, 'Should create user3');
 	});
 
@@ -60,6 +63,7 @@ describe('Auth > Auth Passwd', function () {
 				<password>${validPassword1}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
@@ -70,13 +74,14 @@ describe('Auth > Auth Passwd', function () {
 	});
 
 
-	it('Sanity | Verify password with spaces works', async () => {
+	it('Sanity | Verify password with spaces works 1', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser2}</account>
 				<password>${validPassword2}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
@@ -87,13 +92,14 @@ describe('Auth > Auth Passwd', function () {
 	});
 
 
-	it('Sanity | Verify password with accented characters works', async () => {
+	it('Sanity | Verify password with spaces works 1 1', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser3}</account>
 				<password>${validPassword3}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;

@@ -37,6 +37,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse,
 			'Should create account on default domain');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -72,13 +73,14 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost}</virtualHost>
 				</AuthRequest>`, null, true, testAccountServer
 			);
+			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		});
 
 
-		it('Sanity | Virtual Host Test: AuthRequest - login with virtual host password', async () => {
+		it('Sanity | Virtual Host Test - AuthRequest - login with virtual host password', async () => {
 			const virtualHost = 'v' + common.getUniqueString() + '.virtual.com';
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
@@ -96,7 +98,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 		});
 
 
-		it('Sanity | Virtual Host Test: AuthRequest - login with full account name', async () => {
+		it('Sanity | Virtual Host Test - AuthRequest - login with full account name', async () => {
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}@${testDomainName}</account>
@@ -104,13 +106,14 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>v${common.getUniqueString()}.virtual.com</virtualHost>
 				</AuthRequest>`, null, true
 			);
+			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		});
 
 
-		it('Sanity | Virtual Host Test: AuthRequest - login using default/good password', async () => {
+		it('Sanity | Virtual Host Test - AuthRequest - login using default, good password', async () => {
 			const virtualHost01 = 'v' + common.getUniqueString() + '.virtual.com';
 			const domain1Name = 'domain' + common.getUniqueString() + '.com';
 
@@ -123,6 +126,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<a n="zimbraVirtualHostname">${virtualHost01}</a>
 				</CreateDomainRequest>`, adminAuthToken
 			);
+			assert.notExists(domainRes.Fault, 'Response should not be a Fault');
 			assert.exists(domainRes.CreateDomainResponse, 'Should create domain');
 
 			const domainId = Array.isArray(domainRes.CreateDomainResponse.domain)
@@ -136,6 +140,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<password>${config.accountPassword}${domain1Name}</password>
 				</CreateAccountRequest>`, adminAuthToken
 			);
+			assert.notExists(createRes.Fault, 'Response should not be a Fault');
 			assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 			const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -152,6 +157,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost01}</virtualHost>
 				</AuthRequest>`, null, true, acctServer
 			);
+			assert.notExists(authRes.Fault, 'Response should not be a Fault');
 			assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 			assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
@@ -167,6 +173,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<account by="name">${testAccountUser}@${domain1Name}</account>
 				</GetAccountInfoRequest>`, authToken, false, acctServer
 			);
+			assert.notExists(infoRes.Fault, 'Response should not be a Fault');
 			assert.exists(infoRes.GetAccountInfoResponse,
 				'GetAccountInfoResponse should exist');
 
@@ -180,7 +187,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 		});
 
 
-		it('Sanity | Basic Test: AuthRequest - login using default/good password - multiple virtual hosts', async () => {
+		it('Sanity | Basic Test - AuthRequest - login using default, good password - multiple virtual hosts', async () => {
 			const virtualHost01 = 'v1' + common.getUniqueString() + '.virtual.com';
 			const virtualHost02 = 'v2' + common.getUniqueString() + '.virtual.com';
 			const virtualHost03 = 'v3' + common.getUniqueString() + '.virtual.com';
@@ -221,6 +228,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<a n="zimbraVirtualHostname">${virtualHost03}</a>
 				</ModifyDomainRequest>`, adminAuthToken
 			);
+			assert.notExists(modRes.Fault, 'Response should not be a Fault');
 			assert.exists(modRes.ModifyDomainResponse, 'ModifyDomainResponse should exist');
 			const domain = Array.isArray(modRes.ModifyDomainResponse.domain)
 				? modRes.ModifyDomainResponse.domain[0]
@@ -235,6 +243,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost01}</virtualHost>
 				</AuthRequest>`, null, true, acctServer
 			);
+			assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 			assert.exists(authRes1.AuthResponse, 'Should auth with virtualHost01');
 			assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
@@ -248,6 +257,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost02}</virtualHost>
 				</AuthRequest>`, null, true, acctServer
 			);
+			assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 			assert.exists(authRes2.AuthResponse, 'Should auth with virtualHost02');
 			assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
@@ -261,6 +271,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost03}</virtualHost>
 				</AuthRequest>`, null, true, acctServer
 			);
+			assert.notExists(authRes3.Fault, 'Response should not be a Fault');
 			assert.exists(authRes3.AuthResponse, 'Should auth with virtualHost03');
 			assert.match(String(authRes3.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
@@ -279,7 +290,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 	// Serial tests
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-		it('Serial | Adding and removing virtual host - verify auth after mailboxd restart', async function () {
+		it('Basic Test - AuthRequest - login using default, good password - Adding and removing virtual host', async function () {
 			this.timeout(600 * 1000);
 
 			const virtualHost02 = 'v' + common.getUniqueString() + '.virtual.com';
@@ -295,6 +306,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<name>${domain2Name}</name>
 				</CreateDomainRequest>`, adminAuthToken
 			);
+			assert.notExists(domRes.Fault, 'Response should not be a Fault');
 			assert.exists(domRes.CreateDomainResponse, 'Should create domain2');
 			const domain2Id = Array.isArray(domRes.CreateDomainResponse.domain)
 				? domRes.CreateDomainResponse.domain[0].id
@@ -307,6 +319,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<password>${passwordNew}</password>
 				</CreateAccountRequest>`, adminAuthToken
 			);
+			assert.notExists(createRes.Fault, 'Response should not be a Fault');
 			assert.exists(createRes.CreateAccountResponse, 'Should create account');
 			const acct = Array.isArray(createRes.CreateAccountResponse.account)
 				? createRes.CreateAccountResponse.account[0]
@@ -321,6 +334,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<a n="zimbraVirtualHostname">${virtualHost02}</a>
 				</ModifyDomainRequest>`, adminAuthToken
 			);
+			assert.notExists(modRes1.Fault, 'Response should not be a Fault');
 			assert.exists(modRes1.ModifyDomainResponse, 'Should modify domain');
 			let domain = Array.isArray(modRes1.ModifyDomainResponse.domain)
 				? modRes1.ModifyDomainResponse.domain[0]
@@ -335,6 +349,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost02}</virtualHost>
 				</AuthRequest>`, null, true, domain2Server
 			);
+			assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 			assert.exists(authRes1.AuthResponse, 'Should auth with virtualHost02');
 			assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
@@ -348,6 +363,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<account by="name">${testAccountUser}@${domain2Name}</account>
 				</GetAccountInfoRequest>`, authToken1, false, domain2Server
 			);
+			assert.notExists(infoRes1.Fault, 'Response should not be a Fault');
 			assert.exists(infoRes1.GetAccountInfoResponse, 'GetAccountInfoResponse should exist');
 
 			// Replace virtualHost02 with virtualHost03
@@ -394,6 +410,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost03}</virtualHost>
 				</AuthRequest>`, null, true, domain2Server
 			);
+			assert.notExists(authRes4.Fault, 'Response should not be a Fault');
 			assert.exists(authRes4.AuthResponse, 'Should auth with virtualHost03');
 			assert.match(String(authRes4.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
@@ -407,6 +424,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<account by="name">${testAccountUser}@${domain2Name}</account>
 				</GetAccountInfoRequest>`, authToken4, false, domain2Server
 			);
+			assert.notExists(infoRes2.Fault, 'Response should not be a Fault');
 			assert.exists(infoRes2.GetAccountInfoResponse, 'GetAccountInfoResponse should exist');
 
 			// Remove all virtual hosts
@@ -417,6 +435,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<a n="zimbraVirtualHostname"></a>
 				</ModifyDomainRequest>`, adminAuthToken
 			);
+			assert.notExists(modRes3.Fault, 'Response should not be a Fault');
 			assert.exists(modRes3.ModifyDomainResponse, 'Should remove virtual hosts');
 			domain = Array.isArray(modRes3.ModifyDomainResponse.domain)
 				? modRes3.ModifyDomainResponse.domain[0]
@@ -469,6 +488,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<password>${passwordNew}</password>
 				</AuthRequest>`, null, true, domain2Server
 			);
+			assert.notExists(authRes8.Fault, 'Response should not be a Fault');
 			assert.exists(authRes8.AuthResponse, 'Should auth with full domain name');
 			assert.match(String(authRes8.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');

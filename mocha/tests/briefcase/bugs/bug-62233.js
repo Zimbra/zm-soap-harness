@@ -19,6 +19,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -33,6 +34,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth as account1
@@ -42,6 +44,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes1.AuthResponse.authToken)
@@ -66,6 +69,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Share briefcase with read access to account2
@@ -84,6 +88,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist');
 
 		account2Token = Array.isArray(authRes2.AuthResponse.authToken)
@@ -110,11 +115,12 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 	}
 
 	// Tests
-	it('Sanity | Verify sharing briefcase with read access allows view but not add, delete, or reshare', async () => {
+	it('Sanity | Verify that sharing briefcase folders with read access allows document to be viewed, but not added, deleted, or reshared', async () => {
 		// Get shared briefcase folder id for account2
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]

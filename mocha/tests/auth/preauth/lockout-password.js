@@ -21,6 +21,7 @@ describe('Auth > Preauth > Lockout Password', function () {
 				<a n="zimbraPreAuthKey">${preauthKey}</a>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+		assert.notExists(domRes.Fault, 'Response should not be a Fault');
 		assert.exists(domRes.CreateDomainResponse, 'Should create domain');
 
 		// Create account with lockout settings
@@ -34,6 +35,7 @@ describe('Auth > Preauth > Lockout Password', function () {
 				<a n="zimbraPasswordLockoutMaxFailures">5</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 	});
 

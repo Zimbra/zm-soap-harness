@@ -18,6 +18,7 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -26,6 +27,7 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -50,6 +52,7 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 				</signature>
 			</CreateSignatureRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateSignatureResponse,
 			'CreateSignatureResponse should exist');
 
@@ -67,7 +70,7 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 	});
 
 
-	it('Sanity | Verify signature data correctly returned in GetInfo response - text/plain', async () => {
+	it('Sanity | Verify signature data correctly returned in GetInfo response 1', async () => {
 		const sigName = 'PlainSig.' + common.getUniqueString();
 		const sigContent = 'Plain text signature ' + common.getUniqueString();
 
@@ -78,6 +81,7 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 				</signature>
 			</CreateSignatureRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateSignatureResponse,
 			'CreateSignatureResponse should exist');
 
@@ -85,11 +89,12 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetSignaturesRequest xmlns="urn:zimbraAccount"/>', account1Token
 		);
+		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetSignaturesResponse, 'GetSignaturesResponse should exist');
 	});
 
 
-	it('Sanity | Verify signature data correctly returned in GetInfo response - text/html', async () => {
+	it('Sanity | Verify signature data correctly returned in GetInfo response 1 1', async () => {
 		const sigName = 'HtmlSig.' + common.getUniqueString();
 
 		const createRes = await soap.makeSOAPEnvelopeAccount(
@@ -99,17 +104,19 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 				</signature>
 			</CreateSignatureRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateSignatureResponse,
 			'CreateSignatureResponse should exist');
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetSignaturesRequest xmlns="urn:zimbraAccount"/>', account1Token
 		);
+		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetSignaturesResponse, 'GetSignaturesResponse should exist');
 	});
 
 
-	it('Sanity | Verify signature data correctly returned in GetInfo response - mixed', async () => {
+	it('Sanity | Verify signature data correctly returned in GetInfo response 1 2', async () => {
 		const sigName = 'MixedSig.' + common.getUniqueString();
 
 		const createRes = await soap.makeSOAPEnvelopeAccount(
@@ -120,12 +127,14 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 				</signature>
 			</CreateSignatureRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateSignatureResponse,
 			'CreateSignatureResponse should exist');
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetSignaturesRequest xmlns="urn:zimbraAccount"/>', account1Token
 		);
+		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetSignaturesResponse, 'GetSignaturesResponse should exist');
 	});
 });

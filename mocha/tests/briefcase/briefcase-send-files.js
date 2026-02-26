@@ -21,6 +21,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		// Create account2
@@ -31,6 +32,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth as account1
@@ -40,6 +42,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -50,6 +53,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
@@ -76,6 +80,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -93,6 +98,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				</m>
 			</SaveDraftRequest>`, account1Token
 		);
+		assert.notExists(draftRes.Fault, 'Response should not be a Fault');
 		assert.exists(draftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
 
 		const draft = Array.isArray(draftRes.SaveDraftResponse.m)
@@ -112,6 +118,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 
 		const sent = Array.isArray(sendRes.SendMsgResponse.m)
@@ -124,6 +131,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				<m id="${sentId}" read="1"/>
 			</GetMsgRequest>`, account1Token
 		);
+		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
 
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
@@ -141,6 +149,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -155,6 +164,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Send the document as a link
@@ -169,6 +179,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 
 		const sent = Array.isArray(sendRes.SendMsgResponse.m)
@@ -181,6 +192,7 @@ describe('Briefcase > Briefcase Send Files', function () {
 				<m id="${sentId}"/>
 			</GetMsgRequest>`, account1Token
 		);
+		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
 
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)

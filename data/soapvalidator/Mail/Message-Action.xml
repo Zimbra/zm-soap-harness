@@ -488,7 +488,7 @@
 
 
 <t:test_case testcaseid = "MsgActionRequest19" type="regression">
-    <t:objective>MsgActionRequest with Blank op but valid id in Action tag {op=}</t:objective>
+    <t:objective>MsgActionRequest with Blank op but valid id in Action tag op</t:objective>
     <t:steps>
         1. send a mail with valid address in To field
         2. MsgActionRequest with Blank op but valid id in Action tag
@@ -542,7 +542,7 @@
 
 
 <t:test_case testcaseid = "MsgActionRequest21" type="regression">
-    <t:objective>MsgActionRequest with special char in op but valid id in Action tag {op=^//}</t:objective>
+    <t:objective>MsgActionRequest with special char in op but valid id in Action tag op , ,</t:objective>
 
     <t:test id = "MailAction021" depends = "MsgActionRequest19a">
         <t:request>
@@ -559,7 +559,7 @@
 
 
 <t:test_case testcaseid = "MsgActionRequest22" type="regression">
-    <t:objective>MsgActionRequest with sometext in op but valid id in Action tag {op=some text}</t:objective>
+    <t:objective>MsgActionRequest with sometext in op but valid id in Action tag op some text</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
         <t:request>
@@ -670,6 +670,57 @@
         </t:request>
         <t:response>
             <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MsgActionRequest29" type="deprecated">
+    <t:objective>Use MsgActionRequest to change an existing messages importance to important</t:objective>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>To: foo@example.com
+From: bar@example.com
+Subject: Subject${TIME}${COUNTER}
+Date: Fri, 28 Dec 2007 09:38:56 -0800
+
+
+Content${TIME}${COUNTER}
+
+
+                    </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message29.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message29.id}" f="!"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message29.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:m" attr="f" match=".*!.*"/>
+            </t:select>
         </t:response>
     </t:test>
 

@@ -229,7 +229,7 @@
 
  <t:test_case testcaseid="ZCS-367_FilterByDomainName_Before_outgoing"
   type="regression" bugids="ZCS-367">
-  <t:objective>Execute Modify and Get Filter Request by domain name for incoming mails. Verify that appropriate LDAP attribute is modified.</t:objective>
+  <t:objective>Execute Modify and Get Filter Request by domain name for incoming mails. Verify that appropriate LDAP attribute is modified. 1</t:objective>
 
   <t:property name="server.zimbraAccount" value="${account1.server}" />
 
@@ -361,7 +361,7 @@
 
  <t:test_case testcaseid="ZCS-367_FilterByDomainId_Before_outgoing"
   type="regression" bugids="ZCS-367">
-  <t:objective>Execute Modify and Get Filter Request by domain id for incoming mails. Verify that appropriate LDAP attribute is modified.</t:objective>
+  <t:objective>Execute Modify and Get Filter Request by domain id for incoming mails. Verify that appropriate LDAP attribute is modified. 1</t:objective>
 
   <t:property name="server.zimbraAccount" value="${account1.server}" />
 
@@ -496,7 +496,7 @@
 
  <t:test_case testcaseid="ZCS-367_FilterByDomainId_After_outgoing"
   type="regression" bugids="ZCS-367">
-  <t:objective>Execute Modify and Get Filter Request by domain id for incoming mails. Verify that appropriate LDAP attribute is modified.</t:objective>
+  <t:objective>Execute Modify and Get Filter Request by domain id for incoming mails. Verify that appropriate LDAP attribute is modified. 2</t:objective>
 
   <t:property name="server.zimbraAccount" value="${account1.server}" />
 
@@ -629,7 +629,7 @@
 
  <t:test_case testcaseid="ZCS-367_FilterByDomainName_After_outgoing"
   type="regression" bugids="ZCS-367">
-  <t:objective>Execute Modify and Get Filter Request by domain name for incoming mails. Verify that appropriate LDAP attribute is modified.</t:objective>
+  <t:objective>Execute Modify and Get Filter Request by domain name for incoming mails. Verify that appropriate LDAP attribute is modified. 2</t:objective>
 
   <t:property name="server.zimbraAccount" value="${account1.server}" />
 
@@ -894,7 +894,7 @@
 
  <t:test_case testcaseid="ZCS-367_FilterByCosName_After_outgoing"
   type="regression" bugids="ZCS-367">
-  <t:objective>Execute Modify and Get Filter Request by cos name for incoming mails. Verify that appropriate LDAP attribute is modified.</t:objective>
+  <t:objective>Execute Modify and Get Filter Request by cos name for incoming mails. Verify that appropriate LDAP attribute is modified. 1</t:objective>
 
   <t:property name="server.zimbraAccount" value="${account1.server}" />
 
@@ -1160,7 +1160,7 @@
 
  <t:test_case testcaseid="ZCS-367_FilterByCosName_Before_outgoing"
   type="regression" bugids="ZCS-367">
-  <t:objective>Execute Modify and Get Filter Request by cos name for incoming mails. Verify that appropriate LDAP attribute is modified.</t:objective>
+  <t:objective>Execute Modify and Get Filter Request by cos name for incoming mails. Verify that appropriate LDAP attribute is modified. 2</t:objective>
 
   <t:property name="server.zimbraAccount" value="${account1.server}" />
 
@@ -1290,6 +1290,527 @@
    </t:response>
   </t:test>
  </t:test_case>
+
+
+ <!-- Server name -->
+<!-- Modify and GetFilterRequest are moved for server as part of zcs-806. Disabling the testcase. -->
+ <t:test_case testcaseid="ZCS-367_FilterByServerId_After_outgoing"
+  type="deprecated" bugids="ZCS-367">
+  <t:objective>Execute Modify and Get Filter Request by server name for incoming mails. Verify that appropriate LDAP attribute is modified. 1</t:objective>
+
+  <t:property name="server.zimbraAccount" value="${account1.server}" />
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:property name="filter1.name" value="filter${TIME}${COUNTER}" />
+  <t:property name="filter1.subject" value="filter${TIME}${COUNTER}" />
+  <t:property name="filter1.subject" value="filter${TIME}${COUNTER}" />
+
+
+  <t:test>
+   <t:request>
+    <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+     type="after">
+     <server by="id">${server.id}</server>
+      <filterRules>
+      <filterRule name="${filter1.name}" active="1">
+       <filterTests condition="anyof" xmlns="urn:zimbraMail">
+        <headerTest header="Subject" stringComparison="contains"
+         value="${msg01.subject}" />
+       </filterTests>
+       <filterActions xmlns="urn:zimbraMail">
+        <actionTag tagName="tag3" />
+        <actionStop />
+       </filterActions>
+      </filterRule>
+     </filterRules>
+    </ModifyOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+     type="after">
+     <server by="id">${server.id}</server>
+    </GetOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionTag"
+     attr="tagName" match="tag3" />
+   </t:response>
+  </t:test>
+  <t:test>
+   <t:request>
+    <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+     <account by="name">${account1.name}</account>
+    </GetOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionTag"
+     attr="tagName" match="tag1" />
+   </t:response>
+  </t:test>
+  <t:test>
+  <t:request>
+   <GetServerRequest xmlns="urn:zimbraAdmin" >
+    <server by="id">${server.id}</server>
+     <a n="zimbraAdminOutgoingSieveScriptBefore"/>
+   </GetServerRequest>
+  </t:request>
+  <t:response>
+   <t:select
+    path="//admin:GetServerResponse/admin:server/admin:a[@n='zimbraAdminOutgoingSieveScriptBefore']"
+    contains="tag3" />
+  </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${account1.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+<t:test >
+    <t:request>
+        <SendMsgRequest xmlns="urn:zimbraMail">
+            <m>
+          <e t="t" a='${account2.name}'/>
+          <su>${msg01.subject}</su>
+          <mp ct="text/plain">
+              <content>Good Morning</content>
+          </mp>
+           </m>
+        </SendMsgRequest>
+      </t:request>
+      <t:response>
+          <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
+      </t:response>
+  </t:test>
+
+  <t:test id="filters_basic02d" depends="filters_basic01a">
+   <t:request>
+    <SearchRequest xmlns="urn:zimbraMail" types="message">
+     <query>subject:(${msg01.subject})</query>
+    </SearchRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:SearchResponse/mail:m" attr="su"
+     match="${msg01.subject}" />
+    <t:select path="//mail:SearchResponse/mail:m" attr="tn"
+     match="tag1" />
+   </t:response>
+  </t:test>
+
+
+ </t:test_case>
+
+<!-- Modify and GetFilterRequest are moved for server as part of zcs-806. Disabling the testcase. -->
+ <t:test_case testcaseid="ZCS-367_FilterByServerName_After_outgoing"
+  type="deprecated" bugids="ZCS-367">
+  <t:objective>Execute Modify and Get Filter Request by server name for incoming mails. Verify that appropriate LDAP attribute is modified. 2</t:objective>
+
+  <t:property name="server.zimbraAccount" value="${account1.server}" />
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:property name="filter1.name" value="filter${TIME}${COUNTER}" />
+  <t:property name="filter1.subject" value="filter${TIME}${COUNTER}" />
+  <t:property name="filter1.subject" value="filter${TIME}${COUNTER}" />
+
+
+  <t:test>
+   <t:request>
+    <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+     type="after">
+     <server by="name">${server.name}</server>
+       <filterRules>
+      <filterRule name="${filter1.name}" active="1">
+       <filterTests condition="anyof" xmlns="urn:zimbraMail">
+        <headerTest header="Subject" stringComparison="contains"
+         value="${msg01.subject}" />
+       </filterTests>
+       <filterActions xmlns="urn:zimbraMail">
+        <actionTag tagName="tag3" />
+        <actionStop />
+       </filterActions>
+      </filterRule>
+     </filterRules>
+    </ModifyOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+     type="after">
+     <server by="name">${server.name}</server>
+    </GetOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionTag"
+     attr="tagName" match="tag3" />
+   </t:response>
+  </t:test>
+    <t:test>
+   <t:request>
+    <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+     <account by="name">${account1.name}</account>
+    </GetOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionTag"
+     attr="tagName" match="tag2" />
+   </t:response>
+  </t:test>
+  <t:test>
+  <t:request>
+   <GetServerRequest xmlns="urn:zimbraAdmin" >
+    <server by="name">${server.name}</server>
+     <a n="zimbraAdminOutgoingSieveScriptAfter"/>
+   </GetServerRequest>
+  </t:request>
+  <t:response>
+   <t:select
+    path="//admin:GetServerResponse/admin:server/admin:a[@n='zimbraAdminOutgoingSieveScriptAfter']"
+    contains="tag3" />
+  </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${account1.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test >
+    <t:request>
+        <SendMsgRequest xmlns="urn:zimbraMail">
+            <m>
+          <e t="t" a='${account1.name}'/>
+          <su>${msg01.subject}</su>
+          <mp ct="text/plain">
+              <content>Good Morning</content>
+          </mp>
+           </m>
+        </SendMsgRequest>
+      </t:request>
+      <t:response>
+          <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
+      </t:response>
+  </t:test>
+
+  <t:test id="filters_basic02d" depends="filters_basic01a">
+   <t:request>
+    <SearchRequest xmlns="urn:zimbraMail" types="message">
+     <query>subject:(${msg01.subject})</query>
+    </SearchRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:SearchResponse/mail:m" attr="su"
+     match="${msg01.subject}" />
+    <t:select path="//mail:SearchResponse/mail:m" attr="tn"
+     match="tag1" />
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+
+ <!-- Modify and GetFilterRequest are moved for server as part of zcs-806. Disabling the testcase. -->
+ <t:test_case testcaseid="ZCS-367_FilterByServerId_Before_outgoing"
+  type="deprecated" bugids="ZCS-367">
+  <t:objective>Execute Modify and Get Filter Request by server id for incoming mails. Verify that GetFilter by account also returns the same filter rules. Verify that appropriate LDAP attribute is modified.</t:objective>
+
+  <t:property name="server.zimbraAccount" value="${account1.server}" />
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:property name="filter1.name" value="filter${TIME}${COUNTER}" />
+  <t:property name="filter1.subject" value="filter${TIME}${COUNTER}" />
+  <t:property name="filter1.subject" value="filter${TIME}${COUNTER}" />
+
+
+  <t:test>
+   <t:request>
+    <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+     type="before">
+     <server by="id">${server.id}</server>
+    <filterRules>
+      <filterRule name="${filter1.name}" active="1">
+       <filterTests condition="anyof" xmlns="urn:zimbraMail">
+        <headerTest header="Subject" stringComparison="contains"
+         value="${msg01.subject}" />
+       </filterTests>
+       <filterActions xmlns="urn:zimbraMail">
+        <actionTag tagName="tag3" />
+        <actionStop />
+       </filterActions>
+      </filterRule>
+     </filterRules>
+    </ModifyOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+     type="before">
+     <server by="id">${server.id}</server>
+    </GetOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionTag"
+     attr="tagName" match="tag3" />
+   </t:response>
+  </t:test>
+    <t:test>
+   <t:request>
+    <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+     <account by="name">${account1.name}</account>
+    </GetOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionTag"
+     attr="tagName" match="tag2" />
+   </t:response>
+  </t:test>
+  <t:test>
+  <t:request>
+   <GetServerRequest xmlns="urn:zimbraAdmin" >
+    <server by="id">${server.id}</server>
+     <a n="zimbraAdminOutgoingSieveScriptBefore"/>
+   </GetServerRequest>
+  </t:request>
+  <t:response>
+   <t:select
+    path="//admin:GetServerResponse/admin:server/admin:a[@n='zimbraAdminOutgoingSieveScriptBefore']"
+    contains="tag3" />
+  </t:response>
+  </t:test>
+
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${account1.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+
+   </t:response>
+  </t:test>
+
+  <t:test id="filters_basic02d" depends="filters_basic01a">
+   <t:request>
+    <SearchRequest xmlns="urn:zimbraMail" types="message">
+     <query>subject:(${msg01.subject})</query>
+    </SearchRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:SearchResponse/mail:m" attr="su"
+     match="${msg01.subject}" />
+    <t:select path="//mail:SearchResponse/mail:m" attr="tn"
+     match="tag1" />
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+
+<!-- Modify and GetFilterRequest are moved for server as part of zcs-806. Disabling the testcase. -->
+ <t:test_case testcaseid="ZCS-367_FilterByServerName_Before_outgoing"
+  type="deprecated" bugids="ZCS-367">
+  <t:objective>Execute Modify and Get Filter Request by server name for incoming mails. Verify that GetFilter by account also returns the same filter rules. Verify that appropriate LDAP attribute is modified.</t:objective>
+
+  <t:property name="server.zimbraAccount" value="${account1.server}" />
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:property name="filter1.name" value="filter${TIME}${COUNTER}" />
+  <t:property name="filter1.subject" value="filter${TIME}${COUNTER}" />
+  <t:property name="filter1.subject" value="filter${TIME}${COUNTER}" />
+
+
+  <t:test>
+   <t:request>
+    <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+     type="before">
+     <server by="name">${server.name}</server>
+     <filterRules>
+      <filterRule name="${filter1.name}" active="1">
+       <filterTests condition="anyof" xmlns="urn:zimbraMail">
+        <headerTest header="Subject" stringComparison="contains"
+         value="${msg01.subject}" />
+       </filterTests>
+       <filterActions xmlns="urn:zimbraMail">
+        <actionTag tagName="tag3" />
+        <actionStop />
+       </filterActions>
+      </filterRule>
+     </filterRules>
+    </ModifyOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+     type="before">
+     <server by="name">${server.name}</server>
+    </GetOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionTag"
+     attr="tagName" match="tag3" />
+   </t:response>
+  </t:test>
+    <t:test>
+   <t:request>
+    <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+     <account by="name">${account1.name}</account>
+    </GetOutgoingFilterRulesRequest>
+   </t:request>
+   <t:response>
+    <t:select
+     path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionTag"
+     attr="tagName" match="tag2" />
+   </t:response>
+  </t:test>
+  <t:test>
+  <t:request>
+   <GetServerRequest xmlns="urn:zimbraAdmin" >
+    <server by="name">${server.name}</server>
+     <a n="zimbraAdminOutgoingSieveScriptBefore"/>
+   </GetServerRequest>
+  </t:request>
+  <t:response>
+   <t:select
+    path="//admin:GetServerResponse/admin:server/admin:a[@n='zimbraAdminOutgoingSieveScriptBefore']"
+    contains="tag3" />
+  </t:response>
+  </t:test>
+
+ <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${account1.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test >
+    <t:request>
+        <SendMsgRequest xmlns="urn:zimbraMail">
+            <m>
+          <e t="t" a='${account1.name}'/>
+          <su>${msg01.subject}</su>
+          <mp ct="text/plain">
+              <content>Good Morning</content>
+          </mp>
+           </m>
+        </SendMsgRequest>
+      </t:request>
+      <t:response>
+          <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
+      </t:response>
+  </t:test>
+
+
+  <t:test id="filters_basic02d" depends="filters_basic01a">
+   <t:request>
+    <SearchRequest xmlns="urn:zimbraMail" types="message">
+     <query>subject:(${msg01.subject})</query>
+    </SearchRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:SearchResponse/mail:m" attr="su"
+     match="${msg01.subject}" />
+    <t:select path="//mail:SearchResponse/mail:m" attr="tn"
+     match="tag1" />
+   </t:response>
+  </t:test>
+ </t:test_case>
+
 
  <t:finally type="always">
   <t:test id="admin_login" required="true">

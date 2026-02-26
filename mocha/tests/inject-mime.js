@@ -1,12 +1,8 @@
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { assert } from 'chai';
 import config from '../conf/config.js';
 import { soap } from '../framework/backend/soap-client.js';
 import { main } from '../pages/main.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 describe('Mail > Mime > Inject MIME', function () {
 	this.timeout(30 * 1000);
@@ -27,12 +23,12 @@ describe('Mail > Mime > Inject MIME', function () {
 	}
 
 	// Tests
-	it('Smoke | Inject message with attachments using REST upload and search it', async() => {
+	it('Smoke | Inject message with attachments using REST upload and search it', async () => {
 		const accountEmailAddress = soap.testAccounts.testAccount1.emailAddress;
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmailAddress);
 
 		const subject = 'REST Upload - API automation subject';
-		const filePath = path.join(__dirname, '../../data/mime/file-attachments.txt');
+		const filePath = path.join(config.projectRoot, 'mocha/data/mime/file-attachments.txt');
 		const attachmentFiles = 'htmFile.html,PDFFile.pdf,PlainTextFile.txt,WordDocFile.docx,ExcelDocFile.xlsx';
 
 		// Inject mime

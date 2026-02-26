@@ -18,6 +18,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -26,6 +27,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -35,6 +37,7 @@ describe('Briefcase > Purge Revision Request', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
@@ -52,7 +55,7 @@ describe('Briefcase > Purge Revision Request', function () {
 	}
 
 	// Tests
-	it('Smoke | Purge a specific revision of a document', async () => {
+	it('Smoke | Purge particular revision of document with multiple revision', async () => {
 		// Save document v1
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -62,6 +65,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -76,6 +80,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Save revision 3
@@ -86,6 +91,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save3.Fault, 'Response should not be a Fault');
 		assert.exists(save3.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Purge revision 1
@@ -94,6 +100,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				<revision id="${docId}" ver="1" includeOlderRevisions="false"/>
 			</PurgeRevisionRequest>`, account1Token
 		);
+		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
 		assert.exists(purgeRes.PurgeRevisionResponse,
 			'PurgeRevisionResponse should exist');
 
@@ -103,12 +110,13 @@ describe('Briefcase > Purge Revision Request', function () {
 				<doc id="${docId}"/>
 			</ListDocumentRevisionsRequest>`, account1Token
 		);
+		assert.notExists(listRes.Fault, 'Response should not be a Fault');
 		assert.exists(listRes.ListDocumentRevisionsResponse,
 			'ListDocumentRevisionsResponse should exist');
 	});
 
 
-	it('Sanity | Purge older revisions using includeOlderRevisions flag', async () => {
+	it('Sanity | Purge older revision of document with multiple revision', async () => {
 		// Save document v1
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -118,6 +126,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -133,6 +142,7 @@ describe('Briefcase > Purge Revision Request', function () {
 					</doc>
 				</SaveDocumentRequest>`, account1Token
 			);
+			assert.notExists(save.Fault, 'Response should not be a Fault');
 			assert.exists(save.SaveDocumentResponse,
 				`SaveDocumentResponse v${i} should exist`);
 		}
@@ -143,6 +153,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				<revision id="${docId}" ver="2" includeOlderRevisions="true"/>
 			</PurgeRevisionRequest>`, account1Token
 		);
+		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
 		assert.exists(purgeRes.PurgeRevisionResponse,
 			'PurgeRevisionResponse should exist');
 
@@ -152,12 +163,13 @@ describe('Briefcase > Purge Revision Request', function () {
 				<doc id="${docId}"/>
 			</ListDocumentRevisionsRequest>`, account1Token
 		);
+		assert.notExists(listRes.Fault, 'Response should not be a Fault');
 		assert.exists(listRes.ListDocumentRevisionsResponse,
 			'ListDocumentRevisionsResponse should exist');
 	});
 
 
-	it('Sanity | PurgeRevisionRequest with invalid document id', async () => {
+	it('Sanity | Purge document with invalid values', async () => {
 		const purgeRes = await soap.makeSOAPEnvelopeAccount(
 			`<PurgeRevisionRequest xmlns="urn:zimbraMail">
 				<revision id="99999" ver="1" includeOlderRevisions="false"/>
@@ -168,7 +180,7 @@ describe('Briefcase > Purge Revision Request', function () {
 	});
 
 
-	it('Sanity | PurgeRevisionRequest with invalid version', async () => {
+	it('Sanity | Purge document with single revision', async () => {
 		// Save a document
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -178,6 +190,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -190,6 +203,7 @@ describe('Briefcase > Purge Revision Request', function () {
 				<revision id="${docId}" ver="999" includeOlderRevisions="false"/>
 			</PurgeRevisionRequest>`, account1Token
 		);
+		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
 		assert.exists(purgeRes.PurgeRevisionResponse,
 			'PurgeRevisionResponse should exist for invalid version');
 	});

@@ -273,7 +273,7 @@
 
 
 <t:test_case testcaseid="Search_SearchDate_SearchRequest11" type="regression" >
-    <t:objective>Search with wrong Date Formate in query after: using variable GENTIME</t:objective>
+    <t:objective>Search with wrong Date Formate in query after - using variable GENTIME</t:objective>
 
     <t:test>
         <t:request>
@@ -291,7 +291,7 @@
 
 
 <t:test_case testcaseid="Search_SearchDate_SearchRequest12" type="regression" >
-    <t:objective>Search with wrong Date Formate in query before: using variable GENTIME</t:objective>
+    <t:objective>Search with wrong Date Formate in query before - using variable GENTIME</t:objective>
 
     <t:test>
         <t:request>
@@ -381,7 +381,7 @@
 
 
 <t:test_case testcaseid="Search_SearchDate_SearchRequest17" bugids="1305" type="functional" >
-    <t:objective>Search for invalid value of Month in after: query</t:objective>
+    <t:objective>Search for invalid value of Month in after - query</t:objective>
 
     <t:test>
         <t:request>
@@ -399,7 +399,7 @@
 
 
 <t:test_case testcaseid="Search_SearchDate_SearchRequest18" bugids="1305" type="functional" >
-    <t:objective>Search for invalid value of Month in before: query</t:objective>
+    <t:objective>Search for invalid value of Month in before - query</t:objective>
 
     <t:test>
         <t:request>
@@ -432,6 +432,63 @@
     </t:test>
 
 </t:test_case>
+
+
+<!-- I don't see how invalid.year (1/1/10) is invalid -->
+<t:test_case testcaseid="Search_SearchDate_SearchRequest20"  type="deprecated" >
+    <t:objective>Search for invalid value of Year in after query</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${invalid.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest21"  type="deprecated" >
+    <t:objective>Search for invalid value of Year in before query</t:objective>
+
+    <t:test id="date021">
+        <t:request>
+
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${invalid.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest22"  type="deprecated" >
+    <t:objective>Search for invalid value of Year</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${invalid.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
 
 <t:test_case testcaseid="Search_SearchDate_SearchRequest23"  type="functional" >
     <t:objective>Search with text in after query</t:objective>

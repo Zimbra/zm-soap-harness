@@ -1116,7 +1116,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest1" type="sanity" areas="Calendar">
-    <t:objective>Modify a daily appointment instance with valid values.</t:objective>
+    <t:objective>Modify a daily appointment instance with valid values</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -1161,7 +1161,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest2" type="functional" areas="Calendar">
-    <t:objective>Modify a daily appointment instance with all old values.</t:objective>
+    <t:objective>Modify a daily appointment instance with all old values</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment with all old values.
     </t:steps>
@@ -1204,8 +1204,53 @@
 </t:test_case>
 
 
+<t:test_case testcaseid="CreateAppointmentExceptionRequest3" type="deprecated" areas="Calendar" bugids="8446">
+    <t:objective>Modify a daily appointment instance with non-existing account name in attendees</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify an instance of appointment.
+    </t:steps>
+
+    <!-- Search the appointment.-->
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment3.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment3.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment with non-existing account name in attendees.-->
+    <t:test>
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment3.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment3.subject}" loc="${appointment.location}">
+                        <s d="${Time3}"/>
+                        <e d="${Time4}"/>
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct3.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment3.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.SEND_ABORTED_ADDRESS_FAILURE$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
 <t:test_case testcaseid="CreateAppointmentExceptionRequest4" type="regression" areas="Calendar" bugids="4255">
-    <t:objective>Modify a daily appointment instance with start and end time as Non numeric invalid values(Space/blanks/sometext/special charcters)</t:objective>
+    <t:objective>Modify a daily appointment instance with start and end time as Non numeric invalid values(Space, blanks, sometext, special charcters)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -1323,7 +1368,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest5" type="regression" areas="Calendar" bugids="4255">
-    <t:objective>Modify a daily appointment instance with start and end time as invalid numeric value (negative, very large number 20 digits /zero)</t:objective>
+    <t:objective>Modify a daily appointment instance with start and end time as invalid numeric value (negative, very large number 20 digits , zero)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -1416,7 +1461,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest6" type="sanity" areas="Calendar">
-    <t:objective>Modify a daily appointment instance inviting multiple people.</t:objective>
+    <t:objective>Modify a daily appointment instance inviting multiple people</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment inviting multiple people.
     </t:steps>
@@ -1460,8 +1505,164 @@
 </t:test_case>
 
 
+<t:test_case testcaseid="CreateAppointmentExceptionRequest7" type="deprecated" areas="Calendar" bugids="8446">
+    <t:objective>Modify a daily appointment instance inviting multiple people in which address of one attendee is non-existing</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify an instance of appointment inviting multiple people in which address of one attendee is non-existing.
+    </t:steps>
+
+    <!-- Search the appointment.-->
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment6.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment6.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment inviting multiple people in which address of one attendee is non-existing.-->
+    <t:test>
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment6.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment6.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <e a="${acct3.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment6.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.SEND_ABORTED_ADDRESS_FAILURE$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAppointmentExceptionRequest8" type="deprecated" areas="Calendar" bugids="8446">
+    <t:objective>Modify a daily appointment instance inviting multiple people in which address of all attendees is non-existing</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify an instance of appointment inviting multiple people in which address of all attendees is non-existing.
+    </t:steps>
+
+    <!--Search the appointment.-->
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment7.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment7.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify an instance of appointment inviting multiple people in which address of one attendee is non-existing.-->
+    <t:test>
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment7.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment7.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct3.name}" t="t"/>
+                    <e a="${acct5.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment7.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.SEND_ABORTED_ADDRESS_FAILURE$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAppointmentExceptionRequest9" type="deprecated" areas="Calendar" bugids="8446">
+    <t:objective>Modify a daily appointment instance having attendee whose account has been deleted</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Delete an account.
+              3.Modify an instance of appointment having attendee whose account has been deleted.
+    </t:steps>
+
+    <!-- Search the appointment.-->
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment8.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment8.id"/>
+        </t:response>
+    </t:test>
+<t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+
+    <!-- delete an account.-->
+    <t:test>
+        <t:request>
+            <DeleteAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${acct6.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:property name="authToken" value="${mail1.authToken}"/>
+
+
+    <!--Modify an instance of appointment having attendee whose account has been deleted.-->
+    <t:test>
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment8.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment8.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct6.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment8.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.SEND_ABORTED_ADDRESS_FAILURE$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
 <t:test_case testcaseid="CreateAppointmentExceptionRequest10" type="functional" areas="Calendar">
-    <t:objective>Modify a daily appointment instance and check whether the attendee get both the mails or not.</t:objective>
+    <t:objective>Modify a daily appointment instance and check whether the attendee get both the mails or not</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
               3.Login to account 2.
@@ -1548,7 +1749,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest11" type="regression" areas="Calendar">
-    <t:objective>Attempt to modify a daily appointment instance that has been modified already.(Re-sending CreateAppointmentExceptionRequest which is not allowed.)</t:objective>
+    <t:objective>Attempt to modify a daily appointment instance that has been modified already(Re-sending CreateAppointmentExceptionRequest which is not allowed)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment that has been modified already.
     </t:steps>
@@ -1616,7 +1817,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest12" type="regression" areas="Calendar" bugids="3847">
-    <t:objective>Verify NOT_THE_ORGANIZER return code (acct2 attempts to modify an appointment owned by acct1)</t:objective>
+    <t:objective>Verify NOTTHEORGANIZER return code (acct2 attempts to modify an appointment owned by acct1)</t:objective>
     <t:steps> 1.Login to account2
               2.Search the appointment.
               3.Modify an instance of appointment.
@@ -1687,7 +1888,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest13" type="functional" areas="Calendar">
-    <t:objective>Modify a daily appointment instance making it a all day appointment.</t:objective>
+    <t:objective>Modify a daily appointment instance making it a all day appointment</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment making it a all day appointment.
     </t:steps>
@@ -1732,7 +1933,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest14" type="regression" areas="Calendar">
-    <t:objective>Modify a daily appointment instance in which start time is greater than end time.</t:objective>
+    <t:objective>Modify a daily appointment instance in which start time is greater than end time</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment in which start time is greater than end time.
     </t:steps>
@@ -1777,7 +1978,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest15" type="functional" areas="Calendar">
-    <t:objective>Modify a daily appointment instance making it schedule to some other day.</t:objective>
+    <t:objective>Modify a daily appointment instance making it schedule to some other day</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment making it schedule to some other day .
     </t:steps>
@@ -1822,7 +2023,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest16" type="regression" areas="Calendar">
-    <t:objective>Modify a daily appointment instance making it schedule to some other day in which start date is greater than end date.</t:objective>
+    <t:objective>Modify a daily appointment instance making it schedule to some other day in which start date is greater than end date</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment making it schedule to some other day in which start date is greater than end date.
     </t:steps>
@@ -1867,7 +2068,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest17" type="regression" areas="Calendar" bugids="45245">
-    <t:objective>Modify a daily appointment instance which was canceled.</t:objective>
+    <t:objective>Modify a daily appointment instance which was canceled</t:objective>
     <t:steps> 1.Search the appointment.
               2.Cancel the appointment.
               3.Modify an instance of appointment which was canceled.
@@ -1959,7 +2160,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest18" type="regression" areas="Calendar" >
-    <t:objective>Try to modify a daily appointment instance which is before the start date (this instance does not exists).</t:objective>
+    <t:objective>Try to modify a daily appointment instance which is before the start date (this instance does not exists)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2004,7 +2205,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest19" type="regression" areas="Calendar" >
-    <t:objective>Try to modify a daily appointment instance which is after the end date (this instance does not exists).</t:objective>
+    <t:objective>Try to modify a daily appointment instance which is after the end date (this instance does not exists)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2049,7 +2250,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest20" type="sanity" areas="Calendar">
-    <t:objective>Modify a weekly appointment instance with valid values.</t:objective>
+    <t:objective>Modify a weekly appointment instance with valid values</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2094,7 +2295,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest21" type="regression" areas="Calendar" >
-    <t:objective>Try to modify a weekly appointment instance which is before the start date (this instance does not exists).</t:objective>
+    <t:objective>Try to modify a weekly appointment instance which is before the start date (this instance does not exists)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2139,7 +2340,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest22" type="regression" areas="Calendar" >
-    <t:objective>Try to modify a weekly appointment instance which is after the end date (this instance does not exists).</t:objective>
+    <t:objective>Try to modify a weekly appointment instance which is after the end date (this instance does not exists)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2184,7 +2385,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest23" type="sanity" areas="Calendar">
-    <t:objective>Modify a monthly appointment instance with valid values.</t:objective>
+    <t:objective>Modify a monthly appointment instance with valid values</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2229,7 +2430,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest24" type="regression" areas="Calendar" >
-    <t:objective>Try to modify a monthly appointment instance which is before the start date (this instance does not exists).</t:objective>
+    <t:objective>Try to modify a monthly appointment instance which is before the start date (this instance does not exists)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2274,7 +2475,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest25" type="regression" areas="Calendar" >
-    <t:objective>Try to modify a monthly appointment instance which is after the end date (this instance does not exists).</t:objective>
+    <t:objective>Try to modify a monthly appointment instance which is after the end date (this instance does not exists)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2319,7 +2520,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest26" type="sanity" areas="Calendar">
-    <t:objective>Modify a yearly appointment instance with valid values.</t:objective>
+    <t:objective>Modify a yearly appointment instance with valid values</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2364,7 +2565,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest27" type="regression" areas="Calendar" >
-    <t:objective>Try to modify a yearly appointment instance which is before the start date (this instance does not exists).</t:objective>
+    <t:objective>Try to modify a yearly appointment instance which is before the start date (this instance does not exists)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2409,7 +2610,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest28" type="regression" areas="Calendar" >
-    <t:objective>Try to modify a yearly appointment instance which is after the end date (this instance does not exists).</t:objective>
+    <t:objective>Try to modify a yearly appointment instance which is after the end date (this instance does not exists) 1</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2454,7 +2655,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest29" type="regression" areas="Calendar" >
-    <t:objective>Try to modify a yearly appointment instance which is after the end date (this instance does not exists).</t:objective>
+    <t:objective>Try to modify a yearly appointment instance which is after the end date (this instance does not exists) 2</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment.
     </t:steps>
@@ -2498,7 +2699,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest29" type="regression" areas="Calendar">
-    <t:objective>Modify a daily appointment instance with invalid value for exceptId(Space/blank/sometext/special character/negative number/zero/large number).</t:objective>
+    <t:objective>Modify a daily appointment instance with invalid value for exceptId(Space, blank, sometext, special character, negative number, zero, large number)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment with invalid value for exceptId(Space/blank/sometext/special character/negative number/zero/large number).
     </t:steps>
@@ -2687,7 +2888,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest29" type="regression" areas="Calendar">
-    <t:objective>Modify a daily appointment instance with invalid positive value for id (Negative/Zero/large number).</t:objective>
+    <t:objective>Modify a daily appointment instance with invalid positive value for id (Negative, Zero, large number)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment with invalid positive value for id (Negative/Zero/large number).
     </t:steps>
@@ -2768,7 +2969,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest30" type="regression" areas="Calendar" bugids="3843">
-    <t:objective>Modify a daily appointment instance with invalid value for id (Space/blank/sometext/special character)</t:objective>
+    <t:objective>Modify a daily appointment instance with invalid value for id (Space, blank, sometext, special character)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment with invalid value for id (Space/blank/sometext/special character).
     </t:steps>
@@ -2873,7 +3074,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest31" type="regression" areas="Calendar">
-    <t:objective>Modify a daily appointment instance with no m tag.</t:objective>
+    <t:objective>Modify a daily appointment instance with no m tag</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment with invalid value for id (Negative/Space/blank/sometext/special character).
     </t:steps>
@@ -2892,7 +3093,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest33" type="regression" areas="Calendar">
-    <t:objective>Modify a daily appointment instance with no exceptId.</t:objective>
+    <t:objective>Modify a daily appointment instance with no exceptId</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment with no exceptId.
     </t:steps>
@@ -2924,7 +3125,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest32" type="regression" areas="Calendar" bugids="4480">
-    <t:objective>Modify a daily appointment instance with no subject tag.</t:objective>
+    <t:objective>Modify a daily appointment instance with no subject tag</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment with no subject tag.
     </t:steps>
@@ -2959,7 +3160,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest34" type="regression" areas="Calendar">
-    <t:objective>Modify a daily appointment instance with no e and s tag.</t:objective>
+    <t:objective>Modify a daily appointment instance with no e and s tag</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment with no exceptId.
     </t:steps>
@@ -2991,7 +3192,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest35" type="regression" areas="Calendar">
-    <t:objective>Modify a daily appointment instance with no or tag .</t:objective>
+    <t:objective>Modify a daily appointment instance with no or tag</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify an instance of appointment with no or tag .
     </t:steps>
@@ -3023,7 +3224,7 @@
 
 
 <t:test_case testcaseid="CreateAppointmentExceptionRequest36" type="functional" areas="Calendar" bugids="3848">
-    <t:objective>Modify a non-recursive appointment (in this case,CreateAppointmentExceptionRequest is not called).</t:objective>
+    <t:objective>Modify a non-recursive appointment (in this case,CreateAppointmentExceptionRequest is not called)</t:objective>
     <t:steps> 1.Search the appointment.
               2.Modify the single day appointment.
     </t:steps>

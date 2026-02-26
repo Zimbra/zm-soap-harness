@@ -20,6 +20,7 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -94,6 +95,7 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 				<link l="${root2.id}" name="MountedBC.${common.getUniqueString()}" rid="${briefcaseFolderId}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
 		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
@@ -106,6 +108,7 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 				<action op="delete" id="${mountId}"/>
 			</FolderActionRequest>`, account2Token
 		);
+		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 		assert.exists(deleteRes.FolderActionResponse,
 			'FolderActionResponse should exist');
 	});

@@ -53,11 +53,15 @@ const res = await soap.makeSOAPEnvelopeAdmin(
 - `<t:select path="//zimbra:Code" match="^service.FAILURE"/>` → assert `res.Fault.Detail.Error.Code.includes('service.FAILURE')`
 - If XML checks multiple `<t:select>` in one `<t:test>`, the JS test MUST have multiple assertions
 
+> [!CAUTION]
+> **MANDATORY Fault Check**: Before EVERY `assert.exists(response.XxxResponse)`, you MUST add `assert.notExists(response.Fault, 'Response should not be a Fault')`. This catches silent server errors that would otherwise pass as false positives. This applies to ALL SOAP response assertions — admin, account, delegated — no exceptions.
+
 ```js
-// WRONG — too weak, does not validate what XML checks:
+// WRONG — too weak, does not catch server errors:
 assert.exists(res.CreateAccountResponse);
 
-// CORRECT — matches XML t:select path/attr/match:
+// CORRECT — fault check + existence + specific validations:
+assert.notExists(res.Fault, 'Response should not be a Fault');
 assert.exists(res.CreateAccountResponse, 'CreateAccountResponse should exist');
 const account = res.CreateAccountResponse.account[0];
 assert.exists(account.id, 'Account should have an id');
@@ -73,9 +77,31 @@ assert.equal(mailHost._content, expectedHost, 'zimbraMailHost should match');
   - **Keep**: Japanese/CJK chars, letters, numbers, hyphens, parens, commas, periods, colons, pipes `|`, `=`, `/`, `@`
   - Run `node utils/ai/fix-objectives.js data/soapvalidator` before migration to pre-clean XML
 - **No XML reference comments** — do NOT add comments like `// XML: t:select path="..."` in JS files. The assertions should be self-explanatory.
-- **Double blank line** between `it()` blocks
 - **120 character line limit** — break long lines at `||`, `&&`, `?` operators. Break long ternaries onto 3 lines.
 - End-of-file: **NO blank line** between last `});` (closing `it()`) and `});` (closing `describe()`). Then single newline at EOF.
+
+## Double Blank Line Between `it()` Blocks — STRICT FORMAT
+
+> [!CAUTION]
+> There MUST be exactly **2 blank lines** between every `it()` block. This applies to ALL test files. Not 0, not 1 — always exactly 2 blank lines after the closing `});` of one `it()` and before the next `it(`.
+
+```js
+	it('first test', async () => {
+		// ...
+	});
+
+
+	it('second test', async () => {
+		// ...
+	});
+```
+
+**WRONG** (only 1 blank line):
+```js
+	});
+
+	it('second test', async () => {
+```
 
 ## Applicable Zimbra Versions Block — STRICT FORMAT
 
@@ -98,6 +124,8 @@ assert.equal(mailHost._content, expectedHost, 'zimbraMailHost should match');
 - `if (!String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/g))` — missing `config.serial`, has `/g`
 - Having TWO blocks — always exactly ONE
 - TWO blank lines before `// Applicable zimbra versions` — always exactly ONE blank line
+- Missing `// Tests` comment before first `it()` — ALWAYS include it
+- TWO blank lines between `}` (end of if block) and `// Tests` — always exactly ONE blank line
 
 If duplicates are found, run: `node utils/ai/fix-duplicate-zimbra.cjs`
 

@@ -28,6 +28,7 @@ describe('Auth > Preauth > Preauth Basic', function () {
 				<a n="zimbraPreAuthKey">${preauthKey}</a>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+		assert.notExists(domRes.Fault, 'Response should not be a Fault');
 		assert.exists(domRes.CreateDomainResponse, 'Should create domain1');
 
 		// Create accounts on domain1
@@ -38,6 +39,7 @@ describe('Auth > Preauth > Preauth Basic', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -53,6 +55,7 @@ describe('Auth > Preauth > Preauth Basic', function () {
 				<a n="zimbraForeignPrincipal">${account2ForeignPrincipal}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		account3Name = 'preauth' + common.getUniqueString() + '@' + domain1Name;
@@ -62,6 +65,7 @@ describe('Auth > Preauth > Preauth Basic', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
 		assert.exists(createRes3.CreateAccountResponse, 'Should create account3');
 
 		// Create domain2 (no preauth key)
@@ -79,6 +83,7 @@ describe('Auth > Preauth > Preauth Basic', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes4.Fault, 'Response should not be a Fault');
 		assert.exists(createRes4.CreateAccountResponse, 'Should create account4');
 	});
 
@@ -88,7 +93,7 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	}
 
 	// Tests
-	it('Smoke | Preauth request - basic test. by=name', async () => {
+	it('Smoke | Preauth request - basic test. by="name"', async () => {
 		const timestamp = String(Date.now());
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -103,7 +108,7 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	});
 
 
-	it('Sanity | Preauth request - basic test. by=id', async () => {
+	it('Sanity | Preauth request - basic test. by="name"', async () => {
 		const timestamp = String(Date.now());
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -118,7 +123,7 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	});
 
 
-	it('Sanity | Preauth request - basic test. by=foreignPrincipal', async () => {
+	it('Sanity | Preauth request - basic test. by="name" 1', async () => {
 		const timestamp = String(Date.now());
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">

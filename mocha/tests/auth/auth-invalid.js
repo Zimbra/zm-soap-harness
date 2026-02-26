@@ -21,6 +21,7 @@ describe('Auth > Auth Invalid', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create test account');
 	});
 
@@ -65,6 +66,7 @@ describe('Auth > Auth Invalid', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Should create account on default domain');
 
@@ -74,6 +76,7 @@ describe('Auth > Auth Invalid', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;

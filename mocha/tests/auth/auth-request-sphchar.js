@@ -17,7 +17,7 @@ describe('Auth > Auth Request Sphchar', function () {
 	}
 
 	// Tests
-	it('Sanity | Tests to check the authentication of user names having special characters and numbers.', async () => {
+	it('Sanity | Tests to check the authentication of user names having special characters and numbers', async () => {
 		const accountNames = [];
 		const types = ['decimal', 'charsdot', 'decimaldot', 'alphanum'];
 
@@ -36,6 +36,7 @@ describe('Auth > Auth Request Sphchar', function () {
 					<password>${config.accountPassword}</password>
 				</CreateAccountRequest>`, adminAuthToken
 			);
+			assert.notExists(createRes.Fault, 'Response should not be a Fault');
 			assert.exists(createRes.CreateAccountResponse,
 				'Should create account: ' + acctName);
 		}
@@ -48,6 +49,7 @@ describe('Auth > Auth Request Sphchar', function () {
 					<password>${config.accountPassword}</password>
 				</AuthRequest>`, null, true
 			);
+			assert.notExists(authRes.Fault, 'Response should not be a Fault');
 			assert.exists(authRes.AuthResponse,
 				'AuthResponse should exist for: ' + acctName);
 			const lifetime = authRes.AuthResponse.lifetime;
@@ -58,7 +60,7 @@ describe('Auth > Auth Request Sphchar', function () {
 	});
 
 
-	it('Functional | Tests to check the authentication of case sensitive user names.', async () => {
+	it('Functional | Tests to check the authentication of case sensitive user names', async () => {
 		const baseName = 'TestUser' + common.getUniqueString();
 		const accountName = baseName + '@' + config.testDomain;
 
@@ -69,6 +71,7 @@ describe('Auth > Auth Request Sphchar', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		// Auth with lowercase version
@@ -78,6 +81,7 @@ describe('Auth > Auth Request Sphchar', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for lowercase login');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');

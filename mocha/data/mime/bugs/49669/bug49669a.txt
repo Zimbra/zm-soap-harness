@@ -1,0 +1,234 @@
+Date: Wed, 5 May 2010 04:37:53 -0700 (PDT)
+From: Vishal Mahajan <vmahajan@example.com>
+To: JJ Zhuang <jjzhuang@example.com>, Phoebe Shao <pshao@example.com>
+Cc: Maria Lo <mlo@example.com>, Jeff Sposetti <sposetti@example.com>
+Bcc: Satishkumar Sugumaran <satishs@example.com>
+Message-ID: <11825985.94.1273059515788.JavaMail.administrator@example.com>
+In-Reply-To: <11427035.90.1273059469863.JavaMail.administrator@example.com>
+Subject: OAuth Provider review [Re: Blogs on server extensions [Re: OAuth
+ Support in Gmail - very HOT!]]
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_92_31241027.1273059515776"
+X-Mailer: Zimbra 6.0.7_GA_2408.RHEL4_64 (Zimbra Desktop/2.0_10411_Mac)
+
+------=_Part_92_31241027.1273059515776
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_93_8190935.1273059515777"
+
+------=_Part_93_8190935.1273059515777
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Hi JJ, Phoebe, 
+
+To initiate the technical review of Yutaka's OAuth Provider extension (http://www.zimbra.com/forums/developers/35150-oauth-provider-extension-zcs6-0-a.html), I have attached the following: 
+
+    1. The src code 
+    2. The setup required for the extension 
+    3. A sample OAuth Consumer program that I wrote to test the extension 
+    4. A sample user flow when you run the sample Consumer program against the extension 
+
+The extension basically hosts the following URLs using the ExtensionHttpHandler interface: 
+
+    1. /service/extension/oauth/req_token - Consumer calls this to get an OAuth Request Token 
+    2. /service/extension/oauth/req_token - Consumer calls this to get user's authorization for accessing resources on his/her behalf 
+    3. /service/extension/oauth/req_token - Finally, Consumer calls this to get an OAuth Access Token, which it stores and uses to access user's resources 
+
+An AuthProvider implementation is registered to look for an OAuth Access Token in the request. If an OAuth Access Token is present in the request and is valid, access is granted. 
+
+One known limitation of the current implementation is that nonces are not taken into account. This limitation should be pretty easy to fix. 
+
+I have not prepared a blog draft for this stuff yet. I guess what we would want to blog about is - This extension can be deployed on a zimbra system to allow third-party applications to access zimbra services using OAuth, i.e. access zimbra services on a user's behalf without requiring the user to provide his/her credentials to the application. 
+
+Thanks, 
+
+Vishal 
+
+
+From: "JJ Zhuang" <jjzhuang@example.com> 
+To: "Vishal Mahajan" <vmahajan@example.com> 
+Cc: "Maria Lo" <mlo@example.com>, "John Robb" <john.robb@example.com>, "Jeff Sposetti" <sposetti@example.com>, "Kevin Henrikson" <kevinh@example.com> 
+Sent: Thursday, April 22, 2010 11:43:07 AM 
+Subject: Re: Blogs on server extensions [Re: OAuth Support in Gmail - very HOT!] 
+
+Kevin, most of the stuff mentioned in the draft are already in use by the mobile sync code. As you know mobile sync code works as a drop-in extension. Since mobile sync has been using it for years, it should be OK to tell people about it :) 
+
+Jeff, Vishal, the doc looks good. For this piece I think the topics are pretty safe. However for the additional hooks you plan to cover in subsequent blogs, I share the same concerns with Kevin. We should do some more sanity check before telling people about it. That means both to verify the hooks work and to make sure the design is sound. This is especially important for SAML and OAuth. Because they are auth features we don't want to put out something people can pick on. Phoebe and I probably should review the design before that blog. 
+
+As to what to do with the current piece, any objection to post this as-is? My vote is to just go with it. 
+
+
+------=_Part_93_8190935.1273059515777
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html><head><style type=3D'text/css'>p { margin: 0; }</style></head><body><=
+div style=3D'font-family: Arial; font-size: 10pt; color: #000000'>Hi JJ, Ph=
+oebe,<br><br>To initiate the technical review of Yutaka's OAuth Provider ex=
+tension (http://www.zimbra.com/forums/developers/35150-oauth-provider-exten=
+sion-zcs6-0-a.html), I have attached the following:<br><ol><li>The src code=
+</li><li>The setup required for the extension</li><li>A sample OAuth Consum=
+er program that I wrote to test the extension</li><li>A sample user flow wh=
+en you run the sample Consumer program against the extension</li></ol><br>T=
+he extension basically hosts the following URLs using the ExtensionHttpHand=
+ler interface:<br><ol><li>/service/extension/oauth/req_token - Consumer cal=
+ls this to get an OAuth Request Token</li><li>/service/extension/oauth/req_=
+token - Consumer calls this to get user's authorization for accessing resou=
+rces on his/her behalf</li><li>/service/extension/oauth/req_token - Finally=
+, Consumer calls this to get an OAuth Access Token, which it stores and use=
+s to access user's resources</li></ol>An AuthProvider implementation is reg=
+istered to look for an OAuth Access Token in the request. If an OAuth Acces=
+s Token is present in the request and is valid, access is granted.<br><br>O=
+ne known limitation of the current implementation is that nonces are not ta=
+ken into account. This limitation should be pretty easy to fix.<br><br>I ha=
+ve not prepared a blog draft for this stuff yet. I guess what we would want=
+ to blog about is&nbsp; -&nbsp; This extension can be deployed on a zimbra =
+system to allow third-party applications to access zimbra services using OA=
+uth, i.e. access zimbra services on a user's behalf without requiring the u=
+ser to provide his/her credentials to the application.<br><br>Thanks,<br><b=
+r>Vishal<br><br><hr><b>From: </b>"JJ Zhuang" &lt;jjzhuang@example.com&gt;<br=
+><b>To: </b>"Vishal Mahajan" &lt;vmahajan@example.com&gt;<br><b>Cc: </b>"Mar=
+ia Lo" &lt;mlo@example.com&gt;, "John Robb" &lt;john.robb@example.com&gt;, "J=
+eff Sposetti" &lt;sposetti@example.com&gt;, "Kevin Henrikson" &lt;kevinh@example.com=
+bra.com&gt;<br><b>Sent: </b>Thursday, April 22, 2010 11:43:07 AM<br><b>Subj=
+ect: </b>Re: Blogs on server extensions [Re: OAuth Support in Gmail - very =
+HOT!]<br><br>Kevin, most of the stuff mentioned in the draft are already in=
+ use by the mobile sync code. &nbsp;As you know mobile sync code works as a=
+ drop-in extension. &nbsp;Since mobile sync has been using it for years, it=
+ should be OK to tell people about it :)<br><br>Jeff, Vishal, the doc looks=
+ good. &nbsp;For this piece I think the topics are pretty safe. &nbsp;Howev=
+er for the additional hooks you plan to cover in subsequent blogs, I share =
+the same concerns with Kevin. &nbsp;We should do some more sanity check bef=
+ore telling people about it. &nbsp;That means both to verify the hooks work=
+ and to make sure the design is sound. &nbsp;This is especially important f=
+or SAML and OAuth. &nbsp;Because they are auth features we don't want to pu=
+t out something people can pick on. &nbsp;Phoebe and I probably should revi=
+ew the design before that blog.<br><br>As to what to do with the current pi=
+ece, any objection to post this as-is? &nbsp;My vote is to just go with it.=
+<br><br></div></body></html>
+------=_Part_93_8190935.1273059515777--
+
+------=_Part_92_31241027.1273059515776
+Content-Type: application/zip; name=SampleOAuthProviderExtension.zip
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=SampleOAuthProviderExtension.zip
+
+SGkgYWxsLA0KQXR0YWNoZWQgcGxzLiBmaW5kIHRoZSBUZXN0IFJuRCBQdWJsaWMgSG9saWRheSBhcnJhbmdlbWVudCArIGZvcmNlIGxlYXZlIGRheXMgb2ZmLiBXZWxsIGhhdmUgdG90YWwgNiBkYXlzIGZvcmNlIGxlYXZlIHdoaWNoIGhhcyBiZWVuIGhpZ2hsaWdodCBpbiB5ZWxsb3cgaW4gdGhlIGF0dGFjaGVkIGZpbGUsIGFsbCBkYXlzIGluIGNvbG9yIGdyZWVuIHNoYWxsIGJlIGNvdW50ZWQgYXMgd29ya2luZyBkYXkuDQoNClRoYW5rIHlvdSBmb3IgeW91ciBhdHRlbnRpb24hDQoNClRlc3QgTWFuYWdlcg0KU2VuaW9yIE1hbmFnZXIsIEh1bWFuIFJlc291cmNlcw0KDQpNOiArMTEgMTExIDExMTEgMTExMSB8IFc6ICsyMiAyMiAyMiAyMjIyDQp0ZXN0IGxvY2F0aW9ufCA4RiBTb3V0aCBXaW5nLCBUZXN0IGJ1aWxkaW5nDQoyLCBUZXN0IHJvYWQsIHRlc3QgRGlzdHJpY3QuIFRlc3QgMTExMTExDQoNCltjaWQ6aW1hZ2UwMDEuZ2lmQDAxQ0I5QzY3LjUwNDMzRjIwXQ==
+------=_Part_92_31241027.1273059515776
+Content-Type: text/plain; name=oauth_setup.txt
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=oauth_setup.txt
+
+
+1. Create an 'oauth' directory under /opt/zimbra/lib/ext and copy sampleoauthprov.jar and oauth-1.4.jar under it.
+
+2. Copy authorize.jsp file to /opt/zimbra/jetty/webapps/zimbra/public directory.
+
+3. For an OAuth consumer with consumer id = 'consumer1' and consumer secret = 'secret1', in localconfig add:
+
+    oauth_consumerKey_consumer1=consumer1
+    oauth_consumerSecret_consumer1=secret1
+    oauth_consumerDescription_consumer1=OAuth Consumer with name 'consumer1'
+
+4. In localconfig modify:
+
+    zimbra_auth_provider=zimbra,oauth
+
+5. Setup memcached.
+
+6. Restart server.
+
+------=_Part_92_31241027.1273059515776
+Content-Type: text/x-java; name=SampleOAuthConsumer.java
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=SampleOAuthConsumer.java
+
+import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthProvider;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+
+/**
+ * @example.com vmahajan
+ */
+public class SampleOAuthConsumer {
+
+    public static final String REQUEST_TOKEN_ENDPOINT_URL = "http://localhost:7070/service/extension/oauth/req_token";
+    public static final String ACCESS_TOKEN_ENDPOINT_URL = "http://localhost:7070/service/extension/oauth/access_token";
+    public static final String AUTHORIZE_WEBSITE_URL = "http://localhost:7070/service/extension/oauth/authorization";
+
+    private static final String CONSUMER_KEY = "consumer1";
+    private static final String CONSUMER_SECRET = "secret1";
+
+    public static final String CALLBACK_URL = OAuth.OUT_OF_BAND;
+
+    public static void main(String[] args) throws Exception {
+
+        //System.setProperty("debug", "1");
+
+        // create a consumer object
+        OAuthConsumer consumer = new DefaultOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
+
+        // create a new service provider object and configure it with
+        // the URLs which provide request tokens, access tokens, and
+        // the URL to which users are sent in order to grant permission
+        // to your application to access protected resources
+        OAuthProvider provider = new DefaultOAuthProvider(REQUEST_TOKEN_ENDPOINT_URL,
+                                                          ACCESS_TOKEN_ENDPOINT_URL,
+                                                          AUTHORIZE_WEBSITE_URL);
+        provider.setOAuth10a(true);
+
+        // fetches a request token from the service provider and builds
+        // a url based on AUTHORIZE_WEBSITE_URL and CALLBACK_URL to
+        // which your app must now send the user
+        // In the sample code we are setting CALLBACK_URL to OAuth.OUT_OF_BAND
+        // which means the user would manually enter the OAuth verification code
+        // obtained from provider site
+        String userAuthzUrl = provider.retrieveRequestToken(consumer, CALLBACK_URL);
+        System.out.println("URL for obtaining user authorization: " + userAuthzUrl);
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nEnter verification code: ");
+        // fetches a request token from the service provider and builds
+        // a url based on AUTHORIZE_WEBSITE_URL and CALLBACK_URL to
+        // which your app must now send the user
+        provider.retrieveAccessToken(consumer, scanner.nextLine());
+
+        System.out.println("\nRetrieving http://localhost:7070/service/home/user1@example.com/inbox.rss..");
+        // create an HTTP request to a protected resource
+        URL protRscUrl = new URL("http://localhost:7070/service/home/user1@example.com/inbox.rss");
+        HttpURLConnection connection = (HttpURLConnection) protRscUrl.openConnection();
+
+        // sign the request
+        consumer.sign(connection);
+
+        // send the request
+        connection.connect();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        System.out.println("\nResponse: " + sb.toString());
+    }
+}
+
+------=_Part_92_31241027.1273059515776
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document;
+	name=zimbra_oauth_sample_flow.docx
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=zimbra_oauth_sample_flow.docx
+
+SGkgYWxsLA0KQXR0YWNoZWQgcGxzLiBmaW5kIHRoZSBUZXN0IFJuRCBQdWJsaWMgSG9saWRheSBhcnJhbmdlbWVudCArIGZvcmNlIGxlYXZlIGRheXMgb2ZmLiBXZWxsIGhhdmUgdG90YWwgNiBkYXlzIGZvcmNlIGxlYXZlIHdoaWNoIGhhcyBiZWVuIGhpZ2hsaWdodCBpbiB5ZWxsb3cgaW4gdGhlIGF0dGFjaGVkIGZpbGUsIGFsbCBkYXlzIGluIGNvbG9yIGdyZWVuIHNoYWxsIGJlIGNvdW50ZWQgYXMgd29ya2luZyBkYXkuDQoNClRoYW5rIHlvdSBmb3IgeW91ciBhdHRlbnRpb24hDQoNClRlc3QgTWFuYWdlcg0KU2VuaW9yIE1hbmFnZXIsIEh1bWFuIFJlc291cmNlcw0KDQpNOiArMTEgMTExIDExMTEgMTExMSB8IFc6ICsyMiAyMiAyMiAyMjIyDQp0ZXN0IGxvY2F0aW9ufCA4RiBTb3V0aCBXaW5nLCBUZXN0IGJ1aWxkaW5nDQoyLCBUZXN0IHJvYWQsIHRlc3QgRGlzdHJpY3QuIFRlc3QgMTExMTExDQoNCltjaWQ6aW1hZ2UwMDEuZ2lmQDAxQ0I5QzY3LjUwNDMzRjIwXQ==
+------=_Part_92_31241027.1273059515776--
+

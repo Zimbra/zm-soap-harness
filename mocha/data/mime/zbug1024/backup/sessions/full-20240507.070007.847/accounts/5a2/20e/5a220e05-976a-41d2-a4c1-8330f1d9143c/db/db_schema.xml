@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<backupMetadata xmlns="urn:zimbraBackupMeta" version="7.2" dbVersion="111">
+  <tables>
+    <table name="zimbra.mailbox">
+      <column position="1" name="id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="group_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="3" name="account_id" type="varchar(127)" nullable="true">
+      </column>
+      <column position="4" name="index_volume_id" type="tinyint(3) unsigned" nullable="true">
+      </column>
+      <column position="5" name="item_id_checkpoint" type="int(10) unsigned" nullable="true" default="0">
+      </column>
+      <column position="6" name="contact_count" type="int(10) unsigned" nullable="true" default="0">
+      </column>
+      <column position="7" name="size_checkpoint" type="bigint(20) unsigned" nullable="true" default="0">
+      </column>
+      <column position="8" name="change_checkpoint" type="int(10) unsigned" nullable="true" default="0">
+      </column>
+      <column position="9" name="tracking_sync" type="int(10) unsigned" nullable="true" default="0">
+      </column>
+      <column position="10" name="tracking_imap" type="tinyint(1)" nullable="true" default="0">
+      </column>
+      <column position="11" name="last_backup_at" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="12" name="comment" type="varchar(255)" nullable="true">
+      </column>
+      <column position="13" name="last_soap_access" type="int(10) unsigned" nullable="true" default="0">
+      </column>
+      <column position="14" name="new_messages" type="int(10) unsigned" nullable="true" default="0">
+      </column>
+      <column position="15" name="idx_deferred_count" type="int(11)" nullable="true" default="0">
+      </column>
+      <column position="16" name="highest_indexed" type="varchar(21)" nullable="true">
+      </column>
+      <column position="17" name="version" type="varchar(16)" nullable="true">
+      </column>
+      <column position="18" name="last_purge_at" type="int(10) unsigned" nullable="true" default="0">
+      </column>
+      <column position="19" name="itemcache_checkpoint" type="int(10) unsigned" nullable="true" default="0">
+      </column>
+    </table>
+    <table name="zimbra.mailbox_metadata">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="section" type="varchar(64)" nullable="true">
+      </column>
+      <column position="3" name="metadata" type="mediumtext" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.scheduled_task">
+      <column position="1" name="class_name" type="varchar(255)" nullable="true">
+      </column>
+      <column position="2" name="name" type="varchar(255)" nullable="true">
+      </column>
+      <column position="3" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="4" name="exec_time" type="datetime" nullable="true">
+      </column>
+      <column position="5" name="interval_millis" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="6" name="metadata" type="mediumtext" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.out_of_office">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="sent_to" type="varchar(255)" nullable="true">
+      </column>
+      <column position="3" name="sent_on" type="datetime" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.mobile_devices">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="device_id" type="varchar(64)" nullable="true">
+      </column>
+      <column position="3" name="device_type" type="varchar(64)" nullable="true">
+      </column>
+      <column position="4" name="user_agent" type="varchar(64)" nullable="true">
+      </column>
+      <column position="5" name="protocol_version" type="varchar(64)" nullable="true">
+      </column>
+      <column position="6" name="provisionable" type="tinyint(1)" nullable="true" default="0">
+      </column>
+      <column position="7" name="status" type="tinyint(3) unsigned" nullable="true" default="0">
+      </column>
+      <column position="8" name="policy_key" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="9" name="recovery_password" type="varchar(64)" nullable="true">
+      </column>
+      <column position="10" name="first_req_received" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="11" name="last_policy_update" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="12" name="remote_wipe_req" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="13" name="remote_wipe_ack" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="14" name="policy_values" type="varchar(512)" nullable="true">
+      </column>
+      <column position="15" name="last_used_date" type="date" nullable="true">
+      </column>
+      <column position="16" name="deleted_by_user" type="tinyint(1)" nullable="true" default="0">
+      </column>
+      <column position="17" name="model" type="varchar(64)" nullable="true">
+      </column>
+      <column position="18" name="imei" type="varchar(64)" nullable="true">
+      </column>
+      <column position="19" name="friendly_name" type="varchar(512)" nullable="true">
+      </column>
+      <column position="20" name="os" type="varchar(64)" nullable="true">
+      </column>
+      <column position="21" name="os_language" type="varchar(64)" nullable="true">
+      </column>
+      <column position="22" name="phone_number" type="varchar(64)" nullable="true">
+      </column>
+      <column position="23" name="unapproved_appl_list" type="text" nullable="true">
+      </column>
+      <column position="24" name="approved_appl_list" type="text" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.pending_acl_push">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="3" name="date" type="bigint(20) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.mail_item">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="3" name="type" type="tinyint(4)" nullable="true">
+      </column>
+      <column position="4" name="parent_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="5" name="folder_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="6" name="prev_folders" type="text" nullable="true">
+      </column>
+      <column position="7" name="index_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="8" name="imap_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="9" name="date" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="10" name="size" type="bigint(20) unsigned" nullable="true">
+      </column>
+      <column position="11" name="locator" type="varchar(1024)" nullable="true">
+      </column>
+      <column position="12" name="blob_digest" type="varchar(44)" nullable="true">
+      </column>
+      <column position="13" name="unread" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="14" name="flags" type="int(11)" nullable="true" default="0">
+      </column>
+      <column position="15" name="tags" type="bigint(20)" nullable="true" default="0">
+      </column>
+      <column position="16" name="tag_names" type="text" nullable="true">
+      </column>
+      <column position="17" name="sender" type="varchar(128)" nullable="true">
+      </column>
+      <column position="18" name="recipients" type="varchar(128)" nullable="true">
+      </column>
+      <column position="19" name="subject" type="text" nullable="true">
+      </column>
+      <column position="20" name="name" type="varchar(255)" nullable="true">
+      </column>
+      <column position="21" name="metadata" type="mediumtext" nullable="true">
+      </column>
+      <column position="22" name="mod_metadata" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="23" name="change_date" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="24" name="mod_content" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="25" name="uuid" type="varchar(127)" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.mail_item_dumpster">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="3" name="type" type="tinyint(4)" nullable="true">
+      </column>
+      <column position="4" name="parent_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="5" name="folder_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="6" name="prev_folders" type="text" nullable="true">
+      </column>
+      <column position="7" name="index_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="8" name="imap_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="9" name="date" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="10" name="size" type="bigint(20) unsigned" nullable="true">
+      </column>
+      <column position="11" name="locator" type="varchar(1024)" nullable="true">
+      </column>
+      <column position="12" name="blob_digest" type="varchar(44)" nullable="true">
+      </column>
+      <column position="13" name="unread" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="14" name="flags" type="int(11)" nullable="true" default="0">
+      </column>
+      <column position="15" name="tags" type="bigint(20)" nullable="true" default="0">
+      </column>
+      <column position="16" name="tag_names" type="text" nullable="true">
+      </column>
+      <column position="17" name="sender" type="varchar(128)" nullable="true">
+      </column>
+      <column position="18" name="recipients" type="varchar(128)" nullable="true">
+      </column>
+      <column position="19" name="subject" type="text" nullable="true">
+      </column>
+      <column position="20" name="name" type="varchar(255)" nullable="true">
+      </column>
+      <column position="21" name="metadata" type="mediumtext" nullable="true">
+      </column>
+      <column position="22" name="mod_metadata" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="23" name="change_date" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="24" name="mod_content" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="25" name="uuid" type="varchar(127)" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.revision">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="3" name="version" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="4" name="date" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="5" name="size" type="bigint(20) unsigned" nullable="true">
+      </column>
+      <column position="6" name="locator" type="varchar(1024)" nullable="true">
+      </column>
+      <column position="7" name="blob_digest" type="varchar(44)" nullable="true">
+      </column>
+      <column position="8" name="name" type="varchar(255)" nullable="true">
+      </column>
+      <column position="9" name="metadata" type="mediumtext" nullable="true">
+      </column>
+      <column position="10" name="mod_metadata" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="11" name="change_date" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="12" name="mod_content" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.revision_dumpster">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="3" name="version" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="4" name="date" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="5" name="size" type="bigint(20) unsigned" nullable="true">
+      </column>
+      <column position="6" name="locator" type="varchar(1024)" nullable="true">
+      </column>
+      <column position="7" name="blob_digest" type="varchar(44)" nullable="true">
+      </column>
+      <column position="8" name="name" type="varchar(255)" nullable="true">
+      </column>
+      <column position="9" name="metadata" type="mediumtext" nullable="true">
+      </column>
+      <column position="10" name="mod_metadata" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="11" name="change_date" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="12" name="mod_content" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.tag">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="id" type="int(11)" nullable="true">
+      </column>
+      <column position="3" name="name" type="varchar(128)" nullable="true">
+      </column>
+      <column position="4" name="color" type="bigint(20)" nullable="true">
+      </column>
+      <column position="5" name="item_count" type="int(11)" nullable="true" default="0">
+      </column>
+      <column position="6" name="unread" type="int(11)" nullable="true" default="0">
+      </column>
+      <column position="7" name="listed" type="tinyint(1)" nullable="true" default="0">
+      </column>
+      <column position="8" name="sequence" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="9" name="policy" type="varchar(1024)" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.tagged_item">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="tag_id" type="int(11)" nullable="true">
+      </column>
+      <column position="3" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.open_conversation">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="hash" type="char(28)" nullable="true">
+      </column>
+      <column position="3" name="conv_id" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.appointment">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="uid" type="varchar(255)" nullable="true">
+      </column>
+      <column position="3" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="4" name="start_time" type="datetime" nullable="true">
+      </column>
+      <column position="5" name="end_time" type="datetime" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.appointment_dumpster">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="uid" type="varchar(255)" nullable="true">
+      </column>
+      <column position="3" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="4" name="start_time" type="datetime" nullable="true">
+      </column>
+      <column position="5" name="end_time" type="datetime" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.tombstone">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="sequence" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="3" name="date" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="4" name="type" type="tinyint(4)" nullable="true">
+      </column>
+      <column position="5" name="ids" type="text" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.pop3_message">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="data_source_id" type="char(36)" nullable="true">
+      </column>
+      <column position="3" name="uid" type="varchar(255)" nullable="true">
+      </column>
+      <column position="4" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.imap_folder">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="3" name="data_source_id" type="char(36)" nullable="true">
+      </column>
+      <column position="4" name="local_path" type="varchar(1000)" nullable="true">
+      </column>
+      <column position="5" name="remote_path" type="varchar(1000)" nullable="true">
+      </column>
+      <column position="6" name="uid_validity" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="mboxgroup37.imap_message">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="imap_folder_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="3" name="uid" type="bigint(20)" nullable="true">
+      </column>
+      <column position="4" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="5" name="flags" type="int(11)" nullable="true" default="0">
+      </column>
+    </table>
+    <table name="mboxgroup37.data_source_item">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="data_source_id" type="char(36)" nullable="true">
+      </column>
+      <column position="3" name="item_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="4" name="folder_id" type="int(10) unsigned" nullable="true" default="0">
+      </column>
+      <column position="5" name="remote_id" type="varchar(255)" nullable="true">
+      </column>
+      <column position="6" name="metadata" type="mediumtext" nullable="true">
+      </column>
+    </table>
+  </tables>
+</backupMetadata>

@@ -95,7 +95,7 @@
 
 
 <t:test_case testcaseid="acctSetup2_conversation_search_fetch" type="always" >
-    <t:objective>login as the test account and create a conversation.</t:objective>
+    <t:objective>login as the test account and create a conversation</t:objective>
     <t:steps>
         1. Login to test_account1
         2. Send a mail to test_account1
@@ -327,7 +327,7 @@
 
 
 <t:test_case testcaseid="SearchConvRequest_fetch1" type="smoke">
-    <t:objective>Search for a conversation with fetch/read/html=not specified should not expand the first hit nor mark it read</t:objective>
+    <t:objective>Search for a conversation with fetch, read, html not specified should not expand the first hit nor mark it read</t:objective>
 
     <t:test >
         <t:request>
@@ -384,7 +384,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="SearchConvRequest_fetch2" type="sanity" bugids="6606">
-    <t:objective>Search for a conversation with fetch=1 should expand first hit (read=not specified, html=not specified)</t:objective>
+    <t:objective>Search for a conversation with fetch 1 should expand first hit (read not specified, html not specified)</t:objective>
 
     <t:test >
         <t:request>
@@ -441,7 +441,7 @@
 
 
 <t:test_case testcaseid="SearchConvRequest_read3" type="sanity" bugids="8175,7568">
-    <t:objective>Search for a conversation with fetch=1, read=1, html=not specified should mark the first message as read.</t:objective>
+    <t:objective>Search for a conversation with fetch 1, read 1, html not specified should mark the first message as read</t:objective>
 
     <t:test >
         <t:request>
@@ -500,7 +500,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="SearchConvRequest_read4" type="sanity">
-    <t:objective>Search for a conversation with fetch=1, read=1, html=not specified should return the text part.</t:objective>
+    <t:objective>Search for a conversation with fetch 1, read 1, html not specified should return the text part</t:objective>
 
     <t:test >
         <t:request>
@@ -531,7 +531,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="SearchConvRequest_read5" type="sanity">
-    <t:objective>Search for a conversation with fetch=1, read=1, html=1 should return the HTML part.</t:objective>
+    <t:objective>Search for a conversation with fetch 1, read 1, html 1 should return the HTML part</t:objective>
 
     <t:test >
         <t:request>
@@ -585,7 +585,7 @@
 
 
 <t:test_case testcaseid="SearchConvRequest_fetch4" type="regression" bugids="27139">
-    <t:objective>Search for a conversation with invalid values(blank,text,integer other than 1/0,long positive/negative integer,spaces,decimal number,special character.</t:objective>
+    <t:objective>Search for a conversation with invalid values(blank,text,integer other than 1, 0,long positive, negative integer,spaces,decimal number,special character</t:objective>
 
     <t:test>
         <t:request>
@@ -699,9 +699,26 @@
 
 </t:test_case>
 
+<!-- fetch=0 and read=0 have the same functionality as not specifying the attribute -->
+<t:test_case testcaseid="SearchConvRequest_fetch5" type="deprecated" bugids="4926">
+    <t:objective>Verify that a search for a conversation with fetch 0 returns INVALIDREQUEST - read 0 is invalid</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="0">
+                <query>subject:(${message.subject1})</query>
+            </SearchConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
 
 <t:test_case testcaseid="SearchConvRequest_read6" type="regression" >
-    <t:objective>Search for a conversation with invalid values(blank,text,integer,long positive/negative integer,spaces,decimal number,special characters).</t:objective>
+    <t:objective>Search for a conversation with invalid values(blank,text,integer,long positive, negative integer,spaces,decimal number,special characters)</t:objective>
 
     <t:test>
         <t:request>
@@ -805,6 +822,23 @@
     <t:test>
         <t:request>
             <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="${read_spchar}">
+                <query>subject:(${message.subject1})</query>
+            </SearchConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!-- fetch=0 and read=0 have the same functionality as not specifying the attribute -->
+<t:test_case testcaseid="SearchConvRequest_read7" type="deprecated" bugids="4926">
+    <t:objective>Verify that a search for a conversation with fetch 1 and read 0 returns INVALIDREQUEST - read 0 is invalid</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="1" read="0">
                 <query>subject:(${message.subject1})</query>
             </SearchConvRequest>
         </t:request>

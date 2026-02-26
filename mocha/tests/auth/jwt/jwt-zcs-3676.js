@@ -25,6 +25,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				<a n="zimbraForeignPrincipal">${account1ForeignPrincipal}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes.CreateAccountResponse.account)
@@ -48,6 +49,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -63,6 +65,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
@@ -78,6 +81,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
@@ -93,6 +97,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -108,6 +113,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -129,6 +135,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				/account\.AUTH_FAILED|service\.INVALID_REQUEST/,
 				'Should return AUTH_FAILED or INVALID_REQUEST');
 		} else {
+			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
@@ -162,6 +169,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');

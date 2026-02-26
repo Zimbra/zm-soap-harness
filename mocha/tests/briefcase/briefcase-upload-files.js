@@ -18,6 +18,7 @@ describe('Briefcase > Briefcase Upload Files', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -26,6 +27,7 @@ describe('Briefcase > Briefcase Upload Files', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -35,6 +37,7 @@ describe('Briefcase > Briefcase Upload Files', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
@@ -64,6 +67,7 @@ describe('Briefcase > Briefcase Upload Files', function () {
 					</doc>
 				</SaveDocumentRequest>`, account1Token
 			);
+			assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 			assert.exists(saveRes.SaveDocumentResponse,
 				`SaveDocumentResponse should exist for ${fileType}`);
 			const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -77,6 +81,7 @@ describe('Briefcase > Briefcase Upload Files', function () {
 				<query>in:Briefcase</query>
 			</SearchRequest>`, account1Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const docs = searchRes.SearchResponse.doc;
@@ -89,6 +94,7 @@ describe('Briefcase > Briefcase Upload Files', function () {
 				<action id="${firstDoc.id}" op="trash"/>
 			</ItemActionRequest>`, account1Token
 		);
+		assert.notExists(trashRes.Fault, 'Response should not be a Fault');
 		assert.exists(trashRes.ItemActionResponse, 'ItemActionResponse should exist');
 	});
 });

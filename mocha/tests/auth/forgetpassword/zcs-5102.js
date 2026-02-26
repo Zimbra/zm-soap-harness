@@ -28,6 +28,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 				<a n="zimbraPasswordLockoutMaxFailures">2</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -182,7 +183,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 	}
 
 	// Tests
-	it('Sanity | Set recovery email and validate it using code - account1', async () => {
+	it('Sanity | Set recovery email and validate it using code', async () => {
 		adminAuthToken = await soap.getAdminAuthToken();
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -200,7 +201,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 	});
 
 
-	it('Sanity | Set recovery email and validate it using code - account3', async () => {
+	it('Sanity | Set recovery email and validate it using code 1', async () => {
 		adminAuthToken = await soap.getAdminAuthToken();
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
@@ -218,7 +219,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 	});
 
 
-	it('Sanity | Get recovery details for the account and verify account lockout scenario .', async () => {
+	it('Sanity | Get recovery details for the account and verify account lockout scenario 1', async () => {
 		const invalidRecoveryCode = 'abc1234';
 
 		// Auth as account1 and send recovery code
@@ -282,7 +283,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 	});
 
 
-	it('Sanity | Get recovery details for the account and verify account lockout scenario . - zimbraPasswordLockoutFailureLifetime honored', async () => {
+	it('Sanity | Get recovery details for the account and verify account lockout scenario 1 1', async () => {
 		const invalidRecoveryCode = 'abc1234';
 
 		// Auth as account3 and send recovery code

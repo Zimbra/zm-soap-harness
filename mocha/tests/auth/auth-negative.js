@@ -21,6 +21,7 @@ describe('Auth > Auth Negative', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create test account');
 	});
 
@@ -30,7 +31,7 @@ describe('Auth > Auth Negative', function () {
 	}
 
 	// Tests
-	it('Functional | login with a domain with a left parenthes', async () => {
+	it('Functional | login with a domain with a left parenthes 1', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@inva(lid_domain.com</account>
@@ -56,7 +57,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a domain with a left parenthes', async () => {
+	it('Functional | login with a domain with a left parenthes 2', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@zim(bra.com</account>

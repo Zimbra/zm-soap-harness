@@ -350,6 +350,161 @@
 
 </t:test_case>
 
+<!--
+
+Deprecated: http://bugzilla.zimbra.com/show_bug.cgi?id=33793#c12
+See Filter_Contains_06 for the non-trailing space test.
+
+-->
+<t:test_case testcaseid="Filter_Contains_04" type="deprecated">
+    <t:objective>Verify filters handle the case where the substring spans multiple lines (with trailing space)</t:objective>
+    <t:steps>
+		  1. Login to test account4
+		  2. Create a filter based on "Content ->  contains -> "text string"
+		  3. Inject message where "text string" spans two lines
+		  4. Verify the message is filtered
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	  <t:test>
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="${filter4.name}" active="1">
+                         <filterTests condition="anyof">
+                         <bodyTest caseSensitive="0" value="text string"/>
+                        </filterTests>
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="message4.file" value="${testMailRaw.root}/email42/email42.txt"/>
+	<t:property name="message4.subject" value="email42A"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message4.file}</filename>
+			<to>${account4.name}</to>
+			<from>${account1.name}</from>
+			<server>${account4.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+    <t:test id="searchRequest1">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:${message4.subject}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!--
+
+Deprecated: http://bugzilla.zimbra.com/show_bug.cgi?id=33793#c12
+See Filter_Contains_06 for the non-trailing space test.
+
+-->
+<t:test_case testcaseid="Filter_Contains_05" type="deprecated">
+    <t:objective>Verify filters handle the case where the substring spans the entire line (with trailing spaces)</t:objective>
+    <t:steps>
+		  1. Login to test account5
+		  2. Create a filter based on "Content ->  contains -> "simple text"
+		  3. Inject message where "text string" spans two lines
+		  4. Verify the message is filtered
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account5.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account5.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	  <t:test>
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="${filter4.name}" active="1">
+                         <filterTests condition="anyof">
+                         <bodyTest caseSensitive="0" value="simple text"/>
+                        </filterTests>
+                        <filterActions>
+                        	<actionFlag flagName="flagged" />
+                        	<actionStop />
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="message5.file" value="${testMailRaw.root}/email42/email42.txt"/>
+	<t:property name="message5.subject" value="email42A"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message5.file}</filename>
+			<to>${account5.name}</to>
+			<from>${account1.name}</from>
+			<server>${account5.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+    <t:test id="searchRequest1">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:${message5.subject}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
 
 <t:test_case testcaseid="Filter_Contains_06" type="sanity">
     <t:objective>Verify filters handle the case where the substring spans multiple lines</t:objective>

@@ -18,6 +18,7 @@ describe('Briefcase > List Document Revisions', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -26,6 +27,7 @@ describe('Briefcase > List Document Revisions', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -35,6 +37,7 @@ describe('Briefcase > List Document Revisions', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
@@ -52,7 +55,7 @@ describe('Briefcase > List Document Revisions', function () {
 	}
 
 	// Tests
-	it('Smoke | Verify document revision list for a briefcase document', async () => {
+	it('Smoke | listdocument revision request for non existing document', async () => {
 		// Save document v1
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -62,6 +65,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -76,6 +80,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// List revisions
@@ -84,6 +89,7 @@ describe('Briefcase > List Document Revisions', function () {
 				<doc id="${docId}"/>
 			</ListDocumentRevisionsRequest>`, account1Token
 		);
+		assert.notExists(listRes.Fault, 'Response should not be a Fault');
 		assert.exists(listRes.ListDocumentRevisionsResponse,
 			'ListDocumentRevisionsResponse should exist');
 		const revisions = listRes.ListDocumentRevisionsResponse.doc;
@@ -94,7 +100,7 @@ describe('Briefcase > List Document Revisions', function () {
 	});
 
 
-	it('Sanity | Verify revisions after updating document with another version', async () => {
+	it('Sanity | Upload document with multiple revisions and list revisions specify version', async () => {
 		// Save document v1
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -104,6 +110,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -118,6 +125,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Save revision 3
@@ -128,6 +136,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save3.Fault, 'Response should not be a Fault');
 		assert.exists(save3.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// List revisions
@@ -136,6 +145,7 @@ describe('Briefcase > List Document Revisions', function () {
 				<doc id="${docId}"/>
 			</ListDocumentRevisionsRequest>`, account1Token
 		);
+		assert.notExists(listRes.Fault, 'Response should not be a Fault');
 		assert.exists(listRes.ListDocumentRevisionsResponse,
 			'ListDocumentRevisionsResponse should exist');
 		const revisions = listRes.ListDocumentRevisionsResponse.doc;
@@ -144,7 +154,7 @@ describe('Briefcase > List Document Revisions', function () {
 	});
 
 
-	it('Sanity | ListDocumentRevisionsRequest with count parameter', async () => {
+	it('Sanity | Upload document with multiple revisions and list revisions specify count', async () => {
 		// Save document v1
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -154,6 +164,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -169,6 +180,7 @@ describe('Briefcase > List Document Revisions', function () {
 					</doc>
 				</SaveDocumentRequest>`, account1Token
 			);
+			assert.notExists(save.Fault, 'Response should not be a Fault');
 			assert.exists(save.SaveDocumentResponse,
 				`SaveDocumentResponse v${i} should exist`);
 		}
@@ -179,12 +191,13 @@ describe('Briefcase > List Document Revisions', function () {
 				<doc id="${docId}"/>
 			</ListDocumentRevisionsRequest>`, account1Token
 		);
+		assert.notExists(listRes.Fault, 'Response should not be a Fault');
 		assert.exists(listRes.ListDocumentRevisionsResponse,
 			'ListDocumentRevisionsResponse should exist');
 	});
 
 
-	it('Sanity | ListDocumentRevisionsRequest with version parameter', async () => {
+	it('Sanity | Upload document with multiple revisions and list revisions specify version 1', async () => {
 		// Save document v1
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -194,6 +207,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -208,6 +222,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// List revisions from version 1
@@ -216,12 +231,13 @@ describe('Briefcase > List Document Revisions', function () {
 				<doc id="${docId}"/>
 			</ListDocumentRevisionsRequest>`, account1Token
 		);
+		assert.notExists(listRes.Fault, 'Response should not be a Fault');
 		assert.exists(listRes.ListDocumentRevisionsResponse,
 			'ListDocumentRevisionsResponse should exist');
 	});
 
 
-	it('Sanity | ListDocumentRevisionsRequest for trashed document', async () => {
+	it('Sanity | listdocument revision request for non existing document', async () => {
 		// Save document
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -231,6 +247,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -245,6 +262,7 @@ describe('Briefcase > List Document Revisions', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Trash the document
@@ -253,6 +271,7 @@ describe('Briefcase > List Document Revisions', function () {
 				<action id="${docId}" op="trash"/>
 			</ItemActionRequest>`, account1Token
 		);
+		assert.notExists(trashRes.Fault, 'Response should not be a Fault');
 		assert.exists(trashRes.ItemActionResponse, 'ItemActionResponse should exist');
 
 		// List revisions of trashed document
@@ -261,6 +280,7 @@ describe('Briefcase > List Document Revisions', function () {
 				<doc id="${docId}"/>
 			</ListDocumentRevisionsRequest>`, account1Token
 		);
+		assert.notExists(listRes.Fault, 'Response should not be a Fault');
 		assert.exists(listRes.ListDocumentRevisionsResponse,
 			'ListDocumentRevisionsResponse should exist');
 	});

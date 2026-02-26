@@ -18,6 +18,7 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -31,6 +32,7 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -44,7 +46,7 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 	}
 
 	// Tests
-	it('Sanity | Create a briefcase folder. Share it to public.', async () => {
+	it('Sanity | Create a briefcase folder Share it to public', async () => {
 		const folderName = 'Briefcase.' + common.getUniqueString();
 
 		// Create briefcase folder
@@ -53,6 +55,7 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 				<folder l="1" name="${folderName}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
@@ -67,6 +70,7 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 });

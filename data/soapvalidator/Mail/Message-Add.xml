@@ -124,7 +124,7 @@
 
 
 <t:test_case testcaseid="AddMsgRequest1" type="smoke">
-    <t:objective>Adding a message to default folders.</t:objective>
+    <t:objective>Adding a message to default folders</t:objective>
     <t:steps>1. Add message in default folder
              2. Search to verify whether it is added.
     </t:steps>
@@ -262,7 +262,7 @@
 
 
  <t:test_case testcaseid="AddMsgRequest2" type="sanity">
-    <t:objective>Adding a message to user defined folder.</t:objective>
+    <t:objective>Adding a message to user defined folder</t:objective>
     <t:steps>1.Create a folder.
              2.Add a mail to the newly created folder.
              3.Search the mail in newly created folder.
@@ -310,7 +310,7 @@
 
 
 <t:test_case testcaseid="AddMsgRequest3" type="regression" >
-    <t:objective>Adding a message to a non-existing folder.</t:objective>
+    <t:objective>Adding a message to a non-existing folder</t:objective>
 
     <t:test>
         <t:request>
@@ -329,7 +329,7 @@
 
 
 <t:test_case testcaseid="AddMsgRequest4" type="regression" >
-    <t:objective>Adding a message to a deleted folder.</t:objective>
+    <t:objective>Adding a message to a deleted folder</t:objective>
     <t:steps> 1.Create a folder.
               2.Delete it.
               3.Add a mail to the deleted folder.
@@ -380,7 +380,7 @@
 
 
 <t:test_case testcaseid="AddMsgRequest5" type="functional" >
-    <t:objective>Adding a message in inbox and tag it.</t:objective>
+    <t:objective>Adding a message in inbox and tag it</t:objective>
     <t:steps> 1.Create a tag.
               2.Tag a mail and add in the inbox.
     </t:steps>
@@ -415,8 +415,69 @@
 </t:test_case>
 
 
+<!-- 'l' attribute cannot be used to specify names, only ID numbers -->
+<t:test_case testcaseid="AddMsgRequest6" type="deprecated" >
+    <t:objective>Adding a message in a sub folder</t:objective>
+    <t:steps>1.create a folder.
+             2.create a sub folder for that.
+             3.add the mail to the subfolder giving path.
+    </t:steps>
+
+    <!-- Create a folder.-->
+    <t:test id="AddMsgRequest6a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder4.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Create a sub folder for the above created folder.-->
+    <t:test id="AddMsgRequest6b" depends="AddMsgRequest6a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${subfolder4.name}" l="${folder4.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="subfolder4.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Add a mail to the sub folder.-->
+    <t:test id="AddMsgRequest6c" depends="AddMsgRequest6b">
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="/${folder4.name}/${subfolder4.name}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message8.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Search the mail in the sub folder.-->
+    <t:test depends="AddMsgRequest6c">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail">
+                <query>in:"${folder4.name}/${subfolder4.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message8.id}']" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
 <t:test_case testcaseid="AddMsgRequest7" type="regression" >
-    <t:objective>Adding a message in inbox giving an invalid path of folder.</t:objective>
+    <t:objective>Adding a message in inbox giving an invalid path of folder</t:objective>
 
     <t:test>
         <t:request>
@@ -456,7 +517,7 @@
 
 
 <t:test_case testcaseid="AddMsgRequest9" type="functional">
-    <t:objective>Adding a message in inbox and flag it.</t:objective>
+    <t:objective>Adding a message in inbox and flag it</t:objective>
     <t:steps> 1. AddMsgRequest to add a message
               2. Flag a message in inbox added by AddMsgRequest.
     </t:steps>
@@ -508,7 +569,7 @@
 
 
 <t:test_case testcaseid="AddMsgRequest11" type="functional">
-    <t:objective>Mark message added by AddMsgRequest as read/unread</t:objective>
+    <t:objective>Mark message added by AddMsgRequest as read, unread</t:objective>
 
     <t:test depends="AddMsgRequest9a">
         <t:request>
@@ -591,7 +652,7 @@ simple text string in the body
 
 
 <t:test_case testcaseid="AddMsgRequest13" type="regression">
-    <t:objective>AddMsgRequest with attribute d as invalid (sonetext/spchar/number/negative/decimal/blank)</t:objective>
+    <t:objective>AddMsgRequest with attribute d as invalid (sonetext, spchar, number, negative, decimal, blank)</t:objective>
 
     <t:test>
         <t:request>
@@ -675,7 +736,7 @@ simple text string in the body
 
 
 <t:test_case testcaseid="AddMsgRequest14" type="regression">
-    <t:objective>AddMsgRequest with attribute aid as invalid (sonetext/spchar/number/negative/decimal/blank)</t:objective>
+    <t:objective>AddMsgRequest with attribute aid as invalid (sonetext, spchar, number, negative, decimal, blank)</t:objective>
 
     <t:test>
         <t:request>
@@ -759,7 +820,7 @@ simple text string in the body
 
 
 <t:test_case testcaseid="AddMsgRequest15" type="functional">
-    <t:objective>AddMsgRequest with attribute noICal as valid (TRUE/FALSE)</t:objective>
+    <t:objective>AddMsgRequest with attribute noICal as valid (TRUE, FALSE)</t:objective>
 
     <t:test>
         <t:request>
@@ -791,7 +852,7 @@ simple text string in the body
 
 
 <t:test_case testcaseid="AddMsgRequest16" type="regression">
-    <t:objective>AddMsgRequest with attribute noICal as invalid (sonetext/spchar/number/negative/decimal/blank)</t:objective>
+    <t:objective>AddMsgRequest with attribute noICal as invalid (sonetext, spchar, number, negative, decimal, blank)</t:objective>
 
     <t:test>
         <t:request>
@@ -875,7 +936,7 @@ simple text string in the body
 
 
 <t:test_case testcaseid="AddMsgRequest17" type="regression">
-    <t:objective>AddMsgRequest with attribute uid as invalid (sometext/spchar/number/negative/decimal/blank)</t:objective>
+    <t:objective>AddMsgRequest with attribute uid as invalid (sometext, spchar, number, negative, decimal, blank)</t:objective>
 
     <t:test>
         <t:request>

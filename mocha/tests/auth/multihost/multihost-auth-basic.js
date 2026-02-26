@@ -19,6 +19,7 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		account2Name = 'mh2.' + common.getUniqueString() + '@' + config.testDomain;
@@ -28,6 +29,7 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 	});
 
@@ -37,25 +39,27 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 	}
 
 	// Tests
-	it('Smoke | Verify that an account configured with zimbraMailHost=A can log into host B', async () => {
+	it('Smoke | Verify that an account configured with zimbraMailHost A can log into host B', async () => {
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
-	it('Sanity | Verify that an account configured with zimbraMailHost=A can log into host A', async () => {
+	it('Sanity | Verify that an account configured with zimbraMailHost A can log into host A', async () => {
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
@@ -66,29 +70,32 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 
 
-	it('Sanity | Verify that an account configured with zimbraMailHost=B can log into host A', async () => {
+	it('Sanity | Verify that an account configured with zimbraMailHost B can log into host A', async () => {
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
-	it('Sanity | Verify that an account configured with zimbraMailHost=B can log into host B', async () => {
+	it('Sanity | Verify that an account configured with zimbraMailHost B can log into host B', async () => {
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
@@ -98,6 +105,7 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 
@@ -109,6 +117,7 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
@@ -119,6 +128,7 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 });

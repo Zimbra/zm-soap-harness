@@ -23,6 +23,7 @@ describe('Auth > Test Authtoken', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -38,6 +39,7 @@ describe('Auth > Test Authtoken', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
@@ -59,6 +61,7 @@ describe('Auth > Test Authtoken', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken1
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(response.GetFolderResponse.folder)
 			? response.GetFolderResponse.folder[0]
@@ -74,6 +77,7 @@ describe('Auth > Test Authtoken', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken1
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(response.GetFolderResponse.folder)
 			? response.GetFolderResponse.folder[0]
@@ -85,13 +89,14 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Sanity | Login to test_account2 with admins authtoken (using context specified by name)', async () => {
+	it('Sanity | Login to testaccount2 with admins authtoken (using context specified by name)', async () => {
 		// Use admin token to access test_account2 folders
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${testAccount2Name}</account>
 			</DelegateAuthRequest>`, adminAuthToken
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.DelegateAuthResponse, 'DelegateAuthResponse should exist');
 
 		const delegateToken = Array.isArray(response.DelegateAuthResponse.authToken)
@@ -102,6 +107,7 @@ describe('Auth > Test Authtoken', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
@@ -110,13 +116,14 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Sanity | Login to test_account2 with admins authtoken (using context specified by id)', async () => {
+	it('Sanity | Login to testaccount2 with admins authtoken (using context specified by id)', async () => {
 		// Use admin token to access test_account2 folders by id
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${testAccount2Id}</account>
 			</DelegateAuthRequest>`, adminAuthToken
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.DelegateAuthResponse, 'DelegateAuthResponse should exist');
 
 		const delegateToken = Array.isArray(response.DelegateAuthResponse.authToken)
@@ -127,6 +134,7 @@ describe('Auth > Test Authtoken', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
@@ -135,7 +143,7 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Sanity | Login to test_account2 with test_account1s auth token should be denied', async () => {
+	it('Sanity | Login to testaccount2 with testaccount1s auth token (using context specified by name)', async () => {
 		// This test verifies that normal user can't access another user's data
 		// Using account1 token, try to get test_account2 data via delegate
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -149,7 +157,7 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Regression | Login to test_account2 with test_account1s auth token (using context specified by name)', async () => {
+	it('Regression | Login to testaccount2 with testaccount1s auth token (using context specified by name)', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${testAccount2Name}</account>
@@ -161,7 +169,7 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Regression | Login to test_account2 with test_account1s auth token (using context specified by id)', async () => {
+	it('Regression | Login to testaccount2 with testaccount1s auth token (using context specified by id)', async () => {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${testAccount2Id}</account>
@@ -173,7 +181,7 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Regression | Login to test_account2 with its different session-id and without authtoken (using context specified by name/id)', async () => {
+	it('Regression | Login to testaccount2 with its different session-id and without authtoken (using context specified by name, id)', async () => {
 		// NOTE: Commented out in XML due to session-id handling issues
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -181,6 +189,7 @@ describe('Auth > Test Authtoken', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -188,7 +197,7 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Regression | Login to test_account2 with its own session-id and without authtoken (using context specified by id/name)', async () => {
+	it('Regression | Login to testaccount2 with its own session-id and without authtoken (using context specified by id, name)', async () => {
 		// NOTE: Commented out in XML due to session-id handling issues
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -196,6 +205,7 @@ describe('Auth > Test Authtoken', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -203,13 +213,14 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Sanity | Login to admin.mailaccount with adminlogin authtoken (requestContext specified by name)', async () => {
+	it('Sanity | Login to adminmailaccount with adminlogin authtoken (requestContext specified by name)', async () => {
 		// NOTE: Commented out in XML — admin mail account delegation
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${testAccount1Name}</account>
 			</DelegateAuthRequest>`, adminAuthToken
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.DelegateAuthResponse,
 			'DelegateAuthResponse should exist');
 		assert.exists(response.DelegateAuthResponse.authToken, 'Delegated authToken should exist');
@@ -218,7 +229,7 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Functional | Login to admin.mailaccount with test_account1s auth token (requestContext specified by name)', async () => {
+	it('Functional | Login to adminmailaccount with testaccount1s auth token (requestContext specified by name)', async () => {
 		// NOTE: Commented out in XML — user token cannot delegate
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
@@ -231,13 +242,14 @@ describe('Auth > Test Authtoken', function () {
 	});
 
 
-	it('Functional | Login to test_account1 with admin.mailaccounts authtoken (requestContext specified by nameid)', async () => {
+	it('Functional | Login to testaccount1 with adminmailaccounts authtoken (requestContext specified by nameid)', async () => {
 		// NOTE: Commented out in XML — admin delegating to regular account
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${testAccount1Id}</account>
 			</DelegateAuthRequest>`, adminAuthToken
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.DelegateAuthResponse,
 			'DelegateAuthResponse should exist');
 
@@ -249,6 +261,7 @@ describe('Auth > Test Authtoken', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]

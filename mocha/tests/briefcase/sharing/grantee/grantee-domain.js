@@ -34,7 +34,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Domain', function () {
 	}
 
 	// Tests
-	it('Sanity | Share a briefcase folder to domain. Verify that users in domain have access', async () => {
+	it('Sanity | Share a briefcase folder to a domain. Verify that all users in that domain have access.', async () => {
 		const folderName = 'DomainShare.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -52,11 +52,12 @@ describe('Briefcase > Sharing > Grantee > Grantee Domain', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 
 
-	it('Sanity | Unshare a briefcase folder from domain. Verify removal', async () => {
+	it('Sanity | Unshare a briefcase folder to all. Verify that all users have access.', async () => {
 		const folderName = 'DomainUnshare.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -82,6 +83,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Domain', function () {
 				<action op="!grant" id="${folder.id}" zid="${zid}"/>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.FolderActionResponse,
 			'FolderActionResponse should exist');
 	});

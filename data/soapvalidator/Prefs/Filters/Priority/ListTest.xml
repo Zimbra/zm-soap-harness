@@ -109,4 +109,218 @@
     
 </t:test_case>
 
+<!-- Please modify the type to smoke to test the listTest Filter.It needs milter service which not enabled by default -->
+
+<t:test_case testcaseid="listTest_01" type="deprecated" bugids="42185" >
+   <t:objective>Verify that message sent to a list gets flagged for list members for listTest filter</t:objective>
+    
+    <t:steps> 1. Create filter for listTest for account1
+			  2. account2 sends a message to a list(account1 is a list member)			 
+			  3. Verify that the message gets flagged in account1 inbox
+    </t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>	
+    
+	<t:property name="filter_ListTest1.name" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter_ListTest1.subject" value="ListTest ${TIME}${COUNTER}"/>
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_ListTest1.name}" active="1">
+						<filterTests condition="anyof">
+						 <listTest/>			
+						</filterTests>
+						<filterActions>
+							<actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>    
+   
+	<t:property name="addressBook_msg01.file" value="${testMailRaw.root}/bug42185/addressbook01.txt" />
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>		
+			<e t="t" a='${acl1.name}'/>
+			<su>${filter_ListTest1.subject}</su>
+			<mp ct="text/plain">
+			    <content> Testing listTest filter 1</content>
+			</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+	         <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>	
+	
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_ListTest1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_ListTest1.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>
+              
+</t:test_case> 
+
+<!-- Please modify the type to smoke to test the listTest Filter.It needs milter service which not enabled by default -->
+
+<t:test_case testcaseid="listTest_02" type="deprecated" bugids="42185" >
+   <t:objective>Verify that message CCed to a list gets flagged for list members for listTest filter</t:objective>
+    
+    <t:steps> 1. Create filter for listTest for account1
+			  2. account2 CCed a message to a list(account1 is a list member)			 
+			  3. Verify that the message gets flagged in account1 inbox
+    </t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>	
+    
+	<t:property name="filter_ListTest2.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_ListTest2.subject" value="ListTest ${TIME}${COUNTER}"/>		
+	
+	<t:property name="addressBook_msg02.file" value="${testMailRaw.root}/bug42185/addressbook02.txt" />
+
+	    
+    <t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_ListTest2.name}" active="1">
+						<filterTests condition="anyof">
+						  <listTest/>							
+						</filterTests>
+						<filterActions>
+							<actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+            
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+		<e t="t" a='${account2.name}'/>
+		<e t="c" a='${acl1.name}'/>
+		<su>${filter_ListTest2.subject}</su>
+		<mp ct="text/plain">
+		    <content> Testing listTest filter 2 </content>
+		</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+	         <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+    
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_ListTest2.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_ListTest2.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>  
+          
+</t:test_case> 
 </t:tests>

@@ -222,7 +222,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="Send_Recovery_Code" type="sanity" bugids="ZCS-4798">
-		<t:objective>Get recovery details for the account.</t:objective>
+		<t:objective>Get recovery details for the account</t:objective>
 
 		<t:steps>
 			1. Log in with account 1.
@@ -283,7 +283,7 @@
 
 
 	<t:test_case testcaseid="Get_auth_Token" type="sanity" bugids="ZCS-4798">
-		<t:objective>Use recovery code to generate Auth token.</t:objective>
+		<t:objective>Use recovery code to generate Auth token</t:objective>
 
 		<t:steps>
 			1. Trigger auth request using recovery code
@@ -321,8 +321,127 @@
 
 	</t:test_case>
 
+	<t:test_case testcaseid="Verify_for_JWT_Token" type="deprecated" bugids="ZCS-4798">
+		<t:objective>Get recovery details for the account and generate JWT auth token</t:objective>
+
+		<t:steps>
+			1. Log in with account 1.
+			2. Send recovery code to the recovery email.
+			3. Verify that recovery email account receives recovery code.
+			4. Generate JWT auth token using that recovery code and use it to send an email to admin
+		</t:steps>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="sendRecoveryCode_for_valid_user">
+			<t:request>
+				<RecoverAccountRequest op="sendRecoveryCode" email="${account1.name}" channel="email" xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select path="//mail:RecoverAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth_testAccount2" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:delay sec="50" />
+
+		<t:test id="SearchRequest_for_recoveryCode_email">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>subject:Reset your ${account1.server} </query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message.id1" />
+				<t:select path="//mail:SearchResponse/mail:c/mail:fr" set="message.content" />
+			</t:response>
+		</t:test>
+
+		<t:regex input="${message.content}" regex="^We have received a password reset request for your account, ${account1.name}. Temporary Reset Code: (.*) Use ...$" group="1" set="account1.recoverycode2" />
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<account by="name">${account1.alias}</account>
+					<recoveryCode>${account1.recoverycode2}</recoveryCode>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account3.name}" />
+						<su>recovery auth email2</su>
+						<mp ct="text/plain">
+							<content>content ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}}</account>
+					<password>${account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:delay sec="20"/>
+
+		<t:test id="search_Message1" required="true">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" type="message">
+					<query>subject:recovery auth email2</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e" attr="a" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
 	<t:test_case testcaseid="Verify_for_alias_account" type="sanity" bugids="ZCS-4798">
-		<t:objective>Get recovery details for the account and generate auth token for alias account.</t:objective>
+		<t:objective>Get recovery details for the account and generate auth token for alias account</t:objective>
 
 		<t:steps>
 			1. Log in with account 1.
@@ -414,7 +533,7 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="Verify_for_malformedEmail" type="sanity" bugids="ZCS-4798">
-		<t:objective>Get recovery details for the malformed email and verify error.</t:objective>
+		<t:objective>Get recovery details for the malformed email and verify error</t:objective>
 
 		<t:steps>
 			1. Log in with account 1.

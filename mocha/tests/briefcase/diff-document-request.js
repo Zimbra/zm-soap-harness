@@ -18,6 +18,7 @@ describe('Briefcase > Diff Document Request', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -26,6 +27,7 @@ describe('Briefcase > Diff Document Request', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -35,6 +37,7 @@ describe('Briefcase > Diff Document Request', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
@@ -62,6 +65,7 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -76,6 +80,7 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Diff the two revisions
@@ -84,6 +89,7 @@ describe('Briefcase > Diff Document Request', function () {
 				<doc v1="1" v2="2" l="${briefcaseFolderId}" id="${docId}"/>
 			</DiffDocumentRequest>`, account1Token
 		);
+		assert.notExists(diffRes.Fault, 'Response should not be a Fault');
 		assert.exists(diffRes.DiffDocumentResponse, 'DiffDocumentResponse should exist');
 		assert.exists(diffRes.DiffDocumentResponse.chunk,
 			'chunk should exist in diff response');
@@ -100,6 +106,7 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -114,6 +121,7 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Diff the two revisions
@@ -122,12 +130,13 @@ describe('Briefcase > Diff Document Request', function () {
 				<doc v1="1" v2="2" l="${briefcaseFolderId}" id="${docId}"/>
 			</DiffDocumentRequest>`, account1Token
 		);
+		assert.notExists(diffRes.Fault, 'Response should not be a Fault');
 		assert.exists(diffRes.DiffDocumentResponse, 'DiffDocumentResponse should exist');
 		assert.exists(diffRes.DiffDocumentResponse.chunk, 'chunk should exist');
 	});
 
 
-	it('Sanity | Send DiffDocumentRequest with invalid value for version V1 - service.INVALID_REQUEST', async () => {
+	it('Sanity | Send DiffDocumentRequest with invalid value for verison V1 - serviceINVALIDREQUEST', async () => {
 		// Save a document
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -137,6 +146,7 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -155,7 +165,7 @@ describe('Briefcase > Diff Document Request', function () {
 	});
 
 
-	it('Sanity | Send DiffDocumentRequest with invalid value for version V2 - service.INVALID_REQUEST', async () => {
+	it('Sanity | Send DiffDocumentRequest with invalid value for version V2 - serviceINVALIDREQUEST', async () => {
 		// Save a document and create revision
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -165,6 +175,7 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
@@ -179,6 +190,7 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Diff with invalid v2

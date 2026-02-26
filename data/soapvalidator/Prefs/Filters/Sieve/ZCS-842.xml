@@ -389,7 +389,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter1" type="regression"
 		bugids="ZCS-842">
-		<t:objective>First wildcard non-greedy example Send a mail with subject as sample abc test 123 test ABC test. ${1}should contain abc. Sieve test: if header :matches :comparator i;ascii-casemap Subject sample*test* { tag ${1}; }</t:objective>
+		<t:objective>First wildcard non-greedy example Send a mail with subject as 'sample abc test 123 test ABC test'. ${1}should contain 'abc'. Sieve test: if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*" { tag "${1}"; }</t:objective>
 
 		<t:test>
 			<t:request>
@@ -452,7 +452,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter2" type="regression"
 		bugids="ZCS-842">
-		<t:objective>Only one wildcard greedy example Send a mail with subject as sample abc test 123 test ABC test. ${1}should contain abc test 123 test ABC. Sieve test: if header :matches :comparator i;ascii-casemap Subject sample*test { tag ${1}; }</t:objective>
+		<t:objective>Only one wildcard greedy example Send a mail with subject as 'sample abc test 123 test ABC test'. ${1}should contain 'abc test 123 test ABC'. Sieve test: if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test" { tag "${1}"; }</t:objective>
 
 		<t:test>
 			<t:request>
@@ -517,7 +517,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter3" type="regression"
 		bugids="ZCS-842">
-		<t:objective>Multiple wildcards last greedy example Send a mail with subject as sample abc test 123 test ABC test. ${1}should contain abc, ${2} should contain 123 test ABC and not just 123. Sieve test: if header :matches :comparator i;ascii-casemap Subject sample*test*test { tag ${1}-${2}; }</t:objective>
+		<t:objective>Multiple wildcards last greedy example Send a mail with subject as 'sample abc test 123 test ABC test'. ${1}should contain 'abc', ${2} should contain '123 test ABC' and not just '123'. Sieve test: if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*test" { tag "${1}-${2}"; }</t:objective>
 
 		<t:test>
 			<t:request>
@@ -581,7 +581,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter4" type="regression"
 		bugids="ZCS-842">
-		<t:objective>wildcard first variable example Send a mail with subject as sample abc test 123 test ABC test. ${0} should contain sample abc test 123 test ABC test. Sieve test: if header :matches :comparator i;ascii-casemap Subject sample*test { tag ${0}; }</t:objective>
+		<t:objective>wildcard first variable example Send a mail with subject as 'sample abc test 123 test ABC test'. ${0} should contain 'sample abc test 123 test ABC test'. Sieve test: if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test" { tag "${0}"; }</t:objective>
 
 		<t:test>
 			<t:request>
@@ -645,7 +645,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter5" type="regression"
 		bugids="ZCS-842">
-		<t:objective>wildcard last greedy example Send a mail with subject as sample abc test 123 test ABC test. ${1} should contain abc test 123 test ABC test Sieve test: if header :matches :comparator i;ascii-casemap Subject sample* { tag ${1}; }</t:objective>
+		<t:objective>wildcard last greedy example Send a mail with subject as 'sample abc test 123 test ABC test'. ${1} should contain 'abc test 123 test ABC test' Sieve test: if header :matches :comparator "i;ascii-casemap" "Subject" "sample*" { tag "${1}"; }</t:objective>
 
 		<t:test>
 			<t:request>
@@ -708,7 +708,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter6" type="regression"
 		bugids="ZCS-842">
-		<t:objective>wildcard first non-greedy example Send a mail with subject as sample test 123 test ABC test. ${1} should contain . ${2} should contain 123 test ABC test. Sieve test: if header :matches :comparator i;ascii-casemap Subject sample*test* { tag space.${1}.tag.${2}; }</t:objective>
+		<t:objective>wildcard first non-greedy example Send a mail with subject as 'sample test 123 test ABC test'. ${1} should contain ' '. ${2} should contain '123 test ABC test'. Sieve test: if header :matches :comparator "i;ascii-casemap" "Subject" "sample*test*" { tag "space.${1}.tag.${2}"; }</t:objective>
 
 		<t:test>
 			<t:request>
@@ -771,7 +771,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter7" type="regression"
 		bugids="ZCS-842">
-		<t:objective>address test - wildcard greedy example Send a mail with From as sender123@domain.com. ${0001} should contain sender123, ${000} should contain sender123@domain.com Sieve test: if address :matches :comparator i;ascii-casemap From *@${defaultdomain.name} { tag ${000}-${0001}@${defaultdomain.name}; }</t:objective>
+		<t:objective>address test - wildcard greedy example Send a mail with From as 'sender123@domain.com'. ${0001} should contain 'sender123', ${000} should contain 'sender123@domain.com' Sieve test: if address :matches :comparator "i;ascii-casemap" "From" "*@${defaultdomain.name}" { tag "${000}-${0001}@${defaultdomain.name}"; }</t:objective>
 
 		<t:test>
 			<t:request>
@@ -834,7 +834,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter8" type="regression"
 		bugids="ZCS-842">
-		<t:objective>replaceheader test - multiple wildcard example Send a mail with subject as sample abc test 123 test ABC test . ${1} should contain abc, ${2} should contain 123 test ABC test Sieve test: replaceheader :newvalue [Spam] ${1},${2} :comparator i;ascii-casemap :matches subject sample*test*;</t:objective>
+		<t:objective>replaceheader test - multiple wildcard example Send a mail with subject as 'sample abc test 123 test ABC test' . ${1} should contain 'abc', ${2} should contain '123 test ABC test' Sieve test: replaceheader :newvalue "[Spam] ${1},${2}" :comparator "i;ascii-casemap" :matches "subject" "sample*test*";</t:objective>
 
 		<t:test>
 			<t:request>
@@ -906,7 +906,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter9" type="regression"
 		bugids="ZCS-842">
-		<t:objective>deleteheader test - wildcard greedy example Delete header if the value matches with variable value of header test Sieve test: addheader X-New-Header1 This is a new header1; addheader X-New-Header2 This is a new header2; if header :matches X-New-Header1 This* { deleteheader :comparator i;ascii-casemap :matches X-New-Header1 ${0}; }</t:objective>
+		<t:objective>deleteheader test - wildcard greedy example Delete header if the value matches with variable value of header test Sieve test: addheader "X-New-Header1" "This is a new header1"; addheader "X-New-Header2" "This is a new header2"; if header :matches "X-New-Header1" "This*" { deleteheader :comparator "i;ascii-casemap" :matches "X-New-Header1" "${0}"; }</t:objective>
 
 		<t:test>
 			<t:request>
@@ -979,7 +979,7 @@ tag "${1}";
 
 	<t:test_case testcaseid="ZCS-842_Filter10" type="regression"
 		bugids="ZCS-842">
-		<t:objective>header test - wildcard greedy example Send a message with subject as sieve_test new zimbra test sample sample. result: tag zimbra test sample Sieve test: set var_one sieve_test new; if header :matches Subject sieve_test new*sample { tag ${1}; }</t:objective>
+		<t:objective>header test - wildcard greedy example Send a message with subject as 'sieve_test new zimbra test sample sample'. result: tag 'zimbra test sample' Sieve test: set "var_one" "sieve_test new"; if header :matches "Subject" "sieve_test new*sample" { tag "${1}"; }</t:objective>
 
 		<t:test>
 			<t:request>

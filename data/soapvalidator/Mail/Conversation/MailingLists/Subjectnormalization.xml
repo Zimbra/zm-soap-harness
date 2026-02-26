@@ -393,6 +393,144 @@ ${message.content}
 
 </t:test_case>
 
+<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_03" type="deprecated" areas="noncluster">
+	<t:objective>Verify if zimbraPrefDedupeMessagesSentToSelf dedupeAll, then the original sent message should be combined into the conversation</t:objective>
+	<t:steps>
+		1. ModifyPrefsRequest - set zimbraPrefDedupeMessagesSentToSelf=dedupeAll
+		2. account2 - SendMsgRequest to account3 with subject: subject1
+		3. account3 - SendMsgRequest to account2 with subject: [mailling-list] subject1
+		4. account3 - SendMsgRequest to account2 with subject: RE: [mailling-list] subject1
+		5. account2 - Verify all 3 messages are combined into one conversation
+	</t:steps>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="message1.content" value="content${TIME}${COUNTER}"/>
+	<t:property name="message2.content" value="content${TIME}${COUNTER}"/>
+	<t:property name="message3.content" value="content${TIME}${COUNTER}"/>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefDedupeMessagesSentToSelf">dedupeAll</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message1.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>[mailing-list] ${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message2.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>RE: [mailing-list] ${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message3.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="convactionrequest1a">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m[1]" attr="id" set="message1.id"/>
+				<t:select path="//mail:m[2]" attr="id" set="message2.id"/>
+				<t:select path="//mail:m[3]" attr="id" set="message3.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
 <t:finally areas="noncluster">
 
 	<t:test id="admin_login" required="true" >

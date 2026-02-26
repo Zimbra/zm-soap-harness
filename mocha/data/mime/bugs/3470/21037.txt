@@ -1,0 +1,2107 @@
+Return-Path: rmansoura@example.com
+Received: from dogfood.zimbra.com (LHLO dogfood.zimbra.com) (10.10.130.20)
+ by dogfood.zimbra.com with LMTP; Thu, 11 Oct 2007 21:59:30 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by dogfood.zimbra.com (Postfix) with ESMTP id EE2691D5575;
+	Thu, 11 Oct 2007 21:59:29 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at dogfood.zimbra.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.298
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.298 tagged_above=-10 required=3
+	tests=[ALL_TRUSTED=-1.8, AWL=0.101, BAYES_00=-2.599]
+Received: from dogfood.zimbra.com ([127.0.0.1])
+	by localhost (dogfood.zimbra.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id V3by+z4dTaC3; Thu, 11 Oct 2007 21:59:20 -0700 (PDT)
+Received: from dogfood.zimbra.com (localhost.localdomain [127.0.0.1])
+	by dogfood.zimbra.com (Postfix) with ESMTP id 809C81D556E;
+	Thu, 11 Oct 2007 21:59:20 -0700 (PDT)
+Date: Thu, 11 Oct 2007 21:59:19 -0700 (PDT)
+From: Ramadan Mansoura <rmansoura@example.com>
+To: server-team <server-team@example.com>, support@example.com
+Message-ID: <628264412.500961192165159751.JavaMail.root@example.com>
+In-Reply-To: <252840765.9071192145687103.JavaMail.email2case@example.com>
+Subject: Fwd: SF: Case 00015611: pricegrabber - fatal errors in mailbox.log
+ - java.lang.OutOfMemoryError: Java heap space
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_6669_1602141227.1192165159726"
+X-Originating-IP: [71.139.180.94]
+
+------=_Part_6669_1602141227.1192165159726
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Folks, customer is running ZCS version 4.5.6. Customer is experiencing OOME 10 times in the past 12 hours.
+ I requested to do kill -3 on the tomcat process and to get the catalina.out and zimbrastats.csv (attached), please advise
+
+
+Regards
+Ramadan Mansoura
+Zimbra Network Support
+-------------------------------
+
+----- Forwarded Message -----
+From: "John Cheng" <jcheng@example.com>
+To: support@example.com
+Sent: Thursday, October 11, 2007 4:39:07 PM (GMT-0800) America/Los_Angeles
+Subject: SF: Case 00015611: pricegrabber - fatal errors in mailbox.log - java.lang.OutOfMemoryError: Java heap space
+
+|Updated Case: 00015611 -- https://na2.salesforce.com/50040000003XvlNAAS
+|----------------
+
+Ok attached are:
+1) catalina.out (after the kill -3 of tomcat)
+2) the zimbrastats.csv
+
+
+Ramadan Mansoura wrote:
+> John,
+> 
+>   Thank you, 
+> 
+>  Can you attach the /opt/zimbra/log/zimbrastats.csv
+>  Can you do some periodic kill -3 of Tomcat PID , as root, to get the stack trace in catalina.out and attatch catalina.out
+> 
+> 
+> Regards
+> Ramadan Mansoura
+> Zimbra Network Support
+> -------------------------------
+> 
+> ----- Original Message -----
+> From: "John Cheng" <jcheng@example.com>
+> To: support@example.com
+> Sent: Thursday, October 11, 2007 2:28:58 PM (GMT-0800) America/Los_Angeles
+> Subject: SF: Case 00015611: pricegrabber - fatal errors in mailbox.log - java.lang.OutOfMemoryError: Java heap space
+> 
+> |Updated Case: 00015611 -- https://na2.salesforce.com/50040000003XvlNAAS
+> |----------------
+> 
+> Ok, attached are:
+> 
+> 1) today's mailbox.log
+> 2) current output of zmdumpenv
+> 3) today's catalina.out
+> 
+> 
+> Ramadan Mansoura wrote:
+>> John,
+>>
+>>   The permission on this file should be set to zimbra:zimbra
+>>  -rw-r-----   1 zimbra  zimbra   44 Sep 12 11:35 tldCache.ser
+>>
+>>   Please send the /opt/zimbra/log/mailbox.log from the time of the crash. Can you also attach the output of this command
+>>  run as zimbra user "zmdumpenv"
+>>
+>>
+>> Regards
+>> Ramadan Mansoura
+>> Zimbra Network Support
+>> -------------------------------
+>>
+>> ----- Original Message -----
+>> From: "John Cheng" <jcheng@example.com>
+>> To: "Ramadan Mansoura" <rmansoura@example.com>
+>> Cc: support@example.com
+>> Sent: Wednesday, October 10, 2007 11:11:44 PM (GMT-0800) America/Los_Angeles
+>> Subject: Re: SF: Case 00015611: pricegrabber - fatal errors in mailbox.log - java.lang.OutOfMemoryError: Java heap space
+>>
+>> Also, in my catalina.out, I see this:
+>> SEVERE: Error reading tld listeners java.io.FileNotFoundException: 
+>> /opt/zimbra/apache-tomcat-5.5.15/work/Catalina/localhost/zimbraAdmin/tldCache.ser 
+>> (Permission denied)
+>> java.io.FileNotFoundException: 
+>> /opt/zimbra/apache-tomcat-5.5.15/work/Catalina/localhost/zimbraAdmin/tldCache.ser 
+>> (Permission denied)
+>>
+>> So should I alter permissions for it? Or, is what I'm looking at, a 
+>> symptom of a problem, and not the actual problem?
+>>
+>> Current perms on that file is:
+>> -rw-r----- 1 root root 44 Jul 29 13:56
+>>
+>> John Cheng wrote:
+>>> Actually the problem didn't go away permanently - a few days after it
+>>> started back up. We had some mysql thread problems (case #00016064)
+>>> which seem to have been resolved, but the fatal errors with the java
+>>> heap space remain.
+>>>
+>>> They show up every 1.25 to 1.5 hours, seems like the heap builds up to a
+>>> certain threshold and craps out.
+>>>
+>>> -- SOME QUESTIONS --
+>>>
+>>> 1) can I be sure that this is a matter of tuning the parameters to java,
+>>> as mentioned here:
+>>> http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments#Java_Settings_for_Tomcat
+>>>
+>>> 2) I still have a handful of users that are not on ZCO 4.5.288 (the ZCO
+>>> that came with 4.5.6) - can you tell me if this is irrelevant, and
+>>> shouldn't affect the heap space problems?
+>>>
+>>> 3) I'm assuming the fatal error (java.lang.OutOfMemoryError: Java heap
+>>> space) is NOT good - but I see that after each one of those, the
+>>> RedoLogManager kicks in, and seemingly recovers.
+>>>
+>>> 3a) What exactly, is going on with the RedoLogManager? for example
+>>> mailbox.log entries like:
+>>>
+>>> 2007-10-10 01:16:09,725 INFO  [main] [] RedoPlayer - Deferring crash
+>>> recovery to after startup: txn 1191999168.1250 [IndexItem] ver=1.12,
+>>> tstamp=1192003088583, mailbox=233, id=132754, type=5
+>>> ....
+>>> 2007-10-10 11:02:11,624 INFO  [PostStartupCrashRecovery] []
+>>> RedoLogManager - REDOING: txn 1192034171.20354 [IndexItem] ver=1.12,
+>>> tstamp=1192039110164, mailbox=21, id=76967, type=5
+>>>
+>>> I'm guessing, it's basically committing whatever sessions/transactions
+>>> it should have before the heap space error.
+>>>
+>>> 3b) Can I be fairly (not absolute) certain that whatever it is
+>>> recovering, should have recovered correctly? How can I verify this, or
+>>> is it something I don't need to worry about and have faith in?
+>>>
+>>> 4) in an effort to further understand the redo log process, can you
+>>> explain what are "transactions". I guess things like: an attempt to
+>>> delete a file/folder; an inbound message not yet stored in the
+>>> filesystem; an oubound message sent to the queue but not in the queue yet?:
+>>>
+>>> [zimbra@example.com log]$ grep Redoing mailbox.log
+>>> 2007-10-10 01:16:09,718 INFO  [main] [] RedoPlayer - Redoing 109
+>>> uncommitted transactions
+>>> 2007-10-10 02:39:29,105 INFO  [main] [] RedoPlayer - Redoing 373
+>>> uncommitted transactions
+>>> 2007-10-10 04:03:20,206 INFO  [main] [] RedoPlayer - Redoing 593
+>>> uncommitted transactions
+>>> 2007-10-10 05:26:30,022 INFO  [main] [] RedoPlayer - Redoing 1348
+>>> uncommitted transactions
+>>> 2007-10-10 06:50:01,344 INFO  [main] [] RedoPlayer - Redoing 226
+>>> uncommitted transactions
+>>> 2007-10-10 08:13:19,001 INFO  [main] [] RedoPlayer - Redoing 274
+>>> uncommitted transactions
+>>> 2007-10-10 09:00:39,837 INFO  [main] [] RedoPlayer - Redoing 1
+>>> uncommitted transactions
+>>> 2007-10-10 09:36:15,506 INFO  [main] [] RedoPlayer - Redoing 688
+>>> uncommitted transactions
+>>> 2007-10-10 10:59:40,080 INFO  [main] [] RedoPlayer - Redoing 749
+>>> uncommitted transactions
+>>>
+>>>
+>>> -- WHAT I'VE TRIED --
+>>>
+>>> Anyway, here's what I've tried:
+>>>
+>>> - increasing the tomcat_java_heap_memory_percent from 40 to 50, then 55
+>>> (then restarting tomcat)
+>>>   zmlocalconfig -e tomcat_java_heap_memory_percent=50
+>>>   zmlocalconfig -e tomcat_java_heap_memory_percent=55
+>>>
+>>> - changing up the params to java, as indicated in the wiki
+>>> (http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments#Java_Settings_for_Tomcat):
+>>>
+>>> zmlocalconfig -e tomcat_java_options="-client -XX:NewRatio=2
+>>> -Djava.awt.headless=true -XX:SoftRefLRUPolicyMSPerMB=1 -XX:+UseParallelGC"
+>>>
+>>> I tried that, restarted tomcat, waited, but still saw the fatal heap
+>>> error. After reading around someone was saying to not bother with the
+>>> NewRatio since UseParallelGC implies a certain NewRatio setting.  So I
+>>> removed it:
+>>> zmlocalconfig -e tomcat_java_options="-client -Djava.awt.headless=true
+>>> -XX:SoftRefLRUPolicyMSPerMB=1 -XX:+UseParallelGC"
+>>>
+>>> ... then restarted tomcat, waited and still we have fatal heap errors.
+>>>
+>>>
+>>> -- OUR SETTINGS --
+>>>
+>>> Our settings are:
+>>>
+>>> - 6GB RAM, RHEL5 (Red Hat Enterprise Linux Client release 5 (Tikanga)
+>>>
+>>> - here's a copy of top, for what it's worth:
+>>>
+>>> Tasks: 153 total,   1 running, 151 sleeping,   0 stopped,   1 zombie
+>>> Cpu(s): 16.4%us, 20.6%sy,  0.0%ni, 31.8%id, 30.7%wa,  0.0%hi,  0.4%si,
+>>> 0.0%st
+>>> Mem:   6110584k total,  6074160k used,    36424k free,  2196300k buffers
+>>> Swap:  2096376k total,      180k used,  2096196k free,   355516k cached
+>>>
+>>>   PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+>>> 12079 zimbra    15   0 1809m 1.5g 4588 S    1 26.4  14:48.61 mysqld
+>>>  7792 zimbra    17   0 4110m 1.5g  17m S    4 26.0   6:24.42 java
+>>> 12084 zimbra    25   0  471m  45m  11m S    4  0.8   2:00.93 java
+>>> 11628 zimbra    15   0  209m  30m 4164 S  100  0.5 627:17.99 mysqld
+>>>
+>>> - Here's what is getting passed to our currently running java:
+>>> [zimbra@example.com log]$ ps -ef | grep tomcat
+>>> zimbra    7792 31977 38 10:59 ?        00:04:47
+>>> /opt/zimbra/jdk1.5.0_08/bin/java -Xms3282m -Xmx3282m -client
+>>> -Djava.awt.headless=true -XX:SoftRefLRUPolicyMSPerMB=1
+>>> -XX:+UseParallelGC -Dcatalina.base=/opt/zimbra/apache-tomcat-5.5.15
+>>> -Dcatalina.home=/opt/zimbra/apache-tomcat-5.5.15
+>>> -Djava.io.tmpdir=/opt/zimbra/apache-tomcat-5.5.15/temp
+>>> -Djava.library.path=/opt/zimbra/lib
+>>> -Djava.endorsed.dirs=/opt/zimbra/apache-tomcat-5.5.15/common/endorsed
+>>> -classpath
+>>> /opt/zimbra/apache-tomcat-5.5.15/bin/bootstrap.jar:/opt/zimbra/apache-tomcat-5.5.15/bin/commons-logging-api.jar:/opt/zimbra/lib/jars/zimbra-launcher.jar
+>>> com.zimbra.cs.launcher.TomcatLauncher
+>>>
+>>>
+>>> -- LAST WORDS --
+>>>
+>>> Let me know of anything I've missed in describing, or settings you want
+>>> to verify.
+>>>
+>>> Thanks,
+>>> john
+>>>
+>>>
+>>>
+>>>
+> 
+> 
+> |Updated Case: 00015611 -- https://na2.salesforce.com/50040000003XvlNAAS
+> |----------------
+> 
+> 4039.289: [GC [PSYoungGen: 732414K->34957K(745408K)] 882187K->196481K(2985920K), 0.0784890 secs]
+> 4526.971: [GC [PSYoungGen: 745357K->23987K(786816K)] 906881K->206398K(3027328K), 0.0900950 secs]
+> 4631.365: [GC [PSYoungGen: 725875K->7786K(701376K)] 908286K->197736K(2941888K), 0.0304930 secs]
+> 4821.094: [GC [PSYoungGen: 506372K->7891K(768192K)] 696322K->202173K(3008704K), 0.0252800 secs]
+> 4861.921: [GC [PSYoungGen: 627623K->3943K(681344K)] 821905K->788425K(2921856K), 0.8038400 secs]
+> 4866.353: [GC [PSYoungGen: 561044K->64K(770944K)] 1345526K->1504696K(3011456K), 1.1186390 secs]
+> 4869.176: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor36]
+> [Unloading class sun.reflect.GeneratedMethodAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor78]
+> [Unloading class sun.reflect.GeneratedMethodAccessor80]
+> [Unloading class sun.reflect.GeneratedMethodAccessor31]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor64]
+> [Unloading class sun.reflect.GeneratedMethodAccessor79]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor5]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor7]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor65]
+> [Unloading class sun.reflect.GeneratedMethodAccessor81]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor4]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor6]
+> [Unloading class sun.reflect.GeneratedSerializationConstructorAccessor1]
+>  [PSYoungGen: 269225K->0K(770944K)] [PSOldGen: 2029432K->1303663K(2240512K)] 2298658K->1303663K(3011456K) [PSPermGen: 40025K->40025K(80064K)], 1.2872840 secs]
+> 4870.464: [GC [PSYoungGen: 0K->0K(768768K)] 1303663K->1303663K(3009280K), 0.0242850 secs]
+> 4870.488: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor77]
+> [Unloading class sun.reflect.GeneratedMethodAccessor76]
+>  [PSYoungGen: 0K->0K(768768K)] [PSOldGen: 1303663K->1193075K(2240512K)] 1303663K->1193075K(3009280K) [PSPermGen: 40025K->39873K(80064K)], 1.3520330 secs]
+> Oct 11, 2007 2:15:47 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 2:15:47 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 2:15:47 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 2:15:47 AM org.apache.catalina.startup.Catalina load
+> INFO: Initialization processed in 1525 ms
+> Oct 11, 2007 2:15:47 AM org.apache.catalina.core.StandardService start
+> INFO: Starting service Catalina
+> Oct 11, 2007 2:15:47 AM org.apache.catalina.core.StandardEngine start
+> INFO: Starting Servlet Engine: Apache Tomcat/5.5.15
+> Oct 11, 2007 2:15:48 AM org.apache.catalina.core.StandardHost start
+> INFO: XML validation disabled
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.startup.TldConfig).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.startup.HostConfig deployDescriptor
+> WARNING: A docBase /opt/zimbra/apache-tomcat-5.5.15/webapps/zimbra inside the host appBase has been specified, and will be ignored
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/host-manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/host-manager] startup failed due to previous errors
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager] has not been started
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/manager] startup failed due to previous errors
+> Oct 11, 2007 2:15:50 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager] has not been started
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Zimbra server reserving server socket port=110 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=995 bindaddr=null ssl=true
+> Zimbra server reserving server socket port=143 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=993 bindaddr=null ssl=true
+> Zimbra server process is running as root, changing to user=zimbra uid=608 gid=604
+> Zimbra server process, after change, is running with uid=608 euid=608 gid=604 egid=604
+> Oct 11, 2007 2:15:57 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 2:15:57 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 2:15:57 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 2:15:57 AM org.apache.catalina.startup.Catalina start
+> INFO: Server startup in 9896 ms
+> 25.870: [GC [PSYoungGen: 840192K->36934K(980224K)] 840192K->36934K(3220736K), 0.0902010 secs]
+> 97.484: [GC [PSYoungGen: 877126K->46704K(980224K)] 877126K->46704K(3220736K), 0.1137830 secs]
+> 215.459: [GC [PSYoungGen: 886896K->36797K(980224K)] 886896K->36797K(3220736K), 0.0688850 secs]
+> 294.571: [GC [PSYoungGen: 876989K->37174K(980224K)] 876989K->37174K(3220736K), 0.0724030 secs]
+> 670.825: [GC [PSYoungGen: 877366K->57302K(886080K)] 877366K->57302K(3126592K), 0.1304340 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> unable to load resource bundle: /msgs/com_zimbra_phone
+> unable to load resource bundle: /msgs/com_zimbra_date
+> unable to load resource bundle: /msgs/com_zimbra_email
+> 1015.766: [GC [PSYoungGen: 886038K->57903K(875520K)] 886038K->62726K(3116032K), 0.1479940 secs]
+> 1328.388: [GC [PSYoungGen: 875503K->46950K(853696K)] 880326K->73051K(3094208K), 0.1349910 secs]
+> 1597.818: [GC [PSYoungGen: 853660K->36940K(833088K)] 879761K->69733K(3073600K), 0.0863500 secs]
+> 2157.448: [GC [PSYoungGen: 833036K->38102K(823808K)] 865829K->84959K(3064320K), 0.1011090 secs]
+> 2513.764: [GC [PSYoungGen: 823766K->34481K(828032K)] 870623K->86564K(3068544K), 0.0782580 secs]
+> 2810.942: [GC [PSYoungGen: 809969K->62880K(828480K)] 862052K->178441K(3068992K), 0.6146020 secs]
+> 3066.021: [GC [PSYoungGen: 828448K->78951K(847488K)] 944009K->211400K(3088000K), 0.2888930 secs]
+> 3084.666: [GC [PSYoungGen: 834791K->2277K(748672K)] 967240K->149568K(2989184K), 0.0416310 secs]
+> 3214.630: [GC [PSYoungGen: 748645K->61436K(828544K)] 895936K->209329K(3069056K), 0.1222900 secs]
+> 3523.615: [GC [PSYoungGen: 798524K->51643K(779648K)] 946417K->208502K(3020160K), 0.1176760 secs]
+> 3769.264: [GC [PSYoungGen: 779643K->20357K(808064K)] 936502K->188477K(3048576K), 0.0621250 secs]
+> 3799.094: [GC [PSYoungGen: 738515K->19198K(729600K)] 906636K->197862K(2970112K), 0.0550420 secs]
+> 3842.614: [GC [PSYoungGen: 729598K->25913K(786496K)] 908262K->221615K(3027008K), 0.0761440 secs]
+> 4070.758: [GC [PSYoungGen: 727801K->39171K(732800K)] 923503K->260879K(2973312K), 0.1146220 secs]
+> 4279.472: [GC [PSYoungGen: 732739K->36827K(759936K)] 954447K->268892K(3000448K), 0.0942310 secs]
+> 4362.544: [GC [PSYoungGen: 722203K->8063K(685440K)] 954268K->249794K(2925952K), 0.0385580 secs]
+> 4540.948: [GC [PSYoungGen: 685439K->22758K(745216K)] 927170K->269230K(2985728K), 0.0656240 secs]
+> 4738.424: [GC [PSYoungGen: 692326K->19670K(681600K)] 938798K->280948K(2922112K), 0.0839990 secs]
+> 4804.890: [GC [PSYoungGen: 681558K->8771K(729920K)] 942836K->279723K(2970432K), 0.0392370 secs]
+> 4946.684: [GC [PSYoungGen: 663171K->13020K(660096K)] 934123K->288927K(2900608K), 0.0451780 secs]
+> 4988.053: [GC [PSYoungGen: 376343K->3483K(713216K)] 652249K->579129K(2953728K), 0.4962360 secs]
+> 4992.196: [GC [PSYoungGen: 624324K->33200K(720960K)] 1199970K->1782906K(2961472K), 1.6749840 secs]
+> 4993.871: [Full GC[Unloading class sun.reflect.GeneratedConstructorAccessor4]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor5]
+> [Unloading class sun.reflect.GeneratedSerializationConstructorAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor40]
+> [Unloading class sun.reflect.GeneratedMethodAccessor1]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor7]
+> [Unloading class sun.reflect.GeneratedMethodAccessor37]
+> [Unloading class sun.reflect.GeneratedMethodAccessor39]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor63]
+> [Unloading class sun.reflect.GeneratedMethodAccessor41]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor59]
+> [Unloading class sun.reflect.GeneratedMethodAccessor36]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor6]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor60]
+> [Unloading class sun.reflect.GeneratedMethodAccessor38]
+>  [PSYoungGen: 33200K->0K(720960K)] [PSOldGen: 1749705K->806225K(2240512K)] 1782906K->806225K(2961472K) [PSPermGen: 36200K->36200K(72704K)], 0.9404790 secs]
+> 4996.568: [GC [PSYoungGen: 499489K->176K(908160K)] 1830514K->1331201K(3148672K), 0.0180110 secs]
+> 4996.586: [GC [PSYoungGen: 176K->0K(908864K)] 1331201K->1331090K(3149376K), 0.0264290 secs]
+> 4996.613: [Full GC [PSYoungGen: 0K->0K(908864K)] [PSOldGen: 1331090K->1292440K(2240512K)] 1331090K->1292440K(3149376K) [PSPermGen: 36201K->36201K(81472K)], 1.2817430 secs]
+> 4997.895: [GC [PSYoungGen: 0K->0K(1031232K)] 1292440K->1292440K(3271744K), 0.0373590 secs]
+> 4997.932: [Full GC [PSYoungGen: 0K->0K(1031232K)] [PSOldGen: 1292440K->1180422K(2240512K)] 1292440K->1180422K(3271744K) [PSPermGen: 36201K->36045K(78400K)], 1.3167120 secs]
+> 5002.590: [Full GC [PSYoungGen: 852425K->0K(1031232K)] [PSOldGen: 2230022K->787072K(2240512K)] 3082447K->787072K(3271744K) [PSPermGen: 36046K->36046K(75136K)], 0.8046340 secs]
+> 5005.911: [Full GC [PSYoungGen: 801358K->0K(1031232K)] [PSOldGen: 1836672K->1705728K(2240512K)] 2638031K->1705728K(3271744K) [PSPermGen: 36049K->36049K(71552K)], 1.1613220 secs]
+> 5007.983: [GC-- [PSYoungGen: 600080K->600080K(1031232K)] 2305809K->2305809K(3271744K), 0.0385750 secs]
+> 5008.022: [Full GC [PSYoungGen: 600080K->0K(1031232K)] [PSOldGen: 1705728K->1243846K(2240512K)] 2305809K->1243846K(3271744K) [PSPermGen: 36050K->36050K(67776K)], 0.7866130 secs]
+> 5094.045: [GC [PSYoungGen: 961536K->6367K(1036864K)] 2205382K->1835763K(3277376K), 0.5498730 secs]
+> 5094.595: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor43]
+> [Unloading class sun.reflect.GeneratedMethodAccessor42]
+> [Unloading class sun.reflect.GeneratedMethodAccessor44]
+>  [PSYoungGen: 6367K->0K(1036864K)] [PSOldGen: 1829395K->1834836K(2240512K)] 1835763K->1834836K(3277376K) [PSPermGen: 36089K->36089K(64512K)], 0.3280380 secs]
+> 5120.987: [Full GC [PSYoungGen: 505362K->0K(1036864K)] [PSOldGen: 1834836K->1832534K(2240512K)] 2340199K->1832534K(3277376K) [PSPermGen: 36101K->36067K(61312K)], 2.0182090 secs]
+> 5123.005: [GC [PSYoungGen: 0K->0K(1038336K)] 1832534K->1832534K(3278848K), 0.0264310 secs]
+> 5123.032: [Full GC [PSYoungGen: 0K->0K(1038336K)] [PSOldGen: 1832534K->1832290K(2240512K)] 1832534K->1832290K(3278848K) [PSPermGen: 36067K->36063K(58176K)], 0.3290740 secs]
+> Oct 11, 2007 3:41:11 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 3:41:12 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 3:41:12 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 3:41:12 AM org.apache.catalina.startup.Catalina load
+> INFO: Initialization processed in 1587 ms
+> Oct 11, 2007 3:41:12 AM org.apache.catalina.core.StandardService start
+> INFO: Starting service Catalina
+> Oct 11, 2007 3:41:12 AM org.apache.catalina.core.StandardEngine start
+> INFO: Starting Servlet Engine: Apache Tomcat/5.5.15
+> Oct 11, 2007 3:41:12 AM org.apache.catalina.core.StandardHost start
+> INFO: XML validation disabled
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.startup.TldConfig).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 3:41:13 AM org.apache.catalina.startup.HostConfig deployDescriptor
+> WARNING: A docBase /opt/zimbra/apache-tomcat-5.5.15/webapps/zimbra inside the host appBase has been specified, and will be ignored
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/host-manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/host-manager] startup failed due to previous errors
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager] has not been started
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/manager] startup failed due to previous errors
+> Oct 11, 2007 3:41:14 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager] has not been started
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Zimbra server reserving server socket port=110 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=995 bindaddr=null ssl=true
+> Zimbra server reserving server socket port=143 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=993 bindaddr=null ssl=true
+> Zimbra server process is running as root, changing to user=zimbra uid=608 gid=604
+> Zimbra server process, after change, is running with uid=608 euid=608 gid=604 egid=604
+> Oct 11, 2007 3:41:22 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 3:41:22 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 3:41:23 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 3:41:23 AM org.apache.catalina.startup.Catalina start
+> INFO: Server startup in 10859 ms
+> 19.343: [GC [PSYoungGen: 840192K->19746K(980224K)] 840192K->19746K(3220736K), 0.0564430 secs]
+> 42.518: [GC [PSYoungGen: 859938K->65668K(980224K)] 859938K->65668K(3220736K), 0.1532070 secs]
+> 79.275: [GC [PSYoungGen: 905860K->58466K(980224K)] 905860K->58466K(3220736K), 0.1370040 secs]
+> 126.101: [GC [PSYoungGen: 898658K->33833K(980224K)] 898658K->33833K(3220736K), 0.0623170 secs]
+> 231.979: [GC [PSYoungGen: 874025K->41566K(870336K)] 874025K->41566K(3110848K), 0.0873040 secs]
+> 490.162: [GC [PSYoungGen: 870284K->46528K(864192K)] 870284K->46528K(3104704K), 0.1013730 secs]
+> 556.911: [GC [PSYoungGen: 864128K->29371K(836096K)] 864128K->49041K(3076608K), 0.0975540 secs]
+> 662.001: [GC [PSYoungGen: 836091K->20278K(856384K)] 855761K->49580K(3096896K), 0.0570510 secs]
+> 775.211: [GC [PSYoungGen: 816374K->20347K(806016K)] 845676K->57171K(3046528K), 0.0597750 secs]
+> 898.736: [GC [PSYoungGen: 806011K->16386K(835904K)] 842835K->58179K(3076416K), 0.0421280 secs]
+> 923.203: [GC [PSYoungGen: 791874K->6944K(772544K)] 833667K->59653K(3013056K), 0.0421080 secs]
+> 1081.021: [GC [PSYoungGen: 772512K->15902K(815552K)] 825221K->74384K(3056064K), 0.0447810 secs]
+> 1281.014: [GC [PSYoungGen: 771534K->16345K(762752K)] 830016K->87390K(3003264K), 0.0909370 secs]
+> 1434.641: [GC [PSYoungGen: 762713K->25536K(790208K)] 833758K->105352K(3030720K), 0.0727650 secs]
+> 1847.242: [GC [PSYoungGen: 762624K->27111K(755136K)] 842440K->122074K(2995648K), 0.0836400 secs]
+> 2083.198: [GC [PSYoungGen: 755111K->21398K(768384K)] 850074K->127703K(3008896K), 0.0602660 secs]
+> 2215.697: [GC [PSYoungGen: 738969K->22409K(732864K)] 845274K->136458K(2973376K), 0.0478170 secs]
+> 2596.023: [GC [PSYoungGen: 732809K->28399K(745920K)] 846858K->153766K(2986432K), 0.0838250 secs]
+> 2789.897: [GC [PSYoungGen: 730287K->13471K(707072K)] 855654K->154323K(2947584K), 0.0603960 secs]
+> 3063.190: [GC [PSYoungGen: 707039K->13674K(730688K)] 847891K->159235K(2971200K), 0.0398250 secs]
+> 3399.301: [GC [PSYoungGen: 699050K->14293K(691712K)] 844611K->165243K(2932224K), 0.0396580 secs]
+> 3637.722: [GC [PSYoungGen: 691669K->9836K(713792K)] 842619K->165269K(2954304K), 0.0298600 secs]
+> 3838.118: [GC [PSYoungGen: 679404K->18301K(680192K)] 834837K->177226K(2920704K), 0.0452800 secs]
+> 3852.891: [GC [PSYoungGen: 680189K->9139K(695872K)] 839114K->181267K(2936384K), 0.0593810 secs]
+> 3987.014: [GC [PSYoungGen: 663539K->9169K(656256K)] 835667K->190334K(2896768K), 0.0554090 secs]
+> 4143.603: [GC [PSYoungGen: 656209K->10586K(678592K)] 837374K->197427K(2919104K), 0.0355850 secs]
+> 4263.680: [GC [PSYoungGen: 650394K->9626K(642368K)] 837235K->201433K(2882880K), 0.0351780 secs]
+> 4393.144: [GC [PSYoungGen: 642330K->9582K(662080K)] 834137K->205535K(2902592K), 0.0319250 secs]
+> 4480.432: [GC [PSYoungGen: 635374K->11709K(630720K)] 831327K->211486K(2871232K), 0.0321250 secs]
+> 4582.333: [GC [PSYoungGen: 630717K->12788K(644352K)] 830494K->222191K(2884864K), 0.0516970 secs]
+> 4658.808: [GC [PSYoungGen: 625140K->37563K(643392K)] 834543K->252516K(2883904K), 0.0829150 secs]
+> 4823.970: [GC [PSYoungGen: 477119K->46180K(638080K)] 692072K->278356K(2878592K), 0.1375290 secs]
+> 4846.765: [GC [PSYoungGen: 638052K->8701K(594432K)] 870228K->551472K(2834944K), 0.5838950 secs]
+> 4866.258: [GC [PSYoungGen: 340164K->6367K(630144K)] 882935K->554096K(2870656K), 0.0317750 secs]
+> 4870.533: [GC [PSYoungGen: 571118K->992K(637312K)] 1411621K->1561954K(2877824K), 0.9647300 secs]
+> 4873.994: [Full GC[Unloading class sun.reflect.GeneratedConstructorAccessor5]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor4]
+> [Unloading class sun.reflect.GeneratedMethodAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor40]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor7]
+> [Unloading class sun.reflect.GeneratedMethodAccessor42]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor65]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor6]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor66]
+> [Unloading class sun.reflect.GeneratedSerializationConstructorAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor41]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor64]
+> [Unloading class sun.reflect.GeneratedMethodAccessor43]
+>  [PSYoungGen: 276570K->0K(637312K)] [PSOldGen: 2085762K->1338623K(2240512K)] 2362332K->1338623K(2877824K) [PSPermGen: 35963K->35963K(72448K)], 1.8974000 secs]
+> 4875.892: [GC [PSYoungGen: 0K->0K(777344K)] 1338623K->1338623K(3017856K), 0.0451710 secs]
+> 4875.937: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor37]
+> [Unloading class sun.reflect.GeneratedMethodAccessor36]
+> [Unloading class sun.reflect.GeneratedMethodAccessor38]
+> [Unloading class sun.reflect.GeneratedMethodAccessor32]
+> [Unloading class sun.reflect.GeneratedMethodAccessor39]
+>  [PSYoungGen: 0K->0K(777344K)] [PSOldGen: 1338623K->1226480K(2240512K)] 1338623K->1226480K(3017856K) [PSPermGen: 35963K->35811K(81280K)], 1.8187060 secs]
+> Oct 11, 2007 5:02:29 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 5:02:30 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 5:02:30 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 5:02:30 AM org.apache.catalina.startup.Catalina load
+> INFO: Initialization processed in 1641 ms
+> Oct 11, 2007 5:02:30 AM org.apache.catalina.core.StandardService start
+> INFO: Starting service Catalina
+> Oct 11, 2007 5:02:30 AM org.apache.catalina.core.StandardEngine start
+> INFO: Starting Servlet Engine: Apache Tomcat/5.5.15
+> Oct 11, 2007 5:02:30 AM org.apache.catalina.core.StandardHost start
+> INFO: XML validation disabled
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.startup.TldConfig).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 5:02:32 AM org.apache.catalina.startup.HostConfig deployDescriptor
+> WARNING: A docBase /opt/zimbra/apache-tomcat-5.5.15/webapps/zimbra inside the host appBase has been specified, and will be ignored
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/host-manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/host-manager] startup failed due to previous errors
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager] has not been started
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/manager] startup failed due to previous errors
+> Oct 11, 2007 5:02:33 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager] has not been started
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Zimbra server reserving server socket port=110 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=995 bindaddr=null ssl=true
+> Zimbra server reserving server socket port=143 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=993 bindaddr=null ssl=true
+> Zimbra server process is running as root, changing to user=zimbra uid=608 gid=604
+> Zimbra server process, after change, is running with uid=608 euid=608 gid=604 egid=604
+> Oct 11, 2007 5:02:41 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 5:02:42 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 5:02:42 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 5:02:42 AM org.apache.catalina.startup.Catalina start
+> INFO: Server startup in 11495 ms
+> 20.992: [GC [PSYoungGen: 840192K->20033K(980224K)] 840192K->20033K(3220736K), 0.0862080 secs]
+> 40.287: [GC [PSYoungGen: 860225K->48330K(980224K)] 860225K->48330K(3220736K), 0.1183430 secs]
+> 48.066: [GC [PSYoungGen: 888522K->100511K(980224K)] 888522K->100511K(3220736K), 0.1615160 secs]
+> 63.717: [GC [PSYoungGen: 940703K->61034K(980224K)] 940703K->61034K(3220736K), 0.1247930 secs]
+> 82.696: [GC [PSYoungGen: 901226K->79576K(908352K)] 901226K->79576K(3148864K), 0.1493220 secs]
+> 93.869: [GC [PSYoungGen: 908312K->73570K(939328K)] 908312K->73570K(3179840K), 0.1601860 secs]
+> 226.049: [GC [PSYoungGen: 903266K->76780K(895296K)] 903266K->96135K(3135808K), 0.1908460 secs]
+> 342.484: [GC [PSYoungGen: 895276K->28708K(909632K)] 914631K->54797K(3150144K), 0.0646230 secs]
+> 517.532: [GC [PSYoungGen: 836260K->46760K(843648K)] 862349K->77463K(3084160K), 0.0927840 secs]
+> 568.095: [GC [PSYoungGen: 843624K->18054K(888448K)] 874327K->66526K(3128960K), 0.0638900 secs]
+> 1031.149: [GC [PSYoungGen: 804486K->36601K(812864K)] 852958K->100217K(3053376K), 0.0854720 secs]
+> 1449.959: [GC [PSYoungGen: 812857K->44957K(856320K)] 876473K->129599K(3096832K), 0.1014920 secs]
+> 1830.553: [GC [PSYoungGen: 811229K->16045K(772608K)] 895871K->137310K(3013120K), 0.0874380 secs]
+> 1964.417: [GC [PSYoungGen: 772589K->11137K(844224K)] 893854K->138820K(3084736K), 0.0355290 secs]
+> 2070.591: [GC [PSYoungGen: 756648K->8639K(746368K)] 884331K->141375K(2986880K), 0.0241750 secs]
+> 2072.430: [GC [PSYoungGen: 746153K->160K(826752K)] 878890K->140476K(3067264K), 0.0149980 secs]
+> 2074.236: [GC [PSYoungGen: 724932K->256K(720064K)] 865249K->140573K(2960576K), 0.0047960 secs]
+> 2076.145: [GC [PSYoungGen: 719122K->9568K(802112K)] 859439K->150023K(3042624K), 0.0125630 secs]
+> 2077.914: [GC [PSYoungGen: 719000K->9520K(712064K)] 859455K->150031K(2952576K), 0.0163710 secs]
+> 2079.674: [GC [PSYoungGen: 709839K->176K(780992K)] 850350K->140703K(3021504K), 0.0047920 secs]
+> 2081.375: [GC [PSYoungGen: 690292K->9552K(695552K)] 830819K->150135K(2936064K), 0.0135120 secs]
+> 2083.140: [GC [PSYoungGen: 692253K->9681K(754304K)] 832836K->150265K(2994816K), 0.0127080 secs]
+> 2084.790: [GC [PSYoungGen: 686135K->4872K(675008K)] 826718K->145622K(2915520K), 0.0089740 secs]
+> 2086.475: [GC [PSYoungGen: 672153K->4888K(732672K)] 812903K->145694K(2973184K), 0.0089800 secs]
+> 2219.731: [GC [PSYoungGen: 667288K->9391K(664256K)] 808094K->150306K(2904768K), 0.0233170 secs]
+> 2394.690: [GC [PSYoungGen: 664239K->15914K(706432K)] 805154K->160638K(2946944K), 0.0445800 secs]
+> 3205.105: [GC [PSYoungGen: 663402K->37786K(678080K)] 808126K->191622K(2918592K), 0.0871490 secs]
+> 3260.642: [GC [PSYoungGen: 678042K->33197K(698624K)] 831878K->200627K(2939136K), 0.0762150 secs]
+> 3268.433: [GC [PSYoungGen: 666349K->25408K(651712K)] 833779K->217858K(2892224K), 0.0949070 secs]
+> 3360.633: [GC [PSYoungGen: 651648K->20175K(673088K)] 844098K->229675K(2913600K), 0.0667910 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> unable to load resource bundle: /msgs/com_zimbra_phone
+> unable to load resource bundle: /msgs/com_zimbra_email
+> unable to load resource bundle: /msgs/com_zimbra_date
+> 3845.020: [GC [PSYoungGen: 639631K->33816K(646656K)] 849131K->255364K(2887168K), 0.0968830 secs]
+> 4298.517: [GC [PSYoungGen: 646616K->38801K(668032K)] 868164K->278168K(2908544K), 0.1115880 secs]
+> 4748.280: [GC [PSYoungGen: 645073K->30357K(630272K)] 884440K->281958K(2870784K), 0.0830680 secs]
+> 4760.970: [GC [PSYoungGen: 630229K->12075K(648512K)] 881830K->281112K(2889024K), 0.0601990 secs]
+> 4945.530: [GC [PSYoungGen: 396459K->12370K(599808K)] 665496K->290764K(2840320K), 0.0581670 secs]
+> 4985.761: [GC [PSYoungGen: 362578K->5989K(634176K)] 640972K->585965K(2874688K), 0.5760800 secs]
+> 4990.611: [GC [PSYoungGen: 565823K->225K(641280K)] 1438572K->1592278K(2881792K), 0.9934540 secs]
+> 4993.444: [Full GC[Unloading class sun.reflect.GeneratedConstructorAccessor5]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor4]
+> [Unloading class sun.reflect.GeneratedMethodAccessor1]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor64]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor7]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor60]
+> [Unloading class sun.reflect.GeneratedMethodAccessor41]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor61]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor6]
+> [Unloading class sun.reflect.GeneratedSerializationConstructorAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor38]
+> [Unloading class sun.reflect.GeneratedMethodAccessor43]
+> [Unloading class sun.reflect.GeneratedMethodAccessor42]
+> [Unloading class sun.reflect.GeneratedMethodAccessor29]
+>  [PSYoungGen: 269127K->0K(641280K)] [PSOldGen: 2116853K->1312906K(2240512K)] 2385981K->1312906K(2881792K) [PSPermGen: 36225K->36225K(72768K)], 1.3772230 secs]
+> 4994.821: [GC [PSYoungGen: 0K->0K(782592K)] 1312906K->1312906K(3023104K), 0.0294980 secs]
+> 4994.851: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor36]
+> [Unloading class sun.reflect.GeneratedMethodAccessor37]
+> [Unloading class sun.reflect.GeneratedMethodAccessor40]
+> [Unloading class sun.reflect.GeneratedMethodAccessor39]
+>  [PSYoungGen: 0K->0K(782592K)] [PSOldGen: 1312906K->1200837K(2240512K)] 1312906K->1200837K(3023104K) [PSPermGen: 36225K->36074K(81664K)], 1.4431420 secs]
+> Oct 11, 2007 6:25:47 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 6:25:47 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 6:25:47 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 6:25:47 AM org.apache.catalina.startup.Catalina load
+> INFO: Initialization processed in 1606 ms
+> Oct 11, 2007 6:25:47 AM org.apache.catalina.core.StandardService start
+> INFO: Starting service Catalina
+> Oct 11, 2007 6:25:47 AM org.apache.catalina.core.StandardEngine start
+> INFO: Starting Servlet Engine: Apache Tomcat/5.5.15
+> Oct 11, 2007 6:25:47 AM org.apache.catalina.core.StandardHost start
+> INFO: XML validation disabled
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.startup.TldConfig).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 6:25:49 AM org.apache.catalina.startup.HostConfig deployDescriptor
+> WARNING: A docBase /opt/zimbra/apache-tomcat-5.5.15/webapps/zimbra inside the host appBase has been specified, and will be ignored
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/host-manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/host-manager] startup failed due to previous errors
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager] has not been started
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/manager] startup failed due to previous errors
+> Oct 11, 2007 6:25:50 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager] has not been started
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Zimbra server reserving server socket port=110 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=995 bindaddr=null ssl=true
+> Zimbra server reserving server socket port=143 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=993 bindaddr=null ssl=true
+> Zimbra server process is running as root, changing to user=zimbra uid=608 gid=604
+> Zimbra server process, after change, is running with uid=608 euid=608 gid=604 egid=604
+> Oct 11, 2007 6:25:58 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 6:25:58 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 6:25:58 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 6:25:58 AM org.apache.catalina.startup.Catalina start
+> INFO: Server startup in 10946 ms
+> 21.212: [GC [PSYoungGen: 840192K->18858K(980224K)] 840192K->18858K(3220736K), 0.0589910 secs]
+> 41.082: [GC [PSYoungGen: 859050K->46855K(980224K)] 859050K->46855K(3220736K), 0.1083340 secs]
+> 78.789: [GC [PSYoungGen: 887047K->42369K(980224K)] 887047K->42369K(3220736K), 0.3329420 secs]
+> 183.882: [GC [PSYoungGen: 882561K->39256K(980224K)] 882561K->39256K(3220736K), 0.0710950 secs]
+> 274.882: [GC [PSYoungGen: 879448K->52272K(881024K)] 879448K->52272K(3121536K), 0.1098940 secs]
+> 524.091: [GC [PSYoungGen: 881008K->58270K(875904K)] 881008K->58270K(3116416K), 0.1177450 secs]
+> 670.444: [GC [PSYoungGen: 875870K->42568K(849344K)] 875870K->61870K(3089856K), 0.1143380 secs]
+> 745.414: [GC [PSYoungGen: 849288K->26061K(838528K)] 868590K->59359K(3079040K), 0.0760260 secs]
+> 1306.235: [GC [PSYoungGen: 822157K->39591K(825280K)] 855455K->86396K(3065792K), 0.1046620 secs]
+> 1369.505: [GC [PSYoungGen: 825255K->15999K(832064K)] 872060K->67950K(3072576K), 0.0380920 secs]
+> 1605.311: [GC [PSYoungGen: 791487K->20740K(786368K)] 843438K->81917K(3026880K), 0.0624560 secs]
+> 1865.779: [GC [PSYoungGen: 786308K->21757K(810432K)] 847485K->93336K(3050944K), 0.0637080 secs]
+> 1938.270: [GC [PSYoungGen: 777597K->11214K(757632K)] 849176K->93386K(2998144K), 0.0410780 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> 2196.577: [GC [PSYoungGen: 757568K->24746K(789632K)] 839741K->113198K(3030144K), 0.0624170 secs]
+> 2302.095: [GC [PSYoungGen: 761834K->9964K(737984K)] 850286K->113910K(2978496K), 0.0548010 secs]
+> 2481.995: [GC [PSYoungGen: 737893K->10284K(774144K)] 841839K->118913K(3014656K), 0.0302720 secs]
+> 2628.212: [GC [PSYoungGen: 729388K->13758K(724160K)] 838017K->127642K(2964672K), 0.0439900 secs]
+> 2872.637: [GC [PSYoungGen: 724158K->24636K(749568K)] 838042K->144121K(2990080K), 0.0651550 secs]
+> 2957.566: [GC [PSYoungGen: 726524K->5784K(699392K)] 846009K->135142K(2939904K), 0.0325970 secs]
+> 3026.107: [GC [PSYoungGen: 699338K->18384K(731584K)] 828696K->150240K(2972096K), 0.0448750 secs]
+> 3127.297: [GC [PSYoungGen: 703760K->39346K(716736K)] 835616K->179125K(2957248K), 0.0959400 secs]
+> 3296.602: [GC [PSYoungGen: 716722K->32848K(720192K)] 856501K->179375K(2960704K), 0.1117390 secs]
+> 3394.264: [GC [PSYoungGen: 702416K->48224K(710144K)] 848943K->205641K(2950656K), 0.0843010 secs]
+> 3491.693: [GC [PSYoungGen: 710112K->12200K(709056K)] 867529K->203641K(2949568K), 0.0724360 secs]
+> 3620.135: [GC [PSYoungGen: 666600K->21108K(668160K)] 858041K->219200K(2908672K), 0.0514070 secs]
+> 3668.598: [GC [PSYoungGen: 668144K->13664K(690240K)] 866236K->217854K(2930752K), 0.1076860 secs]
+> 3838.199: [GC [PSYoungGen: 653472K->14086K(646848K)] 857662K->228122K(2887360K), 0.0500650 secs]
+> 3979.665: [GC [PSYoungGen: 646790K->11207K(673728K)] 860826K->233325K(2914240K), 0.0435410 secs]
+> 4090.769: [GC [PSYoungGen: 636999K->11028K(630080K)] 859117K->237822K(2870592K), 0.0343650 secs]
+> 4190.861: [GC [PSYoungGen: 630036K->24777K(656320K)] 856830K->256087K(2896832K), 0.0489740 secs]
+> 4277.145: [GC [PSYoungGen: 635607K->21036K(626880K)] 866917K->269827K(2867392K), 0.0649900 secs]
+> 4281.681: [GC [PSYoungGen: 626119K->416K(644352K)] 874910K->261301K(2884864K), 0.0214300 secs]
+> 4352.132: [GC [PSYoungGen: 599840K->15622K(608832K)] 860725K->276795K(2849344K), 0.0295280 secs]
+> 4463.528: [GC [PSYoungGen: 608774K->29049K(630400K)] 869947K->302277K(2870912K), 0.0625210 secs]
+> 4535.285: [GC [PSYoungGen: 615993K->12358K(593280K)] 889221K->309649K(2833792K), 0.0765200 secs]
+> 4740.266: [GC [PSYoungGen: 593213K->16770K(611584K)] 890504K->321478K(2852096K), 0.0503390 secs]
+> 4968.788: [GC [PSYoungGen: 591682K->20297K(589440K)] 1189165K->626064K(2829952K), 0.0543780 secs]
+> 4992.778: [GC [PSYoungGen: 474612K->3847K(600832K)] 1373152K->1632688K(2841344K), 0.8873210 secs]
+> 4995.748: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor1]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor61]
+> [Unloading class sun.reflect.GeneratedMethodAccessor38]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor62]
+> [Unloading class sun.reflect.GeneratedMethodAccessor36]
+> [Unloading class sun.reflect.GeneratedMethodAccessor41]
+> [Unloading class sun.reflect.GeneratedMethodAccessor39]
+> [Unloading class sun.reflect.GeneratedMethodAccessor40]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor7]
+> [Unloading class sun.reflect.GeneratedSerializationConstructorAccessor1]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor6]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor4]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor5]
+> [Unloading class sun.reflect.GeneratedMethodAccessor37]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor60]
+>  [PSYoungGen: 408617K->0K(600832K)] [PSOldGen: 2153640K->1343547K(2240512K)] 2562258K->1343547K(2841344K) [PSPermGen: 36313K->36313K(72896K)], 1.5083480 secs]
+> 4997.256: [GC [PSYoungGen: 0K->0K(557568K)] 1343547K->1343547K(2798080K), 0.0250500 secs]
+> 4997.281: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor31]
+>  [PSYoungGen: 0K->0K(557568K)] [PSOldGen: 1343547K->1233825K(2240512K)] 1343547K->1233825K(2798080K) [PSPermGen: 36313K->36166K(81600K)], 1.5751420 secs]
+> Oct 11, 2007 7:49:06 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 7:49:07 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 7:49:07 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 7:49:07 AM org.apache.catalina.startup.Catalina load
+> INFO: Initialization processed in 1654 ms
+> Oct 11, 2007 7:49:07 AM org.apache.catalina.core.StandardService start
+> INFO: Starting service Catalina
+> Oct 11, 2007 7:49:07 AM org.apache.catalina.core.StandardEngine start
+> INFO: Starting Servlet Engine: Apache Tomcat/5.5.15
+> Oct 11, 2007 7:49:07 AM org.apache.catalina.core.StandardHost start
+> INFO: XML validation disabled
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.startup.TldConfig).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.startup.HostConfig deployDescriptor
+> WARNING: A docBase /opt/zimbra/apache-tomcat-5.5.15/webapps/zimbra inside the host appBase has been specified, and will be ignored
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/host-manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/host-manager] startup failed due to previous errors
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager] has not been started
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/manager] startup failed due to previous errors
+> Oct 11, 2007 7:49:09 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager] has not been started
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Zimbra server reserving server socket port=110 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=995 bindaddr=null ssl=true
+> Zimbra server reserving server socket port=143 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=993 bindaddr=null ssl=true
+> Zimbra server process is running as root, changing to user=zimbra uid=608 gid=604
+> Zimbra server process, after change, is running with uid=608 euid=608 gid=604 egid=604
+> Oct 11, 2007 7:49:17 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 7:49:17 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 7:49:17 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 7:49:17 AM org.apache.catalina.startup.Catalina start
+> INFO: Server startup in 10540 ms
+> 17.695: [GC [PSYoungGen: 840192K->21638K(980224K)] 840192K->21638K(3220736K), 0.0735070 secs]
+> 36.847: [GC [PSYoungGen: 861830K->68434K(980224K)] 861830K->68434K(3220736K), 0.2565120 secs]
+> 101.699: [GC [PSYoungGen: 908626K->70558K(980224K)] 908626K->70558K(3220736K), 0.2629080 secs]
+> 132.550: [GC [PSYoungGen: 910750K->38847K(980224K)] 910750K->38847K(3220736K), 0.0987360 secs]
+> 185.690: [GC [PSYoungGen: 879039K->51052K(879808K)] 879039K->51052K(3120320K), 0.0949780 secs]
+> 301.886: [GC [PSYoungGen: 879788K->60463K(889664K)] 879788K->60463K(3130176K), 0.1152480 secs]
+> 348.445: [GC [PSYoungGen: 878063K->48085K(854848K)] 878063K->64025K(3095360K), 0.1041530 secs]
+> 394.133: [GC [PSYoungGen: 854805K->45337K(860096K)] 870745K->71816K(3100608K), 0.1051560 secs]
+> 422.250: [GC [PSYoungGen: 834138K->40678K(826368K)] 860616K->79937K(3066880K), 0.0996360 secs]
+> 435.591: [GC [PSYoungGen: 819120K->46784K(836608K)] 858379K->105555K(3077120K), 0.0834100 secs]
+> 450.512: [GC [PSYoungGen: 822052K->1623K(767232K)] 880822K->67808K(3007744K), 0.0132820 secs]
+> 464.528: [GC [PSYoungGen: 762242K->14820K(828416K)] 828427K->82384K(3068928K), 0.0190590 secs]
+> 478.272: [GC [PSYoungGen: 770660K->5448K(751872K)] 838224K->73862K(2992384K), 0.0420880 secs]
+> 555.149: [GC [PSYoungGen: 751816K->12278K(810432K)] 820230K->83193K(3050944K), 0.0312390 secs]
+> 649.161: [GC [PSYoungGen: 749366K->22411K(750464K)] 820281K->101805K(2990976K), 0.0666820 secs]
+> 778.833: [GC [PSYoungGen: 750411K->18251K(786560K)] 829805K->107323K(3027072K), 0.0600470 secs]
+> 994.873: [GC [PSYoungGen: 737355K->23703K(734144K)] 826427K->125093K(2974656K), 0.0701180 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> unable to load resource bundle: /msgs/com_zimbra_phone
+> unable to load resource bundle: /msgs/com_zimbra_date
+> unable to load resource bundle: /msgs/com_zimbra_email
+> 1015.438: [GC [PSYoungGen: 734103K->7100K(768128K)] 835493K->125233K(3008640K), 0.0484590 secs]
+> 1054.990: [GC [PSYoungGen: 708988K->6031K(699648K)] 827121K->129440K(2940160K), 0.0242820 secs]
+> 1337.409: [GC [PSYoungGen: 699599K->34438K(747648K)] 823008K->162804K(2988160K), 0.0885530 secs]
+> 1484.842: [GC [PSYoungGen: 719814K->27657K(705088K)] 848180K->173636K(2945600K), 0.0841190 secs]
+> 1499.815: [GC [PSYoungGen: 705033K->9795K(727744K)] 851012K->174146K(2968256K), 0.0631060 secs]
+> 1673.337: [GC [PSYoungGen: 679363K->32228K(694144K)] 843714K->206074K(2934656K), 0.0984140 secs]
+> 1815.518: [GC [PSYoungGen: 694116K->29636K(706752K)] 867962K->220935K(2947264K), 0.0808080 secs]
+> 1909.555: [GC [PSYoungGen: 684024K->18761K(665856K)] 875324K->227308K(2906368K), 0.0672380 secs]
+> 2113.639: [GC [PSYoungGen: 665801K->25458K(686208K)] 874348K->247970K(2926720K), 0.0859740 secs]
+> 2289.061: [GC [PSYoungGen: 665266K->37695K(670400K)] 887778K->271344K(2910912K), 0.0853040 secs]
+> 2340.798: [GC [PSYoungGen: 670399K->24232K(671808K)] 904048K->282957K(2912320K), 0.0838410 secs]
+> 2422.268: [GC [PSYoungGen: 650024K->13580K(632640K)] 908749K->291022K(2873152K), 0.0597670 secs]
+> 2544.422: [GC [PSYoungGen: 632585K->19624K(656704K)] 910028K->304224K(2897216K), 0.0589300 secs]
+> 2661.209: [GC [PSYoungGen: 631976K->13011K(618880K)] 916576K->306169K(2859392K), 0.0463130 secs]
+> 2706.500: [GC [PSYoungGen: 618831K->7981K(644864K)] 911989K->307956K(2885376K), 0.0315420 secs]
+> 2876.331: [GC [PSYoungGen: 607405K->36040K(629248K)] 907380K->339580K(2869760K), 0.0856430 secs]
+> 2966.330: [GC [PSYoungGen: 629192K->13322K(632256K)] 932732K->335703K(2872768K), 0.0586620 secs]
+> 3080.411: [GC [PSYoungGen: 600266K->52854K(633728K)] 922647K->478518K(2874240K), 0.6128950 secs]
+> 3142.300: [GC [PSYoungGen: 633669K->99232K(617984K)] 1059334K->646622K(2858496K), 1.2591080 secs]
+> 3218.420: [GC [PSYoungGen: 617952K->145708K(675264K)] 1165342K->784775K(2915776K), 0.6827980 secs]
+> 3271.781: [GC [PSYoungGen: 659564K->26595K(677248K)] 1298631K->755726K(2917760K), 0.6639340 secs]
+> 3481.950: [GC [PSYoungGen: 535715K->29369K(533824K)] 1264846K->777755K(2774336K), 0.1518750 secs]
+> 3556.299: [GC [PSYoungGen: 533817K->9166K(660416K)] 1282203K->771483K(2900928K), 0.0484920 secs]
+> 3642.811: [GC [PSYoungGen: 509006K->12080K(507392K)] 1271323K->780981K(2747904K), 0.0491440 secs]
+> 3745.294: [GC [PSYoungGen: 507376K->17261K(637376K)] 1276277K->792897K(2877888K), 0.0577720 secs]
+> 3769.714: [GC [PSYoungGen: 508077K->4792K(491264K)] 1283713K->792130K(2731776K), 0.0415570 secs]
+> 3857.255: [GC [PSYoungGen: 491256K->13973K(617536K)] 1278594K->804138K(2858048K), 0.0453820 secs]
+> 3911.971: [GC [PSYoungGen: 496149K->9295K(487296K)] 1286314K->808235K(2727808K), 0.0409650 secs]
+> 3960.756: [GC [PSYoungGen: 487247K->9459K(597888K)] 1286187K->813518K(2838400K), 0.0364040 secs]
+> 4101.054: [GC [PSYoungGen: 483251K->19905K(489664K)] 1287310K->831198K(2730176K), 0.0602040 secs]
+> 4146.784: [GC [PSYoungGen: 489601K->10932K(576064K)] 1300894K->833627K(2816576K), 0.0420670 secs]
+> 4193.944: [GC [PSYoungGen: 476596K->11206K(472960K)] 1299291K->841639K(2713472K), 0.0453920 secs]
+> 4250.833: [GC [PSYoungGen: 472902K->9455K(557120K)] 1303335K->845283K(2797632K), 0.0493120 secs]
+> 4377.604: [GC [PSYoungGen: 467242K->21252K(475264K)] 1303070K->860221K(2715776K), 0.0613810 secs]
+> 4502.006: [GC [PSYoungGen: 475204K->18378K(534848K)] 1314173K->870067K(2775360K), 0.0693730 secs]
+> 4552.230: [GC [PSYoungGen: 468554K->8753K(455232K)] 1320243K->871800K(2695744K), 0.0538160 secs]
+> 4584.886: [GC [PSYoungGen: 452815K->90273K(518784K)] 1315863K->981660K(2759296K), 0.1359180 secs]
+> 4662.132: [GC [PSYoungGen: 518561K->12512K(437440K)] 1409948K->907794K(2677952K), 0.0389340 secs]
+> 4735.869: [GC [PSYoungGen: 437408K->10956K(512704K)] 1332690K->916408K(2753216K), 0.0502430 secs]
+> 4800.975: [GC [PSYoungGen: 432518K->14123K(432384K)] 1337971K->924161K(2672896K), 0.0480250 secs]
+> 4820.764: [GC [PSYoungGen: 432363K->5925K(498368K)] 1342401K->923395K(2738880K), 0.0407400 secs]
+> 4871.072: [GC [PSYoungGen: 420901K->9137K(420928K)] 1338371K->931212K(2661440K), 0.0533050 secs]
+> 4923.944: [GC [PSYoungGen: 420913K->10767K(482368K)] 1342988K->937255K(2722880K), 0.0376770 secs]
+> 4989.752: [GC [PSYoungGen: 419407K->19149K(424704K)] 1638671K->1243861K(2665216K), 0.0581270 secs]
+> 4990.693: [GC [PSYoungGen: 424653K->96K(483136K)] 1649365K->1533291K(2723648K), 0.5155030 secs]
+> 4995.140: [GC [PSYoungGen: 406897K->4469K(481088K)] 1940093K->2123213K(2721600K), 1.0090360 secs]
+> 4996.150: [Full GC[Unloading class sun.reflect.GeneratedConstructorAccessor5]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor4]
+> [Unloading class sun.reflect.GeneratedMethodAccessor38]
+> [Unloading class sun.reflect.GeneratedMethodAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor80]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor7]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor73]
+> [Unloading class sun.reflect.GeneratedMethodAccessor81]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor30]
+> [Unloading class sun.reflect.GeneratedMethodAccessor79]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor74]
+> [Unloading class sun.reflect.GeneratedMethodAccessor37]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor6]
+> [Unloading class sun.reflect.GeneratedSerializationConstructorAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor82]
+> [Unloading class sun.reflect.GeneratedMethodAccessor83]
+> [Unloading class sun.reflect.GeneratedMethodAccessor31]
+> [Unloading class sun.reflect.GeneratedMethodAccessor78]
+> [Unloading class sun.reflect.GeneratedMethodAccessor36]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor72]
+>  [PSYoungGen: 4469K->0K(481088K)] [PSOldGen: 2118744K->1195703K(2240512K)] 2123213K->1195703K(2721600K) [PSPermGen: 41419K->41419K(83136K)], 2.9008380 secs]
+> 5001.372: [Full GC [PSYoungGen: 407552K->0K(481088K)] [PSOldGen: 1982903K->1586841K(2240512K)] 2390455K->1586841K(2721600K) [PSPermGen: 41427K->41427K(83136K)], 2.3485210 secs]
+> 5003.993: [GC [PSYoungGen: 103937K->516K(434880K)] 1690778K->1587357K(2675392K), 0.0298500 secs]
+> 5004.023: [GC [PSYoungGen: 516K->452K(497216K)] 1587357K->1587293K(2737728K), 0.0278160 secs]
+> 5004.051: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor91]
+>  [PSYoungGen: 452K->0K(497216K)] [PSOldGen: 1586841K->1587006K(2240512K)] 1587293K->1587006K(2737728K) [PSPermGen: 41429K->41429K(83136K)], 1.6540630 secs]
+> 5005.705: [GC [PSYoungGen: 0K->0K(502016K)] 1587006K->1587006K(2742528K), 0.0397230 secs]
+> 5005.745: [Full GC [PSYoungGen: 0K->0K(502016K)] [PSOldGen: 1587006K->1474990K(2240512K)] 1587006K->1474990K(2742528K) [PSPermGen: 41429K->41246K(83136K)], 2.5237490 secs]
+> Oct 11, 2007 9:12:35 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 9:12:36 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 9:12:36 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 9:12:36 AM org.apache.catalina.startup.Catalina load
+> INFO: Initialization processed in 1848 ms
+> Oct 11, 2007 9:12:36 AM org.apache.catalina.core.StandardService start
+> INFO: Starting service Catalina
+> Oct 11, 2007 9:12:36 AM org.apache.catalina.core.StandardEngine start
+> INFO: Starting Servlet Engine: Apache Tomcat/5.5.15
+> Oct 11, 2007 9:12:36 AM org.apache.catalina.core.StandardHost start
+> INFO: XML validation disabled
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.startup.TldConfig).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 9:12:39 AM org.apache.catalina.startup.HostConfig deployDescriptor
+> WARNING: A docBase /opt/zimbra/apache-tomcat-5.5.15/webapps/zimbra inside the host appBase has been specified, and will be ignored
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 9:12:39 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/host-manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 9:12:39 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 9:12:39 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 9:12:39 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/host-manager] startup failed due to previous errors
+> Oct 11, 2007 9:12:39 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager] has not been started
+> Oct 11, 2007 9:12:39 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 9:12:39 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 9:12:40 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 9:12:40 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/manager] startup failed due to previous errors
+> Oct 11, 2007 9:12:40 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager] has not been started
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Zimbra server reserving server socket port=110 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=995 bindaddr=null ssl=true
+> Zimbra server reserving server socket port=143 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=993 bindaddr=null ssl=true
+> Zimbra server process is running as root, changing to user=zimbra uid=608 gid=604
+> Zimbra server process, after change, is running with uid=608 euid=608 gid=604 egid=604
+> Oct 11, 2007 9:12:50 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 9:12:51 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 9:12:51 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 9:12:51 AM org.apache.catalina.startup.Catalina start
+> INFO: Server startup in 14811 ms
+> 18.662: [GC [PSYoungGen: 840192K->20719K(980224K)] 840192K->20719K(3220736K), 0.0795800 secs]
+> 21.701: [GC [PSYoungGen: 860901K->26456K(980224K)] 860901K->26456K(3220736K), 0.0784800 secs]
+> 25.773: [GC [PSYoungGen: 866648K->31620K(980224K)] 866648K->31620K(3220736K), 0.0754210 secs]
+> 40.466: [GC [PSYoungGen: 871812K->59769K(980224K)] 871812K->59769K(3220736K), 0.1349560 secs]
+> 58.259: [GC [PSYoungGen: 899961K->113580K(953792K)] 899961K->113580K(3194304K), 0.1938520 secs]
+> 63.566: [GC [PSYoungGen: 953772K->96841K(931648K)] 953772K->96841K(3172160K), 0.1414410 secs]
+> 78.224: [GC [PSYoungGen: 925385K->69637K(953792K)] 925385K->89934K(3194304K), 0.1480140 secs]
+> 116.087: [GC [PSYoungGen: 898181K->52282K(979328K)] 918478K->87083K(3219840K), 0.1239870 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> unable to load resource bundle: /msgs/com_zimbra_date
+> unable to load resource bundle: /msgs/com_zimbra_phone
+> unable to load resource bundle: /msgs/com_zimbra_email
+> 183.817: [GC [PSYoungGen: 925562K->39995K(901056K)] 960363K->87523K(3141568K), 0.0859130 secs]
+> 196.452: [GC [PSYoungGen: 901051K->25166K(949568K)] 948579K->89194K(3190080K), 0.0662420 secs]
+> 290.407: [GC [PSYoungGen: 874318K->33712K(871232K)] 938346K->120981K(3111744K), 0.0900510 secs]
+> 404.832: [GC [PSYoungGen: 871216K->40210K(916800K)] 958485K->147721K(3157312K), 0.1007200 secs]
+> 563.219: [GC [PSYoungGen: 866322K->27593K(842688K)] 973833K->151434K(3083200K), 0.0894750 secs]
+> 591.956: [GC [PSYoungGen: 842633K->41171K(888832K)] 966474K->179497K(3129344K), 0.0831830 secs]
+> 625.152: [GC [PSYoungGen: 845228K->8444K(802112K)] 983554K->183259K(3042624K), 0.0604030 secs]
+> 654.199: [GC [PSYoungGen: 802070K->5361K(875584K)] 976884K->185629K(3116096K), 0.0261500 secs]
+> 682.833: [GC [PSYoungGen: 788657K->7975K(781184K)] 968925K->191815K(3021696K), 0.0238310 secs]
+> 847.183: [GC [PSYoungGen: 779414K->22808K(846400K)] 963254K->213146K(3086912K), 0.0508340 secs]
+> 969.432: [GC [PSYoungGen: 786136K->19980K(773696K)] 976474K->223925K(3014208K), 0.0636930 secs]
+> 1030.810: [GC [PSYoungGen: 773644K->11412K(823744K)] 977589K->227648K(3064256K), 0.0491790 secs]
+> 1108.211: [GC [PSYoungGen: 755604K->29209K(764224K)] 971840K->252192K(3004736K), 0.0848310 secs]
+> 1185.166: [GC [PSYoungGen: 764185K->11377K(798400K)] 987168K->250733K(3038912K), 0.0578150 secs]
+> 1303.090: [GC [PSYoungGen: 737326K->32314K(749440K)] 976682K->279534K(2989952K), 0.0983810 secs]
+> 1304.086: [GC [PSYoungGen: 749434K->64K(796288K)] 996654K->268726K(3036800K), 0.0568890 secs]
+> 1342.542: [GC [PSYoungGen: 716729K->13842K(796352K)] 985391K->282504K(3036864K), 0.0234310 secs]
+> 1345.560: [GC [PSYoungGen: 730509K->5925K(1004800K)] 999172K->285635K(3245312K), 0.0296090 secs]
+> 1425.469: [GC [PSYoungGen: 938149K->23449K(942080K)] 1217859K->303481K(3182592K), 0.0562580 secs]
+> 1449.155: [GC [PSYoungGen: 942041K->11319K(956160K)] 1222073K->308419K(3196672K), 0.0739550 secs]
+> 1527.467: [GC [PSYoungGen: 911838K->42249K(934592K)] 1208938K->349663K(3175104K), 0.1170060 secs]
+> 1620.341: [GC [PSYoungGen: 933022K->61287K(949376K)] 1240436K->396196K(3189888K), 0.1305030 secs]
+> 1728.289: [GC [PSYoungGen: 940903K->19779K(887104K)] 1275812K->374492K(3127616K), 0.0662570 secs]
+> 1847.692: [GC [PSYoungGen: 887043K->20445K(910848K)] 1241756K->385408K(3151360K), 0.0740340 secs]
+> 1935.471: [GC [PSYoungGen: 875613K->13966K(857408K)] 1240576K->389875K(3097920K), 0.0552620 secs]
+> 2024.887: [GC [PSYoungGen: 857358K->33451K(886784K)] 1233267K->417589K(3127296K), 0.0801530 secs]
+> 2038.374: [GC [PSYoungGen: 865323K->10495K(831168K)] 1249461K->422607K(3071680K), 0.0822590 secs]
+> 2100.832: [GC [PSYoungGen: 831167K->29336K(860288K)] 1243279K->449759K(3100800K), 0.0718650 secs]
+> 2186.311: [GC [PSYoungGen: 839064K->35896K(834944K)] 1259487K->480549K(3075456K), 0.1062720 secs]
+> 2268.283: [GC [PSYoungGen: 833138K->33448K(839936K)] 1277790K->504641K(3080448K), 0.1045890 secs]
+> 2356.498: [GC [PSYoungGen: 821992K->32322K(810688K)] 1293185K->529671K(3051200K), 0.0988660 secs]
+> 2511.153: [GC [PSYoungGen: 810611K->32819K(816960K)] 1307960K->555147K(3057472K), 0.1017350 secs]
+> 2629.551: [GC [PSYoungGen: 801139K->29524K(788096K)] 1323467K->566863K(3028608K), 0.0860420 secs]
+> 2733.170: [GC [PSYoungGen: 788052K->55351K(806464K)] 1325391K->607419K(3046976K), 0.1482970 secs]
+> 2947.899: [GC [PSYoungGen: 804343K->57102K(796800K)] 1356411K->640192K(3037312K), 0.1549830 secs]
+> 3035.667: [GC [PSYoungGen: 786396K->36128K(786816K)] 1369486K->650970K(3027328K), 0.1127740 secs]
+> 3099.185: [GC [PSYoungGen: 766621K->12644K(734208K)] 1381463K->636848K(2974720K), 0.0450180 secs]
+> 3178.805: [GC [PSYoungGen: 734180K->31573K(765056K)] 1358384K->663491K(3005568K), 0.0850400 secs]
+> 3253.729: [GC [PSYoungGen: 744336K->21218K(725440K)] 1376255K->666715K(2965952K), 0.0745080 secs]
+> 3313.386: [GC [PSYoungGen: 718212K->63090K(746560K)] 1363709K->740776K(2987072K), 0.3131330 secs]
+> 3338.759: [GC [PSYoungGen: 729694K->20220K(695744K)] 1407379K->714368K(2936256K), 0.0572080 secs]
+> 3356.080: [GC [PSYoungGen: 695738K->6012K(742528K)] 1389887K->702422K(2983040K), 0.0259330 secs]
+> 3445.323: [GC [PSYoungGen: 673718K->82272K(742400K)] 1370127K->851680K(2982912K), 0.6154980 secs]
+> 3556.263: [GC [PSYoungGen: 742368K->29532K(757440K)] 1511776K->818765K(2997952K), 0.1105030 secs]
+> 3644.637: [GC [PSYoungGen: 682140K->98722K(762816K)] 1471373K->900565K(3003328K), 0.3277360 secs]
+> 3680.765: [GC [PSYoungGen: 743970K->90063K(768768K)] 1545813K->913982K(3009280K), 0.3487860 secs]
+> 3804.791: [GC [PSYoungGen: 728140K->53487K(684544K)] 1552059K->903420K(2925056K), 0.2071740 secs]
+> 3927.794: [GC [PSYoungGen: 684520K->35954K(737152K)] 1534453K->899051K(2977664K), 0.1090180 secs]
+> 4010.731: [GC [PSYoungGen: 658131K->25874K(643264K)] 1521227K->902702K(2883776K), 0.0759440 secs]
+> 4052.250: [GC [PSYoungGen: 643218K->17783K(721664K)] 1520046K->906705K(2962176K), 0.0679400 secs]
+> 4065.355: [GC [PSYoungGen: 628471K->7398K(611584K)] 1517393K->906733K(2852096K), 0.0469370 secs]
+> 4139.186: [GC [PSYoungGen: 611558K->27759K(699520K)] 1510893K->930609K(2940032K), 0.0758460 secs]
+> 4237.056: [GC [PSYoungGen: 625519K->34861K(626368K)] 1528369K->951851K(2866880K), 0.1116550 secs]
+> 4293.428: [GC [PSYoungGen: 621375K->107062K(662912K)] 1538365K->1071260K(2903424K), 0.2201600 secs]
+> 4327.209: [GC [PSYoungGen: 662902K->11180K(561536K)] 1627100K->984478K(2802048K), 0.0567660 secs]
+> 4357.759: [GC [PSYoungGen: 561515K->20583K(670464K)] 1534813K->1001672K(2910976K), 0.0616880 secs]
+> 4440.950: [GC [PSYoungGen: 565543K->42724K(582400K)] 1546632K->1035410K(2822912K), 0.1332940 secs]
+> 4527.297: [GC [PSYoungGen: 582362K->29137K(644864K)] 1575048K->1038537K(2885376K), 0.1121030 secs]
+> 4563.374: [GC [PSYoungGen: 563601K->43882K(573248K)] 1573001K->1066886K(2813760K), 0.1864430 secs]
+> 4609.295: [GC [PSYoungGen: 573226K->17281K(627584K)] 1596230K->1050257K(2868096K), 0.0676950 secs]
+> 4660.642: [GC [PSYoungGen: 541569K->30993K(550400K)] 1574545K->1073210K(2790912K), 0.0931790 secs]
+> 4672.681: [GC [PSYoungGen: 550353K->13090K(610880K)] 1592570K->1066211K(2851392K), 0.0605090 secs]
+> 4752.336: [GC [PSYoungGen: 527586K->26474K(536192K)] 1580707K->1085764K(2776704K), 0.0787070 secs]
+> 4789.258: [GC [PSYoungGen: 526139K->26650K(589440K)] 1585428K->1100537K(2829952K), 0.0735790 secs]
+> 4870.656: [GC [PSYoungGen: 531674K->20445K(520896K)] 1605561K->1100195K(2761408K), 0.0694990 secs]
+> 4963.867: [GC [PSYoungGen: 520861K->21649K(574400K)] 1893387K->1402738K(2814912K), 0.0690420 secs]
+> 4988.758: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor44]
+> [Unloading class sun.reflect.GeneratedMethodAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor42]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor7]
+> [Unloading class sun.reflect.GeneratedMethodAccessor45]
+> [Unloading class sun.reflect.GeneratedMethodAccessor37]
+> [Unloading class sun.reflect.GeneratedMethodAccessor41]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor4]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor66]
+> [Unloading class sun.reflect.GeneratedMethodAccessor46]
+> [Unloading class sun.reflect.GeneratedMethodAccessor40]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor5]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor6]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor67]
+> [Unloading class sun.reflect.GeneratedMethodAccessor43]
+> [Unloading class sun.reflect.GeneratedSerializationConstructorAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor36]
+>  [PSYoungGen: 504858K->0K(574400K)] [PSOldGen: 2229038K->1279582K(2240512K)] 2733896K->1279582K(2814912K) [PSPermGen: 37383K->37383K(75072K)], 1.9393000 secs]
+> 4991.746: [GC [PSYoungGen: 12066K->765K(492032K)] 1816448K->1805148K(2732544K), 0.0319210 secs]
+> 4991.778: [GC [PSYoungGen: 765K->0K(578624K)] 1805148K->1805069K(2819136K), 0.0245820 secs]
+> 4991.803: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor31]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor65]
+>  [PSYoungGen: 0K->0K(578624K)] [PSOldGen: 1805069K->1392890K(2240512K)] 1805069K->1392890K(2819136K) [PSPermGen: 37383K->37383K(83968K)], 1.6614490 secs]
+> 4993.464: [GC [PSYoungGen: 0K->0K(577856K)] 1392890K->1392890K(2818368K), 0.0189390 secs]
+> 4993.483: [Full GC [PSYoungGen: 0K->0K(577856K)] [PSOldGen: 1392890K->1281061K(2240512K)] 1392890K->1281061K(2818368K) [PSPermGen: 37383K->37220K(81216K)], 1.6513270 secs]
+> Oct 11, 2007 10:35:51 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 10:35:52 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 10:35:52 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 10:35:52 AM org.apache.catalina.startup.Catalina load
+> INFO: Initialization processed in 1353 ms
+> Oct 11, 2007 10:35:52 AM org.apache.catalina.core.StandardService start
+> INFO: Starting service Catalina
+> Oct 11, 2007 10:35:52 AM org.apache.catalina.core.StandardEngine start
+> INFO: Starting Servlet Engine: Apache Tomcat/5.5.15
+> Oct 11, 2007 10:35:52 AM org.apache.catalina.core.StandardHost start
+> INFO: XML validation disabled
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.startup.TldConfig).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 10:35:54 AM org.apache.catalina.startup.HostConfig deployDescriptor
+> WARNING: A docBase /opt/zimbra/apache-tomcat-5.5.15/webapps/zimbra inside the host appBase has been specified, and will be ignored
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/host-manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/host-manager] startup failed due to previous errors
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager] has not been started
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/manager] startup failed due to previous errors
+> Oct 11, 2007 10:35:55 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager] has not been started
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Zimbra server reserving server socket port=110 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=995 bindaddr=null ssl=true
+> Zimbra server reserving server socket port=143 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=993 bindaddr=null ssl=true
+> Zimbra server process is running as root, changing to user=zimbra uid=608 gid=604
+> Zimbra server process, after change, is running with uid=608 euid=608 gid=604 egid=604
+> Oct 11, 2007 10:36:05 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 10:36:05 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-443
+> 15.902: [GC [PSYoungGen: 840192K->31020K(980224K)] 840192K->31020K(3220736K), 0.0975820 secs]
+> Oct 11, 2007 10:36:08 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 10:36:08 AM org.apache.catalina.startup.Catalina start
+> INFO: Server startup in 16640 ms
+> 24.145: [GC [PSYoungGen: 871212K->57647K(980224K)] 871212K->57647K(3220736K), 0.1017480 secs]
+> 36.373: [GC [PSYoungGen: 897839K->66016K(980224K)] 897839K->66016K(3220736K), 0.1170510 secs]
+> 50.804: [GC [PSYoungGen: 906208K->138605K(980224K)] 906208K->138605K(3220736K), 0.2152730 secs]
+> 66.901: [GC [PSYoungGen: 978797K->78926K(919168K)] 978797K->78926K(3159680K), 0.1462790 secs]
+> 83.358: [GC [PSYoungGen: 916861K->96028K(955904K)] 916861K->96028K(3196416K), 0.1460160 secs]
+> 101.854: [GC [PSYoungGen: 924764K->90726K(964544K)] 924764K->116180K(3205056K), 0.2016370 secs]
+> 118.003: [GC [PSYoungGen: 919462K->57261K(913152K)] 944916K->97135K(3153664K), 0.0990620 secs]
+> 130.095: [GC [PSYoungGen: 874861K->132006K(949632K)] 914735K->209171K(3190144K), 0.2428940 secs]
+> 141.663: [GC [PSYoungGen: 949606K->121959K(946496K)] 1026771K->218667K(3187008K), 0.1960060 secs]
+> 164.067: [GC [PSYoungGen: 905191K->38065K(821312K)] 1001899K->149561K(3061824K), 0.1268780 secs]
+> 204.657: [GC [PSYoungGen: 821297K->13442K(942528K)] 932793K->133299K(3183040K), 0.0468250 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> unable to load resource bundle: /msgs/com_zimbra_phone
+> unable to load resource bundle: /msgs/com_zimbra_date
+> unable to load resource bundle: /msgs/com_zimbra_email
+> 247.149: [GC [PSYoungGen: 786562K->15930K(779200K)] 906419K->144736K(3019712K), 0.0483850 secs]
+> 271.902: [GC [PSYoungGen: 768606K->43951K(907456K)] 897411K->185430K(3147968K), 0.0875460 secs]
+> 290.991: [GC [PSYoungGen: 797551K->7663K(751808K)] 939030K->155812K(2992320K), 0.0345290 secs]
+> 354.729: [GC [PSYoungGen: 751791K->19389K(888768K)] 899940K->172533K(3129280K), 0.0572340 secs]
+> 424.175: [GC [PSYoungGen: 754299K->13380K(739328K)] 907443K->174801K(2979840K), 0.0536720 secs]
+> 520.323: [GC [PSYoungGen: 739268K->19692K(861312K)] 900689K->188869K(3101824K), 0.0611420 secs]
+> 596.549: [GC [PSYoungGen: 736748K->15339K(723776K)] 905925K->195088K(2964288K), 0.0621890 secs]
+> 668.071: [GC [PSYoungGen: 723755K->42588K(825216K)] 903504K->229053K(3065728K), 0.0760820 secs]
+> 732.686: [GC [PSYoungGen: 742556K->24750K(716416K)] 929021K->220743K(2956928K), 0.0946990 secs]
+> 733.930: [GC [PSYoungGen: 716398K->467K(831104K)] 912391K->214691K(3071616K), 0.0536540 secs]
+> 799.897: [GC [PSYoungGen: 693969K->13736K(699072K)] 908192K->228276K(2939584K), 0.0379560 secs]
+> 898.164: [GC [PSYoungGen: 699048K->18783K(787712K)] 913588K->240653K(3028224K), 0.0593380 secs]
+> 910.352: [GC [PSYoungGen: 696095K->10525K(680064K)] 917965K->242705K(2920576K), 0.0462380 secs]
+> 969.098: [GC [PSYoungGen: 680029K->15177K(762688K)] 912209K->250797K(3003200K), 0.0460200 secs]
+> 1029.708: [GC [PSYoungGen: 677001K->16732K(671104K)] 912621K->260627K(2911616K), 0.0553780 secs]
+> 1108.422: [GC [PSYoungGen: 671068K->15571K(737216K)] 914963K->271939K(2977728K), 0.0641150 secs]
+> 1202.699: [GC [PSYoungGen: 662543K->17886K(657664K)] 918911K->281613K(2898176K), 0.0532080 secs]
+> 1335.603: [GC [PSYoungGen: 657630K->29228K(710336K)] 921357K->300611K(2950848K), 0.0776880 secs]
+> 1395.130: [GC [PSYoungGen: 661868K->53958K(679744K)] 933251K->341017K(2920256K), 0.0999790 secs]
+> 1469.081: [GC [PSYoungGen: 679686K->17254K(698176K)] 966745K->317505K(2938688K), 0.0594990 secs]
+> 1505.687: [GC [PSYoungGen: 636198K->13083K(625408K)] 936449K->321787K(2865920K), 0.0534310 secs]
+> 1557.194: [GC [PSYoungGen: 625371K->23394K(675520K)] 934075K->338602K(2916032K), 0.0812660 secs]
+> 1648.397: [GC [PSYoungGen: 629154K->21836K(621248K)] 944362K->343697K(2861760K), 0.0613990 secs]
+> 1782.292: [GC [PSYoungGen: 621195K->22949K(654784K)] 943056K->357456K(2895296K), 0.0764760 secs]
+> 1942.125: [GC [PSYoungGen: 613173K->43732K(630720K)] 947679K->388882K(2871232K), 0.0987900 secs]
+> 2008.236: [GC [PSYoungGen: 625570K->23069K(641472K)] 970721K->381581K(2881984K), 0.0603620 secs]
+> 2082.193: [GC [PSYoungGen: 603933K->14986K(589952K)] 962445K->380029K(2830464K), 0.0580010 secs]
+> 2175.201: [GC [PSYoungGen: 589891K->19506K(625408K)] 954934K->392528K(2865920K), 0.0561890 secs]
+> 2202.832: [GC [PSYoungGen: 588594K->61414K(628544K)] 961616K->446631K(2869056K), 0.0998020 secs]
+> 2256.216: [GC [PSYoungGen: 624742K->17821K(621376K)] 1009959K->408761K(2861888K), 0.0542550 secs]
+> 2297.316: [GC [PSYoungGen: 575517K->10082K(562304K)] 966457K->410519K(2802816K), 0.0389110 secs]
+> 2338.968: [GC [PSYoungGen: 562274K->10264K(608384K)] 962711K->416828K(2848896K), 0.0354010 secs]
+> 2397.964: [GC [PSYoungGen: 557016K->13449K(554944K)] 963580K->425172K(2795456K), 0.0394500 secs]
+> 2479.654: [GC [PSYoungGen: 554875K->14719K(591616K)] 966598K->435374K(2832128K), 0.0450500 secs]
+> 2500.219: [GC [PSYoungGen: 550911K->4542K(535616K)] 971566K->434121K(2776128K), 0.0300970 secs]
+> 2541.728: [GC [PSYoungGen: 535614K->12733K(577792K)] 965193K->445823K(2818304K), 0.0405240 secs]
+> 2555.581: [GC [PSYoungGen: 538749K->6327K(527360K)] 971839K->450003K(2767872K), 0.0421630 secs]
+> 2566.213: [GC [PSYoungGen: 527351K->8102K(565056K)] 971027K->457863K(2805568K), 0.0537070 secs]
+> 2589.897: [GC [PSYoungGen: 524262K->8265K(519680K)] 974023K->465926K(2760192K), 0.0494500 secs]
+> 2627.356: [GC [PSYoungGen: 519621K->6921K(551424K)] 977281K->469327K(2791936K), 0.0278810 secs]
+> 2692.585: [GC [PSYoungGen: 513536K->16012K(518080K)] 975942K->483495K(2758592K), 0.0492370 secs]
+> 2750.806: [GC [PSYoungGen: 505650K->39459K(544576K)] 973133K->516923K(2785088K), 0.0806180 secs]
+> 2823.867: [GC [PSYoungGen: 535896K->23246K(515264K)] 1013359K->516606K(2755776K), 0.0740910 secs]
+> 2902.246: [GC [PSYoungGen: 513316K->17099K(529024K)] 1006676K->523933K(2769536K), 0.0653840 secs]
+> 2978.836: [GC [PSYoungGen: 504651K->15020K(498240K)] 1011485K->530106K(2738752K), 0.0463830 secs]
+> 2984.516: [GC [PSYoungGen: 498220K->2350K(520960K)] 1013306K->526379K(2761472K), 0.0271380 secs]
+> 3109.114: [GC [PSYoungGen: 481325K->21561K(496384K)] 1005354K->547583K(2736896K), 0.0533010 secs]
+> 3168.967: [GC [PSYoungGen: 496377K->18052K(506944K)] 1022399K->554930K(2747456K), 0.0649240 secs]
+> 3176.942: [GC [PSYoungGen: 488772K->6268K(472960K)] 1025650K->555095K(2713472K), 0.0579630 secs]
+> 3188.478: [GC [PSYoungGen: 472956K->7289K(498624K)] 1021783K->561886K(2739136K), 0.0423170 secs]
+> 3204.159: [GC [PSYoungGen: 470009K->8342K(467200K)] 1024606K->568523K(2707712K), 0.0460640 secs]
+> 3246.493: [GC [PSYoungGen: 467158K->39530K(453056K)] 1027339K->703912K(2693568K), 0.1851830 secs]
+> 3264.323: [GC [PSYoungGen: 438140K->13116K(423424K)] 1102522K->684823K(2663936K), 0.0364820 secs]
+> 3275.818: [GC [PSYoungGen: 423410K->3683K(481984K)] 1095117K->679658K(2722496K), 0.0230850 secs]
+> 3319.201: [GC [PSYoungGen: 410549K->22435K(426560K)] 1086525K->700069K(2667072K), 0.0568220 secs]
+> 3358.940: [GC [PSYoungGen: 426531K->13799K(465536K)] 1104165K->698544K(2706048K), 0.0456320 secs]
+> 3400.728: [GC [PSYoungGen: 414823K->15597K(413632K)] 1099568K->710546K(2654144K), 0.0627330 secs]
+> 3439.303: [GC [PSYoungGen: 413613K->12735K(453568K)] 1108562K->714032K(2694080K), 0.0410860 secs]
+> 3492.001: [GC [PSYoungGen: 407807K->8322K(400512K)] 1109104K->720060K(2641024K), 0.0415950 secs]
+> 3578.770: [GC [PSYoungGen: 400450K->25951K(444736K)] 1112188K->743837K(2685248K), 0.0845810 secs]
+> 3633.370: [GC [PSYoungGen: 415199K->12019K(398400K)] 1133085K->739664K(2638912K), 0.0431010 secs]
+> 3639.046: [GC [PSYoungGen: 398387K->4729K(435840K)] 1126032K->739728K(2676352K), 0.0269790 secs]
+> 3653.394: [GC [PSYoungGen: 388272K->7841K(388672K)] 1123272K->746787K(2629184K), 0.0304630 secs]
+> 3661.751: [GC [PSYoungGen: 388641K->5556K(426112K)] 1127587K->751462K(2666624K), 0.0466390 secs]
+> 3752.607: [GC [PSYoungGen: 382139K->16468K(391872K)] 1128045K->767820K(2632384K), 0.0461260 secs]
+> 3878.221: [GC [PSYoungGen: 391828K->18232K(414080K)] 1143180K->781066K(2654592K), 0.0635270 secs]
+> 3937.018: [GC [PSYoungGen: 390904K->15148K(385216K)] 1153738K->786096K(2625728K), 0.0545170 secs]
+> 3969.406: [GC [PSYoungGen: 382199K->37047K(408832K)] 1153147K->814780K(2649344K), 0.0630940 secs]
+> 4062.265: [GC [PSYoungGen: 401942K->17624K(380224K)] 1179675K->800605K(2620736K), 0.0441360 secs]
+> 4167.338: [GC [PSYoungGen: 380184K->45759K(394112K)] 1163165K->846924K(2634624K), 0.2578520 secs]
+> 4228.194: [GC [PSYoungGen: 393759K->25156K(371264K)] 1194925K->862857K(2611776K), 0.2231570 secs]
+> 4292.027: [GC [PSYoungGen: 371204K->12988K(395136K)] 1208905K->860867K(2635648K), 0.0533530 secs]
+> 4445.197: [GC [PSYoungGen: 356732K->32173K(373696K)] 1204611K->888714K(2614208K), 0.1002260 secs]
+> 4498.225: [GC [PSYoungGen: 373677K->12952K(389696K)] 1230218K->884953K(2630208K), 0.0646700 secs]
+> 4540.658: [GC [PSYoungGen: 352216K->12300K(349440K)] 1224217K->894149K(2589952K), 0.0780500 secs]
+> 4621.451: [GC [PSYoungGen: 349383K->16654K(380608K)] 1231232K->907905K(2621120K), 0.0592490 secs]
+> 4634.745: [GC [PSYoungGen: 351566K->2473K(335232K)] 1242817K->904341K(2575744K), 0.0356360 secs]
+> 4700.455: [GC [PSYoungGen: 335209K->16280K(373376K)] 1237077K->919774K(2613888K), 0.0627500 secs]
+> 4700.956: [GC [PSYoungGen: 346904K->176K(378240K)] 1250398K->916447K(2618752K), 0.0488100 secs]
+> 4701.430: [GC [PSYoungGen: 330800K->32K(444032K)] 1247071K->916375K(2684544K), 0.0098720 secs]
+> 4725.266: [GC [PSYoungGen: 396826K->23512K(444352K)] 1313170K->939856K(2684864K), 0.0474370 secs]
+> 4802.171: [GC [PSYoungGen: 420312K->22653K(522368K)] 1336656K->959722K(2762880K), 0.0797550 secs]
+> 4879.871: [GC [PSYoungGen: 498813K->46816K(523008K)] 1435882K->999939K(2763520K), 0.1912190 secs]
+> 4973.931: [GC [PSYoungGen: 522976K->33774K(505792K)] 1768874K->1294814K(2746304K), 0.1301640 secs]
+> 4987.806: [GC [PSYoungGen: 503133K->16964K(604480K)] 2056947K->2172724K(2844992K), 0.7927320 secs]
+> 4988.599: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor44]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor64]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor5]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor39]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor4]
+> [Unloading class sun.reflect.GeneratedMethodAccessor1]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor26]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor7]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor38]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor70]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor33]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor40]
+> [Unloading class sun.reflect.GeneratedMethodAccessor43]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor29]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor37]
+> [Unloading class sun.reflect.GeneratedMethodAccessor36]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor28]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor27]
+> [Unloading class sun.reflect.GeneratedMethodAccessor39]
+> [Unloading class sun.reflect.GeneratedMethodAccessor42]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor6]
+> [Unloading class sun.reflect.GeneratedSerializationConstructorAccessor1]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor71]
+> [Unloading class sun.reflect.GeneratedMethodAccessor38]
+> [Unloading class sun.reflect.GeneratedMethodAccessor37]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor31]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor32]
+> [Unloading class sun.reflect.GeneratedMethodAccessor40]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor30]
+>  [PSYoungGen: 16964K->0K(604480K)] [PSOldGen: 2155760K->1067016K(2240512K)] 2172724K->1067016K(2844992K) [PSPermGen: 37424K->37424K(75136K)], 1.6247230 secs]
+> 4992.090: [GC [PSYoungGen: 525167K->1011K(625152K)] 2116983K->1592827K(2865664K), 0.0252350 secs]
+> 4992.115: [GC [PSYoungGen: 1011K->0K(625024K)] 1592827K->1592741K(2865536K), 0.0193090 secs]
+> 4992.135: [Full GC [PSYoungGen: 0K->0K(625024K)] [PSOldGen: 1592741K->1385633K(2240512K)] 1592741K->1385633K(2865536K) [PSPermGen: 37427K->37427K(83968K)], 1.5803220 secs]
+> 4993.715: [GC [PSYoungGen: 0K->0K(618816K)] 1385633K->1385633K(2859328K), 0.0172730 secs]
+> 4993.732: [Full GC [PSYoungGen: 0K->0K(618816K)] [PSOldGen: 1385633K->1273915K(2240512K)] 1385633K->1273915K(2859328K) [PSPermGen: 37427K->37228K(81280K)], 1.7433420 secs]
+> Oct 11, 2007 11:59:07 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 11:59:08 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 11:59:08 AM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 11:59:08 AM org.apache.catalina.startup.Catalina load
+> INFO: Initialization processed in 1447 ms
+> Oct 11, 2007 11:59:08 AM org.apache.catalina.core.StandardService start
+> INFO: Starting service Catalina
+> Oct 11, 2007 11:59:08 AM org.apache.catalina.core.StandardEngine start
+> INFO: Starting Servlet Engine: Apache Tomcat/5.5.15
+> Oct 11, 2007 11:59:08 AM org.apache.catalina.core.StandardHost start
+> INFO: XML validation disabled
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.startup.TldConfig).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 11:59:09 AM org.apache.catalina.startup.HostConfig deployDescriptor
+> WARNING: A docBase /opt/zimbra/apache-tomcat-5.5.15/webapps/zimbra inside the host appBase has been specified, and will be ignored
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/host-manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/host-manager] startup failed due to previous errors
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager] has not been started
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/manager] startup failed due to previous errors
+> Oct 11, 2007 11:59:10 AM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager] has not been started
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Zimbra server reserving server socket port=110 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=995 bindaddr=null ssl=true
+> Zimbra server reserving server socket port=143 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=993 bindaddr=null ssl=true
+> Zimbra server process is running as root, changing to user=zimbra uid=608 gid=604
+> Zimbra server process, after change, is running with uid=608 euid=608 gid=604 egid=604
+> Oct 11, 2007 11:59:16 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 11:59:16 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 11:59:17 AM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 11:59:17 AM org.apache.catalina.startup.Catalina start
+> INFO: Server startup in 8939 ms
+> 11.490: [GC [PSYoungGen: 840192K->18879K(980224K)] 840192K->18879K(3220736K), 0.0642140 secs]
+> 16.301: [GC [PSYoungGen: 859071K->29949K(980224K)] 859071K->29949K(3220736K), 0.1004490 secs]
+> 29.391: [GC [PSYoungGen: 870141K->48784K(980224K)] 870141K->48784K(3220736K), 0.0977290 secs]
+> 40.081: [GC [PSYoungGen: 888976K->64305K(980224K)] 888976K->64305K(3220736K), 0.2010370 secs]
+> 76.657: [GC [PSYoungGen: 904497K->55485K(895680K)] 904497K->55485K(3136192K), 0.1165140 secs]
+> 134.704: [GC [PSYoungGen: 895257K->68768K(906816K)] 895257K->68768K(3147328K), 0.1383670 secs]
+> 145.123: [GC [PSYoungGen: 897504K->49867K(867520K)] 897504K->70132K(3108032K), 0.1208010 secs]
+> 164.022: [GC [PSYoungGen: 867467K->50185K(872064K)] 887732K->84276K(3112576K), 0.1520570 secs]
+> 181.942: [GC [PSYoungGen: 856905K->39783K(835904K)] 890996K->87874K(3076416K), 0.0959580 secs]
+> 241.658: [GC [PSYoungGen: 835874K->38246K(849728K)] 883964K->112325K(3090240K), 0.1344160 secs]
+> 279.275: [GC [PSYoungGen: 811896K->59756K(835264K)] 885976K->228177K(3075776K), 0.2184950 secs]
+> 319.148: [GC [PSYoungGen: 835244K->15699K(838464K)] 1003665K->187595K(3078976K), 0.0502220 secs]
+> 403.009: [GC [PSYoungGen: 781267K->19312K(775168K)] 953163K->200535K(3015680K), 0.0540920 secs]
+> 487.441: [GC [PSYoungGen: 775152K->22634K(816704K)] 956375K->216529K(3057216K), 0.0675790 secs]
+> 548.591: [GC [PSYoungGen: 769002K->49115K(786240K)] 962897K->257147K(3026752K), 0.1275380 secs]
+> 688.298: [GC [PSYoungGen: 786203K->36678K(792384K)] 994235K->265577K(3032896K), 0.1070670 secs]
+> 703.794: [GC [PSYoungGen: 764674K->9886K(729024K)] 993573K->258494K(2969536K), 0.0747570 secs]
+> 732.891: [GC [PSYoungGen: 728990K->6137K(782336K)] 977598K->261868K(3022848K), 0.0468860 secs]
+> 816.321: [GC [PSYoungGen: 716530K->21232K(723136K)] 972261K->281541K(2963648K), 0.0468870 secs]
+> 925.405: [GC [PSYoungGen: 723120K->20249K(757824K)] 983429K->294875K(2998336K), 0.0628100 secs]
+> 1020.083: [GC [PSYoungGen: 713816K->22513K(707904K)] 988442K->307891K(2948416K), 0.0682110 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> unable to load resource bundle: /msgs/com_zimbra_phone
+> unable to load resource bundle: /msgs/com_zimbra_date
+> unable to load resource bundle: /msgs/com_zimbra_email
+> 1118.396: [GC [PSYoungGen: 707889K->29098K(733824K)] 993267K->324953K(2974336K), 0.0814780 secs]
+> 1176.821: [GC [PSYoungGen: 704768K->13279K(682880K)] 1000623K->325257K(2923392K), 0.0593670 secs]
+> 1179.359: [GC [PSYoungGen: 681457K->4782K(722112K)] 993435K->324841K(2962624K), 0.0244440 secs]
+> 1181.857: [GC [PSYoungGen: 662818K->402K(654848K)] 982878K->321204K(2895360K), 0.0078640 secs]
+> 1184.427: [GC [PSYoungGen: 651190K->4206K(705664K)] 971992K->325323K(2946176K), 0.0105500 secs]
+> 1186.935: [GC [PSYoungGen: 651063K->4173K(644032K)] 972180K->325469K(2884544K), 0.0102220 secs]
+> 1229.319: [GC [PSYoungGen: 642842K->13235K(684416K)] 964138K->334669K(2924928K), 0.0235380 secs]
+> 1377.443: [GC [PSYoungGen: 645939K->36562K(662400K)] 967373K->361863K(2902912K), 0.0851410 secs]
+> 1435.821: [GC [PSYoungGen: 662354K->17718K(668992K)] 987655K->365756K(2909504K), 0.0786080 secs]
+> 1562.238: [GC [PSYoungGen: 636716K->18420K(630784K)] 984754K->377766K(2871296K), 0.0566050 secs]
+> 1739.807: [GC [PSYoungGen: 630772K->29711K(655808K)] 990118K->397830K(2896320K), 0.0817480 secs]
+> 1983.438: [GC [PSYoungGen: 635535K->37548K(636992K)] 1003654K->416869K(2877504K), 0.0915190 secs]
+> 2038.099: [GC [PSYoungGen: 636972K->13667K(641984K)] 1016293K->407777K(2882496K), 0.0586190 secs]
+> 2253.342: [GC [PSYoungGen: 606267K->46720K(633728K)] 1000377K->445854K(2874240K), 0.0823980 secs]
+> 2409.194: [GC [PSYoungGen: 633664K->46676K(643584K)] 1032798K->474226K(2884096K), 0.1059260 secs]
+> 2599.906: [GC [PSYoungGen: 627540K->29474K(604416K)] 1055090K->482606K(2844928K), 0.0930250 secs]
+> 2643.486: [GC [PSYoungGen: 604386K->10465K(625600K)] 1057518K->476957K(2866112K), 0.0478410 secs]
+> 2902.700: [GC [PSYoungGen: 579553K->38840K(602176K)] 1046045K->510758K(2842688K), 0.0888530 secs]
+> 2938.404: [GC [PSYoungGen: 602168K->11711K(614016K)] 1074086K->500872K(2854528K), 0.0617070 secs]
+> 2950.484: [GC [PSYoungGen: 569407K->8747K(560960K)] 1058568K->509204K(2801472K), 0.0608880 secs]
+> 3150.384: [GC [PSYoungGen: 560939K->30518K(600832K)] 1061396K->539318K(2841344K), 0.0927770 secs]
+> 3254.504: [GC [PSYoungGen: 577270K->18742K(560192K)] 1086070K->542801K(2800704K), 0.0672670 secs]
+> 3349.899: [GC [PSYoungGen: 560182K->11730K(586304K)] 1084241K->543570K(2826816K), 0.0389140 secs]
+> 3467.963: [GC [PSYoungGen: 547922K->34749K(565824K)] 1079762K->572613K(2806336K), 0.1024630 secs]
+> 3589.123: [GC [PSYoungGen: 565821K->24325K(572416K)] 1103685K->579203K(2812928K), 0.0821870 secs]
+> 3755.676: [GC [PSYoungGen: 550340K->27522K(548608K)] 1105219K->597009K(2789120K), 0.0790220 secs]
+> 3785.391: [GC [PSYoungGen: 548546K->9306K(563584K)] 1118033K->596236K(2804096K), 0.0608430 secs]
+> 3825.913: [GC [PSYoungGen: 525466K->11211K(522624K)] 1112396K->607101K(2763136K), 0.0583610 secs]
+> 3860.220: [GC [PSYoungGen: 522571K->7647K(552192K)] 1118461K->613360K(2792704K), 0.0468680 secs]
+> 4040.998: [GC [PSYoungGen: 514269K->20735K(522752K)] 1119982K->629387K(2763264K), 0.0506160 secs]
+> 4189.915: [GC [PSYoungGen: 522751K->19186K(535872K)] 1131403K->635362K(2776384K), 0.0584380 secs]
+> 4249.618: [GC [PSYoungGen: 516658K->12818K(505856K)] 1132834K->635338K(2746368K), 0.0434200 secs]
+> 4343.989: [GC [PSYoungGen: 505810K->15915K(524608K)] 1128330K->646872K(2765120K), 0.0620260 secs]
+> 4473.034: [GC [PSYoungGen: 504491K->21981K(506240K)] 1135448K->662691K(2746752K), 0.0672110 secs]
+> 4570.960: [GC [PSYoungGen: 506205K->10555K(515328K)] 1146915K->659548K(2755840K), 0.0387570 secs]
+> 4757.181: [GC [PSYoungGen: 490488K->24319K(500032K)] 1139481K->678272K(2740544K), 0.0518300 secs]
+> 4992.502: [GC [PSYoungGen: 489016K->40357K(505664K)] 2021294K->1585310K(2746176K), 0.0961330 secs]
+> 4993.683: [GC [PSYoungGen: 274021K->144K(516096K)] 2081375K->1816857K(2756608K), 0.0460100 secs]
+> 4993.729: [GC [PSYoungGen: 144K->0K(609856K)] 1816857K->1816786K(2850368K), 0.0280440 secs]
+> 4993.757: [Full GC[Unloading class sun.reflect.GeneratedConstructorAccessor59]
+> [Unloading class sun.reflect.GeneratedMethodAccessor46]
+> [Unloading class sun.reflect.GeneratedMethodAccessor34]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor5]
+> [Unloading class sun.reflect.GeneratedMethodAccessor47]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor4]
+> [Unloading class sun.reflect.GeneratedMethodAccessor1]
+> [Unloading class sun.reflect.GeneratedMethodAccessor48]
+> [Unloading class sun.reflect.GeneratedMethodAccessor40]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor7]
+> [Unloading class sun.reflect.GeneratedMethodAccessor43]
+> [Unloading class sun.reflect.GeneratedMethodAccessor41]
+> [Unloading class sun.reflect.GeneratedMethodAccessor33]
+> [Unloading class sun.reflect.GeneratedMethodAccessor36]
+> [Unloading class sun.reflect.GeneratedMethodAccessor45]
+> [Unloading class sun.reflect.GeneratedMethodAccessor44]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor54]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor6]
+> [Unloading class sun.reflect.GeneratedSerializationConstructorAccessor1]
+> [Unloading class sun.reflect.GeneratedConstructorAccessor60]
+> [Unloading class sun.reflect.GeneratedMethodAccessor42]
+> [Unloading class sun.reflect.GeneratedMethodAccessor32]
+>  [PSYoungGen: 0K->0K(609856K)] [PSOldGen: 1816786K->1141377K(2240512K)] 1816786K->1141377K(2850368K) [PSPermGen: 37493K->37493K(75520K)], 1.5488030 secs]
+> 4997.842: [Full GC [PSYoungGen: 533461K->0K(609856K)] [PSOldGen: 2190977K->1868604K(2240512K)] 2724439K->1868604K(2850368K) [PSPermGen: 37498K->37498K(75520K)], 1.9104850 secs]
+> 4999.752: [GC [PSYoungGen: 0K->0K(610112K)] 1868604K->1868604K(2850624K), 0.0408060 secs]
+> 4999.793: [Full GC[Unloading class sun.reflect.GeneratedMethodAccessor35]
+>  [PSYoungGen: 0K->0K(610112K)] [PSOldGen: 1868604K->1756334K(2240512K)] 1868604K->1756334K(2850624K) [PSPermGen: 37498K->37322K(81728K)], 2.6366450 secs]
+> Oct 11, 2007 1:22:31 PM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 1:22:32 PM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 1:22:32 PM org.apache.coyote.http11.Http11BaseProtocol init
+> INFO: Initializing Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 1:22:32 PM org.apache.catalina.startup.Catalina load
+> INFO: Initialization processed in 2128 ms
+> Oct 11, 2007 1:22:32 PM org.apache.catalina.core.StandardService start
+> INFO: Starting service Catalina
+> Oct 11, 2007 1:22:32 PM org.apache.catalina.core.StandardEngine start
+> INFO: Starting Servlet Engine: Apache Tomcat/5.5.15
+> Oct 11, 2007 1:22:32 PM org.apache.catalina.core.StandardHost start
+> INFO: XML validation disabled
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.startup.TldConfig).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 1:22:34 PM org.apache.catalina.startup.HostConfig deployDescriptor
+> WARNING: A docBase /opt/zimbra/apache-tomcat-5.5.15/webapps/zimbra inside the host appBase has been specified, and will be ignored
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/host-manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/host-manager] startup failed due to previous errors
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager] has not been started
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext resourcesStart
+> SEVERE: Error starting static Resources
+> java.lang.IllegalArgumentException: Document base /opt/zimbra/apache-tomcat-5.5.15/server/webapps/manager does not exist or is not a readable directory
+> 	at org.apache.naming.resources.FileDirContext.setDocBase(FileDirContext.java:140)
+> 	at org.apache.catalina.core.StandardContext.resourcesStart(StandardContext.java:3812)
+> 	at org.apache.catalina.core.StandardContext.start(StandardContext.java:3983)
+> 	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:759)
+> 	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:739)
+> 	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:524)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:603)
+> 	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:535)
+> 	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+> 	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1118)
+> 	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+> 	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1020)
+> 	at org.apache.catalina.core.StandardHost.start(StandardHost.java:718)
+> 	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1012)
+> 	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:442)
+> 	at org.apache.catalina.core.StandardService.start(StandardService.java:450)
+> 	at org.apache.catalina.core.StandardServer.start(StandardServer.java:700)
+> 	at org.apache.catalina.startup.Catalina.start(Catalina.java:551)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:275)
+> 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:406)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+> 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+> 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+> 	at java.lang.reflect.Method.invoke(Method.java:585)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.start(TomcatLauncher.java:52)
+> 	at com.zimbra.cs.launcher.TomcatLauncher.main(TomcatLauncher.java:74)
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext start
+> SEVERE: Error in resourceStart()
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext start
+> SEVERE: Error getConfigured
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext start
+> SEVERE: Context [/manager] startup failed due to previous errors
+> Oct 11, 2007 1:22:35 PM org.apache.catalina.core.StandardContext stop
+> INFO: Container org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager] has not been started
+> log4j:WARN No appenders could be found for logger (org.apache.catalina.session.ManagerBase).
+> log4j:WARN Please initialize the log4j system properly.
+> Zimbra server reserving server socket port=110 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=995 bindaddr=null ssl=true
+> Zimbra server reserving server socket port=143 bindaddr=null ssl=false
+> Zimbra server reserving server socket port=993 bindaddr=null ssl=true
+> Zimbra server process is running as root, changing to user=zimbra uid=608 gid=604
+> Zimbra server process, after change, is running with uid=608 euid=608 gid=604 egid=604
+> 19.673: [GC [PSYoungGen: 840192K->16484K(980224K)] 840192K->16484K(3220736K), 0.0526560 secs]
+> Oct 11, 2007 1:22:49 PM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-80
+> Oct 11, 2007 1:22:49 PM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-443
+> Oct 11, 2007 1:22:50 PM org.apache.coyote.http11.Http11BaseProtocol start
+> INFO: Starting Coyote HTTP/1.1 on http-7071
+> Oct 11, 2007 1:22:50 PM org.apache.catalina.startup.Catalina start
+> INFO: Server startup in 17706 ms
+> 43.546: [GC [PSYoungGen: 856676K->76898K(980224K)] 856676K->76898K(3220736K), 0.1720000 secs]
+> 75.997: [GC [PSYoungGen: 917090K->69643K(980224K)] 917090K->69643K(3220736K), 0.1683610 secs]
+> 102.120: [GC [PSYoungGen: 909835K->53202K(980224K)] 909835K->53202K(3220736K), 0.1046110 secs]
+> 126.565: [GC [PSYoungGen: 893394K->51501K(880256K)] 893394K->51501K(3120768K), 0.1040820 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> 221.735: [GC [PSYoungGen: 880237K->75793K(900160K)] 880237K->75793K(3140672K), 0.1571130 secs]
+> 337.231: [GC [PSYoungGen: 893393K->59187K(865920K)] 893393K->86618K(3106432K), 0.1746200 secs]
+> 418.200: [GC [PSYoungGen: 865907K->51429K(867584K)] 893338K->88355K(3108096K), 0.1224020 secs]
+> 499.488: [GC [PSYoungGen: 847509K->38283K(824000K)] 884436K->99611K(3064512K), 0.1343680 secs]
+> 568.371: [GC [PSYoungGen: 823947K->21074K(855488K)] 885275K->98980K(3096000K), 0.0794510 secs]
+> 640.143: [GC [PSYoungGen: 796562K->18525K(784128K)] 874468K->111799K(3024640K), 0.0785440 secs]
+> 876.455: [GC [PSYoungGen: 784093K->36307K(831232K)] 877367K->140613K(3071744K), 0.0849380 secs]
+> 1091.213: [GC [PSYoungGen: 792147K->34462K(780864K)] 896453K->153419K(3021376K), 0.0857290 secs]
+> 1215.911: [GC [PSYoungGen: 780815K->23534K(812672K)] 899772K->161094K(3053184K), 0.0757080 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> unable to load resource bundle: /msgs/com_zimbra_phone
+> unable to load resource bundle: /msgs/com_zimbra_date
+> unable to load resource bundle: /msgs/com_zimbra_email
+> 1457.907: [GC [PSYoungGen: 760622K->44222K(772224K)] 898182K->195963K(3012736K), 0.1293350 secs]
+> 1641.255: [GC [PSYoungGen: 772222K->25874K(789952K)] 923963K->190719K(3030464K), 0.0727340 secs]
+> 1826.435: [GC [PSYoungGen: 744978K->42325K(752768K)] 909823K->218362K(2993280K), 0.0978870 secs]
+> 1910.878: [GC [PSYoungGen: 752725K->19057K(770880K)] 928762K->220990K(3011392K), 0.0832350 secs]
+> 2024.923: [GC [PSYoungGen: 720945K->24257K(717888K)] 922878K->233866K(2958400K), 0.0584040 secs]
+> 2124.817: [GC [PSYoungGen: 717825K->22903K(750656K)] 927434K->245111K(2991168K), 0.0723670 secs]
+> 2205.918: [GC [PSYoungGen: 708279K->27778K(705216K)] 930487K->260362K(2945728K), 0.0772820 secs]
+> 2313.081: [GC [PSYoungGen: 705154K->21734K(731520K)] 937738K->271221K(2972032K), 0.0782080 secs]
+> 2456.736: [GC [PSYoungGen: 691302K->25794K(687744K)] 940789K->289706K(2928256K), 0.0781350 secs]
+> 2643.488: [GC [PSYoungGen: 687682K->51963K(722432K)] 951594K->325254K(2962944K), 0.1630470 secs]
+> 2762.207: [GC [PSYoungGen: 706363K->26072K(673152K)] 979654K->327454K(2913664K), 0.1198230 secs]
+> 2855.848: [GC [PSYoungGen: 673112K->19671K(700480K)] 974494K->331888K(2940992K), 0.0736340 secs]
+> 2990.327: [GC [PSYoungGen: 659479K->37451K(670208K)] 971696K->357959K(2910720K), 0.1105940 secs]
+> 3005.044: [GC [PSYoungGen: 670155K->12251K(686336K)] 990663K->354265K(2926848K), 0.0885190 secs]
+> 3005.936: [GC [PSYoungGen: 638043K->318K(693056K)] 980057K->354528K(2933568K), 0.0539050 secs]
+> 3023.031: [GC [PSYoungGen: 604369K->27329K(874560K)] 958579K->381753K(3115072K), 0.0611510 secs]
+> 3026.687: [GC [PSYoungGen: 833126K->753K(878528K)] 1187550K->357040K(3119040K), 0.0130770 secs]
+> 3033.036: [GC [PSYoungGen: 796055K->45862K(1047296K)] 1152342K->402451K(3287808K), 0.0866040 secs]
+> 3046.393: [GC [PSYoungGen: 1007240K->46687K(1028096K)] 1363830K->404205K(3268608K), 0.0882110 secs]
+> 3063.345: [GC [PSYoungGen: 1012475K->46368K(1033920K)] 1369993K->405383K(3274432K), 0.0568060 secs]
+> 3080.538: [GC [PSYoungGen: 1012832K->5150K(957120K)] 1371847K->365564K(3197632K), 0.0195000 secs]
+> 3105.642: [GC [PSYoungGen: 944602K->32339K(991744K)] 1305016K->395693K(3232256K), 0.0553240 secs]
+> 3121.648: [GC [PSYoungGen: 968498K->48787K(972800K)] 1331852K->421600K(3213312K), 0.0721620 secs]
+> 3146.757: [GC [PSYoungGen: 972755K->11354K(969408K)] 1345568K->388012K(3209920K), 0.0506710 secs]
+> 3149.948: [GC [PSYoungGen: 921882K->9064K(906496K)] 1298540K->388936K(3147008K), 0.0478300 secs]
+> 3151.128: [GC [PSYoungGen: 906472K->160K(969728K)] 1286344K->388798K(3210240K), 0.0378960 secs]
+> 3324.709: [GC [PSYoungGen: 897568K->35432K(920064K)] 1286206K->424071K(3160576K), 0.0641110 secs]
+> unable to load resource bundle: /msgs/com_zimbra_bugz
+> unable to load resource bundle: /msgs/com_zimbra_phone
+> unable to load resource bundle: /msgs/com_zimbra_date
+> unable to load resource bundle: /msgs/com_zimbra_email
+> 3455.579: [GC [PSYoungGen: 920040K->29664K(925312K)] 1308679K->435927K(3165824K), 0.0864130 secs]
+> 3665.153: [GC [PSYoungGen: 901792K->52584K(912576K)] 1308055K->473145K(3153088K), 0.1548480 secs]
+> 3768.634: [GC [PSYoungGen: 912552K->20179K(904064K)] 1333113K->461051K(3144576K), 0.0930270 secs]
+> 3794.940: [GC [PSYoungGen: 868243K->16828K(853312K)] 1309115K->471126K(3093824K), 0.0864320 secs]
+> 
+
+
+------=_Part_6669_1602141227.1192165159726
+Content-Type: application/x-gzip; name=zimbrastats.csv-2007-10-11.gz
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=zimbrastats.csv-2007-10-11.gz
+
+SGkgYWxsLA0KQXR0YWNoZWQgcGxzLiBmaW5kIHRoZSBUZXN0IFJuRCBQdWJsaWMgSG9saWRheSBhcnJhbmdlbWVudCArIGZvcmNlIGxlYXZlIGRheXMgb2ZmLiBXZWxsIGhhdmUgdG90YWwgNiBkYXlzIGZvcmNlIGxlYXZlIHdoaWNoIGhhcyBiZWVuIGhpZ2hsaWdodCBpbiB5ZWxsb3cgaW4gdGhlIGF0dGFjaGVkIGZpbGUsIGFsbCBkYXlzIGluIGNvbG9yIGdyZWVuIHNoYWxsIGJlIGNvdW50ZWQgYXMgd29ya2luZyBkYXkuDQoNClRoYW5rIHlvdSBmb3IgeW91ciBhdHRlbnRpb24hDQoNClRlc3QgTWFuYWdlcg0KU2VuaW9yIE1hbmFnZXIsIEh1bWFuIFJlc291cmNlcw0KDQpNOiArMTEgMTExIDExMTEgMTExMSB8IFc6ICsyMiAyMiAyMiAyMjIyDQp0ZXN0IGxvY2F0aW9ufCA4RiBTb3V0aCBXaW5nLCBUZXN0IGJ1aWxkaW5nDQoyLCBUZXN0IHJvYWQsIHRlc3QgRGlzdHJpY3QuIFRlc3QgMTExMTExDQoNCltjaWQ6aW1hZ2UwMDEuZ2lmQDAxQ0I5QzY3LjUwNDMzRjIwXQ==
+------=_Part_6669_1602141227.1192165159726
+Content-Type: application/x-gzip; name=catalina.out.gz
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=catalina.out.gz
+
+SGkgYWxsLA0KQXR0YWNoZWQgcGxzLiBmaW5kIHRoZSBUZXN0IFJuRCBQdWJsaWMgSG9saWRheSBhcnJhbmdlbWVudCArIGZvcmNlIGxlYXZlIGRheXMgb2ZmLiBXZWxsIGhhdmUgdG90YWwgNiBkYXlzIGZvcmNlIGxlYXZlIHdoaWNoIGhhcyBiZWVuIGhpZ2hsaWdodCBpbiB5ZWxsb3cgaW4gdGhlIGF0dGFjaGVkIGZpbGUsIGFsbCBkYXlzIGluIGNvbG9yIGdyZWVuIHNoYWxsIGJlIGNvdW50ZWQgYXMgd29ya2luZyBkYXkuDQoNClRoYW5rIHlvdSBmb3IgeW91ciBhdHRlbnRpb24hDQoNClRlc3QgTWFuYWdlcg0KU2VuaW9yIE1hbmFnZXIsIEh1bWFuIFJlc291cmNlcw0KDQpNOiArMTEgMTExIDExMTEgMTExMSB8IFc6ICsyMiAyMiAyMiAyMjIyDQp0ZXN0IGxvY2F0aW9ufCA4RiBTb3V0aCBXaW5nLCBUZXN0IGJ1aWxkaW5nDQoyLCBUZXN0IHJvYWQsIHRlc3QgRGlzdHJpY3QuIFRlc3QgMTExMTExDQoNCltjaWQ6aW1hZ2UwMDEuZ2lmQDAxQ0I5QzY3LjUwNDMzRjIwXQ==
+------=_Part_6669_1602141227.1192165159726--
+

@@ -130,9 +130,7 @@
 
 
 <t:test_case testcaseid="UploadServletAttachments1" type="smoke" bugids="8911">
-	<t:objective>
-		Send a message that includes an attachment that was uploaded using the upload servlet
-	</t:objective>
+	<t:objective>Send a message that includes an attachment that was uploaded using the upload servlet</t:objective>
 
 	<t:uploadservlettest>
 		<t:uploadServletRequest>
@@ -187,9 +185,7 @@
 <t:property name="uploadServletServer" value="${test_acct2.server}"/>
 
 <t:test_case testcaseid="UploadServletAttachments2" type="regression">
-	<t:objective>
-		Send a message that includes an attachment that was uploaded for diffrent account
-	</t:objective>
+	<t:objective>Send a message that includes an attachment that was uploaded for diffrent account</t:objective>
        <t:steps>1. Login to account2
                2. Send a message using aid uploaded for first account
        </t:steps>
@@ -226,5 +222,52 @@
     </t:test>
 
 </t:test_case>
+
+<!-- The french file name crashes the mac client.  For now, deprecate this test -->
+<t:test_case testcaseid="UploadServletAttachments3" type="deprecated" bugids="7361">
+	<t:objective>Send a message that includes an attachment (with foreign characters in the filename) that was uploaded using the upload servlet</t:objective>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${frenchFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+			<e t="t" a="${account2.name}"/>
+			<su> ${compose.subject} </su>
+			<mp ct="text/plain">
+			    <content> ${compose.content} </content>
+			</mp>
+		    <attach aid="${message2.aid}"/>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+	         <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
+	   </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message2.id}" read="1" html="1"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <!-- Right now, the filename is set as BD_Mod?le.sql, but that is the bug.  Not sure what the correct value is. -->
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='application/octet-stream']" attr="filename" match="TODO"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
 
 </t:tests>

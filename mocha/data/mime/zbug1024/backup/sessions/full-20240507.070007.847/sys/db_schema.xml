@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<backupMetadata xmlns="urn:zimbraBackupMeta" version="7.2" dbVersion="111">
+  <tables>
+    <table name="zimbra.zmg_devices">
+      <column position="1" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="app_id" type="varchar(64)" nullable="true">
+      </column>
+      <column position="3" name="reg_id" type="varchar(255)" nullable="true">
+      </column>
+      <column position="4" name="push_provider" type="varchar(8)" nullable="true">
+      </column>
+      <column position="5" name="os_name" type="varchar(16)" nullable="true">
+      </column>
+      <column position="6" name="os_version" type="varchar(8)" nullable="true">
+      </column>
+      <column position="7" name="max_payload_size" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.volume_blobs">
+      <column position="1" name="id" type="bigint(20)" nullable="true">
+      </column>
+      <column position="2" name="volume_id" type="tinyint(4)" nullable="true">
+      </column>
+      <column position="3" name="mailbox_id" type="int(11)" nullable="true">
+      </column>
+      <column position="4" name="item_id" type="int(11)" nullable="true">
+      </column>
+      <column position="5" name="revision" type="int(11)" nullable="true">
+      </column>
+      <column position="6" name="blob_digest" type="varchar(44)" nullable="true">
+      </column>
+      <column position="7" name="processed" type="tinyint(1)" nullable="true" default="0">
+      </column>
+    </table>
+    <table name="zimbra.current_volumes">
+      <column position="1" name="message_volume_id" type="tinyint(3) unsigned" nullable="true">
+      </column>
+      <column position="2" name="secondary_message_volume_id" type="tinyint(3) unsigned" nullable="true">
+      </column>
+      <column position="3" name="index_volume_id" type="tinyint(3) unsigned" nullable="true">
+      </column>
+      <column position="4" name="next_mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.deleted_account">
+      <column position="1" name="email" type="varchar(255)" nullable="true">
+      </column>
+      <column position="2" name="account_id" type="varchar(127)" nullable="true">
+      </column>
+      <column position="3" name="mailbox_id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="4" name="deleted_at" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.volume">
+      <column position="1" name="id" type="tinyint(3) unsigned" nullable="true">
+      </column>
+      <column position="2" name="type" type="tinyint(4)" nullable="true">
+      </column>
+      <column position="3" name="name" type="varchar(255)" nullable="true">
+      </column>
+      <column position="4" name="path" type="text" nullable="true">
+      </column>
+      <column position="5" name="file_bits" type="smallint(6)" nullable="true">
+      </column>
+      <column position="6" name="file_group_bits" type="smallint(6)" nullable="true">
+      </column>
+      <column position="7" name="mailbox_bits" type="smallint(6)" nullable="true">
+      </column>
+      <column position="8" name="mailbox_group_bits" type="smallint(6)" nullable="true">
+      </column>
+      <column position="9" name="compress_blobs" type="tinyint(1)" nullable="true">
+      </column>
+      <column position="10" name="compression_threshold" type="bigint(20)" nullable="true">
+      </column>
+      <column position="11" name="metadata" type="mediumtext" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.current_sessions">
+      <column position="1" name="id" type="int(10) unsigned" nullable="true">
+      </column>
+      <column position="2" name="server_id" type="varchar(127)" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.table_maintenance">
+      <column position="1" name="database_name" type="varchar(64)" nullable="true">
+      </column>
+      <column position="2" name="table_name" type="varchar(64)" nullable="true">
+      </column>
+      <column position="3" name="maintenance_date" type="datetime" nullable="true">
+      </column>
+      <column position="4" name="last_optimize_date" type="datetime" nullable="true">
+      </column>
+      <column position="5" name="num_rows" type="int(10) unsigned" nullable="true">
+      </column>
+    </table>
+    <table name="zimbra.config">
+      <column position="1" name="name" type="varchar(255)" nullable="true">
+      </column>
+      <column position="2" name="value" type="text" nullable="true">
+      </column>
+      <column position="3" name="description" type="text" nullable="true">
+      </column>
+      <column position="4" name="modified" type="timestamp" nullable="true" default="CURRENT_TIMESTAMP">
+      </column>
+    </table>
+  </tables>
+</backupMetadata>

@@ -11,7 +11,7 @@ describe('Auth > Bugs > ZCS-5598', function () {
 	}
 
 	// Tests
-	it('Sanity | Verify WWW-Authenticate BASIC realm=Zimbra is not returned for non-existent account or existing account', async () => {
+	it('Sanity | Verify WWW-Authenticate - BASIC realm Zimbra is not returned for non-existent account, existing account', async () => {
 		// Verify with existing admin user + incorrect password
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">

@@ -112,6 +112,7 @@ describe('Module > Feature Name', function () {
 ## Test Independence Rules (STRICT)
 - **1:1 XML-to-JS file mapping**: Each XML file → exactly one JS file. Never merge or split.
 - **1:1 test case mapping**: Each XML `<t:test_case>` → exactly one `it()` block. Never merge or split.
+- **Confirm before combining**: If multiple XML tests are inherently sequential (e.g., lock → lock-fail → unlock where each depends on the previous state), **always ask the user** before combining them into a single `it()` block. Explain the nature of the dependency and let the user decide. Never combine silently.
 - **Independent tests**: Each `it()` block must be self-contained with ALL its own code (setup, action, assertion).
 - **Minimal `before()` hook**: Only put truly shared, unavoidable setup in `before()` (e.g. `main.before()`, getting admin auth token). All test-specific setup goes INSIDE the `it()` block.
 - **No shared state between tests**: Tests must not depend on state created by other `it()` blocks.

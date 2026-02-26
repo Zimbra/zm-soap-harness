@@ -23,6 +23,7 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 				<a n="zimbraAuthTokenLifetime">1m</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -56,7 +57,7 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 	}
 
 	// Tests
-	it('Smoke | Generate JWT auth token and send email using that token', async () => {
+	it('Smoke | Generate JWT auth token and send email using that token 1', async () => {
 		// Generate JWT token to verify JWT auth works
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false" tokenType="JWT">
@@ -64,6 +65,7 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -98,6 +100,7 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 		if (sendRes.Fault) {
 			assert.fail('Should be able to send message: ' + sendRes.Fault.Reason.Text);
 		}
+		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Wait for message delivery
@@ -119,6 +122,7 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 				<query>JWT Subject1</query>
 			</SearchRequest>`, acct2Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
@@ -129,7 +133,7 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 	});
 
 
-	it('Sanity | Generate JWT auth token and send email using that token - multiple recipients', async () => {
+	it('Sanity | Generate JWT auth token and send email using that token 1', async () => {
 		// Generate JWT token to verify JWT auth works
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false" tokenType="JWT">
@@ -137,6 +141,7 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'JWT AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -166,6 +171,7 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 				</m>
 			</SendMsgRequest>`, regularToken
 		);
+		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Wait for message delivery
@@ -187,6 +193,7 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 				<query>JWT Subject2</query>
 			</SearchRequest>`, acct3Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;

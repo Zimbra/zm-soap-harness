@@ -22,6 +22,7 @@ describe('Auth > Bugs > Bug 95102', function () {
 				<a n="zimbraPreAuthKey">${domainPreauthKey}</a>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+		assert.notExists(domainRes.Fault, 'Response should not be a Fault');
 		assert.exists(domainRes.CreateDomainResponse, 'Should create domain');
 
 		// Create account with maintenance status
@@ -33,6 +34,7 @@ describe('Auth > Bugs > Bug 95102', function () {
 				<a n="zimbraAccountStatus">maintenance</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)

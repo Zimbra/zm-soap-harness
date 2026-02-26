@@ -43,7 +43,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 	}
 
 	// Tests
-	it('Sanity | Verify sharing rights combine - user (read) and group (delete)', async () => {
+	it('Sanity | Verify that rights combine when a folder is shared with an account (read) and a group (delete)', async () => {
 		const folderName = 'Combine1.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -61,11 +61,12 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		assert.exists(grantRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 
 
-	it('Sanity | Verify rights combine when a folder is shared to a user (read) and a pub (rwd)', async () => {
+	it('Sanity | Verify that rights combine when a folder is shared with an account (read) and a pub (delete)', async () => {
 		const folderName = 'Combine2.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -90,11 +91,12 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(pubRes.Fault, 'Response should not be a Fault');
 		assert.exists(pubRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 
 
-	it('Sanity | Verify rights combine when a folder is shared to a user (read) and a pub (delete)', async () => {
+	it('Sanity | Verify that rights combine when a folder is shared with an account (read) and a pub (delete) 1', async () => {
 		const folderName = 'Combine3.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -119,11 +121,12 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(pubRes.Fault, 'Response should not be a Fault');
 		assert.exists(pubRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 
 
-	it('Sanity | Verify sharing combined rights for user and domain', async () => {
+	it('Sanity | Verify that rights combine when a folder is shared with an account (read) and a domain (delete)', async () => {
 		const folderName = 'Combine4.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -148,11 +151,12 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(domRes.Fault, 'Response should not be a Fault');
 		assert.exists(domRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 
 
-	it('Sanity | Verify sharing combined rights for user and all', async () => {
+	it('Sanity | Verify that rights combine when a folder is shared with an account (read) and all (delete)', async () => {
 		const folderName = 'Combine5.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -177,11 +181,12 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(allRes.Fault, 'Response should not be a Fault');
 		assert.exists(allRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 
 
-	it('Sanity | Verify sharing combined rights for domain and all', async () => {
+	it('Sanity | Verify that rights combine when a folder is shared with an account (read) and the same account (delete)', async () => {
 		const folderName = 'Combine6.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -206,11 +211,12 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(allRes.Fault, 'Response should not be a Fault');
 		assert.exists(allRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 
 
-	it('Functional | Verify rights combine when a folder is shared to a user (read) and a guest (delete)', async () => {
+	it('Functional | Verify that rights combine when a folder is shared with an account (read) and a guest (delete)', async () => {
 		const folderName = 'Combine7.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -235,11 +241,12 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(guestRes.Fault, 'Response should not be a Fault');
 		assert.exists(guestRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 
 
-	it('Functional | Verify the specific rights read and none are combined: both should be applied meaning read access allowed', async () => {
+	it('Functional | Verify the specific rights read and none are combined - both should be applied meaning read access allowed', async () => {
 		const folderName = 'Combine8.' + common.getUniqueString();
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -267,6 +274,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(noneRes.Fault, 'Response should not be a Fault');
 		assert.exists(noneRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 });

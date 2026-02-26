@@ -19,6 +19,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 	});
 
@@ -36,6 +37,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'First AuthResponse should exist');
 		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -53,6 +55,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'Second AuthResponse should exist');
 		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -70,6 +73,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes3.Fault, 'Response should not be a Fault');
 		assert.exists(authRes3.AuthResponse, 'Third AuthResponse should exist');
 		assert.match(String(authRes3.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -86,6 +90,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 				<authToken>${token3}</authToken>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(verifyRes.Fault, 'Response should not be a Fault');
 		assert.exists(verifyRes.AuthResponse, 'Token3 should still be valid for re-auth');
 		assert.match(String(verifyRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -101,6 +106,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'First AuthResponse should exist');
 		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -118,6 +124,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'Second AuthResponse should exist');
 		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -132,6 +139,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 		const endRes = await soap.makeSOAPEnvelopeAccount(
 			'<EndSessionRequest xmlns="urn:zimbraAccount" logoff="1"/>', token2
 		);
+		assert.notExists(endRes.Fault, 'Response should not be a Fault');
 		assert.exists(endRes.EndSessionResponse, 'EndSessionResponse should exist');
 
 		// Verify token1 is invalidated

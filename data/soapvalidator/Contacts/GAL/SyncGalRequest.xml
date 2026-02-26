@@ -118,6 +118,204 @@
 
 </t:test_case>
 
+<!--
+Deprecated.  See test case in GALAccount_SyncGalRequest_01
+-->
+<t:test_case testcaseid="SyncGalRequest_01" type="deprecated" bugids="36679">
+    <t:objective>Verify a new account is returned in GalSyncResponse</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Send SyncGalRequest (no token) to get the latest token
+	3. Login as admin
+	4. Create a new account
+	5. Login as account1
+	6. Send SyncGalRequest (token from step 2), verify that new account is contained in the response
+	</t:steps>
+
+
+	<!-- change to the end-user auth token -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+	<t:test>
+		<t:request>
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
+		</t:response>
+    </t:test>
+
+
+	<!-- change to the admin auth token -->
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test id="CreateAccount1a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+		</t:response>
+    </t:test>
+	<t:delay msec="50000"/>
+
+
+	<!-- change to the end-user auth token -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+	<t:test>
+		<t:request>
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/>
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:SyncGalResponse/acct:cn[contains(@id,'${account4}')]">
+ 				<t:select path="//acct:a[@n='email']" match="${account4}@${domain}"/>
+ 			</t:select>
+		</t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<!--
+Deprecated.  See test case in GALAccount_SyncGalRequest_02
+-->
+<t:test_case testcaseid="SyncGalRequest_02" type="deprecated">
+    <t:objective>Verify a modified account is returned in GalSyncResponse</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Send SyncGalRequest (no token) to get the latest token
+	3. Login as admin
+	4. Modify an existing account
+	5. Login as account1
+	6. Send SyncGalRequest (token from step 2), verify that new account is contained in the response
+	</t:steps>
+
+
+	<!-- change to the end-user auth token -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+	<t:test>
+		<t:request>
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
+		</t:response>
+    </t:test>
+
+
+	<!-- change to the admin auth token -->
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test id="CreateAccount1a" required="true" depends="adminlogin">
+        <t:request>
+			<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${account2.id}</id>
+				<a n="displayName">${account2.newDisplayName}</a>
+			</ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse"/>
+		</t:response>
+    </t:test>
+	<t:delay msec="5000"/>
+
+
+	<!-- change to the end-user auth token -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+	<t:test>
+		<t:request>
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/>
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:SyncGalResponse/acct:cn[contains(@id,'${account2}')]">
+ 				<t:select path="//acct:a[@n='fullName']" match="${account2.newDisplayName}"/>
+ 			</t:select>
+		</t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<!--
+Deprecated.  See test case in GALAccount_SyncGalRequest_03
+-->
+<t:test_case testcaseid="SyncGalRequest_03" type="deprecated">
+    <t:objective>Verify a deleted account is not returned in GalSyncResponse</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Send SyncGalRequest (no token) to get the latest token
+	3. Login as admin
+	4. Delete an existing account
+	5. Login as account1
+	6. Send SyncGalRequest (token from step 2), verify that new account is contained in the response
+	</t:steps>
+
+
+	<!-- change to the end-user auth token -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+	<t:test>
+		<t:request>
+			<SyncGalRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
+		</t:response>
+    </t:test>
+
+
+	<!-- change to the admin auth token -->
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test >
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account3.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+	<t:delay msec="5000"/>
+
+
+	<!-- change to the end-user auth token -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+	<t:test>
+		<t:request>
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/>
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:SyncGalResponse/acct:cn[contains(@id,'${account3}')]" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+
+</t:test_case>
 
 <t:test_case testcaseid="SyncGalRequest_04" type="sanity">
     <t:objective>Verify SyncGalRequest cannot be sent with zimbraFeatureGalEnabled set to False</t:objective>

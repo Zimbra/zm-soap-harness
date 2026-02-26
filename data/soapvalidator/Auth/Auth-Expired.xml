@@ -237,5 +237,109 @@
 </t:test_case>
 
 
+<!--
+	Not sure what this test case is trying to verify.  Deprecating
+-->
+<t:test_case testcaseid="auth_expired5" type="deprecated">
+    <t:objective>Relogin without password</t:objective>
+
+    <t:test depends="auth_expired4a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.AUTH_EXPIRED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<!--
+	Not sure what this test case is trying to verify.  Deprecating
+-->
+<t:test_case testcaseid="auth_expired6" type="deprecated">
+    <t:objective>Relogin with wrong password</t:objective>
+
+    <t:test depends="auth_expired4a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${account1.wrongpassword}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.AUTH_EXPIRED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<!--
+	Not sure what this test case is trying to verify.  Deprecating
+-->
+<t:test_case testcaseid="auth_expired7" type="deprecated">
+    <t:objective>Relogin with right password in upper case</t:objective>
+
+    <t:test depends="auth_expired4a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${account1.upperpassword}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.AUTH_EXPIRED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<!--
+	Not sure what this test case is trying to verify.  Deprecating
+-->
+<t:test_case testcaseid="auth_expired8" type="deprecated">
+    <t:objective>Relogin with blank password</t:objective>
+
+    <t:test depends="auth_expired4a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${account1.blankpassword}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.AUTH_EXPIRED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+<!--
+	Not sure what this test case is trying to verify.  Deprecating
+-->
+<t:test_case testcaseid="auth_expired9" type="deprecated">
+    <t:objective>Login to another account with expired authtoken</t:objective>
+
+    <t:test depends="auth_expired4a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.AUTH_EXPIRED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
 
 </t:tests>

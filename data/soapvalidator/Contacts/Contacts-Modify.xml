@@ -214,7 +214,7 @@
 
 
 <t:test_case testcaseid = "ModifyContactRequest1" bugids="2532" type="smoke">
-    <t:objective>Modify a contact: change the email address</t:objective>
+    <t:objective>Modify a contact - change the email address</t:objective>
     <t:steps>1. create a new contact with email address A
         2. change the contact to email address B
     </t:steps>
@@ -264,7 +264,7 @@
 
 
 <t:test_case testcaseid = "ModifyContactRequest2" bugids="2532" type="sanity">
-    <t:objective>Modify a contact: change the each of the fields</t:objective>
+    <t:objective>Modify a contact - change the each of the fields</t:objective>
     <t:steps>1. Create a new contact.
              2. Modify the content
              3. Verify for the modification
@@ -393,7 +393,7 @@
 
 
 <t:test_case testcaseid = "ModifyContactRequest3" bugids="2532" type="regression">
-    <t:objective>Modify a contact: Verify proper functioning of attribute replace =0/1</t:objective>
+    <t:objective>Modify a contact - Verify proper functioning of attribute replace 0, 1</t:objective>
     <t:steps>1. Create a new contact.
              2. Modify the content with replace = 0
              3. Verify the modification
@@ -552,6 +552,59 @@
 </t:test_case>
 
 
+<t:test_case testcaseid = "ModifyContactRequest4" bugids="2532" type="deprecated">
+    <t:objective>Modify a contact - verify functioning of force attribute 0, 1</t:objective>
+    <t:steps>1. Create a new contact with email address A
+             2. Modify the contact with force = 0
+             3. Modify the contact with force = 1
+    </t:steps>
+
+    <t:test id = "modifycontactrequest4a">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">First${TIME}${COUNTER}</a>
+                    <a n = "lastName">Last${TIME}${COUNTER}</a>
+                    <a n = "email">mail${TIME}${COUNTER}@example.com</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set="contact5a.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id = "modifycontactrequest4b" depends = "modifycontactrequest4a">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "0">
+                <cn id = "${contact5a.id}" md = "${TIME}">
+                    <a n = "email">NewMail${TIME}${COUNTER}@persistent.co.in</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match="mail.MODIFY_CONFLICT"/>
+        </t:response>
+    </t:test>
+
+    <t:test id = "modifycontactrequest4c" depends = "modifycontactrequest4a">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
+                <cn id = "${contact5a.id}" md = "${TIME}">
+                    <a n = "email">NewMail${TIME}${COUNTER}@persistent.co.in</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
 <t:test_case testcaseid = "ModifyContactRequest5" type="regression">
     <t:objective>Modify a contact and delete all the info of contact</t:objective>
 
@@ -591,7 +644,7 @@
 
 
 <t:test_case testcaseid = "ModifyContactRequest6" type="regression">
-    <t:objective>Modify a contact and delete all the info of contact with replace=1 force=1</t:objective>
+    <t:objective>Modify a contact and delete all the info of contact with replace 1 force 1</t:objective>
 
     <t:test id = "modifycontactrequest6a">
         <t:request>
@@ -642,7 +695,7 @@
 
 
 <t:test_case testcaseid = "ModifyContactRequest7" type="regression">
-    <t:objective>Modify a contact with fileas option as invalid (>7/alpha/negative/decimal/zero/blank)</t:objective>
+    <t:objective>Modify a contact with fileas option as invalid ( greater than 7, alpha, negative, decimal, zero, blank)</t:objective>
 
     <t:test id = "modifycontactrequest7a">
         <t:request>
@@ -742,7 +795,7 @@
 
 
 <t:test_case testcaseid = "ModifyContactRequest8" type="sanity">
-    <t:objective>Modify a contact to change fileas option to all allowed values i.e from 1 to 7</t:objective>
+    <t:objective>Modify a contact to change fileas option to all allowed values ie from 1 to 7</t:objective>
 
     <t:test id = "modifycontactrequest8a">
         <t:request>
@@ -868,7 +921,7 @@
 
 
 <t:test_case testcaseid = "ModifyContactRequest9" type="regression">
-    <t:objective>Modify a contact with invalid id (numbers/alpha/negative/blank)</t:objective>
+    <t:objective>Modify a contact with invalid id (numbers, alpha, negative, blank)</t:objective>
 
     <t:test>
         <t:request>
@@ -927,7 +980,7 @@
 <!--  Test case corresponding to 15589 -->
 
 <t:test_case testcaseid = "ModifyContactRequest10" type="sanity">
-    <t:objective>To change the email address of a contact with verbose=0 and verify that only id is returned in response</t:objective>
+    <t:objective>To change the email address of a contact with verbose 0 and verify that only id is returned in response</t:objective>
     <t:steps>1. create a new contact with email address A
         2. change the contact to email address B
     </t:steps>

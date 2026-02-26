@@ -21,6 +21,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		account2Name = 'smtp2.' + common.getUniqueString() + '@' + config.testDomain;
@@ -30,6 +31,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Get MTA server
@@ -38,6 +40,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 				<server by="name">${config.serverHost}</server>
 			</GetServerRequest>`, adminAuthToken
 		);
+		assert.notExists(serverRes.Fault, 'Response should not be a Fault');
 		assert.exists(serverRes.GetServerResponse, 'GetServerResponse should exist');
 		const serverObj = Array.isArray(serverRes.GetServerResponse.server)
 			? serverRes.GetServerResponse.server[0]
@@ -62,7 +65,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 	// Serial tests
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-		it('Serial | Verify zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=TRUE settings', async function () {
+		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly TRUE settings', async function () {
 			this.timeout(120 * 1000);
 
 			const modifyRes = await soap.makeSOAPEnvelopeAdmin(
@@ -73,6 +76,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 					<a n="zimbraMtaTlsAuthOnly">TRUE</a>
 				</ModifyConfigRequest>`, adminAuthToken
 			);
+			assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 			assert.exists(modifyRes.ModifyConfigResponse, 'ModifyConfigResponse should exist');
 
 			await server.runCommand('sudo su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'');
@@ -81,11 +85,12 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 			const configRes = await soap.makeSOAPEnvelopeAdmin(
 				'<GetAllConfigRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
 			);
+			assert.notExists(configRes.Fault, 'Response should not be a Fault');
 			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
 		});
 
 
-		it('Serial | Verify zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=TRUE/zimbraMtaTlsAuthOnly=FALSE settings', async function () {
+		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly FALSE settings', async function () {
 			this.timeout(120 * 1000);
 
 			const modifyRes = await soap.makeSOAPEnvelopeAdmin(
@@ -96,6 +101,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 					<a n="zimbraMtaTlsAuthOnly">FALSE</a>
 				</ModifyConfigRequest>`, adminAuthToken
 			);
+			assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 			assert.exists(modifyRes.ModifyConfigResponse, 'ModifyConfigResponse should exist');
 
 			await server.runCommand('sudo su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'');
@@ -104,11 +110,12 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 			const configRes = await soap.makeSOAPEnvelopeAdmin(
 				'<GetAllConfigRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
 			);
+			assert.notExists(configRes.Fault, 'Response should not be a Fault');
 			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
 		});
 
 
-		it('Serial | Verify zimbraMtaTlsSecurityLevel=may/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE settings', async function () {
+		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable FALSE, zimbraMtaTlsAuthOnly FALSE settings', async function () {
 			this.timeout(120 * 1000);
 
 			const modifyRes = await soap.makeSOAPEnvelopeAdmin(
@@ -119,6 +126,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 					<a n="zimbraMtaTlsAuthOnly">FALSE</a>
 				</ModifyConfigRequest>`, adminAuthToken
 			);
+			assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 			assert.exists(modifyRes.ModifyConfigResponse, 'ModifyConfigResponse should exist');
 
 			await server.runCommand('sudo su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'');
@@ -127,11 +135,12 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 			const configRes = await soap.makeSOAPEnvelopeAdmin(
 				'<GetAllConfigRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
 			);
+			assert.notExists(configRes.Fault, 'Response should not be a Fault');
 			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
 		});
 
 
-		it('Serial | Verify zimbraMtaTlsSecurityLevel=none/zimbraMtaSaslAuthEnable=FALSE/zimbraMtaTlsAuthOnly=FALSE settings', async function () {
+		it('Verify zimbraMtaTlsSecurityLevel none, zimbraMtaSaslAuthEnable FALSE, zimbraMtaTlsAuthOnly FALSE settings', async function () {
 			this.timeout(120 * 1000);
 
 			const modifyRes = await soap.makeSOAPEnvelopeAdmin(
@@ -142,6 +151,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 					<a n="zimbraMtaTlsAuthOnly">FALSE</a>
 				</ModifyConfigRequest>`, adminAuthToken
 			);
+			assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 			assert.exists(modifyRes.ModifyConfigResponse, 'ModifyConfigResponse should exist');
 
 			await server.runCommand('sudo su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'');
@@ -150,6 +160,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 			const configRes = await soap.makeSOAPEnvelopeAdmin(
 				'<GetAllConfigRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
 			);
+			assert.notExists(configRes.Fault, 'Response should not be a Fault');
 			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
 		});
 	}

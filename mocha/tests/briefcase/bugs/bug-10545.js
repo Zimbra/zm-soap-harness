@@ -18,6 +18,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -26,6 +27,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -35,6 +37,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
@@ -60,6 +63,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -72,6 +76,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				<action id="${docId}" op="!flag"/>
 			</ItemActionRequest>`, account1Token
 		);
+		assert.notExists(actionRes.Fault, 'Response should not be a Fault');
 		assert.exists(actionRes.ItemActionResponse, 'ItemActionResponse should exist');
 	});
 
@@ -84,6 +89,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -96,6 +102,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				<action id="${docId}" op="update" f=""/>
 			</ItemActionRequest>`, account1Token
 		);
+		assert.notExists(updateRes.Fault, 'Response should not be a Fault');
 		assert.exists(updateRes.ItemActionResponse, 'ItemActionResponse should exist');
 	});
 
@@ -108,6 +115,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -120,6 +128,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				<action id="${docId}" op="flag"/>
 			</ItemActionRequest>`, account1Token
 		);
+		assert.notExists(actionRes.Fault, 'Response should not be a Fault');
 		assert.exists(actionRes.ItemActionResponse, 'ItemActionResponse should exist');
 	});
 
@@ -134,6 +143,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -166,6 +176,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -181,6 +192,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(updateRes.Fault, 'Response should not be a Fault');
 		assert.exists(updateRes.SaveDocumentResponse,
 			'SaveDocumentResponse should exist for update');
 

@@ -29,6 +29,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 				<a n="zimbraPasswordRecoveryMaxAttempts">3</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -86,7 +87,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 	}
 
 	// Tests
-	it('Sanity | Set recovery email and send code to that email', async () => {
+	it('Sanity | Set recovery email and send code to that email 1', async () => {
 		// Auth as account1
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -102,6 +103,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 		const sendCodeRes = await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="sendCode" recoveryAccount="${account2Name}" channel="email" xmlns="urn:zimbraMail" />`, acct1Token
 		);
+		assert.notExists(sendCodeRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendCodeRes.SetRecoveryAccountResponse, 'Should send code');
 
 		// Auth as account2
@@ -123,6 +125,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 				<query>${account1Name}</query>
 			</SearchRequest>`, acct2Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const conv = Array.isArray(searchRes.SearchResponse.c)
@@ -150,7 +153,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 	});
 
 
-	it('Sanity | Verify that the recovery code sent can be used to set recovery email - validateCode', async () => {
+	it('Sanity | Verify that the recovery code sent can be used to set recovery email 1', async () => {
 		// Auth as account1
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -166,6 +169,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 		const validateRes = await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="validateCode" recoveryAccountVerificationCode="${account1RecoveryCode}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
 		);
+		assert.notExists(validateRes.Fault, 'Response should not be a Fault');
 		assert.exists(validateRes.SetRecoveryAccountResponse,
 			'Validation should succeed');
 
@@ -187,7 +191,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 	});
 
 
-	it('Sanity | Verify that the recovery code sent can be used to set recovery email - reset', async () => {
+	it('Sanity | Verify that the recovery code sent can be used to set recovery email 1 1', async () => {
 		// Auth as account1
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -203,6 +207,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 		const resetRes = await soap.makeSOAPEnvelopeAccount(
 			'<SetRecoveryAccountRequest op="reset" channel="email" xmlns="urn:zimbraMail" />', acctToken
 		);
+		assert.notExists(resetRes.Fault, 'Response should not be a Fault');
 		assert.exists(resetRes.SetRecoveryAccountResponse, 'Reset should succeed');
 
 		// Verify recovery address and status are removed
@@ -220,7 +225,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 	});
 
 
-	it('Sanity | Set recovery email and send code to that email - resendCode', async () => {
+	it('Sanity | Set recovery email and send code to that email 1 1', async () => {
 		// Auth as account3
 		const authRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -253,6 +258,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 		const resendRes = await soap.makeSOAPEnvelopeAccount(
 			'<SetRecoveryAccountRequest op="resendCode" channel="email" xmlns="urn:zimbraMail" />', acct3TokenB
 		);
+		assert.notExists(resendRes.Fault, 'Response should not be a Fault');
 		assert.exists(resendRes.SetRecoveryAccountResponse, 'Resend should succeed');
 
 		// Verify status is still pending

@@ -27,6 +27,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -42,6 +43,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth account1
@@ -63,6 +65,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 		const folderRes2 = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+		assert.notExists(folderRes2.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes2.GetFolderResponse, 'GetFolderResponse should exist');
 
 		// Create a folder under account1's briefcase
@@ -71,6 +74,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 				<folder l="${briefcaseFolderId1}" name="folder${common.getUniqueString()}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
 		const folder1 = Array.isArray(createFolderRes.CreateFolderResponse.folder)
@@ -133,6 +137,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 				<link l="1" name="${mountName}" rid="${folder1Id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
 
@@ -147,6 +152,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 				<folder path="${mountedName}"/>
 			</GetFolderRequest>`, account2Token
 		);
+		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 
@@ -159,6 +165,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 				<link l="1" name="${mountName}" rid="${briefcaseFolderId1}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
 
@@ -168,6 +175,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 				<folder path="${mountName}/${subFolderName}"/>
 			</GetFolderRequest>`, account2Token
 		);
+		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		// Search the sub-folder's document
@@ -176,6 +184,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 				<query>in:${mountName}/${subFolderName}/</query>
 			</SearchRequest>`, account2Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

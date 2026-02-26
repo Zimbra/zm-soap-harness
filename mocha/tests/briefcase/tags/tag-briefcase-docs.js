@@ -52,6 +52,7 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 				<tag name="${tagName}" color="1"/>
 			</CreateTagRequest>`, account1Token
 		);
+		assert.notExists(tagRes.Fault, 'Response should not be a Fault');
 		assert.exists(tagRes.CreateTagResponse, 'CreateTagResponse should exist');
 
 		const tag = Array.isArray(tagRes.CreateTagResponse.tag)
@@ -66,6 +67,7 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -78,6 +80,7 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 				<action id="${docId}" op="tag" tn="${tagName}"/>
 			</ItemActionRequest>`, account1Token
 		);
+		assert.notExists(tagActionRes.Fault, 'Response should not be a Fault');
 		assert.exists(tagActionRes.ItemActionResponse, 'ItemActionResponse should exist');
 
 		// Search for tagged documents
@@ -86,6 +89,7 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 				<query>tag:"${tagName}"</query>
 			</SearchRequest>`, account1Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

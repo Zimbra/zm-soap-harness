@@ -20,6 +20,7 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create test_account1');
 
 		// Create account1 with recovery email pre-configured
@@ -33,6 +34,7 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 				<a n="zimbraPrefPasswordRecoveryAddressStatus">verified</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account1');
 	});
 
@@ -50,6 +52,7 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist');
 
 		const acct1Token = Array.isArray(authRes1.AuthResponse.authToken)
@@ -63,6 +66,7 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 				<email>${account1Name}</email>
 			</RecoverAccountRequest>`, acct1Token
 		);
+		assert.notExists(recoverRes.Fault, 'Response should not be a Fault');
 		assert.exists(recoverRes.RecoverAccountResponse,
 			'RecoverAccountResponse should exist');
 
@@ -73,6 +77,7 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 				<account by="name">${account1Name}</account>
 			</ResetAccountPasswordRequest>`, adminAuthToken
 		);
+		assert.notExists(resetRes.Fault, 'Response should not be a Fault');
 		assert.exists(resetRes.ResetAccountPasswordResponse,
 			'ResetAccountPasswordResponse should exist');
 
@@ -86,6 +91,7 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist');
 
 		const testAcct1Token = Array.isArray(authRes2.AuthResponse.authToken)
@@ -98,6 +104,7 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, testAcct1Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
@@ -112,6 +119,7 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 				<m id="${msg.id}" />
 			</GetMsgRequest>`, testAcct1Token
 		);
+		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
 
 		const fullMsg = Array.isArray(getMsgRes.GetMsgResponse.m)

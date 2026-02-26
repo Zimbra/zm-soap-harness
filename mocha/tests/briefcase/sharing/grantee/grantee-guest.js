@@ -34,7 +34,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Guest', function () {
 	}
 
 	// Tests
-	it('Sanity | Share a briefcase folder to guest. Verify that the guest has access', async () => {
+	it('Sanity | Share a briefcase folder to guest. Verify that the guest has access.', async () => {
 		const folderName = 'GuestShare.' + common.getUniqueString();
 		const guestEmail = 'guest.' + common.getUniqueString() + '@external.com';
 		const createRes = await soap.makeSOAPEnvelopeAccount(
@@ -53,11 +53,12 @@ describe('Briefcase > Sharing > Grantee > Grantee Guest', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
 
 
-	it('Sanity | Unshare a folder to guest. Verify that the guest no longer has access', async () => {
+	it('Sanity | Unshare a folder to guest. Verify that the guest no longer has access.', async () => {
 		const folderName = 'GuestUnshare.' + common.getUniqueString();
 		const guestEmail = 'guest.' + common.getUniqueString() + '@external.com';
 		const createRes = await soap.makeSOAPEnvelopeAccount(
@@ -76,6 +77,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Guest', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 
 		const zid = Array.isArray(shareRes.FolderActionResponse.action)
@@ -86,6 +88,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Guest', function () {
 				<action op="!grant" id="${folder.id}" zid="${zid}"/>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.FolderActionResponse,
 			'FolderActionResponse should exist');
 	});

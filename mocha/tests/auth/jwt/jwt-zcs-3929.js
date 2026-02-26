@@ -19,6 +19,7 @@ describe('Auth > JWT > JWT-ZCS-3929', function () {
 				<a n="zimbraAuthTokenLifetime">1m</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 	});
 
@@ -35,6 +36,7 @@ describe('Auth > JWT > JWT-ZCS-3929', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
@@ -65,6 +67,7 @@ describe('Auth > JWT > JWT-ZCS-3929', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)

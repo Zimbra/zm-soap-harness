@@ -92,7 +92,7 @@
 
 
 <t:test_case testcaseid="ModifyPrefsRequest1" type="smoke">
-    <t:objective> Set zimbraPrefComposeFormat attribute to html/text </t:objective>
+    <t:objective>Set zimbraPrefComposeFormat attribute to html, text</t:objective>
 
     <t:test>
         <t:request>
@@ -142,7 +142,7 @@
 
 
 <t:test_case testcaseid="ModifyPrefsRequest2" type="regression" >
-    <t:objective> Set zimbraPrefMailItemsPerPage attribute to some values like negative/decimal/starting with zero/alpha </t:objective>
+    <t:objective>Set zimbraPrefMailItemsPerPage attribute to some values like negative, decimal, starting with zero, alpha</t:objective>
 
     <t:test>
         <t:request>
@@ -201,8 +201,120 @@
 
 </t:test_case>
 
+
+<t:test_case testcaseid="ModifyPrefsRequest3" type="deprecated" >
+    <t:objective>Set zimbraPrefForwardReplyInOriginalFormat attribute to html, text</t:objective>
+
+   <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${globals.true}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyInOriginalFormat']" match ="${globals.true}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${globals.false}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyInOriginalFormat']" match ="${globals.false}"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest4" type="deprecated" >
+    <t:objective>Set zimbraPrefForwardReplyInOriginalFormat attribute to some values like negative, decimal, starting with zero, alpha</t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.negative}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.decimal}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.invalid}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.alpha}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.blank}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
 <t:test_case testcaseid="ModifyPrefsRequest5" type="sanity">
-    <t:objective> Set zimbraPrefComposeInNewWindow attribute to true/false </t:objective>
+    <t:objective>Set zimbraPrefComposeInNewWindow attribute to true, false</t:objective>
 
     <t:test>
         <t:request>
@@ -252,7 +364,7 @@
 
 
 <t:test_case testcaseid="ModifyPrefsRequest6" type="regression" >
-    <t:objective> Set zimbraPrefComposeInNewWindow attribute to some values like negative/decimal/starting with zero/alpha </t:objective>
+    <t:objective>Set zimbraPrefComposeInNewWindow attribute to some values like negative, decimal, starting with zero, alpha</t:objective>
 
     <t:test>
         <t:request>
@@ -313,7 +425,7 @@
 
 
 <t:test_case testcaseid="ModifyPrefsRequest7" type="sanity">
-    <t:objective> Set zimbraPrefCalendarInitialView attribute to true/false </t:objective>
+    <t:objective>Set zimbraPrefCalendarInitialView attribute to true, false</t:objective>
 
     <t:test>
         <t:request>
@@ -408,7 +520,7 @@
 
 
 <t:test_case testcaseid="ModifyPrefsRequest8" type="regression" >
-    <t:objective> Set zimbraPrefCalendarInitialView attribute to some values like negative/decimal/starting with zero/alpha </t:objective>
+    <t:objective>Set zimbraPrefCalendarInitialView attribute to some values like negative, decimal, starting with zero, alpha</t:objective>
 
     <t:test>
         <t:request>
@@ -469,7 +581,7 @@
 
 
 <t:test_case testcaseid="ModifyPrefsRequest9" type="sanity">
-    <t:objective> Set zimbraPrefUseTimeZoneListInCalendar attribute to html/text </t:objective>
+    <t:objective>Set zimbraPrefUseTimeZoneListInCalendar attribute to html, text</t:objective>
 
     <t:test>
         <t:request>
@@ -519,7 +631,7 @@
 
 
 <t:test_case testcaseid="ModifyPrefsRequest10" type="regression" >
-    <t:objective> Set zimbraPrefUseTimeZoneListInCalendar attribute to some values like negative/decimal/starting with zero/alpha </t:objective>
+    <t:objective>Set zimbraPrefUseTimeZoneListInCalendar attribute to some values like negative, decimal, starting with zero, alpha</t:objective>
 
     <t:test>
         <t:request>

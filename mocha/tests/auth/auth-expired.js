@@ -20,6 +20,7 @@ describe('Auth > Auth Expired', function () {
 				<a n="zimbraAuthTokenLifetime">5s</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 	});
 
@@ -37,6 +38,7 @@ describe('Auth > Auth Expired', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = authRes.AuthResponse.lifetime;
@@ -54,6 +56,7 @@ describe('Auth > Auth Expired', function () {
 		const infoRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetInfoRequest xmlns="urn:zimbraAccount"/>', token
 		);
+		assert.notExists(infoRes.Fault, 'Response should not be a Fault');
 		assert.exists(infoRes.GetInfoResponse,
 			'GetInfoResponse should exist (token still valid)');
 		assert.exists(infoRes.GetInfoResponse.name, 'GetInfoResponse should have name');
@@ -68,6 +71,7 @@ describe('Auth > Auth Expired', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -108,6 +112,7 @@ describe('Auth > Auth Expired', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -125,6 +130,7 @@ describe('Auth > Auth Expired', function () {
 		const infoRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<GetInfoRequest xmlns="urn:zimbraAccount"/>', token
 		);
+		assert.notExists(infoRes1.Fault, 'Response should not be a Fault');
 		assert.exists(infoRes1.GetInfoResponse,
 			'First GetInfoResponse should exist (token still valid)');
 
@@ -158,6 +164,7 @@ describe('Auth > Auth Expired', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -184,6 +191,7 @@ describe('Auth > Auth Expired', function () {
 					'Should return AUTH_EXPIRED');
 			} else {
 				// Some servers may still allow re-auth
+				assert.notExists(reAuthRes.Fault, 'Response should not be a Fault');
 				assert.exists(reAuthRes.AuthResponse, 'AuthResponse should exist');
 				assert.match(String(reAuthRes.AuthResponse.lifetime), /^\d+$/,
 					'lifetime should be numeric');

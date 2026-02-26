@@ -27,6 +27,7 @@ describe('Auth > Auth Alias', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -55,6 +56,7 @@ describe('Auth > Auth Alias', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
@@ -80,6 +82,7 @@ describe('Auth > Auth Alias', function () {
 					<password>${config.accountPassword}</password>
 				</AuthRequest>`, null, true
 			);
+			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		});
@@ -107,7 +110,7 @@ describe('Auth > Auth Alias', function () {
 
 	// Serial tests
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-		it('Serial | Verify when alias_login_enabled is false - alias login blocked and email login works', async function () {
+		it('Verify below points when "alias_login_enabled" local config value is set to false - 1. Alias login will blocked 2. Login with email address would work.', async function () {
 			this.timeout(120 * 1000);
 
 			// Set alias_login_enabled to false
@@ -134,6 +137,7 @@ describe('Auth > Auth Alias', function () {
 						<password>${config.accountPassword}</password>
 					</AuthRequest>`, null, true, account1Server
 				);
+				assert.notExists(acctRes.Fault, 'Response should not be a Fault');
 				assert.exists(acctRes.AuthResponse, 'AuthResponse should exist for regular login');
 				assert.match(String(acctRes.AuthResponse.lifetime), /^\d+$/,
 					'lifetime should be numeric');

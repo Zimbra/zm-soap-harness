@@ -28,6 +28,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 				<a n="zimbraPasswordLockoutMaxFailures">2</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -78,6 +79,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'Should authenticate account1');
 		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -91,6 +93,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 		const sendCodeRes = await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="sendCode" recoveryAccount="${account2Name}" channel="email" xmlns="urn:zimbraMail" />`, acct1Token
 		);
+		assert.notExists(sendCodeRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendCodeRes.SetRecoveryAccountResponse,
 			'SetRecoveryAccountResponse should exist');
 
@@ -113,6 +116,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 				<query>${account1Name}</query>
 			</SearchRequest>`, acct2Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const conv = Array.isArray(searchRes.SearchResponse.c)
@@ -136,6 +140,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 		const validateRes = await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="validateCode" recoveryAccountVerificationCode="${recoveryCode}" channel="email" xmlns="urn:zimbraMail" />`, acct1TokenB
 		);
+		assert.notExists(validateRes.Fault, 'Response should not be a Fault');
 		assert.exists(validateRes.SetRecoveryAccountResponse,
 			'Validation should succeed');
 
@@ -157,7 +162,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 	});
 
 
-	it('Sanity | Get recovery details for the account. - Send Recovery Code', async () => {
+	it('Sanity | Get recovery details for the account 1', async () => {
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -171,12 +176,13 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 		const recoverRes = await soap.makeSOAPEnvelopeAccount(
 			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
 		);
+		assert.notExists(recoverRes.Fault, 'Response should not be a Fault');
 		assert.exists(recoverRes.RecoverAccountResponse,
 			'RecoverAccountResponse should exist');
 	});
 
 
-	it('Sanity | Use recovery code to generate Auth token.', async () => {
+	it('Sanity | Use recovery code to generate Auth token', async () => {
 		// Wait for recovery code email
 		await new Promise(resolve => setTimeout(resolve, 50000));
 
@@ -196,6 +202,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 				<query>subject:"Reset your" in:inbox</query>
 			</SearchRequest>`, acct2Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
@@ -228,6 +235,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 				<recoveryCode>${recoveryCode}</recoveryCode>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(authRecovery.Fault, 'Response should not be a Fault');
 		assert.exists(authRecovery.AuthResponse, 'Should auth with recovery code');
 		assert.match(String(authRecovery.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -258,7 +266,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 	});
 
 
-	it('Sanity | Get recovery details for the account and generate auth token for alias account.', async () => {
+	it('Sanity | Get recovery details for the account and generate auth token for alias account', async () => {
 		// Auth as account1
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
@@ -274,6 +282,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 		const recoverRes = await soap.makeSOAPEnvelopeAccount(
 			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
 		);
+		assert.notExists(recoverRes.Fault, 'Response should not be a Fault');
 		assert.exists(recoverRes.RecoverAccountResponse, 'Should send recovery code');
 
 		// Wait and get code from account2
@@ -293,6 +302,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 				<query>subject:"Reset your" in:inbox</query>
 			</SearchRequest>`, acct2Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
@@ -325,6 +335,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 				<recoveryCode>${recoveryCode2}</recoveryCode>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(authAlias.Fault, 'Response should not be a Fault');
 		assert.exists(authAlias.AuthResponse, 'Should auth with alias and recovery code');
 		assert.match(String(authAlias.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -355,7 +366,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 	});
 
 
-	it('Sanity | Get recovery details for the malformed email and verify error.', async () => {
+	it('Sanity | Get recovery details for the malformed email and verify error', async () => {
 		const malformedEmail = 'abc.com';
 
 		// Auth as account1
@@ -391,6 +402,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 				<query>subject:"Reset your" in:inbox</query>
 			</SearchRequest>`, acct2Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;

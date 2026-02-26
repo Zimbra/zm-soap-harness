@@ -521,7 +521,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="outlook_ical_recur05" type="functional">
-    <t:objective>Verify the ical format invitation for an appointment every weekday ending after 10 occurrences.</t:objective>
+    <t:objective>Verify the ical format invitation for an appointment every weekday ending after 10 occurrences</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -593,7 +593,7 @@
 
 
 <t:test_case testcaseid="outlook_ical_recur06" type="functional">
-    <t:objective>Verify the ical format invitation for an appointment every weekday ending after 1 month.</t:objective>
+    <t:objective>Verify the ical format invitation for an appointment every weekday ending after 1 month</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -663,7 +663,7 @@
 
 
 <t:test_case testcaseid="outlook_ical_recur07" type="functional">
-    <t:objective>Verify the ical format invitation for an repeating every 1 week on Thursday never ending.</t:objective>
+    <t:objective>Verify the ical format invitation for an repeating every 1 week on Thursday never ending</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -728,7 +728,7 @@
 
 
 <t:test_case testcaseid="outlook_ical_recur08" type="functional">
-    <t:objective>Verify the ical format invitation for weekly appointment repeating every 2 weeks on Thursday ending after 10 occurrences.</t:objective>
+    <t:objective>Verify the ical format invitation for weekly appointment repeating every 2 weeks on Thursday ending after 10 occurrences</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -794,7 +794,7 @@
 
 
 <t:test_case testcaseid="outlook_ical_recur09" type="functional">
-    <t:objective>Verify the ical format invitation for weekly appointment repeating every 2 weeks on Thursday ending by 20th january 2006.</t:objective>
+    <t:objective>Verify the ical format invitation for weekly appointment repeating every 2 weeks on Thursday ending by 20th january 2006</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -860,7 +860,7 @@
 
 
 <t:test_case testcaseid="outlook_ical_recur10" type="functional">
-    <t:objective>Verify the ical format invitation for monthly appointment repeating on every 15th day of a month never ending .</t:objective>
+    <t:objective>Verify the ical format invitation for monthly appointment repeating on every 15th day of a month never ending</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -991,7 +991,7 @@
 
 
 <t:test_case testcaseid="outlook_ical_recur12" type="functional">
-    <t:objective>Verify the ical format invitation for monthly appointment repeating on every 15ht day of a month ending by 20th nov 2005(after 1 month).</t:objective>
+    <t:objective>Verify the ical format invitation for monthly appointment repeating on every 15ht day of a month ending by 20th nov 2005(after 1 month)</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -1057,7 +1057,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="outlook_ical_recur13" type="functional">
-    <t:objective>Verify the ical format invitation for monthly appointment repeating on the second Monday of every 1 months never ending.</t:objective>
+    <t:objective>Verify the ical format invitation for monthly appointment repeating on the second Monday of every 1 months never ending</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -1123,7 +1123,7 @@
 
 
 <t:test_case testcaseid="outlook_ical_recur14" type="functional">
-    <t:objective>Verify the ical format invitation for monthly appointment repeating on the second monday of every 1 months ending after 5 occurrences.</t:objective>
+    <t:objective>Verify the ical format invitation for monthly appointment repeating on the second monday of every 1 months ending after 5 occurrences</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -1190,7 +1190,7 @@
 
 
 <t:test_case testcaseid="outlook_ical_recur15" type="functional">
-    <t:objective>Verify the ical format invitation for monthly appointment repeating on the second Monday of every 1 month ending by 29th january 2007.</t:objective>
+    <t:objective>Verify the ical format invitation for monthly appointment repeating on the second Monday of every 1 month ending by 29th january 2007</t:objective>
     <t:steps>
               1. Use lmtp inject to inject the message
               2. Login as the invitee
@@ -1391,5 +1391,76 @@
 
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="acctSetup2_outlook_ical_recur" type="deprecated">
+    <t:objective>Delete test accounts</t:objective>
+
+    <!-- Login to admin -->
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test>
+        <t:request>
+            <DeleteMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${newaccount1.id}"/>
+            </DeleteMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteMailboxResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test>
+        <t:request>
+            <DeleteMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${newaccount2.id}"/>
+            </DeleteMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteMailboxResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test>
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${newaccount1.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test>
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${newaccount2.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
 
 </t:tests>

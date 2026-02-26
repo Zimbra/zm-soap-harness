@@ -97,7 +97,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="GetWorkingHoursRequest_01" type="smoke">
-    <t:objective>Verify user can retrieve the users working hours within the given time range.</t:objective>
+    <t:objective>Verify user can retrieve the users working hours within the given time range</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -148,7 +148,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="GetWorkingHoursRequest_02" type="sanity">
-    <t:objective>Send GetWorkingHoursRequest with blank s=RANGE_START time - service.INVALID_REQUEST</t:objective>
+    <t:objective>Send GetWorkingHoursRequest with blank s RANGESTART time - serviceINVALIDREQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -199,7 +199,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="GetWorkingHoursRequest_03" type="sanity">
-    <t:objective>Send GetWorkingHoursRequest with blank e=RANGE_END time - service.INVALID_REQUEST</t:objective>
+    <t:objective>Send GetWorkingHoursRequest with blank e RANGEEND time - serviceINVALIDREQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -251,7 +251,7 @@
 
 
 <t:test_case testcaseid="GetWorkingHoursRequest_04" type="sanity">
-    <t:objective>Send GetWorkingHoursRequest with negative value for s=RANGE_START time - service.INVALID_REQUEST</t:objective>
+    <t:objective>Send GetWorkingHoursRequest with negative value for s RANGESTART time - serviceINVALIDREQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -302,7 +302,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="GetWorkingHoursRequest_05" type="sanity">
-    <t:objective>Send GetWorkingHoursRequest with negative value for e=RANGE_END time - service.INVALID_REQUEST</t:objective>
+    <t:objective>Send GetWorkingHoursRequest with negative value for e RANGEEND time - serviceINVALIDREQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -353,7 +353,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="GetWorkingHoursRequest_06" type="sanity">
-    <t:objective>Send GetWorkingHoursRequest with s=RANGE_START and e=RANGE_END time as alphabets. - service.INVALID_REQUEST</t:objective>
+    <t:objective>Send GetWorkingHoursRequest with s RANGESTART and e RANGEEND time as alphabets - serviceINVALIDREQUEST</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
@@ -403,6 +403,119 @@
 
 </t:test_case>
 
+<t:test_case testcaseid="GetWorkingHoursRequest_07" type="deprecated" >
+    <t:objective>Send GetWorkingHoursRequest with spaces, Special Character, Zero, Negative numbers, Leading Spaces , Trailling Spaces , Space before and after the id</t:objective>
+
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Blank ID  -->
+    <t:test>
+        <t:request>
+           <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id=""/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <!-- Alphabets -->
+    <t:test>
+        <t:request>
+           <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="aaaa"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <!-- Leading spaces -->
+    <t:test>
+        <t:request>
+           <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="    ${test_account1.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <!-- trailing spaces -->
+     <t:test>
+        <t:request>
+           <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="${test_account1.id}      "/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <!-- Leading and trailing Spaces -->
+    <t:test>
+        <t:request>
+           <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="    ${test_account1.id}   "/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <!-- Leading & trailing Spaces -->
+    <t:test>
+        <t:request>
+           <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="#@!*"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+           <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="8ef2300f-a7ab-4bd1-a47c-70fdf942d1d9"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
 
 <t:test_case testcaseid="GetWorkingHoursRequest_08" type="sanity" bugids="50209">
     <t:objective>Verify GetWorkingHoursRequest soap api for retrieving working hours of multiple users</t:objective>

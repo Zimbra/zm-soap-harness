@@ -1,12 +1,18 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const config = require('./environment.json');
+
+// Project root
+config.projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+// Args
 const argv = yargs(hideBin(process.argv)).option('serial', { type: 'boolean' })
 	.option('jobs', { alias: ['j', 'workers'], type: 'number' }).parse();
-
 const cliString = (envKey, fallback) => process.env[envKey] !== undefined
 	? String(process.env[envKey]).toUpperCase()
 	: String(fallback).toUpperCase();

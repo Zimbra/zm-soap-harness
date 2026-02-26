@@ -20,6 +20,7 @@ describe('Auth > Auth Basic', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -34,13 +35,14 @@ describe('Auth > Auth Basic', function () {
 	}
 
 	// Tests
-	it('Smoke | Basic Test: AuthRequest - login to the client using by=name', async () => {
+	it('Smoke | Basic Test - AuthRequest - login to the client using by name', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
@@ -51,13 +53,14 @@ describe('Auth > Auth Basic', function () {
 	});
 
 
-	it('Smoke | Basic Test: AuthRequest - login to the client using by=id', async () => {
+	it('Smoke | Basic Test - AuthRequest - login to the client using by id', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="id">${account1Id}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
@@ -76,6 +79,7 @@ describe('Auth > Auth Basic', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -120,6 +124,7 @@ describe('Auth > Auth Basic', function () {
 				<password>${config.adminPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'CreateAccountResponse should exist');
 
@@ -130,6 +135,7 @@ describe('Auth > Auth Basic', function () {
 				<password>${config.adminPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -138,7 +144,7 @@ describe('Auth > Auth Basic', function () {
 	});
 
 
-	it('Functional | Basic Test: AuthRequest - login to the client using by=foreignPrincipal', async () => {
+	it('Functional | Basic Test - AuthRequest - login to the client using by foreignPrincipal', async () => {
 		const foreignPrincipal = 'test:' + common.getUniqueString();
 
 		// Add foreign principal to account
@@ -156,6 +162,7 @@ describe('Auth > Auth Basic', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
@@ -166,7 +173,7 @@ describe('Auth > Auth Basic', function () {
 	});
 
 
-	it('Functional | Verify that Accented characters in password field is allowed.', async () => {
+	it('Functional | Verify that Accented characters in password field is allowed', async () => {
 		const accentedPassword = 'tëstäöü';
 		const account2Name = 'user2.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -177,6 +184,7 @@ describe('Auth > Auth Basic', function () {
 				<password>${accentedPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -190,6 +198,7 @@ describe('Auth > Auth Basic', function () {
 				<password>${accentedPassword}</password>
 			</AuthRequest>`, null, true
 		);
+		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;

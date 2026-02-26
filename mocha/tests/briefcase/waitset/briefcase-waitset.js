@@ -54,6 +54,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 				</add>
 			</CreateWaitSetRequest>`, account1Token
 		);
+		assert.notExists(createWS.Fault, 'Response should not be a Fault');
 		assert.exists(createWS.CreateWaitSetResponse,
 			'CreateWaitSetResponse should exist');
 		const wsId = createWS.CreateWaitSetResponse.waitSet;
@@ -75,18 +76,20 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 		const waitRes = await soap.makeSOAPEnvelopeAccount(
 			`<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${wsId}" seq="${seq}" block="0" timeout="5000"/>`, account1Token
 		);
+		assert.notExists(waitRes.Fault, 'Response should not be a Fault');
 		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 
 		// Destroy waitset
 		const destroyRes = await soap.makeSOAPEnvelopeAccount(
 			`<DestroyWaitSetRequest xmlns="urn:zimbraMail" waitSet="${wsId}"/>`, account1Token
 		);
+		assert.notExists(destroyRes.Fault, 'Response should not be a Fault');
 		assert.exists(destroyRes.DestroyWaitSetResponse,
 			'DestroyWaitSetResponse should exist');
 	});
 
 
-	it('Sanity | Basic Test Case for WaitSetRequest on document - add and modify', async () => {
+	it('Sanity | Basic Test Case for WaitSetRequest on document 1', async () => {
 		// Create waitset
 		const createWS = await soap.makeSOAPEnvelopeAccount(
 			`<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="d">
@@ -95,6 +98,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 				</add>
 			</CreateWaitSetRequest>`, account1Token
 		);
+		assert.notExists(createWS.Fault, 'Response should not be a Fault');
 		assert.exists(createWS.CreateWaitSetResponse,
 			'CreateWaitSetResponse should exist');
 		const wsId = createWS.CreateWaitSetResponse.waitSet;
@@ -117,6 +121,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 		const waitRes = await soap.makeSOAPEnvelopeAccount(
 			`<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${wsId}" seq="${seq}" block="0" timeout="5000"/>`, account1Token
 		);
+		assert.notExists(waitRes.Fault, 'Response should not be a Fault');
 		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 
 		// Modify document
@@ -133,6 +138,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 		const waitRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${wsId}" seq="${newSeq}" block="0" timeout="5000"/>`, account1Token
 		);
+		assert.notExists(waitRes2.Fault, 'Response should not be a Fault');
 		assert.exists(waitRes2.WaitSetResponse, 'WaitSetResponse should exist');
 
 		// Cleanup
@@ -142,7 +148,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 	});
 
 
-	it('Sanity | Basic Test Case for WaitSetRequest on document - delete', async () => {
+	it('Sanity | Basic Test Case for WaitSetRequest on document 1 1', async () => {
 		// Create waitset
 		const createWS = await soap.makeSOAPEnvelopeAccount(
 			`<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="d">
@@ -151,6 +157,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 				</add>
 			</CreateWaitSetRequest>`, account1Token
 		);
+		assert.notExists(createWS.Fault, 'Response should not be a Fault');
 		assert.exists(createWS.CreateWaitSetResponse,
 			'CreateWaitSetResponse should exist');
 		const wsId = createWS.CreateWaitSetResponse.waitSet;
@@ -180,6 +187,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 		const waitRes = await soap.makeSOAPEnvelopeAccount(
 			`<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${wsId}" seq="${seq}" block="0" timeout="5000"/>`, account1Token
 		);
+		assert.notExists(waitRes.Fault, 'Response should not be a Fault');
 		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 
 		// Cleanup

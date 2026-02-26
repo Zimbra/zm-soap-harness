@@ -85,7 +85,7 @@
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
 <t:test_case testcaseid="SearchAuthRequest" type="functional" >
-    <t:objective> Create setup for the Search </t:objective>
+    <t:objective>Create setup for the Search</t:objective>
     <t:steps>1. Login to the account.
              2. Search a mail to get the message-id
     </t:steps>
@@ -192,7 +192,7 @@
 
 
 <t:test_case testcaseid="size_SearchRequest1" type="functional" >
-    <t:objective> Verify that a search for size smaller than 50bytes returns the correct email </t:objective>
+    <t:objective>Verify that a search for size smaller than 50bytes returns the correct email</t:objective>
 
     <t:test>
         <t:request>
@@ -209,7 +209,7 @@
 
 
 <t:test_case testcaseid="size_SearchRequest2" type="functional">
-    <t:objective> Verify that a search for size smaller than 500bytes returns the correct email (for type message/conversation) </t:objective>
+    <t:objective>Verify that a search for size smaller than 500bytes returns the correct email (for type message, conversation)</t:objective>
 
     <t:test>
         <t:request>
@@ -237,7 +237,7 @@
 
 
 <t:test_case testcaseid="size_SearchRequest3" type="functional">
-    <t:objective> Verify that a search for size larger than 50bytes returns the correct email (for type message/conversation) </t:objective>
+    <t:objective>Verify that a search for size larger than 50bytes returns the correct email (for type message, conversation)</t:objective>
 
     <t:test>
         <t:request>
@@ -273,7 +273,7 @@
 
 
 <t:test_case testcaseid="size_SearchRequest4" type="functional">
-    <t:objective> Verify that a search for size smaller than 500 kb returns the correct email (for type message/conversation) </t:objective>
+    <t:objective>Verify that a search for size smaller than 500 kb returns the correct email (for type message, conversation)</t:objective>
 
     <t:test>
         <t:request>
@@ -305,7 +305,7 @@
 
 
 <t:test_case testcaseid="size_SearchRequest5" type="functional">
-    <t:objective> Verify that a search for size larger than 900 kb returns the correct email (for type message/conversation) </t:objective>
+    <t:objective>Verify that a search for size larger than 900 kb returns the correct email (for type message, conversation)</t:objective>
 
     <t:test>
         <t:request>
@@ -335,7 +335,7 @@
 
 
 <t:test_case testcaseid="size_SearchRequest6" type="functional" >
-    <t:objective> Verify that a search for size larger than 3MB returns the correct email (for type message/conversation) </t:objective>
+    <t:objective>Verify that a search for size larger than 3MB returns the correct email (for type message, conversation)</t:objective>
 
     <t:test>
         <t:request>
@@ -362,9 +362,37 @@
 </t:test_case>
 
 
+<!-- bug 2827 - GB no longer supported -->
+<t:test_case testcaseid="size_SearchRequest7" type="deprecated" bugids="2827, 4987">
+    <t:objective>Verify that a search for size larger than 1GB returns the correct email (for type message, conversation)</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> larger:1gb </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query> larger:1gb </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
 
 <t:test_case testcaseid="size_SearchRequest8" type="functional" bugids="2696">
-    <t:objective> Verify that a search for smaller than 0 (bytes/KB/MB/GB) doesnot return any mail </t:objective>
+    <t:objective>Verify that a search for smaller than 0 (bytes, KB, MB, GB) doesnot return any mail 1</t:objective>
 
     <t:test>
         <t:request>
@@ -416,7 +444,7 @@
 
 
 <t:test_case testcaseid="size_SearchRequest9" type="functional" bugids="2696">
-    <t:objective> Verify that a search for larger than 0 (bytes/KB/MB/GB) doesnot return any mail </t:objective>
+    <t:objective>Verify that a search for larger than 0 (bytes, KB, MB, GB) doesnot return any mail</t:objective>
 
     <t:test>
         <t:request>
@@ -484,7 +512,7 @@
 
 
 <t:test_case testcaseid="size_SearchRequest10" type="functional" bugids="2696">
-    <t:objective> Verify that a search for smaller than 0 (bytes/KB/MB/GB) doesnot return any mail </t:objective>
+    <t:objective>Verify that a search for smaller than 0 (bytes, KB, MB, GB) doesnot return any mail 2</t:objective>
 
     <t:test>
         <t:request>
@@ -537,7 +565,7 @@
 
 
 <t:test_case testcaseid="size_SearchRequest11" type="functional" bugids="2696">
-    <t:objective> Verify that a search for larger than 0 (bytes/KB/MB/GB) return any mail </t:objective>
+    <t:objective>Verify that a search for larger than 0 (bytes, KB, MB, GB) return any mail</t:objective>
 
     <t:test>
         <t:request>
@@ -604,7 +632,7 @@
 </t:test_case>
 
 <t:test_case testcaseid="size_SearchRequest12" type="regression" bugids="4987">
-    <t:objective> Verify that a proper error message is displayed for invalid query using smaller:/larger: </t:objective>
+    <t:objective>Verify that a proper error message is displayed for invalid query using smaller - , larger -</t:objective>
 
     <t:test>
         <t:request>

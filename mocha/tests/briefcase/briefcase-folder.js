@@ -23,6 +23,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -38,6 +39,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth as account1
@@ -47,6 +49,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes1.AuthResponse.authToken)
@@ -67,6 +70,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<folder l="1" name="${folderName}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
@@ -84,6 +88,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<folder l="1" name="${folderName}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
 
@@ -109,6 +114,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<folder l="1" name="${folderName}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
@@ -121,6 +127,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<action op="rename" id="${folderId}" name="${newFolderName}"/>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
 		assert.exists(renameRes.FolderActionResponse,
 			'FolderActionResponse should exist');
 		const action = Array.isArray(renameRes.FolderActionResponse.action)
@@ -139,6 +146,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<folder l="1" name="${folder3Name}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(create3.Fault, 'Response should not be a Fault');
 		assert.exists(create3.CreateFolderResponse, 'CreateFolderResponse should exist');
 
 		const folder3 = Array.isArray(create3.CreateFolderResponse.folder)
@@ -151,6 +159,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<folder l="1" name="${folder4Name}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(create4.Fault, 'Response should not be a Fault');
 		assert.exists(create4.CreateFolderResponse, 'CreateFolderResponse should exist');
 
 		const folder4 = Array.isArray(create4.CreateFolderResponse.folder)
@@ -163,6 +172,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<action op="trash" id="${folder3Id}"/>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(trashRes.Fault, 'Response should not be a Fault');
 		assert.exists(trashRes.FolderActionResponse, 'FolderActionResponse should exist');
 
 		const trashAction = Array.isArray(trashRes.FolderActionResponse.action)
@@ -175,6 +185,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<action op="delete" id="${folder4Id}"/>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 		assert.exists(deleteRes.FolderActionResponse,
 			'FolderActionResponse should exist');
 		const deleteAction = Array.isArray(deleteRes.FolderActionResponse.action)
@@ -192,6 +203,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<folder l="1" name="${folderName}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
@@ -206,6 +218,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -220,6 +233,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Auth as account2
@@ -229,6 +243,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -242,6 +257,7 @@ describe('Briefcase > Briefcase Folder', function () {
 		const folderRes2 = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+		assert.notExists(folderRes2.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes2.GetFolderResponse, 'GetFolderResponse should exist');
 		const root2 = Array.isArray(folderRes2.GetFolderResponse.folder)
 			? folderRes2.GetFolderResponse.folder[0] : folderRes2.GetFolderResponse.folder;
@@ -255,6 +271,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<link l="${rootId2}" name="${sharedFolderName}" rid="${folderId}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
 		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
@@ -267,6 +284,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<query>in:(${sharedFolderName})</query>
 			</SearchRequest>`, account2Token
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Delete shared folder as account1
@@ -275,6 +293,7 @@ describe('Briefcase > Briefcase Folder', function () {
 				<action op="delete" id="${folderId}"/>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 		assert.exists(deleteRes.FolderActionResponse,
 			'FolderActionResponse should exist');
 	});

@@ -22,6 +22,7 @@ describe('Auth > Bugs > Zcs 3948', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes.CreateAccountResponse.account)
@@ -52,6 +53,7 @@ describe('Auth > Bugs > Zcs 3948', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'Should authenticate account1');
 
 		account1AuthToken = Array.isArray(authRes.AuthResponse.authToken)
@@ -75,6 +77,7 @@ describe('Auth > Bugs > Zcs 3948', function () {
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account1AuthToken, false, account1Server
 		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Verify auth with correct credentials works
@@ -84,6 +87,7 @@ describe('Auth > Bugs > Zcs 3948', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for valid credentials');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');

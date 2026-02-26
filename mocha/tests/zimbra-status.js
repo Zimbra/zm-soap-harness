@@ -24,7 +24,7 @@ describe('Admin > Server > Zimbra Status', function() {
 	}
 
 	// Tests
-	it('Serial | Check zimbra server status', async() => {
+	it('Serial Check zimbra server status', async() => {
 		const services = [ 'mailbox', 'memcached', 'mta', 'onlyoffice' ];
 		const status = await server.runCommand(`sudo su - zimbra -c 'zmcontrol status'`);
 		for (const service of services) {

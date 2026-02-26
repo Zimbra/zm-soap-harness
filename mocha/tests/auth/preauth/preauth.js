@@ -23,6 +23,7 @@ describe('Auth > Preauth > Preauth', function () {
 				<a n="zimbraPreAuthKey">${preauthKey}</a>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+		assert.notExists(domRes.Fault, 'Response should not be a Fault');
 		assert.exists(domRes.CreateDomainResponse, 'Should create domain');
 
 		account1Name = 'user' + common.getUniqueString() + '@' + domain1Name;
@@ -32,6 +33,7 @@ describe('Auth > Preauth > Preauth', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		account2Name = 'user2' + common.getUniqueString() + '@' + domain1Name;
@@ -41,6 +43,7 @@ describe('Auth > Preauth > Preauth', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		account3Name = 'user3' + common.getUniqueString() + '@' + domain1Name;
@@ -50,6 +53,7 @@ describe('Auth > Preauth > Preauth', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
 		assert.exists(createRes3.CreateAccountResponse, 'Should create account3');
 	});
 
@@ -129,7 +133,7 @@ describe('Auth > Preauth > Preauth', function () {
 	});
 
 
-	it('Functional | Preauth request - no preauth key specified', async () => {
+	it('Functional | Preauth request - no preauth key () specified', async () => {
 		const timestamp = String(Date.now());
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
