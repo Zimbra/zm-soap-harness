@@ -67,6 +67,9 @@ describe('Auth > Bugs > Bug 65554', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 	});
 
 

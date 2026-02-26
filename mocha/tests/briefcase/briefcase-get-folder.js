@@ -75,5 +75,9 @@ describe('Briefcase > Briefcase Get Folder', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
 		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
+		const rootFolder = Array.isArray(getFolderRes.GetFolderResponse.folder)
+			? getFolderRes.GetFolderResponse.folder[0]
+			: getFolderRes.GetFolderResponse.folder;
+		assert.exists(rootFolder, 'folder should exist');
 	});
 });

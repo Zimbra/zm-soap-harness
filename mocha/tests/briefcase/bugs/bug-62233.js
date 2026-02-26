@@ -116,5 +116,9 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
+		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
+			? folderRes.GetFolderResponse.folder[0]
+			: folderRes.GetFolderResponse.folder;
+		assert.exists(folder, 'folder should exist');
 	});
 });

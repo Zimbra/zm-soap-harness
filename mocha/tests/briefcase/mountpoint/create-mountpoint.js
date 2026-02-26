@@ -329,6 +329,10 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
 		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
+		const rootFolder = Array.isArray(getFolderRes.GetFolderResponse.folder)
+			? getFolderRes.GetFolderResponse.folder[0]
+			: getFolderRes.GetFolderResponse.folder;
+		assert.exists(rootFolder, 'folder should exist');
 	});
 
 

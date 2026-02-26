@@ -60,12 +60,13 @@ describe('Auth > Test Authtoken', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken1
 		);
 		assert.exists(response.GetFolderResponse, 'GetFolderResponse should exist');
-
-		const folder = response.GetFolderResponse.folder;
+		const folder = Array.isArray(response.GetFolderResponse.folder)
+			? response.GetFolderResponse.folder[0]
+			: response.GetFolderResponse.folder;
 		assert.exists(folder, 'folder should exist');
 
-		const fld = Array.isArray(folder) ? folder[0] : folder;
-		assert.equal(fld.id, '1', 'Root folder id should be 1');
+
+		assert.equal(folder.id, '1', 'Root folder id should be 1');
 	});
 
 
@@ -74,12 +75,13 @@ describe('Auth > Test Authtoken', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken1
 		);
 		assert.exists(response.GetFolderResponse, 'GetFolderResponse should exist');
-
-		const folder = response.GetFolderResponse.folder;
+		const folder = Array.isArray(response.GetFolderResponse.folder)
+			? response.GetFolderResponse.folder[0]
+			: response.GetFolderResponse.folder;
 		assert.exists(folder, 'folder should exist');
 
-		const fld = Array.isArray(folder) ? folder[0] : folder;
-		assert.equal(fld.id, '1', 'Root folder id should be 1');
+
+		assert.equal(folder.id, '1', 'Root folder id should be 1');
 	});
 
 
@@ -101,6 +103,10 @@ describe('Auth > Test Authtoken', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
 		);
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
+		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
+			? folderRes.GetFolderResponse.folder[0]
+			: folderRes.GetFolderResponse.folder;
+		assert.exists(folder, 'folder should exist');
 	});
 
 
@@ -122,6 +128,10 @@ describe('Auth > Test Authtoken', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
 		);
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
+		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
+			? folderRes.GetFolderResponse.folder[0]
+			: folderRes.GetFolderResponse.folder;
+		assert.exists(folder, 'folder should exist');
 	});
 
 
@@ -172,6 +182,9 @@ describe('Auth > Test Authtoken', function () {
 			</AuthRequest>`, null
 		);
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -184,6 +197,9 @@ describe('Auth > Test Authtoken', function () {
 			</AuthRequest>`, null
 		);
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -196,6 +212,9 @@ describe('Auth > Test Authtoken', function () {
 		);
 		assert.exists(response.DelegateAuthResponse,
 			'DelegateAuthResponse should exist');
+		assert.exists(response.DelegateAuthResponse.authToken, 'Delegated authToken should exist');
+		assert.match(String(response.DelegateAuthResponse.lifetime), /^\d+$/,
+			'Delegated lifetime should be numeric');
 	});
 
 
@@ -231,5 +250,9 @@ describe('Auth > Test Authtoken', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
 		);
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
+		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
+			? folderRes.GetFolderResponse.folder[0]
+			: folderRes.GetFolderResponse.folder;
+		assert.exists(folder, 'folder should exist');
 	});
 });

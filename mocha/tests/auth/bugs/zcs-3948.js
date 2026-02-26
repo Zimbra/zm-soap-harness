@@ -85,6 +85,9 @@ describe('Auth > Bugs > Zcs 3948', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for valid credentials');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
 

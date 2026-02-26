@@ -82,5 +82,9 @@ describe('Briefcase > Sharing > Sharing To Admin', function () {
 			</GetFolderRequest>`, account1Token
 		);
 		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
+		const verifiedFolder = Array.isArray(getFolderRes.GetFolderResponse.folder)
+			? getFolderRes.GetFolderResponse.folder[0]
+			: getFolderRes.GetFolderResponse.folder;
+		assert.exists(verifiedFolder, 'folder should exist');
 	});
 });

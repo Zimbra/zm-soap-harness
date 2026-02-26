@@ -153,6 +153,9 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				</AuthRequest>`, null, true, acctServer
 			);
 			assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+			assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+				'lifetime should be numeric');
+			assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 			const authToken = Array.isArray(authRes.AuthResponse.authToken)
 				? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -219,6 +222,10 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				</ModifyDomainRequest>`, adminAuthToken
 			);
 			assert.exists(modRes.ModifyDomainResponse, 'ModifyDomainResponse should exist');
+			const domain = Array.isArray(modRes.ModifyDomainResponse.domain)
+				? modRes.ModifyDomainResponse.domain[0]
+				: modRes.ModifyDomainResponse.domain;
+			assert.exists(domain.id, 'domain id should exist');
 
 			// Auth with virtual host 01
 			const authRes1 = await soap.makeSOAPEnvelopeAccount(
@@ -229,6 +236,9 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				</AuthRequest>`, null, true, acctServer
 			);
 			assert.exists(authRes1.AuthResponse, 'Should auth with virtualHost01');
+			assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
+				'lifetime should be numeric');
+			assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
 
 			// Auth with virtual host 02
 			const authRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -239,6 +249,9 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				</AuthRequest>`, null, true, acctServer
 			);
 			assert.exists(authRes2.AuthResponse, 'Should auth with virtualHost02');
+			assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
+				'lifetime should be numeric');
+			assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
 
 			// Auth with virtual host 03
 			const authRes3 = await soap.makeSOAPEnvelopeAccount(
@@ -249,6 +262,9 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				</AuthRequest>`, null, true, acctServer
 			);
 			assert.exists(authRes3.AuthResponse, 'Should auth with virtualHost03');
+			assert.match(String(authRes3.AuthResponse.lifetime), /^\d+$/,
+				'lifetime should be numeric');
+			assert.exists(authRes3.AuthResponse.authToken, 'authToken should exist');
 
 			// Cleanup
 			await soap.makeSOAPEnvelopeAdmin(
@@ -306,6 +322,10 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				</ModifyDomainRequest>`, adminAuthToken
 			);
 			assert.exists(modRes1.ModifyDomainResponse, 'Should modify domain');
+			let domain = Array.isArray(modRes1.ModifyDomainResponse.domain)
+				? modRes1.ModifyDomainResponse.domain[0]
+				: modRes1.ModifyDomainResponse.domain;
+			assert.exists(domain.id, 'domain id should exist');
 
 			// Auth with virtualHost02 - should succeed
 			const authRes1 = await soap.makeSOAPEnvelopeAccount(
@@ -398,6 +418,10 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				</ModifyDomainRequest>`, adminAuthToken
 			);
 			assert.exists(modRes3.ModifyDomainResponse, 'Should remove virtual hosts');
+			domain = Array.isArray(modRes3.ModifyDomainResponse.domain)
+				? modRes3.ModifyDomainResponse.domain[0]
+				: modRes3.ModifyDomainResponse.domain;
+			assert.exists(domain.id, 'domain id should exist');
 
 			// Restart mailboxd again
 			await server.runCommand('sudo su - zimbra -c \'zmmailboxdctl restart\'');

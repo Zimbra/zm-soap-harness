@@ -69,6 +69,9 @@ describe('Auth > Auth Expired', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content
@@ -106,6 +109,9 @@ describe('Auth > Auth Expired', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content
@@ -153,6 +159,9 @@ describe('Auth > Auth Expired', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content
@@ -176,6 +185,9 @@ describe('Auth > Auth Expired', function () {
 			} else {
 				// Some servers may still allow re-auth
 				assert.exists(reAuthRes.AuthResponse, 'AuthResponse should exist');
+				assert.match(String(reAuthRes.AuthResponse.lifetime), /^\d+$/,
+					'lifetime should be numeric');
+				assert.exists(reAuthRes.AuthResponse.authToken, 'authToken should exist');
 			}
 		} catch (error) {
 			assert.match(String(error), /AUTH_EXPIRED|not valid JSON|SyntaxError/,

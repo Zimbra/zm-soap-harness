@@ -164,6 +164,7 @@ describe('Briefcase > Purge Revision Request', function () {
 			</PurgeRevisionRequest>`, account1Token
 		);
 		assert.exists(purgeRes.Fault, 'Should return Fault for invalid document id');
+		assert.exists(purgeRes.Fault.Detail.Error.Code, 'Error code should exist');
 	});
 
 

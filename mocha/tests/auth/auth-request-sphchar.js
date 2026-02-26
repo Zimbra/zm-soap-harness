@@ -79,6 +79,9 @@ describe('Auth > Auth Request Sphchar', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for lowercase login');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 });

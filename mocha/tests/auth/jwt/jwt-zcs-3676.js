@@ -49,6 +49,9 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		assert.exists(response.AuthResponse.authToken, 'Auth token should exist');
 	});
 
@@ -91,6 +94,9 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		assert.exists(response.AuthResponse.authToken, 'Auth token should exist');
 	});
 
@@ -103,6 +109,9 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		assert.exists(response.AuthResponse.authToken, 'Auth token should exist');
 	});
 
@@ -121,6 +130,9 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				'Should return AUTH_FAILED or INVALID_REQUEST');
 		} else {
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');
+			assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+				'lifetime should be numeric');
+			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		}
 	});
 
@@ -151,6 +163,9 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]

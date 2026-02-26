@@ -37,6 +37,9 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes1.AuthResponse, 'First AuthResponse should exist');
+		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
 
 		const token1 = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content
@@ -51,6 +54,9 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes2.AuthResponse, 'Second AuthResponse should exist');
+		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
 
 		const token2 = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content
@@ -65,6 +71,9 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes3.AuthResponse, 'Third AuthResponse should exist');
+		assert.match(String(authRes3.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes3.AuthResponse.authToken, 'authToken should exist');
 
 		const token3 = Array.isArray(authRes3.AuthResponse.authToken)
 			? authRes3.AuthResponse.authToken[0]._content
@@ -78,6 +87,9 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(verifyRes.AuthResponse, 'Token3 should still be valid for re-auth');
+		assert.match(String(verifyRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(verifyRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -90,6 +102,9 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes1.AuthResponse, 'First AuthResponse should exist');
+		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
 
 		const token1 = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content
@@ -104,6 +119,9 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes2.AuthResponse, 'Second AuthResponse should exist');
+		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
 
 		const token2 = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content

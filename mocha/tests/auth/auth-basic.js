@@ -77,6 +77,9 @@ describe('Auth > Auth Basic', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const userToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content
@@ -128,6 +131,9 @@ describe('Auth > Auth Basic', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 

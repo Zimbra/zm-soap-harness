@@ -48,6 +48,9 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 			</AuthRequest>`, null
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const acct1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -96,6 +99,9 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 			</AuthRequest>`, null
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const acct1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -124,6 +130,9 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 			</AuthRequest>`, null
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const acct1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -136,5 +145,6 @@ describe('Auth > Forgetpassword > Reset Password Zcs 4802', function () {
 			</ResetPasswordRequest>`, acct1Token
 		);
 		assert.exists(resetRes.Fault, 'Should return Fault for empty password');
+		assert.exists(resetRes.Fault.Detail.Error.Code, 'Error code should exist');
 	});
 });

@@ -55,6 +55,9 @@ describe('Auth > Jwt > Jwt Zcs 2478', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'JWT token should exist');
 
 		// Wait for token to expire (1 minute)

@@ -65,6 +65,9 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'JWT auth token should exist');
 
 		// Note: The XML test framework uses a special <jwtToken> SOAP header element for JWT.
@@ -135,6 +138,9 @@ describe('Auth > Jwt > Jwt Zcs 3258', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes.AuthResponse, 'JWT AuthResponse should exist');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		// Use regular auth token for send (JS framework doesn't support jwtToken SOAP header)
 		const regularAuthRes = await soap.makeSOAPEnvelopeAccount(

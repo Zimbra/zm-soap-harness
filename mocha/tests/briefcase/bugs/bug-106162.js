@@ -63,6 +63,7 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 		);
 		assert.exists(createRes2.Fault,
 			'Should return Fault for case-insensitive duplicate');
+		assert.exists(createRes2.Fault.Detail.Error.Code, 'Error code should exist');
 	});
 
 

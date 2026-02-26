@@ -72,6 +72,9 @@ describe('Auth > Forgetpassword > Zcs 4798', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes1.AuthResponse, 'Should authenticate account1');
+		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
 
 		const acct1Token = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
@@ -92,6 +95,9 @@ describe('Auth > Forgetpassword > Zcs 4798', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(authRes2.AuthResponse, 'Should authenticate account2');
+		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
 
 		const acct2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -170,6 +176,9 @@ describe('Auth > Forgetpassword > Zcs 4798', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes.AuthResponse, 'Should authenticate account1');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const acctToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -195,6 +204,9 @@ describe('Auth > Forgetpassword > Zcs 4798', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes.AuthResponse, 'Should authenticate account1');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const acctToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -218,6 +230,9 @@ describe('Auth > Forgetpassword > Zcs 4798', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes.AuthResponse, 'Should authenticate account1');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const acctToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]

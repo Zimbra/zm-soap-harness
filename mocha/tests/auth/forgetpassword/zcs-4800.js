@@ -79,6 +79,9 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRes1.AuthResponse, 'Should authenticate account1');
+		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
 
 		const acct1Token = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
@@ -226,6 +229,9 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authRecovery.AuthResponse, 'Should auth with recovery code');
+		assert.match(String(authRecovery.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRecovery.AuthResponse.authToken, 'authToken should exist');
 
 		const recoveryToken = Array.isArray(authRecovery.AuthResponse.authToken)
 			? authRecovery.AuthResponse.authToken[0]._content || authRecovery.AuthResponse.authToken[0]
@@ -320,6 +326,9 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(authAlias.AuthResponse, 'Should auth with alias and recovery code');
+		assert.match(String(authAlias.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authAlias.AuthResponse.authToken, 'authToken should exist');
 
 		const aliasToken = Array.isArray(authAlias.AuthResponse.authToken)
 			? authAlias.AuthResponse.authToken[0]._content || authAlias.AuthResponse.authToken[0]

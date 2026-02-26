@@ -255,6 +255,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(attempt2.Fault, 'Attempt 2 should fail');
+		assert.exists(attempt2.Fault.Detail.Error.Code, 'Error code should exist');
 
 		// Attempt 3 - should trigger lockout
 		const attempt3 = await soap.makeSOAPEnvelopeAccount(
@@ -264,6 +265,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		assert.exists(attempt3.Fault, 'Attempt 3 should fail');
+		assert.exists(attempt3.Fault.Detail.Error.Code, 'Error code should exist');
 
 		// Verify account is locked out
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -306,6 +308,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(attempt1.Fault, 'Attempt 1 should fail');
+		assert.exists(attempt1.Fault.Detail.Error.Code, 'Error code should exist');
 
 		// Wait for lockout failure lifetime to expire
 		await new Promise(resolve => setTimeout(resolve, 30000));
@@ -318,6 +321,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(attempt2.Fault, 'Attempt 2 should fail');
+		assert.exists(attempt2.Fault.Detail.Error.Code, 'Error code should exist');
 
 		// Verify account is NOT locked out
 		adminAuthToken = await soap.getAdminAuthToken();

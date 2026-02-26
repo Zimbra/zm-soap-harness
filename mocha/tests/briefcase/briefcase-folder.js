@@ -230,6 +230,9 @@ describe('Briefcase > Briefcase Folder', function () {
 			</AuthRequest>`, null
 		);
 		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
 
 		account2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -240,9 +243,9 @@ describe('Briefcase > Briefcase Folder', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
 		assert.exists(folderRes2.GetFolderResponse, 'GetFolderResponse should exist');
-
 		const root2 = Array.isArray(folderRes2.GetFolderResponse.folder)
 			? folderRes2.GetFolderResponse.folder[0] : folderRes2.GetFolderResponse.folder;
+		assert.exists(root2, 'folder should exist');
 		const rootId2 = root2.id;
 
 		// Create mountpoint

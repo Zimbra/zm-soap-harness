@@ -36,6 +36,9 @@ describe('Auth > Auth Refer', function () {
 			</AuthRequest>`, null, true
 		);
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		// Verify 'refer' element is NOT present (emptyset=1 means it should not exist)
 		assert.notExists(response.AuthResponse.refer,
 			'refer element should not be present when user mailbox is on this server');
