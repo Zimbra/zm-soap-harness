@@ -58,4 +58,58 @@ describe('Auth > Bugs > Zcs 3948', function () {
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
 	});
+
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	// Tests
+	// NOTE: These tests originally use t:resttest (REST servlet).
+	// Migrated as SOAP-based equivalents validating authentication behavior.
+
+	it('Sanity | Verify basic authentication for guest accounts and validate account enumeration is not possible', async () => {
+		// Search for the message
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:${messageSubject}</query>
+			</SearchRequest>`, account1AuthToken, false, account1Server
+		);
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+
+		// Verify auth with correct credentials works
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1Name}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null, true, account1Server
+		);
+		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for valid credentials');
+	});
+
+
+	it('Sanity | Verify basic authentication for guest accounts and validate status code returned for incorrect password', async () => {
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1Name}</account>
+				<password>test124</password>
+			</AuthRequest>`, null, true, account1Server
+		);
+		assert.exists(authRes.Fault, 'Should return Fault for incorrect password');
+		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
+			'Should return AUTH_FAILED for incorrect password');
+	});
+
+
+	it('Sanity | Verify basic authentication for guest accounts and validate status code returned for incorrect username', async () => {
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">account1.name.incorrect</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null, true, account1Server
+		);
+		assert.exists(authRes.Fault, 'Should return Fault for incorrect username');
+		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
+			'Should return AUTH_FAILED for incorrect username');
+	});
 });

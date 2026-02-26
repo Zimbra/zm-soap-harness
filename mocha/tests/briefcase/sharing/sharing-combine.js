@@ -208,4 +208,65 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		);
 		assert.exists(allRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
+
+
+	it('Functional | Verify rights combine when a folder is shared to a user (read) and a guest (delete)', async () => {
+		const folderName = 'Combine7.' + common.getUniqueString();
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder l="1" name="${folderName}" view="document"/>
+			</CreateFolderRequest>`, account1Token
+		);
+		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0]
+			: createRes.CreateFolderResponse.folder;
+
+		await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${folder.id}">
+					<grant gt="usr" d="${account2Name}" perm="r"/>
+				</action>
+			</FolderActionRequest>`, account1Token
+		);
+		const guestRes = await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${folder.id}">
+					<grant gt="guest" d="guest@test.com" pw="test123" perm="d"/>
+				</action>
+			</FolderActionRequest>`, account1Token
+		);
+		assert.exists(guestRes.FolderActionResponse, 'FolderActionResponse should exist');
+	});
+
+
+	it('Functional | Verify the specific rights read and none are combined: both should be applied meaning read access allowed', async () => {
+		const folderName = 'Combine8.' + common.getUniqueString();
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder l="1" name="${folderName}" view="document"/>
+			</CreateFolderRequest>`, account1Token
+		);
+		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0]
+			: createRes.CreateFolderResponse.folder;
+
+		// Grant read to user
+		await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${folder.id}">
+					<grant gt="usr" d="${account2Name}" perm="r"/>
+				</action>
+			</FolderActionRequest>`, account1Token
+		);
+
+		// Grant none (empty) to pub — both should combine, read still allowed
+		const noneRes = await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${folder.id}">
+					<grant gt="pub" perm=""/>
+				</action>
+			</FolderActionRequest>`, account1Token
+		);
+		assert.exists(noneRes.FolderActionResponse, 'FolderActionResponse should exist');
+	});
 });

@@ -161,4 +161,75 @@ describe('Auth > Test Authtoken', function () {
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
 	});
+
+
+	it('Regression | Login to test_account2 with its different session-id and without authtoken (using context specified by name/id)', async () => {
+		// NOTE: Commented out in XML due to session-id handling issues
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${testAccount2Name}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null
+		);
+		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+	});
+
+
+	it('Regression | Login to test_account2 with its own session-id and without authtoken (using context specified by id/name)', async () => {
+		// NOTE: Commented out in XML due to session-id handling issues
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="id">${testAccount2Id}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null
+		);
+		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+	});
+
+
+	it('Sanity | Login to admin.mailaccount with adminlogin authtoken (requestContext specified by name)', async () => {
+		// NOTE: Commented out in XML — admin mail account delegation
+		const response = await soap.makeSOAPEnvelopeAdmin(
+			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${testAccount1Name}</account>
+			</DelegateAuthRequest>`, adminAuthToken
+		);
+		assert.exists(response.DelegateAuthResponse,
+			'DelegateAuthResponse should exist');
+	});
+
+
+	it('Functional | Login to admin.mailaccount with test_account1s auth token (requestContext specified by name)', async () => {
+		// NOTE: Commented out in XML — user token cannot delegate
+		const response = await soap.makeSOAPEnvelopeAdmin(
+			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${testAccount2Name}</account>
+			</DelegateAuthRequest>`, authToken1
+		);
+		assert.exists(response.Fault, 'Should return Fault');
+		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
+			'Should return PERM_DENIED');
+	});
+
+
+	it('Functional | Login to test_account1 with admin.mailaccounts authtoken (requestContext specified by nameid)', async () => {
+		// NOTE: Commented out in XML — admin delegating to regular account
+		const response = await soap.makeSOAPEnvelopeAdmin(
+			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${testAccount1Id}</account>
+			</DelegateAuthRequest>`, adminAuthToken
+		);
+		assert.exists(response.DelegateAuthResponse,
+			'DelegateAuthResponse should exist');
+
+		const delegateToken = Array.isArray(response.DelegateAuthResponse.authToken)
+			? response.DelegateAuthResponse.authToken[0]._content
+			: response.DelegateAuthResponse.authToken._content
+			|| response.DelegateAuthResponse.authToken;
+
+		const folderRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
+		);
+		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
+	});
 });

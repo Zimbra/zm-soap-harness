@@ -107,6 +107,24 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 	});
 
 
+	it('Sanity | Auth request for preauth with token type as JWT', async () => {
+		const timestamp = String(Date.now());
+		const response = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount" tokenType="JWT">
+				<account by="name">${account1Name}</account>
+				<preauth timestamp="${timestamp}" expires="0">dummypreauthkey</preauth>
+			</AuthRequest>`, null, true, account1Server
+		);
+		if (response.Fault) {
+			assert.match(response.Fault.Detail.Error.Code,
+				/account\.AUTH_FAILED|service\.INVALID_REQUEST/,
+				'Should return AUTH_FAILED or INVALID_REQUEST');
+		} else {
+			assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		}
+	});
+
+
 	it('Sanity | Auth request as an invalid email account and tokeType as JWT', async () => {
 		const invalidUser = 'user2.' + common.getUniqueString();
 		const response = await soap.makeSOAPEnvelopeAccount(

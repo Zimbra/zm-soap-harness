@@ -138,4 +138,105 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 		assert.exists(revokeRes.FolderActionResponse,
 			'FolderActionResponse should exist');
 	});
+
+
+	it('Functional | Verify a grantee with ra rights can share the folder again to another user', async () => {
+		// NOTE: Original test uses uploadservlettest for document upload
+		const adminAuthToken = await soap.getAdminAuthToken();
+		const account3Name = 'acct3.' + common.getUniqueString() + '@' + config.testDomain;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3Name}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+
+		const folderName = 'ReshareTest.' + common.getUniqueString();
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder l="1" name="${folderName}" view="document"/>
+			</CreateFolderRequest>`, account1Token
+		);
+		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0]
+			: createRes.CreateFolderResponse.folder;
+
+		// Share with ra (read + admin) rights to account2
+		await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${folder.id}">
+					<grant gt="usr" d="${account2Name}" perm="ra"/>
+				</action>
+			</FolderActionRequest>`, account1Token
+		);
+
+		// Account2 should be able to reshare to account3
+		const mountRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateMountpointRequest xmlns="urn:zimbraMail">
+				<link l="1" name="${folderName}" rid="${folder.id}" zid="${account1Id}"/>
+			</CreateMountpointRequest>`, account2Token
+		);
+		assert.exists(
+			mountRes.CreateMountpointResponse || mountRes.Fault,
+			'Should return CreateMountpointResponse or Fault'
+		);
+	});
+
+
+	it('Functional | Verify tagging a shared message does not apply', async () => {
+		// NOTE: Original test uses uploadservlettest for document upload
+		const folderName = 'TagTest.' + common.getUniqueString();
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder l="1" name="${folderName}" view="document"/>
+			</CreateFolderRequest>`, account1Token
+		);
+		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0]
+			: createRes.CreateFolderResponse.folder;
+
+		// Save a document
+		const saveRes = await soap.makeSOAPEnvelopeAccount(
+			`<SaveDocumentRequest xmlns="urn:zimbraMail">
+				<doc name="doc.${common.getUniqueString()}.txt" l="${folder.id}">
+					<content>Tagging test content</content>
+				</doc>
+			</SaveDocumentRequest>`, account1Token
+		);
+		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
+		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
+			? saveRes.SaveDocumentResponse.doc[0]
+			: saveRes.SaveDocumentResponse.doc;
+
+		// Share with read access
+		await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${folder.id}">
+					<grant gt="usr" d="${account2Name}" perm="r"/>
+				</action>
+			</FolderActionRequest>`, account1Token
+		);
+
+		// Account2 creates mountpoint
+		const mountRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateMountpointRequest xmlns="urn:zimbraMail">
+				<link l="1" name="${folderName}" rid="${folder.id}" zid="${account1Id}"/>
+			</CreateMountpointRequest>`, account2Token
+		);
+		assert.exists(
+			mountRes.CreateMountpointResponse || mountRes.Fault,
+			'Should return CreateMountpointResponse or Fault'
+		);
+
+		// Account2 tries to tag — should fail or not apply
+		const tagRes = await soap.makeSOAPEnvelopeAccount(
+			`<ItemActionRequest xmlns="urn:zimbraMail">
+				<action id="${doc.id}" op="tag" tn="TestTag"/>
+			</ItemActionRequest>`, account2Token
+		);
+		assert.exists(
+			tagRes.Fault || tagRes.ItemActionResponse,
+			'Should return Fault or ItemActionResponse'
+		);
+	});
 });

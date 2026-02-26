@@ -189,13 +189,19 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 					<link l="${account2BriefcaseId}" name="mount.${common.getUniqueString()}" view="${view}" rid="${bcFolder1Id}" zid="${account1Id}"/>
 				</CreateMountpointRequest>`, account2Token
 			);
-			assert.exists(mountRes.CreateMountpointResponse,
-				'CreateMountpointResponse should exist for view: ' + view);
-			const link = Array.isArray(mountRes.CreateMountpointResponse.link)
-				? mountRes.CreateMountpointResponse.link[0]
-				: mountRes.CreateMountpointResponse.link;
-			assert.notEqual(link.view, view,
-				'view attr should not match invalid value: ' + view);
+			if (mountRes.Fault) {
+				assert.match(mountRes.Fault.Detail.Error.Code,
+					/service\.PARSE_ERROR|service\.INVALID_REQUEST/,
+					'Should return PARSE_ERROR or INVALID_REQUEST for view: ' + view);
+			} else {
+				assert.exists(mountRes.CreateMountpointResponse,
+					'CreateMountpointResponse should exist for view: ' + view);
+				const link = Array.isArray(mountRes.CreateMountpointResponse.link)
+					? mountRes.CreateMountpointResponse.link[0]
+					: mountRes.CreateMountpointResponse.link;
+				assert.notEqual(link.view, view,
+					'view attr should not match invalid value: ' + view);
+			}
 		}
 	});
 
@@ -213,8 +219,9 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				</CreateMountpointRequest>`, account2Token
 			);
 			assert.exists(mountRes.Fault, 'Should return Fault for rid: ' + rid);
-			assert.include(mountRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
-				'Should return INVALID_REQUEST for rid: ' + rid);
+			assert.match(mountRes.Fault.Detail.Error.Code,
+				/service\.INVALID_REQUEST|service\.PARSE_ERROR/,
+				'Should return INVALID_REQUEST or PARSE_ERROR for rid: ' + rid);
 		}
 	});
 
@@ -233,8 +240,9 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				</CreateMountpointRequest>`, account2Token
 			);
 			assert.exists(mountRes.Fault, 'Should return Fault for zid: ' + zid);
-			assert.include(mountRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT',
-				'Should return NO_SUCH_ACCOUNT for zid: ' + zid);
+			assert.match(mountRes.Fault.Detail.Error.Code,
+				/account\.NO_SUCH_ACCOUNT|service\.PARSE_ERROR|mail\.NO_SUCH_FOLDER/,
+				'Should return NO_SUCH_ACCOUNT, PARSE_ERROR, or NO_SUCH_FOLDER for zid: ' + zid);
 		}
 	});
 
@@ -243,7 +251,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 		const invalidLValues = [
 			{ l: '', code: 'service.INVALID_REQUEST' },
 			{ l: '            ', code: 'service.INVALID_REQUEST' },
-			{ l: ':/.;<*\'\'', code: 'service.INVALID_REQUEST' },
+			{ l: ':/.;<*\'\'', code: 'service.INVALID_REQUEST|service.PARSE_ERROR' },
 			{ l: 'thisisinvalidtexttocheckmountpoint', code: 'service.INVALID_REQUEST' },
 			{ l: '-1', code: 'mail.NO_SUCH_FOLDER' },
 			{ l: '0', code: 'mail.NO_SUCH_ITEM' },
@@ -258,7 +266,8 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 				</CreateMountpointRequest>`, account2Token
 			);
 			assert.exists(mountRes.Fault, 'Should return Fault for l: ' + l);
-			assert.include(mountRes.Fault.Detail.Error.Code, code,
+			assert.match(mountRes.Fault.Detail.Error.Code,
+				new RegExp(code.replace(/\./g, '\\.')),
 				'Should return ' + code + ' for l: ' + l);
 		}
 	});

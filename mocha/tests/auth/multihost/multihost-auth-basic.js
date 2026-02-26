@@ -1,0 +1,124 @@
+import { assert } from 'chai';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
+
+describe('Auth > Multihost > Multihost Auth Basic', function () {
+	this.timeout(60 * 1000);
+	let adminAuthToken;
+	let account1Name;
+	let account2Name;
+
+	before(async function () {
+		adminAuthToken = await soap.getAdminAuthToken();
+
+		account1Name = 'mh1.' + common.getUniqueString() + '@' + config.testDomain;
+		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1Name}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
+
+		account2Name = 'mh2.' + common.getUniqueString() + '@' + config.testDomain;
+		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2Name}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
+	});
+
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	// Tests
+	it('Smoke | Verify that an account configured with zimbraMailHost=A can log into host B', async () => {
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1Name}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null
+		);
+		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
+	});
+
+
+	it('Sanity | Verify that an account configured with zimbraMailHost=A can log into host A', async () => {
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1Name}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null
+		);
+		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+
+		const authToken = Array.isArray(authRes.AuthResponse.authToken)
+			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
+			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
+
+		// Verify account can get folders
+		const folderRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken
+		);
+		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
+	});
+
+
+	it('Sanity | Verify that an account configured with zimbraMailHost=B can log into host A', async () => {
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2Name}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null
+		);
+		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
+	});
+
+
+	it('Sanity | Verify that an account configured with zimbraMailHost=B can log into host B', async () => {
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2Name}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null
+		);
+		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+
+		const authToken = Array.isArray(authRes.AuthResponse.authToken)
+			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
+			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
+
+		const folderRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken
+		);
+		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
+	});
+
+
+	it('Sanity | Verify that an auth token from host A is active on host B', async () => {
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1Name}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null
+		);
+		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+
+		const authToken = Array.isArray(authRes.AuthResponse.authToken)
+			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
+			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
+
+		// Use the token from account1 to access a different endpoint
+		const folderRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken
+		);
+		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
+	});
+});

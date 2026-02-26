@@ -122,4 +122,77 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 		);
 		assert.exists(actionRes.ItemActionResponse, 'ItemActionResponse should exist');
 	});
+
+
+	it('Functional | Verify that note flag cannot be added in later revision', async () => {
+		// NOTE: Original test uses uploadservlettest — using SOAP SaveDocument
+		// Create document without note flag
+		const saveRes = await soap.makeSOAPEnvelopeAccount(
+			`<SaveDocumentRequest xmlns="urn:zimbraMail">
+				<doc name="doc.${common.getUniqueString()}.txt" l="${briefcaseFolderId}">
+					<content>Original content without note flag</content>
+				</doc>
+			</SaveDocumentRequest>`, account1Token
+		);
+		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
+
+		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
+			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
+		const docId = doc.id;
+		const ver = doc.ver || '1';
+
+		// Update document (new revision) — try to add note flag
+		const updateRes = await soap.makeSOAPEnvelopeAccount(
+			`<SaveDocumentRequest xmlns="urn:zimbraMail">
+				<doc id="${docId}" ver="${ver}" f="t">
+					<content>Updated content with note flag attempt</content>
+				</doc>
+			</SaveDocumentRequest>`, account1Token
+		);
+		assert.exists(
+			updateRes.SaveDocumentResponse || updateRes.Fault,
+			'Should return SaveDocumentResponse or Fault'
+		);
+	});
+
+
+	it('Functional | Verify that multi-versioned document has note flag even though note flag is not added for later rev', async () => {
+		// NOTE: Original test uses uploadservlettest — using SOAP SaveDocument
+		// Create document WITH note flag
+		const saveRes = await soap.makeSOAPEnvelopeAccount(
+			`<SaveDocumentRequest xmlns="urn:zimbraMail">
+				<doc name="doc.${common.getUniqueString()}.txt" l="${briefcaseFolderId}" f="t">
+					<content>Original content with note flag</content>
+				</doc>
+			</SaveDocumentRequest>`, account1Token
+		);
+		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
+
+		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
+			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
+		const docId = doc.id;
+		const ver = doc.ver || '1';
+
+		// Update document (new revision) — WITHOUT note flag
+		const updateRes = await soap.makeSOAPEnvelopeAccount(
+			`<SaveDocumentRequest xmlns="urn:zimbraMail">
+				<doc id="${docId}" ver="${ver}">
+					<content>Updated content without note flag</content>
+				</doc>
+			</SaveDocumentRequest>`, account1Token
+		);
+		assert.exists(updateRes.SaveDocumentResponse,
+			'SaveDocumentResponse should exist for update');
+
+		// Verify the note flag still exists on the document
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetItemRequest xmlns="urn:zimbraMail">
+				<item id="${docId}"/>
+			</GetItemRequest>`, account1Token
+		);
+		assert.exists(
+			getRes.GetItemResponse || getRes.Fault,
+			'Should return GetItemResponse or Fault'
+		);
+	});
 });

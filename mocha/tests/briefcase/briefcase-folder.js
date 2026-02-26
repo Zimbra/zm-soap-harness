@@ -75,6 +75,30 @@ describe('Briefcase > Briefcase Folder', function () {
 	});
 
 
+	it('Regression | Try to create duplicate briefcase folder', async () => {
+		const folderName = 'Briefcase.' + common.getUniqueString();
+
+		// Create folder first time
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder l="1" name="${folderName}"/>
+			</CreateFolderRequest>`, account1Token
+		);
+		assert.exists(createRes.CreateFolderResponse,
+			'CreateFolderResponse should exist');
+
+		// Try to create same folder again — should fail
+		const dupRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder l="1" name="${folderName}"/>
+			</CreateFolderRequest>`, account1Token
+		);
+		assert.exists(dupRes.Fault, 'Should return Fault for duplicate folder');
+		assert.include(dupRes.Fault.Detail.Error.Code, 'mail.ALREADY_EXISTS',
+			'Should return ALREADY_EXISTS');
+	});
+
+
 	it('Sanity | Rename briefcase folder', async () => {
 		const folderName = 'Briefcase.' + common.getUniqueString();
 		const newFolderName = 'Briefcase.' + common.getUniqueString();

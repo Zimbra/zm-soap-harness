@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import server from '../../framework/backend/server-command.js';
 
 describe('Auth > Auth Alias', function () {
 	this.timeout(30 * 1000);
@@ -13,7 +14,6 @@ describe('Auth > Auth Alias', function () {
 	let account2Name;
 	let account2AliasUser;
 	let account2Alias;
-	let account2Server;
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -61,8 +61,6 @@ describe('Auth > Auth Alias', function () {
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
 		const acct2Id = acct2.id;
-		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
-		account2Server = host2 ? host2._content : config.server;
 
 		// Add alias for account2
 		await soap.makeSOAPEnvelopeAdmin(
@@ -73,37 +71,78 @@ describe('Auth > Auth Alias', function () {
 		);
 	});
 
-	// Applicable zimbra versions
-	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-		return;
+	// Tests
+	if (config.serial !== true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		it('Smoke | AuthRequest - log in with alias', async () => {
+			const response = await soap.makeSOAPEnvelopeAccount(
+				`<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1Alias}</account>
+					<password>${config.accountPassword}</password>
+				</AuthRequest>`, null, true
+			);
+			assert.exists(response.AuthResponse, 'AuthResponse should exist');
+			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
+		});
 	}
 
-	// Tests
-	it('Smoke | AuthRequest - log in with alias', async () => {
-		const response = await soap.makeSOAPEnvelopeAccount(
-			`<AuthRequest xmlns="urn:zimbraAccount">
-				<account by="name">${account1Alias}</account>
-				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
-		);
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
-	});
+
+	if (config.serial !== true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		it('Sanity | AuthRequest - verify failed login with alias name does not show real account name', async () => {
+			const response = await soap.makeSOAPEnvelopeAccount(
+				`<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2AliasUser}</account>
+					<password>wrong password</password>
+				</AuthRequest>`, null, true
+			);
+			assert.exists(response.Fault, 'Should return Fault');
+			assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
+				'Should return AUTH_FAILED');
+			// Verify real account name is NOT in the error trace
+			const faultText = JSON.stringify(response.Fault);
+			assert.notInclude(faultText, account2NameUser,
+				'Real account name should not appear in error');
+		});
+	}
 
 
-	it('Sanity | AuthRequest - verify failed login with alias name does not show real account name', async () => {
-		const response = await soap.makeSOAPEnvelopeAccount(
-			`<AuthRequest xmlns="urn:zimbraAccount">
-				<account by="name">${account2AliasUser}</account>
-				<password>wrong password</password>
-			</AuthRequest>`, null, true
-		);
-		assert.exists(response.Fault, 'Should return Fault');
-		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
-			'Should return AUTH_FAILED');
-		// Verify real account name is NOT in the error trace
-		const faultText = JSON.stringify(response.Fault);
-		assert.notInclude(faultText, account2NameUser,
-			'Real account name should not appear in error');
-	});
+	// Serial tests
+	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		it('Serial | Verify when alias_login_enabled is false - alias login blocked and email login works', async function () {
+			this.timeout(120 * 1000);
+
+			// Set alias_login_enabled to false
+			await server.runCommand('sudo su - zimbra -c \'zmlocalconfig -e alias_login_enabled=false\'');
+			await server.runCommand('sudo su - zimbra -c \'zmmailboxdctl restart\'');
+			await new Promise(resolve => setTimeout(resolve, 10000));
+
+			try {
+				// Attempt alias login - should fail with AUTH_FAILED
+				const aliasRes = await soap.makeSOAPEnvelopeAccount(
+					`<AuthRequest xmlns="urn:zimbraAccount">
+						<account by="name">${account1Alias}</account>
+						<password>${config.accountPassword}</password>
+					</AuthRequest>`, null, true, account1Server
+				);
+				assert.exists(aliasRes.Fault, 'Should return Fault for alias login when disabled');
+				assert.include(aliasRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
+					'Should return AUTH_FAILED for alias login');
+
+				// Regular account login should still work
+				const acctRes = await soap.makeSOAPEnvelopeAccount(
+					`<AuthRequest xmlns="urn:zimbraAccount">
+						<account by="name">${account1Name}</account>
+						<password>${config.accountPassword}</password>
+					</AuthRequest>`, null, true, account1Server
+				);
+				assert.exists(acctRes.AuthResponse, 'AuthResponse should exist for regular login');
+				assert.match(String(acctRes.AuthResponse.lifetime), /^\d+$/,
+					'lifetime should be numeric');
+				assert.exists(acctRes.AuthResponse.authToken, 'authToken should exist');
+
+			} finally {
+				await server.runCommand('sudo su - zimbra -c \'zmlocalconfig -e alias_login_enabled=true\'');
+				await server.runCommand('sudo su - zimbra -c \'zmmailboxdctl restart\'');
+			}
+		});
+	}
 });
