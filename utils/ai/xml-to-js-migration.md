@@ -4,6 +4,12 @@ description: How to migrate XML SOAP test cases to JavaScript (mocha) with 1:1 p
 
 # XML to JS Test Migration Workflow
 
+> [!CAUTION]
+> **NEVER FORGET — Read these BEFORE writing ANY code:**
+> 1. **MANDATORY SECTION COMMENTS** — Every file MUST have `// Applicable zimbra versions` before the `if (config.serial...)` block AND `// Tests` before the first `it()`. Same indentation level. 1 blank line before each comment.
+> 2. **STRICT FORMATTING** — TABS ONLY (never spaces). Exactly **2 blank lines** between every `it()` block. 120-char line limit. Multi-line SOAP XML.
+> 3. **STRICT ASSERTIONS** — ALWAYS `assert.notExists(res.Fault, 'Response should not be a Fault')` before checking response. Match EXACT XML `t:select` path depth. Never use shallow `assert.exists(res.SomeResponse)` alone.
+
 ## File Structure
 - XML tests: `data/soapvalidator/<Module>/*.xml` (with subdirs like `Sharing/`, `Mountpoint/`, `VirtualHost/`)
 - JS tests: `mocha/tests/<module>/*.js` (with matching subdirs)
@@ -68,6 +74,7 @@ describe('Module > Feature Name', function () {
 ## Formatting Rules
 - **TABS ONLY for indentation** — NEVER use spaces for indentation. This is a STRICT rule. Every level of indentation MUST use a tab character (`\t`), not spaces. This applies to ALL code: `describe()`, `before()`, `it()`, assertions, SOAP XML inside template literals, etc. Files that use 4-space indentation are WRONG and must be converted to tabs.
 - **Double blank line** between `it()` blocks
+- **MANDATORY section comments** — Every test file MUST have `// Applicable zimbra versions` before the `if (config.serial...)` block and `// Tests` before the first `it()` block. Both comments use the same indentation as the code around them (one tab). There must be exactly 1 blank line between `});` (end of `before`) and `// Applicable zimbra versions`, and exactly 1 blank line between `}` (end of `if` block) and `// Tests`.
 - **SOAP XML must ALWAYS be multi-line** — NEVER condense XML into a single line. Each child element goes on its own indented line:
   ```js
   // WRONG — single-line XML:
