@@ -52,7 +52,7 @@ describe('RestServlet > Contacts > Post CSV', function () {
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const contacts = searchRes.SearchResponse?.cn;
 		const contactArr = Array.isArray(contacts) ? contacts : (contacts ? [contacts] : []);
-		assert.isAbove(contactArr.length, 0, 'Should find imported contact');
+		assert.isAtLeast(contactArr.length, 1, 'Should find at least one imported contact');
 		const contactId = contactArr[0].id;
 
 		// Verify contact details
@@ -70,7 +70,7 @@ describe('RestServlet > Contacts > Post CSV', function () {
 		} else if (contact?.a) {
 			const aArr = Array.isArray(contact.a) ? contact.a : [contact.a];
 			aArr.forEach(a => {
-				attrs[a.n] = a._content; 
+				attrs[a.n] = a._content;
 			});
 		}
 		assert.equal(attrs.email, 'email@foo.com', 'Email should match');

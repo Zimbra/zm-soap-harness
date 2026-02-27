@@ -48,6 +48,6 @@ describe('RestServlet > Fmt > Message ZIP', function () {
 			returnBuffer: true
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'ZIP response should have content');
+		assert.isAbove(res.body.length, 10, 'ZIP response should contain binary data');
 	});
 });

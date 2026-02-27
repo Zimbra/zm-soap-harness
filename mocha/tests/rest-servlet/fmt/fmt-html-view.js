@@ -46,6 +46,6 @@ describe('RestServlet > Fmt > HTML > Part View As HTML', function () {
 			fmt: 'html'
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'HTML response should have content');
+		assert.include(res.body, 'HTML', 'HTML response should contain HTML markup');
 	});
 });

@@ -79,7 +79,7 @@ describe('RestServlet > User > REST User', function () {
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const msgs = searchRes.SearchResponse?.m;
 		const msgArr = Array.isArray(msgs) ? msgs : (msgs ? [msgs] : []);
-		assert.isAbove(msgArr.length, 0, 'Should find message');
+		assert.isAtLeast(msgArr.length, 1, 'Should find at least one message');
 		const msgId = msgArr[0].id;
 
 		const res = await soap.makeRestRequest(account1Token, {

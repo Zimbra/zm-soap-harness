@@ -45,7 +45,7 @@ describe('RestServlet > Mail > Blocked Attachments', function () {
 			returnBuffer: true
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have content');
+		assert.isAbove(res.body.length, 10, 'ZIP response should contain message data');
 	});
 
 

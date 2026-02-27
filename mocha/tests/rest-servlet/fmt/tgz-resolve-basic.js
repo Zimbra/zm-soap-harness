@@ -55,7 +55,7 @@ describe('RestServlet > Fmt > TGZ > Resolve Basic', function () {
 			returnBuffer: true
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
-		assert.isAbove(exportRes.body.length, 0, 'TGZ should have content');
+		assert.isAbove(exportRes.body.length, 10, 'TGZ should have content');
 
 		// Import to account2 with resolve=skip
 		const importRes = await soap.makeRestPostRequest(account2Token, {

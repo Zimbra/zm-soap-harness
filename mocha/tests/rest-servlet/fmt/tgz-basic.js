@@ -48,7 +48,7 @@ describe('RestServlet > Fmt > TGZ', function () {
 			returnBuffer: true
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have tgz content');
+		assert.isAbove(res.body.length, 10, 'Response should have tgz content');
 	});
 
 
@@ -60,7 +60,7 @@ describe('RestServlet > Fmt > TGZ', function () {
 			returnBuffer: true
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have tgz content');
+		assert.isAbove(res.body.length, 10, 'Response should have tgz content');
 	});
 
 
@@ -71,6 +71,6 @@ describe('RestServlet > Fmt > TGZ', function () {
 			returnBuffer: true
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have tgz content');
+		assert.isAbove(res.body.length, 10, 'Response should have tgz content');
 	});
 });

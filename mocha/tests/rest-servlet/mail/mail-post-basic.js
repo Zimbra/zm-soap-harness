@@ -30,8 +30,8 @@ describe('RestServlet > Mail > Post Basic', function () {
 	it('Sanity | Post a message via REST servlet', async () => {
 		const emlContent = Buffer.from(
 			'From: foo@foo.com\r\nTo: ' + account1Email + '\r\nSubject: restPostTest\r\n' +
-            'MIME-Version: 1.0\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n' +
-            'rest post test content\r\n'
+			'MIME-Version: 1.0\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n' +
+			'rest post test content\r\n'
 		);
 
 		const postRes = await soap.makeRestPostRequest(account1Token, {
@@ -51,6 +51,6 @@ describe('RestServlet > Mail > Post Basic', function () {
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const msgs = searchRes.SearchResponse?.m;
 		const msgArr = Array.isArray(msgs) ? msgs : (msgs ? [msgs] : []);
-		assert.isAbove(msgArr.length, 0, 'Should find imported message');
+		assert.isAtLeast(msgArr.length, 1, 'Should find at least one imported message');
 	});
 });

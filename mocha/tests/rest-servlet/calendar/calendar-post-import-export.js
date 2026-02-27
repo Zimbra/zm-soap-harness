@@ -126,7 +126,7 @@ describe('RestServlet > Calendar > Post Import Export', function () {
 
 		const appt = searchRes.SearchResponse?.appt;
 		const apptArr = Array.isArray(appt) ? appt : (appt ? [appt] : []);
-		assert.isAbove(apptArr.length, 0, 'Should find imported appointment');
+		assert.isAtLeast(apptArr.length, 1, 'Should find at least one imported appointment');
 
 		// Verify Spanish characters
 		const invId = apptArr[0].invId;

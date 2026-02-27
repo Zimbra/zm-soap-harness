@@ -47,7 +47,7 @@ describe('RestServlet > View > Part View As HTML', function () {
 			view: 'html'
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have content');
+		assert.include(res.body, '<', 'HTML response should contain markup');
 	});
 
 

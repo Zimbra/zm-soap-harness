@@ -99,7 +99,7 @@ describe('RestServlet > Fmt > TGZ > Export Import', function () {
 			returnBuffer: true
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
-		assert.isAbove(exportRes.body.length, 0, 'TGZ should have content');
+		assert.isAbove(exportRes.body.length, 10, 'TGZ export should contain data');
 
 		const importRes = await soap.makeRestPostRequest(account2Token, {
 			user: account2Email,
@@ -179,7 +179,7 @@ describe('RestServlet > Fmt > TGZ > Export Import', function () {
 			returnBuffer: true
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
-		assert.isAbove(exportRes.body.length, 0, 'TGZ should have content');
+		assert.isAbove(exportRes.body.length, 10, 'TGZ export should contain mailbox data');
 	});
 
 
@@ -210,7 +210,7 @@ describe('RestServlet > Fmt > TGZ > Export Import', function () {
 			returnBuffer: true
 		});
 		assert.equal(exportRes.status, 200, 'Export should have return 200');
-		assert.isAbove(exportRes.body.length, 0, 'TGZ should have content');
+		assert.isAbove(exportRes.body.length, 10, 'TGZ export should contain preference data');
 	});
 
 
@@ -221,7 +221,7 @@ describe('RestServlet > Fmt > TGZ > Export Import', function () {
 			returnBuffer: true
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
-		assert.isAbove(exportRes.body.length, 0, 'Should have tgz data with tags');
+		assert.isAbove(exportRes.body.length, 10, 'TGZ export should contain tag data');
 	});
 
 

@@ -31,8 +31,8 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 		);
 		assert.notExists(addPlain.Fault, 'Response should not be a Fault');
 		plainMsgId = addPlain.AddMsgResponse?.m?.id
-            || (Array.isArray(addPlain.AddMsgResponse?.m)
-            	? addPlain.AddMsgResponse.m[0].id : undefined);
+			|| (Array.isArray(addPlain.AddMsgResponse?.m)
+				? addPlain.AddMsgResponse.m[0].id : undefined);
 
 		// HTML message
 		const addHtml = await soap.makeSOAPEnvelopeAccount(
@@ -44,8 +44,8 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 		);
 		assert.notExists(addHtml.Fault, 'Response should not be a Fault');
 		htmlMsgId = addHtml.AddMsgResponse?.m?.id
-            || (Array.isArray(addHtml.AddMsgResponse?.m)
-            	? addHtml.AddMsgResponse.m[0].id : undefined);
+			|| (Array.isArray(addHtml.AddMsgResponse?.m)
+				? addHtml.AddMsgResponse.m[0].id : undefined);
 
 		// Multipart message
 		const addMulti = await soap.makeSOAPEnvelopeAccount(
@@ -57,8 +57,8 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 		);
 		assert.notExists(addMulti.Fault, 'Response should not be a Fault');
 		multipartMsgId = addMulti.AddMsgResponse?.m?.id
-            || (Array.isArray(addMulti.AddMsgResponse?.m)
-            	? addMulti.AddMsgResponse.m[0].id : undefined);
+			|| (Array.isArray(addMulti.AddMsgResponse?.m)
+				? addMulti.AddMsgResponse.m[0].id : undefined);
 
 		// Message with attachment
 		const addAttach = await soap.makeSOAPEnvelopeAccount(
@@ -70,8 +70,8 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 		);
 		assert.notExists(addAttach.Fault, 'Response should not be a Fault');
 		attachMsgId = addAttach.AddMsgResponse?.m?.id
-            || (Array.isArray(addAttach.AddMsgResponse?.m)
-            	? addAttach.AddMsgResponse.m[0].id : undefined);
+			|| (Array.isArray(addAttach.AddMsgResponse?.m)
+				? addAttach.AddMsgResponse.m[0].id : undefined);
 
 		// Message with inline image
 		const addInline = await soap.makeSOAPEnvelopeAccount(
@@ -83,8 +83,8 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 		);
 		assert.notExists(addInline.Fault, 'Response should not be a Fault');
 		inlineMsgId = addInline.AddMsgResponse?.m?.id
-            || (Array.isArray(addInline.AddMsgResponse?.m)
-            	? addInline.AddMsgResponse.m[0].id : undefined);
+			|| (Array.isArray(addInline.AddMsgResponse?.m)
+				? addInline.AddMsgResponse.m[0].id : undefined);
 
 		// Nested multipart message
 		const addNested = await soap.makeSOAPEnvelopeAccount(
@@ -96,8 +96,8 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 		);
 		assert.notExists(addNested.Fault, 'Response should not be a Fault');
 		nestedMsgId = addNested.AddMsgResponse?.m?.id
-            || (Array.isArray(addNested.AddMsgResponse?.m)
-            	? addNested.AddMsgResponse.m[0].id : undefined);
+			|| (Array.isArray(addNested.AddMsgResponse?.m)
+				? addNested.AddMsgResponse.m[0].id : undefined);
 	});
 
 	// Applicable zimbra versions
@@ -123,7 +123,7 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 			id: htmlMsgId
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have content');
+		assert.include(res.body, 'HTML body content', 'HTML response should contain expected content');
 	});
 
 
@@ -133,7 +133,7 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 			id: multipartMsgId
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have content');
+		assert.include(res.body, 'Plain part', 'Multipart response should contain plain part content');
 	});
 
 
@@ -143,7 +143,7 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 			id: attachMsgId
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have content');
+		assert.include(res.body, 'body with attachment', 'Attachment response should contain body content');
 	});
 
 
@@ -153,7 +153,7 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 			id: inlineMsgId
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have content');
+		assert.include(res.body, 'inline image test', 'Inline image response should contain body content');
 	});
 
 
@@ -163,6 +163,6 @@ describe('RestServlet > Fmt > Body > Mail Body', function () {
 			id: nestedMsgId
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
-		assert.isAbove(res.body.length, 0, 'Response should have content');
+		assert.include(res.body, 'nested plain', 'Nested multipart response should contain plain content');
 	});
 });
