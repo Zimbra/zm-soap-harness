@@ -93,10 +93,10 @@ describe('Sharing > Send Share Notification Request Basic', function () {
         assert.notExists(res.Fault, 'AddDL2Members should not fault');
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it('Smoke | SendShareNotificationRequest sends notification about share', async () => {
@@ -169,7 +169,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
             `<SendShareNotificationRequest xmlns="urn:zimbraMail">
 				<share l="${acct2Briefcase.id}" gt="usr" d="${account1Email}"/>
 				<notes>test notes</notes>
-			</SendShareNotificationRequest>`, account2AuthToken
+			</SendShareNotificationRequest>`, account2AuthToken, false
         );
         assert.exists(res.Fault, 'Should fault for unshared folder');
 		const faultMsg = JSON.stringify(res.Fault);
@@ -337,7 +337,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
             `<SendShareNotificationRequest xmlns="urn:zimbraMail">
 				<share l="${acct5Calendar.id}" gt="grp" zid="${dl2Id}"/>
 				<notes>test notes</notes>
-			</SendShareNotificationRequest>`, account5AuthToken
+			</SendShareNotificationRequest>`, account5AuthToken, false
         );
         assert.exists(res.Fault, 'Should fault after revoke');
 
@@ -353,7 +353,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
             `<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${acct7Calendar.id}" name="${mountName2}"
 					zid="${account5Id}" rid="${acct5Calendar.id}" view="appointment"/>
-			</CreateMountpointRequest>`, account7AuthToken
+			</CreateMountpointRequest>`, account7AuthToken, false
         );
         assert.exists(res.Fault, 'Mount after revoke should fault with PERM_DENIED');
     });

@@ -55,7 +55,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>@${config.testDomain}</newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		assert.include(renameRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
@@ -77,7 +77,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>invaliddomain</newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		assert.include(renameRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
@@ -99,7 +99,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>invaliddomain</newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		assert.include(renameRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
@@ -120,7 +120,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName></newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
@@ -143,7 +143,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>             </newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
@@ -166,7 +166,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>:'&lt;//\\</newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
@@ -189,7 +189,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>some text</newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
@@ -212,7 +212,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>some text</newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
@@ -235,7 +235,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>-1</newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
@@ -258,7 +258,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>0</newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
@@ -281,7 +281,7 @@ describe('Admin > Accounts > Account Rename', function () {
 			`<RenameAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<newName>12345678901234567890</newName>
-			</RenameAccountRequest>`, adminAuthToken
+			</RenameAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;

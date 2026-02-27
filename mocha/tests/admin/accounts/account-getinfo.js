@@ -160,7 +160,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 					<account by="name">${name}</account>
-				</GetAccountInfoRequest>`, userAuthToken
+				</GetAccountInfoRequest>`, userAuthToken, false
 			);
 			assert.exists(response.Fault, `Should fault for name="${name}"`);
 
@@ -198,7 +198,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="id">${testAccount1}_nonexist</account>
-			</GetAccountInfoRequest>`, userAuthToken
+			</GetAccountInfoRequest>`, userAuthToken, false
 		);
 		assert.exists(response.Fault);
 
@@ -211,7 +211,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="name">${testAccount3}</account>
-			</GetAccountInfoRequest>`, userAuthToken
+			</GetAccountInfoRequest>`, userAuthToken, false
 		);
 		assert.exists(response.Fault);
 
@@ -224,7 +224,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="id">${account3Id}</account>
-			</GetAccountInfoRequest>`, userAuthToken
+			</GetAccountInfoRequest>`, userAuthToken, false
 		);
 		assert.exists(response.Fault);
 
@@ -237,7 +237,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="name">${config.testDomain}</account>
-			</GetAccountInfoRequest>`, userAuthToken
+			</GetAccountInfoRequest>`, userAuthToken, false
 		);
 		assert.exists(response.Fault);
 
@@ -254,7 +254,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="name">${nonExistName}</account>
 				<account by="id">${account1Id}</account>
-			</GetAccountInfoRequest>`, userAuthToken
+			</GetAccountInfoRequest>`, userAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should return fault');
 		const code = response.Fault.Detail.Error.Code;
@@ -269,7 +269,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 				<account by="name">${testAccount4}</account>
-			</GetAccountInfoRequest>`, userAuthToken
+			</GetAccountInfoRequest>`, userAuthToken, false
 		);
 		assert.isTrue(!!response.GetAccountInfoResponse || !!response.Fault, 'Expected fault or success');
 		if (response.Fault && response.Fault.Detail && response.Fault.Detail.Error) {

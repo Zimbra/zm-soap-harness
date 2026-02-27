@@ -12,10 +12,10 @@ describe('SanityTest > Check Request Sanity', function () {
         adminAuthToken = await soap.getAdminAuthToken();
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it('Sanity | Sanity test for CheckHostnameResolveRequest', async () => {
@@ -45,7 +45,7 @@ describe('SanityTest > Check Request Sanity', function () {
 				<a n="zimbraAuthLdapBindDn">%u@${config.testDomain}</a>
 				<name>${config.adminUser}</name>
 				<password>${config.adminPassword}</password>
-			</CheckAuthConfigRequest>`, adminAuthToken
+			</CheckAuthConfigRequest>`, adminAuthToken, false
         );
         // Server may succeed or fault depending on LDAP configuration
         if (res.CheckAuthConfigResponse) {
@@ -69,7 +69,7 @@ describe('SanityTest > Check Request Sanity', function () {
 				<a n="zimbraGalLdapBindDn">${config.adminUser}</a>
 				<a n="zimbraGalLdapBindPassword">${config.adminPassword}</a>
 				<query limit="2">admin</query>
-			</CheckGalConfigRequest>`, adminAuthToken
+			</CheckGalConfigRequest>`, adminAuthToken, false
         );
         // Server may succeed or fault depending on GAL/LDAP configuration
         if (res.CheckGalConfigResponse) {

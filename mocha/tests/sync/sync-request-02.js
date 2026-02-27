@@ -4,7 +4,7 @@ import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import { main } from '../../pages/main.js';
 
-describe('Sync > Sync Request', function () {
+describe('Sync > Sync Request 02', function () {
 	this.timeout(60 * 1000);
 	let accountEmail = null, accountAuthToken = null;
 	let account2Email = null, account2AuthToken = null;
@@ -19,7 +19,7 @@ describe('Sync > Sync Request', function () {
 
 		// Get standard folder ids
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
-			'<GetFolderRequest xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		const folders = Array.isArray(getFolderRes.GetFolderResponse.folder)
@@ -55,7 +55,7 @@ describe('Sync > Sync Request', function () {
 	}
 
 	// Tests
-	
+
 
 
 	it('Functional | SyncRequest after moving a contact to sent folder', async () => {
@@ -64,7 +64,7 @@ describe('Sync > Sync Request', function () {
 				<cn>
 					<a n="firstName">first${common.getUniqueString()}</a>
 				</cn>
-			</CreateContactRequest>`, accountAuthToken, true
+			</CreateContactRequest>`, accountAuthToken
 		);
 		const contactId = createRes.CreateContactResponse.cn[0].id;
 		const token = await getSyncToken(accountAuthToken);
@@ -72,7 +72,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${contactId}" l="${sentId}"/>
-			</ContactActionRequest>`, accountAuthToken, true
+			</ContactActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -89,7 +89,7 @@ describe('Sync > Sync Request', function () {
 				<cn>
 					<a n="firstName">first${common.getUniqueString()}</a>
 				</cn>
-			</CreateContactRequest>`, accountAuthToken, true
+			</CreateContactRequest>`, accountAuthToken
 		);
 		const contactId = createRes.CreateContactResponse.cn[0].id;
 		const token = await getSyncToken(accountAuthToken);
@@ -97,7 +97,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${contactId}" l="${draftsId}"/>
-			</ContactActionRequest>`, accountAuthToken, true
+			</ContactActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -114,7 +114,7 @@ describe('Sync > Sync Request', function () {
 				<cn>
 					<a n="firstName">first${common.getUniqueString()}</a>
 				</cn>
-			</CreateContactRequest>`, accountAuthToken, true
+			</CreateContactRequest>`, accountAuthToken
 		);
 		const contactId = createRes.CreateContactResponse.cn[0].id;
 		const token = await getSyncToken(accountAuthToken);
@@ -122,7 +122,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${contactId}" l="${junkId}"/>
-			</ContactActionRequest>`, accountAuthToken, true
+			</ContactActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -145,19 +145,23 @@ describe('Sync > Sync Request', function () {
 						<content>Test content</content>
 					</mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
-		);
-		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
-			? searchRes.SearchResponse.m : (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+		let searchMsgs = [];
+		for (let i = 0; i < 10; i++) {
+			await new Promise(resolve => setTimeout(resolve, 1500));
+			const searchRes = await soap.makeSOAPEnvelopeAccount(
+				`<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>subject:(${subject})</query>
+				</SearchRequest>`, accountAuthToken
+			);
+			assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+			searchMsgs = Array.isArray(searchRes.SearchResponse.m)
+				? searchRes.SearchResponse.m : (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+			if (searchMsgs.length > 0) break;
+		}
 		assert.isAbove(searchMsgs.length, 0, 'Should find the sent message');
 		const msgId = searchMsgs[0].id;
 
@@ -165,7 +169,7 @@ describe('Sync > Sync Request', function () {
 		const createTag = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="3"/>
-			</CreateTagRequest>`, accountAuthToken, true
+			</CreateTagRequest>`, accountAuthToken
 		);
 		const tagId = createTag.CreateTagResponse.tag[0].id;
 
@@ -174,7 +178,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="tag" id="${msgId}" tag="${tagId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		let syncData = await syncWithToken(token, accountAuthToken);
@@ -187,7 +191,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="!tag" id="${msgId}" tag="${tagId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		syncData = await syncWithToken(token2, accountAuthToken);
@@ -207,13 +211,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -225,7 +229,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="flag" id="${msgId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		let syncData = await syncWithToken(token, accountAuthToken);
@@ -238,7 +242,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="!flag" id="${msgId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		syncData = await syncWithToken(token2, accountAuthToken);
@@ -258,13 +262,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -276,7 +280,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="read" id="${msgId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		let syncData = await syncWithToken(token, accountAuthToken);
@@ -289,7 +293,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="!read" id="${msgId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		syncData = await syncWithToken(token2, accountAuthToken);
@@ -309,13 +313,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -327,7 +331,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${msgId}" l="${trashId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -347,13 +351,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -365,7 +369,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${msgId}" l="${junkId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -385,13 +389,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -403,7 +407,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${msgId}" l="${draftsId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -423,13 +427,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -441,7 +445,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${msgId}" l="${sentId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -461,13 +465,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -479,7 +483,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${msgId}" l="${trashId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const token = await getSyncToken(accountAuthToken);
@@ -488,7 +492,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${msgId}" l="${inboxId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -508,13 +512,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -526,7 +530,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="spam" id="${msgId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -546,13 +550,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -564,7 +568,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="spam" id="${msgId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const token = await getSyncToken(accountAuthToken);
@@ -573,7 +577,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="!spam" id="${msgId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -593,13 +597,13 @@ describe('Sync > Sync Request', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test</content></mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken, true
+			</SendMsgRequest>`, accountAuthToken
 		);
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken, true
+			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
@@ -611,7 +615,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${msgId}" l="${junkId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const token = await getSyncToken(accountAuthToken);
@@ -620,7 +624,7 @@ describe('Sync > Sync Request', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="!spam" id="${msgId}"/>
-			</MsgActionRequest>`, accountAuthToken, true
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		const syncData = await syncWithToken(token, accountAuthToken);
@@ -642,7 +646,7 @@ describe('Sync > Sync Request', function () {
 Content Text
 					</content>
 				</m>
-			</AddMsgRequest>`, accountAuthToken, true
+			</AddMsgRequest>`, accountAuthToken
 		);
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const msgId = addRes.AddMsgResponse.m[0].id;
@@ -667,7 +671,7 @@ Content Text
 						<content>Draft content</content>
 					</mp>
 				</m>
-			</SaveDraftRequest>`, accountAuthToken, true
+			</SaveDraftRequest>`, accountAuthToken
 		);
 		assert.notExists(draftRes.Fault, 'Response should not be a Fault');
 		const draftId = draftRes.SaveDraftResponse.m[0].id;
@@ -697,7 +701,7 @@ Content Text
 					</mp>
 					<su>Test appointment ${common.getUniqueString()}</su>
 				</m>
-			</CreateAppointmentRequest>`, accountAuthToken, true
+			</CreateAppointmentRequest>`, accountAuthToken
 		);
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 		const apptId = apptRes.CreateAppointmentResponse.calItemId;
@@ -727,7 +731,7 @@ Content Text
 Content Text
 					</content>
 				</m>
-			</AddMsgRequest>`, accountAuthToken, true
+			</AddMsgRequest>`, accountAuthToken
 		);
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const msgId = addRes.AddMsgResponse.m[0].id;
@@ -743,7 +747,7 @@ Content Text
 					<a n="firstName">first${common.getUniqueString()}</a>
 					<a n="lastName">last${common.getUniqueString()}</a>
 				</cn>
-			</CreateContactRequest>`, accountAuthToken, true
+			</CreateContactRequest>`, accountAuthToken
 		);
 		assert.notExists(contactRes.Fault, 'Response should not be a Fault');
 		const contactId = contactRes.CreateContactResponse.cn[0].id;
@@ -764,21 +768,21 @@ Content Text
 	it('Regression | SyncRequest with the invalid numeric tokens (Negative, Zero, Decimal, Large Number)', async () => {
 		// Negative token
 		const negRes = await soap.makeSOAPEnvelopeAccount(
-			'<SyncRequest token="-1" xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<SyncRequest token="-1" xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
 		assert.notExists(negRes.Fault, 'Negative token should not cause a Fault');
 		assert.exists(negRes.SyncResponse.token, 'Should return a valid token');
 
 		// Zero token
 		const zeroRes = await soap.makeSOAPEnvelopeAccount(
-			'<SyncRequest token="0" xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<SyncRequest token="0" xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
 		assert.notExists(zeroRes.Fault, 'Zero token should not cause a Fault');
 		assert.exists(zeroRes.SyncResponse.token, 'Should return a valid token');
 
 		// Decimal token — should return INVALID_REQUEST
 		const decRes = await soap.makeSOAPEnvelopeAccount(
-			'<SyncRequest token="1.54" xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<SyncRequest token="1.54" xmlns="urn:zimbraMail"/>', accountAuthToken, false
 		);
 		assert.exists(decRes.Fault, 'Decimal token should return Fault');
 		assert.include(decRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
@@ -786,7 +790,7 @@ Content Text
 
 		// Large number token
 		const largeRes = await soap.makeSOAPEnvelopeAccount(
-			'<SyncRequest token="111222333" xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<SyncRequest token="111222333" xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
 		assert.notExists(largeRes.Fault, 'Large number token should not cause a Fault');
 		assert.exists(largeRes.SyncResponse.token, 'Should return a valid token');
@@ -796,7 +800,7 @@ Content Text
 	it('Regression | SyncRequest with the invalid tokens (blank, spaces, sometext)', async () => {
 		// Blank token — server treats as no-token sync (returns full SyncResponse)
 		const blankRes = await soap.makeSOAPEnvelopeAccount(
-			'<SyncRequest token="" xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<SyncRequest token="" xmlns="urn:zimbraMail"/>', accountAuthToken, false
 		);
 		if (blankRes.Fault) {
 			assert.include(blankRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
@@ -807,7 +811,7 @@ Content Text
 
 		// Spaces token
 		const spaceRes = await soap.makeSOAPEnvelopeAccount(
-			'<SyncRequest token="        " xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<SyncRequest token="        " xmlns="urn:zimbraMail"/>', accountAuthToken, false
 		);
 		assert.exists(spaceRes.Fault, 'Spaces token should return Fault');
 		assert.include(spaceRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
@@ -815,7 +819,7 @@ Content Text
 
 		// Sometext token
 		const textRes = await soap.makeSOAPEnvelopeAccount(
-			'<SyncRequest token="Some Text" xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<SyncRequest token="Some Text" xmlns="urn:zimbraMail"/>', accountAuthToken, false
 		);
 		assert.exists(textRes.Fault, 'Text token should return Fault');
 		assert.include(textRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',

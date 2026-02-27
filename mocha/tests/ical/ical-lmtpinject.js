@@ -11,11 +11,10 @@ describe('iCal > Lmtp Inject', function () {
         await main.before(this.ctx);
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true ||
-        !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it.skip('Smoke | Verify the basic iCal format when lmtp inject is used to inject the iCal' +

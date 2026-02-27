@@ -47,7 +47,7 @@ describe('Auth > Auth Request Sphchar', function () {
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${acctName}</account>
 					<password>${config.accountPassword}</password>
-				</AuthRequest>`, null, true
+				</AuthRequest>`, null
 			);
 			assert.notExists(authRes.Fault, 'Response should not be a Fault');
 			assert.exists(authRes.AuthResponse,
@@ -79,13 +79,12 @@ describe('Auth > Auth Request Sphchar', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountName.toLowerCase()}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for lowercase login');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
-		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 });

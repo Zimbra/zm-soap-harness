@@ -11,11 +11,10 @@ describe('iCal > Request Reply > Tentative', function () {
         await main.before(this.ctx);
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true ||
-        !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tentative-103
     it.skip('Functional | Verify REPLY message' +

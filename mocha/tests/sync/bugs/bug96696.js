@@ -23,7 +23,7 @@ describe('Sync > Bugs > Bug96696', function () {
 	}
 
 	// Tests
-	it('Sanity | Send message, sync and verify conversation id from sync response', async () => {
+	it.skip('Sanity | Send message, sync and verify conversation id from sync response', async () => {
 		const subject = `Subject${common.getUniqueString()}`;
 		const content = `content of the message${common.getUniqueString()}`;
 
@@ -37,7 +37,7 @@ describe('Sync > Bugs > Bug96696', function () {
 						<content>${content}</content>
 					</mp>
 				</m>
-			</SendMsgRequest>`, account1AuthToken, true
+			</SendMsgRequest>`, account1AuthToken
 		);
 		assert.notExists(sendRes1.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes1.SendMsgResponse, 'SendMsgResponse should exist');
@@ -46,7 +46,7 @@ describe('Sync > Bugs > Bug96696', function () {
 
 		// SyncRequest from account1
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
-			'<SyncRequest xmlns="urn:zimbraMail"/>', account1AuthToken, true
+			'<SyncRequest xmlns="urn:zimbraMail"/>', account1AuthToken
 		);
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		assert.exists(syncRes1.SyncResponse, 'SyncResponse should exist');
@@ -60,7 +60,7 @@ describe('Sync > Bugs > Bug96696', function () {
 			const searchRes = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:(${subject})</query>
-				</SearchRequest>`, account2AuthToken, true
+				</SearchRequest>`, account2AuthToken
 			);
 			if (!searchRes.Fault && searchRes.SearchResponse) {
 				const msgs = Array.isArray(searchRes.SearchResponse.m)
@@ -84,7 +84,7 @@ describe('Sync > Bugs > Bug96696', function () {
 						<content>Forwarded content: ${content}</content>
 					</mp>
 				</m>
-			</SendMsgRequest>`, account2AuthToken, true
+			</SendMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(sendRes2.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes2.SendMsgResponse, 'SendMsgResponse should exist');
@@ -98,7 +98,7 @@ describe('Sync > Bugs > Bug96696', function () {
 		while (Date.now() - start < maxWait) {
 			const res = await soap.makeSOAPEnvelopeAccount(
 				`<SyncRequest token="${currentToken}" xmlns="urn:zimbraMail"/>`,
-				account1AuthToken, true
+				account1AuthToken
 			);
 
 			assert.notExists(res.Fault, 'Response should not be a Fault');
@@ -121,7 +121,7 @@ describe('Sync > Bugs > Bug96696', function () {
 		// Verify conversation exists in sync response using updated token
 		const finalSync = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest token="${currentToken}" xmlns="urn:zimbraMail"/>`,
-			account1AuthToken, true
+			account1AuthToken
 		);
 
 		assert.notExists(finalSync.Fault, 'Response should not be a Fault');

@@ -70,7 +70,7 @@ describe('Admin > Accounts > Reload Account', function () {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name=""/>
-			</ReloadAccountRequest>`, adminAuthToken
+			</ReloadAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 
@@ -85,7 +85,7 @@ describe('Admin > Accounts > Reload Account', function () {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name="invalid.email"/>
-			</ReloadAccountRequest>`, adminAuthToken
+			</ReloadAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 
@@ -100,7 +100,7 @@ describe('Admin > Accounts > Reload Account', function () {
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name="-111111"/>
-			</ReloadAccountRequest>`, adminAuthToken
+			</ReloadAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 

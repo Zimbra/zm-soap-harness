@@ -165,7 +165,7 @@ describe('Folders > Searchfolder Create', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${searchName}' query='in:contacts' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
-		const response2 = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken);
+		const response2 = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken, false);
 
 		assert.exists(response2.Fault, 'Verify Fault exists');
 		assert.include(response2.Fault.Reason.Text, 'already exists',
@@ -178,7 +178,7 @@ describe('Folders > Searchfolder Create', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name="':;~!@" query='in:trash' types='conversation' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
-		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken);
+		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken, false);
 
 		assert.exists(response.Fault, 'Verify Fault exists');
 		assert.include(response.Fault.Reason.Text, 'invalid name',
@@ -207,7 +207,7 @@ describe('Folders > Searchfolder Create', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='' query='in:trash' types='conversation' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
-		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken);
+		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken, false);
 
 		assert.exists(response.Fault, 'Verify Fault exists');
 		assert.include(response.Fault.Reason.Text, 'invalid name',
@@ -220,7 +220,7 @@ describe('Folders > Searchfolder Create', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name=' ' query='in:trash' types='conversation' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
-		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken);
+		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken, false);
 
 		assert.exists(response.Fault, 'Verify Fault exists');
 		assert.include(response.Fault.Reason.Text, 'invalid name',
@@ -306,7 +306,7 @@ describe('Folders > Searchfolder Create', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${searchName}' query='in:contacts' types='conversation' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
-		const response2 = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken);
+		const response2 = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken, false);
 
 		assert.exists(response2.Fault, 'Verify Fault exists');
 		assert.include(response2.Fault.Reason.Text, 'already exists',

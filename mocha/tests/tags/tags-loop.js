@@ -27,7 +27,7 @@ describe('Tags > Tags Loop', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${freshEmail}</name>
 				<password>${soap.accountPassword}</password>
-			</CreateAccountRequest>`, adminAuthToken, true
+			</CreateAccountRequest>`, adminAuthToken
 		);
 		const freshToken = await soap.getAccountAuthToken(freshEmail);
 
@@ -37,7 +37,7 @@ describe('Tags > Tags Loop', function () {
 			const res = await soap.makeSOAPEnvelopeAccount(
 				`<CreateTagRequest xmlns="urn:zimbraMail">
 					<tag name="tag${i}_${common.getUniqueString()}" color="${(i % 7) + 1}"/>
-				</CreateTagRequest>`, freshToken, true
+				</CreateTagRequest>`, freshToken
 			);
 			assert.notExists(res.Fault, `Tag ${i + 1} should be created`);
 			tagIds.push(res.CreateTagResponse.tag[0].id);
@@ -48,7 +48,7 @@ describe('Tags > Tags Loop', function () {
 
 	it('Functional | Get all tags', async () => {
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetTagResponse, 'GetTagResponse should exist');
@@ -60,13 +60,13 @@ describe('Tags > Tags Loop', function () {
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="3"/>
-			</CreateTagRequest>`, accountAuthToken, true
+			</CreateTagRequest>`, accountAuthToken
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
@@ -82,7 +82,7 @@ describe('Tags > Tags Loop', function () {
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="2"/>
-			</CreateTagRequest>`, accountAuthToken, true
+			</CreateTagRequest>`, accountAuthToken
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
@@ -91,12 +91,12 @@ describe('Tags > Tags Loop', function () {
 		const renameRes = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="rename" id="${tagId}" name="${newName}"/>
-			</TagActionRequest>`, accountAuthToken, true
+			</TagActionRequest>`, accountAuthToken
 		);
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
 			? getRes.GetTagResponse.tag : [getRes.GetTagResponse.tag];
@@ -111,7 +111,7 @@ describe('Tags > Tags Loop', function () {
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="1"/>
-			</CreateTagRequest>`, accountAuthToken, true
+			</CreateTagRequest>`, accountAuthToken
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
@@ -119,12 +119,12 @@ describe('Tags > Tags Loop', function () {
 		const colorRes = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="color" id="${tagId}" color="6"/>
-			</TagActionRequest>`, accountAuthToken, true
+			</TagActionRequest>`, accountAuthToken
 		);
 		assert.notExists(colorRes.Fault, 'Response should not be a Fault');
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
 			? getRes.GetTagResponse.tag : [getRes.GetTagResponse.tag];
@@ -141,7 +141,7 @@ describe('Tags > Tags Loop', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${freshEmail}</name>
 				<password>${soap.accountPassword}</password>
-			</CreateAccountRequest>`, adminAuthToken, true
+			</CreateAccountRequest>`, adminAuthToken
 		);
 		const freshToken = await soap.getAccountAuthToken(freshEmail);
 
@@ -150,12 +150,12 @@ describe('Tags > Tags Loop', function () {
 			await soap.makeSOAPEnvelopeAccount(
 				`<CreateTagRequest xmlns="urn:zimbraMail">
 					<tag name="tag${i}_${common.getUniqueString()}" color="${(i % 7) + 1}"/>
-				</CreateTagRequest>`, freshToken, true
+				</CreateTagRequest>`, freshToken
 			);
 		}
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			'<GetTagRequest xmlns="urn:zimbraMail"/>', freshToken, true
+			'<GetTagRequest xmlns="urn:zimbraMail"/>', freshToken
 		);
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
@@ -169,7 +169,7 @@ describe('Tags > Tags Loop', function () {
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="4"/>
-			</CreateTagRequest>`, accountAuthToken, true
+			</CreateTagRequest>`, accountAuthToken
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
@@ -177,12 +177,12 @@ describe('Tags > Tags Loop', function () {
 		const deleteRes = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" id="${tagId}"/>
-			</TagActionRequest>`, accountAuthToken, true
+			</TagActionRequest>`, accountAuthToken
 		);
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken, true
+			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
 			? getRes.GetTagResponse.tag
@@ -199,7 +199,7 @@ describe('Tags > Tags Loop', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${freshEmail}</name>
 				<password>${soap.accountPassword}</password>
-			</CreateAccountRequest>`, adminAuthToken, true
+			</CreateAccountRequest>`, adminAuthToken
 		);
 		const freshToken = await soap.getAccountAuthToken(freshEmail);
 
@@ -209,7 +209,7 @@ describe('Tags > Tags Loop', function () {
 			const res = await soap.makeSOAPEnvelopeAccount(
 				`<CreateTagRequest xmlns="urn:zimbraMail">
 					<tag name="tag${i}_${common.getUniqueString()}" color="${(i % 7) + 1}"/>
-				</CreateTagRequest>`, freshToken, true
+				</CreateTagRequest>`, freshToken
 			);
 			tagIds.push(res.CreateTagResponse.tag[0].id);
 		}
@@ -218,7 +218,7 @@ describe('Tags > Tags Loop', function () {
 		await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" id="${tagIds[0]}"/>
-			</TagActionRequest>`, freshToken, true
+			</TagActionRequest>`, freshToken
 		);
 
 		// Create a new tag
@@ -226,7 +226,7 @@ describe('Tags > Tags Loop', function () {
 		const newRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${newTagName}" color="5"/>
-			</CreateTagRequest>`, freshToken, true
+			</CreateTagRequest>`, freshToken
 		);
 		assert.notExists(newRes.Fault, 'New tag should be created after deletion');
 		assert.exists(newRes.CreateTagResponse, 'CreateTagResponse should exist');

@@ -184,7 +184,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domainName}</name>
 				<a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
-			</CreateDomainRequest>`, adminAuthToken
+			</CreateDomainRequest>`, adminAuthToken, false
 		);
 		assert.exists(domRes.Fault,
 			'Domain create with zimbraCalendarReminderDeviceEmail should fault');
@@ -203,7 +203,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 			`<ModifyDomainRequest xmlns="urn:zimbraAdmin">
 				<id>${domId}</id>
 				<a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
-			</ModifyDomainRequest>`, adminAuthToken
+			</ModifyDomainRequest>`, adminAuthToken, false
 		);
 		assert.exists(modDomRes.Fault,
 			'Domain modify with zimbraCalendarReminderDeviceEmail should fault');
@@ -222,7 +222,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 			`<ModifyCosRequest xmlns="urn:zimbraAdmin">
 				<id>${cosId}</id>
 				<a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
-			</ModifyCosRequest>`, adminAuthToken
+			</ModifyCosRequest>`, adminAuthToken, false
 		);
 		assert.exists(modCosRes.Fault,
 			'COS modify with zimbraCalendarReminderDeviceEmail should fault');
@@ -232,7 +232,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name xmlns="">test_cos_${common.getUniqueString()}</name>
 				<a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
-			</CreateCosRequest>`, adminAuthToken
+			</CreateCosRequest>`, adminAuthToken, false
 		);
 		assert.exists(cosRes2.Fault,
 			'COS create with zimbraCalendarReminderDeviceEmail should fault');

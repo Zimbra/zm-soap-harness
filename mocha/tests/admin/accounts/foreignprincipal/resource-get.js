@@ -125,7 +125,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<calresource by="foreignPrincipal">${fp}</calresource>
-			</GetCalendarResourceRequest>`, adminAuthToken
+			</GetCalendarResourceRequest>`, adminAuthToken, false
 		);
 		assert.exists(getRes.Fault);
 		assert.include(getRes.Fault.Detail.Error.Code, 'NO_SUCH_CALENDAR_RESOURCE');
@@ -140,7 +140,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${fp}</account>
-			</GetAccountRequest>`, adminAuthToken
+			</GetAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(getRes.Fault);
 	});

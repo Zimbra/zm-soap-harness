@@ -17,10 +17,10 @@ describe('Tasks > SendingTasks > SendTaskBasic', function () {
         account2AuthToken = await soap.getAccountAuthToken(account2Email);
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it('Sanity | Send a partially completed task from user1 to user2', async () => {
@@ -41,7 +41,7 @@ describe('Tasks > SendingTasks > SendTaskBasic', function () {
 						<content>Partially completed task</content>
 					</mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken, true
+			</CreateTaskRequest>`, accountAuthToken
         );
         assert.notExists(createRes.Fault, 'Response should not be a Fault');
         assert.exists(createRes.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -52,7 +52,7 @@ describe('Tasks > SendingTasks > SendTaskBasic', function () {
         const searchRes = await soap.makeSOAPEnvelopeAccount(
             `<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, account2AuthToken, true
+			</SearchRequest>`, account2AuthToken
         );
         assert.notExists(searchRes.Fault, 'Response should not be a Fault');
         assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');

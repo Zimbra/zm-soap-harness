@@ -85,7 +85,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 					<purge>
 						<policy name="${policyName}" lifetime="${val}" xmlns="urn:zimbraMail"/>
 					</purge>
-				</CreateSystemRetentionPolicyRequest>`, adminAuthToken
+				</CreateSystemRetentionPolicyRequest>`, adminAuthToken, false
 			);
 			assert.exists(response.Fault, `Should fault for invalid lifetime "${val}"`);
 		}

@@ -75,7 +75,7 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 
 		const request =
 			`<FolderActionRequest xmlns="urn:zimbraMail">${actionXml}</FolderActionRequest>`;
-		const response = await soap.makeSOAPEnvelopeAccount(request, auth2);
+		const response = await soap.makeSOAPEnvelopeAccount(request, auth2, false);
 		assert.exists(response.Fault,
 			`Should have failed to ${op} immutable folder ${folderName}`);
 		if (response.Fault && response.Fault.Reason) {

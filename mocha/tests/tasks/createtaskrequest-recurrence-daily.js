@@ -33,7 +33,7 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Daily recurring task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken, true
+			</CreateTaskRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -57,7 +57,7 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>5 occurrence task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken, true
+			</CreateTaskRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -79,7 +79,7 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Every 3 days task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken, true
+			</CreateTaskRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -102,7 +102,7 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Every 3 days, 4 occurrences</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken, true
+			</CreateTaskRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');

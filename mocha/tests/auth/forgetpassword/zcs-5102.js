@@ -93,7 +93,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		const acct2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -130,7 +130,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		const acct3Token = Array.isArray(authRes3.AuthResponse.authToken)
 			? authRes3.AuthResponse.authToken[0]._content || authRes3.AuthResponse.authToken[0]
@@ -144,7 +144,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account4Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		const acct4Token = Array.isArray(authRes4.AuthResponse.authToken)
 			? authRes4.AuthResponse.authToken[0]._content || authRes4.AuthResponse.authToken[0]
@@ -166,7 +166,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		const acct3TokenB = Array.isArray(authRes3b.AuthResponse.authToken)
 			? authRes3b.AuthResponse.authToken[0]._content || authRes3b.AuthResponse.authToken[0]
@@ -291,8 +291,9 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
+		assert.notExists(authRes.Fault, 'Auth for account3 should not fault');
 		const acctToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
@@ -306,7 +307,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<recoveryCode>${invalidRecoveryCode}</recoveryCode>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(attempt1.Fault, 'Attempt 1 should fail');
 		assert.exists(attempt1.Fault.Detail.Error.Code, 'Error code should exist');
@@ -319,7 +320,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<recoveryCode>${invalidRecoveryCode}</recoveryCode>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(attempt2.Fault, 'Attempt 2 should fail');
 		assert.exists(attempt2.Fault.Detail.Error.Code, 'Error code should exist');

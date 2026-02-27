@@ -46,7 +46,7 @@ describe('Auth > Auth Basic Multinode', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountA1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -66,7 +66,7 @@ describe('Auth > Auth Basic Multinode', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountA1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -78,7 +78,7 @@ describe('Auth > Auth Basic Multinode', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountB1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -90,7 +90,7 @@ describe('Auth > Auth Basic Multinode', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountB1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');

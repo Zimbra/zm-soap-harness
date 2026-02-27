@@ -41,7 +41,7 @@ describe('Tags > Tags Create', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="" color="2"/>
-			</CreateTagRequest>`, accountAuthToken
+			</CreateTagRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Response should be a Fault for blank name');
 	});
@@ -51,7 +51,7 @@ describe('Tags > Tags Create', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="   " color="3"/>
-			</CreateTagRequest>`, accountAuthToken
+			</CreateTagRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Response should be a Fault for spaces-only name');
 	});
@@ -69,7 +69,7 @@ describe('Tags > Tags Create', function () {
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="3"/>
-			</CreateTagRequest>`, accountAuthToken
+			</CreateTagRequest>`, accountAuthToken, false
 		);
 		assert.exists(res2.Fault, 'Duplicate name should be a Fault');
 	});
@@ -108,7 +108,7 @@ describe('Tags > Tags Create', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="-1"/>
-			</CreateTagRequest>`, accountAuthToken
+			</CreateTagRequest>`, accountAuthToken, false
 		);
 		// Server may accept negative color values
 		if (res.Fault) {
@@ -124,7 +124,7 @@ describe('Tags > Tags Create', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="   "/>
-			</CreateTagRequest>`, accountAuthToken
+			</CreateTagRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Spaces-only color should be a Fault');
 	});
@@ -135,7 +135,7 @@ describe('Tags > Tags Create', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="!@#"/>
-			</CreateTagRequest>`, accountAuthToken
+			</CreateTagRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Special chars color should be a Fault');
 	});
@@ -159,7 +159,7 @@ describe('Tags > Tags Create', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="" color=""/>
-			</CreateTagRequest>`, accountAuthToken
+			</CreateTagRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Empty name and color should be a Fault');
 	});
@@ -169,7 +169,7 @@ describe('Tags > Tags Create', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="   " color="   "/>
-			</CreateTagRequest>`, accountAuthToken
+			</CreateTagRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Spaces in both should be a Fault');
 	});
@@ -180,7 +180,7 @@ describe('Tags > Tags Create', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="  "/>
-			</CreateTagRequest>`, accountAuthToken
+			</CreateTagRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Valid name with spaces color should be a Fault');
 	});

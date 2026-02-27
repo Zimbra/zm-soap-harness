@@ -36,7 +36,7 @@ describe('Auth > Auth Expired', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
@@ -69,7 +69,7 @@ describe('Auth > Auth Expired', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
@@ -110,7 +110,7 @@ describe('Auth > Auth Expired', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
@@ -162,7 +162,7 @@ describe('Auth > Auth Expired', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
@@ -184,7 +184,7 @@ describe('Auth > Auth Expired', function () {
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1Name}</account>
 					<password>${config.accountPassword}</password>
-				</AuthRequest>`, token, true
+				</AuthRequest>`, token
 			);
 			if (reAuthRes.Fault) {
 				assert.include(reAuthRes.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',

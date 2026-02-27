@@ -104,7 +104,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<account by="name">${testAccountUser}@${testDomainName}</account>
 					<password>${config.accountPassword}v</password>
 					<virtualHost>v${common.getUniqueString()}.virtual.com</virtualHost>
-				</AuthRequest>`, null, true
+				</AuthRequest>`, null
 			);
 			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');

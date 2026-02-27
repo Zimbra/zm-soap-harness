@@ -16,7 +16,7 @@ describe('Folders > Folders Immutable', function () {
 
 		// Get all system folder ids
 		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
-		const response = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken, true);
+		const response = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = response.GetFolderResponse.folder[0].folder;
 
 		folderIds.root = response.GetFolderResponse.folder[0].id;
@@ -52,7 +52,7 @@ describe('Folders > Folders Immutable', function () {
 				`<FolderActionRequest xmlns='urn:zimbraMail'>
 					<action op='delete' id='${folderId}'/>
 				</FolderActionRequest>`;
-			const response = await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken);
+			const response = await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken, false);
 
 			assert.exists(response.Fault,
 				`Verify Fault exists when deleting ${folderKey} folder`);
@@ -75,7 +75,7 @@ describe('Folders > Folders Immutable', function () {
 				`<FolderActionRequest xmlns='urn:zimbraMail'>
 					<action op='rename' id='${folderId}' name='folder${common.getUniqueString()}'/>
 				</FolderActionRequest>`;
-			const response = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken);
+			const response = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken, false);
 
 			assert.exists(response.Fault,
 				`Verify Fault exists when renaming ${folderKey} folder`);
@@ -106,7 +106,7 @@ describe('Folders > Folders Immutable', function () {
 				`<FolderActionRequest xmlns='urn:zimbraMail'>
 					<action op='move' id='${folderId}' l='${targetId}'/>
 				</FolderActionRequest>`;
-			const response = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
+			const response = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 			assert.exists(response.Fault,
 				`Verify Fault exists when moving ${folderKey} folder`);

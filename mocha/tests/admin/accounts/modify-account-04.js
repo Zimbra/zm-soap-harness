@@ -288,7 +288,7 @@ describe('Admin > Accounts > Modify Account 04', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${test_account8_name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, '');
+			</AuthRequest>`, '', false);
 		assert.isTrue(!!res.AuthResponse || (res.Body && res.Body.AuthResponse) ||
 			(res.Fault && res.Fault.Detail && res.Fault.Detail.Error &&
 			(res.Fault.Detail.Error.Code.includes('account.MAINTENANCE_MODE') ||

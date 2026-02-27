@@ -97,7 +97,7 @@ describe('Auth > Forgetpassword > Zcs 4798', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'Should authenticate account2');
@@ -254,28 +254,28 @@ describe('Auth > Forgetpassword > Zcs 4798', function () {
 
 		// Attempt 1 - should succeed
 		const attempt1 = await soap.makeSOAPEnvelopeAccount(
-			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
+			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken, false
 		);
 		assert.notExists(attempt1.Fault, 'Response should not be a Fault');
 		assert.exists(attempt1.RecoverAccountResponse, 'Attempt 1 should succeed');
 
 		// Attempt 2 - should succeed
 		const attempt2 = await soap.makeSOAPEnvelopeAccount(
-			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
+			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken, false
 		);
 		assert.notExists(attempt2.Fault, 'Response should not be a Fault');
 		assert.exists(attempt2.RecoverAccountResponse, 'Attempt 2 should succeed');
 
 		// Attempt 3 - should succeed
 		const attempt3 = await soap.makeSOAPEnvelopeAccount(
-			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
+			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken, false
 		);
 		assert.notExists(attempt3.Fault, 'Response should not be a Fault');
 		assert.exists(attempt3.RecoverAccountResponse, 'Attempt 3 should succeed');
 
 		// Attempt 4 - should fail with max attempts
 		const attempt4 = await soap.makeSOAPEnvelopeAccount(
-			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
+			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken, false
 		);
 		if (attempt4.Fault) {
 			assert.include(attempt4.Fault.Reason.Text, 'Max re-send attempts reached',

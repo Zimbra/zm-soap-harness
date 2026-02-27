@@ -7,36 +7,33 @@ import { main } from '../../pages/main.js';
 describe('iCal > Create Appointment Request', function () {
     this.timeout(60 * 1000);
     let adminAuthToken;
-    let account1Email, account1AuthToken;
-    let account2Email;
     const testDomain = config.testDomain;
 
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-
-        account1Email = `ical1.${common.getUniqueString()}@${testDomain}`;
-        await soap.createAccountByNameAndEmailAddress(
-            adminAuthToken, account1Email, account1Email
-        );
-        account1AuthToken = await soap.getAccountAuthToken(
-            account1Email, config.accountPassword
-        );
-
-        account2Email = `ical2.${common.getUniqueString()}@${testDomain}`;
-        await soap.createAccountByNameAndEmailAddress(
-            adminAuthToken, account2Email, account2Email
-        );
     });
 
     // Applicable zimbra versions
-    if (config.serial === true ||
-        !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
         return;
     }
 
     // Tests
     it('Smoke | Verify the basic iCal format when CreateAppointmentRequest is used to inject the iCal', async () => {
+        const account1Email = `ical1.${common.getUniqueString()}@${testDomain}`;
+        await soap.createAccountByNameAndEmailAddress(
+            adminAuthToken, account1Email, account1Email
+        );
+        const account1AuthToken = await soap.getAccountAuthToken(
+            account1Email, config.accountPassword
+        );
+
+        const account2Email = `ical2.${common.getUniqueString()}@${testDomain}`;
+        await soap.createAccountByNameAndEmailAddress(
+            adminAuthToken, account2Email, account2Email
+        );
+
         const apptSubject = `appt1.${common.getUniqueString()}`;
         const apptLocation = `loc1.${common.getUniqueString()}`;
         const apptContent = `content1.${common.getUniqueString()}`;
@@ -84,6 +81,19 @@ describe('iCal > Create Appointment Request', function () {
 
 
     it('Functional | Verify that only one timezone is specified when using tz Hawaii', async () => {
+        const account3Email = `ical3.${common.getUniqueString()}@${testDomain}`;
+        await soap.createAccountByNameAndEmailAddress(
+            adminAuthToken, account3Email, account3Email
+        );
+        const account3AuthToken = await soap.getAccountAuthToken(
+            account3Email, config.accountPassword
+        );
+
+        const account4Email = `ical4.${common.getUniqueString()}@${testDomain}`;
+        await soap.createAccountByNameAndEmailAddress(
+            adminAuthToken, account4Email, account4Email
+        );
+
         const apptSubject = `appt2.${common.getUniqueString()}`;
         const apptLocation = `loc2.${common.getUniqueString()}`;
         const apptContent = `content2.${common.getUniqueString()}`;
@@ -100,18 +110,18 @@ describe('iCal > Create Appointment Request', function () {
 				<m>
 					<inv method="REQUEST" type="event" fb="B" transp="O"
 						allDay="0" name="${apptSubject}" loc="${apptLocation}">
-						<at role="OPT" ptst="NE" rsvp="1" a="${account2Email}"/>
+						<at role="OPT" ptst="NE" rsvp="1" a="${account4Email}"/>
 						<s d="${startStr}" tz="(GMT-10.00) Hawaii"/>
 						<e d="${endStr}" tz="(GMT-10.00) Hawaii"/>
-						<or a="${account1Email}"/>
+						<or a="${account3Email}"/>
 					</inv>
-					<e a="${account2Email}" t="t"/>
+					<e a="${account4Email}" t="t"/>
 					<mp content-type="text/plain">
 						<content>${apptContent}</content>
 					</mp>
 					<su>${apptSubject}</su>
 				</m>
-			</CreateAppointmentRequest>`, account1AuthToken
+			</CreateAppointmentRequest>`, account3AuthToken
         );
         assert.notExists(res.Fault, 'CreateAppointmentRequest should not fault');
         const invId = res.CreateAppointmentResponse?.invId;
@@ -120,7 +130,7 @@ describe('iCal > Create Appointment Request', function () {
         // Get iCal by invId
         res = await soap.makeSOAPEnvelopeAccount(
             `<GetICalRequest xmlns="urn:zimbraMail"
-				id="${invId}"/>`, account1AuthToken
+				id="${invId}"/>`, account3AuthToken
         );
         assert.notExists(res.Fault, 'GetICalRequest should not fault');
         assert.exists(res.GetICalResponse, 'GetICalResponse should exist');

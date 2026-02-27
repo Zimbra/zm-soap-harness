@@ -57,10 +57,10 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
         assert.notExists(res.Fault, 'AddDistributionListMemberRequest should not fault');
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it('Sanity | GetShareNotificationsRequest gets notification about share', async () => {

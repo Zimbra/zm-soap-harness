@@ -11,11 +11,10 @@ describe('iCal > MS Outlook 2003 > Recurrence', function () {
         await main.before(this.ctx);
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true ||
-        !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it.skip('Smoke | Verify the iCal format invitation for an appointment of half an hour repeating daily' +

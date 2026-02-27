@@ -107,7 +107,7 @@ describe('Tags > Tags Action', function () {
 		const renameRes = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="rename" id="${tagId2}" name="${tagName1}"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(renameRes.Fault, 'Duplicate rename should be a Fault');
 	});
@@ -117,7 +117,7 @@ describe('Tags > Tags Action', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="rename" id="99999" name="newname"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Non-existing tag id rename should be a Fault');
 	});
@@ -137,7 +137,7 @@ describe('Tags > Tags Action', function () {
 		const blankRes = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="rename" id="${tagId}" name=""/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(blankRes.Fault, 'Blank rename should be a Fault');
 
@@ -145,7 +145,7 @@ describe('Tags > Tags Action', function () {
 		const spacesRes = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="rename" id="${tagId}" name="   "/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(spacesRes.Fault, 'Spaces-only rename should be a Fault');
 	});
@@ -216,7 +216,7 @@ describe('Tags > Tags Action', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="color" id="99999" color="3"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Non-existing tag color should be a Fault');
 	});
@@ -235,14 +235,14 @@ describe('Tags > Tags Action', function () {
 		const invalidRes = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="color" id="${tagId}" color="!@"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(invalidRes.Fault, 'Invalid color should be a Fault');
 
 		const negRes = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="color" id="${tagId}" color="-1"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		// Server may accept negative color values
 		if (negRes.Fault) {
@@ -285,7 +285,7 @@ describe('Tags > Tags Action', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" color="3"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Delete with only color should be a Fault');
 	});
@@ -295,14 +295,14 @@ describe('Tags > Tags Action', function () {
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" id="!@#"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(res1.Fault, 'Special char id should be a Fault');
 
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" id=""/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(res2.Fault, 'Blank id should be a Fault');
 	});
@@ -360,7 +360,7 @@ describe('Tags > Tags Action', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="color" tn="nonExistentTag${common.getUniqueString()}" color="3"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Non-existing tag name should be a Fault');
 	});
@@ -370,7 +370,7 @@ describe('Tags > Tags Action', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="color" tn="!@#$%" color="3"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Invalid tag name should be a Fault');
 	});
@@ -380,7 +380,7 @@ describe('Tags > Tags Action', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="color" tn="" color="3"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Blank tag name should be a Fault');
 	});
@@ -390,7 +390,7 @@ describe('Tags > Tags Action', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<TagActionRequest xmlns="urn:zimbraMail">
 				<action op="color" tn="   " color="3"/>
-			</TagActionRequest>`, accountAuthToken
+			</TagActionRequest>`, accountAuthToken, false
 		);
 		assert.exists(res.Fault, 'Space-only tag name should be a Fault');
 	});

@@ -40,7 +40,7 @@ describe('Auth > Auth Basic', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -58,7 +58,7 @@ describe('Auth > Auth Basic', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="id">${account1Id}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -77,7 +77,7 @@ describe('Auth > Auth Basic', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
@@ -133,13 +133,12 @@ describe('Auth > Auth Basic', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${acctNameOnly}</account>
 				<password>${config.adminPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
-		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -160,7 +159,7 @@ describe('Auth > Auth Basic', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="foreignPrincipal">${foreignPrincipal}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -196,7 +195,7 @@ describe('Auth > Auth Basic', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="id">${acct.id}</account>
 				<password>${accentedPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');

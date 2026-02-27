@@ -48,7 +48,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 		const getOld = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${fp1}</account>
-			</GetAccountRequest>`, adminAuthToken
+			</GetAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(getOld.Fault, 'Old FP should no longer work');
 

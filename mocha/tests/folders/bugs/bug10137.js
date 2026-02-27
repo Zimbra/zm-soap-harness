@@ -60,7 +60,7 @@ describe('Folders > Bugs > Bug 10137', function () {
 			`<GetFolderRequest xmlns='urn:zimbraMail'>
 				<folder l='${folderId}'/>
 			</GetFolderRequest>`;
-		const resp = await soap.makeSOAPEnvelopeAccount(getSpecificRequest, accountAuthToken);
+		const resp = await soap.makeSOAPEnvelopeAccount(getSpecificRequest, accountAuthToken, false);
 		// Should either have a Fault (folder not found) or GetFolderResponse without the original folder
 		if (resp.Fault) {
 			assert.exists(resp.Fault, 'Folder should have been deleted');

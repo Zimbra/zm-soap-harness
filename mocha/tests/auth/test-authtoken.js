@@ -67,8 +67,6 @@ describe('Auth > Test Authtoken', function () {
 			? response.GetFolderResponse.folder[0]
 			: response.GetFolderResponse.folder;
 		assert.exists(folder, 'folder should exist');
-
-
 		assert.equal(folder.id, '1', 'Root folder id should be 1');
 	});
 
@@ -83,8 +81,6 @@ describe('Auth > Test Authtoken', function () {
 			? response.GetFolderResponse.folder[0]
 			: response.GetFolderResponse.folder;
 		assert.exists(folder, 'folder should exist');
-
-
 		assert.equal(folder.id, '1', 'Root folder id should be 1');
 	});
 

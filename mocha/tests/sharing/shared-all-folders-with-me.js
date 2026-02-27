@@ -99,10 +99,10 @@ describe('Sharing > Shared All Folders With Me', function () {
         acct1RootId = res.GetFolderResponse.folder[0].id;
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it('Sanity | GetShareInfoRequest when account2 shares folders to account1', async () => {
@@ -380,8 +380,8 @@ describe('Sharing > Shared All Folders With Me', function () {
         res = await soap.makeSOAPEnvelopeAccount(
             `<GetShareInfoRequest xmlns="urn:zimbraAccount"/>`, account4AuthToken
         );
-		if (!res.Fault) {
-			assert.exists(res.GetShareInfoResponse, 'GetShareInfoResponse should exist');
-		}
+        if (!res.Fault) {
+            assert.exists(res.GetShareInfoResponse, 'GetShareInfoResponse should exist');
+        }
     });
 });

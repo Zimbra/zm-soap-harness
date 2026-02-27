@@ -150,7 +150,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount" tokentype="JWT">
 				<account by="name">${invalidUser}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		if (response.Fault) {
 			assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',

@@ -163,7 +163,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${fp}</account>
-			</GetAccountRequest>`, adminAuthToken
+			</GetAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(getRes.Fault, 'Should return fault for deleted account');
 		assert.isTrue(getRes.Fault.Detail && getRes.Fault.Detail.Error &&
@@ -196,7 +196,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${fp}</account>
-			</GetAccountRequest>`, adminAuthToken
+			</GetAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(getRes.Fault,
 			'Should return fault for duplicate foreign principal');

@@ -80,7 +80,7 @@ describe('Tasks > Cancel Tasks', function () {
 					<su>Cancelled again: ${subject}</su>
 					<mp ct="text/plain"><content>Cancelled again</content></mp>
 				</m>
-			</CancelTaskRequest>`, accountAuthToken
+			</CancelTaskRequest>`, accountAuthToken, false
 		);
 		assert.exists(cancelRes2.Fault, 'Second cancel should be a Fault');
 	});

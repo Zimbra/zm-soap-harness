@@ -102,7 +102,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		const acct2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -191,7 +191,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		const acct2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -291,7 +291,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		const acct2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -391,7 +391,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		const acct2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -431,7 +431,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${malformedEmail}</account>
 				<recoveryCode>${recoveryCode}</recoveryCode>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		if (authMalformed.Fault) {
 			assert.include(authMalformed.Fault.Reason.Text, 'authentication failed',

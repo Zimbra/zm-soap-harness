@@ -117,7 +117,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName2}</alias>
-			</RemoveAccountAliasRequest>`, adminAuthToken
+			</RemoveAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
@@ -130,7 +130,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName3}</alias>
-			</RemoveAccountAliasRequest>`, adminAuthToken
+			</RemoveAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 
@@ -147,7 +147,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 				`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 					<id>${account1Id}</id>
 					<alias>${alias}</alias>
-				</RemoveAccountAliasRequest>`, adminAuthToken
+				</RemoveAccountAliasRequest>`, adminAuthToken, false
 			);
 			assert.exists(response.Fault, `Should have a Fault for ${alias}`);
 
@@ -177,7 +177,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName}</alias>
-			</RemoveAccountAliasRequest>`, adminAuthToken
+			</RemoveAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.NO_SUCH_ALIAS',

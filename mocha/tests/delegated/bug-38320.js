@@ -52,10 +52,10 @@ describe('Delegated > Bug 38320', function () {
         equipmentId = res.CreateCalendarResourceResponse.calresource[0].id;
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it('Sanity | Verify Getstarstarstar SOAP calls send the list of attributes and get proper response', async () => {
@@ -73,7 +73,7 @@ describe('Delegated > Bug 38320', function () {
         res = await soap.makeSOAPEnvelopeAdmin(
             `<GetConfigRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
 				<a n="zimbraLmtpBindPort"/>
-			</GetConfigRequest>`, delegatedAuthToken
+			</GetConfigRequest>`, delegatedAuthToken, false
         );
         if (res.GetConfigResponse) {
             const configAttrs = res.GetConfigResponse.a;
@@ -88,7 +88,7 @@ describe('Delegated > Bug 38320', function () {
         res = await soap.makeSOAPEnvelopeAdmin(
             `<GetCosRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
 				<cos by="name">default</cos>
-			</GetCosRequest>`, delegatedAuthToken
+			</GetCosRequest>`, delegatedAuthToken, false
         );
         if (res.GetCosResponse) {
             assert.exists(res.GetCosResponse, 'GetCosResponse should exist');
@@ -100,7 +100,7 @@ describe('Delegated > Bug 38320', function () {
         res = await soap.makeSOAPEnvelopeAdmin(
             `<GetDomainRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
 				<domain by="name">${testDomain}</domain>
-			</GetDomainRequest>`, delegatedAuthToken
+			</GetDomainRequest>`, delegatedAuthToken, false
         );
         assert.exists(res.Fault, 'GetDomainRequest with attrs should return Fault');
         assert.isTrue(
@@ -114,7 +114,7 @@ describe('Delegated > Bug 38320', function () {
         res = await soap.makeSOAPEnvelopeAdmin(
             `<GetServerRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
 				<server by="name">${testDomain}</server>
-			</GetServerRequest>`, delegatedAuthToken
+			</GetServerRequest>`, delegatedAuthToken, false
         );
         assert.exists(res.Fault, 'GetServerRequest with attrs should return Fault');
         assert.isTrue(
@@ -128,7 +128,7 @@ describe('Delegated > Bug 38320', function () {
         res = await soap.makeSOAPEnvelopeAdmin(
             `<GetAccountRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
 				<account by="id">${granteeId}</account>
-			</GetAccountRequest>`, delegatedAuthToken
+			</GetAccountRequest>`, delegatedAuthToken, false
         );
         if (res.GetAccountResponse) {
             assert.exists(res.GetAccountResponse, 'GetAccountResponse should exist');
@@ -140,7 +140,7 @@ describe('Delegated > Bug 38320', function () {
         res = await soap.makeSOAPEnvelopeAdmin(
             `<GetCalendarResourceRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
 				<calresource by="id">${equipmentId}</calresource>
-			</GetCalendarResourceRequest>`, delegatedAuthToken
+			</GetCalendarResourceRequest>`, delegatedAuthToken, false
         );
         if (res.GetCalendarResourceResponse) {
             assert.exists(res.GetCalendarResourceResponse,
@@ -153,7 +153,7 @@ describe('Delegated > Bug 38320', function () {
         res = await soap.makeSOAPEnvelopeAdmin(
             `<GetZimletRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
 				<zimlet name="com_zimbra_date"/>
-			</GetZimletRequest>`, delegatedAuthToken
+			</GetZimletRequest>`, delegatedAuthToken, false
         );
         assert.exists(res.Fault, 'GetZimletRequest should return Fault');
         assert.isTrue(

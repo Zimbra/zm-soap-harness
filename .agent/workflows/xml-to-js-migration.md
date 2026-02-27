@@ -52,7 +52,7 @@ describe('Module > Feature Name', function () {
 ```
 
 ## Formatting Rules
-- Use tabs for indentation
+- Use tabs for indentation — **NEVER use spaces**
 - **Double blank line** between `it()` blocks
 - **NO blank line** before the closing `});` of the `describe()` block:
   ```js
@@ -64,6 +64,21 @@ describe('Module > Feature Name', function () {
   	});
   
   });
+  ```
+- **Applicable zimbra versions block** — MUST use tabs and single-line `if`:
+  ```js
+  // CORRECT (tabs, single-line if):
+  	// Applicable zimbra versions
+  	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+  		return;
+  	}
+
+  // WRONG (spaces, multi-line if):
+      // Applicable zimbra versions
+      if (config.serial === true ||
+          !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+          return;
+      }
   ```
 - Run `npm run format` after all changes
 - Follow rules in `utils/ai/formatting-guidelines.md`
@@ -89,13 +104,34 @@ describe('Module > Feature Name', function () {
 - Test accounts: `soap.testAccounts.testAccount1.emailAddress`, `.testAccount2`, etc.
 - Unique strings: `common.getUniqueString()`
 
+### retryOnFault Rules (CRITICAL — follow strictly)
+- `makeSOAPEnvelopeAccount` and `makeSOAPEnvelopeAdmin` default to `retryOnFault = true` — **never pass `true` explicitly**
+- **Pass `false` explicitly** when the test deliberately expects a SOAP Fault response (i.e., the test asserts that the response IS a Fault):
+  ```js
+  // Test expects a Fault → pass false to disable retry:
+  const res = await soap.makeSOAPEnvelopeAccount(request, authToken, false);
+  assert.exists(res.Fault, 'Should return a Fault');
+  assert.include(res.Fault.Detail.Error.Code, 'mail.ALREADY_EXISTS');
+  ```
+- Non-transient fault codes that should NEVER be retried (already handled in soap-core.js):
+  `account.AUTH_FAILED`, `account.CHANGE_PASSWORD`, `account.MAINTENANCE_MODE`,
+  `service.INVALID_REQUEST`, `service.PERM_DENIED`, `account.AUTH_EXPIRED`,
+  `account.TWO_FACTOR_AUTH_FAILED`, `account.TWO_FACTOR_SETUP_REQUIRED`,
+  `mail.ALREADY_EXISTS`, `mail.NO_SUCH_FOLDER`, `mail.NO_SUCH_ITEM`,
+  `mail.CANNOT_CONTAIN`, `service.UNKNOWN_DOCUMENT`, `account.NO_SUCH_ACCOUNT`
+- `getAccountAuthToken` and `getAdminAuthToken` default to `retryOnFault = false` — only pass `true` if you need retries
+- **Never modify `soap-core.js`** — all fixes must be at the test level
+
 ## Loop Tests
 - XML loop tests (e.g. creating 1000 folders) should reduce count in JS for speed (e.g. 500 or 100)
 - Each distinct operation in the loop (create, rename, move, delete, etc.) gets its own `it()` block
 
 ## Running & Debugging
 // turbo-all
-- **Full suite**: `node mocha-run.js tests/<module>/`
+- **Shell**: Always use **git bash**, never PowerShell
+- **Runner**: Always use `node mocha-run.js`, never `npx mocha`
+- **Full suite**: `node mocha-run.js`
+- **Specific files**: `node mocha-run.js tests/<module>/<file>.js`
 - **Single failed test**: `node mocha-run.js tests/<module>/<file>.js -g "test name pattern"`
 - **Always run only failed tests** with `-g` pattern, never the entire suite, when fixing failures
 - After fixing, run just the specific test to verify before running the full suite

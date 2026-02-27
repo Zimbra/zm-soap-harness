@@ -43,7 +43,7 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='' l='1'/>
 			</CreateFolderRequest>`;
-		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
@@ -57,7 +57,7 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name=' ' l='1'/>
 			</CreateFolderRequest>`;
-		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
@@ -71,7 +71,7 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name=":/\\.;&lt;*''" l='1'/>
 			</CreateFolderRequest>`;
-		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
@@ -97,7 +97,7 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
-		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken);
+		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken, false);
 
 		// Verify error
 		assert.exists(createResponse2.Fault, 'Verify Fault exists');
@@ -113,7 +113,7 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='0'/>
 			</CreateFolderRequest>`;
-		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
@@ -129,7 +129,7 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l=''/>
 			</CreateFolderRequest>`;
-		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
@@ -189,7 +189,7 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName} ' l='1'/>
 			</CreateFolderRequest>`;
-		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken);
+		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken, false);
 
 		// Verify error
 		assert.exists(createResponse2.Fault, 'Verify Fault exists');

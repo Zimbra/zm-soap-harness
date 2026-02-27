@@ -63,7 +63,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName2}</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
@@ -76,7 +76,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName3}</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.NO_SUCH_DOMAIN',
@@ -90,7 +90,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasSpChar}</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 
@@ -117,7 +117,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias></alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
@@ -130,7 +130,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName}</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
@@ -157,7 +157,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>alias01.${common.getUniqueString()}@${domainName}</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.NO_SUCH_DOMAIN',
@@ -172,7 +172,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${nonExistentAccount}</id>
 				<alias>${aliasName}</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 
@@ -188,7 +188,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
 				<alias>${testAccount3}</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
@@ -201,7 +201,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
 				<alias>${testAccount1}</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
@@ -214,7 +214,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
 				<alias>${testAccount4}</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
@@ -818,7 +818,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
 				<alias>invalidalias</alias>
-			</AddAccountAliasRequest>`, adminAuthToken
+			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(

@@ -31,10 +31,10 @@ describe('Sharing > Bugs > Bug 84420', function () {
         account2AuthToken = await soap.getAccountAuthToken(account2Email, config.accountPassword);
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it('Sanity | Cant move subfolders in shared email folder', async () => {

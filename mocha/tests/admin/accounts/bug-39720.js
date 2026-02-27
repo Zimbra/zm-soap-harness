@@ -63,7 +63,7 @@ describe('Admin > Accounts > Bug 39720', function () {
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${adminAcctId}</id>
 				<a n="zimbraAuthTokenLifetime">0</a>
-			</ModifyAccountRequest>`, adminAuthToken
+			</ModifyAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
@@ -76,7 +76,7 @@ describe('Admin > Accounts > Bug 39720', function () {
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${regularAcctId}</id>
 				<a n="zimbraAuthTokenLifetime">0</a>
-			</ModifyAccountRequest>`, adminAuthToken
+			</ModifyAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
@@ -89,7 +89,7 @@ describe('Admin > Accounts > Bug 39720', function () {
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${delegatedAdminId}</id>
 				<a n="zimbraAuthTokenLifetime">0</a>
-			</ModifyAccountRequest>`, adminAuthToken
+			</ModifyAccountRequest>`, adminAuthToken, false
 		);
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');

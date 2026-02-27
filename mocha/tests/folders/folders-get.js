@@ -116,7 +116,7 @@ describe('Folders > Folders Get', function () {
 			`<GetFolderRequest xmlns='urn:zimbraMail'>
 				<folder l='${folderId}'/>
 			</GetFolderRequest>`;
-		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
+		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken, false);
 
 		// Verify error - server may Fault or return response without the folder
 		if (getFolderResponse.Fault) {
@@ -135,7 +135,7 @@ describe('Folders > Folders Get', function () {
 			`<GetFolderRequest xmlns='urn:zimbraMail'>
 				<folder l=''/>
 			</GetFolderRequest>`;
-		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
+		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken, false);
 
 		// Verify error
 		assert.exists(getFolderResponse.Fault, 'Verify Fault exists');
@@ -180,7 +180,7 @@ describe('Folders > Folders Get', function () {
 			`<GetFolderRequest xmlns='urn:zimbraMail'>
 				<folder l='${nonExistingName}'/>
 			</GetFolderRequest>`;
-		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
+		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken, false);
 
 		// Verify error
 		assert.exists(getFolderResponse.Fault, 'Verify Fault exists');

@@ -64,10 +64,10 @@ describe('Sharing > Get Share Info Request', function () {
         assert.notExists(res.Fault, 'AddDistributionListMemberRequest should not fault');
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Tests
     it('Sanity | Verify GetShareInfoRequest receives appropriate responses', async () => {

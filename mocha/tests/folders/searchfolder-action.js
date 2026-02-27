@@ -74,7 +74,7 @@ Test content ${uniqueStr}</content>
 			`<MsgActionRequest xmlns='urn:zimbraMail'>
 				<action id='${messageId}' op='move' l='${searchFolderId1}'/>
 			</MsgActionRequest>`;
-		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
+		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		assert.exists(moveResponse.Fault, 'Verify Fault exists');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
@@ -100,7 +100,7 @@ Test content ${uniqueStr}</content>
 			`<ContactActionRequest xmlns='urn:zimbraMail'>
 				<action id='${contactId}' op='move' l='${searchFolderId1}'/>
 			</ContactActionRequest>`;
-		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
+		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		assert.exists(moveResponse.Fault, 'Verify Fault exists');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
@@ -123,7 +123,7 @@ Test content ${uniqueStr}</content>
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action id='${tagId}' op='move' l='${searchFolderId1}'/>
 			</ItemActionRequest>`;
-		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
+		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		assert.exists(moveResponse.Fault,
 			'Verify Fault exists when moving tag to search folder');
@@ -144,7 +144,7 @@ Test content ${uniqueStr}</content>
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${folderId}' l='${searchFolderId1}'/>
 			</FolderActionRequest>`;
-		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
+		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		assert.exists(moveResponse.Fault, 'Verify Fault exists');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
@@ -189,7 +189,7 @@ Test content ${uniqueStr}</content>
 				`<FolderActionRequest xmlns='urn:zimbraMail'>
 					<action op='move' id='${folderId}' l='${searchFolderId1}'/>
 				</FolderActionRequest>`;
-			const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
+			const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 			assert.exists(moveResponse.Fault,
 				`Verify Fault when moving default folder ${folderId} into search folder`);

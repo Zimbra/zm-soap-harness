@@ -17,10 +17,10 @@ describe('Tasks > Tags > TagTasksBasic', function () {
         account2AuthToken = await soap.getAccountAuthToken(account2Email);
     });
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
     // Helper to create a task
     async function createTask(subject, authToken, email) {

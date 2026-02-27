@@ -35,7 +35,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'First AuthResponse should exist');
@@ -53,7 +53,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'Second AuthResponse should exist');
@@ -71,7 +71,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes3.Fault, 'Response should not be a Fault');
 		assert.exists(authRes3.AuthResponse, 'Third AuthResponse should exist');
@@ -88,7 +88,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 		const verifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false">
 				<authToken>${token3}</authToken>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(verifyRes.Fault, 'Response should not be a Fault');
 		assert.exists(verifyRes.AuthResponse, 'Token3 should still be valid for re-auth');
@@ -104,7 +104,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'First AuthResponse should exist');
@@ -122,7 +122,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'Second AuthResponse should exist');
@@ -146,7 +146,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 		const verifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false">
 				<authToken>${token1}</authToken>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		if (verifyRes.Fault) {
 			assert.include(verifyRes.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
@@ -157,7 +157,7 @@ describe('Auth > Zcs 4904 End All Session', function () {
 		const verifyRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false">
 				<authToken>${token2}</authToken>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		if (verifyRes2.Fault) {
 			assert.include(verifyRes2.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',

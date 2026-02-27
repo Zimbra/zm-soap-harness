@@ -31,7 +31,7 @@ describe('Tasks > Modify Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken, true
+			</CreateTaskRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		return res.CreateTaskResponse.invId;
@@ -189,7 +189,7 @@ describe('Tasks > Modify Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Unauthorized modification</content></mp>
 				</m>
-			</ModifyTaskRequest>`, account2AuthToken, true
+			</ModifyTaskRequest>`, account2AuthToken, false
 		);
 		assert.exists(modRes.Fault, 'Unauthorized modification should be a Fault');
 	});

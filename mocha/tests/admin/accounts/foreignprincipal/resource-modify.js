@@ -59,7 +59,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Modify', function () {
 		const getOld = await soap.makeSOAPEnvelopeAdmin(
 			`<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<calresource by="foreignPrincipal">${fp1}</calresource>
-			</GetCalendarResourceRequest>`, adminAuthToken
+			</GetCalendarResourceRequest>`, adminAuthToken, false
 		);
 		assert.exists(getOld.Fault, 'Old FP should no longer work');
 

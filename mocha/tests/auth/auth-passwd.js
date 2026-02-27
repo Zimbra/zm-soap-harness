@@ -61,7 +61,7 @@ describe('Auth > Auth Passwd', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser1}</account>
 				<password>${validPassword1}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -79,7 +79,7 @@ describe('Auth > Auth Passwd', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser2}</account>
 				<password>${validPassword2}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -97,7 +97,7 @@ describe('Auth > Auth Passwd', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser3}</account>
 				<password>${validPassword3}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');

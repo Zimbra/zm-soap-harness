@@ -267,7 +267,7 @@ describe('Admin > Accounts > Account Getmembership', function () {
 			const response = await soap.makeSOAPEnvelopeAdmin(
 				`<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
 					<account by="id">${val}</account>
-				</GetAccountMembershipRequest>`, adminAuthToken
+				</GetAccountMembershipRequest>`, adminAuthToken, false
 			);
 			assert.exists(response.Fault, `Should fault for id="${val}"`);
 
@@ -285,7 +285,7 @@ describe('Admin > Accounts > Account Getmembership', function () {
 			const response = await soap.makeSOAPEnvelopeAdmin(
 				`<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
 					<account by="name">${val}</account>
-				</GetAccountMembershipRequest>`, adminAuthToken
+				</GetAccountMembershipRequest>`, adminAuthToken, false
 			);
 			assert.exists(response.Fault, `Should fault for name="${val}"`);
 

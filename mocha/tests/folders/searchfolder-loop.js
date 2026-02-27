@@ -107,7 +107,7 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${searchName}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
-		const response = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken);
+		const response = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken, false);
 
 		assert.exists(response.Fault, 'Verify Fault for duplicate search folder');
 		assert.include(response.Fault.Reason.Text, 'already exists',
@@ -157,7 +157,7 @@ describe('Folders > Searchfolder Loop', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='rename' id='${sfId2}' name='${sfName1}'/>
 			</FolderActionRequest>`;
-		const renameResponse = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken);
+		const renameResponse = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken, false);
 
 		assert.exists(renameResponse.Fault, 'Verify Fault exists for duplicate rename');
 		assert.include(renameResponse.Fault.Reason.Text, 'already exists',
@@ -266,7 +266,7 @@ describe('Folders > Searchfolder Loop', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${parentId}' l='${childId}'/>
 			</FolderActionRequest>`;
-		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
+		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		assert.exists(moveResponse.Fault, 'Verify Fault exists for circular move');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',

@@ -36,7 +36,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
 				<password>invalid_password</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -74,7 +74,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${defaultDomainUser}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -92,7 +92,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">invalid_user@${config.testDomain}</account>
 				<password>invalid_password</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -105,7 +105,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -118,7 +118,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invalid_domain,com</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -131,7 +131,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">invalid_user@${config.testDomain}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -144,7 +144,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name"> ${validUserShort}@invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -157,7 +157,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invalid_domain.com </account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -170,7 +170,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort} @invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -183,7 +183,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">use r1@invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -196,7 +196,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@ invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -209,7 +209,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invali d_domain.com</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -231,7 +231,7 @@ describe('Auth > Auth Invalid', function () {
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${invalidUser}</account>
 					<password>${config.accountPassword}</password>
-				</AuthRequest>`, null, true
+				</AuthRequest>`, null
 			);
 			assert.exists(response.Fault, 'Should return Fault for: ' + invalidUser);
 			assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
@@ -245,7 +245,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">first1.middle.last1@${config.testDomain}</account>
 				<password>${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -258,7 +258,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
 				<password> ${config.accountPassword}</password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -271,7 +271,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
 				<password>${config.accountPassword} </password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
@@ -284,7 +284,7 @@ describe('Auth > Auth Invalid', function () {
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
 				<password>${config.accountPassword.toUpperCase()} </password>
-			</AuthRequest>`, null, true
+			</AuthRequest>`, null
 		);
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',

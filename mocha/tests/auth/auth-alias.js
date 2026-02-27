@@ -80,7 +80,7 @@ describe('Auth > Auth Alias', function () {
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1Alias}</account>
 					<password>${config.accountPassword}</password>
-				</AuthRequest>`, null, true
+				</AuthRequest>`, null
 			);
 			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');
@@ -95,7 +95,7 @@ describe('Auth > Auth Alias', function () {
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2AliasUser}</account>
 					<password>wrong password</password>
-				</AuthRequest>`, null, true
+				</AuthRequest>`, null
 			);
 			assert.exists(response.Fault, 'Should return Fault');
 			assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
