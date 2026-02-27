@@ -17,7 +17,7 @@ describe('Folders > Searchfolder Loop', function () {
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Get root folder id
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 
 		rootId = getFolderResponse.GetFolderResponse.folder[0].id;
@@ -44,7 +44,7 @@ describe('Folders > Searchfolder Loop', function () {
 				'Verify search folder created');
 		}
 
-		const getInfoRequest = `<GetInfoRequest xmlns='urn:zimbraAccount'/>`;
+		const getInfoRequest = '<GetInfoRequest xmlns=\'urn:zimbraAccount\'/>';
 		const getInfoResponse = await soap.makeSOAPEnvelopeAccount(getInfoRequest, accountAuthToken);
 		assert.exists(getInfoResponse.GetInfoResponse.name,
 			'Verify GetInfoRequest returns account name');
@@ -85,7 +85,7 @@ describe('Folders > Searchfolder Loop', function () {
 
 
 	it('Functional | Basic test of GetSearchFolderRequest', async () => {
-		const getSearchRequest = `<GetSearchFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getSearchRequest = '<GetSearchFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const response = await soap.makeSOAPEnvelopeAccount(getSearchRequest, accountAuthToken);
 
 		assert.exists(response.GetSearchFolderResponse.search,
@@ -292,7 +292,7 @@ describe('Folders > Searchfolder Loop', function () {
 		const childSearchId = sfResp2.CreateSearchFolderResponse.search[0].id;
 
 		// Verify child is under parent
-		const getSearchRequest1 = `<GetSearchFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getSearchRequest1 = '<GetSearchFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getSearchResponse1 = await soap.makeSOAPEnvelopeAccount(getSearchRequest1, accountAuthToken);
 		const childFolder = getSearchResponse1.GetSearchFolderResponse.search.find(s => s.id === childSearchId);
 		assert.equal(childFolder.l, parentSearchId,
@@ -308,7 +308,7 @@ describe('Folders > Searchfolder Loop', function () {
 			'Verify op is empty');
 
 		// Verify child no longer exists and parent still exists
-		const getSearchRequest2 = `<GetSearchFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getSearchRequest2 = '<GetSearchFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getSearchResponse2 = await soap.makeSOAPEnvelopeAccount(getSearchRequest2, accountAuthToken);
 
 		const childAfterEmpty = getSearchResponse2.GetSearchFolderResponse.search

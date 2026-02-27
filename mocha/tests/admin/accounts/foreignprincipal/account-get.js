@@ -168,7 +168,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Get', function () {
 		assert.exists(getRes.Fault, 'Should return fault for deleted account');
 		assert.isTrue(getRes.Fault.Detail && getRes.Fault.Detail.Error &&
 			getRes.Fault.Detail.Error.Code.includes('NO_SUCH_ACCOUNT'),
-			'Should return NO_SUCH_ACCOUNT');
+		'Should return NO_SUCH_ACCOUNT');
 	});
 
 

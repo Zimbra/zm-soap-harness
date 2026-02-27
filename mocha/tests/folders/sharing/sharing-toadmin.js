@@ -63,7 +63,7 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 	// Tests
 	it('Sanity | Verify an admin user only has user rights, if logged into the user interface', async () => {
 		// User shares folder with Admin (Read Only)
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -123,7 +123,7 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 		// Admin tokens are valid at `/service/soap`.
 
 		// Use the same folder and share as above.
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

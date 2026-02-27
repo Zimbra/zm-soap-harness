@@ -232,7 +232,7 @@ describe('Admin > Accounts > Account Request', function () {
 	it('Sanity | Sanity test for GetAllAdminAccountsRequest', async function () {
 		this.timeout(60000);
 		const response = await soap.makeSOAPEnvelopeAdmin(
-			`<GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
+			'<GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetAllAdminAccountsResponse,
@@ -276,7 +276,7 @@ describe('Admin > Accounts > Account Request', function () {
 
 		const userAuth = await soap.getAccountAuthToken(acctName, config.accountPassword);
 		const response = await soap.makeSOAPEnvelopeAccount(
-			`<GetAvailableSkinsRequest xmlns="urn:zimbraAccount"/>`, userAuth
+			'<GetAvailableSkinsRequest xmlns="urn:zimbraAccount"/>', userAuth
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetAvailableSkinsResponse,
@@ -295,7 +295,7 @@ describe('Admin > Accounts > Account Request', function () {
 
 		const userAuth = await soap.getAccountAuthToken(acctName, config.accountPassword);
 		const response = await soap.makeSOAPEnvelopeAccount(
-			`<GetAvailableCsvFormatsRequest xmlns="urn:zimbraAccount"/>`, userAuth
+			'<GetAvailableCsvFormatsRequest xmlns="urn:zimbraAccount"/>', userAuth
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetAvailableCsvFormatsResponse,

@@ -56,7 +56,7 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 	// Tests
 	it('Sanity | Verify an admin user only has user rights, if logged into the user interface', async () => {
 		// User shares folder with DA (Read Only)
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -102,7 +102,7 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 	it('Sanity | Verify an admin user has admin rights, if logged into the admin interface', async () => {
 		// Based on XML SharingFoldersToDomainAdmin_02, Domain Admins do NOT get implicit write access via Mountpoints if they only have Read access shared, even with Admin Auth.
 
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

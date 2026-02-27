@@ -36,7 +36,7 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 	// Tests
 	it('Sanity | Verify key grantee type for folder ACL', async function () {
 		// 1. Create subfolder of inbox for account2
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder2 = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth2);
 		const inboxId2 = getFolder2.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -134,7 +134,7 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 
 	it('Sanity | Verify Searching Shared Folders that have subfolder works fine', async function () {
 		// Create folder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

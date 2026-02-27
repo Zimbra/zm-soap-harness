@@ -108,7 +108,7 @@ describe('Folders > Bugs > Bug 40759', function () {
 		await soap.makeSOAPEnvelopeAdmin(addAlias, adminAuthToken);
 
 		// 5. Login Account1 (A) - Verify GetFolderRequest works (no hang)
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		await soap.makeSOAPEnvelopeAccount(getFolder, acct1.authToken);
 
 		// 6. Login Account2 (B), CreateMountpoint
@@ -211,7 +211,7 @@ describe('Folders > Bugs > Bug 40759', function () {
 		await soap.makeSOAPEnvelopeAdmin(addAlias2, adminAuthToken);
 
 		// 6. Login Account3 (C) - Verify GetFolderRequest works
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		await soap.makeSOAPEnvelopeAccount(getFolder, acct3.authToken);
 
 		// 7. Login Account4 (D), CreateMountpoint

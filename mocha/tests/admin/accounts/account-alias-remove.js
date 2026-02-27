@@ -39,11 +39,11 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 		alias2Name = `alias.2.${ts}@${config.testDomain}`;
 		alias3Name = `alias.3.${ts}@${config.testDomain}`;
 
-		aliasName2 = `alias01`;
-		aliasName3 = `alias@non.existing.domain`;
-		aliasBlank = ``;
-		aliasNumbers = `1234566`;
-		aliasSpchar = `:''<//\\\\`;
+		aliasName2 = 'alias01';
+		aliasName3 = 'alias@non.existing.domain';
+		aliasBlank = '';
+		aliasNumbers = '1234566';
+		aliasSpchar = ':\'\'<//\\\\';
 
 		domainName = `dl.example.${common.getUniqueString()}.com`;
 		dlName = `testList@${domainName}`;
@@ -445,7 +445,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 				'Should be NO_SUCH_ACCOUNT or SEND_ABORTED_ADDRESS_FAILURE');
 		} else {
 			assert.notExists(sendResponse2.Fault, 'Response should not be a Fault');
-			assert.exists(sendResponse2.SendMsgResponse, "MTA accepted message for bounce");
+			assert.exists(sendResponse2.SendMsgResponse, 'MTA accepted message for bounce');
 		}
 	});
 });

@@ -62,7 +62,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 	// Tests
 	it('Sanity | Share a folder to a COS. Verify that COS users have access.', async function () {
 		// Setup Folder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -96,7 +96,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 
 	it('Sanity | Unshare a folder to a COS. Verify that COS users no longer have access.', async function () {
 		// Create folder
-		const getFolderRequest2 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

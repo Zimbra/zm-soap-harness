@@ -36,7 +36,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 	// Tests
 	it('Smoke | Share a folder to all. Verify that all users have access.', async () => {
 		// Setup Folder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -70,7 +70,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 
 	it('Sanity | Unshare a folder to pub. Verify that all users no longer have access.', async () => {
 		// Create folder
-		const getFolderRequest2 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

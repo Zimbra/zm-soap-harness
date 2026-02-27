@@ -23,7 +23,7 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 		account2Id = res2.accountId;
 
 		// Setup shared folder and mountpoint
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -75,7 +75,7 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth2);
 
 		// Verify mountpoint is gone
-		const getFolderRequest2 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder2 = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth2);
 
 		const folderList = getFolder2.GetFolderResponse.folder[0].link || []; // link is array if present, undefined if not? 

@@ -49,7 +49,7 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 
 		// 2. Create Briefcase subfolder
 		// Get Briefcase ID
-		const getFolderRequest1 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest1 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest1, auth1);
 		const briefcaseId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Briefcase').id;
 
@@ -140,7 +140,7 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 		const adminAuth = await soap.getAdminAuthToken();
 
 		// Create Briefcase subfolder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const briefcaseId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Briefcase').id;
 
@@ -179,7 +179,7 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 		const adminAuth = await soap.getAdminAuthToken();
 
 		// Create Briefcase subfolder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const briefcaseId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Briefcase').id;
 

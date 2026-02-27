@@ -33,7 +33,7 @@ describe('Folders > Bugs > Bug 85404', function () {
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
 		// Verify absFolderPath is /folderName
-		let getRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		let getRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		let getResponse = await soap.makeSOAPEnvelopeAccount(getRequest, accountAuthToken);
 
 		const findFolder = (folders, id) => {

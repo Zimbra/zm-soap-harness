@@ -120,7 +120,7 @@ describe('Admin > Accounts > Account Logger', function () {
 		);
 
 		const response = await soap.makeSOAPEnvelopeAdmin(
-			`<GetAllAccountLoggersRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
+			'<GetAllAccountLoggersRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
 		);
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetAllAccountLoggersResponse,

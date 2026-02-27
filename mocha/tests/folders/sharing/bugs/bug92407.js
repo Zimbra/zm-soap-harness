@@ -25,7 +25,7 @@ describe('Folders > Sharing > Bugs > Bug 92407', function () {
 		auth2 = await soap.getAccountAuthToken(testAccount2, config.accountPassword);
 
 		// Get Task Folder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 
 		taskFolderId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Tasks').id;

@@ -79,7 +79,7 @@ describe('Admin > Accounts > Account Get', function () {
 
 
 	it('Regression | GetAccountRequest by id and with value of applyCos as invalid, negative, char, spchar, startingwithzero', async () => {
-		const invalidValues = ['invalid', '-1', ":'<//\\\\", '01'];
+		const invalidValues = ['invalid', '-1', ':\'<//\\\\', '01'];
 		for (const val of invalidValues) {
 			const res = await soap.makeSOAPEnvelopeAdmin(
 				`<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="${val}">
@@ -112,7 +112,7 @@ describe('Admin > Accounts > Account Get', function () {
 
 
 	it('Regression | GetAccountRequest by name and value of cos as invalid, negative, char, spchar, startingwithzero', async () => {
-		const invalidValues = ['invalid', '-1', ":'<//\\\\", '01'];
+		const invalidValues = ['invalid', '-1', ':\'<//\\\\', '01'];
 		for (const val of invalidValues) {
 			const res = await soap.makeSOAPEnvelopeAdmin(
 				`<GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="${val}">
@@ -213,7 +213,7 @@ describe('Admin > Accounts > Account Get', function () {
 		assert.exists(res.Fault, 'Should return Fault for deleted account id');
 		assert.isTrue(res.Fault.Detail && res.Fault.Detail.Error &&
 			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'),
-			'Should return NO_SUCH_ACCOUNT');
+		'Should return NO_SUCH_ACCOUNT');
 	});
 
 

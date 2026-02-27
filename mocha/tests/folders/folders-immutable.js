@@ -15,7 +15,7 @@ describe('Folders > Folders Immutable', function () {
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Get all system folder ids
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const response = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = response.GetFolderResponse.folder[0].folder;
 

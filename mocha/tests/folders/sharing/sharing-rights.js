@@ -39,7 +39,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 	// Tests
 	it('Smoke | Verify that sharing folders with read access allows messages to be viewed, but not added, modified, deleted, or reshared', async () => {
 		// Share Folder with Acc2 (Read)
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -117,7 +117,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 
 	it('Sanity | Verify that sharing folders with manager (rwidx) access allows messages to be viewed, added, modified, and deleted, but not reshared', async () => {
 		// Share Folder with Acc3 (Manager)
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -188,7 +188,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 
 
 	it('Functional | Verify a grantee with ra rights can share the folder again to another user', async () => {
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -238,7 +238,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 
 
 	it('Functional | Verify tagging a shared message does not apply', async () => {
-		const getFolderRequest2 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -291,7 +291,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 
 
 	it('Functional | Verify flagging a shared message', async () => {
-		const getFolderRequest4 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest4 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest4, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -338,7 +338,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 
 
 	it('Sanity | Verify that sharing contacts with none access does not grant access to the contact information', async () => {
-		const getFolderRequest5 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest5 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest5, auth1);
 		const contactsId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Contacts').id;
 
@@ -383,7 +383,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 
 
 	it('Sanity | Verify that a folder shared with none permissions cannot be searched', async () => {
-		const getFolderRequest6 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest6 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest6, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

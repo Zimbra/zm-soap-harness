@@ -22,7 +22,7 @@ describe('Folders > Folders Get', function () {
 
 	// Tests
 	it('Smoke | Basic test of GetFolderRequest', async () => {
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 
 		// Verify root folder
@@ -35,7 +35,7 @@ describe('Folders > Folders Get', function () {
 
 
 	it('Sanity | Verify the basic system folders present', async () => {
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 
 		const rootFolder = getFolderResponse.GetFolderResponse.folder[0];
@@ -209,7 +209,7 @@ describe('Folders > Folders Get', function () {
 		}
 
 		// Get folders and verify rest URLs
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 
 		// Verify response exists
@@ -307,7 +307,7 @@ describe('Folders > Folders Get', function () {
 
 		// GetFolderRequest with visible='1'
 		const getFolderRequest2 =
-			`<GetFolderRequest xmlns='urn:zimbraMail' visible='1'/>`;
+			'<GetFolderRequest xmlns=\'urn:zimbraMail\' visible=\'1\'/>';
 		const visibleResp = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, shareeAuth);
 		assert.notExists(visibleResp.Fault, 'Response should not be a Fault');
 		assert.exists(visibleResp.GetFolderResponse,
@@ -315,7 +315,7 @@ describe('Folders > Folders Get', function () {
 
 		// GetFolderRequest with visible='0'
 		const getFolderRequest3 =
-			`<GetFolderRequest xmlns='urn:zimbraMail' visible='0'/>`;
+			'<GetFolderRequest xmlns=\'urn:zimbraMail\' visible=\'0\'/>';
 		const invisibleResp = await soap.makeSOAPEnvelopeAccount(getFolderRequest3, shareeAuth);
 		assert.notExists(invisibleResp.Fault, 'Response should not be a Fault');
 		assert.exists(invisibleResp.GetFolderResponse,
@@ -376,7 +376,7 @@ describe('Folders > Folders Get', function () {
 
 		// GetFolderRequest with visible='1' to verify sub-folders
 		const getFolderRequest4 =
-			`<GetFolderRequest xmlns='urn:zimbraMail' visible='1'/>`;
+			'<GetFolderRequest xmlns=\'urn:zimbraMail\' visible=\'1\'/>';
 		const visibleResp = await soap.makeSOAPEnvelopeAccount(getFolderRequest4, shareeAuth);
 		assert.notExists(visibleResp.Fault, 'Response should not be a Fault');
 		assert.exists(visibleResp.GetFolderResponse,
@@ -384,7 +384,7 @@ describe('Folders > Folders Get', function () {
 
 		// GetFolderRequest with visible='0'
 		const getFolderRequest5 =
-			`<GetFolderRequest xmlns='urn:zimbraMail' visible='0'/>`;
+			'<GetFolderRequest xmlns=\'urn:zimbraMail\' visible=\'0\'/>';
 		const invisibleResp = await soap.makeSOAPEnvelopeAccount(getFolderRequest5, shareeAuth);
 		assert.notExists(invisibleResp.Fault, 'Response should not be a Fault');
 		assert.exists(invisibleResp.GetFolderResponse,

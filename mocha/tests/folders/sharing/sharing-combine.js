@@ -74,7 +74,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 	// Tests
 	it('Smoke | Verify that rights combine when a folder is shared with an account (read) and a group (delete)', async () => {
 		// 1. Acc1 shares Inbox with Acc2 (Read)
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -144,7 +144,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 	it('Sanity | Verify that rights combine when a folder is shared with an account (read) and a domain (delete)', async () => {
 		// 1. Acc1 shares Inbox with Acc3 (Read) (Acc3 is in domain3)
 		// 2. Acc1 shares Inbox with Domain3 (Delete)
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

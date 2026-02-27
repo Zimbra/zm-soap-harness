@@ -28,7 +28,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, testAccount5, testAccount5);
 
 		aliasName = `alias.${common.getUniqueString()}@${config.testDomain}`;
-		aliasName2 = `alias01`; // Invalid (no domain)
+		aliasName2 = 'alias01'; // Invalid (no domain)
 		aliasName3 = `alias@non.existing.domain${common.getUniqueString()}`;
 		aliasName4 = `alias4.${common.getUniqueString()}@${config.testDomain}`;
 	});

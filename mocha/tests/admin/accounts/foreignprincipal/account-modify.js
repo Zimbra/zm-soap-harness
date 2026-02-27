@@ -27,7 +27,9 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 				<a n="zimbraForeignPrincipal">${fp1}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const acctId = (() => { const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id; })();
+		const acctId = (() => {
+			const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id; 
+		})();
 
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -72,7 +74,9 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const acctId = (() => { const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id; })();
+		const acctId = (() => {
+			const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id; 
+		})();
 
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">

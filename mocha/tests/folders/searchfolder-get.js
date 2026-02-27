@@ -39,7 +39,7 @@ describe('Folders > Searchfolder Get', function () {
 			'Verify search query');
 
 		// Get search folder
-		const getRequest = `<GetSearchFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getRequest = '<GetSearchFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getResponse = await soap.makeSOAPEnvelopeAccount(getRequest, accountAuthToken);
 
 		assert.notExists(getResponse.Fault, 'Response should not be a Fault');

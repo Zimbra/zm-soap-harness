@@ -15,7 +15,7 @@ describe('Folders > Folder Nested Loop', function () {
 		const accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		auth = await soap.getAccountAuthToken(accountEmail);
 
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth);
 
 		rootId = getFolder.GetFolderResponse.folder[0].id;
@@ -42,7 +42,7 @@ describe('Folders > Folder Nested Loop', function () {
 			parentId = res.CreateFolderResponse.folder[0].id;
 		}
 
-		const getInfoRequest = `<GetInfoRequest xmlns='urn:zimbraAccount'/>`;
+		const getInfoRequest = '<GetInfoRequest xmlns=\'urn:zimbraAccount\'/>';
 		const getInfo = await soap.makeSOAPEnvelopeAccount(getInfoRequest, auth);
 		assert.exists(getInfo.GetInfoResponse.name,
 			'Verify GetInfo should return success');

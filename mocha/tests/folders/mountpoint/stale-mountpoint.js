@@ -75,7 +75,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
 		// Verify mount exists and is valid
-		let getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		let getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		let getResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct2.authToken);
 		// Find mountpoint link
 		// We can just verify it doesn't say broken yet?
@@ -92,7 +92,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		// XML checks header <zimbra:link ... broken="1"> in AuthResponse (login) or GetFolderResponse
 		// Let's use GetFolderRequest with tr="1" (include trash? or tree?) - XML uses tr="1"
 		getFolder =
-			`<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>`;
+			'<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>';
 		getResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct2.authToken);
 
 		const findLink = (folders, id) => {
@@ -173,7 +173,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		await soap.makeSOAPEnvelopeAccount(revoke, acct1.authToken);
 
 		// 5. Verify broken
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>';
 		const getResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct2.authToken);
 
 		const allLinks = [];
@@ -234,7 +234,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		await soap.makeSOAPEnvelopeAdmin(modifyRequest, adminAuthToken);
 
 		// 5. Verify broken
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>';
 		const getResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct2.authToken);
 
 		const allLinks = [];
@@ -296,7 +296,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		await soap.makeSOAPEnvelopeAdmin(modifyRequest, adminAuthToken);
 
 		// 5. Verify broken
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>';
 		const getResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct2.authToken);
 
 		const allLinks = [];
@@ -361,7 +361,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		await soap.makeSOAPEnvelopeAdmin(deleteAccountRequest, adminAuthToken);
 
 		// 5. Verify broken
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>';
 		const getResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct2.authToken);
 
 		const allLinks = [];

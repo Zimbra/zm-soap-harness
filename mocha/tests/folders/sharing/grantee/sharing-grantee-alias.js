@@ -47,7 +47,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Alias', function () {
 	// Tests
 	it('Smoke | Share a folder to an alias. Verify that the account has access.', async () => {
 		// Setup Folder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -81,7 +81,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Alias', function () {
 
 	it('Sanity | Unshare a folder to an alias. Verify that the account no longer has access.', async () => {
 		// Create folder
-		const getFolderRequest2 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

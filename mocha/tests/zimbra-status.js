@@ -26,7 +26,7 @@ describe('Admin > Server > Zimbra Status', function() {
 	// Tests
 	it('Serial Check zimbra server status', async() => {
 		const services = [ 'mailbox', 'memcached', 'mta', 'onlyoffice' ];
-		const status = await server.runCommand(`sudo su - zimbra -c 'zmcontrol status'`);
+		const status = await server.runCommand('sudo su - zimbra -c \'zmcontrol status\'');
 		for (const service of services) {
 			assert.match(status, new RegExp(`${service}\\s+Running`, 'i'), `Verify ${service} running after config change`);
 		}

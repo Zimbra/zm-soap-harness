@@ -53,7 +53,7 @@ describe('Folders > Virtualhost > Virtualhost Getinforequest', function () {
 
 	// Tests
 	it('Sanity | Verify the URL for GetInfoRequest uses the virtual host name', async () => {
-		const getInfoRequest = `<GetInfoRequest xmlns="urn:zimbraAccount"/>`;
+		const getInfoRequest = '<GetInfoRequest xmlns="urn:zimbraAccount"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getInfoRequest, virtAuth);
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetInfoResponse, 'Should return info');

@@ -38,7 +38,7 @@ describe('Folders > Bugs > Bug 31113', function () {
 		const folderName = `folder${common.getUniqueString()}`;
 
 		// 1. Create Folder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const rootId = getFolder.GetFolderResponse.folder[0].id;
 

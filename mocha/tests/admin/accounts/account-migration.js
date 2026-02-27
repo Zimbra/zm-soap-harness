@@ -51,7 +51,7 @@ describe('Admin > Accounts > Account Migration', function () {
 			</ValidateRemoteZimbraConnectionRequest>`, adminAuth);
 		assert.isTrue(!!response.ValidateRemoteZimbraConnectionResponse ||
 			!!response.Fault,
-			'Should return response or fault');
+		'Should return response or fault');
 	});
 
 
@@ -64,7 +64,7 @@ describe('Admin > Accounts > Account Migration', function () {
 			</FetchAllRemoteAccountsRequest>`, adminAuth);
 		assert.isTrue(!!response.FetchAllRemoteAccountsResponse ||
 			!!response.Fault,
-			'Should return response or fault');
+		'Should return response or fault');
 	});
 
 
@@ -96,7 +96,7 @@ describe('Admin > Accounts > Account Migration', function () {
 			</MigrateUsersDataRequest>`, adminAuth);
 		assert.isTrue(!!response.MigrateUsersDataResponse ||
 			!!response.Fault,
-			'Should return response or fault');
+		'Should return response or fault');
 	});
 
 

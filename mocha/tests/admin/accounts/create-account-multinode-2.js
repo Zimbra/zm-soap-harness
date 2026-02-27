@@ -24,7 +24,7 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 
 		// Get server A ID by name
 		const serversRes = await soap.makeSOAPEnvelopeAdmin(
-			`<GetAllServersRequest xmlns="urn:zimbraAdmin"/>`, adminAuth);
+			'<GetAllServersRequest xmlns="urn:zimbraAdmin"/>', adminAuth);
 		assert.notExists(serversRes.Fault, 'Response should not be a Fault');
 		assert.exists(serversRes.GetAllServersResponse, 'GetAllServersResponse should exist');
 		const servers = Array.isArray(serversRes.GetAllServersResponse.server)

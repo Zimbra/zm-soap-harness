@@ -134,7 +134,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		// The XML expects account2 info to be returned (id takes precedence)
 		assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail &&
 			response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')),
-			'Expected PERM_DENIED or Success');
+		'Expected PERM_DENIED or Success');
 	});
 
 
@@ -150,12 +150,12 @@ describe('Admin > Accounts > Account Getinfo', function () {
 				response.Fault.Detail.Error &&
 				response.Fault.Detail.Error.Code.includes(
 					'service.PERM_DENIED')),
-			'Expected PERM_DENIED or Success');
+		'Expected PERM_DENIED or Success');
 	});
 
 
 	it('Regression | Get the account information by invalid values (blank, spaces, sometext, spchar) for name of an account', async () => {
-		const invalidNames = ['', '        ', 'some text 009', "//|.'\\\\\-"];
+		const invalidNames = ['', '        ', 'some text 009', '//|.\'\\\\\-'];
 		for (const name of invalidNames) {
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
@@ -173,7 +173,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 
 
 	it('Regression | Get the account information by writing invalid (blank, space, sometext, negative, zero, special characters) in account id', async () => {
-		const invalidIds = ['{', 'some text 009 ', '        ', '-109876', "//|.'\\\\\-"];
+		const invalidIds = ['{', 'some text 009 ', '        ', '-109876', '//|.\'\\\\\-'];
 		for (const id of invalidIds) {
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<GetAccountInfoRequest xmlns="urn:zimbraAccount">

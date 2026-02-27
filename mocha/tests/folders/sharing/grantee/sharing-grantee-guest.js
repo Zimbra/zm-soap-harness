@@ -34,7 +34,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 		const password = 'guestPassword123!';
 
 		// Setup Folder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -86,7 +86,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 		const password2 = 'guestRevoke123!';
 
 		// Create folder
-		const getFolderRequest3 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest3 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest3, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

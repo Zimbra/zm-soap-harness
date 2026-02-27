@@ -311,7 +311,7 @@ describe('Folders > Folder Action', function () {
 			'Verify op is rename');
 
 		// Verify both folders exist via GetFolder
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		assert.notExists(getFolderResponse.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderResponse.GetFolderResponse,
@@ -456,7 +456,7 @@ describe('Folders > Folder Action', function () {
 			'Verify op is empty');
 
 		// Verify folder still exists
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		assert.notExists(getFolderResponse.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderResponse.GetFolderResponse,
@@ -1072,7 +1072,7 @@ describe('Folders > Folder Action', function () {
 
 	it('Sanity | More Options - delete calendar -main calendar', async () => {
 		// Get calendar folder id
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		assert.notExists(getFolderResponse.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderResponse.GetFolderResponse,
@@ -1099,7 +1099,7 @@ describe('Folders > Folder Action', function () {
 
 	it('Sanity | Need folder preference for offline sync interval', async () => {
 		// Get Drafts folder id
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const draftsFolder = folders.find(f => f.name === 'Drafts');
@@ -1153,7 +1153,7 @@ describe('Folders > Folder Action', function () {
 		this.timeout(60 * 1000);
 
 		// Get inbox and trash ids
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxId = folders.find(f => f.name === 'Inbox').id;

@@ -35,7 +35,7 @@ describe('Folders > Searchfolder Action', function () {
 		searchFolderId2 = response2.CreateSearchFolderResponse.search[0].id;
 
 		// Get standard folder ids
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 

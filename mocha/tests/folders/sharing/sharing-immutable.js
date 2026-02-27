@@ -22,7 +22,7 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 		account1Id = res1.accountId;
 
 		// Grant 'manager' rights to Account2 on Account1's Root (Inherit)
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const rootId = resp.GetFolderResponse.folder[0].id;
 
@@ -43,7 +43,7 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 
 	const verifyImmutable = async (op, folderName, newName = null, newParent = null) => {
 		// Get Acc1 folders to find ID
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 
 		// Recursively collect all folders
@@ -110,7 +110,7 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 
 	it('Sanity | Verify that a shared immutable folders cannot be moved', async () => {
 		// Create a custom folder to move TO
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

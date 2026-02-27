@@ -43,7 +43,7 @@ describe('Folders > Bugs > Bug 66715', function () {
 		const acct2 = accounts[1]; // Sharee
 
 		// 1. Login user1. Get Inbox ID.
-		let getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		let getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		let folderResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct1.authToken);
 
 		// Find inbox
@@ -130,7 +130,7 @@ describe('Folders > Bugs > Bug 66715', function () {
 		const acct1 = accounts[0]; // Owner (reusing, policy already set on Inbox)
 		const acct3 = accounts[2]; // Sharee
 
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const folderResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct1.authToken);
 		// Find inbox explicitly again or reuse id
 		// Better to be robust

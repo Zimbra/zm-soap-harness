@@ -37,7 +37,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 
 	// Tests
 	it('Sanity | Verify that a folder can be delegated to a distribution list', async () => {
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -89,7 +89,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 
 	it('Sanity | Unshare a folder to a DL. Verify that DL users no longer have access.', async () => {
 		// Create folder
-		const getFolderRequest2 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -212,7 +212,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 		await soap.makeSOAPEnvelopeAdmin(addDistributionListMemberRequest4, adminAuth);
 
 		// Create a folder and share with outer DL
-		const getFolderRequest3 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest3 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest3, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

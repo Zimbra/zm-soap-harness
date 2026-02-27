@@ -15,7 +15,7 @@ describe('Folders > Folder Loop', function () {
 		const accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		auth = await soap.getAccountAuthToken(accountEmail);
 
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth, true);
 
 		rootId = getFolder.GetFolderResponse.folder[0].id;
@@ -39,7 +39,7 @@ describe('Folders > Folder Loop', function () {
 			await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth, true);
 		}
 
-		const getInfoRequest = `<GetInfoRequest xmlns='urn:zimbraAccount'/>`;
+		const getInfoRequest = '<GetInfoRequest xmlns=\'urn:zimbraAccount\'/>';
 		const getInfo = await soap.makeSOAPEnvelopeAccount(getInfoRequest, auth, true);
 		assert.exists(getInfo.GetInfoResponse.name,
 			'Verify GetInfo should return success');
@@ -168,7 +168,7 @@ describe('Folders > Folder Loop', function () {
 			'Verify op is empty');
 
 		// Verify folder still exists
-		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth, true);
 		assert.notExists(getFolderResponse.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderResponse.GetFolderResponse,

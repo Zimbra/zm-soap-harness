@@ -26,7 +26,7 @@ describe('Folders > Bugs > Bug 39804', function () {
 		auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
 
 		// Get Inbox
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 
 		inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;

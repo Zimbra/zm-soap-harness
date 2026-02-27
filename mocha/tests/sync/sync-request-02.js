@@ -57,7 +57,6 @@ describe('Sync > Sync Request 02', function () {
 	// Tests
 
 
-
 	it('Functional | SyncRequest after moving a contact to sent folder', async () => {
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">

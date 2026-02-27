@@ -232,7 +232,7 @@ describe('Folders > Folder Create', function () {
 		const folderName = `folder ${common.getUniqueString()}`;
 
 		// Get inbox folder id
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxFolder = folders.find(f => f.name === 'Inbox');
@@ -257,7 +257,7 @@ describe('Folders > Folder Create', function () {
 		const folderName = `Folder${common.getUniqueString()}`;
 
 		// Get inbox folder id
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxFolder = folders.find(f => f.name === 'Inbox');
@@ -279,7 +279,7 @@ describe('Folders > Folder Create', function () {
 		const folderName = `Folder${common.getUniqueString()}`;
 
 		// Get inbox folder id
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxFolder = folders.find(f => f.name === 'Inbox');

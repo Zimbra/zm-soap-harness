@@ -46,7 +46,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 		// Access to message in Subfolder2 is DENIED.
 		// This implies inheritance blocked.
 
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -117,7 +117,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 
 	it('Sanity | Verify by default subfolders are allowed to be read', async () => {
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -175,7 +175,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 
 	it('Functional | Verify that newly-created subfolders will automatically inherit granted rights as appropriate', async () => {
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -242,7 +242,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 
 	it('Functional | Verify that Existing folders moved to a different point in the folder hierarchy will also reinterpret their inherited permissions in the context of their new location.', async () => {
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -309,7 +309,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 
 	it('Sanity | Verify by default read permission applies to multiple levels (4 levels) of subfolders', async () => {
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -384,7 +384,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 
 	it('Sanity | Verify that one subfolder with perm none and flags i breaks the inherit properties of all subfolders', async () => {
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -451,7 +451,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 
 	it('Sanity | Verify by default delgatee are allowed to create a subfolder in the shared folder', async () => {
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -494,7 +494,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 
 	it('Functional | Verify that a subfolder folder cannot be shared if parent folder has d permission but flags i', async () => {
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -542,7 +542,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 
 	it('Functional | Verify that a folder cannot be created in a folder whose parent folder has rwi permission but flags i', async () => {
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -592,7 +592,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 
 	it('Functional | Verify that a folder cannot be moved into another whose parent folder has rwi permission and flags i', async () => {
-		const getFolder = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

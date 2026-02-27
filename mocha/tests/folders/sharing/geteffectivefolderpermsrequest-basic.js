@@ -23,7 +23,7 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		account1Id = res1.accountId;
 
 		// Create a folder for sharing
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

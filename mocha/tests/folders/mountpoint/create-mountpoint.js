@@ -23,7 +23,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		account2Id = res2.accountId;
 
 		// Account1 creates a folder and shares it with Account2
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 
 		inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
@@ -249,7 +249,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 
 	it('Functional | CreateMountPointRequest with parent-folder id is id of a default folder', async () => {
 		// Get Inbox folder ID (default folder)
-		const getFolderRequest2 = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth2);
 		const acc2InboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

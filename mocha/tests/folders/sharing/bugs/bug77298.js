@@ -49,7 +49,7 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 		auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
 
 		// Get Root Folder
-		const getFolderRequest = `<GetFolderRequest xmlns="urn:zimbraMail"/>`;
+		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const rootId = getFolder.GetFolderResponse.folder[0].id;
 

@@ -97,7 +97,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Create', function () {
 
 	it('Regression | Create an account with zimbraForeignPrincipal as spaces, blank, spchar, sometext, negative, zero, largenumber', async () => {
 		// These values must always succeed
-		const validValues = [":'//\\\\", 'some text', '-1', '0', '12345678901234567890'];
+		const validValues = [':\'//\\\\', 'some text', '-1', '0', '12345678901234567890'];
 		for (const val of validValues) {
 			const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
 			const response = await soap.makeSOAPEnvelopeAdmin(

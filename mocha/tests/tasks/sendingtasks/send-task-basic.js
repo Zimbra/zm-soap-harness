@@ -5,30 +5,30 @@ import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
 describe('Tasks > SendingTasks > SendTaskBasic', function () {
-    this.timeout(60 * 1000);
-    let accountEmail = null, accountAuthToken = null;
-    let account2Email = null, account2AuthToken = null;
+	this.timeout(60 * 1000);
+	let accountEmail = null, accountAuthToken = null;
+	let account2Email = null, account2AuthToken = null;
 
-    before(async () => {
-        await main.before(this.ctx);
-        accountEmail = soap.testAccounts.testAccount1.emailAddress;
-        accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-        account2Email = soap.testAccounts.testAccount2.emailAddress;
-        account2AuthToken = await soap.getAccountAuthToken(account2Email);
-    });
+	before(async () => {
+		await main.before(this.ctx);
+		accountEmail = soap.testAccounts.testAccount1.emailAddress;
+		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+		account2Email = soap.testAccounts.testAccount2.emailAddress;
+		account2AuthToken = await soap.getAccountAuthToken(account2Email);
+	});
 
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
-    // Tests
-    it('Sanity | Send a partially completed task from user1 to user2', async () => {
-        const subject = `task${common.getUniqueString()}`;
+	// Tests
+	it('Sanity | Send a partially completed task from user1 to user2', async () => {
+		const subject = `task${common.getUniqueString()}`;
 
-        // Create a task with partial completion and send to account2
-        const createRes = await soap.makeSOAPEnvelopeAccount(
-            `<CreateTaskRequest xmlns="urn:zimbraMail">
+		// Create a task with partial completion and send to account2
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv><comp name="${subject}" method="REQUEST"
 						status="INPR" percentComplete="50" priority="5">
@@ -42,24 +42,24 @@ describe('Tasks > SendingTasks > SendTaskBasic', function () {
 					</mp>
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
-        );
-        assert.notExists(createRes.Fault, 'Response should not be a Fault');
-        assert.exists(createRes.CreateTaskResponse, 'CreateTaskResponse should exist');
-        assert.exists(createRes.CreateTaskResponse.calItemId, 'Task should have calItemId');
+		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
+		assert.exists(createRes.CreateTaskResponse, 'CreateTaskResponse should exist');
+		assert.exists(createRes.CreateTaskResponse.calItemId, 'Task should have calItemId');
 
-        // Wait for delivery and search in account2
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        const searchRes = await soap.makeSOAPEnvelopeAccount(
-            `<SearchRequest xmlns="urn:zimbraMail" types="message">
+		// Wait for delivery and search in account2
+		await new Promise(resolve => setTimeout(resolve, 2000));
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account2AuthToken
-        );
-        assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-        assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-        const msgs = Array.isArray(searchRes.SearchResponse.m)
-            ? searchRes.SearchResponse.m
-            : (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
-        assert.isAbove(msgs.length, 0,
-            'Task invitation should be in account2 inbox');
-    });
+		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m
+			: (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+		assert.isAbove(msgs.length, 0,
+			'Task invitation should be in account2 inbox');
+	});
 });
