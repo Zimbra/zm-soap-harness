@@ -3,7 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Calendar > ICS Format', function () {
+describe('Rest Servlet > Calendar > ICS Format', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token, appt01Subject, appt01Id;
 
@@ -39,7 +39,7 @@ describe('RestServlet > Calendar > ICS Format', function () {
 		);
 		assert.notExists(createAppt.Fault, 'Response should not be a Fault');
 		appt01Id = createAppt.CreateAppointmentResponse.apptId
-            || createAppt.CreateAppointmentResponse.$.apptId;
+			|| createAppt.CreateAppointmentResponse.$.apptId;
 	});
 
 	// Applicable zimbra versions

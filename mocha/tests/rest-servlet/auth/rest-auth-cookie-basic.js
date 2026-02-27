@@ -3,7 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Auth > Cookie Basic', function () {
+describe('Rest Servlet > Auth > Cookie Basic', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token, account2Email, msgId, msgSubject;
 

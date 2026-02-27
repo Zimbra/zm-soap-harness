@@ -8,7 +8,7 @@ import soap from '../../../framework/backend/soap-client.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataRoot = path.resolve(__dirname, '../../../../data/soapvalidator/RestServlet/Contacts/Post');
 
-describe('RestServlet > Contacts > Post CSV', function () {
+describe('Rest Servlet > Contacts > Post CSV', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
 

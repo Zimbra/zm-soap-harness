@@ -1,18 +1,18 @@
 import { assert } from 'chai';
 import path from 'path';
-import config from '../../conf/config.js';
-import common from '../../framework/core/common.js';
-import soap from '../../framework/backend/soap-client.js';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
 
-describe('UploadServlet > Add Msg Request', function () {
+describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 	this.timeout(30 * 1000);
+	let account1Name;
 	let account1Token;
-	let inboxId;
 
 	before(async function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
-		const account1Name = 'test' + common.getUniqueString() + '@' + config.testDomain;
+		account1Name = 'test' + common.getUniqueString() + '@' + config.testDomain;
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -34,29 +34,11 @@ describe('UploadServlet > Add Msg Request', function () {
 		);
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
-		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
-			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
-
-		// Get inbox folder id
-		const folderRes = await soap.makeSOAPEnvelopeAccount(
-			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
-		);
-		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
-
-		const root = Array.isArray(folderRes.GetFolderResponse.folder)
-			? folderRes.GetFolderResponse.folder[0]
-			: folderRes.GetFolderResponse.folder;
-		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
-		const inbox = subfolders.find(f => f && f.name === 'Inbox');
-		assert.exists(inbox, 'Inbox folder should exist');
-
-		inboxId = inbox.id;
 	});
 
 	// Applicable zimbra versions
@@ -71,23 +53,25 @@ describe('UploadServlet > Add Msg Request', function () {
 		const attachmentId = await soap.uploadFile(account1Token, filePath);
 		assert.exists(attachmentId, 'Upload should return attachment id');
 
-		// Add message to inbox
-		const addRes = await soap.makeSOAPEnvelopeAccount(
-			`<AddMsgRequest xmlns="urn:zimbraMail">
-				<m l="${inboxId}" aid="${attachmentId}"/>
-			</AddMsgRequest>`, account1Token
+		// Send message using uploaded aid
+		const sendRes = await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m aid="${attachmentId}">
+					<e t="t" a="${account1Name}"/>
+				</m>
+			</SendMsgRequest>`, account1Token
 		);
-		assert.notExists(addRes.Fault, 'Response should not be a Fault');
-		assert.exists(addRes.AddMsgResponse, 'AddMsgResponse should exist');
-		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
-			? addRes.AddMsgResponse.m[0]
-			: addRes.AddMsgResponse.m;
-		assert.exists(addedMsg.id, 'Added message should have an id');
+		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
+		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0]
+			: sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg.id, 'Sent message should have an id');
 
-		// Verify message exists via GetMsgRequest
+		// Verify via GetMsgRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
-				<m id="${addedMsg.id}"/>
+				<m id="${sentMsg.id}"/>
 			</GetMsgRequest>`, account1Token
 		);
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
@@ -95,6 +79,22 @@ describe('UploadServlet > Add Msg Request', function () {
 		const msg = Array.isArray(getRes.GetMsgResponse.m)
 			? getRes.GetMsgResponse.m[0]
 			: getRes.GetMsgResponse.m;
-		assert.equal(msg.id, addedMsg.id, 'Message id should match');
+
+		// Verify sender (from)
+		const emails = Array.isArray(msg.e) ? msg.e : [msg.e];
+		const fromEmail = emails.find(e => e.t === 'f');
+		assert.exists(fromEmail, 'From email should exist');
+		assert.equal(fromEmail.a, account1Name, 'From address should match account1');
+
+		// Verify recipient (to)
+		const toEmail = emails.find(e => e.t === 't');
+		assert.exists(toEmail, 'To email should exist');
+
+		// Verify subject
+		assert.equal(msg.su, 'email01A', 'Subject should match uploaded message subject');
+
+		// Verify content type - text/plain part exists
+		const mp = Array.isArray(msg.mp) ? msg.mp[0] : msg.mp;
+		assert.exists(mp, 'Message part should exist');
 	});
 });

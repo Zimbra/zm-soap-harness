@@ -3,12 +3,14 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Sharing > Permissions Guest', function () {
+describe('Rest Servlet > Sharing > Permissions Guest', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let account1Email, account1Token;
-	let account2Email, account2Token;
-	let guestEmail;
+	let account2Email;
+	let guest1Email, guest2Email, guest3Email;
+	let message1Id, message1Subject, message1Content;
+	let folderId;
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -32,18 +34,79 @@ describe('RestServlet > Sharing > Permissions Guest', function () {
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
-		account2Token = await soap.getAccountAuthToken(account2Email);
-		guestEmail = 'guest' + common.getUniqueString() + '@external.com';
 
-		// Add messages to account1
-		const addRes = await soap.makeSOAPEnvelopeAccount(
-			`<AddMsgRequest xmlns="urn:zimbraMail">
-				<m l="2">
-					<content>From: foo@foo.com\r\nTo: ${account1Email}\r\nSubject: sharingTest\r\nMIME-Version: 1.0\r\nContent-Type: text/plain\r\n\r\nsharing content\r\n</content>
-				</m>
-			</AddMsgRequest>`, account1Token
+		guest1Email = 'guest1' + common.getUniqueString() + '@foo.com';
+		guest2Email = 'guest2' + common.getUniqueString() + '@bar.com';
+		guest3Email = 'guest3' + common.getUniqueString() + '@bar.com';
+
+		// Get inbox folder ID
+		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
-		assert.notExists(addRes.Fault, 'Response should not be a Fault');
+		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
+		const folders = getFolderRes.GetFolderResponse.folder[0].folder;
+		const inbox = folders.find(f => f.name === 'Inbox');
+		const inboxId = inbox.id;
+
+		// Create subfolder under Inbox
+		const folderName = 'folder' + common.getUniqueString();
+		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="${folderName}" l="${inboxId}"/>
+			</CreateFolderRequest>`, account1Token
+		);
+		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
+		folderId = createFolderRes.CreateFolderResponse.folder[0].id;
+
+		// Send a message to account2
+		message1Subject = 'subject' + common.getUniqueString();
+		message1Content = 'content' + common.getUniqueString();
+		const sendRes = await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2Email}"/>
+					<su>${message1Subject}</su>
+					<mp ct="text/plain">
+						<content>${message1Content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, account1Token
+		);
+		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
+		const m1 = sendRes.SendMsgResponse?.m;
+		message1Id = (Array.isArray(m1) ? m1[0] : m1).id;
+
+		// Move message to the subfolder
+		const moveRes = await soap.makeSOAPEnvelopeAccount(
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${message1Id}" op="move" l="${folderId}"/>
+			</MsgActionRequest>`, account1Token
+		);
+		assert.notExists(moveRes.Fault, 'Response should not be a Fault');
+		const actionArr = moveRes.MsgActionResponse.action;
+		const moveAction = Array.isArray(actionArr) ? actionArr[0] : actionArr;
+		assert.equal(moveAction.op, 'move', 'Action op should be move');
+		assert.equal(moveAction.id, message1Id, 'Action id should match message id');
+
+		// Grant guest1 read access to the subfolder
+		const grant1Res = await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${folderId}">
+					<grant gt="guest" perm="r" d="${guest1Email}" args="guest1password"/>
+				</action>
+			</FolderActionRequest>`, account1Token
+		);
+		assert.notExists(grant1Res.Fault, 'Response should not be a Fault');
+
+		// Grant guest2 read access to the subfolder
+		const grant2Res = await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${folderId}">
+					<grant gt="guest" perm="r" d="${guest2Email}" args="guest2password"/>
+				</action>
+			</FolderActionRequest>`, account1Token
+		);
+		assert.notExists(grant2Res.Fault, 'Response should not be a Fault');
 	});
 
 	// Applicable zimbra versions
@@ -52,97 +115,82 @@ describe('RestServlet > Sharing > Permissions Guest', function () {
 	}
 
 	// Tests
-	it('Sanity | Share a folder with guest user and verify access via REST', async () => {
-		// Share inbox with guest
-		const grantRes = await soap.makeSOAPEnvelopeAccount(
-			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action op="grant" id="2">
-					<grant gt="guest" inh="1" perm="r" d="${guestEmail}" pw="test123"/>
-				</action>
-			</FolderActionRequest>`, account1Token
-		);
-		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
-
-		// Access shared folder via REST with guest credentials
+	it('Sanity | Verify that a guest can access a shared REST file with valid user, valid password', async () => {
 		const res = await soap.makeRestRequest(null, {
 			user: account1Email,
-			folder: 'Inbox',
-			fmt: 'rss',
-			auth: 'ba',
-			guest: guestEmail,
-			password: 'test123'
+			id: message1Id,
+			guest: guest1Email,
+			password: 'guest1password'
 		});
 		assert.equal(res.status, 200, 'REST GET should return 200');
+		assert.include(res.body, account2Email, 'Response body should contain To address');
+		assert.include(res.body, message1Subject, 'Response body should contain Subject');
 	});
 
 
-	it('Sanity | Share with guest and verify correct password required', async () => {
-		// Access with wrong password should fail
+	it('Sanity | Verify that a guest can NOT access a shared REST file with invalid user, valid password', async () => {
 		const res = await soap.makeRestRequest(null, {
 			user: account1Email,
-			folder: 'Inbox',
-			fmt: 'rss',
-			auth: 'ba',
-			guest: guestEmail,
-			password: 'wrongpassword'
+			id: message1Id,
+			guest: 'invalid' + guest1Email,
+			password: 'guest1password'
 		});
-		assert.notEqual(res.status, 200, 'Wrong password should not return 200');
+		assert.equal(res.status, 401, 'Invalid guest user should return 401');
 	});
 
 
-	it('Sanity | Share a calendar folder with guest and verify access', async () => {
-		// Share calendar with guest
-		const calGrantRes = await soap.makeSOAPEnvelopeAccount(
-			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action op="grant" id="10">
-					<grant gt="guest" inh="1" perm="r" d="${guestEmail}" pw="test456"/>
-				</action>
-			</FolderActionRequest>`, account1Token
-		);
-		assert.notExists(calGrantRes.Fault, 'Response should not be a Fault');
-
+	it('Sanity | Verify that a guest can NOT access a shared REST file with valid user, invalid password', async () => {
 		const res = await soap.makeRestRequest(null, {
 			user: account1Email,
-			folder: 'Calendar',
-			fmt: 'ics',
-			auth: 'ba',
-			guest: guestEmail,
-			password: 'test456'
+			id: message1Id,
+			guest: guest1Email,
+			password: 'invalidguest1password'
 		});
-		assert.equal(res.status, 200, 'REST GET should return 200');
+		assert.equal(res.status, 401, 'Invalid password should return 401');
 	});
 
 
-	it('Sanity | Verify guest access to contacts folder', async () => {
-		// Share contacts with guest
-		const contactGrantRes = await soap.makeSOAPEnvelopeAccount(
-			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action op="grant" id="7">
-					<grant gt="guest" inh="1" perm="r" d="${guestEmail}" pw="test789"/>
-				</action>
-			</FolderActionRequest>`, account1Token
-		);
-		assert.notExists(contactGrantRes.Fault, 'Response should not be a Fault');
-
+	it('Sanity | Verify that a guest can NOT access a shared REST file with invalid user, invalid password', async () => {
 		const res = await soap.makeRestRequest(null, {
 			user: account1Email,
-			folder: 'Contacts',
-			fmt: 'csv',
-			auth: 'ba',
-			guest: guestEmail,
-			password: 'test789'
+			id: message1Id,
+			guest: 'invalid' + guest1Email,
+			password: 'invalidguest1password'
 		});
-		assert.equal(res.status, 200, 'REST GET should return 200');
+		assert.equal(res.status, 401, 'Invalid guest and password should return 401');
 	});
 
 
-	it('Sanity | Verify unauthenticated access is denied to private folder', async () => {
-		const res = await soap.makeRestRequest(null, {
+	it('Sanity | Verify that a folder can be shared to multiple guests simultaneously', async () => {
+		// guest1 should have access (200) with correct content
+		const res1 = await soap.makeRestRequest(null, {
 			user: account1Email,
-			folder: 'Inbox',
-			fmt: 'rss'
+			id: message1Id,
+			guest: guest1Email,
+			password: 'guest1password'
 		});
-		// Without auth, should get redirected or denied
-		assert.notEqual(res.status, 200, 'Unauthenticated access should not return 200');
+		assert.equal(res1.status, 200, 'Guest1 REST GET should return 200');
+		assert.include(res1.body, account2Email, 'Guest1 response should contain To address');
+		assert.include(res1.body, message1Subject, 'Guest1 response should contain Subject');
+
+		// guest2 should have access (200) with correct content
+		const res2 = await soap.makeRestRequest(null, {
+			user: account1Email,
+			id: message1Id,
+			guest: guest2Email,
+			password: 'guest2password'
+		});
+		assert.equal(res2.status, 200, 'Guest2 REST GET should return 200');
+		assert.include(res2.body, account2Email, 'Guest2 response should contain To address');
+		assert.include(res2.body, message1Subject, 'Guest2 response should contain Subject');
+
+		// guest3 should NOT have access (401)
+		const res3 = await soap.makeRestRequest(null, {
+			user: account1Email,
+			id: message1Id,
+			guest: guest3Email,
+			password: 'guest3password'
+		});
+		assert.equal(res3.status, 401, 'Guest3 without grant should return 401');
 	});
 });

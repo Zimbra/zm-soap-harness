@@ -8,7 +8,7 @@ import soap from '../../../framework/backend/soap-client.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataRoot = path.resolve(__dirname, '../../../../data/soapvalidator/RestServlet/Calendar/Post');
 
-describe('RestServlet > Calendar > Post Basic', function () {
+describe('Rest Servlet > Calendar > Post Basic', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
 
@@ -61,10 +61,10 @@ describe('RestServlet > Calendar > Post Basic', function () {
 		const subject = 'funcAppt' + common.getUniqueString();
 		const icsContent = Buffer.from(
 			'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\n' +
-            'DTSTART:20250601T120000Z\r\nDTEND:20250601T130000Z\r\n' +
-            'SUMMARY:' + subject + '\r\n' +
-            'LOCATION:FuncTestLocation\r\n' +
-            'END:VEVENT\r\nEND:VCALENDAR\r\n'
+			'DTSTART:20250601T120000Z\r\nDTEND:20250601T130000Z\r\n' +
+			'SUMMARY:' + subject + '\r\n' +
+			'LOCATION:FuncTestLocation\r\n' +
+			'END:VEVENT\r\nEND:VCALENDAR\r\n'
 		);
 
 		const postRes = await soap.makeRestPostRequest(account1Token, {

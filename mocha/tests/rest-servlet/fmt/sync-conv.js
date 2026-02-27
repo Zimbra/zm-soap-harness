@@ -3,7 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Fmt > Sync > Conversation', function () {
+describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
 	let account2Email, account2Token;
@@ -45,8 +45,8 @@ describe('RestServlet > Fmt > Sync > Conversation', function () {
 		);
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		message1Id = sendRes.SendMsgResponse?.m?.id
-            || (Array.isArray(sendRes.SendMsgResponse?.m)
-            	? sendRes.SendMsgResponse.m[0].id : undefined);
+			|| (Array.isArray(sendRes.SendMsgResponse?.m)
+				? sendRes.SendMsgResponse.m[0].id : undefined);
 	});
 
 	// Applicable zimbra versions

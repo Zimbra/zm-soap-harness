@@ -69,6 +69,33 @@ const mailHost = account.a.find(a => a.n === 'zimbraMailHost');
 assert.equal(mailHost._content, expectedHost, 'zimbraMailHost should match');
 ```
 
+## REST Servlet Assertions (CRITICAL — follow for all REST tests)
+
+> [!CAUTION]
+> REST servlet tests MUST use **exact status code assertions**, never generic `notEqual(res.status, 200)`. When the XML uses `<t:select attr="StatusCode" match="401"/>`, the JS MUST use `assert.equal(res.status, 401)`. When XML checks body attributes like `To` and `Subject`, the JS MUST assert `res.body` contains those values.
+
+```js
+// WRONG — too weak, hides real failures:
+assert.notEqual(res.status, 200, 'Should not return 200');
+assert.equal(res.status, 200, 'REST GET should return 200');
+// (no body checks)
+
+// CORRECT — exact status code + body content per XML t:select:
+assert.equal(res.status, 200, 'REST GET should return 200');
+assert.include(res.body, account2Email, 'Response body should contain To address');
+assert.include(res.body, messageSubject, 'Response body should contain Subject');
+
+// CORRECT — exact denial status code:
+assert.equal(res.status, 401, 'Invalid guest user should return 401');
+```
+
+**Key rules:**
+- XML `StatusCode` match → `assert.equal(res.status, code)` with the **exact code** (401, 403, 404, etc.)
+- XML `To` / `Subject` / body attr matches → `assert.include(res.body, value)` for each
+- Guest auth tests: pass `null` as authToken, use `guest` + `password` options
+- Message-level REST access: use `id: messageId` (not `folder` + `fmt`) to match XML `<id>` pattern
+- Setup must replicate XML setup exactly: create folder, send message, move to folder, grant to guests
+
 ## Other Rules
 - **Capitalize first word after pipe `|` in test names** — In both JS `it('Type | Description')` and XML `<t:objective>Type | Description</t:objective>`, the first character after `| ` MUST be uppercase. Example: `it('Sanity | Create a new Tag')` NOT `it('Sanity | create a new Tag')`. Run `node mocha/utils/ai/fix-capitalize.cjs` from the repo root to auto-fix all files.
 - **Sanitize test names from `<t:objective>`** — When migrating XML `<t:objective>` text to JS `it('...')` test names, ensure clean matching:

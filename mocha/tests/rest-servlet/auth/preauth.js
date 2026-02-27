@@ -4,7 +4,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Auth > Preauth', function () {
+describe('Rest Servlet > Auth > Preauth', function () {
 	this.timeout(120 * 1000);
 	let account1Email, preauthKey, domainName;
 
@@ -62,9 +62,9 @@ describe('RestServlet > Auth > Preauth', function () {
 
 		// Verify preauth via REST /service/preauth endpoint
 		const preauthUrl = `https://${config.serverHost}:${config.clientPort || 443}`
-            + `/service/preauth?account=${encodeURIComponent(account1Email)}`
-            + `&by=name&timestamp=${timestamp}&expires=${expires}`
-            + `&preauth=${hmac}`;
+			+ `/service/preauth?account=${encodeURIComponent(account1Email)}`
+			+ `&by=name&timestamp=${timestamp}&expires=${expires}`
+			+ `&preauth=${hmac}`;
 
 		const response = await fetch(preauthUrl, {
 			method: 'GET',

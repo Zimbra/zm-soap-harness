@@ -3,7 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Calendar > FreeBusy Exclude', function () {
+describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let account1Email, account1Token;
@@ -289,9 +289,9 @@ function toIcalTime(ms) {
 	const d = new Date(Number(ms));
 	const pad = (n) => String(n).padStart(2, '0');
 	return d.getUTCFullYear() +
-        pad(d.getUTCMonth() + 1) +
-        pad(d.getUTCDate()) + 'T' +
-        pad(d.getUTCHours()) +
-        pad(d.getUTCMinutes()) +
-        pad(d.getUTCSeconds());
+		pad(d.getUTCMonth() + 1) +
+		pad(d.getUTCDate()) + 'T' +
+		pad(d.getUTCHours()) +
+		pad(d.getUTCMinutes()) +
+		pad(d.getUTCSeconds());
 }

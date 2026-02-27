@@ -3,7 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Account Status', function () {
+describe('Rest Servlet > Account Status', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let account1Email, account1Token, account1Id;

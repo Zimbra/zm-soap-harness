@@ -3,7 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Sharing > Calendar > ICS Format', function () {
+describe('Rest Servlet > Sharing > Calendar > ICS Format', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
 	let account2Email, account2Token;

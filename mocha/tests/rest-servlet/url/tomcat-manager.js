@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > URL > Tomcat Manager', function () {
+describe('Rest Servlet > URL > Tomcat Manager', function () {
 	this.timeout(120 * 1000);
 
 	// Applicable zimbra versions

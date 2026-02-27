@@ -3,7 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Fmt > TGZ > Export Import', function () {
+describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 	this.timeout(180 * 1000);
 	let account1Email, account1Token;
 	let account2Email, account2Token;

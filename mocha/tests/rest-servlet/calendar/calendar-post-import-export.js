@@ -8,7 +8,7 @@ import soap from '../../../framework/backend/soap-client.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataRoot = path.resolve(__dirname, '../../../../data/soapvalidator/RestServlet/Calendar/Post/import_export');
 
-describe('RestServlet > Calendar > Post Import Export', function () {
+describe('Rest Servlet > Calendar > Post Import Export', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
 	let account2Email, account2Token;

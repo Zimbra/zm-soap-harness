@@ -3,7 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('RestServlet > Calendar > HTML Format', function () {
+describe('Rest Servlet > Calendar > HTML Format', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token, appt01Id, appt02Id;
 
@@ -45,7 +45,7 @@ describe('RestServlet > Calendar > HTML Format', function () {
 		);
 		assert.notExists(createAppt01.Fault, 'Response should not be a Fault');
 		appt01Id = createAppt01.CreateAppointmentResponse.apptId
-            || createAppt01.CreateAppointmentResponse.$.apptId;
+			|| createAppt01.CreateAppointmentResponse.$.apptId;
 
 		const appt02Subject = 'Appointment02' + common.getUniqueString();
 		const appt02Content = 'Content02' + common.getUniqueString();
@@ -66,7 +66,7 @@ describe('RestServlet > Calendar > HTML Format', function () {
 		);
 		assert.notExists(createAppt02.Fault, 'Response should not be a Fault');
 		appt02Id = createAppt02.CreateAppointmentResponse.apptId
-            || createAppt02.CreateAppointmentResponse.$.apptId;
+			|| createAppt02.CreateAppointmentResponse.$.apptId;
 	});
 
 	// Applicable zimbra versions

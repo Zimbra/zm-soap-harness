@@ -1,10 +1,10 @@
 import { assert } from 'chai';
 import path from 'path';
-import config from '../../conf/config.js';
-import common from '../../framework/core/common.js';
-import soap from '../../framework/backend/soap-client.js';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
 
-describe('UploadServlet > Upload Servlet', function () {
+describe('Rest Servlet > Upload Servlet > Upload Servlet', function () {
 	this.timeout(120 * 1000);
 	let account1Token;
 

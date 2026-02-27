@@ -97,6 +97,13 @@ describe('Module > Feature Name', function () {
   assert.include(response.Fault.Reason.Text, 'error');  // crashes if no Fault
   ```
 
+## REST Servlet Assertion Patterns
+- **Exact status codes** — XML `<t:select attr="StatusCode" match="401"/>` → `assert.equal(res.status, 401)`. NEVER use `assert.notEqual(res.status, 200)`
+- **Body content** — XML `<t:select attr="To" match="..."/>` → `assert.include(res.body, toAddress)`. Check every attribute the XML checks.
+- **Guest auth** — pass `null` as authToken, use `{ guest: email, password: pwd }` options
+- **Message-level access** — use `{ id: messageId }` to match XML `<id>` element, NOT `{ folder: ..., fmt: ... }` unless the XML actually uses folder-based access
+- **Setup parity** — replicate XML setup exactly: create subfolder, send message, move message to subfolder, grant to each guest with `gt="guest"` and `args="password"`
+
 ## SOAP Patterns
 - Account requests: `soap.makeSOAPEnvelopeAccount(request, accountAuthToken)`
 - Admin requests: `soap.makeSOAPEnvelopeAdmin(request, adminAuthToken)`
