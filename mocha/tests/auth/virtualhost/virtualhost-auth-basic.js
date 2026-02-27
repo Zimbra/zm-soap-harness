@@ -75,7 +75,7 @@ describe('Auth > Virtualhost > Virtualhost Auth Basic', function () {
 	}
 
 	// Tests
-	it('Smoke | login as the test account using the full email address', async () => {
+	it('Smoke | Login as the test account using the full email address', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -92,7 +92,7 @@ describe('Auth > Virtualhost > Virtualhost Auth Basic', function () {
 	});
 
 
-	it('Sanity | login as the test account using only the name part of the email address', async () => {
+	it('Sanity | Login as the test account using only the name part of the email address', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1User}</account>

@@ -68,7 +68,7 @@ describe('Folders > Folders Get', function () {
 	});
 
 
-	it('Sanity | get folder with specific folder id', async () => {
+	it('Sanity | Get folder with specific folder id', async () => {
 		const folderName = `folder ${common.getUniqueString()}`;
 
 		// Create folder
@@ -93,7 +93,7 @@ describe('Folders > Folders Get', function () {
 	});
 
 
-	it('Functional | get folder with deleted folder id', async () => {
+	it('Functional | Get folder with deleted folder id', async () => {
 		const folderName = `folder ${common.getUniqueString()}`;
 
 		// Create folder
@@ -130,7 +130,7 @@ describe('Folders > Folders Get', function () {
 	});
 
 
-	it('Regression | get folder with blank location', async () => {
+	it('Regression | Get folder with blank location', async () => {
 		const getFolderRequest =
 			`<GetFolderRequest xmlns='urn:zimbraMail'>
 				<folder l=''/>
@@ -142,7 +142,7 @@ describe('Folders > Folders Get', function () {
 	});
 
 
-	it('Sanity | get folder with changed location', async () => {
+	it('Sanity | Get folder with changed location', async () => {
 		const folderName = `folder ${common.getUniqueString()}`;
 
 		// Create folder
@@ -173,7 +173,7 @@ describe('Folders > Folders Get', function () {
 	});
 
 
-	it('Functional | get folder with non existing folder name', async () => {
+	it('Functional | Get folder with non existing folder name', async () => {
 		const nonExistingName = `folder ${common.getUniqueString()}`;
 
 		const getFolderRequest =
@@ -219,7 +219,7 @@ describe('Folders > Folders Get', function () {
 	});
 
 
-	it('Functional | get folder with specific id leading space', async () => {
+	it('Functional | Get folder with specific id leading space', async () => {
 		const folderName = `folder ${common.getUniqueString()}`;
 
 		// Create folder
@@ -243,7 +243,7 @@ describe('Folders > Folders Get', function () {
 	});
 
 
-	it('Functional | get folder with specific id trailing space', async () => {
+	it('Functional | Get folder with specific id trailing space', async () => {
 		const folderName = `folder ${common.getUniqueString()}`;
 
 		// Create folder

@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import { main } from '../../pages/main.js';
 
 describe('Folders > Folders Immutable', function () {
-	this.timeout(30 * 1000);
+	this.timeout(120 * 1000);
 	let accountAuthToken;
 	let folderIds = {};
 
@@ -16,7 +16,7 @@ describe('Folders > Folders Immutable', function () {
 
 		// Get all system folder ids
 		const getFolderRequest = `<GetFolderRequest xmlns='urn:zimbraMail'/>`;
-		const response = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
+		const response = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken, true);
 		const folders = response.GetFolderResponse.folder[0].folder;
 
 		folderIds.root = response.GetFolderResponse.folder[0].id;

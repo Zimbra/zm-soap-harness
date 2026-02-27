@@ -20,7 +20,7 @@ describe('Tags > Tags Get', function () {
 	}
 
 	// Tests
-	it('Sanity | get all tags', async () => {
+	it('Sanity | Get all tags', async () => {
 		// Create a tag first to ensure there is at least one
 		const tagName = `tag${common.getUniqueString()}`;
 		const createRes = await soap.makeSOAPEnvelopeAccount(

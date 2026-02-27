@@ -55,7 +55,7 @@ describe('Briefcase > List Document Revisions', function () {
 	}
 
 	// Tests
-	it('Smoke | listdocument revision request for non existing document', async () => {
+	it('Smoke | Listdocument revision request for non existing document', async () => {
 		// Save document v1
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(
@@ -237,7 +237,7 @@ describe('Briefcase > List Document Revisions', function () {
 	});
 
 
-	it('Sanity | listdocument revision request for non existing document', async () => {
+	it('Sanity | Listdocument revision request for non existing document', async () => {
 		// Save document
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 		const save1 = await soap.makeSOAPEnvelopeAccount(

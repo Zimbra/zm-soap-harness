@@ -52,12 +52,18 @@ describe('Folders > Searchfolder Action', function () {
 
 	// Tests
 	it('Functional | Try to move mail in search folder', async () => {
-		// Add a message to inbox
+		// Add a message to inbox with proper RFC 822 headers
+		const uniqueStr = common.getUniqueString();
 		const addMsgRequest =
 			`<AddMsgRequest xmlns='urn:zimbraMail'>
 				<m l='${folderIds.inbox}'>
-					<content>Subject: test msg
-					Test content ${common.getUniqueString()}</content>
+					<content>From: test@example.com
+To: test@example.com
+Subject: test msg ${uniqueStr}
+Date: Thu, 01 Jan 2026 00:00:00 +0000
+Content-Type: text/plain
+
+Test content ${uniqueStr}</content>
 				</m>
 			</AddMsgRequest>`;
 		const addMsgResponse = await soap.makeSOAPEnvelopeAccount(addMsgRequest, accountAuthToken);

@@ -98,7 +98,7 @@ describe('Tags > Tags Retention Policy', function () {
 		);
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 
-		await new Promise(resolve => setTimeout(resolve, 1000));
+		await new Promise(resolve => setTimeout(resolve, 30000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>

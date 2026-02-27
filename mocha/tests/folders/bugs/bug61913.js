@@ -20,7 +20,7 @@ describe('Folders > Bugs > Bug 61913', function () {
 	}
 
 	// Tests
-	it('Sanity | login as the test account', async () => {
+	it('Sanity | Login as the test account', async () => {
 		const folderName = `bug61913_${common.getUniqueString()}`;
 
 		// Create folder

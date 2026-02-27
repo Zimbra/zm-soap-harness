@@ -50,7 +50,7 @@ describe('Auth > Bugs > Bug 95102', function () {
 	}
 
 	// Tests
-	it('Sanity | preAuthServlet has no checking against the accounts status', async () => {
+	it('Sanity | PreAuthServlet has no checking against the accounts status', async () => {
 		// Attempt to auth with account in maintenance mode - should get MAINTENANCE_MODE error
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">

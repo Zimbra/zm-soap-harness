@@ -41,7 +41,7 @@ describe('Tasks > SendingTasks > SendTaskBasic', function () {
 						<content>Partially completed task</content>
 					</mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
         );
         assert.notExists(createRes.Fault, 'Response should not be a Fault');
         assert.exists(createRes.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -52,7 +52,7 @@ describe('Tasks > SendingTasks > SendTaskBasic', function () {
         const searchRes = await soap.makeSOAPEnvelopeAccount(
             `<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, account2AuthToken
+			</SearchRequest>`, account2AuthToken, true
         );
         assert.notExists(searchRes.Fault, 'Response should not be a Fault');
         assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');

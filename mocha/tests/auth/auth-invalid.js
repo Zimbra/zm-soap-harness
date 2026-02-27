@@ -31,7 +31,7 @@ describe('Auth > Auth Invalid', function () {
 	}
 
 	// Tests
-	it('Smoke | login with an invalid password', async () => {
+	it('Smoke | Login with an invalid password', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
@@ -87,7 +87,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Sanity | login with invalid user name and invalid password', async () => {
+	it('Sanity | Login with invalid user name and invalid password', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">invalid_user@${config.testDomain}</account>
@@ -100,7 +100,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login as domain that doesnt exist', async () => {
+	it('Functional | Login as domain that doesnt exist', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invalid_domain.com</account>
@@ -113,7 +113,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login with a domain that has a comma', async () => {
+	it('Functional | Login with a domain that has a comma', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invalid_domain,com</account>
@@ -126,7 +126,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login as an invalid email account', async () => {
+	it('Functional | Login as an invalid email account', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">invalid_user@${config.testDomain}</account>
@@ -139,7 +139,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login as a user with leading spaces', async () => {
+	it('Functional | Login as a user with leading spaces', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name"> ${validUserShort}@invalid_domain.com</account>
@@ -152,7 +152,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login as trailing spaces', async () => {
+	it('Functional | Login as trailing spaces', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invalid_domain.com </account>
@@ -165,7 +165,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login as space before the at symbol', async () => {
+	it('Functional | Login as space before the at symbol', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort} @invalid_domain.com</account>
@@ -178,7 +178,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login as space within the email', async () => {
+	it('Functional | Login as space within the email', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">use r1@invalid_domain.com</account>
@@ -191,7 +191,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login as space after the at symbol', async () => {
+	it('Functional | Login as space after the at symbol', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@ invalid_domain.com</account>
@@ -204,7 +204,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login as space within the domain', async () => {
+	it('Functional | Login as space within the domain', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invali d_domain.com</account>
@@ -217,7 +217,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login with no domain, but with an at symbol', async () => {
+	it('Functional | Login with no domain, but with an at symbol', async () => {
 		const invalidUsers = [
 			validUserShort + '@',
 			validUserShort + '@@',
@@ -240,7 +240,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login with periods in the address', async () => {
+	it('Functional | Login with periods in the address', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">first1.middle.last1@${config.testDomain}</account>
@@ -253,7 +253,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login with password with a leading space', async () => {
+	it('Functional | Login with password with a leading space', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
@@ -266,7 +266,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login with password with trailing spaces', async () => {
+	it('Functional | Login with password with trailing spaces', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
@@ -279,7 +279,7 @@ describe('Auth > Auth Invalid', function () {
 	});
 
 
-	it('Functional | login with password in capital letters', async () => {
+	it('Functional | Login with password in capital letters', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>

@@ -32,7 +32,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Test task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -50,12 +50,12 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>High priority task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		const taskId = res.CreateTaskResponse.invId;
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, accountAuthToken
+			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, accountAuthToken, true
 		);
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 	});
@@ -70,7 +70,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>In progress task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -86,7 +86,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>50% complete</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -103,7 +103,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>All day task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -120,7 +120,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Task with location</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -136,7 +136,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Named task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -153,7 +153,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Start time only</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -170,7 +170,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>End time only</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -188,7 +188,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Start and end time</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -204,7 +204,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>With organiser</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -224,7 +224,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Task with attendee</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -241,7 +241,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>${content}</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -261,7 +261,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Task invitation</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -271,7 +271,7 @@ describe('Tasks > Create Tasks', function () {
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, account2AuthToken
+			</SearchRequest>`, account2AuthToken, true
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 	});
@@ -290,7 +290,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Recurring daily task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -306,7 +306,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Task with attachment reference</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -324,7 +324,7 @@ describe('Tasks > Create Tasks', function () {
 						<mp ct="text/plain"><content>Task with MIME attachment</content></mp>
 					</mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -344,7 +344,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Yesterday task</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
@@ -363,7 +363,7 @@ describe('Tasks > Create Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Task with reminder</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');

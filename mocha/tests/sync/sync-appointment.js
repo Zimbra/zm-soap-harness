@@ -712,21 +712,34 @@ describe('Sync > Sync Appointment', function () {
 		);
 		assert.notExists(setRes2.Fault, 'Response should not be a Fault');
 
-		// Get the appointment to find invId and compNum
+		// Search to find the invId (matching XML which uses SearchResponse inst invId)
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
+				calExpandInstStart="1267344000000" calExpandInstEnd="1267948800000">
+				<query>in:Calendar</query>
+			</SearchRequest>`, account3AuthToken
+		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
+		const searchAppts = Array.isArray(searchRes.SearchResponse.appt)
+			? searchRes.SearchResponse.appt : (searchRes.SearchResponse.appt ? [searchRes.SearchResponse.appt] : []);
+		const foundAppt = searchAppts.find(a => a.uid === uid);
+		assert.exists(foundAppt, 'Appointment should be found in search');
+		const inst = Array.isArray(foundAppt.inst) ? foundAppt.inst[0] : foundAppt.inst;
+		const searchInvId = inst.invId || foundAppt.invId;
+
+		// Get compNum from GetAppointmentRequest
 		const getApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetAppointmentRequest xmlns="urn:zimbraMail" id="${apptId}"/>`, account3AuthToken
 		);
 		assert.notExists(getApptRes.Fault, 'Response should not be a Fault');
-		assert.exists(getApptRes.GetAppointmentResponse, 'GetAppointmentResponse should exist');
 		const apptData = getApptRes.GetAppointmentResponse.appt[0];
 		const inv = Array.isArray(apptData.inv) ? apptData.inv[0] : apptData.inv;
 		const compNum = inv.compNum;
-		const invId = inv.id;
 
-		// Cancel the appointment
+		// Cancel the appointment using invId from search
 		const cancelRes = await soap.makeSOAPEnvelopeAccount(
 			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
-				id="${invId}" comp="${compNum}"/>`, account3AuthToken
+				id="${searchInvId}" comp="${compNum}"/>`, account3AuthToken
 		);
 		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
 		assert.exists(cancelRes.CancelAppointmentResponse,
@@ -850,7 +863,22 @@ describe('Sync > Sync Appointment', function () {
 		);
 		assert.notExists(setRes2.Fault, 'Response should not be a Fault');
 
-		// Get appointment details
+		// Search to find the invId (matching XML which uses SearchResponse inst invId)
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
+				calExpandInstStart="1267344000000" calExpandInstEnd="1267948800000">
+				<query>in:Calendar</query>
+			</SearchRequest>`, account4AuthToken
+		);
+		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
+		const searchAppts2 = Array.isArray(searchRes.SearchResponse.appt)
+			? searchRes.SearchResponse.appt : (searchRes.SearchResponse.appt ? [searchRes.SearchResponse.appt] : []);
+		const foundAppt = searchAppts2.find(a => a.uid === uid);
+		assert.exists(foundAppt, 'Appointment should be found in search');
+		const inst = Array.isArray(foundAppt.inst) ? foundAppt.inst[0] : foundAppt.inst;
+		const searchInvId = inst.invId || foundAppt.invId;
+
+		// Get compNum from GetAppointmentRequest
 		const getApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetAppointmentRequest xmlns="urn:zimbraMail" id="${apptId}"/>`, account4AuthToken
 		);
@@ -858,12 +886,11 @@ describe('Sync > Sync Appointment', function () {
 		const apptData = getApptRes.GetAppointmentResponse.appt[0];
 		const inv = Array.isArray(apptData.inv) ? apptData.inv[0] : apptData.inv;
 		const compNum = inv.compNum;
-		const invId = inv.id;
 
-		// Cancel
+		// Cancel using invId from search
 		const cancelRes = await soap.makeSOAPEnvelopeAccount(
 			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
-				id="${invId}" comp="${compNum}"/>`, account4AuthToken
+				id="${searchInvId}" comp="${compNum}"/>`, account4AuthToken
 		);
 		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
 
@@ -881,7 +908,10 @@ describe('Sync > Sync Appointment', function () {
 		);
 		assert.notExists(syncRes3.Fault, 'Response should not be a Fault');
 		if (syncRes3.SyncResponse.deleted) {
-			assert.include(syncRes3.SyncResponse.deleted.ids, apptId,
+			const deletedArr = Array.isArray(syncRes3.SyncResponse.deleted)
+				? syncRes3.SyncResponse.deleted : [syncRes3.SyncResponse.deleted];
+			const allDeletedIds = deletedArr.map(d => d.ids).join(',');
+			assert.include(allDeletedIds, apptId,
 				'Deleted ids should contain appointment id');
 		}
 	});

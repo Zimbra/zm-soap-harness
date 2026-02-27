@@ -139,7 +139,7 @@ describe('Tasks > Tags > TagTasksBasic', function () {
     });
 
 
-    it('Deprecated | Apply a tag to a received (non-owned) appointment', async () => {
+    it('Regression | Apply a tag to a received (non-owned) appointment', async () => {
         // Send a task to account2
         const subject = `task${common.getUniqueString()}`;
         const createRes = await soap.makeSOAPEnvelopeAccount(
@@ -205,7 +205,7 @@ describe('Tasks > Tags > TagTasksBasic', function () {
     });
 
 
-    it('Deprecated | Apply a tag to a received (non-owned) appointment using SetAppointmentRequest', async () => {
+    it('Regression | Apply a tag to a received (non-owned) appointment using SetAppointmentRequest', async () => {
         // Create tag
         const tagName = `tag${common.getUniqueString()}`;
         const createTagRes = await soap.makeSOAPEnvelopeAccount(

@@ -134,16 +134,21 @@ describe('Sync > Mountpoint > SyncRequest Contacts', function () {
 		);
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 
+		// Wait for server to process deletion
+		await new Promise(resolve => setTimeout(resolve, 3000));
+
 		// Sync as account2 - verify deleted
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest l="${account1Id}:${contactsFolderId}"
 				token="${token}" xmlns="urn:zimbraMail"/>`, account2AuthToken
 		);
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
-		if (syncRes2.SyncResponse.deleted) {
-			assert.exists(syncRes2.SyncResponse.deleted.ids,
-				'SyncResponse should have deleted ids');
-		}
+		assert.exists(syncRes2.SyncResponse.deleted,
+			'SyncResponse should have deleted element');
+		const delObj = syncRes2.SyncResponse.deleted;
+		const deletedIds = String(delObj.ids || delObj.id || delObj || '');
+		assert.isNotEmpty(deletedIds,
+			'SyncResponse should have deleted ids');
 	});
 
 

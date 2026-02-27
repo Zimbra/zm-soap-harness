@@ -176,7 +176,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 	});
 
 
-	it('Sanity | zimbraPrefCalendarReminderDeviceEmail should be on account only', async () => {
+	it('Sanity | ZimbraPrefCalendarReminderDeviceEmail should be on account only', async () => {
 		const domainName = `domain.${common.getUniqueString()}.${config.testDomain}`;
 
 		// Creating domain with zimbraCalendarReminderDeviceEmail should fail

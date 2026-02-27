@@ -94,11 +94,13 @@ describe('Tags > Tags Action', function () {
 				<tag name="${tagName1}" color="3"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'First tag creation should not be a Fault');
 		const createRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName2}" color="4"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Second tag creation should not be a Fault');
 		const tagId2 = createRes2.CreateTagResponse.tag[0].id;
 
 		// Try to rename tag2 to tag1's name
@@ -227,6 +229,7 @@ describe('Tags > Tags Action', function () {
 				<tag name="${tagName}" color="2"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
 
 		const invalidRes = await soap.makeSOAPEnvelopeAccount(
@@ -258,11 +261,13 @@ describe('Tags > Tags Action', function () {
 				<tag name="${tagName1}" color="3"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'First tag creation should not be a Fault');
 		const createRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName2}" color="4"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Second tag creation should not be a Fault');
 		const tagId1 = createRes1.CreateTagResponse.tag[0].id;
 		const tagId2 = createRes2.CreateTagResponse.tag[0].id;
 
@@ -303,7 +308,7 @@ describe('Tags > Tags Action', function () {
 	});
 
 
-	it('Sanity | change the color of a tag using only tag name in the action request', async () => {
+	it('Sanity | Change the color of a tag using only tag name in the action request', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -331,7 +336,7 @@ describe('Tags > Tags Action', function () {
 	});
 
 
-	it('Sanity | change the color of a tag using tag id in the action request', async () => {
+	it('Sanity | Change the color of a tag using tag id in the action request', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">

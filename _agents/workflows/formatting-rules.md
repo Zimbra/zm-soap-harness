@@ -70,6 +70,7 @@ assert.equal(mailHost._content, expectedHost, 'zimbraMailHost should match');
 ```
 
 ## Other Rules
+- **Capitalize first word after pipe `|` in test names** — In both JS `it('Type | Description')` and XML `<t:objective>Type | Description</t:objective>`, the first character after `| ` MUST be uppercase. Example: `it('Sanity | Create a new Tag')` NOT `it('Sanity | create a new Tag')`. Run `node mocha/utils/ai/fix-capitalize.cjs` from the repo root to auto-fix all files.
 - **Sanitize test names from `<t:objective>`** — When migrating XML `<t:objective>` text to JS `it('...')` test names, ensure clean matching:
   - **Remove**: single quotes `'`, double quotes `"`, smart quotes, backticks `` ` ``, backslashes `\`, acute accents
   - **Replace**: full-width spaces `U+3000` → regular space, tabs/newlines → single space

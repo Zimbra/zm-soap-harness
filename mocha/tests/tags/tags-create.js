@@ -20,7 +20,7 @@ describe('Tags > Tags Create', function () {
 	}
 
 	// Tests
-	it('Sanity | create a new Tag', async () => {
+	it('Sanity | Create a new Tag', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -37,7 +37,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Functional | create a new Tag with blank name', async () => {
+	it('Functional | Create a new Tag with blank name', async () => {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="" color="2"/>
@@ -47,7 +47,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Functional | create a new Tag with all spaces in name', async () => {
+	it('Functional | Create a new Tag with all spaces in name', async () => {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="   " color="3"/>
@@ -57,7 +57,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Functional | create a Tag with Duplicate name', async () => {
+	it('Functional | Create a Tag with Duplicate name', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -75,7 +75,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Functional | create a Tag with Special Characters in name', async () => {
+	it('Functional | Create a Tag with Special Characters in name', async () => {
 		const tagName = `tag!@#$%${common.getUniqueString()}`;
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -89,7 +89,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Regression | create a Tag with Unique name and with color value greater than 8', async () => {
+	it('Regression | Create a Tag with Unique name and with color value greater than 8', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -103,7 +103,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Regression | create a Tag with Unique name and with color value negative', async () => {
+	it('Regression | Create a Tag with Unique name and with color value negative', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -119,7 +119,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Regression | create a new Tag with all spaces in the color', async () => {
+	it('Regression | Create a new Tag with all spaces in the color', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -130,7 +130,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Regression | create a new Tag with special chars in the color', async () => {
+	it('Regression | Create a new Tag with special chars in the color', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -141,7 +141,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Regression | create a new Tag with blank in the color', async () => {
+	it('Regression | Create a new Tag with blank in the color', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -155,7 +155,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Regression | create a new Tag with invalid attributes', async () => {
+	it('Regression | Create a new Tag with invalid attributes', async () => {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="" color=""/>
@@ -165,7 +165,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Regression | create a new Tag with spaces in the tag name and color', async () => {
+	it('Regression | Create a new Tag with spaces in the tag name and color', async () => {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="   " color="   "/>
@@ -186,7 +186,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Sanity | create a new Tag with default color', async () => {
+	it('Sanity | Create a new Tag with default color', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
@@ -200,7 +200,7 @@ describe('Tags > Tags Create', function () {
 	});
 
 
-	it('Sanity | create a new Tag with different color modify it to default color', async () => {
+	it('Sanity | Create a new Tag with different color modify it to default color', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">

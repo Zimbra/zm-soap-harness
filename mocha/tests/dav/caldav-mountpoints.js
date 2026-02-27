@@ -720,7 +720,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				<D:prop><D:getetag/></D:prop>
 				<filter>
 					<comp-filter name="VCALENDAR">
-						<comp-filter name="VTODO"/>
+						<comp-filter name="VEVENT"/>
 					</comp-filter>
 				</filter>
 			</calendar-query>`,
@@ -899,7 +899,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				<D:prop><D:getetag/></D:prop>
 				<filter>
 					<comp-filter name="VCALENDAR">
-						<comp-filter name="VTODO"/>
+						<comp-filter name="VEVENT"/>
 					</comp-filter>
 				</filter>
 			</calendar-query>`,
@@ -1075,7 +1075,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				<D:prop><D:getetag/></D:prop>
 				<filter>
 					<comp-filter name="VCALENDAR">
-						<comp-filter name="VTODO"/>
+						<comp-filter name="VEVENT"/>
 					</comp-filter>
 				</filter>
 			</calendar-query>`,

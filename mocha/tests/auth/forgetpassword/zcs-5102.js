@@ -312,7 +312,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 		assert.exists(attempt1.Fault.Detail.Error.Code, 'Error code should exist');
 
 		// Wait for lockout failure lifetime to expire
-		await new Promise(resolve => setTimeout(resolve, 30000));
+		await new Promise(resolve => setTimeout(resolve, 35000));
 
 		// Attempt 2 - after lifetime expired, should not lock out
 		const attempt2 = await soap.makeSOAPEnvelopeAccount(

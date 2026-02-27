@@ -205,7 +205,7 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 	});
 
 
-	it('Regression | login with a domain with less than invalid query5', async () => {
+	it('Regression | Login with a domain with less than invalid query5', async () => {
 		// invalidsphchar5 (<>) - Expects INVALID_REQUEST
 		// Note: XML payload might need escaping.
 		const res = await soap.makeSOAPEnvelopeAdmin(

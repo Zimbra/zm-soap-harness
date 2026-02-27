@@ -31,7 +31,7 @@ describe('Auth > Auth Negative', function () {
 	}
 
 	// Tests
-	it('Functional | login with a domain with a left parenthes 1', async () => {
+	it('Functional | Login with a domain with a left parenthes 1', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@inva(lid_domain.com</account>
@@ -44,7 +44,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a domain with less than', async () => {
+	it('Functional | Login with a domain with less than', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@inva&lt;lid_domain,com</account>
@@ -57,7 +57,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a domain with a left parenthes 2', async () => {
+	it('Functional | Login with a domain with a left parenthes 2', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@zim(bra.com</account>
@@ -70,7 +70,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a domain with a right parenthes', async () => {
+	it('Functional | Login with a domain with a right parenthes', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@zimbr)a.com</account>
@@ -83,7 +83,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a domain with a vertical bar', async () => {
+	it('Functional | Login with a domain with a vertical bar', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@zim|bra.com</account>
@@ -96,7 +96,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a domain with an ampersand', async () => {
+	it('Functional | Login with a domain with an ampersand', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@zimbr&amp;a.com</account>
@@ -109,7 +109,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a domain with a semicolon', async () => {
+	it('Functional | Login with a domain with a semicolon', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@z;imbra.com</account>
@@ -122,7 +122,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a domain with a equals sign', async () => {
+	it('Functional | Login with a domain with a equals sign', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@zim=bra.com</account>
@@ -135,7 +135,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a password with a left parenthes', async () => {
+	it('Functional | Login with a password with a left parenthes', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
@@ -148,7 +148,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a password with a right parenthes', async () => {
+	it('Functional | Login with a password with a right parenthes', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
@@ -161,7 +161,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a password with a vertical bar', async () => {
+	it('Functional | Login with a password with a vertical bar', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
@@ -174,7 +174,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a password with a ampersand', async () => {
+	it('Functional | Login with a password with a ampersand', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
@@ -187,7 +187,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a password with a semi-colon', async () => {
+	it('Functional | Login with a password with a semi-colon', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
@@ -200,7 +200,7 @@ describe('Auth > Auth Negative', function () {
 	});
 
 
-	it('Functional | login with a password with a equals sign', async () => {
+	it('Functional | Login with a password with a equals sign', async () => {
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>

@@ -72,6 +72,7 @@ describe('Module > Feature Name', function () {
 ```
 
 ## Formatting Rules
+- **Capitalize first word after pipe `|` in test names** — The first character after `| ` in `it()` descriptions MUST be uppercase. Example: `it('Sanity | Create a new Tag')` NOT `it('Sanity | create a new Tag')`. This is a STRICT rule.
 - **TABS ONLY for indentation** — NEVER use spaces for indentation. This is a STRICT rule. Every level of indentation MUST use a tab character (`\t`), not spaces. This applies to ALL code: `describe()`, `before()`, `it()`, assertions, SOAP XML inside template literals, etc. Files that use 4-space indentation are WRONG and must be converted to tabs.
 - **Double blank line** between `it()` blocks
 - **MANDATORY section comments** — Every test file MUST have `// Applicable zimbra versions` before the `if (config.serial...)` block and `// Tests` before the first `it()` block. Both comments use the same indentation as the code around them (one tab). There must be exactly 1 blank line between `});` (end of `before`) and `// Applicable zimbra versions`, and exactly 1 blank line between `}` (end of `if` block) and `// Tests`.

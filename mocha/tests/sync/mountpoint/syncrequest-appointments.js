@@ -155,14 +155,15 @@ describe('Sync > Mountpoint > SyncRequest Appointments', function () {
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token = syncRes1.SyncResponse.token;
 
-		// Cancel appointment as account1
-		const cancelRes = await soap.makeSOAPEnvelopeAccount(
-			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
-				id="${apptId}" comp="0"/>`, account1AuthToken
+		// Delete appointment as account1
+		const deleteRes = await soap.makeSOAPEnvelopeAccount(
+			`<ItemActionRequest xmlns="urn:zimbraMail">
+				<action op="delete" id="${apptId}"/>
+			</ItemActionRequest>`, account1AuthToken
 		);
-		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
-		assert.exists(cancelRes.CancelAppointmentResponse,
-			'CancelAppointmentResponse should exist');
+		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
+		assert.exists(deleteRes.ItemActionResponse,
+			'ItemActionResponse should exist');
 
 		// Sync as account2 - verify deleted
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -172,8 +173,10 @@ describe('Sync > Mountpoint > SyncRequest Appointments', function () {
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		if (syncRes2.SyncResponse.deleted) {
-			const deletedIds = syncRes2.SyncResponse.deleted.ids;
-			assert.exists(deletedIds, 'SyncResponse should have deleted ids');
+			const deletedArr = Array.isArray(syncRes2.SyncResponse.deleted)
+				? syncRes2.SyncResponse.deleted : [syncRes2.SyncResponse.deleted];
+			const allDeletedIds = deletedArr.map(d => d.ids || d.id || '').join(',');
+			assert.isNotEmpty(allDeletedIds, 'SyncResponse should have deleted ids');
 		}
 	});
 

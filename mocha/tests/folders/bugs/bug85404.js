@@ -20,7 +20,7 @@ describe('Folders > Bugs > Bug 85404', function () {
 	}
 
 	// Tests
-	it('Sanity | absFolderPath not returned in notification when a folder has moved', async () => {
+	it('Sanity | AbsFolderPath not returned in notification when a folder has moved', async () => {
 		const folderName = `bug85404_${common.getUniqueString()}`;
 		const rootId = '1';
 

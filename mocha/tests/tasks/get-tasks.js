@@ -29,13 +29,13 @@ describe('Tasks > Get Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Task details test</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const taskId = createRes.CreateTaskResponse.invId;
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, accountAuthToken
+			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, accountAuthToken, true
 		);
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetTaskResponse, 'GetTaskResponse should exist');
@@ -51,7 +51,7 @@ describe('Tasks > Get Tasks', function () {
 					<su>${subject}</su>
 					<mp ct="text/plain"><content>Task to cancel and get</content></mp>
 				</m>
-			</CreateTaskRequest>`, accountAuthToken
+			</CreateTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const taskId = createRes.CreateTaskResponse.invId;
@@ -63,13 +63,13 @@ describe('Tasks > Get Tasks', function () {
 					<su>Cancelled: ${subject}</su>
 					<mp ct="text/plain"><content>Cancelled</content></mp>
 				</m>
-			</CancelTaskRequest>`, accountAuthToken
+			</CancelTaskRequest>`, accountAuthToken, true
 		);
 		assert.notExists(cancelRes.Fault, 'Cancel should not be a Fault');
 
 		// Get the canceled task - should fault (no such item)
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, accountAuthToken
+			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, accountAuthToken, true
 		);
 		// Server may fault with "no such item" or return the cancelled task
 		if (getRes.Fault) {
