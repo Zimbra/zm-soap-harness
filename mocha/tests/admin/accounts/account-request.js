@@ -208,7 +208,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ? createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id);
+		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ?
+			createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id);
 
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -248,7 +249,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ? createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id);
+		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ?
+			createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id);
 
 		const userAuth = await soap.getAccountAuthToken(acctName, config.accountPassword);
 		const response = await soap.makeSOAPEnvelopeAccount(
@@ -322,7 +324,8 @@ describe('Admin > Accounts > Account Request', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ? createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id);
+		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ?
+			createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id);
 
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<SearchAccountsRequest xmlns="urn:zimbraAdmin">
@@ -347,13 +350,15 @@ describe('Admin > Accounts > Account Request', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ? createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id);
+		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ?
+			createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id);
 
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<MigrateAccountRequest xmlns="urn:zimbraAdmin">
 				<migrate action="wiki" id="${acctId}"/>
 			</MigrateAccountRequest>`, adminAuthToken
 		);
+
 		// May succeed or fault depending on server support, enforcing strict assertion:
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.MigrateAccountResponse,

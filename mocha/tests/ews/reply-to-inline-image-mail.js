@@ -16,7 +16,7 @@ describe('EWS > Reply To Inline Image Mail', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 
 		account1Email = `ewsinline1${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function () {
 	this.timeout(120 * 1000);
@@ -97,7 +98,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 		const oneDayMs = 86400000;
 
 		// Non-authenticated user should NOT see FreeBusy (gt=all means internal only)
-		const fbPublic = await soap.makeFreeBusyRequest(null, {
+		const fbPublic = await rest.makeFreeBusyRequest(null, {
 			acct: account1Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -107,7 +108,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			'Non-authenticated user should not see busy time with gt=all');
 
 		// Internal user SHOULD see FreeBusy
-		const fbInternal = await soap.makeFreeBusyRequest(accountAToken, {
+		const fbInternal = await rest.makeFreeBusyRequest(accountAToken, {
 			acct: account1Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -156,7 +157,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 		const oneDayMs = 86400000;
 
 		// Non-authenticated user SHOULD see FreeBusy (gt=pub)
-		const fbPublic = await soap.makeFreeBusyRequest(null, {
+		const fbPublic = await rest.makeFreeBusyRequest(null, {
 			acct: account2Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -166,7 +167,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			'Non-authenticated user should see busy time with gt=pub');
 
 		// Internal user SHOULD also see FreeBusy
-		const fbInternal = await soap.makeFreeBusyRequest(accountAToken, {
+		const fbInternal = await rest.makeFreeBusyRequest(accountAToken, {
 			acct: account2Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -215,7 +216,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 		const oneDayMs = 86400000;
 
 		// Non-authenticated should NOT see (deny=1)
-		const fbPublic = await soap.makeFreeBusyRequest(null, {
+		const fbPublic = await rest.makeFreeBusyRequest(null, {
 			acct: account3Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -225,7 +226,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			'Non-authenticated user should not see busy time with deny=1');
 
 		// Internal user also should NOT see (deny=1 for all)
-		const fbInternal = await soap.makeFreeBusyRequest(accountAToken, {
+		const fbInternal = await rest.makeFreeBusyRequest(accountAToken, {
 			acct: account3Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -274,7 +275,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 		const oneDayMs = 86400000;
 
 		// Non-authenticated should NOT see
-		const fbPublic = await soap.makeFreeBusyRequest(null, {
+		const fbPublic = await rest.makeFreeBusyRequest(null, {
 			acct: account4Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -284,7 +285,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			'Non-authenticated user should not see busy time with gt=usr');
 
 		// Specified user (accountA) SHOULD see
-		const fbAllowed = await soap.makeFreeBusyRequest(accountAToken, {
+		const fbAllowed = await rest.makeFreeBusyRequest(accountAToken, {
 			acct: account4Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -294,7 +295,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			'Specified user should see busy time');
 
 		// Non-specified user (accountB) should NOT see
-		const fbDenied = await soap.makeFreeBusyRequest(accountBToken, {
+		const fbDenied = await rest.makeFreeBusyRequest(accountBToken, {
 			acct: account4Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -344,7 +345,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 		const oneDayMs = 86400000;
 
 		// Non-authenticated should NOT see
-		const fbPublic = await soap.makeFreeBusyRequest(null, {
+		const fbPublic = await rest.makeFreeBusyRequest(null, {
 			acct: account5Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -354,7 +355,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			'Non-authenticated user should not see busy time');
 
 		// AccountA SHOULD see
-		const fbA = await soap.makeFreeBusyRequest(accountAToken, {
+		const fbA = await rest.makeFreeBusyRequest(accountAToken, {
 			acct: account5Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -364,7 +365,7 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			'AccountA should see busy time');
 
 		// AccountB SHOULD see
-		const fbB = await soap.makeFreeBusyRequest(accountBToken, {
+		const fbB = await rest.makeFreeBusyRequest(accountBToken, {
 			acct: account5Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)

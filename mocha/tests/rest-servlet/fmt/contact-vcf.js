@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > Contact VCF', function () {
 	this.timeout(120 * 1000);
@@ -43,7 +44,7 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 
 	// Tests
 	it('Sanity | Using the REST servlet, get a contact using vcf format', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: contactId,
 			fmt: 'vcf'
@@ -56,7 +57,7 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 
 
 	it('Functional | Get all contacts folder in vcf format', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Contacts',
 			fmt: 'vcf'
@@ -68,7 +69,7 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 
 
 	it('Functional | Verify VCF contains email address', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: contactId,
 			fmt: 'vcf'
@@ -79,7 +80,7 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 
 
 	it('Functional | Verify VCF contains proper N and FN fields', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: contactId,
 			fmt: 'vcf'
@@ -102,7 +103,7 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
             </CreateContactRequest>`, account1Token
 		);
 
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Contacts',
 			fmt: 'vcf'

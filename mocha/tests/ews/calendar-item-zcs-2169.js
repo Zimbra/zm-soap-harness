@@ -12,7 +12,7 @@ describe('EWS > CalendarItem ZCS-2169', function () {
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = 'test123';
+        account1Password = config.accountPassword;
 
         const accountName = `ewstest${common.getUniqueString()}@${config.testDomain}`;
         await soap.makeSOAPEnvelopeAdmin(

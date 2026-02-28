@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > Message XML', function () {
 	this.timeout(120 * 1000);
@@ -96,7 +97,7 @@ describe('Rest Servlet > Fmt > Message XML', function () {
 
 	// Tests
 	it('Sanity | Verify basic XML format', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fmt: 'xml'
@@ -107,7 +108,7 @@ describe('Rest Servlet > Fmt > Message XML', function () {
 
 
 	it('Sanity | With REST url with spaces verify that the trailing spaces are trimmed and return expected response', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox/' + folder1Name,
 			fmt: 'xml'

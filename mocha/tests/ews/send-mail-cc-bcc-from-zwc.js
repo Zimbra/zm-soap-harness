@@ -14,7 +14,7 @@ describe('EWS > Send Mail CC BCC From ZWC', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 		messageSubject = `subject${common.getUniqueString()}`;
 
 		account1Email = `ewsccbccz1${common.getUniqueString()}@${config.testDomain}`;

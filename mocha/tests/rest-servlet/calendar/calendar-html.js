@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Calendar > HTML Format', function () {
 	this.timeout(120 * 1000);
@@ -76,7 +77,7 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 
 	// Tests
 	it('Sanity | Using the REST servlet, get a calendar using html format 1', async () => {
-		const restRes = await soap.makeRestRequest(account1Token, {
+		const restRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: appt01Id,
 			fmt: 'html'
@@ -86,7 +87,7 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 
 
 	it('Sanity | Using the REST servlet, get a calendar using html format 2', async () => {
-		const restRes = await soap.makeRestRequest(account1Token, {
+		const restRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'html'
@@ -96,7 +97,7 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 
 
 	it('Sanity | Using the REST servlet, get a calendar using html format 3', async () => {
-		const restRes = await soap.makeRestRequest(account1Token, {
+		const restRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'html'
@@ -106,7 +107,7 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 
 
 	it('Sanity | Using the REST servlet, get an appointment with only text, plain parts using html format', async () => {
-		const restRes = await soap.makeRestRequest(account1Token, {
+		const restRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: appt02Id,
 			fmt: 'html'

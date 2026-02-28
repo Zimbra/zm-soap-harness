@@ -19,7 +19,7 @@ describe('EWS > Recover Mail From Dumpster', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 
 		account1Email = `ewsdump1${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(

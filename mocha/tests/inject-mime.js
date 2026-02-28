@@ -28,7 +28,7 @@ describe('Mail > Mime > Inject MIME', function () {
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmailAddress);
 
 		const subject = 'REST Upload - API automation subject';
-		const filePath = path.join(config.projectRoot, 'mocha/data/mime/file-attachments.txt');
+		const filePath = path.join(config.projectRoot, 'mocha/data/file-attachments.txt');
 		const attachmentFiles = 'htmFile.html,PDFFile.pdf,PlainTextFile.txt,WordDocFile.docx,ExcelDocFile.xlsx';
 
 		// Inject mime

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Mail > Part Basic', function () {
 	this.timeout(120 * 1000);
@@ -41,7 +42,7 @@ describe('Rest Servlet > Mail > Part Basic', function () {
 
 	// Tests
 	it('Sanity | Get a message part using the REST servlet', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			extraParams: { part: '2' }
@@ -52,7 +53,7 @@ describe('Rest Servlet > Mail > Part Basic', function () {
 
 
 	it('Functional | Get first part (text body) of a multipart message', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			extraParams: { part: '1' }
@@ -63,7 +64,7 @@ describe('Rest Servlet > Mail > Part Basic', function () {
 
 
 	it('Functional | Get message in sync format to verify part structure', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			fmt: 'sync'

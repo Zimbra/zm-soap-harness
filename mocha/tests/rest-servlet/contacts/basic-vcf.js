@@ -1,12 +1,11 @@
 import { assert } from 'chai';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataRoot = path.resolve(__dirname, '../../../../data/soapvalidator/RestServlet/Contacts/Post');
+const dataRoot = path.join(config.projectRoot, 'mocha/data/tests');
 
 describe('Rest Servlet > Contacts > Post VCF', function () {
 	this.timeout(120 * 1000);
@@ -35,7 +34,7 @@ describe('Rest Servlet > Contacts > Post VCF', function () {
 	it('Sanity | Post a Contact VCF to the REST servlet', async () => {
 		const vcfFilePath = path.join(dataRoot, 'contact1.vcf');
 
-		const postRes = await soap.makeRestPostRequest(account1Token, {
+		const postRes = await rest.makeRestPostRequest(account1Token, {
 			user: account1Email,
 			folder: 'contacts',
 			fmt: 'vcf',

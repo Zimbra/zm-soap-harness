@@ -6,49 +6,49 @@ import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
 describe('EWS > CalendarItem ZCS-2210', function () {
-    this.timeout(120 * 1000);
-    let adminAuthToken, account1Email, account1Password;
-    let account2Email, account2Password;
+	this.timeout(120 * 1000);
+	let adminAuthToken, account1Email, account1Password;
+	let account2Email, account2Password;
 
-    before(async function () {
-        await main.before(this.ctx);
-        adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = 'test123';
-        account2Password = 'test123';
+	before(async function () {
+		await main.before(this.ctx);
+		adminAuthToken = await soap.getAdminAuthToken();
+		account1Password = config.accountPassword;
+		account2Password = config.accountPassword;
 
-        const account1Name = `ewstest1${common.getUniqueString()}@${config.testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+		const account1Name = `ewstest1${common.getUniqueString()}@${config.testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${account1Password}</password>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        account1Email = account1Name;
+		);
+		account1Email = account1Name;
 
-        const account2Name = `ewstest2${common.getUniqueString()}@${config.testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+		const account2Name = `ewstest2${common.getUniqueString()}@${config.testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${account2Password}</password>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        account2Email = account2Name;
-    });
+		);
+		account2Email = account2Name;
+	});
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    // Tests
-    it('Sanity | Create a meeting request with no UID specified', async () => {
-        const messageSubject = `subject${common.getUniqueString()}`;
+	// Tests
+	it('Sanity | Create a meeting request with no UID specified', async () => {
+		const messageSubject = `subject${common.getUniqueString()}`;
 
-        // EWS: CreateItem — recurring meeting without UID
-        const createRes = await ews.makeEWSRequest(
-            `<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+		// EWS: CreateItem — recurring meeting without UID
+		const createRes = await ews.makeEWSRequest(
+			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
 				<SavedItemFolderId>
 					<t:FolderId Id="10" />
@@ -108,17 +108,17 @@ describe('EWS > CalendarItem ZCS-2210', function () {
 					</t:CalendarItem>
 				</Items>
 			</CreateItem>`,
-            account1Email, account1Password
-        );
-        const createBody = ews.getBody(createRes);
-        const createMsg = createBody.CreateItemResponse
-            .ResponseMessages.CreateItemResponseMessage;
-        const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
-        assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
+			account1Email, account1Password
+		);
+		const createBody = ews.getBody(createRes);
+		const createMsg = createBody.CreateItemResponse
+			.ResponseMessages.CreateItemResponseMessage;
+		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-        // EWS: SyncFolderItems
-        const syncRes = await ews.makeEWSRequest(
-            `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: SyncFolderItems
+		const syncRes = await ews.makeEWSRequest(
+			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
@@ -130,21 +130,21 @@ describe('EWS > CalendarItem ZCS-2210', function () {
 				<Ignore />
 				<MaxChangesReturned>100</MaxChangesReturned>
 			</SyncFolderItems>`,
-            account1Email, account1Password
-        );
-        const syncBody = ews.getBody(syncRes);
-        const syncMsg = syncBody.SyncFolderItemsResponse
-            .ResponseMessages.SyncFolderItemsResponseMessage;
-        const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-        assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
-        const creates = Array.isArray(syncMessage.Changes.Create)
-            ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const calItemId = creates[0].CalendarItem.ItemId.$.Id;
-        const calChangeKey = creates[0].CalendarItem.ItemId.$.ChangeKey;
+			account1Email, account1Password
+		);
+		const syncBody = ews.getBody(syncRes);
+		const syncMsg = syncBody.SyncFolderItemsResponse
+			.ResponseMessages.SyncFolderItemsResponseMessage;
+		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
+		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
+		const creates = Array.isArray(syncMessage.Changes.Create)
+			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
+		const calItemId = creates[0].CalendarItem.ItemId.$.Id;
+		const calChangeKey = creates[0].CalendarItem.ItemId.$.ChangeKey;
 
-        // EWS: GetItem to check UID exists
-        const getItemRes = await ews.makeEWSRequest(
-            `<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: GetItem to check UID exists
+		const getItemRes = await ews.makeEWSRequest(
+			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>Default</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
@@ -157,26 +157,26 @@ describe('EWS > CalendarItem ZCS-2210', function () {
 					<t:ItemId Id="${calItemId}" ChangeKey="${calChangeKey}" />
 				</ItemIds>
 			</GetItem>`,
-            account1Email, account1Password
-        );
-        const getItemBody = ews.getBody(getItemRes);
-        const getItemMsg = getItemBody.GetItemResponse
-            .ResponseMessages.GetItemResponseMessage;
-        const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
-        assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
-        assert.equal(itemMsg.Items.CalendarItem.Subject, messageSubject,
-            'Subject should match');
-        assert.exists(itemMsg.Items.CalendarItem.UID,
-            'UID should be auto-generated when not specified');
-    });
+			account1Email, account1Password
+		);
+		const getItemBody = ews.getBody(getItemRes);
+		const getItemMsg = getItemBody.GetItemResponse
+			.ResponseMessages.GetItemResponseMessage;
+		const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
+		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.equal(itemMsg.Items.CalendarItem.Subject, messageSubject,
+			'Subject should match');
+		assert.exists(itemMsg.Items.CalendarItem.UID,
+			'UID should be auto-generated when not specified');
+	});
 
 
-    it('Sanity | Create a meeting request with random UID specified', async () => {
-        const messageSubject = `subject1.${common.getUniqueString()}`;
+	it('Sanity | Create a meeting request with random UID specified', async () => {
+		const messageSubject = `subject1.${common.getUniqueString()}`;
 
-        // EWS: CreateItem with a random UID
-        const createRes = await ews.makeEWSRequest(
-            `<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+		// EWS: CreateItem with a random UID
+		const createRes = await ews.makeEWSRequest(
+			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
 				<SavedItemFolderId>
 					<t:FolderId Id="10" />
@@ -237,17 +237,17 @@ describe('EWS > CalendarItem ZCS-2210', function () {
 					</t:CalendarItem>
 				</Items>
 			</CreateItem>`,
-            account1Email, account1Password
-        );
-        const createBody = ews.getBody(createRes);
-        const createMsg = createBody.CreateItemResponse
-            .ResponseMessages.CreateItemResponseMessage;
-        const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
-        assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
+			account1Email, account1Password
+		);
+		const createBody = ews.getBody(createRes);
+		const createMsg = createBody.CreateItemResponse
+			.ResponseMessages.CreateItemResponseMessage;
+		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-        // EWS: SyncFolderItems
-        const syncRes = await ews.makeEWSRequest(
-            `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: SyncFolderItems
+		const syncRes = await ews.makeEWSRequest(
+			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
@@ -259,21 +259,21 @@ describe('EWS > CalendarItem ZCS-2210', function () {
 				<Ignore />
 				<MaxChangesReturned>100</MaxChangesReturned>
 			</SyncFolderItems>`,
-            account1Email, account1Password
-        );
-        const syncBody = ews.getBody(syncRes);
-        const syncMsg = syncBody.SyncFolderItemsResponse
-            .ResponseMessages.SyncFolderItemsResponseMessage;
-        const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-        assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
-        const creates = Array.isArray(syncMessage.Changes.Create)
-            ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const calItemId = creates[creates.length - 1].CalendarItem.ItemId.$.Id;
-        const calChangeKey = creates[creates.length - 1].CalendarItem.ItemId.$.ChangeKey;
+			account1Email, account1Password
+		);
+		const syncBody = ews.getBody(syncRes);
+		const syncMsg = syncBody.SyncFolderItemsResponse
+			.ResponseMessages.SyncFolderItemsResponseMessage;
+		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
+		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
+		const creates = Array.isArray(syncMessage.Changes.Create)
+			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
+		const calItemId = creates[creates.length - 1].CalendarItem.ItemId.$.Id;
+		const calChangeKey = creates[creates.length - 1].CalendarItem.ItemId.$.ChangeKey;
 
-        // EWS: GetItem to verify UID is "Random string"
-        const getItemRes = await ews.makeEWSRequest(
-            `<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: GetItem to verify UID is "Random string"
+		const getItemRes = await ews.makeEWSRequest(
+			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>Default</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
@@ -286,26 +286,26 @@ describe('EWS > CalendarItem ZCS-2210', function () {
 					<t:ItemId Id="${calItemId}" ChangeKey="${calChangeKey}" />
 				</ItemIds>
 			</GetItem>`,
-            account1Email, account1Password
-        );
-        const getItemBody = ews.getBody(getItemRes);
-        const getItemMsg = getItemBody.GetItemResponse
-            .ResponseMessages.GetItemResponseMessage;
-        const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
-        assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
-        assert.equal(itemMsg.Items.CalendarItem.Subject, messageSubject,
-            'Subject should match');
-        assert.equal(itemMsg.Items.CalendarItem.UID, 'Random string',
-            'UID should match the random string provided');
-    });
+			account1Email, account1Password
+		);
+		const getItemBody = ews.getBody(getItemRes);
+		const getItemMsg = getItemBody.GetItemResponse
+			.ResponseMessages.GetItemResponseMessage;
+		const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
+		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.equal(itemMsg.Items.CalendarItem.Subject, messageSubject,
+			'Subject should match');
+		assert.equal(itemMsg.Items.CalendarItem.UID, 'Random string',
+			'UID should match the random string provided');
+	});
 
 
-    it('Sanity | Create a meeting request with UID field empty', async () => {
-        const messageSubject = `subject2.${common.getUniqueString()}`;
+	it('Sanity | Create a meeting request with UID field empty', async () => {
+		const messageSubject = `subject2.${common.getUniqueString()}`;
 
-        // EWS: CreateItem with empty UID
-        const createRes = await ews.makeEWSRequest(
-            `<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+		// EWS: CreateItem with empty UID
+		const createRes = await ews.makeEWSRequest(
+			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
 				<SavedItemFolderId>
 					<t:FolderId Id="10" />
@@ -366,17 +366,17 @@ describe('EWS > CalendarItem ZCS-2210', function () {
 					</t:CalendarItem>
 				</Items>
 			</CreateItem>`,
-            account1Email, account1Password
-        );
-        const createBody = ews.getBody(createRes);
-        const createMsg = createBody.CreateItemResponse
-            .ResponseMessages.CreateItemResponseMessage;
-        const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
-        assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
+			account1Email, account1Password
+		);
+		const createBody = ews.getBody(createRes);
+		const createMsg = createBody.CreateItemResponse
+			.ResponseMessages.CreateItemResponseMessage;
+		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-        // EWS: SyncFolderItems
-        const syncRes = await ews.makeEWSRequest(
-            `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: SyncFolderItems
+		const syncRes = await ews.makeEWSRequest(
+			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
@@ -388,21 +388,21 @@ describe('EWS > CalendarItem ZCS-2210', function () {
 				<Ignore />
 				<MaxChangesReturned>100</MaxChangesReturned>
 			</SyncFolderItems>`,
-            account1Email, account1Password
-        );
-        const syncBody = ews.getBody(syncRes);
-        const syncMsg = syncBody.SyncFolderItemsResponse
-            .ResponseMessages.SyncFolderItemsResponseMessage;
-        const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-        assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
-        const creates = Array.isArray(syncMessage.Changes.Create)
-            ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const calItemId = creates[creates.length - 1].CalendarItem.ItemId.$.Id;
-        const calChangeKey = creates[creates.length - 1].CalendarItem.ItemId.$.ChangeKey;
+			account1Email, account1Password
+		);
+		const syncBody = ews.getBody(syncRes);
+		const syncMsg = syncBody.SyncFolderItemsResponse
+			.ResponseMessages.SyncFolderItemsResponseMessage;
+		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
+		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
+		const creates = Array.isArray(syncMessage.Changes.Create)
+			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
+		const calItemId = creates[creates.length - 1].CalendarItem.ItemId.$.Id;
+		const calChangeKey = creates[creates.length - 1].CalendarItem.ItemId.$.ChangeKey;
 
-        // EWS: GetItem to verify UID is present (auto-generated)
-        const getItemRes = await ews.makeEWSRequest(
-            `<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: GetItem to verify UID is present (auto-generated)
+		const getItemRes = await ews.makeEWSRequest(
+			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>Default</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
@@ -415,16 +415,16 @@ describe('EWS > CalendarItem ZCS-2210', function () {
 					<t:ItemId Id="${calItemId}" ChangeKey="${calChangeKey}" />
 				</ItemIds>
 			</GetItem>`,
-            account1Email, account1Password
-        );
-        const getItemBody = ews.getBody(getItemRes);
-        const getItemMsg = getItemBody.GetItemResponse
-            .ResponseMessages.GetItemResponseMessage;
-        const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
-        assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
-        assert.equal(itemMsg.Items.CalendarItem.Subject, messageSubject,
-            'Subject should match');
-        assert.exists(itemMsg.Items.CalendarItem.UID,
-            'UID should be auto-generated even when provided empty');
-    });
+			account1Email, account1Password
+		);
+		const getItemBody = ews.getBody(getItemRes);
+		const getItemMsg = getItemBody.GetItemResponse
+			.ResponseMessages.GetItemResponseMessage;
+		const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
+		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.equal(itemMsg.Items.CalendarItem.Subject, messageSubject,
+			'Subject should match');
+		assert.exists(itemMsg.Items.CalendarItem.UID,
+			'UID should be auto-generated even when provided empty');
+	});
 });

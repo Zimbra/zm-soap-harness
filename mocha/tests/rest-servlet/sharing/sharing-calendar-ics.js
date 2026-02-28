@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Sharing > Calendar > ICS Format', function () {
 	this.timeout(120 * 1000);
@@ -71,7 +72,7 @@ describe('Rest Servlet > Sharing > Calendar > ICS Format', function () {
 
 	// Tests
 	it('Sanity | Download shared calendar in ICS format via REST', async () => {
-		const res = await soap.makeRestRequest(account2Token, {
+		const res = await rest.makeRestRequest(account2Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'
@@ -83,7 +84,7 @@ describe('Rest Servlet > Sharing > Calendar > ICS Format', function () {
 
 
 	it('Sanity | Verify ICS format contains appointment details', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'
@@ -95,7 +96,7 @@ describe('Rest Servlet > Sharing > Calendar > ICS Format', function () {
 
 
 	it('Sanity | Verify ICS format calendar export has correct structure', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'

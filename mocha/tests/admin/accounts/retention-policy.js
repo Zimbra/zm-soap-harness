@@ -105,7 +105,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifySystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
-				<policy id="${policyId}" lifetime="5d" xmlns="urn:zimbraMail"/>
+				<policy id="${policyId}" name="${policyName}" lifetime="5d" type="user" xmlns="urn:zimbraMail"/>
 			</ModifySystemRetentionPolicyRequest>`, adminAuthToken
 		);
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');

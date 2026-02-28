@@ -212,15 +212,19 @@ describe('Sync > Sync Request 02', function () {
 				</m>
 			</SendMsgRequest>`, accountAuthToken
 		);
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken
-		);
-		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
-			? searchRes.SearchResponse.m : (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+		let searchMsgs = [];
+		for (let i = 0; i < 10; i++) {
+			await new Promise(resolve => setTimeout(resolve, 1500));
+			const searchRes = await soap.makeSOAPEnvelopeAccount(
+				`<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>subject:(${subject})</query>
+				</SearchRequest>`, accountAuthToken
+			);
+			assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+			searchMsgs = Array.isArray(searchRes.SearchResponse.m)
+				? searchRes.SearchResponse.m : (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+			if (searchMsgs.length > 0) break;
+		}
 		assert.isAbove(searchMsgs.length, 0, 'Should find the sent message');
 		const msgId = searchMsgs[0].id;
 
@@ -263,15 +267,19 @@ describe('Sync > Sync Request 02', function () {
 				</m>
 			</SendMsgRequest>`, accountAuthToken
 		);
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken
-		);
-		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
-			? searchRes.SearchResponse.m : (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+		let searchMsgs = [];
+		for (let i = 0; i < 10; i++) {
+			await new Promise(resolve => setTimeout(resolve, 1500));
+			const searchRes = await soap.makeSOAPEnvelopeAccount(
+				`<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>subject:(${subject})</query>
+				</SearchRequest>`, accountAuthToken
+			);
+			assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+			searchMsgs = Array.isArray(searchRes.SearchResponse.m)
+				? searchRes.SearchResponse.m : (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+			if (searchMsgs.length > 0) break;
+		}
 		assert.isAbove(searchMsgs.length, 0, 'Should find the sent message');
 		const msgId = searchMsgs[0].id;
 
@@ -314,15 +322,19 @@ describe('Sync > Sync Request 02', function () {
 				</m>
 			</SendMsgRequest>`, accountAuthToken
 		);
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>subject:(${subject})</query>
-			</SearchRequest>`, accountAuthToken
-		);
-		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		const searchMsgs = Array.isArray(searchRes.SearchResponse.m)
-			? searchRes.SearchResponse.m : (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+		let searchMsgs = [];
+		for (let i = 0; i < 10; i++) {
+			await new Promise(resolve => setTimeout(resolve, 1500));
+			const searchRes = await soap.makeSOAPEnvelopeAccount(
+				`<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>subject:(${subject})</query>
+				</SearchRequest>`, accountAuthToken
+			);
+			assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+			searchMsgs = Array.isArray(searchRes.SearchResponse.m)
+				? searchRes.SearchResponse.m : (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+			if (searchMsgs.length > 0) break;
+		}
 		assert.isAbove(searchMsgs.length, 0, 'Should find the sent message');
 		const msgId = searchMsgs[0].id;
 

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Auth > Basic Auth', function () {
 	this.timeout(120 * 1000);
@@ -56,7 +57,7 @@ describe('Rest Servlet > Auth > Basic Auth', function () {
 
 	// Tests
 	it('Sanity | Use basic auth to view a file using REST', async () => {
-		const restRes = await soap.makeRestRequest(null, {
+		const restRes = await rest.makeRestRequest(null, {
 			user: account1Email,
 			auth: 'ba',
 			id: msgId

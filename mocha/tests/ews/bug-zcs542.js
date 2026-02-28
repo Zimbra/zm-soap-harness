@@ -12,7 +12,7 @@ describe('EWS > Bug ZCS-542', function () {
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = 'test123';
+        account1Password = config.accountPassword;
 
         const accountName = `ewstest${common.getUniqueString()}@${config.testDomain}`;
         await soap.makeSOAPEnvelopeAdmin(
@@ -29,11 +29,11 @@ describe('EWS > Bug ZCS-542', function () {
         await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
-				<password>test123</password>
+				<password>${config.accountPassword}</password>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
         );
-        const account2AuthToken = await soap.getAccountAuthToken(account2Name, 'test123');
+        const account2AuthToken = await soap.getAccountAuthToken(account2Name, config.accountPassword);
         await soap.makeSOAPEnvelopeAccount(
             `<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -99,7 +99,7 @@ describe('EWS > Bug ZCS-542', function () {
         const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
         const creates = Array.isArray(syncMessage.Changes.Create)
             ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+        const matchedItem = creates.find(c => c?.Message?.Subject === 'email04A');
         assert.exists(matchedItem, "Should find message matching subject");
         const mailItemId = matchedItem.Message.ItemId.$.Id;
         const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;

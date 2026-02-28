@@ -12,7 +12,7 @@ describe('EWS > Contact Sync', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 		contactFolderId = '7';
 
 		accountEmail = `ewscontact${common.getUniqueString()}@${config.testDomain}`;

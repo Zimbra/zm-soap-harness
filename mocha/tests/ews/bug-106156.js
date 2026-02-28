@@ -12,7 +12,7 @@ describe('EWS > Bug 106156', function () {
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = 'test123';
+        account1Password = config.accountPassword;
 
         account1Email = `ewstest${common.getUniqueString()}@${config.testDomain}`;
         await soap.makeSOAPEnvelopeAdmin(

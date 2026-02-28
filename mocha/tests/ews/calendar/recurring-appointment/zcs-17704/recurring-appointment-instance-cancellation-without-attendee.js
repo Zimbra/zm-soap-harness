@@ -13,7 +13,7 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 		account1Email = `testShub1.${unique}@${config.testDomain}`;
 
 		await soap.makeSOAPEnvelopeAdmin(

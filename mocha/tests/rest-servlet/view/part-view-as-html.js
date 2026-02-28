@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > View > Part View As HTML', function () {
 	this.timeout(120 * 1000);
@@ -41,7 +42,7 @@ describe('Rest Servlet > View > Part View As HTML', function () {
 
 	// Tests
 	it('Sanity | View a message part as HTML via REST servlet', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			view: 'html'
@@ -52,7 +53,7 @@ describe('Rest Servlet > View > Part View As HTML', function () {
 
 
 	it('Sanity | View a message part as HTML with part param via REST servlet', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			extraParams: { part: '2' },
@@ -64,7 +65,7 @@ describe('Rest Servlet > View > Part View As HTML', function () {
 
 
 	it('Functional | View plain text part as HTML conversion', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			extraParams: { part: '1' },

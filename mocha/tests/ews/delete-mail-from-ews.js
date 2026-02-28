@@ -12,7 +12,7 @@ describe('EWS > Delete Mail From EWS', function () {
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        accountPassword = 'test123';
+        accountPassword = config.accountPassword;
 
         const account1Name = `ewstest${common.getUniqueString()}@${config.testDomain}`;
         await soap.makeSOAPEnvelopeAdmin(

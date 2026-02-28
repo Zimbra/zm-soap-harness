@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 	this.timeout(120 * 1000);
@@ -57,7 +58,7 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 	// Tests
 	it('Sanity | Verify X-Zimbra-Conv header in sync format for sent message', async () => {
 		if (!message1Id) return;
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: message1Id,
 			fmt: 'sync'
@@ -83,7 +84,7 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 		if (msgArr.length === 0) return;
 		const msgId = msgArr[0].id;
 
-		const res = await soap.makeRestRequest(account2Token, {
+		const res = await rest.makeRestRequest(account2Token, {
 			user: account2Email,
 			id: msgId,
 			fmt: 'sync'

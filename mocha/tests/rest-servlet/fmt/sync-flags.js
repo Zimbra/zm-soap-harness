@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > Sync > Flags', function () {
 	this.timeout(120 * 1000);
@@ -172,7 +173,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 
 	// Tests
 	it('Sanity | Verify X-Zimbra-Flags for deleted message shows x flag', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: deletedMsgId,
 			fmt: 'sync'
@@ -183,7 +184,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 
 
 	it('Sanity | Verify X-Zimbra-Flags for draft message shows d flag', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: draftMsgId,
 			fmt: 'sync'
@@ -194,7 +195,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 
 
 	it('Sanity | Verify X-Zimbra-Flags for flagged message shows f flag', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: flaggedMsgId,
 			fmt: 'sync'
@@ -205,7 +206,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 
 
 	it('Sanity | Verify X-Zimbra-Flags for forwarded message shows w flag', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: forwardedMsgId,
 			fmt: 'sync'
@@ -216,7 +217,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 
 
 	it('Sanity | Verify X-Zimbra-Flags for replied message shows r flag', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: repliedMsgId,
 			fmt: 'sync'
@@ -228,7 +229,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 
 	it('Sanity | Verify X-Zimbra-Flags for sent message shows s flag', async () => {
 		if (!sentMsgId) return;
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: sentMsgId,
 			fmt: 'sync'
@@ -255,7 +256,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			|| (Array.isArray(sendRes.SendMsgResponse?.m)
 				? sendRes.SendMsgResponse.m[0].id : undefined);
 		if (!msgId2) return;
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: msgId2,
 			fmt: 'sync'
@@ -266,7 +267,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 
 
 	it('Sanity | Verify X-Zimbra-Flags for unread message shows u flag', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: unreadMsgId,
 			fmt: 'sync'
@@ -289,7 +290,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			|| (Array.isArray(addRes.AddMsgResponse?.m)
 				? addRes.AddMsgResponse.m[0].id : undefined);
 
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: attachMsgId,
 			fmt: 'sync'
@@ -312,7 +313,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			|| (Array.isArray(addRes.AddMsgResponse?.m)
 				? addRes.AddMsgResponse.m[0].id : undefined);
 
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: attachMsgId,
 			fmt: 'sync'

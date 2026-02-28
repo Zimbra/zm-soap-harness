@@ -13,8 +13,8 @@ describe('EWS > Create Draft From ZWC', function () {
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = 'test123';
-        account2Password = 'test123';
+        account1Password = config.accountPassword;
+        account2Password = config.accountPassword;
 
         const account1Name = `ewstest1${common.getUniqueString()}@${config.testDomain}`;
         await soap.makeSOAPEnvelopeAdmin(

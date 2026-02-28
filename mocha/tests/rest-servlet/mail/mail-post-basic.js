@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Mail > Post Basic', function () {
 	this.timeout(120 * 1000);
@@ -34,7 +35,7 @@ describe('Rest Servlet > Mail > Post Basic', function () {
 			'rest post test content\r\n'
 		);
 
-		const postRes = await soap.makeRestPostRequest(account1Token, {
+		const postRes = await rest.makeRestPostRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fileBuffer: emlContent,

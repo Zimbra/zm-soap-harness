@@ -7,13 +7,13 @@ import { main } from '../../pages/main.js';
 
 describe('EWS > Bug ZCS-693', function () {
     this.timeout(120 * 1000);
-    let adminAuthToken, account1Email, account2Email, account1Password, account2Password;
+    let adminAuthToken, account1Email, account2Email, account1Password, account2Password, messageSubject;
 
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = 'test123';
-        account2Password = 'test123';
+        account1Password = config.accountPassword;
+        account2Password = config.accountPassword;
 
         account1Email = `ewstest1${common.getUniqueString()}@${config.testDomain}`;
         await soap.makeSOAPEnvelopeAdmin(
@@ -37,11 +37,12 @@ describe('EWS > Bug ZCS-693', function () {
         const account1AuthToken = await soap.getAccountAuthToken(
             account1Email, account1Password
         );
+        messageSubject = 'subject' + common.getUniqueString();
         await soap.makeSOAPEnvelopeAccount(
             `<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
 					<e t="t" a="${account2Email}" />
-					<su>subject${common.getUniqueString()}</su>
+					<su>${messageSubject}</su>
 					<mp ct="text/html">
 						<content>Message 1 test content</content>
 					</mp>

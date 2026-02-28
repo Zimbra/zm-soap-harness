@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Sharing > Permissions Guest', function () {
 	this.timeout(120 * 1000);
@@ -116,7 +117,7 @@ describe('Rest Servlet > Sharing > Permissions Guest', function () {
 
 	// Tests
 	it('Sanity | Verify that a guest can access a shared REST file with valid user, valid password', async () => {
-		const res = await soap.makeRestRequest(null, {
+		const res = await rest.makeRestRequest(null, {
 			user: account1Email,
 			id: message1Id,
 			guest: guest1Email,
@@ -129,7 +130,7 @@ describe('Rest Servlet > Sharing > Permissions Guest', function () {
 
 
 	it('Sanity | Verify that a guest can NOT access a shared REST file with invalid user, valid password', async () => {
-		const res = await soap.makeRestRequest(null, {
+		const res = await rest.makeRestRequest(null, {
 			user: account1Email,
 			id: message1Id,
 			guest: 'invalid' + guest1Email,
@@ -140,7 +141,7 @@ describe('Rest Servlet > Sharing > Permissions Guest', function () {
 
 
 	it('Sanity | Verify that a guest can NOT access a shared REST file with valid user, invalid password', async () => {
-		const res = await soap.makeRestRequest(null, {
+		const res = await rest.makeRestRequest(null, {
 			user: account1Email,
 			id: message1Id,
 			guest: guest1Email,
@@ -151,7 +152,7 @@ describe('Rest Servlet > Sharing > Permissions Guest', function () {
 
 
 	it('Sanity | Verify that a guest can NOT access a shared REST file with invalid user, invalid password', async () => {
-		const res = await soap.makeRestRequest(null, {
+		const res = await rest.makeRestRequest(null, {
 			user: account1Email,
 			id: message1Id,
 			guest: 'invalid' + guest1Email,
@@ -163,7 +164,7 @@ describe('Rest Servlet > Sharing > Permissions Guest', function () {
 
 	it('Sanity | Verify that a folder can be shared to multiple guests simultaneously', async () => {
 		// guest1 should have access (200) with correct content
-		const res1 = await soap.makeRestRequest(null, {
+		const res1 = await rest.makeRestRequest(null, {
 			user: account1Email,
 			id: message1Id,
 			guest: guest1Email,
@@ -174,7 +175,7 @@ describe('Rest Servlet > Sharing > Permissions Guest', function () {
 		assert.include(res1.body, message1Subject, 'Guest1 response should contain Subject');
 
 		// guest2 should have access (200) with correct content
-		const res2 = await soap.makeRestRequest(null, {
+		const res2 = await rest.makeRestRequest(null, {
 			user: account1Email,
 			id: message1Id,
 			guest: guest2Email,
@@ -185,7 +186,7 @@ describe('Rest Servlet > Sharing > Permissions Guest', function () {
 		assert.include(res2.body, message1Subject, 'Guest2 response should contain Subject');
 
 		// guest3 should NOT have access (401)
-		const res3 = await soap.makeRestRequest(null, {
+		const res3 = await rest.makeRestRequest(null, {
 			user: account1Email,
 			id: message1Id,
 			guest: guest3Email,

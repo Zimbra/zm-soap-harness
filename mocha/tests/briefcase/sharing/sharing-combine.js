@@ -237,7 +237,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		const guestRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
-					<grant gt="guest" d="guest@test.com" pw="test123" perm="d"/>
+					<grant gt="guest" d="guest@test.com" pw="${config.accountPassword}" perm="d"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);

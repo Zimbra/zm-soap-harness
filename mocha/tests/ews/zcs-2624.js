@@ -13,7 +13,7 @@ describe('EWS > ZCS-2624', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 		messageSubject = `subject1${common.getUniqueString()}`;
 
 		account1Email = `ewszcs2624a${common.getUniqueString()}@${config.testDomain}`;

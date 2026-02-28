@@ -16,7 +16,7 @@ describe('EWS > Calendar > Inline > ZCS-16898 > Create Meeting With Both Attachm
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 		account1Email = `test1.${unique}@${config.testDomain}`;
 
 		await soap.makeSOAPEnvelopeAdmin(

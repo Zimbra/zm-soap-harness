@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > Message RSS', function () {
 	this.timeout(120 * 1000);
@@ -38,7 +39,7 @@ describe('Rest Servlet > Fmt > Message RSS', function () {
 
 	// Tests
 	it('Sanity | Verify basic RSS format', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fmt: 'rss'

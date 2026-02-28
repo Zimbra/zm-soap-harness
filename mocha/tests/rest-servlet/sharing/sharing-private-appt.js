@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Sharing > Calendar > Private Appointment', function () {
 	this.timeout(120 * 1000);
@@ -71,7 +72,7 @@ describe('Rest Servlet > Sharing > Calendar > Private Appointment', function () 
 
 	// Tests
 	it('Sanity | Verify private appointment visibility in shared calendar ICS', async () => {
-		const res = await soap.makeRestRequest(account2Token, {
+		const res = await rest.makeRestRequest(account2Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'
@@ -84,7 +85,7 @@ describe('Rest Servlet > Sharing > Calendar > Private Appointment', function () 
 
 
 	it('Sanity | Verify owner can see private appointment details in ICS', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'

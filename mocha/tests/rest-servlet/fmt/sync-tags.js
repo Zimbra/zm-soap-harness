@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > Sync > Tags', function () {
 	this.timeout(120 * 1000);
@@ -52,7 +53,7 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 
 	// Tests
 	it('Sanity | Verify X-Zimbra-Tags header contains tag name', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			fmt: 'sync'
@@ -64,7 +65,7 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 
 
 	it('Sanity | Verify tagged message has correct tag in sync format', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			fmt: 'sync'
@@ -98,7 +99,7 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 			|| (Array.isArray(addRes.AddMsgResponse?.m)
 				? addRes.AddMsgResponse.m[0].id : undefined);
 
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: msg2Id,
 			fmt: 'sync'

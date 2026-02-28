@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Auth > zAuthToken', function () {
 	this.timeout(120 * 1000);
@@ -56,7 +57,7 @@ describe('Rest Servlet > Auth > zAuthToken', function () {
 
 	// Tests
 	it('Sanity | Use zAuthToken in the URL to view a file using REST', async () => {
-		const restRes = await soap.makeRestRequest(null, {
+		const restRes = await rest.makeRestRequest(null, {
 			user: account1Email,
 			zauthtoken: account1Token,
 			id: msgId
@@ -67,7 +68,7 @@ describe('Rest Servlet > Auth > zAuthToken', function () {
 
 
 	it('Sanity | Verify nginx routes the REST request based on the zauthtoken value', async () => {
-		const restRes = await soap.makeRestRequest(null, {
+		const restRes = await rest.makeRestRequest(null, {
 			user: account1Email,
 			zauthtoken: account1Token,
 			id: msgId

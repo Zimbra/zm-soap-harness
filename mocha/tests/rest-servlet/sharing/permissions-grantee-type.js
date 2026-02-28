@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
     this.timeout(120 * 1000);
@@ -152,7 +153,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
 
     // Tests
     it('Sanity | Self Test - Verify the account can view his own files', async () => {
-        const res = await soap.makeRestRequest(account1Token, {
+        const res = await rest.makeRestRequest(account1Token, {
             user: account1Email,
             id: messageId
         });
@@ -164,7 +165,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
 
     it('Sanity | Verify grantee-type usr', async () => {
         // Verify account3 cannot view without grant
-        const denyRes = await soap.makeRestRequest(account3Token, {
+        const denyRes = await rest.makeRestRequest(account3Token, {
             user: account1Email,
             id: messageId
         });
@@ -180,7 +181,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
         );
 
         // Verify account3 can view after grant
-        const allowRes = await soap.makeRestRequest(account3Token, {
+        const allowRes = await rest.makeRestRequest(account3Token, {
             user: account1Email,
             id: messageId
         });
@@ -192,7 +193,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
 
     it('Sanity | Verify grantee-type grp', async () => {
         // Verify account4 cannot view without grant
-        const denyRes = await soap.makeRestRequest(account4Token, {
+        const denyRes = await rest.makeRestRequest(account4Token, {
             user: account1Email,
             id: messageId
         });
@@ -208,7 +209,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
         );
 
         // Verify account4 (DL member) can view after grant
-        const allowRes = await soap.makeRestRequest(account4Token, {
+        const allowRes = await rest.makeRestRequest(account4Token, {
             user: account1Email,
             id: messageId
         });
@@ -220,7 +221,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
 
     it('Sanity | Verify grantee-type dom', async () => {
         // Verify account5 (different domain) cannot view without grant
-        const denyRes = await soap.makeRestRequest(account5Token, {
+        const denyRes = await rest.makeRestRequest(account5Token, {
             user: account1Email,
             id: messageId
         });
@@ -236,7 +237,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
         );
 
         // Verify account5 can view after dom grant
-        const allowRes = await soap.makeRestRequest(account5Token, {
+        const allowRes = await rest.makeRestRequest(account5Token, {
             user: account1Email,
             id: messageId
         });
@@ -248,7 +249,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
 
     it('Sanity | Verify grantee-type cos', async () => {
         // Verify account6 cannot view without cos grant
-        const denyRes = await soap.makeRestRequest(account6Token, {
+        const denyRes = await rest.makeRestRequest(account6Token, {
             user: account1Email,
             id: messageId
         });
@@ -264,7 +265,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
         );
 
         // Verify account6 can view after cos grant
-        const allowRes = await soap.makeRestRequest(account6Token, {
+        const allowRes = await rest.makeRestRequest(account6Token, {
             user: account1Email,
             id: messageId
         });
@@ -294,7 +295,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
         assert.oneOf(noAuth2Res.status, [401, 403], 'Unauthenticated should still get 401 or 403 with all grant');
 
         // Verify account7 (authenticated) can view
-        const allowRes = await soap.makeRestRequest(account7Token, {
+        const allowRes = await rest.makeRestRequest(account7Token, {
             user: account1Email,
             id: messageId
         });
@@ -324,7 +325,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
         assert.equal(pubRes.status, 200, 'Unauthenticated should see message after pub grant');
 
         // Verify authenticated user can also view
-        const authRes = await soap.makeRestRequest(account7Token, {
+        const authRes = await rest.makeRestRequest(account7Token, {
             user: account1Email,
             id: messageId
         });

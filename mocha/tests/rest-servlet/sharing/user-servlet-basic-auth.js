@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Sharing > Calendar > User Servlet Basic Auth', function () {
 	this.timeout(120 * 1000);
@@ -49,7 +50,7 @@ describe('Rest Servlet > Sharing > Calendar > User Servlet Basic Auth', function
 
 	// Tests
 	it('Sanity | Access shared calendar via REST with basic auth', async () => {
-		const res = await soap.makeRestRequest(account2Token, {
+		const res = await rest.makeRestRequest(account2Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'
@@ -60,7 +61,7 @@ describe('Rest Servlet > Sharing > Calendar > User Servlet Basic Auth', function
 
 
 	it('Sanity | Access shared calendar via REST with auth token', async () => {
-		const res = await soap.makeRestRequest(account2Token, {
+		const res = await rest.makeRestRequest(account2Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics',

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 	this.timeout(120 * 1000);
@@ -48,7 +49,7 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 	// Tests
 	it('Sanity | Export mailbox as tgz and import to another account with resolve=skip', async () => {
 		// Export from account1
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fmt: 'tgz',
@@ -58,7 +59,7 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 		assert.isAbove(exportRes.body.length, 10, 'TGZ should have content');
 
 		// Import to account2 with resolve=skip
-		const importRes = await soap.makeRestPostRequest(account2Token, {
+		const importRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			folder: 'Inbox',
 			fmt: 'tgz',
@@ -71,7 +72,7 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 
 
 	it('Sanity | Export and import with resolve=modify', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fmt: 'tgz',
@@ -79,7 +80,7 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
-		const importRes = await soap.makeRestPostRequest(account2Token, {
+		const importRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			folder: 'Inbox',
 			fmt: 'tgz',
@@ -92,7 +93,7 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 
 
 	it('Sanity | Export and import with resolve=replace', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fmt: 'tgz',
@@ -100,7 +101,7 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
-		const importRes = await soap.makeRestPostRequest(account2Token, {
+		const importRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			folder: 'Inbox',
 			fmt: 'tgz',
@@ -113,7 +114,7 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 
 
 	it('Sanity | Export and import with resolve=reset', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fmt: 'tgz',
@@ -121,7 +122,7 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
-		const importRes = await soap.makeRestPostRequest(account2Token, {
+		const importRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			folder: 'Inbox',
 			fmt: 'tgz',

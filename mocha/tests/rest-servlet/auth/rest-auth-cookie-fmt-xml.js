@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Auth > Cookie Fmt XML', function () {
 	this.timeout(120 * 1000);
@@ -59,7 +60,7 @@ ${msgContent}
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 
 		// REST with auth token (should succeed)
-		const restRes1 = await soap.makeRestRequest(account1Token, {
+		const restRes1 = await rest.makeRestRequest(account1Token, {
 			auth: 'co',
 			fmt: 'xml',
 			query: msgContent
@@ -67,7 +68,7 @@ ${msgContent}
 		assert.equal(restRes1.status, 200, 'REST with cookie auth should return 200');
 
 		// REST without auth token (no user part → 404)
-		const restRes2 = await soap.makeRestRequest(null, {
+		const restRes2 = await rest.makeRestRequest(null, {
 			auth: 'co',
 			fmt: 'xml',
 			query: msgContent
@@ -108,7 +109,7 @@ ${msgContent}
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 
 		// REST with auth token and user part (should succeed)
-		const restRes1 = await soap.makeRestRequest(account1Token, {
+		const restRes1 = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			auth: 'co',
 			fmt: 'xml',
@@ -117,7 +118,7 @@ ${msgContent}
 		assert.equal(restRes1.status, 200, 'REST with cookie and user should return 200');
 
 		// REST without auth token but with user part (should return 500)
-		const restRes2 = await soap.makeRestRequest(null, {
+		const restRes2 = await rest.makeRestRequest(null, {
 			user: account1Email,
 			auth: 'co',
 			fmt: 'xml',
@@ -159,7 +160,7 @@ ${msgContent}
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 
 		// REST with valid auth token (should succeed)
-		const restRes1 = await soap.makeRestRequest(account1Token, {
+		const restRes1 = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			auth: 'co',
 			fmt: 'xml',
@@ -168,7 +169,7 @@ ${msgContent}
 		assert.equal(restRes1.status, 200, 'REST with valid cookie should return 200');
 
 		// REST with invalid auth token (should return 401)
-		const restRes2 = await soap.makeRestRequest('123456780', {
+		const restRes2 = await rest.makeRestRequest('123456780', {
 			user: account1Email,
 			auth: 'co',
 			fmt: 'xml',

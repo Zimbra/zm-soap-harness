@@ -1,12 +1,11 @@
 import { assert } from 'chai';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataRoot = path.resolve(__dirname, '../../../../data/soapvalidator/RestServlet/Calendar/Post/import_export');
+const dataRoot = path.join(config.projectRoot, 'mocha/data/tests');
 
 describe('Rest Servlet > Calendar > Post Import Export', function () {
 	this.timeout(120 * 1000);
@@ -48,7 +47,7 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 		const icsFilePath = path.join(dataRoot, 'bug-25845.ics');
 
 		// Upload ICS
-		const postRes = await soap.makeRestPostRequest(account1Token, {
+		const postRes = await rest.makeRestPostRequest(account1Token, {
 			user: account1Email,
 			folder: 'calendar',
 			fmt: 'ics',
@@ -69,7 +68,7 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 		const apptId = found.id;
 
 		// Download via REST GET and verify
-		const getRes = await soap.makeRestRequest(account1Token, {
+		const getRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: apptId,
 			fmt: 'ics'
@@ -83,7 +82,7 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 		const icsFilePath = path.join(dataRoot, 'espanol.ics');
 
 		// Upload ICS with Spanish characters
-		const postRes = await soap.makeRestPostRequest(account2Token, {
+		const postRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			folder: 'Calendar',
 			fmt: 'ics',

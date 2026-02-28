@@ -23,7 +23,7 @@ describe('EWS > Folder Actions', function () {
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        accountPassword = 'test123';
+        accountPassword = config.accountPassword;
         const unique = common.getUniqueString();
         folder1Name = `root1_folder${unique}`;
         folder2Name = `root2_folder${unique}`;

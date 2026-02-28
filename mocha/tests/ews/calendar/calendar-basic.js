@@ -12,7 +12,7 @@ describe('EWS > Calendar > Calendar Basic', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		const adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 		const unique = common.getUniqueString();
 
 		account1Email = `ewscalbasica${unique}@${config.testDomain}`;

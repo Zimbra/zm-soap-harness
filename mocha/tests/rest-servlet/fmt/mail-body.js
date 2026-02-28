@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 	this.timeout(120 * 1000);
@@ -107,7 +108,7 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 
 	// Tests
 	it('Functional | Get plain text message body via REST', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: plainMsgId
 		});
@@ -118,7 +119,7 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 
 
 	it('Functional | Get HTML message body via REST', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: htmlMsgId
 		});
@@ -128,7 +129,7 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 
 
 	it('Functional | Get multipart alternative message via REST', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: multipartMsgId
 		});
@@ -138,7 +139,7 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 
 
 	it('Functional | Get message with attachment body via REST', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: attachMsgId
 		});
@@ -148,7 +149,7 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 
 
 	it('Functional | Get message with inline image via REST', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: inlineMsgId
 		});
@@ -158,7 +159,7 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 
 
 	it('Functional | Get nested multipart message via REST', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: nestedMsgId
 		});

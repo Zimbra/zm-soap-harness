@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > User > REST User', function () {
 	this.timeout(120 * 1000);
@@ -38,7 +39,7 @@ describe('Rest Servlet > User > REST User', function () {
 
 	// Tests
 	it('Sanity | Access REST servlet with user path and verify inbox', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fmt: 'rss'
@@ -49,7 +50,7 @@ describe('Rest Servlet > User > REST User', function () {
 
 
 	it('Sanity | Access REST servlet using user path with calendar folder', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'
@@ -60,7 +61,7 @@ describe('Rest Servlet > User > REST User', function () {
 
 
 	it('Sanity | Access REST servlet using user path with contacts folder', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Contacts',
 			fmt: 'csv'
@@ -82,7 +83,7 @@ describe('Rest Servlet > User > REST User', function () {
 		assert.isAtLeast(msgArr.length, 1, 'Should find at least one message');
 		const msgId = msgArr[0].id;
 
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: msgId
 		});
@@ -92,7 +93,7 @@ describe('Rest Servlet > User > REST User', function () {
 
 
 	it('Functional | Access REST servlet with non-existent folder returns error', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'NonExistentFolder' + common.getUniqueString(),
 			fmt: 'rss'
@@ -111,7 +112,7 @@ describe('Rest Servlet > User > REST User', function () {
 		);
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox/' + folderName,
 			fmt: 'rss'
@@ -121,7 +122,7 @@ describe('Rest Servlet > User > REST User', function () {
 
 
 	it('Functional | Access REST servlet inbox via tilde URL', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fmt: 'xml'
@@ -132,7 +133,7 @@ describe('Rest Servlet > User > REST User', function () {
 
 
 	it('Functional | Access REST servlet with Sent folder', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Sent',
 			fmt: 'rss'
@@ -142,7 +143,7 @@ describe('Rest Servlet > User > REST User', function () {
 
 
 	it('Functional | Access REST servlet with Drafts folder', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Drafts',
 			fmt: 'rss'

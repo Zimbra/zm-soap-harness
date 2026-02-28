@@ -16,7 +16,7 @@ describe('EWS > Forward Plain Text Mail', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 
 		account1Email = `ewsfwdplain1${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
@@ -170,16 +170,16 @@ describe('EWS > Forward Plain Text Mail', function () {
 		const account3Username = account3Email.split('@')[0];
 		const mimeContent = Buffer.from(
 			'User-Agent: Microsoft-MacOutlook/f.1f.0.170216\r\n' +
-            `Subject: ${forwardSubject}\r\n` +
-            `Thread-Topic: ${messageSubject}\r\n` +
-            'Mime-version: 1.0\r\n' +
-            'Content-type: text/plain; charset="UTF-8"\r\n' +
-            '\r\n' +
-            `${forwardContent}\r\n` +
-            '\r\n' +
-            `Subject: ${messageSubject}\r\n` +
-            '\r\n' +
-            `${messageContent}\r\n`
+			`Subject: ${forwardSubject}\r\n` +
+			`Thread-Topic: ${messageSubject}\r\n` +
+			'Mime-version: 1.0\r\n' +
+			'Content-type: text/plain; charset="UTF-8"\r\n' +
+			'\r\n' +
+			`${forwardContent}\r\n` +
+			'\r\n' +
+			`Subject: ${messageSubject}\r\n` +
+			'\r\n' +
+			`${messageContent}\r\n`
 		).toString('base64');
 
 		const createRes = await ews.makeEWSRequest(

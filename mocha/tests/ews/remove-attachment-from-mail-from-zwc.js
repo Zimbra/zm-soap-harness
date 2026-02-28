@@ -14,7 +14,7 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 
 		account1Email = `ewsrmzwc1${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(

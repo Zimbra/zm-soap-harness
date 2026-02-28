@@ -15,8 +15,8 @@ describe('EWS > Sync Mail Properties', function () {
 		await main.before(this.ctx);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
-		account1Password = 'test123';
-		account2Password = 'test123';
+		account1Password = config.accountPassword;
+		account2Password = config.accountPassword;
 		account1Email = `ewstest${common.getUniqueString()}@${config.testDomain}`;
 		account2Email = `ewstest${common.getUniqueString()}@${config.testDomain}`;
 

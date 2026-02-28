@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Calendar > ICS Format', function () {
 	this.timeout(120 * 1000);
@@ -49,7 +50,7 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 
 	// Tests
 	it('Sanity | Using the REST servlet, get a calendar using ics format 1', async () => {
-		const restRes = await soap.makeRestRequest(account1Token, {
+		const restRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: appt01Id,
 			fmt: 'ics'
@@ -60,7 +61,7 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 
 
 	it('Sanity | Using the REST servlet, get a calendar using ics format 2', async () => {
-		const restRes = await soap.makeRestRequest(account1Token, {
+		const restRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'
@@ -71,7 +72,7 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 
 
 	it('Sanity | Using the REST servlet, get a calendar using ics format 3', async () => {
-		const restRes = await soap.makeRestRequest(account1Token, {
+		const restRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'
@@ -82,7 +83,7 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 
 
 	it('Sanity | Using the REST servlet, while getting a calendar with ics format if query contains trailing spaces they should be trimmed', async () => {
-		const restRes = await soap.makeRestRequest(account1Token, {
+		const restRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'ics'

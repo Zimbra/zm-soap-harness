@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > Contact CSV', function () {
 	this.timeout(120 * 1000);
@@ -43,7 +44,7 @@ describe('Rest Servlet > Fmt > Contact CSV', function () {
 
 	// Tests
 	it('Sanity | Using the REST servlet, get a contact using csv format', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: contactId,
 			fmt: 'csv'
@@ -56,7 +57,7 @@ describe('Rest Servlet > Fmt > Contact CSV', function () {
 
 
 	it('Sanity | Using the REST servlet, get all contacts using csv format', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'contacts',
 			fmt: 'csv'
@@ -67,7 +68,7 @@ describe('Rest Servlet > Fmt > Contact CSV', function () {
 
 
 	it('Sanity | Using the REST servlet with spaces, get contact, the spaces should get trimmed', async () => {
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'contacts',
 			fmt: 'csv'

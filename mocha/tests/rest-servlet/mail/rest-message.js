@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Mail > Rest Message', function () {
     this.timeout(120 * 1000);
@@ -88,7 +89,7 @@ describe('Rest Servlet > Mail > Rest Message', function () {
 
     // Tests
     it('Sanity | Basic verification of Rest Servlet - get a message by id', async () => {
-        const res = await soap.makeRestRequest(account1Token, {
+        const res = await rest.makeRestRequest(account1Token, {
             user: account1Email,
             id: message1Id
         });
@@ -99,7 +100,7 @@ describe('Rest Servlet > Mail > Rest Message', function () {
 
 
     it('Sanity | Basic verification of Rest Servlet - get a message (externally sent) by id', async () => {
-        const res = await soap.makeRestRequest(account1Token, {
+        const res = await rest.makeRestRequest(account1Token, {
             user: account1Email,
             id: message2Id
         });
@@ -111,7 +112,7 @@ describe('Rest Servlet > Mail > Rest Message', function () {
 
 
     it('Sanity | Basic Rest Servlet Test - Verify the http 200 response', async () => {
-        const res = await soap.makeRestRequest(account1Token, {
+        const res = await rest.makeRestRequest(account1Token, {
             user: account1Email,
             id: message1Id
         });
@@ -121,7 +122,7 @@ describe('Rest Servlet > Mail > Rest Message', function () {
 
 
     it('Sanity | Basic Content Servlet Test - Verify the http response is 404 when an invalid ID is sent', async () => {
-        const res = await soap.makeRestRequest(account1Token, {
+        const res = await rest.makeRestRequest(account1Token, {
             user: account1Email,
             id: '252525'
         });

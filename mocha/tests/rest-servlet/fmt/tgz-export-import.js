@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 	this.timeout(180 * 1000);
@@ -92,7 +93,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 
 	// Tests
 	it('Sanity | Export and import messages via tgz', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Inbox',
 			fmt: 'tgz',
@@ -101,7 +102,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 		assert.isAbove(exportRes.body.length, 10, 'TGZ export should contain data');
 
-		const importRes = await soap.makeRestPostRequest(account2Token, {
+		const importRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			folder: 'Inbox',
 			fmt: 'tgz',
@@ -113,7 +114,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 
 
 	it('Sanity | Export and import contacts via tgz', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Contacts',
 			fmt: 'tgz',
@@ -121,7 +122,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
-		const importRes = await soap.makeRestPostRequest(account2Token, {
+		const importRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			folder: 'Contacts',
 			fmt: 'tgz',
@@ -133,7 +134,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 
 
 	it('Functional | Export and import contacts with verify', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Contacts',
 			fmt: 'tgz',
@@ -141,7 +142,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
-		const importRes = await soap.makeRestPostRequest(account2Token, {
+		const importRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			folder: 'Contacts',
 			fmt: 'tgz',
@@ -162,7 +163,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 
 
 	it('Sanity | Export and import documents via tgz', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Briefcase',
 			fmt: 'tgz',
@@ -173,7 +174,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 
 
 	it('Sanity | Export and import folders via tgz', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			fmt: 'tgz',
 			returnBuffer: true
@@ -184,7 +185,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 
 
 	it('Sanity | Export and import appointments via tgz', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			folder: 'Calendar',
 			fmt: 'tgz',
@@ -192,7 +193,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
-		const importRes = await soap.makeRestPostRequest(account2Token, {
+		const importRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			folder: 'Calendar',
 			fmt: 'tgz',
@@ -204,7 +205,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 
 
 	it('Functional | Export and import preferences via tgz', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			fmt: 'tgz',
 			returnBuffer: true
@@ -215,7 +216,7 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 
 
 	it('Sanity | Export and import tags via tgz', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			fmt: 'tgz',
 			returnBuffer: true
@@ -226,14 +227,14 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 
 
 	it('Sanity | Verify tags are present after tgz export/import', async () => {
-		const exportRes = await soap.makeRestRequest(account1Token, {
+		const exportRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			fmt: 'tgz',
 			returnBuffer: true
 		});
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
-		const importRes = await soap.makeRestPostRequest(account2Token, {
+		const importRes = await rest.makeRestPostRequest(account2Token, {
 			user: account2Email,
 			fmt: 'tgz',
 			fileBuffer: exportRes.body,

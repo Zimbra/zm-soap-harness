@@ -26,7 +26,7 @@ describe('EWS > FindItem CalendarView ZCS-1835', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		const adminAuthToken = await soap.getAdminAuthToken();
-		account1Password = 'test123';
+		account1Password = config.accountPassword;
 
 		account1Email = `ewstest${common.getUniqueString()}@${config.testDomain}`;
 		account2Email = `ewstest${common.getUniqueString()}@${config.testDomain}`;

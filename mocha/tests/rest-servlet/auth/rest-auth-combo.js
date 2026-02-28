@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Auth > Auth Combo', function () {
 	this.timeout(120 * 1000);
@@ -56,7 +57,7 @@ describe('Rest Servlet > Auth > Auth Combo', function () {
 
 	// Tests
 	it('Sanity | Use the ba and co to view a file using REST (no cookie set)', async () => {
-		const restRes = await soap.makeRestRequest(null, {
+		const restRes = await rest.makeRestRequest(null, {
 			user: account1Email,
 			auth: 'ba,co',
 			id: msgId
@@ -67,7 +68,7 @@ describe('Rest Servlet > Auth > Auth Combo', function () {
 
 
 	it('Sanity | Use the ba and co to view a file using REST (cookie is set)', async () => {
-		const restRes = await soap.makeRestRequest(account1Token, {
+		const restRes = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			auth: 'ba,co',
 			id: msgId

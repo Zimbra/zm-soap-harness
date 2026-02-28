@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Fmt > Sync > Modified and Received', function () {
 	this.timeout(120 * 1000);
@@ -56,7 +57,7 @@ describe('Rest Servlet > Fmt > Sync > Modified and Received', function () {
 	// Tests
 	it('Sanity | Verify X-Zimbra-Modified header exists in sync format', async () => {
 		if (!messageId) return;
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			fmt: 'sync'
@@ -69,7 +70,7 @@ describe('Rest Servlet > Fmt > Sync > Modified and Received', function () {
 
 	it('Sanity | Verify X-Zimbra-Received header exists in sync format', async () => {
 		if (!messageId) return;
-		const res = await soap.makeRestRequest(account1Token, {
+		const res = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: messageId,
 			fmt: 'sync'

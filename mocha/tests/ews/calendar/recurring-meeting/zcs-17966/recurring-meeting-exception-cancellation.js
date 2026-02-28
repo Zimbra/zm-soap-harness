@@ -13,7 +13,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 		account1Email = `testAccount1.${unique}@${config.testDomain}`;
 		account2Email = `testAccount2.${unique}@${config.testDomain}`;
 

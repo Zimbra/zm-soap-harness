@@ -7,12 +7,12 @@ import { main } from '../../pages/main.js';
 
 describe('EWS > Bug ZCS-397', function () {
     this.timeout(120 * 1000);
-    let adminAuthToken, account1Email, account2Email, account1Password;
+    let adminAuthToken, account1Email, account2Email, accountPassword;
 
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = 'test123';
+        accountPassword = config.accountPassword;
 
         const domainName = `zcs397${common.getUniqueString()}.com`;
         await soap.makeSOAPEnvelopeAdmin(
@@ -25,7 +25,7 @@ describe('EWS > Bug ZCS-397', function () {
         await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
-				<password>${account1Password}</password>
+				<password>${accountPassword}</password>
 				<a n="zimbraFeatureSMIMEEnabled">TRUE</a>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
@@ -35,14 +35,14 @@ describe('EWS > Bug ZCS-397', function () {
         await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
-				<password>${account1Password}</password>
+				<password>${accountPassword}</password>
 				<a n="zimbraFeatureSMIMEEnabled">TRUE</a>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
         );
 
         // Send a mail from account1 to account2
-        const account1AuthToken = await soap.getAccountAuthToken(account1Email, account1Password);
+        const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
         await soap.makeSOAPEnvelopeAccount(
             `<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -78,7 +78,7 @@ describe('EWS > Bug ZCS-397', function () {
 					</t:DistinguishedFolderId>
 				</FolderIds>
 			</GetFolder>`,
-            account2Email, account1Password
+            account2Email, accountPassword
         );
         const getFolderBody = ews.getBody(getFolderRes);
         const getFolderMsg = getFolderBody.GetFolderResponse
@@ -104,7 +104,7 @@ describe('EWS > Bug ZCS-397', function () {
 				<Ignore />
 				<MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
-            account2Email, account1Password
+            account2Email, accountPassword
         );
         const syncBody = ews.getBody(syncRes);
         const syncMsg = syncBody.SyncFolderItemsResponse
@@ -114,7 +114,7 @@ describe('EWS > Bug ZCS-397', function () {
             'SyncFolderItems should succeed');
         const creates = Array.isArray(syncMessage.Changes.Create)
             ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+        const matchedItem = creates.find(c => c?.Message?.Subject === 'encrypt test');
         assert.exists(matchedItem, "Should find message matching subject");
         const mailItemId = matchedItem.Message.ItemId.$.Id;
         const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
@@ -139,7 +139,7 @@ describe('EWS > Bug ZCS-397', function () {
 					<t:ItemId Id="${mailItemId}" ChangeKey="${mailChangeKey}" />
 				</ItemIds>
 			</GetItem>`,
-            account2Email, account1Password
+            account2Email, accountPassword
         );
         const getItemBody = ews.getBody(getItemRes);
         const getItemMsg = getItemBody.GetItemResponse

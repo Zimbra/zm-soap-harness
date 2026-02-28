@@ -15,7 +15,7 @@ describe('EWS > Resolve Names ZCS-407', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = config.accountPassword || 'test123';
+		accountPassword = config.accountPassword || config.accountPassword;
 
 		firstnameContact1 = `Firstname_contact1_${common.getUniqueString()}`;
 		lastnameContact1 = `Lastname_contact1_${common.getUniqueString()}`;
@@ -186,7 +186,7 @@ describe('EWS > Resolve Names ZCS-407', function () {
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${newAccountEmail}</name>
-				<password>test123</password>
+				<password>${config.accountPassword}</password>
 				<a n="zimbraAccountStatus">active</a>
 				<a n="displayName">${firstnameAccount1} ${lastnameAccount1}</a>
 				<a n="givenName">${firstnameAccount1}</a>

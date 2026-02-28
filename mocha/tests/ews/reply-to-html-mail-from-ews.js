@@ -15,7 +15,7 @@ describe('EWS > Reply To Html Mail From EWS', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 
 		account1Email = `ewsrhtml1${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
@@ -158,32 +158,32 @@ describe('EWS > Reply To Html Mail From EWS', function () {
 		const account2Username = account2Email.split('@')[0];
 		const replyMime = Buffer.from(
 			'User-Agent: Microsoft-MacOutlook/f.1f.0.170216\r\n' +
-            `Subject: ${replySubject}\r\n` +
-            `Thread-Topic: ${messageSubject}\r\n` +
-            'Mime-version: 1.0\r\n' +
-            'Content-type: multipart/alternative;\r\n' +
-            '\tboundary="B_3586353514_159392094"\r\n' +
-            '\r\n' +
-            '> This message is in MIME format. Since your mail reader does not understand\r\n' +
-            'this format, some or all of this message may not be legible.\r\n' +
-            '\r\n' +
-            '--B_3586353514_159392094\r\n' +
-            'Content-type: text/plain;\r\n' +
-            '\tcharset="UTF-8"\r\n' +
-            'Content-transfer-encoding: 7bit\r\n' +
-            '\r\n' +
-            'Reply message content1\r\n' +
-            '\r\n' +
-            '\r\n' +
-            '--B_3586353514_159392094\r\n' +
-            'Content-type: text/html;\r\n' +
-            '\tcharset="UTF-8"\r\n' +
-            'Content-transfer-encoding: quoted-printable\r\n' +
-            '\r\n' +
-            '<html><body>Reply message content1</body></html>\r\n' +
-            '\r\n' +
-            '--B_3586353514_159392094--\r\n' +
-            '\r\n'
+			`Subject: ${replySubject}\r\n` +
+			`Thread-Topic: ${messageSubject}\r\n` +
+			'Mime-version: 1.0\r\n' +
+			'Content-type: multipart/alternative;\r\n' +
+			'\tboundary="B_3586353514_159392094"\r\n' +
+			'\r\n' +
+			'> This message is in MIME format. Since your mail reader does not understand\r\n' +
+			'this format, some or all of this message may not be legible.\r\n' +
+			'\r\n' +
+			'--B_3586353514_159392094\r\n' +
+			'Content-type: text/plain;\r\n' +
+			'\tcharset="UTF-8"\r\n' +
+			'Content-transfer-encoding: 7bit\r\n' +
+			'\r\n' +
+			'Reply message content1\r\n' +
+			'\r\n' +
+			'\r\n' +
+			'--B_3586353514_159392094\r\n' +
+			'Content-type: text/html;\r\n' +
+			'\tcharset="UTF-8"\r\n' +
+			'Content-transfer-encoding: quoted-printable\r\n' +
+			'\r\n' +
+			'<html><body>Reply message content1</body></html>\r\n' +
+			'\r\n' +
+			'--B_3586353514_159392094--\r\n' +
+			'\r\n'
 		).toString('base64');
 
 		const createRes = await ews.makeEWSRequest(

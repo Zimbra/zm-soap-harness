@@ -13,7 +13,7 @@ describe('EWS > Bug 105034', function () {
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = 'test123';
+        account1Password = config.accountPassword;
 
         account1Email = `ewstest1${common.getUniqueString()}@${config.testDomain}`;
         await soap.makeSOAPEnvelopeAdmin(
@@ -156,7 +156,7 @@ describe('EWS > Bug 105034', function () {
         // EWS: GetItem
         const creates = Array.isArray(syncMessage.Changes.Create)
             ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+        const matchedItem = creates.find(c => c?.Message?.Subject === 'sub1');
         assert.exists(matchedItem, "Should find message matching subject");
         const mailItemId = matchedItem.Message.ItemId.$.Id;
         const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;

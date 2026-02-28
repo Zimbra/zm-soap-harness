@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > URL > Tomcat Manager', function () {
 	this.timeout(120 * 1000);
@@ -13,7 +14,7 @@ describe('Rest Servlet > URL > Tomcat Manager', function () {
 	// Tests
 	it('Sanity | Verify that Tomcat Manager is not accessible via REST', async () => {
 		const adminAuthToken = await soap.getAdminAuthToken();
-		const res = await soap.makeRestRequest(adminAuthToken, {
+		const res = await rest.makeRestRequest(adminAuthToken, {
 			user: 'admin',
 			folder: '../manager/html'
 		});

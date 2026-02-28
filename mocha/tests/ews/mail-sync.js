@@ -14,7 +14,7 @@ describe('EWS > Mail Sync', function () {
         adminAuthToken = await soap.getAdminAuthToken();
 
         const accountName = `ewstest${common.getUniqueString()}@${config.testDomain}`;
-        account1Password = 'test123';
+        account1Password = config.accountPassword;
         const createRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountName}</name>

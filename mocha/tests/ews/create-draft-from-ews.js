@@ -12,7 +12,7 @@ describe('EWS > Create Draft From EWS', function () {
     before(async function () {
         await main.before(this.ctx);
         adminAuthToken = await soap.getAdminAuthToken();
-        accountPassword = 'test123';
+        accountPassword = config.accountPassword;
 
         const accountName = `ewstest${common.getUniqueString()}@${config.testDomain}`;
         await soap.makeSOAPEnvelopeAdmin(

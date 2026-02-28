@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Account Status', function () {
 	this.timeout(120 * 1000);
@@ -124,7 +125,7 @@ simple text string in the body
 	// Tests
 	it('Functional | Verify if account status active, that the rest servlet is active for the account', async () => {
 		// Verify REST works before status change
-		const restRes1 = await soap.makeRestRequest(account1Token, {
+		const restRes1 = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: account1MsgId
 		});
@@ -147,7 +148,7 @@ simple text string in the body
 			'Account status should be active');
 
 		// Verify REST still works after confirming active
-		const restRes2 = await soap.makeRestRequest(account1Token, {
+		const restRes2 = await rest.makeRestRequest(account1Token, {
 			user: account1Email,
 			id: account1MsgId
 		});
@@ -157,7 +158,7 @@ simple text string in the body
 
 	it('Functional | Verify if account status maintenance, that the rest servlet is not active for the account', async () => {
 		// Verify REST works before status change
-		const restRes1 = await soap.makeRestRequest(account2Token, {
+		const restRes1 = await rest.makeRestRequest(account2Token, {
 			user: account2Email,
 			id: account2MsgId
 		});
@@ -180,7 +181,7 @@ simple text string in the body
 			'Account status should be maintenance');
 
 		// Verify REST returns 401 for maintenance account
-		const restRes2 = await soap.makeRestRequest(account2Token, {
+		const restRes2 = await rest.makeRestRequest(account2Token, {
 			user: account2Email,
 			id: account2MsgId
 		});
@@ -191,7 +192,7 @@ simple text string in the body
 
 	it('Functional | Verify if account status locked, that the rest servlet is not active for the account', async () => {
 		// Verify REST works before status change
-		const restRes1 = await soap.makeRestRequest(account3Token, {
+		const restRes1 = await rest.makeRestRequest(account3Token, {
 			user: account3Email,
 			id: account3MsgId
 		});
@@ -214,7 +215,7 @@ simple text string in the body
 			'Account status should be locked');
 
 		// Verify REST returns 401 for locked account
-		const restRes2 = await soap.makeRestRequest(account3Token, {
+		const restRes2 = await rest.makeRestRequest(account3Token, {
 			user: account3Email,
 			id: account3MsgId
 		});
@@ -225,7 +226,7 @@ simple text string in the body
 
 	it('Functional | Verify if account status closed, that the rest servlet is not active for the account', async () => {
 		// Verify REST works before status change
-		const restRes1 = await soap.makeRestRequest(account4Token, {
+		const restRes1 = await rest.makeRestRequest(account4Token, {
 			user: account4Email,
 			id: account4MsgId
 		});
@@ -248,7 +249,7 @@ simple text string in the body
 			'Account status should be closed');
 
 		// Verify REST returns 401 for closed account
-		const restRes2 = await soap.makeRestRequest(account4Token, {
+		const restRes2 = await rest.makeRestRequest(account4Token, {
 			user: account4Email,
 			id: account4MsgId
 		});

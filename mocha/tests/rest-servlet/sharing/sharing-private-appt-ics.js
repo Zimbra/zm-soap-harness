@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Sharing > Private Appointment ICS', function () {
     this.timeout(120 * 1000);
@@ -99,7 +100,7 @@ describe('Rest Servlet > Sharing > Private Appointment ICS', function () {
         assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
         // Account2 gets shared calendar via REST ICS
-        const res = await soap.makeRestRequest(account2Token, {
+        const res = await rest.makeRestRequest(account2Token, {
             user: account2Email,
             folder: mountpointName,
             fmt: 'ics'
@@ -141,7 +142,7 @@ describe('Rest Servlet > Sharing > Private Appointment ICS', function () {
         const invId = appt?.invId || appt?.calItemId;
 
         // Account2 gets specific appointment via REST ICS
-        const res = await soap.makeRestRequest(account2Token, {
+        const res = await rest.makeRestRequest(account2Token, {
             user: account2Email,
             id: `${account1Id}:${invId}`,
             fmt: 'ics'

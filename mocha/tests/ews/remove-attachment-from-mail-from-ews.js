@@ -14,7 +14,7 @@ describe('EWS > Remove Attachment From Mail From EWS', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 
 		account1Email = `ewsrmatch1${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
@@ -48,29 +48,29 @@ describe('EWS > Remove Attachment From Mail From EWS', function () {
 
 		// MIME content with attachment (base64 encoded multipart/mixed message)
 		const mimeRaw =
-            `Subject: ${messageSubject}\r\n` +
-            `Thread-Topic: ${messageSubject}\r\n` +
-            'Mime-version: 1.0\r\n' +
-            'Content-type: multipart/mixed;\r\n' +
-            '\tboundary="B_3594803632_1185087281"\r\n' +
-            '\r\n' +
-            '--B_3594803632_1185087281\r\n' +
-            'Content-type: text/plain;\r\n' +
-            '\tcharset="UTF-8"\r\n' +
-            'Content-transfer-encoding: 7bit\r\n' +
-            '\r\n' +
-            `${messageContent}\r\n` +
-            '\r\n' +
-            '--B_3594803632_1185087281\r\n' +
-            'Content-type: application/pdf;\r\n' +
-            '\tname="file1.pdf"\r\n' +
-            'Content-disposition: attachment;\r\n' +
-            '\tfilename="file1.pdf"\r\n' +
-            'Content-transfer-encoding: base64\r\n' +
-            '\r\n' +
-            'VGVzdCBQREYgY29udGVudA==\r\n' +
-            '\r\n' +
-            '--B_3594803632_1185087281--\r\n';
+			`Subject: ${messageSubject}\r\n` +
+			`Thread-Topic: ${messageSubject}\r\n` +
+			'Mime-version: 1.0\r\n' +
+			'Content-type: multipart/mixed;\r\n' +
+			'\tboundary="B_3594803632_1185087281"\r\n' +
+			'\r\n' +
+			'--B_3594803632_1185087281\r\n' +
+			'Content-type: text/plain;\r\n' +
+			'\tcharset="UTF-8"\r\n' +
+			'Content-transfer-encoding: 7bit\r\n' +
+			'\r\n' +
+			`${messageContent}\r\n` +
+			'\r\n' +
+			'--B_3594803632_1185087281\r\n' +
+			'Content-type: application/pdf;\r\n' +
+			'\tname="file1.pdf"\r\n' +
+			'Content-disposition: attachment;\r\n' +
+			'\tfilename="file1.pdf"\r\n' +
+			'Content-transfer-encoding: base64\r\n' +
+			'\r\n' +
+			'VGVzdCBQREYgY29udGVudA==\r\n' +
+			'\r\n' +
+			'--B_3594803632_1185087281--\r\n';
 		const mimeContent = Buffer.from(mimeRaw).toString('base64');
 
 		const createRes = await ews.makeEWSRequest(
@@ -200,18 +200,18 @@ describe('EWS > Remove Attachment From Mail From EWS', function () {
 		// EWS: Remove attachment via UpdateItem with MimeContent (without attachment)
 		const mimeWithoutAttachment = Buffer.from(
 			`Subject: ${messageSubject}\r\n` +
-            `Thread-Topic: ${messageSubject}\r\n` +
-            'Mime-version: 1.0\r\n' +
-            'Content-type: multipart/mixed;\r\n' +
-            '\tboundary="B_3594803632_1820223572"\r\n' +
-            '\r\n' +
-            '\r\n' +
-            '--B_3594803632_1820223572\r\n' +
-            'Content-type: text/plain;\r\n' +
-            '\tcharset="UTF-8"\r\n' +
-            'Content-transfer-encoding: 7bit\r\n' +
-            '\r\n' +
-            `${messageContent}`
+			`Thread-Topic: ${messageSubject}\r\n` +
+			'Mime-version: 1.0\r\n' +
+			'Content-type: multipart/mixed;\r\n' +
+			'\tboundary="B_3594803632_1820223572"\r\n' +
+			'\r\n' +
+			'\r\n' +
+			'--B_3594803632_1820223572\r\n' +
+			'Content-type: text/plain;\r\n' +
+			'\tcharset="UTF-8"\r\n' +
+			'Content-transfer-encoding: 7bit\r\n' +
+			'\r\n' +
+			`${messageContent}`
 		).toString('base64');
 
 		await ews.makeEWSRequest(

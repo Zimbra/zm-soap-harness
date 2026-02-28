@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 	this.timeout(120 * 1000);
@@ -86,7 +87,7 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account2Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -142,7 +143,7 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account2Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -208,7 +209,7 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		assert.notExists(excludeRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account2Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -274,7 +275,7 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		assert.notExists(includeRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account2Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)

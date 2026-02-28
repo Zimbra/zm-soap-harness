@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 	this.timeout(120 * 1000);
@@ -55,7 +56,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 
 	// Tests
 	it('Sanity | Using the REST servlet, get the free busy for an account', async () => {
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account2Email
 		});
 		assert.equal(fbRes.status, 200, 'FreeBusy should return 200');
@@ -65,7 +66,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 
 
 	it('Sanity | Get the free busy for an account without auth token', async () => {
-		const fbRes = await soap.makeFreeBusyRequest(null, {
+		const fbRes = await rest.makeFreeBusyRequest(null, {
 			acct: account2Email
 		});
 		assert.include(fbRes.body, 'BEGIN:VFREEBUSY', 'Response should contain BEGIN:VFREEBUSY');
@@ -77,7 +78,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 		const startMs = '1326974400000';
 		const endMs = String(Number(startMs) + 86400000);
 
-		const fbRes = await soap.makeFreeBusyRequest(null, {
+		const fbRes = await rest.makeFreeBusyRequest(null, {
 			acct: account2Email,
 			s: startMs,
 			e: endMs
@@ -114,7 +115,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account3Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -150,7 +151,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account3Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -186,7 +187,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account3Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -223,7 +224,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account3Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -283,7 +284,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 		assert.notExists(appt2Res.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account3Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
@@ -342,7 +343,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 		assert.notExists(appt2Res.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
-		const fbRes = await soap.makeFreeBusyRequest(account1Token, {
+		const fbRes = await rest.makeFreeBusyRequest(account1Token, {
 			acct: account3Email,
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)

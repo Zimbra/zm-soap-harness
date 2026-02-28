@@ -14,7 +14,7 @@ describe('EWS > Send Mail CC BCC From EWS', function () {
 	before(async function () {
 		await main.before(this.ctx);
 		adminAuthToken = await soap.getAdminAuthToken();
-		accountPassword = 'test123';
+		accountPassword = config.accountPassword;
 
 		account1Email = `ewsccbcc1${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
@@ -67,15 +67,15 @@ describe('EWS > Send Mail CC BCC From EWS', function () {
 		const account4Username = account4Email.split('@')[0];
 		const mailMime = Buffer.from(
 			'User-Agent: Microsoft-MacOutlook/f.1f.0.170216\r\n' +
-            'Date: Tue, 8 Aug 2017 04:47:01 -0400 (EDT)\r\n' +
-            `Subject: ${messageSubject}\r\n` +
-            `Thread-Topic: ${messageSubject}\r\n` +
-            'Mime-version: 1.0\r\n' +
-            'Content-type: text/plain;\r\n' +
-            '\tcharset="UTF-8"\r\n' +
-            'Content-transfer-encoding: 7bit\r\n' +
-            '\r\n' +
-            `${messageContent}`
+			'Date: Tue, 8 Aug 2017 04:47:01 -0400 (EDT)\r\n' +
+			`Subject: ${messageSubject}\r\n` +
+			`Thread-Topic: ${messageSubject}\r\n` +
+			'Mime-version: 1.0\r\n' +
+			'Content-type: text/plain;\r\n' +
+			'\tcharset="UTF-8"\r\n' +
+			'Content-transfer-encoding: 7bit\r\n' +
+			'\r\n' +
+			`${messageContent}`
 		).toString('base64');
 
 		const createRes = await ews.makeEWSRequest(
