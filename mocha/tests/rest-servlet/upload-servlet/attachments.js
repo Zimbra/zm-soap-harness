@@ -63,7 +63,7 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 			: authRes1.AuthResponse.authToken._content || authRes1.AuthResponse.authToken;
 
 		// Upload a file as account1
-		const filePath = path.resolve('data/mime/email01/msg01.txt');
+		const filePath = path.resolve('data/email01/msg01.txt');
 		uploadedAid = await soap.uploadFile(account1Token, filePath);
 		assert.exists(uploadedAid, 'Upload should return attachment id');
 	});

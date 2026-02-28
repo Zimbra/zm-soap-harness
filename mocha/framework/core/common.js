@@ -164,6 +164,32 @@ const common = {
 	getClientMachineTodayDate: utils.getClientMachineTodayDate,
 	retryUntil: utils.retryUntil,
 
+	/**
+	 * Get a UTC datetime string in EWS XML format (ISO 8601).
+	 * @param {number} offsetMinutes - Minutes offset from now (positive = future, negative = past)
+	 * @returns {string} e.g. "2026-02-28T10:00:00Z"
+	 */
+	getXMLTime(offsetMinutes) {
+		const d = new Date(Date.now() + offsetMinutes * 60 * 1000);
+		return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+	},
+
+	/**
+	 * Get a UTC datetime string in iCal compact format.
+	 * @param {number} offsetMinutes - Minutes offset from now (positive = future, negative = past)
+	 * @returns {string} e.g. "20260228T100000Z"
+	 */
+	getICALTime(offsetMinutes) {
+		const d = new Date(Date.now() + offsetMinutes * 60 * 1000);
+		const yyyy = d.getUTCFullYear();
+		const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+		const dd = String(d.getUTCDate()).padStart(2, '0');
+		const hh = String(d.getUTCHours()).padStart(2, '0');
+		const min = String(d.getUTCMinutes()).padStart(2, '0');
+		const ss = String(d.getUTCSeconds()).padStart(2, '0');
+		return `${yyyy}${mm}${dd}T${hh}${min}${ss}Z`;
+	},
+
 	convertDateTime(date) {
 		let convertedDate;
 		let currentDate = new Date(date);

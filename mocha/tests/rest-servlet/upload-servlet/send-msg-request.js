@@ -49,7 +49,7 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 	// Tests
 	it('Sanity | Add a message that was uploaded using the upload servlet', async () => {
 		// Upload file
-		const filePath = path.resolve('data/mime/email01/msg01.txt');
+		const filePath = path.resolve('data/email01/msg01.txt');
 		const attachmentId = await soap.uploadFile(account1Token, filePath);
 		assert.exists(attachmentId, 'Upload should return attachment id');
 

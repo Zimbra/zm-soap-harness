@@ -2,6 +2,14 @@
 description: Strict formatting rules for all mocha test files
 ---
 
+> [!CAUTION]
+> **NEVER use `npx mocha` to run tests.** ALWAYS use `node mocha-run.js` from the `mocha/` directory. Examples:
+> - `node mocha-run.js tests/ews/bug-106156.js` — run a single file
+> - `node mocha-run.js tests/ews` — run all files in a folder
+> - `node mocha-run.js tests/ews -g "Smoke"` — run with grep filter
+> - `node mocha-run.js tests -g "Serial" --serial true` — run serial tests
+> This is the project's custom test runner that handles setup, reporting, and environment configuration. Using `npx mocha` directly will bypass all of this.
+
 > [!IMPORTANT]
 > **Fresh Start**: `mocha/tests` was cleaned up — all JS tests start fresh with **smoke and sanity only**. Do NOT migrate functional or regression tests until the user instructs otherwise.
 

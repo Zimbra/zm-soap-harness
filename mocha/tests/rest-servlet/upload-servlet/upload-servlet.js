@@ -49,7 +49,7 @@ describe('Rest Servlet > Upload Servlet > Upload Servlet', function () {
 
 	// Tests
 	it('Sanity | Basic Upload Servlet Test - upload a file, receive status code 200 OK', async () => {
-		const filePath = path.resolve('data/mime/email01/msg01.txt');
+		const filePath = path.resolve('data/email01/msg01.txt');
 		const attachmentId = await soap.uploadFile(account1Token, filePath);
 		assert.exists(attachmentId, 'Upload should return attachment id');
 		assert.isString(attachmentId, 'Attachment id should be a string');
@@ -57,7 +57,7 @@ describe('Rest Servlet > Upload Servlet > Upload Servlet', function () {
 
 
 	it('Sanity | Basic Upload Servlet Test - upload a file with har extension, receive status code 200 OK', async () => {
-		const filePath = path.resolve('data/mime/ZBUG711/Archive.har');
+		const filePath = path.resolve('data/ZBUG711/Archive.har');
 		const attachmentId = await soap.uploadFile(account1Token, filePath);
 		assert.exists(attachmentId, 'Upload should return attachment id');
 		assert.isString(attachmentId, 'Attachment id should be a string');
