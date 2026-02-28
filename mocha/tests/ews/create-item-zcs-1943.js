@@ -336,8 +336,10 @@ describe('EWS > CreateItem ZCS-1943', function () {
         assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
         const creates = Array.isArray(syncMessage.Changes.Create)
             ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const mailItemId = creates[0].Message.ItemId.$.Id;
-        const mailChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+        const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+        assert.exists(matchedItem, "Should find message matching subject");
+        const mailItemId = matchedItem.Message.ItemId.$.Id;
+        const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
         // EWS: MoveItem to drafts
         const moveRes = await ews.makeEWSRequest(

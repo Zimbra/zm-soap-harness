@@ -165,6 +165,24 @@ const common = {
 	retryUntil: utils.retryUntil,
 
 	/**
+	 * Async delay/sleep function.
+	 * @param {number} ms - Milliseconds to wait
+	 * @returns {Promise} Resolves after ms milliseconds
+	 */
+	delay(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	},
+
+	/**
+	 * Get a UTC datetime string in iCal compact format (alias for getICALTime).
+	 * @param {number} offsetMinutes - Minutes offset from now (positive = future, negative = past)
+	 * @returns {string} e.g. "20260228T100000Z"
+	 */
+	getGMTTime(offsetMinutes) {
+		return this.getICALTime(offsetMinutes);
+	},
+
+	/**
 	 * Get a UTC datetime string in EWS XML format (ISO 8601).
 	 * @param {number} offsetMinutes - Minutes offset from now (positive = future, negative = past)
 	 * @returns {string} e.g. "2026-02-28T10:00:00Z"

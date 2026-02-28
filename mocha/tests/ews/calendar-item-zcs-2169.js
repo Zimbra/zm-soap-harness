@@ -101,7 +101,12 @@ describe('EWS > CalendarItem ZCS-2169', function () {
         const msg = getMsgRes.GetMsgResponse?.m;
         assert.exists(msg, 'Message should exist');
         const msgItem = Array.isArray(msg) ? msg[0] : msg;
-        const until = msgItem?.inv?.comp?.recur?.add?.rule?.until;
+        const inv = Array.isArray(msgItem?.inv) ? msgItem.inv[0] : msgItem?.inv;
+        const comp = Array.isArray(inv?.comp) ? inv.comp[0] : inv?.comp;
+        const recur = Array.isArray(comp?.recur) ? comp.recur[0] : comp?.recur;
+        const add = Array.isArray(recur?.add) ? recur.add[0] : recur?.add;
+        const rule = Array.isArray(add?.rule) ? add.rule[0] : add?.rule;
+        const until = Array.isArray(rule?.until) ? rule.until[0] : rule?.until;
         assert.exists(until, 'Recurrence until element should exist');
         assert.equal(until.d, '20170906T182959Z', 'Until date should match expected value');
     });

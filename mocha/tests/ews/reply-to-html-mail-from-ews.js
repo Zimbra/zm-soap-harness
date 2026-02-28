@@ -109,8 +109,10 @@ describe('EWS > Reply To Html Mail From EWS', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const mailItemId = creates[0].Message.ItemId.$.Id;
-		const mailChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, "Should find message matching subject");
+		const mailItemId = matchedItem.Message.ItemId.$.Id;
+		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 		const syncState0 = syncMessage.SyncState;
 
 		// EWS: GetItem to verify mail content

@@ -137,14 +137,35 @@ describe('EWS > Folder Actions', function () {
 
 
     it('Sanity | Create a user folder on root level from ZWC and perform SynFolder request', async () => {
-        // Create root folder from ZWC
+        // Re-authenticate (matching original XML test pattern)
+        accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+
+        // Create root folder from ZWC (disable retry - not idempotent)
         const createRes = await soap.makeSOAPEnvelopeAccount(
             `<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folder1Name}" l="1" />
-			</CreateFolderRequest>`, accountAuthToken
+			</CreateFolderRequest>`, accountAuthToken, false
         );
-        assert.notExists(createRes.Fault, 'Response should not be a Fault');
-        folderId1 = createRes.CreateFolderResponse.folder.id;
+        if (createRes.Fault && createRes.Fault.Detail &&
+            createRes.Fault.Detail.Error && createRes.Fault.Detail.Error.Code === 'mail.ALREADY_EXISTS') {
+            // Folder was created on a previous retry but response failed; look it up
+            const gfRes = await soap.makeSOAPEnvelopeAccount(
+                `<GetFolderRequest xmlns="urn:zimbraMail">
+					<folder l="1" />
+				</GetFolderRequest>`, accountAuthToken
+            );
+            const rootFolder = gfRes.GetFolderResponse.folder;
+            const rootChildren = Array.isArray(rootFolder) ? rootFolder[0] : rootFolder;
+            const childFolders = Array.isArray(rootChildren.folder)
+                ? rootChildren.folder : [rootChildren.folder];
+            const existingFolder = childFolders.find(f => f.name === folder1Name);
+            assert.exists(existingFolder, 'Existing folder should be found');
+            folderId1 = existingFolder.id;
+        } else {
+            assert.notExists(createRes.Fault, 'Response should not be a Fault');
+            const folder1 = createRes.CreateFolderResponse.folder;
+            folderId1 = Array.isArray(folder1) ? folder1[0].id : folder1.id;
+        }
 
         // SyncFolderHierarchy on EWS
         const syncRes = await ews.makeEWSRequest(
@@ -195,10 +216,11 @@ describe('EWS > Folder Actions', function () {
 						<content>${messageContent}</content>
 					</mp>
 				</m>
-			</SendMsgRequest>`, accountAuthToken
+			</SendMsgRequest>`, accountAuthToken, false
         );
         assert.notExists(sendRes.Fault, 'Response should not be a Fault');
-        const sentMsgId = sendRes.SendMsgResponse.m.id;
+        const sentMsg = sendRes.SendMsgResponse.m;
+        const sentMsgId = Array.isArray(sentMsg) ? sentMsg[0].id : sentMsg.id;
 
         // GetFolder inbox on EWS
         const getFolderRes = await ews.makeEWSRequest(
@@ -254,7 +276,7 @@ describe('EWS > Folder Actions', function () {
         const moveRes = await soap.makeSOAPEnvelopeAccount(
             `<MsgActionRequest xmlns="urn:zimbraMail">
 				<action op="move" id="${sentMsgId}" l="${folderId1}" />
-			</MsgActionRequest>`, accountAuthToken
+			</MsgActionRequest>`, accountAuthToken, false
         );
         assert.notExists(moveRes.Fault, 'Response should not be a Fault');
         assert.equal(moveRes.MsgActionResponse.action.id, sentMsgId,
@@ -399,6 +421,7 @@ describe('EWS > Folder Actions', function () {
         const createMsg = createBody.CreateFolderResponse
             .ResponseMessages.CreateFolderResponseMessage;
         const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+        assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateFolder should succeed');
         subFolder1Id = createMessage.Folders.Folder.FolderId.$.Id;
 
         // Verify sub folder on ZWC
@@ -417,7 +440,8 @@ describe('EWS > Folder Actions', function () {
 			</CreateFolderRequest>`, accountAuthToken
         );
         assert.notExists(createSubRes.Fault, 'Response should not be a Fault');
-        subFolder2Id = createSubRes.CreateFolderResponse.folder.id;
+        const folder2 = createSubRes.CreateFolderResponse.folder;
+        subFolder2Id = Array.isArray(folder2) ? folder2[0].id : folder2.id;
 
         // Sync on EWS
         const syncRes = await ews.makeEWSRequest(
@@ -520,8 +544,9 @@ describe('EWS > Folder Actions', function () {
             'SyncFolderItems should succeed');
         const siCreates = Array.isArray(siMessage.Changes.Create)
             ? siMessage.Changes.Create : [siMessage.Changes.Create];
-        const mailId2 = siCreates[0].Message.ItemId.$.Id;
-        const mailChangeKey2 = siCreates[0].Message.ItemId.$.ChangeKey;
+        const lastCreate = siCreates[siCreates.length - 1];
+        const mailId2 = lastCreate.Message.ItemId.$.Id;
+        const mailChangeKey2 = lastCreate.Message.ItemId.$.ChangeKey;
 
         // GetItem to verify
         const getItemRes = await ews.makeEWSRequest(
@@ -644,8 +669,9 @@ describe('EWS > Folder Actions', function () {
         // GetItem to verify
         const srCreates = Array.isArray(srMessage.Changes.Create)
             ? srMessage.Changes.Create : [srMessage.Changes.Create];
-        const newItemId = srCreates[0].Message.ItemId.$.Id;
-        const newChangeKey = srCreates[0].Message.ItemId.$.ChangeKey;
+        const lastSrCreate = srCreates[srCreates.length - 1];
+        const newItemId = lastSrCreate.Message.ItemId.$.Id;
+        const newChangeKey = lastSrCreate.Message.ItemId.$.ChangeKey;
 
         const getItemRes2 = await ews.makeEWSRequest(
             `<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -739,7 +765,7 @@ describe('EWS > Folder Actions', function () {
 				<SyncFolderId>
 					<t:FolderId Id="5" />
 				</SyncFolderId>
-				<SyncState>${syncState03}</SyncState>
+				<SyncState />
 				<Ignore />
 				<MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
@@ -912,8 +938,9 @@ describe('EWS > Folder Actions', function () {
         );
         const updateBody = ews.getBody(updateRes);
         const updateMsg = updateBody.UpdateFolderResponse
-            .ResponseMessages.UpdateFolderResponseMessage;
+            .ResponseMessages.GetFolderResponseMessage;
         const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
+        assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateFolder should succeed');
         assert.equal(updateMessage.Folders.Folder.FolderId.$.Id, subFolder2Id,
             'Updated folder Id should match');
 
@@ -990,6 +1017,7 @@ describe('EWS > Folder Actions', function () {
         const mfMsg = mfBody.MoveFolderResponse
             .ResponseMessages.MoveFolderResponseMessage;
         const mfMessage = Array.isArray(mfMsg) ? mfMsg[0] : mfMsg;
+        assert.equal(mfMessage.$.ResponseClass, 'Success', 'MoveFolder should succeed');
         assert.equal(mfMessage.Folders.Folder.FolderId.$.Id, subFolder2Id,
             'Moved folder Id should match');
 

@@ -50,36 +50,36 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 
 		// MIME with 2 attachments: file1.pdf and image2.png
 		const mimeRaw =
-            `Subject: ${messageSubject}\r\n` +
-            `Thread-Topic: ${messageSubject}\r\n` +
-            'Mime-version: 1.0\r\n' +
-            'Content-type: multipart/mixed;\r\n' +
-            '\tboundary="B_3594803632_1185087281"\r\n' +
-            '\r\n' +
-            '--B_3594803632_1185087281\r\n' +
-            'Content-type: text/plain;\r\n' +
-            '\tcharset="UTF-8"\r\n' +
-            'Content-transfer-encoding: 7bit\r\n' +
-            '\r\n' +
-            `${messageContent}\r\n` +
-            '\r\n' +
-            '--B_3594803632_1185087281\r\n' +
-            'Content-type: application/pdf; name="file1.pdf"\r\n' +
-            'Content-disposition: attachment;\r\n' +
-            '\tfilename="file1.pdf"\r\n' +
-            'Content-transfer-encoding: base64\r\n' +
-            '\r\n' +
-            'VGVzdCBQREYgY29udGVudA==\r\n' +
-            '\r\n' +
-            '--B_3594803632_1185087281\r\n' +
-            'Content-type: image/png; name="image2.png"\r\n' +
-            'Content-disposition: attachment;\r\n' +
-            '\tfilename="image2.png"\r\n' +
-            'Content-transfer-encoding: base64\r\n' +
-            '\r\n' +
-            'VGVzdCBQTkcgY29udGVudA==\r\n' +
-            '\r\n' +
-            '--B_3594803632_1185087281--\r\n';
+			`Subject: ${messageSubject}\r\n` +
+			`Thread-Topic: ${messageSubject}\r\n` +
+			'Mime-version: 1.0\r\n' +
+			'Content-type: multipart/mixed;\r\n' +
+			'\tboundary="B_3594803632_1185087281"\r\n' +
+			'\r\n' +
+			'--B_3594803632_1185087281\r\n' +
+			'Content-type: text/plain;\r\n' +
+			'\tcharset="UTF-8"\r\n' +
+			'Content-transfer-encoding: 7bit\r\n' +
+			'\r\n' +
+			`${messageContent}\r\n` +
+			'\r\n' +
+			'--B_3594803632_1185087281\r\n' +
+			'Content-type: application/pdf; name="file1.pdf"\r\n' +
+			'Content-disposition: attachment;\r\n' +
+			'\tfilename="file1.pdf"\r\n' +
+			'Content-transfer-encoding: base64\r\n' +
+			'\r\n' +
+			'VGVzdCBQREYgY29udGVudA==\r\n' +
+			'\r\n' +
+			'--B_3594803632_1185087281\r\n' +
+			'Content-type: image/png; name="image2.png"\r\n' +
+			'Content-disposition: attachment;\r\n' +
+			'\tfilename="image2.png"\r\n' +
+			'Content-transfer-encoding: base64\r\n' +
+			'\r\n' +
+			'VGVzdCBQTkcgY29udGVudA==\r\n' +
+			'\r\n' +
+			'--B_3594803632_1185087281--\r\n';
 		const mimeContent = Buffer.from(mimeRaw).toString('base64');
 
 		const createRes = await ews.makeEWSRequest(
@@ -139,8 +139,10 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 			'SyncFolderItems should succeed');
 		const sentCreates = Array.isArray(syncSentMessage.Changes.Create)
 			? syncSentMessage.Changes.Create : [syncSentMessage.Changes.Create];
-		const mailItemId = sentCreates[0].Message.ItemId.$.Id;
-		const mailChangeKey = sentCreates[0].Message.ItemId.$.ChangeKey;
+		const sentMatch = sentCreates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(sentMatch, 'Should find sent message matching subject');
+		const mailItemId = sentMatch.Message.ItemId.$.Id;
+		const mailChangeKey = sentMatch.Message.ItemId.$.ChangeKey;
 
 		// EWS: GetItem to verify mail has attachments
 		const getItemRes = await ews.makeEWSRequest(
@@ -270,8 +272,10 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const ewsMailId = creates[0].Message.ItemId.$.Id;
-		const ewsChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, "Should find message matching subject");
+		const ewsMailId = matchedItem.Message.ItemId.$.Id;
+		const ewsChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		// EWS: GetItem to verify attachment state
 		const getItemRes2 = await ews.makeEWSRequest(

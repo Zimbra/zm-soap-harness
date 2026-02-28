@@ -101,8 +101,10 @@ describe('EWS > Bug ZCS-693', function () {
         const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
         const creates = Array.isArray(syncMessage.Changes.Create)
             ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const mailItemId = creates[0].Message.ItemId.$.Id;
-        const mailChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+        const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+        assert.exists(matchedItem, "Should find message matching subject");
+        const mailItemId = matchedItem.Message.ItemId.$.Id;
+        const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
         // EWS: GetItem to get body and attachments
         const getItemRes = await ews.makeEWSRequest(

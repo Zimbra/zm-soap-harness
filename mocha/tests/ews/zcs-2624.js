@@ -143,6 +143,9 @@ describe('EWS > ZCS-2624', function () {
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="10" />
@@ -161,7 +164,10 @@ describe('EWS > ZCS-2624', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates[0].CalendarItem || creates[0].MeetingRequest;
+		const calMatch = creates.find(c => c.CalendarItem?.Subject === messageSubject
+			|| c.MeetingRequest?.Subject === messageSubject);
+		const calItem = calMatch?.CalendarItem || calMatch?.MeetingRequest;
+		assert.exists(calItem, 'Calendar item should be found in sync results');
 		const cal02Id = calItem.ItemId.$.Id;
 		const cal02ChangeKey = calItem.ItemId.$.ChangeKey;
 

@@ -88,8 +88,8 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
-		assert.equal(createMsg.ResponseClass, 'Success', 'CreateItem should succeed');
-		const calItemId = createMsg.Items.CalendarItem.ItemId.Id;
+		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
+		const calItemId = createMsg.Items.CalendarItem.ItemId.$.Id;
 
 		// Step 2: Attach first inline image
 		const attachRes = await ews.makeEWSRequest(
@@ -110,8 +110,8 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		const attachBody = ews.getBody(attachRes);
 		const attachMsg = attachBody.CreateAttachmentResponse
 			.ResponseMessages.CreateAttachmentResponseMessage;
-		assert.equal(attachMsg.ResponseClass, 'Success', 'CreateAttachment should succeed');
-		const attachCk = attachMsg.Attachments.FileAttachment.AttachmentId.RootItemChangeKey;
+		assert.equal(attachMsg.$.ResponseClass, 'Success', 'CreateAttachment should succeed');
+		const attachCk = attachMsg.Attachments.FileAttachment.AttachmentId.$.RootItemChangeKey;
 
 		// Step 3: First UpdateItem to send meeting
 		await ews.makeEWSRequest(
@@ -163,7 +163,7 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		const attachMsg2 = attachBody2.CreateAttachmentResponse
 			.ResponseMessages.CreateAttachmentResponseMessage;
 		const attachMsgArr = Array.isArray(attachMsg2) ? attachMsg2 : [attachMsg2];
-		const attachCk2 = attachMsgArr[0].Attachments.FileAttachment.AttachmentId.RootItemChangeKey;
+		const attachCk2 = attachMsgArr[0].Attachments.FileAttachment.AttachmentId.$.RootItemChangeKey;
 
 		// Step 5: Second UpdateItem with updated subject and send
 		await ews.makeEWSRequest(
@@ -207,7 +207,7 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		const syncBody = ews.getBody(syncRes);
 		const syncMsg = syncBody.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
-		assert.equal(syncMsg.ResponseClass, 'Success', 'SyncFolderItems should succeed');
+		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 
 		// Verify on organizer ZWC
 		const acct1Token = await soap.getAccountAuthToken(account1Email, accountPassword);

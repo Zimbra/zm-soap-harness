@@ -68,8 +68,8 @@ describe('EWS > Calendar > Inline > ZCS-16898 > Create Appointment With Inline A
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
-		assert.equal(createMsg.ResponseClass, 'Success', 'CreateItem should succeed');
-		const calItemId = createMsg.Items.CalendarItem.ItemId.Id;
+		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
+		const calItemId = createMsg.Items.CalendarItem.ItemId.$.Id;
 		assert.exists(calItemId, 'Calendar item Id should exist');
 
 		// Attach inline image
@@ -91,7 +91,7 @@ describe('EWS > Calendar > Inline > ZCS-16898 > Create Appointment With Inline A
 		const attachBody = ews.getBody(attachRes);
 		const attachMsg = attachBody.CreateAttachmentResponse
 			.ResponseMessages.CreateAttachmentResponseMessage;
-		assert.equal(attachMsg.ResponseClass, 'Success', 'CreateAttachment should succeed');
+		assert.equal(attachMsg.$.ResponseClass, 'Success', 'CreateAttachment should succeed');
 
 		// Sync on EWS
 		const syncRes = await ews.makeEWSRequest(
@@ -112,7 +112,7 @@ describe('EWS > Calendar > Inline > ZCS-16898 > Create Appointment With Inline A
 		const syncBody = ews.getBody(syncRes);
 		const syncMsg = syncBody.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
-		assert.equal(syncMsg.ResponseClass, 'Success', 'SyncFolderItems should succeed');
+		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 
 		// Verify on ZWC
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);

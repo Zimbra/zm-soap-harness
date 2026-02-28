@@ -92,6 +92,9 @@ describe('EWS > Delete Mail From EWS', function () {
             `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -112,8 +115,10 @@ describe('EWS > Delete Mail From EWS', function () {
         const createItems = Array.isArray(changes?.Create)
             ? changes.Create : changes?.Create ? [changes.Create] : [];
         assert.isAbove(createItems.length, 0, 'Should have created items');
-        const mailItemId = createItems[0]?.Message?.ItemId?.$.Id;
-        const mailItemChangeKey = createItems[0]?.Message?.ItemId?.$.ChangeKey;
+        const matchedItem = createItems.find(c => c?.Message?.Subject === messageSubject);
+        assert.exists(matchedItem, 'Should find message matching subject');
+        const mailItemId = matchedItem.Message.ItemId.$.Id;
+        const mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
         // EWS: GetItem to verify received mail
         const getItemRes = await ews.makeEWSRequest(
@@ -321,6 +326,9 @@ describe('EWS > Delete Mail From EWS', function () {
             `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -341,8 +349,10 @@ describe('EWS > Delete Mail From EWS', function () {
         const createItems = Array.isArray(changes?.Create)
             ? changes.Create : changes?.Create ? [changes.Create] : [];
         assert.isAbove(createItems.length, 0, 'Should have created items');
-        const mailItemId = createItems[0]?.Message?.ItemId?.$.Id;
-        const mailItemChangeKey = createItems[0]?.Message?.ItemId?.$.ChangeKey;
+        const matchedItem = createItems.find(c => c?.Message?.Subject === messageSubject);
+        assert.exists(matchedItem, 'Should find message matching subject');
+        const mailItemId = matchedItem.Message.ItemId.$.Id;
+        const mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
         // EWS: GetItem to verify received mail
         const getItemRes = await ews.makeEWSRequest(

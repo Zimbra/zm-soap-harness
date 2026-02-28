@@ -79,7 +79,10 @@ describe('EWS > Sync Mail Properties', function () {
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-		messageId = searchRes.SearchResponse?.m[0].id;
+		const searchMsgs = searchRes.SearchResponse?.m;
+		const firstMsg = Array.isArray(searchMsgs) ? searchMsgs[0] : searchMsgs;
+		assert.exists(firstMsg, 'Should find message in inbox');
+		messageId = firstMsg.id;
 
 		// Mark as read on ZWC
 		const readRes = await soap.makeSOAPEnvelopeAccount(
@@ -121,6 +124,9 @@ describe('EWS > Sync Mail Properties', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -138,8 +144,10 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const changes = syncMessage.Changes;
 		const creates = Array.isArray(changes.Create) ? changes.Create : [changes.Create];
-		mailItemId = creates[0].Message.ItemId.$.Id;
-		mailItemChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, 'Should find message matching subject');
+		mailItemId = matchedItem.Message.ItemId.$.Id;
+		mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		// GetItem on EWS to verify IsRead is true
 		const getItemRes = await ews.makeEWSRequest(
@@ -230,8 +238,10 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const changes = syncMessage.Changes;
 		const creates = Array.isArray(changes.Create) ? changes.Create : [changes.Create];
-		mailItemId = creates[0].Message.ItemId.$.Id;
-		mailItemChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, 'Should find message matching subject');
+		mailItemId = matchedItem.Message.ItemId.$.Id;
+		mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		// GetItem on EWS to verify IsRead is false
 		const getItemRes = await ews.makeEWSRequest(
@@ -314,8 +324,10 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const changes = syncMessage.Changes;
 		const creates = Array.isArray(changes.Create) ? changes.Create : [changes.Create];
-		mailItemId = creates[0].Message.ItemId.$.Id;
-		mailItemChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, 'Should find message matching subject');
+		mailItemId = matchedItem.Message.ItemId.$.Id;
+		mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		await soap.waitFor(5000);
 
@@ -386,8 +398,10 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const changes = syncMessage.Changes;
 		const creates = Array.isArray(changes.Create) ? changes.Create : [changes.Create];
-		mailItemId = creates[0].Message.ItemId.$.Id;
-		mailItemChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, 'Should find message matching subject');
+		mailItemId = matchedItem.Message.ItemId.$.Id;
+		mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		await soap.waitFor(5000);
 
@@ -419,7 +433,10 @@ describe('EWS > Sync Mail Properties', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		messageId = searchRes.SearchResponse?.m[0].id;
+		const searchMsgs = searchRes.SearchResponse?.m;
+		const firstMsg = Array.isArray(searchMsgs) ? searchMsgs[0] : searchMsgs;
+		assert.exists(firstMsg, 'Should find message in inbox');
+		messageId = firstMsg.id;
 
 		// Flag the message on ZWC
 		const flagRes = await soap.makeSOAPEnvelopeAccount(
@@ -476,8 +493,10 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const changes = syncMessage.Changes;
 		const creates = Array.isArray(changes.Create) ? changes.Create : [changes.Create];
-		mailItemId = creates[0].Message.ItemId.$.Id;
-		mailItemChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, 'Should find message matching subject');
+		mailItemId = matchedItem.Message.ItemId.$.Id;
+		mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		// GetItem on EWS to verify flag status (ExtendedFieldURI 0x1090 = 2 means flagged)
 		const getItemRes = await ews.makeEWSRequest(
@@ -570,8 +589,10 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const changes = syncMessage.Changes;
 		const creates = Array.isArray(changes.Create) ? changes.Create : [changes.Create];
-		mailItemId = creates[0].Message.ItemId.$.Id;
-		mailItemChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, 'Should find message matching subject');
+		mailItemId = matchedItem.Message.ItemId.$.Id;
+		mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		await soap.waitFor(5000);
 
@@ -598,7 +619,10 @@ describe('EWS > Sync Mail Properties', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		messageId = searchRes.SearchResponse?.m[0].id;
+		const searchMsgsTag = searchRes.SearchResponse?.m;
+		const firstMsgTag = Array.isArray(searchMsgsTag) ? searchMsgsTag[0] : searchMsgsTag;
+		assert.exists(firstMsgTag, 'Should find message in inbox');
+		messageId = firstMsgTag.id;
 
 		// Create a tag
 		const tagName = `tag${common.getUniqueString()}`;
@@ -670,8 +694,10 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const changes = syncMessage.Changes;
 		const creates = Array.isArray(changes.Create) ? changes.Create : [changes.Create];
-		mailItemId = creates[0].Message.ItemId.$.Id;
-		mailItemChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, 'Should find message matching subject');
+		mailItemId = matchedItem.Message.ItemId.$.Id;
+		mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		// GetItem on EWS to verify tag in Categories
 		const getItemRes = await ews.makeEWSRequest(
@@ -756,8 +782,10 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const changes = syncMessage.Changes;
 		const creates = Array.isArray(changes.Create) ? changes.Create : [changes.Create];
-		mailItemId = creates[0].Message.ItemId.$.Id;
-		mailItemChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, 'Should find message matching subject');
+		mailItemId = matchedItem.Message.ItemId.$.Id;
+		mailItemChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		await soap.waitFor(5000);
 

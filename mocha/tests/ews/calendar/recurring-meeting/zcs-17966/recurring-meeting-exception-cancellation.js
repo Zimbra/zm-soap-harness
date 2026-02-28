@@ -111,12 +111,12 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		assert.equal(
-			createMsg.ResponseClass,
+			createMsg.$.ResponseClass,
 			'Success',
 			'CreateItem should succeed',
 		);
-		const masterId = createMsg.Items.CalendarItem.ItemId.Id;
-		const masterCk = createMsg.Items.CalendarItem.ItemId.ChangeKey;
+		const masterId = createMsg.Items.CalendarItem.ItemId.$.Id;
+		const masterCk = createMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(masterId, 'Master recurring ItemId should exist');
 
 		// Verify on ZWC
@@ -188,7 +188,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const updateMsg =
 			updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		assert.equal(
-			updateMsg.ResponseClass,
+			updateMsg.$.ResponseClass,
 			'Success',
 			'UpdateItem (exception) should succeed',
 		);
@@ -261,9 +261,9 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const getItemBody = ews.getBody(getItemRes);
 		const getItemMsg =
 			getItemBody.GetItemResponse.ResponseMessages.GetItemResponseMessage;
-		assert.equal(getItemMsg.ResponseClass, 'Success', 'GetItem should succeed');
-		const cancelTargetId = getItemMsg.Items.CalendarItem.ItemId.Id;
-		const cancelTargetCk = getItemMsg.Items.CalendarItem.ItemId.ChangeKey;
+		assert.equal(getItemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
+		const cancelTargetId = getItemMsg.Items.CalendarItem.ItemId.$.Id;
+		const cancelTargetCk = getItemMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(cancelTargetId, 'Occurrence ItemId should exist');
 
 		// Step 5: Cancel exception via EWS
@@ -285,7 +285,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const cancelMsg =
 			cancelBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		assert.equal(
-			cancelMsg.ResponseClass,
+			cancelMsg.$.ResponseClass,
 			'Success',
 			'CancelCalendarItem should succeed',
 		);

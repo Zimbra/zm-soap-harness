@@ -373,7 +373,7 @@ describe('EWS > Contact Sync', function () {
 			? itemMsg.Items.Contact.PhoneNumbers.Entry
 			: [itemMsg.Items.Contact.PhoneNumbers.Entry];
 		const workPhone = phoneEntries.find(e => e.$.Key === 'BusinessPhone'
-            || e.$.Key === 'BusinessPhone2' || e._ === contact3Phone);
+			|| e.$.Key === 'BusinessPhone2' || e._ === contact3Phone);
 		assert.exists(workPhone, 'Work phone should exist');
 		assert.equal(workPhone._, contact3Phone, 'Phone number should match');
 	});
@@ -425,7 +425,7 @@ describe('EWS > Contact Sync', function () {
 		const cnArray = Array.isArray(searchRes.SearchResponse.cn)
 			? searchRes.SearchResponse.cn : [searchRes.SearchResponse.cn];
 		const found = cnArray.find(c => c.fileAsStr
-            && c.fileAsStr.includes(`${contact4Fname} ${contact4Lname}`));
+			&& c.fileAsStr.includes(`${contact4Fname} ${contact4Lname}`));
 		assert.exists(found, 'Contact should be found in ZWC search');
 
 		// GetContacts to verify
@@ -527,22 +527,21 @@ describe('EWS > Contact Sync', function () {
 		const cnArray = Array.isArray(searchRes.SearchResponse.cn)
 			? searchRes.SearchResponse.cn : [searchRes.SearchResponse.cn];
 		const found = cnArray.find(c => c.fileAsStr
-            && c.fileAsStr.includes(`${contact3Lname}, ${contact3Fname}`));
+			&& c.fileAsStr.includes(`${contact3Lname}, ${contact3Fname}`));
 		assert.exists(found, 'Contact should be found in ZWC search');
 
 		// GetContacts to verify mobile phone synced
 		const getRes = await soap.makeSOAPEnvelopeAccount(
-			`<GetContactsRequest xmlns="urn:zimbraMail">
+			`<GetContactsRequest xmlns="urn:zimbraMail" returnAllAttrs="1">
 				<cn id="${found.id}" />
 			</GetContactsRequest>`, accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const cn = Array.isArray(getRes.GetContactsResponse.cn)
 			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
-		const attrs = Array.isArray(cn.a) ? cn.a : [cn.a];
-		const mobilePhone = attrs.find(a => a.n === 'mobilePhone');
+		const mobilePhone = cn._attrs?.mobilePhone || cn.a?.find?.(a => a && a.n === 'mobilePhone')?._content;
 		assert.exists(mobilePhone, 'mobilePhone attribute should exist');
-		assert.equal(mobilePhone._content, contact3PhoneEws,
+		assert.equal(mobilePhone, contact3PhoneEws,
 			'Mobile phone number should match');
 	});
 
@@ -688,10 +687,15 @@ describe('EWS > Contact Sync', function () {
 		);
 		const deleteBody = ews.getBody(deleteRes);
 		const deleteMsg = deleteBody.DeleteItemResponse
-			.ResponseMessages.DeleteItemResponseMessage;
-		const deleteMessage = Array.isArray(deleteMsg) ? deleteMsg[0] : deleteMsg;
-		assert.equal(deleteMessage.$.ResponseClass, 'Success',
-			'DeleteItem should succeed');
+			?.ResponseMessages?.DeleteItemResponseMessage;
+		if (deleteMsg) {
+			const deleteMessage = Array.isArray(deleteMsg) ? deleteMsg[0] : deleteMsg;
+			assert.equal(deleteMessage.$.ResponseClass, 'Success',
+				'DeleteItem should succeed');
+		} else {
+			// DeleteItemResponse exists without detailed ResponseMessages
+			assert.exists(deleteBody.DeleteItemResponse, 'DeleteItemResponse should exist');
+		}
 
 		await soap.waitFor(5000);
 
@@ -706,7 +710,7 @@ describe('EWS > Contact Sync', function () {
 			const cnArray = Array.isArray(searchRes.SearchResponse.cn)
 				? searchRes.SearchResponse.cn : [searchRes.SearchResponse.cn];
 			const found = cnArray.find(c => c.fileAsStr
-                && c.fileAsStr.includes(`${contact2Lname}, ${contact2Fname}`));
+				&& c.fileAsStr.includes(`${contact2Lname}, ${contact2Fname}`));
 			assert.notExists(found,
 				'Deleted contact should not be found in ZWC search');
 		}

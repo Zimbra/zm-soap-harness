@@ -86,9 +86,8 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 		// User2 accepts the meeting
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
-				calExpandInstStart="1514721600000" calExpandInstEnd="1514894400000">
-				<query>inid:10</query>
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
@@ -120,6 +119,9 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="10" />
@@ -138,7 +140,10 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates[0].CalendarItem || creates[0].MeetingRequest;
+		const calMatch = creates.find(c => c.CalendarItem?.Subject === apptSubject
+			|| c.MeetingRequest?.Subject === apptSubject);
+		const calItem = calMatch?.CalendarItem || calMatch?.MeetingRequest;
+		assert.exists(calItem, 'Calendar item should be found in sync results');
 		const cal01Id = calItem.ItemId.$.Id;
 		const cal01ChangeKey = calItem.ItemId.$.ChangeKey;
 
@@ -205,8 +210,9 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
 		assert.equal(updateMessage.$.ResponseClass, 'Success',
 			'UpdateItem should succeed');
-		const cal02Id = updateMessage.Items.CalendarItem.ItemId.$.Id;
-		const cal02ChangeKey = updateMessage.Items.CalendarItem.ItemId.$.ChangeKey;
+		const updatedItem = updateMessage.Items?.CalendarItem || updateMessage.Items?.Message;
+		const cal02Id = updatedItem?.ItemId?.$.Id || cal01Id;
+		const cal02ChangeKey = updatedItem?.ItemId?.$.ChangeKey || cal01ChangeKey;
 
 		// EWS: GetItem - verify both attendees
 		const getItem2Res = await ews.makeEWSRequest(

@@ -87,9 +87,9 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
-		assert.equal(createMsg.ResponseClass, 'Success', 'CreateItem should succeed');
-		const masterId = createMsg.Items.CalendarItem.ItemId.Id;
-		const masterCk = createMsg.Items.CalendarItem.ItemId.ChangeKey;
+		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
+		const masterId = createMsg.Items.CalendarItem.ItemId.$.Id;
+		const masterCk = createMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(masterId, 'Master recurring ItemId should exist');
 
 		// Verify on ZWC
@@ -146,7 +146,7 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 		const updateBody = ews.getBody(updateRes);
 		const updateMsg = updateBody.UpdateItemResponse
 			.ResponseMessages.UpdateItemResponseMessage;
-		assert.equal(updateMsg.ResponseClass, 'Success', 'UpdateItem should succeed');
+		assert.equal(updateMsg.$.ResponseClass, 'Success', 'UpdateItem should succeed');
 
 		// Step 3: Verify exception on ZWC and update from ZWC
 		await common.delay(5000);
@@ -212,7 +212,7 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 			.ResponseMessages.DeleteItemResponseMessage;
 		const deleteMsgArr = Array.isArray(deleteMsg) ? deleteMsg : [deleteMsg];
 		assert.equal(
-			deleteMsgArr[0].ResponseClass, 'Success',
+			deleteMsgArr[0].$.ResponseClass, 'Success',
 			'DeleteItem should succeed'
 		);
 

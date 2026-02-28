@@ -90,6 +90,9 @@ describe('EWS > Flag Unflag', function () {
             `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -107,8 +110,10 @@ describe('EWS > Flag Unflag', function () {
         assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
         const creates = Array.isArray(syncMessage.Changes.Create)
             ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const mailItemId = creates[0].Message.ItemId.$.Id;
-        const mailChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+        const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+        assert.exists(matchedItem, 'Should find message matching subject');
+        const mailItemId = matchedItem.Message.ItemId.$.Id;
+        const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
         // EWS: GetItem to verify mail
         const getItemRes = await ews.makeEWSRequest(
@@ -232,6 +237,9 @@ describe('EWS > Flag Unflag', function () {
             `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="2" />
@@ -248,8 +256,10 @@ describe('EWS > Flag Unflag', function () {
         const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
         const creates = Array.isArray(syncMessage.Changes.Create)
             ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const mailItemId = creates[creates.length - 1].Message.ItemId.$.Id;
-        const mailChangeKey = creates[creates.length - 1].Message.ItemId.$.ChangeKey;
+        const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+        assert.exists(matchedItem, 'Should find message matching subject');
+        const mailItemId = matchedItem.Message.ItemId.$.Id;
+        const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
         // EWS: Flag the item first
         await ews.makeEWSRequest(
@@ -325,6 +335,9 @@ describe('EWS > Flag Unflag', function () {
             `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="2" />
@@ -341,8 +354,10 @@ describe('EWS > Flag Unflag', function () {
         const syncMessage2 = Array.isArray(syncMsg2) ? syncMsg2[0] : syncMsg2;
         const creates2 = Array.isArray(syncMessage2.Changes.Create)
             ? syncMessage2.Changes.Create : [syncMessage2.Changes.Create];
-        const latestItemId = creates2[creates2.length - 1].Message.ItemId.$.Id;
-        const latestChangeKey = creates2[creates2.length - 1].Message.ItemId.$.ChangeKey;
+        const matchedItem2 = creates2.find(c => c?.Message?.Subject === messageSubject);
+        assert.exists(matchedItem2, 'Should find message matching subject');
+        const latestItemId = matchedItem2.Message.ItemId.$.Id;
+        const latestChangeKey = matchedItem2.Message.ItemId.$.ChangeKey;
 
         // GetItem with extended properties to verify unflagged
         const getItemRes = await ews.makeEWSRequest(

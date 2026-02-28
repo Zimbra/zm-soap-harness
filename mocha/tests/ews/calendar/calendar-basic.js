@@ -76,6 +76,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="10" />
@@ -94,9 +97,12 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates[0].CalendarItem || creates[0].MeetingRequest;
-		const calId = calItem.ItemId.$.Id;
-		const calCk = calItem.ItemId.$.ChangeKey;
+		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
+			|| c.MeetingRequest?.Subject === apptSubject);
+		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
+		assert.exists(item, 'Calendar item should be found in sync results');
+		const calId = item.ItemId.$.Id;
+		const calCk = item.ItemId.$.ChangeKey;
 
 		const getItemRes = await ews.makeEWSRequest(
 			`<m:GetItem xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -156,6 +162,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="10" />
@@ -175,8 +184,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
 		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-            || c.MeetingRequest?.Subject === apptSubject);
+			|| c.MeetingRequest?.Subject === apptSubject);
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
+		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
 		const calCk = item.ItemId.$.ChangeKey;
 
@@ -237,6 +247,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="10" />
@@ -256,8 +269,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
 		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-            || c.MeetingRequest?.Subject === apptSubject);
+			|| c.MeetingRequest?.Subject === apptSubject);
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
+		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
 		const calCk = item.ItemId.$.ChangeKey;
 
@@ -326,6 +340,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="10" />
@@ -345,8 +362,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
 		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-            || c.MeetingRequest?.Subject === apptSubject);
+			|| c.MeetingRequest?.Subject === apptSubject);
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
+		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
 		const calCk = item.ItemId.$.ChangeKey;
 
@@ -381,7 +399,7 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		assert.equal(giMessage.Items.CalendarItem.IsAllDayEvent, 'false',
 			'IsAllDayEvent should be false');
 		const bodyText = giMessage.Items.CalendarItem.Body?._ ||
-            giMessage.Items.CalendarItem.Body;
+			giMessage.Items.CalendarItem.Body;
 		assert.include(String(bodyText), apptContent, 'Body should match');
 	});
 
@@ -510,6 +528,7 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		assert.exists(appt, 'Appointment should exist on ZWC');
 		assert.equal(appt.name, apptSubject, 'Subject should match');
 
+		assert.exists(appt, 'Appointment details should exist');
 		const invId = appt.invId;
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
@@ -517,10 +536,11 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			</GetMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
-		const comp = getMsgRes.GetMsgResponse.m.inv?.comp ||
-            getMsgRes.GetMsgResponse.m.inv;
-		const sDate = Array.isArray(comp) ? comp[0] : comp;
-		assert.exists(sDate, 'Appointment details should exist');
+		const msgData = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		const inv = Array.isArray(msgData.inv) ? msgData.inv[0] : msgData.inv;
+		const comp = Array.isArray(inv?.comp) ? inv.comp[0] : inv?.comp;
+		assert.exists(comp, 'Appointment details should exist');
 	});
 
 
@@ -565,9 +585,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
-				calExpandInstStart="1546732800000" calExpandInstEnd="1546819200000">
-				<query>${apptSubject}(inid:10)</query>
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
@@ -583,9 +602,11 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			</GetMsgRequest>`, account1AuthToken
 		);
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
-		const inv = getMsgRes.GetMsgResponse.m.inv;
-		const comp = Array.isArray(inv?.comp) ? inv.comp[0] : inv?.comp;
-		assert.equal(comp?.allDay, '1', 'allDay should be 1');
+		const msgData6 = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		const inv6 = Array.isArray(msgData6.inv) ? msgData6.inv[0] : msgData6.inv;
+		const comp6 = Array.isArray(inv6?.comp) ? inv6.comp[0] : inv6?.comp;
+		assert.equal(comp6?.allDay, '1', 'allDay should be 1');
 	});
 
 
@@ -640,9 +661,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
-				calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
-				<query>${apptSubject}(inid:10)</query>
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
@@ -658,9 +678,11 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			</GetMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
-		const inv = getMsgRes.GetMsgResponse.m.inv;
-		const comp = Array.isArray(inv?.comp) ? inv.comp[0] : inv?.comp;
-		assert.equal(comp?.allDay, '1', 'allDay should be 1');
+		const msgData7 = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		const inv7 = Array.isArray(msgData7.inv) ? msgData7.inv[0] : msgData7.inv;
+		const comp7 = Array.isArray(inv7?.comp) ? inv7.comp[0] : inv7?.comp;
+		assert.equal(comp7?.allDay, '1', 'allDay should be 1');
 	});
 
 
@@ -724,9 +746,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		// Verify on account2
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
-				calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
-				<query>${apptSubject}(inid:10)</query>
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
@@ -738,9 +759,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		// Verify on account3
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email, accountPassword);
 		const searchRes3 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
-				calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
-				<query>${apptSubject}(inid:10)</query>
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account3AuthToken
 		);
 		assert.notExists(searchRes3.Fault, 'Response should not be a Fault');
@@ -781,6 +801,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="10" />
@@ -799,8 +822,10 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
+			|| c.MeetingRequest?.Subject === apptSubject);
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
+		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
 		const calCk = item.ItemId.$.ChangeKey;
 
@@ -835,7 +860,7 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		assert.equal(giMessage.Items.CalendarItem.IsAllDayEvent, 'true',
 			'IsAllDayEvent should be true');
 		const bodyText = giMessage.Items.CalendarItem.Body?._ ||
-            giMessage.Items.CalendarItem.Body;
+			giMessage.Items.CalendarItem.Body;
 		assert.include(String(bodyText), apptContent, 'Body should match');
 		assert.include(giMessage.Items.CalendarItem.Start, '2019-12-04T00:00:00',
 			'Start should contain correct date');
@@ -871,6 +896,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="10" />
@@ -889,8 +917,10 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
+			|| c.MeetingRequest?.Subject === apptSubject);
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
+		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
 		const calCk = item.ItemId.$.ChangeKey;
 
@@ -967,9 +997,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
-				calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
-				<query>${apptSubject}(inid:10)</query>
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
@@ -985,10 +1014,12 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			</GetMsgRequest>`, account1AuthToken
 		);
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
-		const inv = getMsgRes.GetMsgResponse.m.inv;
-		const comp = Array.isArray(inv?.comp) ? inv.comp[0] : inv?.comp;
-		assert.equal(comp?.class, 'PRI', 'Class should be PRI (Private)');
-		assert.equal(comp?.name, apptSubject, 'Name should match');
+		const msgData10 = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		const inv10 = Array.isArray(msgData10.inv) ? msgData10.inv[0] : msgData10.inv;
+		const comp10 = Array.isArray(inv10?.comp) ? inv10.comp[0] : inv10?.comp;
+		assert.equal(comp10?.class, 'PRI', 'Class should be PRI (Private)');
+		assert.equal(comp10?.name, apptSubject, 'Name should match');
 	});
 
 
@@ -1032,6 +1063,9 @@ describe('EWS > Calendar > Calendar Basic', function () {
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:IncludeMimeContent>false</t:IncludeMimeContent>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="10" />
@@ -1050,8 +1084,10 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
+			|| c.MeetingRequest?.Subject === apptSubject);
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
+		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
 		const calCk = item.ItemId.$.ChangeKey;
 
@@ -1152,9 +1188,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		// Verify on ZWC
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
-				calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
-				<query>${apptSubject}(inid:10)</query>
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');

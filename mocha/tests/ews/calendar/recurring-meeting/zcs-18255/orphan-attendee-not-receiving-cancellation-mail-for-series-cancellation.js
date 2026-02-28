@@ -125,12 +125,12 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-18255 > Orphan Attendee Not Re
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		assert.equal(
-			createMsg.ResponseClass,
+			createMsg.$.ResponseClass,
 			'Success',
 			'CreateItem should succeed',
 		);
-		const masterId = createMsg.Items.CalendarItem.ItemId.Id;
-		const masterCk = createMsg.Items.CalendarItem.ItemId.ChangeKey;
+		const masterId = createMsg.Items.CalendarItem.ItemId.$.Id;
+		const masterCk = createMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(masterId, 'Master recurring ItemId should exist');
 
 		// SyncFolderItems to get latest state
@@ -155,7 +155,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-18255 > Orphan Attendee Not Re
 			syncBody.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		assert.equal(
-			syncMsg.ResponseClass,
+			syncMsg.$.ResponseClass,
 			'Success',
 			'SyncFolderItems should succeed',
 		);
@@ -207,7 +207,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-18255 > Orphan Attendee Not Re
 		const acceptMsg =
 			acceptBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		assert.equal(
-			acceptMsg.ResponseClass,
+			acceptMsg.$.ResponseClass,
 			'Success',
 			'AcceptItem should succeed',
 		);
@@ -234,7 +234,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-18255 > Orphan Attendee Not Re
 			syncBody2.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		assert.equal(
-			syncMsg2.ResponseClass,
+			syncMsg2.$.ResponseClass,
 			'Success',
 			'SyncFolderItems should succeed',
 		);
@@ -298,7 +298,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-18255 > Orphan Attendee Not Re
 		const updateMsg =
 			updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		assert.equal(
-			updateMsg.ResponseClass,
+			updateMsg.$.ResponseClass,
 			'Success',
 			'UpdateItem (exception) should succeed',
 		);
@@ -370,9 +370,9 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-18255 > Orphan Attendee Not Re
 		const getItemBody = ews.getBody(getItemRes);
 		const getItemMsg =
 			getItemBody.GetItemResponse.ResponseMessages.GetItemResponseMessage;
-		assert.equal(getItemMsg.ResponseClass, 'Success', 'GetItem should succeed');
-		const cancelTargetId = getItemMsg.Items.CalendarItem.ItemId.Id;
-		const cancelTargetCk = getItemMsg.Items.CalendarItem.ItemId.ChangeKey;
+		assert.equal(getItemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
+		const cancelTargetId = getItemMsg.Items.CalendarItem.ItemId.$.Id;
+		const cancelTargetCk = getItemMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(cancelTargetId, 'Master ItemId should exist');
 
 		// Step 6: Cancel the entire series from Outlook
@@ -394,7 +394,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-18255 > Orphan Attendee Not Re
 		const cancelMsg =
 			cancelBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		assert.equal(
-			cancelMsg.ResponseClass,
+			cancelMsg.$.ResponseClass,
 			'Success',
 			'CancelCalendarItem should succeed',
 		);

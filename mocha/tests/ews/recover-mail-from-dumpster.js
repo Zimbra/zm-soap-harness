@@ -55,16 +55,16 @@ describe('EWS > Recover Mail From Dumpster', function () {
 		const account2Username = account2Email.split('@')[0];
 		const mimeContent = Buffer.from(
 			'User-Agent: Microsoft-MacOutlook/f.1f.0.170216\r\n' +
-            'Date: Tue, 8 Aug 2017 04:47:01 -0400 (EDT)\r\n' +
-            `Subject: ${messageSubject1}\r\n` +
-            'Message-ID: <170593120.259.150218202149.JavaMail@test>\r\n' +
-            `Thread-Topic: ${messageSubject1}\r\n` +
-            'Mime-version: 1.0\r\n' +
-            'Content-type: text/plain;\r\n' +
-            '\tcherset="UTF-8"\r\n' +
-            'Content-transfer-encoding: 7bit\r\n' +
-            '\r\n' +
-            `${messageContent1}`
+			'Date: Tue, 8 Aug 2017 04:47:01 -0400 (EDT)\r\n' +
+			`Subject: ${messageSubject1}\r\n` +
+			'Message-ID: <170593120.259.150218202149.JavaMail@test>\r\n' +
+			`Thread-Topic: ${messageSubject1}\r\n` +
+			'Mime-version: 1.0\r\n' +
+			'Content-type: text/plain;\r\n' +
+			'\tcherset="UTF-8"\r\n' +
+			'Content-transfer-encoding: 7bit\r\n' +
+			'\r\n' +
+			`${messageContent1}`
 		).toString('base64');
 
 		const createRes = await ews.makeEWSRequest(
@@ -319,8 +319,10 @@ describe('EWS > Recover Mail From Dumpster', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncRecoverMessage.Changes.Create)
 			? syncRecoverMessage.Changes.Create : [syncRecoverMessage.Changes.Create];
-		const recoveredMailId = creates[0].Message.ItemId.$.Id;
-		const recoveredChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject1);
+		assert.exists(matchedItem, "Should find message matching subject");
+		const recoveredMailId = matchedItem.Message.ItemId.$.Id;
+		const recoveredChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
 		// EWS: GetItem to verify recovered mail content
 		const getItemRes = await ews.makeEWSRequest(
@@ -538,8 +540,10 @@ describe('EWS > Recover Mail From Dumpster', function () {
 			'SyncFolderItems should succeed');
 		const subCreates = Array.isArray(syncSubMessage.Changes.Create)
 			? syncSubMessage.Changes.Create : [syncSubMessage.Changes.Create];
-		const recoveredMailId = subCreates[0].Message.ItemId.$.Id;
-		const recoveredChangeKey = subCreates[0].Message.ItemId.$.ChangeKey;
+		const matchedSub = subCreates.find(c => c?.Message?.Subject === messageSubject2);
+		assert.exists(matchedSub, 'Should find recovered message matching subject');
+		const recoveredMailId = matchedSub.Message.ItemId.$.Id;
+		const recoveredChangeKey = matchedSub.Message.ItemId.$.ChangeKey;
 
 		// EWS: GetItem to verify recovered mail content
 		const getItemRes = await ews.makeEWSRequest(

@@ -76,6 +76,7 @@ describe('iCal > Create Appointment Request', function () {
 				s="${searchStart}" e="${searchEnd}"/>`, account1AuthToken
 		);
 		assert.notExists(res.Fault, 'GetICalRequest should not fault');
+		assert.exists(res.GetICalResponse, 'GetICalResponse should have content');
 		assert.exists(res.GetICalResponse, 'GetICalResponse should exist');
 	});
 
@@ -133,6 +134,7 @@ describe('iCal > Create Appointment Request', function () {
 				id="${invId}"/>`, account3AuthToken
 		);
 		assert.notExists(res.Fault, 'GetICalRequest should not fault');
+		assert.exists(res.GetICalResponse, 'GetICalResponse should have content');
 		assert.exists(res.GetICalResponse, 'GetICalResponse should exist');
 	});
 });

@@ -106,12 +106,12 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const syncBody = ews.getBody(syncRes);
 		const syncMsg = syncBody.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
-		assert.equal(syncMsg.ResponseClass, 'Success', 'SyncFolderItems should succeed');
+		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMsg.Changes.Create)
 			? syncMsg.Changes.Create : [syncMsg.Changes.Create];
 		const calCreate = creates.find(c => c?.CalendarItem);
-		const calId = calCreate?.CalendarItem?.ItemId?.Id;
-		const calCk = calCreate?.CalendarItem?.ItemId?.ChangeKey;
+		const calId = calCreate?.CalendarItem?.ItemId?.$.Id;
+		const calCk = calCreate?.CalendarItem?.ItemId?.$.ChangeKey;
 		assert.exists(calId, 'Calendar item Id should exist');
 		const syncState1 = syncMsg.SyncState;
 
@@ -139,7 +139,7 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const giBody1 = ews.getBody(getItemRes1);
 		const giMsg1 = giBody1.GetItemResponse
 			.ResponseMessages.GetItemResponseMessage;
-		assert.equal(giMsg1.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.equal(giMsg1.$.ResponseClass, 'Success', 'GetItem should succeed');
 		assert.equal(giMsg1.Items.CalendarItem.Subject, apptSubject, 'Subject should match');
 
 		// EWS organizer modifies meeting time via UpdateItem
@@ -243,7 +243,7 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const updateBody = ews.getBody(updateRes);
 		const updateMsg = updateBody.UpdateItemResponse
 			.ResponseMessages.UpdateItemResponseMessage;
-		assert.equal(updateMsg.ResponseClass, 'Success', 'UpdateItem should succeed');
+		assert.equal(updateMsg.$.ResponseClass, 'Success', 'UpdateItem should succeed');
 
 		// EWS organizer syncs to get updated item
 		const syncRes2 = await ews.makeEWSRequest(
@@ -265,12 +265,12 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const syncBody2 = ews.getBody(syncRes2);
 		const syncMsg2 = syncBody2.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
-		assert.equal(syncMsg2.ResponseClass, 'Success', 'SyncFolderItems should succeed');
+		assert.equal(syncMsg2.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const updates = syncMsg2.Changes?.Update;
 		const updateArr = Array.isArray(updates) ? updates : [updates];
 		const calUpdate = updateArr.find(u => u?.CalendarItem);
-		const cal2Id = calUpdate?.CalendarItem?.ItemId?.Id;
-		const cal2Ck = calUpdate?.CalendarItem?.ItemId?.ChangeKey;
+		const cal2Id = calUpdate?.CalendarItem?.ItemId?.$.Id;
+		const cal2Ck = calUpdate?.CalendarItem?.ItemId?.$.ChangeKey;
 		assert.exists(cal2Id, 'Updated calendar item Id should exist');
 
 		// EWS GetItem to verify modified time
@@ -297,7 +297,7 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const giBody2 = ews.getBody(getItemRes2);
 		const giMsg2 = giBody2.GetItemResponse
 			.ResponseMessages.GetItemResponseMessage;
-		assert.equal(giMsg2.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.equal(giMsg2.$.ResponseClass, 'Success', 'GetItem should succeed');
 		assert.equal(giMsg2.Items.CalendarItem.Subject, apptSubject, 'Subject should match');
 
 		// Verify on ZWC organizer
@@ -409,12 +409,12 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const syncBody = ews.getBody(syncRes);
 		const syncMsg = syncBody.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
-		assert.equal(syncMsg.ResponseClass, 'Success', 'SyncFolderItems should succeed');
+		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMsg.Changes.Create)
 			? syncMsg.Changes.Create : [syncMsg.Changes.Create];
 		const calCreate = creates.find(c => c?.CalendarItem);
-		const calId = calCreate?.CalendarItem?.ItemId?.Id;
-		const calCk = calCreate?.CalendarItem?.ItemId?.ChangeKey;
+		const calId = calCreate?.CalendarItem?.ItemId?.$.Id;
+		const calCk = calCreate?.CalendarItem?.ItemId?.$.ChangeKey;
 		assert.exists(calId, 'Calendar item Id should exist');
 		const syncState1 = syncMsg.SyncState;
 
@@ -442,7 +442,7 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const giBody1 = ews.getBody(getItemRes1);
 		const giMsg1 = giBody1.GetItemResponse
 			.ResponseMessages.GetItemResponseMessage;
-		assert.equal(giMsg1.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.equal(giMsg1.$.ResponseClass, 'Success', 'GetItem should succeed');
 		assert.equal(giMsg1.Items.CalendarItem.Subject, apptSubject, 'Subject should match');
 		const reqAtt1 = Array.isArray(giMsg1.Items.CalendarItem.RequiredAttendees?.Attendee)
 			? giMsg1.Items.CalendarItem.RequiredAttendees.Attendee
@@ -553,7 +553,7 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const updateBody = ews.getBody(updateRes);
 		const updateMsg = updateBody.UpdateItemResponse
 			.ResponseMessages.UpdateItemResponseMessage;
-		assert.equal(updateMsg.ResponseClass, 'Success', 'UpdateItem should succeed');
+		assert.equal(updateMsg.$.ResponseClass, 'Success', 'UpdateItem should succeed');
 
 		// EWS organizer syncs to get updated item
 		const syncRes2 = await ews.makeEWSRequest(
@@ -575,12 +575,12 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const syncBody2 = ews.getBody(syncRes2);
 		const syncMsg2 = syncBody2.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
-		assert.equal(syncMsg2.ResponseClass, 'Success', 'SyncFolderItems should succeed');
+		assert.equal(syncMsg2.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const ewsUpdates = syncMsg2.Changes?.Update;
 		const updateArr = Array.isArray(ewsUpdates) ? ewsUpdates : [ewsUpdates];
 		const calUpdate = updateArr.find(u => u?.CalendarItem);
-		const cal2Id = calUpdate?.CalendarItem?.ItemId?.Id;
-		const cal2Ck = calUpdate?.CalendarItem?.ItemId?.ChangeKey;
+		const cal2Id = calUpdate?.CalendarItem?.ItemId?.$.Id;
+		const cal2Ck = calUpdate?.CalendarItem?.ItemId?.$.ChangeKey;
 		assert.exists(cal2Id, 'Updated calendar item Id should exist');
 
 		// EWS GetItem to verify modified attendee
@@ -606,7 +606,7 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		const giBody2 = ews.getBody(getItemRes2);
 		const giMsg2 = giBody2.GetItemResponse
 			.ResponseMessages.GetItemResponseMessage;
-		assert.equal(giMsg2.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.equal(giMsg2.$.ResponseClass, 'Success', 'GetItem should succeed');
 		assert.equal(giMsg2.Items.CalendarItem.Subject, apptSubject, 'Subject should match');
 		const reqAtt2 = Array.isArray(giMsg2.Items.CalendarItem.RequiredAttendees?.Attendee)
 			? giMsg2.Items.CalendarItem.RequiredAttendees.Attendee

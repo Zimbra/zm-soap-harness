@@ -114,8 +114,10 @@ describe('EWS > Bug ZCS-397', function () {
             'SyncFolderItems should succeed');
         const creates = Array.isArray(syncMessage.Changes.Create)
             ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const mailItemId = creates[0].Message.ItemId.$.Id;
-        const mailChangeKey = creates[0].Message.ItemId.$.ChangeKey;
+        const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+        assert.exists(matchedItem, "Should find message matching subject");
+        const mailItemId = matchedItem.Message.ItemId.$.Id;
+        const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
         // EWS: GetItem with MimeContent
         const getItemRes = await ews.makeEWSRequest(

@@ -107,12 +107,12 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17714 > All Day Recurring Meet
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		assert.equal(
-			createMsg.ResponseClass,
+			createMsg.$.ResponseClass,
 			'Success',
 			'CreateItem should succeed',
 		);
-		const masterId = createMsg.Items.CalendarItem.ItemId.Id;
-		const masterCk = createMsg.Items.CalendarItem.ItemId.ChangeKey;
+		const masterId = createMsg.Items.CalendarItem.ItemId.$.Id;
+		const masterCk = createMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(masterId, 'Master recurring ItemId should exist');
 
 		// Verify on ZWC
@@ -213,7 +213,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17714 > All Day Recurring Meet
 		const updateMsg =
 			updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		assert.equal(
-			updateMsg.ResponseClass,
+			updateMsg.$.ResponseClass,
 			'Success',
 			'UpdateItem (exception) should succeed',
 		);

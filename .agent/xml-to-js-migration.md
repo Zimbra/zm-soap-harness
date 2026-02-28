@@ -1,69 +1,144 @@
 ---
-description: How to migrate XML SOAP test cases to JavaScript (mocha) with 1:1 parity
+description: How to migrate XML test files to JavaScript mocha tests (1:1 parity)
 ---
 
 # XML to JS Test Migration Workflow
 
-## File Structure
-- XML tests: `data/soapvalidator/<Module>/*.xml` (with subdirs like `Sharing/`, `Mountpoint/`, `VirtualHost/`)
-- JS tests: `mocha/tests/<module>/*.js` (with matching subdirs)
-- **1:1 file mapping**: Each XML file gets exactly one JS file. Never merge or split files.
-- **File naming**: lowercase with hyphens, e.g. `Folder-Action.xml` → `folder-action.js`
+> [!CAUTION]
+> **NEVER FORGET — Read these BEFORE writing ANY code:**
+> 1. **MANDATORY SECTION COMMENTS** — Every file MUST have `// Applicable zimbra versions` before the `if (config.serial...)` block AND `// Tests` before the first `it()`. Same indentation level. 1 blank line before each comment.
+> 2. **STRICT FORMATTING** — TABS ONLY (never spaces). Exactly **2 blank lines** between every `it()` block. 120-char line limit. Multi-line SOAP XML.
+> 3. **STRICT ASSERTIONS** — ALWAYS `assert.notExists(res.Fault, 'Response should not be a Fault')` before checking response. Match EXACT XML `t:select` path depth. Never use shallow `assert.exists(res.SomeResponse)` alone.
 
-## Test Case Mapping
-- Each XML `<t:test_case>` (excluding `type="always"` setup tests) maps to one JS `it()` block
-- **Never merge** multiple XML test cases into one `it()` block
-- **Never split** one XML test case into multiple `it()` blocks (unless it's a loop creating multiple distinct operations)
-- XML `type` maps to JS test name prefix: `smoke` → `Smoke |`, `sanity` → `Sanity |`, `functional/bhr` → `Functional |`, `regression` → `Regression |`
+## Exclusion Rules (STRICT)
 
-## JS Test Structure
+**ALWAYS exclude these XML test cases — they must NEVER become `it()` blocks:**
+- `type="always"` (e.g. Ping, setup)
+- `type="deprecated"`
+- `testcaseid="Ping"`
+- `testcaseid` containing `setup` (case-insensitive)
+
+Only `type="smoke"`, `type="sanity"`, `type="functional"`, `type="bhr"`, and `type="regression"` test cases become `it()` blocks.
+- Sanity-type tests that are really setup (e.g. "basic system check", "create test account", "login") should also be treated as setup → `before()` hook
+
+## File Structure Rules
+
+1. **Each XML file → its own JS file** (1:1 mapping). Never merge or split files.
+2. **Each non-excluded `<t:test_case>` → one `it()` block**. Never merge or split.
+3. **File naming**: lowercase with hyphens, e.g. `Folder-Action.xml` → `folder-action.js`
+4. **Directory structure mirrors XML source** using lowercase kebab-case names
+5. **Data file paths** use `mocha/data/` (NOT `data/soapvalidator/`), files are flat under `mocha/data/{folder}/`
+6. XML tests: `data/soapvalidator/<Module>/*.xml` (with subdirs like `Sharing/`, `Mountpoint/`, `VirtualHost/`)
+7. JS tests: `mocha/tests/<module>/*.js` (with matching subdirs)
+
+## `it()` Description Format (STRICT)
+
+```
+it('{Type} | {Objective}', async () => {
+```
+
+- **Type**: Capitalized value of XML `type` attribute → `Smoke`, `Sanity`, `Functional`, `Regression`
+- **Objective**: **Verbatim text** from `<t:objective>` (whitespace normalized to single spaces). Do NOT paraphrase, summarize, or add redundant info.
+- **BugIds**: Do NOT include bugids in the `it()` description
+- **Capitalize first word after pipe `|`** — The first character after `| ` MUST be uppercase.
+
+### Examples
+
+XML:
+```xml
+<t:test_case testcaseid="apple_iCal_rawInject01" type="smoke" bugids="44975">
+    <t:objective>Verify the basic iCal format when lmtp inject is used to inject the iCal</t:objective>
+```
+JS:
 ```javascript
-import { assert } from 'chai';
-import config from '../../conf/config.js';
-import common from '../../framework/core/common.js';
-import soap from '../../framework/backend/soap-client.js';
-import { main } from '../../pages/main.js';
+// CORRECT — use exact objective text:
+it('Smoke | Verify the basic iCal format when lmtp inject is used to inject the iCal', async () => {
+// WRONG — paraphrased/redundant:
+it('Smoke | iCal raw inject - verify basic format', async () => {
+```
 
-describe('Module > Feature Name', function () {
-	this.timeout(30 * 1000);
-	let accountAuthToken;
+## JS File Template
+
+```javascript
+import path from 'node:path';
+import { assert } from 'chai';
+import config from '{relativePath}/conf/config.js';
+import common from '{relativePath}/framework/core/common.js';
+import soap from '{relativePath}/framework/backend/soap-client.js';
+import { main } from '{relativePath}/pages/main.js';
+
+describe('{SuiteName}', function () {
+	this.timeout(60 * 1000);
+	let adminAuthToken;
+	const testDomain = config.testDomain;
 
 	before(async function () {
 		await main.before(this.ctx);
-		const accountEmail = soap.testAccounts.testAccount1.emailAddress;
-		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
 	// Applicable zimbra versions
-	if (!String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/g)) {
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
 	// Tests
-	it('Smoke | Test description', async () => {
-		// test body
+	it('{Type} | {Objective}', async () => {
+		// ... test logic
 	});
 
 
-	it('Sanity | Another test', async () => {
-		// test body
+	it('{Type} | {Objective2}', async () => {
+		// ... test logic
 	});
 });
 ```
 
-## Formatting Rules
-- Use tabs for indentation — **NEVER use spaces**
-- **Double blank line** between `it()` blocks
-- **NO blank line** before the closing `});` of the `describe()` block:
+### Relative Paths
+- Root `tests/` level: `../../`
+- One subdirectory deep: `../../../`
+
+### Data File Paths
+```javascript
+// CORRECT — flat under mocha/data/{category}/
+const filePath = path.join(config.projectRoot, 'mocha/data/ical/mac-ical-raw.txt');
+
+// WRONG — never reference data/soapvalidator
+const filePath = path.join(config.projectRoot, 'data/soapvalidator/iCal/Apple-iCal-1-0/mac-ical-raw.txt');
+
+// WRONG — never include old subdirectory structure
+const filePath = path.join(config.projectRoot, 'mocha/data/ical/Apple-iCal-1-0/mac-ical-raw.txt');
+```
+
+## Formatting Rules (STRICT)
+
+- **TABS ONLY for indentation** — NEVER use spaces. This applies to ALL code: `describe()`, `before()`, `it()`, assertions, SOAP XML inside template literals, etc. Files that use 4-space indentation are WRONG and must be converted to tabs.
+- **2 blank lines between `it()` blocks** — ALWAYS leave exactly 2 blank lines between the closing `});` of one `it()` and the next `it(`
+- **1 blank line** after `// Tests` comment before first `it()`
+- **No blank line** between `const filePath = ...` and `await soap.injectMime(...)` — they stay together
+- **MANDATORY section comments** — Every test file MUST have `// Applicable zimbra versions` before the `if (config.serial...)` block and `// Tests` before the first `it()` block. Both comments use the same indentation as the code around them (one tab). There must be exactly 1 blank line between `});` (end of `before`) and `// Applicable zimbra versions`, and exactly 1 blank line between `}` (end of `if` block) and `// Tests`.
+- **SOAP XML must ALWAYS be multi-line** — NEVER condense XML into a single line. Each child element goes on its own indented line:
   ```js
-  // CORRECT:
-  	});
-  });
-  
-  // WRONG:
-  	});
-  
-  });
+  // WRONG — single-line XML:
+  const res = await soap.makeSOAPEnvelopeAdmin(
+  	`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${name}</name><password>${password}</password></CreateAccountRequest>`, adminAuth);
+
+  // CORRECT — multi-line with indented children:
+  const res = await soap.makeSOAPEnvelopeAdmin(
+  	`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+  		<name>${name}</name>
+  		<password>${password}</password>
+  	</CreateAccountRequest>`, adminAuth);
+  ```
+- **120 character line limit** — STRICTLY break long lines at `||`, `&&`, and `?` operators:
+  ```js
+  // WRONG — exceeds 120 chars:
+  assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail && response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')), 'Expected PERM_DENIED or Success');
+
+  // CORRECT — broken at && and after closing paren:
+  assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail &&
+  			response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')),
+  			'Expected PERM_DENIED or Success');
   ```
 - **Applicable zimbra versions block** — MUST use tabs and single-line `if`:
   ```js
@@ -80,10 +155,49 @@ describe('Module > Feature Name', function () {
           return;
       }
   ```
+- **End-of-file format** — STRICTLY follow this pattern (tab-indented inner `});`, no blank line, no trailing whitespace):
+  ```js
+  // CORRECT — always end files exactly like this:
+  	});
+  });
+  
+  // WRONG — no blank line between closings:
+  	});
+  
+  });
+  
+  // WRONG — inner closing must have tab:
+  });
+  });
+  ```
 - Run `npm run format` after all changes
-- Follow rules in `utils/ai/formatting-guidelines.md`
+
+## Test Independence Rules (STRICT)
+- **1:1 XML-to-JS file mapping**: Each XML file → exactly one JS file. Never merge or split.
+- **1:1 test case mapping**: Each XML `<t:test_case>` → exactly one `it()` block. Never merge or split.
+- **Confirm before combining**: If multiple XML tests are inherently sequential (e.g., lock → lock-fail → unlock where each depends on the previous state), **always ask the user** before combining them into a single `it()` block. Explain the nature of the dependency and let the user decide. Never combine silently.
+- **Independent tests**: Each `it()` block must be self-contained with ALL its own code (setup, action, assertion).
+- **Minimal `before()` hook**: Only put truly shared, unavoidable setup in `before()` (e.g. `main.before()`, getting admin auth token). All test-specific setup goes INSIDE the `it()` block.
+- **No shared state between tests**: Tests must not depend on state created by other `it()` blocks.
 
 ## Assertion Patterns
+
+- **Always derive assertions from the XML `t:select` path** — match the exact depth/node:
+  ```js
+  // XML: <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="expected"/>
+  // CORRECT: Check the account level, not just the Response
+  const account = Array.isArray(res.CreateAccountResponse?.account)
+  	? res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+  assert.exists(account, 'CreateAccountResponse should contain account');
+  
+  // XML: <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+  // CORRECT: Check fault code
+  assert.exists(res.Fault, 'Should return Fault');
+  assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
+  
+  // WRONG: Too shallow, doesn't match XML path depth
+  assert.exists(res.CreateAccountResponse);
+  ```
 - **Always use defensive assertions** — never access `.Fault.Reason.Text` or `.Response.action` without null checking:
   ```js
   // CORRECT:
@@ -148,3 +262,12 @@ describe('Module > Feature Name', function () {
 - Count XML tests: `<t:test_case>` elements minus `type="always"` ones
 - Count JS tests: `it(` occurrences
 - XML `type="sanity"` tests that are setup (Ping, create account, login) are NOT real tests
+
+## Checklist Before Completing Migration
+
+- [ ] All non-excluded test cases have a corresponding `it()` block
+- [ ] `it()` descriptions exactly match XML `type` and `objective` (no bugids)
+- [ ] Excluded types (always, deprecated, ping, setup) have NO `it()` blocks
+- [ ] Data paths use `mocha/data/` with flat file references
+- [ ] All files pass `node --check` syntax validation
+- [ ] `it()` count matches non-excluded `<t:test_case>` count in XML

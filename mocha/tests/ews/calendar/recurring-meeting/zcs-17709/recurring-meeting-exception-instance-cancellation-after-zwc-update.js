@@ -101,12 +101,12 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17709 > Recurring Meeting Exce
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		assert.equal(
-			createMsg.ResponseClass,
+			createMsg.$.ResponseClass,
 			'Success',
 			'CreateItem should succeed',
 		);
-		const masterId = createMsg.Items.CalendarItem.ItemId.Id;
-		const masterCk = createMsg.Items.CalendarItem.ItemId.ChangeKey;
+		const masterId = createMsg.Items.CalendarItem.ItemId.$.Id;
+		const masterCk = createMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(masterId, 'Master recurring ItemId should exist');
 
 		await common.delay(2000);
@@ -131,12 +131,12 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17709 > Recurring Meeting Exce
 			attachBody.CreateAttachmentResponse.ResponseMessages
 				.CreateAttachmentResponseMessage;
 		assert.equal(
-			attachMsg.ResponseClass,
+			attachMsg.$.ResponseClass,
 			'Success',
 			'CreateAttachment should succeed',
 		);
 		const masterCk2 =
-			attachMsg.Attachments.FileAttachment.AttachmentId.RootItemChangeKey;
+			attachMsg.Attachments.FileAttachment.AttachmentId.$.RootItemChangeKey;
 		assert.exists(masterCk2, 'Updated ChangeKey should exist after attachment');
 
 		await common.delay(1000);
@@ -169,7 +169,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17709 > Recurring Meeting Exce
 			updateCkBody.UpdateItemResponse.ResponseMessages
 				.UpdateItemResponseMessage;
 		assert.equal(
-			updateCkMsg.ResponseClass,
+			updateCkMsg.$.ResponseClass,
 			'Success',
 			'UpdateItem should succeed',
 		);
@@ -219,7 +219,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17709 > Recurring Meeting Exce
 		const updateMsg =
 			updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		assert.equal(
-			updateMsg.ResponseClass,
+			updateMsg.$.ResponseClass,
 			'Success',
 			'UpdateItem (exception) should succeed',
 		);
@@ -359,9 +359,9 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17709 > Recurring Meeting Exce
 		const getItemBody = ews.getBody(getItemRes);
 		const getItemMsg =
 			getItemBody.GetItemResponse.ResponseMessages.GetItemResponseMessage;
-		assert.equal(getItemMsg.ResponseClass, 'Success', 'GetItem should succeed');
-		const cancelTargetId = getItemMsg.Items.CalendarItem.ItemId.Id;
-		const cancelTargetCk = getItemMsg.Items.CalendarItem.ItemId.ChangeKey;
+		assert.equal(getItemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
+		const cancelTargetId = getItemMsg.Items.CalendarItem.ItemId.$.Id;
+		const cancelTargetCk = getItemMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(cancelTargetId, 'Occurrence ItemId should exist');
 
 		await common.delay(1000);
@@ -385,7 +385,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17709 > Recurring Meeting Exce
 		const cancelMsg =
 			cancelBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		assert.equal(
-			cancelMsg.ResponseClass,
+			cancelMsg.$.ResponseClass,
 			'Success',
 			'CancelCalendarItem should succeed',
 		);

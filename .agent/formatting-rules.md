@@ -183,4 +183,23 @@ const res = await soap.makeSOAPEnvelopeAdmin(
 const res = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${name}</name><password>${password}</password></CreateAccountRequest>`, adminAuth);
 ```
 
-Run `node utils/ai/format-master.cjs` from `mocha/` to enforce all formatting rules.
+## Automated Formatting Scripts
+
+To enforce all rules instantly, run:
+```bash
+npm run format
+```
+
+This sequentially executes 10 distinct rule verification scripts found in `mocha/utils/ai/`, hooked via `utils/ai/format-master.cjs`:
+
+1. **`apply-strict-formatting.cjs`** — Forces tab indentation, injects `// Applicable zimbra versions` block, clears rogue `this.timeout()`, enforces 1 empty line before `// Tests`.
+2. **`format-xml-in-js.cjs`** — Re-tabs multi-line XML template literals, aligns indentation with parent assignment.
+3. **`separate-requests.cjs`** — Enforces blank line between sequential `await soap.makeSOAPEnvelopeAccount(...)` calls.
+4. **`fix-describe-titles.cjs`** — Synchronizes `describe('...')` titles with disk folder hierarchy (e.g. `Admin > Accounts > Account Create`).
+5. **`format-asserts.cjs`** — Enforces 90-char limit on `assert.*` lines, wrapping message to next line with +1 tab offset.
+6. **`format-xml-attributes.cjs`** — Collapses multi-line XML attributes onto single line for vertical compactness.
+7. **`format-singleline-xml.cjs`** — Single-line XML assignments ≤90 chars stay single-line, otherwise wrap.
+8. **`format-describe-start.cjs`** — Eliminates empty lines after `describe('...', function () {`.
+9. **`format-describe-end.cjs`** — Eliminates trailing empty lines before closing `});`.
+10. **`format-block-spacing.cjs`** — Enforces exactly 1 blank line between closing `});`/`}` and next code block.
+
