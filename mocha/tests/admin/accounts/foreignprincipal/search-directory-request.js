@@ -11,12 +11,16 @@ describe('Admin > Accounts > Foreignprincipal > Search Directory Request', funct
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		domainName = `domain.${common.getUniqueString()}.com`;
+
+		// CreateDomainRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin"><name>${domainName}</name></CreateDomainRequest>`, adminAuthToken
 		);
 
 		account1Fp = `test:${common.getUniqueString()}`;
 		const acct1Name = `fp.${common.getUniqueString()}@${domainName}`;
+
+		// Create account
 		const a1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct1Name}</name>
@@ -29,6 +33,8 @@ describe('Admin > Accounts > Foreignprincipal > Search Directory Request', funct
 		account2Fp1 = `test:${common.getUniqueString()}`;
 		account2Fp2 = `test:${common.getUniqueString()}`;
 		const acct2Name = `fp.${common.getUniqueString()}@${domainName}`;
+
+		// Create account
 		const a2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct2Name}</name>
@@ -47,41 +53,55 @@ describe('Admin > Accounts > Foreignprincipal > Search Directory Request', funct
 
 	// Tests
 	it('Sanity | Search for an account with a foreign principal attribute', async () => {
+		// SearchDirectoryRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domainName}" attrs="zimbraForeignPrincipal">
 				<query>(cn=*)</query>
 			</SearchDirectoryRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.SearchDirectoryResponse,
 			'SearchDirectoryResponse should exist');
 
 		const accounts = response.SearchDirectoryResponse.account || [];
 		const found = accounts.find(a => a.id === account1Id);
+
+		// Verify response
 		assert.exists(found, 'Account1 should be in search results');
 
 		const fpAttrs = (found.a || []).filter(a => a.n === 'zimbraForeignPrincipal');
 		const fpValues = fpAttrs.map(a => a._content);
+
+		// Verify response
 		assert.include(fpValues, account1Fp);
 	});
 
 
 	it('Sanity | Search for an account with two foreign principal attributes', async () => {
+		// SearchDirectoryRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domainName}" attrs="zimbraForeignPrincipal">
 				<query>(cn=*)</query>
 			</SearchDirectoryRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.SearchDirectoryResponse,
 			'SearchDirectoryResponse should exist');
 
 		const accounts = response.SearchDirectoryResponse.account || [];
 		const found = accounts.find(a => a.id === account2Id);
+
+		// Verify response
 		assert.exists(found, 'Account2 should be in search results');
 
 		const fpAttrs = (found.a || []).filter(a => a.n === 'zimbraForeignPrincipal');
 		const fpValues = fpAttrs.map(a => a._content);
+
+		// Verify response
 		assert.include(fpValues, account2Fp1);
 		assert.include(fpValues, account2Fp2);
 	});

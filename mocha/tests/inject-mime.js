@@ -36,10 +36,14 @@ describe('Mail > Mime > Inject MIME', function () {
 
 		// Search message
 		const searchResponse = await soap.searchMessage(accountAuthToken, subject);
+
+		// Verify response
 		assert.isNotNull(searchResponse, 'Verify search message response is not null');
 
 		// Verify message content
 		const getMessageResponse = await soap.getMessage(accountAuthToken, searchResponse);
+
+		// Verify response
 		assert.include(getMessageResponse.attachmentList, attachmentFiles,
 			'Verify message response contains attachment files');
 	});

@@ -10,6 +10,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Public', function () {
 	before(async function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -17,6 +19,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Public', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -36,6 +39,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Public', function () {
 	// Tests
 	it('Sanity | Share a briefcase folder to all. Verify that all users have access.', async () => {
 		const folderName = 'PubShare.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
@@ -45,6 +50,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Public', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -52,6 +58,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Public', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
@@ -59,6 +67,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Public', function () {
 
 	it('Sanity | Unshare a briefcase folder to pub. Verify that all users no longer have access.', async () => {
 		const folderName = 'PubUnshare.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
@@ -68,6 +78,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Public', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -75,11 +86,15 @@ describe('Briefcase > Sharing > Grantee > Grantee Public', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// FolderActionRequest
 		const revokeRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="!grant" id="${folder.id}" zid="99999999-9999-9999-9999-999999999999"/>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.FolderActionResponse,
 			'FolderActionResponse should exist');

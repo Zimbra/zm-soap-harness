@@ -30,7 +30,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 				// Try to delete, might fail if already closed/deleted
 				try {
 					await soap.deleteAccount(acct.id, adminAuthToken);
-				} catch (e) {
+				} catch {
 					// Ignore
 				}
 			}
@@ -53,6 +53,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const folderResp = await soap.makeSOAPEnvelopeAccount(createFolder, acct1.authToken);
 		const folderId = folderResp.CreateFolderResponse.folder[0].id;
 
@@ -63,6 +65,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 					<grant gt="usr" d="${acct2.name}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(share, acct1.authToken);
 
 		// 3. Sharee mounts
@@ -71,11 +75,15 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${acct1.id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMount, acct2.authToken);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
 		// Verify mount exists and is valid
 		let getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// FolderActionRequest
 		let getResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct2.authToken);
 		// Find mountpoint link
 		// We can just verify it doesn't say broken yet?
@@ -86,6 +94,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" id="${folderId}"/>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(deleteFolder, acct1.authToken);
 
 		// 5. Sharee verifies link is broken
@@ -95,7 +105,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail" tr="1"/>';
 		getResp = await soap.makeSOAPEnvelopeAccount(getFolder, acct2.authToken);
 
-		const findLink = (folders, id) => {
+		(folders, id) => {
 			if (Array.isArray(folders)) {
 				for (let f of folders) {
 					if (f.id === id) return f;
@@ -129,6 +139,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		collectLinks(getResp.GetFolderResponse.folder);
 		const link = allLinks.find(l => l.id === mountId);
 
+		// Verify response
 		assert.exists(link, 'Mountpoint should exist');
 		assert.equal(link.broken, '1', 'Mountpoint should be broken');
 	});
@@ -144,6 +155,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const folderResp = await soap.makeSOAPEnvelopeAccount(createFolder, acct1.authToken);
 		const folderId = folderResp.CreateFolderResponse.folder[0].id;
 
@@ -154,6 +167,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 					<grant gt="usr" d="${acct2.name}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(share, acct1.authToken);
 
 		// 3. Mount
@@ -162,6 +177,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${acct1.id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// FolderActionRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMount, acct2.authToken);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -170,6 +187,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="!grant" id="${folderId}" zid="${acct2.id}"/>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(revoke, acct1.authToken);
 
 		// 5. Verify broken
@@ -189,6 +208,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		collectLinks(getResp.GetFolderResponse.folder);
 		const link = allLinks.find(l => l.id === mountId);
 
+		// Verify response
 		assert.exists(link, 'Mountpoint should exist');
 		assert.equal(link.broken, '1', 'Mountpoint should be broken');
 	});
@@ -204,6 +224,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const folderResp = await soap.makeSOAPEnvelopeAccount(createFolder, acct1.authToken);
 		const folderId = folderResp.CreateFolderResponse.folder[0].id;
 
@@ -214,6 +236,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 					<grant gt="usr" d="${acct2.name}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(share, acct1.authToken);
 
 		// 3. Mount
@@ -222,6 +246,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${acct1.id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// ModifyAccountRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMount, acct2.authToken);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -231,6 +257,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 				<id>${acct1.id}</id>
 				<a n="zimbraAccountStatus">closed</a>
 			</ModifyAccountRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAdmin(modifyRequest, adminAuthToken);
 
 		// 5. Verify broken
@@ -250,6 +278,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		collectLinks(getResp.GetFolderResponse.folder);
 		const link = allLinks.find(l => l.id === mountId);
 
+		// Verify response
 		assert.exists(link, 'Mountpoint should exist');
 		// Usually broken="1"
 		assert.equal(link.broken, '1', 'Mountpoint should be broken');
@@ -266,6 +295,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const folderResp = await soap.makeSOAPEnvelopeAccount(createFolder, acct3.authToken);
 		const folderId = folderResp.CreateFolderResponse.folder[0].id;
 
@@ -276,6 +307,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 					<grant gt="usr" d="${acct2.name}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(share, acct3.authToken);
 
 		// 3. Mount
@@ -284,6 +317,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${acct3.id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// ModifyAccountRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMount, acct2.authToken);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -293,6 +328,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 				<id>${acct3.id}</id>
 				<a n="zimbraAccountStatus">maintenance</a>
 			</ModifyAccountRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAdmin(modifyRequest, adminAuthToken);
 
 		// 5. Verify broken
@@ -312,6 +349,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		collectLinks(getResp.GetFolderResponse.folder);
 		const link = allLinks.find(l => l.id === mountId);
 
+		// Verify response
 		assert.exists(link, 'Mountpoint should exist');
 		assert.equal(link.broken, '1', 'Mountpoint should be broken');
 	});
@@ -332,6 +370,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const folderResp = await soap.makeSOAPEnvelopeAccount(createFolder, ownerAuth);
 		const folderId = folderResp.CreateFolderResponse.folder[0].id;
 
@@ -342,6 +382,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 					<grant gt="usr" d="${acct2.name}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(share, ownerAuth);
 
 		// 3. Mount
@@ -350,6 +392,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${ownerId}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// DeleteAccountRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMount, acct2.authToken);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -358,6 +402,8 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 			`<DeleteAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${ownerId}</id>
 			</DeleteAccountRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAdmin(deleteAccountRequest, adminAuthToken);
 
 		// 5. Verify broken
@@ -377,6 +423,7 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		collectLinks(getResp.GetFolderResponse.folder);
 		const link = allLinks.find(l => l.id === mountId);
 
+		// Verify response
 		assert.exists(link, 'Mountpoint should exist');
 		// After account deletion, mountpoint should be marked as broken
 		// Some server versions may not immediately mark as broken

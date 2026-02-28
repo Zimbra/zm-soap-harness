@@ -41,26 +41,36 @@ describe('SanityTest > Data Source Sanity', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		assert.exists(res.GetFolderResponse, 'GetFolderResponse should exist');
 		const folders = res.GetFolderResponse.folder[0].folder;
 		const inbox = folders.find(f => f.name === 'Inbox');
+
+		// Verify response
 		assert.exists(inbox, 'Inbox folder should exist');
 		const parentFolderId = inbox.id;
 
 		// Create folder for data source
 		const folderName = `folder.${common.getUniqueString()}`;
+
+		// CreateFolderRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${parentFolderId}"/>
 			</CreateFolderRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest should not fault');
 		const folderId = res.CreateFolderResponse.folder[0].id;
 
 		// Create POP3 data source
 		const pop3Name = `pop3name${common.getUniqueString()}`;
 		const pop3Id = `pop3id${common.getUniqueString()}`;
+
+		// CreateDataSourceRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateDataSourceRequest xmlns="urn:zimbraMail">
 				<pop3 id="${pop3Id}" name="${pop3Name}" isEnabled="true"
@@ -70,6 +80,8 @@ describe('SanityTest > Data Source Sanity', function () {
 					leaveOnServer="true"/>
 			</CreateDataSourceRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDataSourceRequest should not fault');
 		assert.exists(res.CreateDataSourceResponse,
 			'CreateDataSourceResponse should exist');
@@ -83,6 +95,8 @@ describe('SanityTest > Data Source Sanity', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const folders = res.GetFolderResponse.folder[0].folder;
 		const inbox = folders.find(f => f.name === 'Inbox');
@@ -90,17 +104,23 @@ describe('SanityTest > Data Source Sanity', function () {
 
 		// Create folder
 		const folderName = `folder.${common.getUniqueString()}`;
+
+		// CreateFolderRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${parentFolderId}"/>
 			</CreateFolderRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest should not fault');
 		const folderId = res.CreateFolderResponse.folder[0].id;
 
 		// Create POP3 data source
 		const pop3Name = `pop3name${common.getUniqueString()}`;
 		const pop3Id = `pop3id${common.getUniqueString()}`;
+
+		// CreateDataSourceRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateDataSourceRequest xmlns="urn:zimbraMail">
 				<pop3 id="${pop3Id}" name="${pop3Name}" isEnabled="true"
@@ -110,6 +130,8 @@ describe('SanityTest > Data Source Sanity', function () {
 					leaveOnServer="true"/>
 			</CreateDataSourceRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDataSourceRequest should not fault');
 		const createdPop3Id = Array.isArray(res.CreateDataSourceResponse.pop3)
 			? res.CreateDataSourceResponse.pop3[0].id
@@ -121,6 +143,8 @@ describe('SanityTest > Data Source Sanity', function () {
 				<id>${accountId}</id>
 			</GetDataSourcesRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetDataSourcesRequest should not fault');
 		assert.exists(res.GetDataSourcesResponse,
 			'GetDataSourcesResponse should exist');
@@ -131,6 +155,8 @@ describe('SanityTest > Data Source Sanity', function () {
 			const ds = Array.isArray(dataSources)
 				? dataSources.find(d => d.name === pop3Name)
 				: (dataSources.name === pop3Name ? dataSources : null);
+
+			// Verify response
 			assert.exists(ds, 'Should find the created data source');
 			assert.equal(ds.id, createdPop3Id, 'Data source id should match');
 		}
@@ -156,17 +182,23 @@ describe('SanityTest > Data Source Sanity', function () {
 
 		// Create folder
 		const folderName = `folder.${common.getUniqueString()}`;
+
+		// CreateFolderRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${parentFolderId}"/>
 			</CreateFolderRequest>`, modifyAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest should not fault');
 		const folderId = res.CreateFolderResponse.folder[0].id;
 
 		// Create POP3 data source
 		const pop3Name = `pop3name${common.getUniqueString()}`;
 		const pop3Id = `pop3id${common.getUniqueString()}`;
+
+		// CreateDataSourceRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateDataSourceRequest xmlns="urn:zimbraMail">
 				<pop3 id="${pop3Id}" name="${pop3Name}" isEnabled="true"
@@ -176,6 +208,8 @@ describe('SanityTest > Data Source Sanity', function () {
 					leaveOnServer="true"/>
 			</CreateDataSourceRequest>`, modifyAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDataSourceRequest should not fault');
 		const createdPop3Id = Array.isArray(res.CreateDataSourceResponse.pop3)
 			? res.CreateDataSourceResponse.pop3[0].id
@@ -190,6 +224,8 @@ describe('SanityTest > Data Source Sanity', function () {
 				</dataSource>
 			</ModifyDataSourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'ModifyDataSourceRequest should not fault');
 		assert.exists(res.ModifyDataSourceResponse,
 			'ModifyDataSourceResponse should exist');
@@ -215,17 +251,23 @@ describe('SanityTest > Data Source Sanity', function () {
 
 		// Create folder
 		const folderName = `folder.${common.getUniqueString()}`;
+
+		// CreateFolderRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${parentFolderId}"/>
 			</CreateFolderRequest>`, deleteAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest should not fault');
 		const folderId = res.CreateFolderResponse.folder[0].id;
 
 		// Create POP3 data source
 		const pop3Name = `pop3name${common.getUniqueString()}`;
 		const pop3Id = `pop3id${common.getUniqueString()}`;
+
+		// CreateDataSourceRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateDataSourceRequest xmlns="urn:zimbraMail">
 				<pop3 id="${pop3Id}" name="${pop3Name}" isEnabled="true"
@@ -235,6 +277,8 @@ describe('SanityTest > Data Source Sanity', function () {
 					leaveOnServer="true"/>
 			</CreateDataSourceRequest>`, deleteAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDataSourceRequest should not fault');
 		const createdPop3Id = Array.isArray(res.CreateDataSourceResponse.pop3)
 			? res.CreateDataSourceResponse.pop3[0].id
@@ -248,6 +292,8 @@ describe('SanityTest > Data Source Sanity', function () {
 				</dataSource>
 			</DeleteDataSourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'DeleteDataSourceRequest should not fault');
 		assert.exists(res.DeleteDataSourceResponse,
 			'DeleteDataSourceResponse should exist');
@@ -259,6 +305,8 @@ describe('SanityTest > Data Source Sanity', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const folders = res.GetFolderResponse.folder[0].folder;
 		const inbox = folders.find(f => f.name === 'Inbox');
@@ -266,17 +314,23 @@ describe('SanityTest > Data Source Sanity', function () {
 
 		// Create folder
 		const folderName = `folder.${common.getUniqueString()}`;
+
+		// CreateFolderRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${parentFolderId}"/>
 			</CreateFolderRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest should not fault');
 		const folderId = res.CreateFolderResponse.folder[0].id;
 
 		// Create POP3 data source
 		const pop3Name = `pop3name${common.getUniqueString()}`;
 		const pop3Id = `pop3id${common.getUniqueString()}`;
+
+		// CreateDataSourceRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateDataSourceRequest xmlns="urn:zimbraMail">
 				<pop3 id="${pop3Id}" name="${pop3Name}" isEnabled="true"
@@ -286,6 +340,8 @@ describe('SanityTest > Data Source Sanity', function () {
 					leaveOnServer="true"/>
 			</CreateDataSourceRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDataSourceRequest should not fault');
 		const createdPop3Id = Array.isArray(res.CreateDataSourceResponse.pop3)
 			? res.CreateDataSourceResponse.pop3[0].id
@@ -297,15 +353,20 @@ describe('SanityTest > Data Source Sanity', function () {
 				<pop3 id="${createdPop3Id}"/>
 			</ImportDataRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'ImportDataRequest should not fault');
 		assert.exists(res.ImportDataResponse, 'ImportDataResponse should exist');
 
 		// Wait briefly then check import status
 		await new Promise(resolve => setTimeout(resolve, 1000));
 
+		// GetImportStatusRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			'<GetImportStatusRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetImportStatusRequest should not fault');
 		assert.exists(res.GetImportStatusResponse,
 			'GetImportStatusResponse should exist');
@@ -317,6 +378,8 @@ describe('SanityTest > Data Source Sanity', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const folders = res.GetFolderResponse.folder[0].folder;
 		const inbox = folders.find(f => f.name === 'Inbox');
@@ -324,17 +387,23 @@ describe('SanityTest > Data Source Sanity', function () {
 
 		// Create folder
 		const folderName = `folder.${common.getUniqueString()}`;
+
+		// CreateFolderRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${parentFolderId}"/>
 			</CreateFolderRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest should not fault');
 		const folderId = res.CreateFolderResponse.folder[0].id;
 
 		// Create POP3 data source
 		const pop3Name = `pop3name${common.getUniqueString()}`;
 		const pop3Id = `pop3id${common.getUniqueString()}`;
+
+		// CreateDataSourceRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateDataSourceRequest xmlns="urn:zimbraMail">
 				<pop3 id="${pop3Id}" name="${pop3Name}" isEnabled="true"
@@ -344,6 +413,8 @@ describe('SanityTest > Data Source Sanity', function () {
 					leaveOnServer="true"/>
 			</CreateDataSourceRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDataSourceRequest should not fault');
 
 		// TestDataSourceRequest
@@ -355,12 +426,16 @@ describe('SanityTest > Data Source Sanity', function () {
 					leaveOnServer="true"/>
 			</TestDataSourceRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'TestDataSourceRequest should not fault');
 		assert.exists(res.TestDataSourceResponse,
 			'TestDataSourceResponse should exist');
 		const pop3Result = Array.isArray(res.TestDataSourceResponse.pop3)
 			? res.TestDataSourceResponse.pop3[0]
 			: res.TestDataSourceResponse.pop3;
+
+		// Verify response
 		assert.exists(pop3Result, 'Response should contain pop3 result');
 		// success may be 0 or 1 depending on POP3 server accessibility
 		assert.property(pop3Result, 'success',

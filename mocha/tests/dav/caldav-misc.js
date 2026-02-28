@@ -17,12 +17,15 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 		account1Name = account1User + '@' + config.testDomain;
 		account1NameEncoded = account1User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -47,8 +50,12 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 			password: config.accountPassword,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.oneOf(res.status, [200, 204], 'OPTIONS should return 200 or 204');
 		const davHeader = res.headers.get('DAV') || res.headers.get('dav') || '';
+
+		// Verify response
 		assert.include(davHeader, 'calendar-access',
 			'DAV header should include calendar-access');
 		assert.include(davHeader, 'calendar-auto-schedule',
@@ -72,6 +79,8 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 			</D:propertyupdate>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(patchRes.status, 207, 'PROPPATCH should return 207');
 		assert.include(patchRes.text, 'HTTP/1.1 200 OK',
 			'PROPPATCH should have 200 OK propstat');
@@ -89,6 +98,8 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(findRes.status, 207, 'PROPFIND should return 207');
 		assert.include(findRes.text, '>1<',
 			'calendar-order should return value of 1');
@@ -103,6 +114,7 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 		const acctName = acctUser + '@' + config.testDomain;
 		const acctEncoded = acctUser + '%40' + config.testDomain;
 
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -110,6 +122,8 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 				<a n="zimbraFeatureCalendarEnabled">FALSE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -134,6 +148,8 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 			</D:propfind>`,
 			server: server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		// When Calendar feature disabled, resourcetype should NOT contain calendar element
 		assert.notMatch(res.text, /<C:calendar\s*\/>/,
@@ -149,6 +165,7 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 		const acctName = acctUser + '@' + config.testDomain;
 		const acctEncoded = acctUser + '%40' + config.testDomain;
 
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -156,6 +173,8 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 				<a n="zimbraFeatureTasksEnabled">FALSE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -180,6 +199,8 @@ describe('CalDav > Misc (Lightning, Properties, Features)', function () {
 			</D:propfind>`,
 			server: server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		// When Tasks feature disabled, resourcetype should NOT contain calendar element
 		assert.notMatch(res.text, /<C:calendar\s*\/>/,

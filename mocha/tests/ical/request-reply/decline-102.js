@@ -39,6 +39,8 @@ describe('iCal > RequestReply > Decline 102', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
@@ -46,21 +48,29 @@ describe('iCal > RequestReply > Decline 102', function () {
 		const now = Date.now();
 		const searchStart = String(now - 100 * 86400000);
 		const searchEnd = String(now + 100 * 86400000);
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>in:Calendar</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 
 		// Get iCal
 		const icalStart = String(now - 2 * 86400000);
 		const icalEnd = String(now + 2 * 86400000);
+
+		// GetICalRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<GetICalRequest xmlns="urn:zimbraMail" s="${icalStart}" e="${icalEnd}"/>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetICalRequest should not fault');
 		assert.exists(res.GetICalResponse, 'GetICalResponse should have content');
 
@@ -70,9 +80,13 @@ describe('iCal > RequestReply > Decline 102', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for conversation should not fault');
 		assert.exists(res.SearchResponse, 'Conversation should exist in SearchResponse');
 		const convId = res.SearchResponse?.c?.[0]?.id || res.SearchResponse?.c?.id;
+
+		// Verify response
 		assert.exists(convId, 'Conversation id should exist');
 
 		// SearchConvRequest
@@ -81,15 +95,21 @@ describe('iCal > RequestReply > Decline 102', function () {
 				<query>in:inbox</query>
 			</SearchConvRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchConvRequest should not fault');
 		assert.exists(res.SearchConvResponse, 'SearchConvResponse should exist');
 		const msgId = res.SearchConvResponse?.m?.[0]?.id || res.SearchConvResponse?.m?.id;
+
+		// Verify response
 		assert.exists(msgId, 'Message id should exist');
 
 		// SendInviteReply
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SendInviteReplyRequest xmlns="urn:zimbraMail" id="${msgId}" verb="DECLINE" compNum="0"/>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SendInviteReplyRequest should not fault');
 		assert.exists(res.SendInviteReplyResponse, 'SendInviteReplyResponse should exist');
 
@@ -99,6 +119,8 @@ describe('iCal > RequestReply > Decline 102', function () {
 				<query>in:sent</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for sent should not fault');
 		assert.exists(res.SearchResponse, 'Sent folder should have reply');
 	});

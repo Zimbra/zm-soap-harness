@@ -7,22 +7,25 @@ import rest from '../../../framework/backend/rest-servlet.js';
 describe('Rest Servlet > Fmt > Message ZIP', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
-	let messageId;
 
 	before(async function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
-		// Add a message to inbox
+		// Get inbox folder id
 		const addRes = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
@@ -30,9 +33,10 @@ describe('Rest Servlet > Fmt > Message ZIP', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
-		const m = addRes.AddMsgResponse?.m;
-		messageId = (Array.isArray(m) ? m[0] : m).id;
+		addRes.AddMsgResponse?.m;
 	});
 
 	// Applicable zimbra versions
@@ -48,6 +52,8 @@ describe('Rest Servlet > Fmt > Message ZIP', function () {
 			fmt: 'zip',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.isAbove(res.body.length, 10, 'ZIP response should contain binary data');
 	});

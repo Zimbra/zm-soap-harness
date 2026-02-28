@@ -12,17 +12,23 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
 		appt01Subject = 'Appointment01' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createAppt = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -38,6 +44,8 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createAppt.Fault, 'Response should not be a Fault');
 		appt01Id = createAppt.CreateAppointmentResponse.apptId
 			|| createAppt.CreateAppointmentResponse.$.apptId;
@@ -55,6 +63,8 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 			id: appt01Id,
 			fmt: 'ics'
 		});
+
+		// Verify response
 		assert.equal(restRes.status, 200, 'REST should return 200');
 		assert.include(restRes.body, appt01Subject, 'ICS should contain SUMMARY');
 	});
@@ -66,6 +76,8 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 			folder: 'Calendar',
 			fmt: 'ics'
 		});
+
+		// Verify response
 		assert.equal(restRes.status, 200, 'REST should return 200');
 		assert.include(restRes.body, appt01Subject, 'ICS should contain SUMMARY');
 	});
@@ -77,6 +89,8 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 			folder: 'Calendar',
 			fmt: 'ics'
 		});
+
+		// Verify response
 		assert.equal(restRes.status, 200, 'REST should return 200');
 		assert.include(restRes.body, appt01Subject, 'ICS should contain SUMMARY');
 	});
@@ -88,6 +102,8 @@ describe('Rest Servlet > Calendar > ICS Format', function () {
 			folder: 'Calendar',
 			fmt: 'ics'
 		});
+
+		// Verify response
 		assert.equal(restRes.status, 200, 'REST should return 200');
 		assert.include(restRes.body, appt01Subject, 'ICS should contain SUMMARY');
 	});

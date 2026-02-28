@@ -14,26 +14,36 @@ describe('Rest Servlet > Fmt > Sync Basic', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create1Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create1Res.Fault, 'Response should not be a Fault');
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create2Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
 		// Send a message
 		const subject = 'subject' + common.getUniqueString();
+
+		// SendMsgRequest
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -45,6 +55,8 @@ describe('Rest Servlet > Fmt > Sync Basic', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		const m = sendRes.SendMsgResponse?.m;
 		messageId = (Array.isArray(m) ? m[0] : m).id;
@@ -62,6 +74,8 @@ describe('Rest Servlet > Fmt > Sync Basic', function () {
 			id: messageId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Response should contain X-Zimbra-Flags header');
 		assert.include(res.body, 'X-Zimbra-Conv', 'Response should contain X-Zimbra-Conv header');

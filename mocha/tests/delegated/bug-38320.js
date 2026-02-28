@@ -18,6 +18,8 @@ describe('Delegated > Bug 38320', function () {
 
 		// Create delegated admin account
 		granteeAccount = `admin1.${common.getUniqueString()}@${testDomain}`;
+
+		// Create account
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${granteeAccount}</name>
@@ -25,6 +27,8 @@ describe('Delegated > Bug 38320', function () {
 				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest should not fault');
 		granteeId = res.CreateAccountResponse.account[0].id;
 
@@ -36,10 +40,14 @@ describe('Delegated > Bug 38320', function () {
 				<right>domainAdminRights</right>
 			</GrantRightRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GrantRightRequest should not fault');
 
 		// Create calendar resource (equipment)
 		equipmentAccount = `equipment.${common.getUniqueString()}@${testDomain}`;
+
+		// CreateCalendarResourceRequest
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${equipmentAccount}</name>
@@ -48,6 +56,8 @@ describe('Delegated > Bug 38320', function () {
 				<a n="displayName">${equipmentAccount}</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateCalendarResourceRequest should not fault');
 		equipmentId = res.CreateCalendarResourceResponse.calresource[0].id;
 	});
@@ -60,12 +70,15 @@ describe('Delegated > Bug 38320', function () {
 	// Tests
 	it('Sanity | Verify Getstarstarstar SOAP calls send the list of attributes and get proper response', async () => {
 		// Auth as delegated admin
+		// Send the message
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<AuthRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${granteeAccount}</account>
 				<password>${defaultPassword}</password>
 			</AuthRequest>`
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AuthRequest should not fault');
 		const delegatedAuthToken = res.AuthResponse.authToken;
 
@@ -79,6 +92,8 @@ describe('Delegated > Bug 38320', function () {
 			const configAttrs = res.GetConfigResponse.a;
 			const configPd = Array.isArray(configAttrs)
 				? configAttrs.find(a => a.pd) : configAttrs;
+
+			// Verify response
 			assert.exists(configPd, 'GetConfigResponse should have pd attribute');
 		} else {
 			assert.exists(res.Fault, 'Should return Fault if GetConfig is restricted');
@@ -91,6 +106,8 @@ describe('Delegated > Bug 38320', function () {
 			</GetCosRequest>`, delegatedAuthToken, false
 		);
 		if (res.GetCosResponse) {
+
+			// Verify response
 			assert.exists(res.GetCosResponse, 'GetCosResponse should exist');
 		} else {
 			assert.exists(res.Fault, 'Should return Fault if GetCos is restricted');
@@ -102,11 +119,13 @@ describe('Delegated > Bug 38320', function () {
 				<domain by="name">${testDomain}</domain>
 			</GetDomainRequest>`, delegatedAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'GetDomainRequest with attrs should return Fault');
 		assert.isTrue(
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-            res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED') ||
-            res.Fault.Detail.Error.Code.includes('service.PERM_DENIED'),
+			res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED') ||
+			res.Fault.Detail.Error.Code.includes('service.PERM_DENIED'),
 			'Should be INVALID_REQUEST, AUTH_REQUIRED or PERM_DENIED'
 		);
 
@@ -116,11 +135,13 @@ describe('Delegated > Bug 38320', function () {
 				<server by="name">${testDomain}</server>
 			</GetServerRequest>`, delegatedAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'GetServerRequest with attrs should return Fault');
 		assert.isTrue(
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-            res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED') ||
-            res.Fault.Detail.Error.Code.includes('service.PERM_DENIED'),
+			res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED') ||
+			res.Fault.Detail.Error.Code.includes('service.PERM_DENIED'),
 			'Should be INVALID_REQUEST, AUTH_REQUIRED or PERM_DENIED'
 		);
 
@@ -131,6 +152,8 @@ describe('Delegated > Bug 38320', function () {
 			</GetAccountRequest>`, delegatedAuthToken, false
 		);
 		if (res.GetAccountResponse) {
+
+			// Verify response
 			assert.exists(res.GetAccountResponse, 'GetAccountResponse should exist');
 		} else {
 			assert.exists(res.Fault, 'Should return Fault if restricted');
@@ -143,6 +166,8 @@ describe('Delegated > Bug 38320', function () {
 			</GetCalendarResourceRequest>`, delegatedAuthToken, false
 		);
 		if (res.GetCalendarResourceResponse) {
+
+			// Verify response
 			assert.exists(res.GetCalendarResourceResponse,
 				'GetCalendarResourceResponse should exist');
 		} else {
@@ -155,11 +180,13 @@ describe('Delegated > Bug 38320', function () {
 				<zimlet name="com_zimbra_date"/>
 			</GetZimletRequest>`, delegatedAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'GetZimletRequest should return Fault');
 		assert.isTrue(
 			res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST') ||
-            res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED') ||
-            res.Fault.Detail.Error.Code.includes('service.PERM_DENIED'),
+			res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED') ||
+			res.Fault.Detail.Error.Code.includes('service.PERM_DENIED'),
 			'Should be INVALID_REQUEST, AUTH_REQUIRED or PERM_DENIED'
 		);
 	});

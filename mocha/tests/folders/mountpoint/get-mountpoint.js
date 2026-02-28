@@ -24,6 +24,8 @@ describe('Folders > Mountpoint > Get Mountpoint', function () {
 
 		// Setup shared folder and mountpoint
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -32,6 +34,8 @@ describe('Folders > Mountpoint > Get Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 
 		folderId = createResp.CreateFolderResponse.folder[0].id;
@@ -42,6 +46,8 @@ describe('Folders > Mountpoint > Get Mountpoint', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		const mountName = `mount_get_${common.getUniqueString()}`;
@@ -80,7 +86,7 @@ describe('Folders > Mountpoint > Get Mountpoint', function () {
 		const link = resp.GetFolderResponse.link[0];
 		// Note: GetFolderRequest returning a mountpoint usually returns it as <link> or <folder> depending on structure?
 		// Usually it's in the response body.
-
+		// Verify response
 		assert.equal(link.id, mountId, 'Link ID match');
 		assert.equal(link.zid, account1Id, 'Owner ZID match');
 		assert.equal(link.rid, folderId, 'Remote ID match');
@@ -94,8 +100,10 @@ describe('Folders > Mountpoint > Get Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${subfolderName}" l="${folderId}"/>
 			</CreateFolderRequest>`;
+
+		// GetFolderRequest
 		const subResp = await soap.makeSOAPEnvelopeAccount(createSubRequest, auth1);
-		const subfolderId = subResp.CreateFolderResponse.folder[0].id;
+		subResp.CreateFolderResponse.folder[0].id;
 
 		// Verify account2 can get the subfolder via the mountpoint
 		const getFolderRequest3 =
@@ -105,6 +113,7 @@ describe('Folders > Mountpoint > Get Mountpoint', function () {
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolderRequest3, auth2);
 
 		// Response should show the mountpoint and its sub-folders
+		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetFolderResponse,
 			'GetFolderRequest for mountpoint should succeed');

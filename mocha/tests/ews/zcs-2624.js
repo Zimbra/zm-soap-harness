@@ -162,10 +162,14 @@ describe('EWS > ZCS-2624', function () {
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
 		assert.equal(syncMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
-		const creates = Array.isArray(syncMessage.Changes.Create)
-			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calMatch = creates.find(c => c.CalendarItem?.Subject === messageSubject
-			|| c.MeetingRequest?.Subject === messageSubject);
+		const rawCreates = syncMessage.Changes?.Create;
+		const creates = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const rawUpdates = syncMessage.Changes?.Update;
+		const updates = rawUpdates ? (Array.isArray(rawUpdates) ? rawUpdates : [rawUpdates]) : [];
+		const allSyncItems = [...creates, ...updates];
+		const calMatch = allSyncItems.find(c => c?.CalendarItem?.Subject === messageSubject
+			|| c?.MeetingRequest?.Subject === messageSubject
+			|| c?.CalendarItem || c?.MeetingRequest);
 		const calItem = calMatch?.CalendarItem || calMatch?.MeetingRequest;
 		assert.exists(calItem, 'Calendar item should be found in sync results');
 		const cal02Id = calItem.ItemId.$.Id;
@@ -233,8 +237,9 @@ describe('EWS > ZCS-2624', function () {
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
 		assert.equal(updateMessage.$.ResponseClass, 'Success',
 			'UpdateItem should succeed');
-		const cal03Id = updateMessage.Items.CalendarItem.ItemId.$.Id;
-		const cal03ChangeKey = updateMessage.Items.CalendarItem.ItemId.$.ChangeKey;
+		const updatedItem = updateMessage.Items?.CalendarItem || updateMessage.Items?.Message;
+		const cal03Id = updatedItem.ItemId.$.Id;
+		const cal03ChangeKey = updatedItem.ItemId.$.ChangeKey;
 
 		await soap.waitFor(10000);
 

@@ -18,6 +18,8 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 
 		// Create account1 with foreign principal
 		account1Name = 'zcs3676_' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -25,6 +27,8 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 				<a n="zimbraForeignPrincipal">${account1ForeignPrincipal}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
@@ -43,12 +47,15 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 
 	// Tests
 	it('Sanity | AuthRequest - Generate auth request for user with name with JWT type for token', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" tokenType="JWT">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
@@ -59,12 +66,15 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 
 
 	it('Sanity | AuthRequest - Generate auth request for user with name with auth type for token', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="true" tokenType="auth">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
@@ -75,12 +85,15 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 
 
 	it('Sanity | AuthRequest - Generate auth request for user with name with no token type specified', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
@@ -91,12 +104,15 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 
 
 	it('Sanity | AuthRequest - Generate auth request for user with id with jwt token type specified', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false" tokenType="JWT">
 				<account by="id">${account1Id}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
@@ -107,12 +123,15 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 
 
 	it('Sanity | AuthRequest - Generate auth request for user with foreign principal with jwt token type specified', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="true" tokenType="JWT">
 				<account by="foreignPrincipal">${account1ForeignPrincipal}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
@@ -124,6 +143,8 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 
 	it('Sanity | Auth request for preauth with token type as JWT', async () => {
 		const timestamp = String(Date.now());
+
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" tokenType="JWT">
 				<account by="name">${account1Name}</account>
@@ -131,6 +152,8 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 			</AuthRequest>`, null, true, account1Server
 		);
 		if (response.Fault) {
+
+			// Verify response
 			assert.match(response.Fault.Detail.Error.Code,
 				/account\.AUTH_FAILED|service\.INVALID_REQUEST/,
 				'Should return AUTH_FAILED or INVALID_REQUEST');
@@ -146,6 +169,8 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 
 	it('Sanity | Auth request as an invalid email account and tokeType as JWT', async () => {
 		const invalidUser = 'user2.' + common.getUniqueString();
+
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" tokentype="JWT">
 				<account by="name">${invalidUser}</account>
@@ -153,6 +178,8 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 			</AuthRequest>`, null
 		);
 		if (response.Fault) {
+
+			// Verify response
 			assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED');
 		} else {
@@ -163,12 +190,15 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 
 	it('Sanity | AuthRequest - Generate JWToken based on auth token', async () => {
 		// Get a regular auth token first
+		// Send the message
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false" tokenType="auth">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
@@ -180,6 +210,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
 
 		// Try to generate JWT from auth token - should fail (not supported)
+		// Send the message
 		const jwtRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false" tokenType="JWT">
 				<authToken>${authToken}</authToken>
@@ -192,6 +223,8 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 			if (token) {
 				const tokenValue = typeof token === 'string' ? token
 					: (Array.isArray(token) ? token[0]._content || token[0] : token._content || '');
+
+				// Verify response
 				assert.equal(tokenValue, '', 'JWT token from auth token should be empty');
 			}
 		}

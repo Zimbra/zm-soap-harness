@@ -31,6 +31,8 @@ describe('Sync > Sync Action', function () {
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folders = Array.isArray(getFolderRes.GetFolderResponse.folder)
@@ -40,16 +42,20 @@ describe('Sync > Sync Action', function () {
 
 		// Create subfolder under inbox
 		const folderName = `folder.${common.getUniqueString()}`;
+
+		// CreateFolderRequest
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse, 'CreateFolderResponse should exist');
 		const subfolderId = createFolderRes.CreateFolderResponse.folder[0].id;
 
-		// Add a message to inbox
+		// Get inbox folder id
 		const addMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="${inboxId}">
@@ -64,6 +70,8 @@ Content
 				</m>
 			</AddMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(addMsgRes.Fault, 'Response should not be a Fault');
 		assert.exists(addMsgRes.AddMsgResponse, 'AddMsgResponse should exist');
 		const messageId = addMsgRes.AddMsgResponse.m[0].id;
@@ -72,9 +80,13 @@ Content
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		assert.exists(syncRes1.SyncResponse, 'SyncResponse should exist');
 		const syncToken = syncRes1.SyncResponse.token;
+
+		// Verify response
 		assert.exists(syncToken, 'SyncResponse should have a token');
 
 		// Move message to subfolder
@@ -83,6 +95,8 @@ Content
 				<action id="${messageId}" op="move" l="${subfolderId}"/>
 			</MsgActionRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(moveRes.Fault, 'Response should not be a Fault');
 		assert.exists(moveRes.MsgActionResponse, 'MsgActionResponse should exist');
 		assert.exists(moveRes.MsgActionResponse.action, 'MsgActionResponse should have action');
@@ -91,11 +105,15 @@ Content
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${syncToken}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		const syncMessages = Array.isArray(syncRes2.SyncResponse.m)
 			? syncRes2.SyncResponse.m : (syncRes2.SyncResponse.m ? [syncRes2.SyncResponse.m] : []);
 		const movedMsg = syncMessages.find(m => m.id === messageId);
+
+		// Verify response
 		assert.exists(movedMsg, 'Moved message should appear in SyncResponse');
 		assert.equal(movedMsg.l, subfolderId, 'Message folder should match subfolder id');
 	});
@@ -114,10 +132,13 @@ Content
 				</m>
 			</SendMsgRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(sendRes1.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes1.SendMsgResponse, 'SendMsgResponse should exist');
 		const origMsgId = sendRes1.SendMsgResponse.m[0].id;
 
+		// SendMsgRequest
 		const sendRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m origid="${origMsgId}" rt="f">
@@ -129,9 +150,12 @@ Content
 				</m>
 			</SendMsgRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(sendRes2.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes2.SendMsgResponse, 'SendMsgResponse should exist');
 
+		// SendMsgRequest
 		const sendRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m origid="${origMsgId}" rt="f">
@@ -143,6 +167,8 @@ Content
 				</m>
 			</SendMsgRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(sendRes3.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes3.SendMsgResponse, 'SendMsgResponse should exist');
 
@@ -150,6 +176,8 @@ Content
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		const folders = Array.isArray(getFolderRes.GetFolderResponse.folder)
 			? getFolderRes.GetFolderResponse.folder : [getFolderRes.GetFolderResponse.folder];
@@ -157,34 +185,47 @@ Content
 		const inboxId = inboxFolder.id;
 
 		const folder1Name = `folder.${common.getUniqueString()}`;
+
+		// CreateFolderRequest
 		const createFolder1Res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folder1Name}" l="${inboxId}"/>
 			</CreateFolderRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(createFolder1Res.Fault, 'Response should not be a Fault');
 		const folder1Id = createFolder1Res.CreateFolderResponse.folder[0].id;
-
 		const folder2Name = `folder.${common.getUniqueString()}`;
+
+		// CreateFolderRequest
 		const createFolder2Res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folder2Name}" l="${inboxId}"/>
 			</CreateFolderRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(createFolder2Res.Fault, 'Response should not be a Fault');
 		const folder2Id = createFolder2Res.CreateFolderResponse.folder[0].id;
 
 		// Search inbox for the 3 messages
 		await new Promise(resolve => setTimeout(resolve, 2000));
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:inbox</query>
 			</SearchRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+
+		// Verify response
 		assert.isAtLeast(messages.length, 3, 'Should have at least 3 messages');
 		const msg1Id = messages[messages.length - 3].id;
 		const msg2Id = messages[messages.length - 2].id;
@@ -194,6 +235,8 @@ Content
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const syncToken = syncRes1.SyncResponse.token;
 
@@ -203,22 +246,30 @@ Content
 				<action id="${msg1Id}" op="move" l="${folder1Id}"/>
 			</MsgActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(moveRes1.Fault, 'Response should not be a Fault');
 		assert.exists(moveRes1.MsgActionResponse.action, 'MsgActionResponse should have action');
 
+		// MsgActionRequest
 		const moveRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msg2Id}" op="move" l="${folder2Id}"/>
 			</MsgActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(moveRes2.Fault, 'Response should not be a Fault');
 		assert.exists(moveRes2.MsgActionResponse.action, 'MsgActionResponse should have action');
 
+		// MsgActionRequest
 		const moveRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msg3Id}" op="move" l="${folder2Id}"/>
 			</MsgActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(moveRes3.Fault, 'Response should not be a Fault');
 		assert.exists(moveRes3.MsgActionResponse.action, 'MsgActionResponse should have action');
 
@@ -234,37 +285,50 @@ Content
 				</m>
 			</SendMsgRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(sendRes4.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes4.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Wait for message delivery, then move messages again as account3
 		await new Promise(resolve => setTimeout(resolve, 2000));
 
+		// MsgActionRequest
 		const moveRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msg1Id}" op="move" l="${folder1Id}"/>
 			</MsgActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(moveRes4.Fault, 'Response should not be a Fault');
 
+		// MsgActionRequest
 		const moveRes5 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msg2Id}" op="move" l="${folder2Id}"/>
 			</MsgActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(moveRes5.Fault, 'Response should not be a Fault');
 
+		// MsgActionRequest
 		const moveRes6 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msg3Id}" op="move" l="${folder2Id}"/>
 			</MsgActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(moveRes6.Fault, 'Response should not be a Fault');
 
 		// SyncRequest with token - verify messages appear with correct folders
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${syncToken}"/>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		const syncMessages = Array.isArray(syncRes2.SyncResponse.m)

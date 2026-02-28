@@ -11,6 +11,7 @@ describe('Folders > Searchfolder Loop', function () {
 	let searchFolderId1, searchFolderId2;
 	let customFolderId;
 
+
 	before(async function () {
 		await main.before(this.ctx);
 		const accountEmail = soap.testAccounts.testAccount1.emailAddress;
@@ -38,14 +39,22 @@ describe('Folders > Searchfolder Loop', function () {
 				`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 					<search name='search${common.getUniqueString()}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 				</CreateSearchFolderRequest>`;
+
+			// GetInfoRequest
 			const response = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+
+			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.CreateSearchFolderResponse,
 				'Verify search folder created');
 		}
 
 		const getInfoRequest = '<GetInfoRequest xmlns=\'urn:zimbraAccount\'/>';
+
+		// CreateFolderRequest
 		const getInfoResponse = await soap.makeSOAPEnvelopeAccount(getInfoRequest, accountAuthToken);
+
+		// Verify response
 		assert.exists(getInfoResponse.GetInfoResponse.name,
 			'Verify GetInfoRequest returns account name');
 
@@ -55,6 +64,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='${rootId}'/>
 			</CreateFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		const createFolderResponse = await soap.makeSOAPEnvelopeAccount(createFolderRequest, accountAuthToken);
 
 		customFolderId = createFolderResponse.CreateFolderResponse.folder[0].id;
@@ -67,9 +78,13 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${searchName1}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		const response1 = await soap.makeSOAPEnvelopeAccount(request1, accountAuthToken);
 
 		searchFolderId1 = response1.CreateSearchFolderResponse.search[0].id;
+
+		// Verify response
 		assert.exists(searchFolderId1, 'Verify search folder 1 created');
 
 		const searchName2 = `Namesearch2${common.getUniqueString()}`;
@@ -77,17 +92,24 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${searchName2}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// GetSearchFolderRequest
 		const response2 = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken);
 
 		searchFolderId2 = response2.CreateSearchFolderResponse.search[0].id;
+
+		// Verify response
 		assert.exists(searchFolderId2, 'Verify search folder 2 created');
 	});
 
 
 	it('Functional | Basic test of GetSearchFolderRequest', async () => {
 		const getSearchRequest = '<GetSearchFolderRequest xmlns=\'urn:zimbraMail\'/>';
+
+		// CreateSearchFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(getSearchRequest, accountAuthToken);
 
+		// Verify response
 		assert.exists(response.GetSearchFolderResponse.search,
 			'Verify search folders returned');
 	});
@@ -100,6 +122,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${searchName}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		await soap.makeSOAPEnvelopeAccount(request1, accountAuthToken);
 
 		// Try duplicate
@@ -107,8 +131,11 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${searchName}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(response.Fault, 'Verify Fault for duplicate search folder');
 		assert.include(response.Fault.Reason.Text, 'already exists',
 			'Verify ALREADY_EXISTS error');
@@ -121,6 +148,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
 
@@ -129,8 +158,11 @@ describe('Folders > Searchfolder Loop', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='rename' id='${sfId}' name='${newName}'/>
 			</FolderActionRequest>`;
+
+		// CreateSearchFolderRequest
 		const renameResponse = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(renameResponse.FolderActionResponse.action.op, 'rename',
 			'Verify op is rename');
 	});
@@ -142,6 +174,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName1}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		await soap.makeSOAPEnvelopeAccount(sfReq1, accountAuthToken);
 
 		const sfName2 = `SearchB${common.getUniqueString()}`;
@@ -149,6 +183,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName2}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp2 = await soap.makeSOAPEnvelopeAccount(sfReq2, accountAuthToken);
 		const sfId2 = sfResp2.CreateSearchFolderResponse.search[0].id;
 
@@ -157,8 +193,11 @@ describe('Folders > Searchfolder Loop', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='rename' id='${sfId2}' name='${sfName1}'/>
 			</FolderActionRequest>`;
+
+		// CreateSearchFolderRequest
 		const renameResponse = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(renameResponse.Fault, 'Verify Fault exists for duplicate rename');
 		assert.include(renameResponse.Fault.Reason.Text, 'already exists',
 			'Verify ALREADY_EXISTS error');
@@ -171,6 +210,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateFolderRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
 
@@ -180,6 +221,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='${rootId}'/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createFolderResponse = await soap.makeSOAPEnvelopeAccount(createFolderRequest, accountAuthToken);
 		const targetFolderId = createFolderResponse.CreateFolderResponse.folder[0].id;
 
@@ -187,8 +230,11 @@ describe('Folders > Searchfolder Loop', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${sfId}' l='${targetFolderId}'/>
 			</FolderActionRequest>`;
+
+		// CreateSearchFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(moveResponse.FolderActionResponse.action.op, 'move',
 			'Verify op is move');
 	});
@@ -200,6 +246,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName1}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		const sfResp1 = await soap.makeSOAPEnvelopeAccount(sfReq1, accountAuthToken);
 		const sfId1 = sfResp1.CreateSearchFolderResponse.search[0].id;
 
@@ -208,6 +256,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName2}' query='in:sent' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp2 = await soap.makeSOAPEnvelopeAccount(sfReq2, accountAuthToken);
 		const sfId2 = sfResp2.CreateSearchFolderResponse.search[0].id;
 
@@ -216,8 +266,11 @@ describe('Folders > Searchfolder Loop', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${sfId2}' l='${sfId1}'/>
 			</FolderActionRequest>`;
+
+		// CreateSearchFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(moveResponse.FolderActionResponse.action.op, 'move',
 			'Verify op is move');
 	});
@@ -229,6 +282,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// ModifySearchFolderRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
 
@@ -236,8 +291,11 @@ describe('Folders > Searchfolder Loop', function () {
 			`<ModifySearchFolderRequest xmlns='urn:zimbraMail'>
 				<search id='${sfId}' query='in:sent'/>
 			</ModifySearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		const modifyResponse = await soap.makeSOAPEnvelopeAccount(modifyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(modifyResponse.Fault, 'Response should not be a Fault');
 		assert.exists(modifyResponse.ModifySearchFolderResponse,
 			'Verify ModifySearchFolderResponse exists');
@@ -250,6 +308,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName1}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		const sfResp1 = await soap.makeSOAPEnvelopeAccount(sfReq1, accountAuthToken);
 		const parentId = sfResp1.CreateSearchFolderResponse.search[0].id;
 
@@ -258,6 +318,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName2}' query='in:sent' types='conversation' sortBy='dateDesc' l='${parentId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp2 = await soap.makeSOAPEnvelopeAccount(sfReq2, accountAuthToken);
 		const childId = sfResp2.CreateSearchFolderResponse.search[0].id;
 
@@ -266,8 +328,11 @@ describe('Folders > Searchfolder Loop', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${parentId}' l='${childId}'/>
 			</FolderActionRequest>`;
+
+		// CreateSearchFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(moveResponse.Fault, 'Verify Fault exists for circular move');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
 			'Verify CANNOT_CONTAIN error');
@@ -280,6 +345,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName1}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		const sfResp1 = await soap.makeSOAPEnvelopeAccount(sfReq1, accountAuthToken);
 		const parentSearchId = sfResp1.CreateSearchFolderResponse.search[0].id;
 
@@ -288,13 +355,19 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName2}' query='in:sent' types='conversation' sortBy='dateDesc' l='${parentSearchId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// GetSearchFolderRequest
 		const sfResp2 = await soap.makeSOAPEnvelopeAccount(sfReq2, accountAuthToken);
 		const childSearchId = sfResp2.CreateSearchFolderResponse.search[0].id;
 
 		// Verify child is under parent
 		const getSearchRequest1 = '<GetSearchFolderRequest xmlns=\'urn:zimbraMail\'/>';
+
+		// FolderActionRequest
 		const getSearchResponse1 = await soap.makeSOAPEnvelopeAccount(getSearchRequest1, accountAuthToken);
 		const childFolder = getSearchResponse1.GetSearchFolderResponse.search.find(s => s.id === childSearchId);
+
+		// Verify response
 		assert.equal(childFolder.l, parentSearchId,
 			'Verify child folder is under parent');
 
@@ -303,7 +376,11 @@ describe('Folders > Searchfolder Loop', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='empty' id='${parentSearchId}'/>
 			</FolderActionRequest>`;
+
+		// GetSearchFolderRequest
 		const emptyResponse = await soap.makeSOAPEnvelopeAccount(emptyRequest, accountAuthToken);
+
+		// Verify response
 		assert.equal(emptyResponse.FolderActionResponse.action.op, 'empty',
 			'Verify op is empty');
 
@@ -314,11 +391,15 @@ describe('Folders > Searchfolder Loop', function () {
 		const childAfterEmpty = getSearchResponse2.GetSearchFolderResponse.search
 			? getSearchResponse2.GetSearchFolderResponse.search.find(s => s.id === childSearchId)
 			: undefined;
+
+		// Verify response
 		assert.notExists(childAfterEmpty, 'Verify child search folder no longer exists');
 
 		const parentAfterEmpty = getSearchResponse2.GetSearchFolderResponse.search
 			? getSearchResponse2.GetSearchFolderResponse.search.find(s => s.id === parentSearchId)
 			: undefined;
+
+		// Verify response
 		assert.exists(parentAfterEmpty, 'Verify parent search folder still exists');
 	});
 
@@ -329,6 +410,8 @@ describe('Folders > Searchfolder Loop', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName}' query='in:inbox' types='conversation' sortBy='dateDesc' l='${rootId}'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
 
@@ -338,6 +421,7 @@ describe('Folders > Searchfolder Loop', function () {
 			</FolderActionRequest>`;
 		const deleteResponse = await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(deleteResponse.FolderActionResponse.action.op, 'delete',
 			'Verify op is delete');
 	});

@@ -32,6 +32,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<name>${domainName1}</name>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDomainRequest for domain1 should not fault');
 
 		// Create delegated admin account1
@@ -42,6 +44,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for grantee1 should not fault');
 
 		// Create user account1
@@ -51,6 +55,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<password>${defaultPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for user1 should not fault');
 
 		// Grant domainAdminConsoleRights for domain1
@@ -61,6 +67,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<right>domainAdminConsoleRights</right>
 			</GrantRightRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GrantRightRequest for domain1 should not fault');
 
 		// Create domain2
@@ -69,6 +77,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<name>${domainName2}</name>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDomainRequest for domain2 should not fault');
 
 		// Create delegated admin account2
@@ -79,6 +89,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for grantee2 should not fault');
 
 		// Create user account2
@@ -88,6 +100,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<password>${defaultPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for user2 should not fault');
 
 		// Grant domainAdminConsoleRights for domain2
@@ -98,6 +112,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<right>domainAdminConsoleRights</right>
 			</GrantRightRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GrantRightRequest for domain2 should not fault');
 	});
 
@@ -114,17 +130,23 @@ describe('Delegated > ZBUG 1075', function () {
 				<ldapSearchBase>dc=com</ldapSearchBase>
 			</GetLDAPEntriesRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetLDAPEntriesRequest should not fault');
 		assert.exists(res.GetLDAPEntriesResponse, 'GetLDAPEntriesResponse should exist');
 
 		// Verify both user accounts are in the response
 		const entries = res.GetLDAPEntriesResponse.LDAPEntry;
+
+		// Verify response
 		assert.isArray(entries, 'Should return LDAPEntry array');
 
 		// Check that user accounts are present
 		const allMails = entries.flatMap(entry =>
 			(Array.isArray(entry.a) ? entry.a : [entry.a]).filter(a => a && a.n === 'mail').map(a => a._content)
 		);
+
+		// Verify response
 		assert.include(allMails, userAccount1, 'Should contain user account1');
 		assert.include(allMails, userAccount2, 'Should contain user account2');
 
@@ -134,6 +156,8 @@ describe('Delegated > ZBUG 1075', function () {
 				.filter(a => a && a.n === 'userPassword').map(a => a._content)
 		);
 		if (allPasswords.length > 0) {
+
+			// Verify response
 			assert.include(allPasswords, 'VALUE-BLOCKED',
 				'userPassword should be VALUE-BLOCKED');
 		}
@@ -142,12 +166,15 @@ describe('Delegated > ZBUG 1075', function () {
 
 	it('Sanity | Verify delegated admin can not promote himself to global admin', async () => {
 		// Auth as delegated admin1
+		// Send the message
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<AuthRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${granteeAccount1}</account>
 				<password>${defaultPassword}</password>
 			</AuthRequest>`
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AuthRequest as admin1 should not fault');
 		const admin1Token = res.AuthResponse.authToken;
 
@@ -157,6 +184,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<a n="zimbraIsAdminAccount">TRUE</a>
 			</ModifyLDAPEntryRequest>`, admin1Token
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'ModifyLDAPEntryRequest should return Fault');
 		assert.isTrue(
 			res.Fault.Detail.Error.Code.includes('service.PERM_DENIED') ||
@@ -165,12 +194,15 @@ describe('Delegated > ZBUG 1075', function () {
 		);
 
 		// Auth as delegated admin2
+		// Send the message
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<AuthRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${granteeAccount2}</account>
 				<password>${defaultPassword}</password>
 			</AuthRequest>`
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AuthRequest as admin2 should not fault');
 		const admin2Token = res.AuthResponse.authToken;
 
@@ -180,6 +212,8 @@ describe('Delegated > ZBUG 1075', function () {
 				<a n="zimbraIsAdminAccount">TRUE</a>
 			</ModifyLDAPEntryRequest>`, admin2Token
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'ModifyLDAPEntryRequest should return Fault');
 		assert.isTrue(
 			res.Fault.Detail.Error.Code.includes('service.PERM_DENIED') ||

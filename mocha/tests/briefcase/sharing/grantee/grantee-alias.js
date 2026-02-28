@@ -12,6 +12,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -23,6 +25,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 			: createRes.CreateAccountResponse.account;
 
 		aliasName = 'alias.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${acct.id}
@@ -32,6 +36,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -51,6 +56,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 	// Tests
 	it('Sanity | Share a briefcase folder to guest. Verify that the guest has access.', async () => {
 		const folderName = 'AliasShare.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
@@ -61,6 +68,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 			: createRes.CreateFolderResponse.folder;
 		const account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
 
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -71,6 +79,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
 		const alias2 = 'alias.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${acct2.id}
@@ -80,6 +90,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 
+		// FolderActionRequest
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -87,6 +98,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
@@ -94,6 +107,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 
 	it('Sanity | Create a briefcase folder. GetFolderRequest to verify the settings', async () => {
 		const folderName = 'AliasUnshare.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
@@ -104,6 +119,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 			: createRes.CreateFolderResponse.folder;
 		const account3Name = 'acct3.' + common.getUniqueString() + '@' + config.testDomain;
 
+		// Create account
 		const createRes3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Name}</name>
@@ -114,6 +130,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 			? createRes3.CreateAccountResponse.account[0]
 			: createRes3.CreateAccountResponse.account;
 		const alias3 = 'alias.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${acct3.id}
@@ -123,6 +141,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 
+		// FolderActionRequest
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -133,11 +152,15 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 		const zid = Array.isArray(shareRes.FolderActionResponse.action)
 			? shareRes.FolderActionResponse.action[0].zid
 			: shareRes.FolderActionResponse.action.zid;
+
+		// FolderActionRequest
 		const revokeRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="!grant" id="${folder.id}" zid="${zid}"/>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.FolderActionResponse,
 			'FolderActionResponse should exist');

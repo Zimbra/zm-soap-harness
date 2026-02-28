@@ -28,6 +28,8 @@ describe('Admin > Accounts > LastLogon > Preauth Auth Request', function () {
 			`<GetConfigRequest xmlns="urn:zimbraAdmin">
 				<a n="zimbraLastLogonTimestampFrequency"/>
 			</GetConfigRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(configRes.Fault, 'Response should not be a Fault');
 		assert.exists(configRes.GetConfigResponse,
 			'GetConfigResponse should exist');
@@ -38,6 +40,8 @@ describe('Admin > Accounts > LastLogon > Preauth Auth Request', function () {
 				<name>${domainName}</name>
 				<a n="zimbraPreAuthKey">${preauthKey}</a>
 			</CreateDomainRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(domainRes.Fault, 'Response should not be a Fault');
 		assert.exists(domainRes.CreateDomainResponse,
 			'CreateDomainResponse should exist');
@@ -48,6 +52,8 @@ describe('Admin > Accounts > LastLogon > Preauth Auth Request', function () {
 				<name>${accountName}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Should create account');
@@ -71,11 +77,14 @@ describe('Admin > Accounts > LastLogon > Preauth Auth Request', function () {
 
 		// Auth with password (preauth requires HMAC computation
 		// not available in JS, so use password auth)
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountName}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse,
 			'AuthResponse should exist');
@@ -91,12 +100,15 @@ describe('Admin > Accounts > LastLogon > Preauth Auth Request', function () {
 			: getRes.GetAccountResponse.account;
 		const timestamp1 = acctData.a.find(
 			a => a.n === 'zimbraLastLogonTimestamp');
+
+		// Verify response
 		assert.exists(timestamp1,
 			'zimbraLastLogonTimestamp should have a value');
 
 		// Wait and auth again
 		await new Promise(r => setTimeout(r, 5000));
 
+		// Auth request
 		await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountName}</account>
@@ -114,6 +126,8 @@ describe('Admin > Accounts > LastLogon > Preauth Auth Request', function () {
 			: getRes2.GetAccountResponse.account;
 		const timestamp2 = acctData2.a.find(
 			a => a.n === 'zimbraLastLogonTimestamp');
+
+		// Verify response
 		assert.exists(timestamp2,
 			'zimbraLastLogonTimestamp should still exist');
 		assert.notEqual(

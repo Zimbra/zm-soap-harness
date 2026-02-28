@@ -18,34 +18,46 @@ describe('Auth > Auth Passwd', function () {
 
 		// Create account with complex password
 		validUser1 = 'Test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${validUser1}</name>
 				<password>${validPassword1}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create user1');
 
 		// Create account with space in password
 		validUser2 = 'Test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${validUser2}</name>
 				<password>${validPassword2}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create user2');
 
 		// Create account with accented password
 		validUser3 = 'Test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${validUser3}</name>
 				<password>${validPassword3}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
 		assert.exists(createRes3.CreateAccountResponse, 'Should create user3');
 	});
@@ -57,16 +69,21 @@ describe('Auth > Auth Passwd', function () {
 
 	// Tests
 	it('Sanity | Verify complex password works', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser1}</account>
 				<password>${validPassword1}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
+
+		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -75,16 +92,21 @@ describe('Auth > Auth Passwd', function () {
 
 
 	it('Sanity | Verify password with spaces works 1', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser2}</account>
 				<password>${validPassword2}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
+
+		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -92,17 +114,22 @@ describe('Auth > Auth Passwd', function () {
 	});
 
 
-	it('Sanity | Verify password with spaces works 1 1', async () => {
+	it('Sanity | Verify password with spaces works 2', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser3}</account>
 				<password>${validPassword3}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
+
+		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');

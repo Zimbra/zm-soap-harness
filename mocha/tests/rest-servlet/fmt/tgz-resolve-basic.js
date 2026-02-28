@@ -13,6 +13,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -21,6 +23,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 		);
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
@@ -55,6 +59,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 		assert.isAbove(exportRes.body.length, 10, 'TGZ should have content');
 
@@ -67,6 +73,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 			contentType: 'application/x-tar',
 			extraParams: { resolve: 'skip' }
 		});
+
+		// Verify response
 		assert.equal(importRes.status, 200, 'Import should return 200');
 	});
 
@@ -78,6 +86,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
 		const importRes = await rest.makeRestPostRequest(account2Token, {
@@ -88,6 +98,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 			contentType: 'application/x-tar',
 			extraParams: { resolve: 'modify' }
 		});
+
+		// Verify response
 		assert.equal(importRes.status, 200, 'Import should return 200');
 	});
 
@@ -99,6 +111,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
 		const importRes = await rest.makeRestPostRequest(account2Token, {
@@ -109,6 +123,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 			contentType: 'application/x-tar',
 			extraParams: { resolve: 'replace' }
 		});
+
+		// Verify response
 		assert.equal(importRes.status, 200, 'Import should return 200');
 	});
 
@@ -120,6 +136,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
 		const importRes = await rest.makeRestPostRequest(account2Token, {
@@ -130,6 +148,8 @@ describe('Rest Servlet > Fmt > TGZ > Resolve Basic', function () {
 			contentType: 'application/x-tar',
 			extraParams: { resolve: 'reset' }
 		});
+
+		// Verify response
 		assert.equal(importRes.status, 200, 'Import should return 200');
 	});
 });

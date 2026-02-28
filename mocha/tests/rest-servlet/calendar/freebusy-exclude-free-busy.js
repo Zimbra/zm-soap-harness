@@ -14,21 +14,29 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create1Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create1Res.Fault, 'Response should not be a Fault');
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create2Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
@@ -46,6 +54,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		const rootFolder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
@@ -53,11 +63,15 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 
 		// Create calendar folder
 		const folderName = 'calendar' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${rootId}" view="appointment"/>
 			</CreateFolderRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		const folderId = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0].id
@@ -66,6 +80,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		// Create appointment in the folder
 		const startMs = '1263902400000';
 		const subject = 'subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m l="${folderId}">
@@ -84,6 +100,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -92,6 +110,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbRes.status, 200, 'FreeBusy should return 200');
 		assert.include(fbRes.body, 'FBTYPE=BUSY', 'Response should contain FBTYPE=BUSY');
 	});
@@ -102,6 +122,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		const rootFolder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
@@ -109,11 +131,15 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 
 		// Create calendar folder with exclude flag (f="b")
 		const folderName = 'calendar' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" f="b" l="${rootId}" view="appointment"/>
 			</CreateFolderRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		const folderId = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0].id
@@ -122,6 +148,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		// Create appointment in excluded folder
 		const startMs = '1295438400000';
 		const subject = 'subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m l="${folderId}">
@@ -140,6 +168,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -148,6 +178,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbRes.status, 200, 'FreeBusy should return 200');
 		// Excluded folder should NOT show busy time
 		assert.notInclude(fbRes.body, toIcalTime(startMs),
@@ -160,6 +192,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		const rootFolder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
@@ -167,11 +201,15 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 
 		// Create calendar folder (included)
 		const folderName = 'calendar' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${rootId}" view="appointment"/>
 			</CreateFolderRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		const folderId = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0].id
@@ -180,6 +218,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		// Create appointment
 		const startMs = '1266580800000';
 		const subject = 'subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m l="${folderId}">
@@ -198,6 +238,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		// Now exclude the folder from FreeBusy
@@ -206,6 +248,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 				<action op="fb" id="${folderId}" excludeFreeBusy="1"/>
 			</FolderActionRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(excludeRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -214,6 +258,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbRes.status, 200, 'FreeBusy should return 200');
 		// Excluded folder should NOT show busy time
 		assert.notInclude(fbRes.body, toIcalTime(startMs),
@@ -226,6 +272,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		const rootFolder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
@@ -233,11 +281,15 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 
 		// Create calendar folder with exclude flag
 		const folderName = 'calendar' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" f="b" l="${rootId}" view="appointment"/>
 			</CreateFolderRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		const folderId = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0].id
@@ -246,6 +298,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 		// Create appointment
 		const startMs = '1298116800000';
 		const subject = 'subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m l="${folderId}">
@@ -264,6 +318,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		// Re-include the folder in FreeBusy
@@ -272,6 +328,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 				<action op="fb" id="${folderId}" excludeFreeBusy="0"/>
 			</FolderActionRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(includeRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -280,6 +338,8 @@ describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbRes.status, 200, 'FreeBusy should return 200');
 		assert.include(fbRes.body, 'FBTYPE=BUSY',
 			'Re-included folder should show busy time in FreeBusy');

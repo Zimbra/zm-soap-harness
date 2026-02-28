@@ -16,12 +16,16 @@ describe('Auth > Bugs > Zcs 3948', function () {
 
 		// Create test account
 		account1Name = 'test.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
@@ -34,6 +38,8 @@ describe('Auth > Bugs > Zcs 3948', function () {
 		// Send message from admin to test account
 		messageSubject = 'subject' + common.getUniqueString();
 		const messageContent = 'content' + common.getUniqueString();
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -47,12 +53,15 @@ describe('Auth > Bugs > Zcs 3948', function () {
 		);
 
 		// Auth as test account
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'Should authenticate account1');
 
@@ -77,16 +86,21 @@ describe('Auth > Bugs > Zcs 3948', function () {
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account1AuthToken, false, account1Server
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Verify auth with correct credentials works
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for valid credentials');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
@@ -96,12 +110,15 @@ describe('Auth > Bugs > Zcs 3948', function () {
 
 
 	it('Sanity | Verify basic authentication for guest accounts and validate status code returned for incorrect password', async () => {
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>test124</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.exists(authRes.Fault, 'Should return Fault for incorrect password');
 		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for incorrect password');
@@ -109,12 +126,15 @@ describe('Auth > Bugs > Zcs 3948', function () {
 
 
 	it('Sanity | Verify basic authentication for guest accounts and validate status code returned for incorrect username', async () => {
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">account1.name.incorrect</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.exists(authRes.Fault, 'Should return Fault for incorrect username');
 		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for incorrect username');

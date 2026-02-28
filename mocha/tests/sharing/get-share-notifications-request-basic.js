@@ -37,15 +37,20 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 
 		// Create DL and add members
 		dl1Name = `dl1.${common.getUniqueString()}@${testDomain}`;
+
+		// CreateDistributionListRequest
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dl1Name}</name>
 				<a n="description">A Distribution List containing users</a>
 			</CreateDistributionListRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDistributionListRequest should not fault');
 		dl1Id = res.CreateDistributionListResponse.dl[0].id;
 
+		// AddDistributionListMemberRequest
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
 				<id>${dl1Id}</id>
@@ -54,6 +59,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 				<dlm>${account1Email}</dlm>
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AddDistributionListMemberRequest should not fault');
 	});
 
@@ -68,9 +75,13 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const acct2Folders = res.GetFolderResponse.folder[0].folder;
 		const acct2Calendar = acct2Folders.find(f => f.name === 'Calendar');
+
+		// Verify response
 		assert.exists(acct2Calendar, 'Account2 Calendar should exist');
 
 		// Share Calendar with account1
@@ -81,6 +92,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 				</action>
 			</FolderActionRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant Calendar should not fault');
 
 		// Send share notification
@@ -90,6 +103,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
 
 		// Wait for delivery
@@ -101,19 +116,27 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 
 		// Account1: GetShareNotificationsRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			'<GetShareNotificationsRequest xmlns="urn:zimbraMail"/>', account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest should not fault');
 		assert.exists(res.GetShareNotificationsResponse,
 			'GetShareNotificationsResponse should exist');
 		const shares = res.GetShareNotificationsResponse.share;
+
+		// Verify response
 		assert.exists(shares, 'Share notifications should exist');
 		const shareArr = Array.isArray(shares) ? shares : [shares];
 		const shareNotif = shareArr.find(s => s.grantor);
+
+		// Verify response
 		assert.exists(shareNotif, 'Share notification with grantor should exist');
 	});
 
@@ -123,6 +146,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetShareNotificationsRequest xmlns="urn:zimbraMail"/>', account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest should not fault');
 		assert.exists(res.GetShareNotificationsResponse,
 			'GetShareNotificationsResponse should exist');
@@ -134,9 +159,13 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const acct3Folders = res.GetFolderResponse.folder[0].folder;
 		const acct3Calendar = acct3Folders.find(f => f.name === 'Calendar');
+
+		// Verify response
 		assert.exists(acct3Calendar, 'Account3 Calendar should exist');
 
 		// Share Calendar with DL
@@ -147,6 +176,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 				</action>
 			</FolderActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant Calendar to DL should not fault');
 
 		// Send share notification to DL
@@ -156,6 +187,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
 
 		// Wait for delivery
@@ -165,16 +198,22 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 		res = await soap.makeSOAPEnvelopeAccount(
 			'<GetShareNotificationsRequest xmlns="urn:zimbraMail"/>', account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest should not fault');
 		assert.exists(res.GetShareNotificationsResponse,
 			'GetShareNotificationsResponse should exist');
 		const shares = res.GetShareNotificationsResponse.share;
+
+		// Verify response
 		assert.exists(shares, 'Share notifications should exist');
 
 		// Account2 (DL member): check share notification
 		res = await soap.makeSOAPEnvelopeAccount(
 			'<GetShareNotificationsRequest xmlns="urn:zimbraMail"/>', account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest for account2 should not fault');
 		assert.exists(res.GetShareNotificationsResponse,
 			'GetShareNotificationsResponse for account2 should exist');
@@ -188,8 +227,11 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 		);
 		const acct3Folders = res.GetFolderResponse.folder[0].folder;
 		const acct3Briefcase = acct3Folders.find(f => f.name === 'Briefcase');
+
+		// Verify response
 		assert.exists(acct3Briefcase, 'Account3 Briefcase should exist');
 
+		// FolderActionRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${acct3Briefcase.id}">
@@ -197,14 +239,19 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 				</action>
 			</FolderActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant Briefcase to DL should not fault');
 
+		// SendShareNotificationRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SendShareNotificationRequest xmlns="urn:zimbraMail">
 				<share l="${acct3Briefcase.id}" gt="grp" d="${dl1Name}"/>
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
 
 		// Wait for delivery
@@ -214,6 +261,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 		res = await soap.makeSOAPEnvelopeAccount(
 			'<GetShareNotificationsRequest xmlns="urn:zimbraMail"/>', account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest should not fault');
 		assert.exists(res.GetShareNotificationsResponse,
 			'GetShareNotificationsResponse should exist');
@@ -225,6 +274,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 				<dlm>${account4Email}</dlm>
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AddDistributionListMemberRequest should not fault');
 
 		// Re-send share notification after adding new member
@@ -234,6 +285,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Re-send notification should not fault');
 
 		// Wait for delivery
@@ -243,6 +296,8 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 		res = await soap.makeSOAPEnvelopeAccount(
 			'<GetShareNotificationsRequest xmlns="urn:zimbraMail"/>', account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest for account4 should not fault');
 		assert.exists(res.GetShareNotificationsResponse,
 			'GetShareNotificationsResponse for account4 should exist');

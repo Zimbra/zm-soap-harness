@@ -8,16 +8,21 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 	let account1Token;
 	let account1Id;
 
+
 	before(async function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
@@ -26,12 +31,15 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 			: createRes.CreateAccountResponse.account;
 		account1Id = acct.id;
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -55,6 +63,8 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 				<folder l="1" name="${folderName}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
@@ -70,6 +80,8 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});

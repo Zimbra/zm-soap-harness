@@ -13,6 +13,8 @@ describe('Auth > Auth German', function () {
 
 		// Create domain with German umlaut
 		const domainName = common.getUniqueString() + 'patrick-sch\u00e4fer.de';
+
+		// CreateDomainRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domainName}</name>
@@ -21,12 +23,16 @@ describe('Auth > Auth German', function () {
 
 		// Create account in German domain
 		account1Name = 'german1' + common.getUniqueString() + '@' + domainName;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 	});
@@ -38,16 +44,21 @@ describe('Auth > Auth German', function () {
 
 	// Tests
 	it('Sanity | Test to check the authentication of user names having german characters', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
+
+		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');

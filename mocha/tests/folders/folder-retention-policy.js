@@ -24,6 +24,8 @@ describe('Folders > Folder Retention Policy', function () {
 					<policy name='policy1${common.getUniqueString()}' lifetime='1s' xmlns='urn:zimbraMail'/>
 				</keep>
 			</CreateSystemRetentionPolicyRequest>`;
+
+		// CreateSystemRetentionPolicyRequest
 		const keepResponse = await soap.makeSOAPEnvelopeAdmin(createKeepPolicy, adminAuthToken);
 
 		policy1Id = keepResponse.CreateSystemRetentionPolicyResponse.policy[0].id;
@@ -55,6 +57,8 @@ describe('Folders > Folder Retention Policy', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1' view='message'/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -70,8 +74,11 @@ describe('Folders > Folder Retention Policy', function () {
 					</retentionPolicy>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		const retentionResponse = await soap.makeSOAPEnvelopeAccount(retentionRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(retentionResponse.FolderActionResponse.action.id, folderId,
 			'Verify folder id');
 		assert.equal(retentionResponse.FolderActionResponse.action.op, 'retentionpolicy',
@@ -82,8 +89,11 @@ describe('Folders > Folder Retention Policy', function () {
 			`<GetFolderRequest xmlns='urn:zimbraMail'>
 				<folder l='${folderId}'/>
 			</GetFolderRequest>`;
+
+		// CreateFolderRequest
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(getFolderResponse.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderResponse.GetFolderResponse, 'Verify get folder response');
 	});
@@ -96,6 +106,8 @@ describe('Folders > Folder Retention Policy', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1' view='message'/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -111,8 +123,11 @@ describe('Folders > Folder Retention Policy', function () {
 					</retentionPolicy>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateFolderRequest
 		const retentionResponse = await soap.makeSOAPEnvelopeAccount(retentionRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(retentionResponse.FolderActionResponse.action.id, folderId,
 			'Verify folder id');
 		assert.equal(retentionResponse.FolderActionResponse.action.op, 'retentionpolicy',
@@ -126,6 +141,8 @@ describe('Folders > Folder Retention Policy', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1' view='message'/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -137,6 +154,8 @@ describe('Folders > Folder Retention Policy', function () {
 					Test message for retention keep policy</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const addMsgResponse = await soap.makeSOAPEnvelopeAccount(addMsgRequest, accountAuthToken);
 		const msgId = addMsgResponse.AddMsgResponse.m[0].id;
 
@@ -151,8 +170,11 @@ describe('Folders > Folder Retention Policy', function () {
 					</retentionPolicy>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		const retentionResponse = await soap.makeSOAPEnvelopeAccount(retentionRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(retentionResponse.FolderActionResponse.action.op, 'retentionpolicy',
 			'Verify op');
 
@@ -161,7 +183,11 @@ describe('Folders > Folder Retention Policy', function () {
 			`<GetMsgRequest xmlns='urn:zimbraMail'>
 				<m id='${msgId}'/>
 			</GetMsgRequest>`;
+
+		// CreateFolderRequest
 		const getMsgResponse = await soap.makeSOAPEnvelopeAccount(getMsgRequest, accountAuthToken);
+
+		// Verify response
 		assert.exists(getMsgResponse.GetMsgResponse.m,
 			'Message should be kept by retention keep policy');
 	});
@@ -173,6 +199,8 @@ describe('Folders > Folder Retention Policy', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1' view='message'/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -192,8 +220,11 @@ describe('Folders > Folder Retention Policy', function () {
 					</retentionPolicy>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		const retentionResponse = await soap.makeSOAPEnvelopeAccount(retentionRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(retentionResponse.FolderActionResponse.action.id, folderId,
 			'Verify folder id');
 		assert.equal(retentionResponse.FolderActionResponse.action.op, 'retentionpolicy',
@@ -204,7 +235,11 @@ describe('Folders > Folder Retention Policy', function () {
 			`<GetFolderRequest xmlns='urn:zimbraMail'>
 				<folder l='${folderId}'/>
 			</GetFolderRequest>`;
+
+		// CreateFolderRequest
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, accountAuthToken);
+
+		// Verify response
 		assert.notExists(getFolderResponse.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderResponse.GetFolderResponse, 'Verify get folder response');
 	});
@@ -216,6 +251,8 @@ describe('Folders > Folder Retention Policy', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1' view='message'/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -230,6 +267,8 @@ describe('Folders > Folder Retention Policy', function () {
 					</retentionPolicy>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, accountAuthToken);
 
 		// Modify to purge policy (replaces keep)
@@ -245,6 +284,7 @@ describe('Folders > Folder Retention Policy', function () {
 			</FolderActionRequest>`;
 		const modifyResponse = await soap.makeSOAPEnvelopeAccount(folderActionRequest2, accountAuthToken);
 
+		// Verify response
 		assert.equal(modifyResponse.FolderActionResponse.action.id, folderId,
 			'Verify folder id after modify');
 		assert.equal(modifyResponse.FolderActionResponse.action.op, 'retentionpolicy',

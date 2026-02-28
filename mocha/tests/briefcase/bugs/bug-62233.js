@@ -13,12 +13,16 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct1.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
@@ -28,22 +32,29 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 		const account1Id = acct1.id;
 
 		account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth as account1
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist');
 
@@ -69,6 +80,8 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -82,12 +95,15 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 		);
 
 		// Auth as account2
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist');
 
@@ -102,6 +118,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 		const rootFolder = Array.isArray(root2.GetFolderResponse.folder)
 			? root2.GetFolderResponse.folder[0] : root2.GetFolderResponse.folder;
 
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootFolder.id}" name="SharedBriefcase.${common.getUniqueString()}" rid="${briefcaseFolderId}" zid="${account1Id}"/>
@@ -120,11 +137,15 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
 			: folderRes.GetFolderResponse.folder;
+
+		// Verify response
 		assert.exists(folder, 'folder should exist');
 	});
 });

@@ -12,21 +12,28 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -34,9 +41,12 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
 
+		// GetFolderRequest
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
@@ -44,8 +54,9 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
-		assert.exists(briefcase, 'Briefcase folder should exist');
 
+		// Verify response
+		assert.exists(briefcase, 'Briefcase folder should exist');
 		briefcaseFolderId = briefcase.id;
 	});
 
@@ -56,6 +67,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 	// Tests
 	it('Sanity | Save a briefcase file with note flag and try to remove the note flag', async () => {
+		// SaveDocumentRequest
 		const saveRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="doc.${common.getUniqueString()}.txt" l="${briefcaseFolderId}" f="t">
@@ -63,6 +75,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -76,12 +90,15 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				<action id="${docId}" op="!flag"/>
 			</ItemActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(actionRes.Fault, 'Response should not be a Fault');
 		assert.exists(actionRes.ItemActionResponse, 'ItemActionResponse should exist');
 	});
 
 
 	it('Sanity | Save a briefcase file with a note flag and try to remove the note flag', async () => {
+		// SaveDocumentRequest
 		const saveRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="doc.${common.getUniqueString()}.txt" l="${briefcaseFolderId}" f="t">
@@ -89,6 +106,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -102,12 +121,15 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				<action id="${docId}" op="update" f=""/>
 			</ItemActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(updateRes.Fault, 'Response should not be a Fault');
 		assert.exists(updateRes.ItemActionResponse, 'ItemActionResponse should exist');
 	});
 
 
 	it('Sanity | Save a document without a note flag and try add later note flag', async () => {
+		// SaveDocumentRequest
 		const saveRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="doc.${common.getUniqueString()}.txt" l="${briefcaseFolderId}">
@@ -115,6 +137,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -128,6 +152,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				<action id="${docId}" op="flag"/>
 			</ItemActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(actionRes.Fault, 'Response should not be a Fault');
 		assert.exists(actionRes.ItemActionResponse, 'ItemActionResponse should exist');
 	});
@@ -143,6 +169,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -159,6 +187,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.exists(
 			updateRes.SaveDocumentResponse || updateRes.Fault,
 			'Should return SaveDocumentResponse or Fault'
@@ -176,6 +206,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -192,6 +224,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(updateRes.Fault, 'Response should not be a Fault');
 		assert.exists(updateRes.SaveDocumentResponse,
 			'SaveDocumentResponse should exist for update');
@@ -202,6 +236,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 				<item id="${docId}"/>
 			</GetItemRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.exists(
 			getRes.GetItemResponse || getRes.Fault,
 			'Should return GetItemResponse or Fault'

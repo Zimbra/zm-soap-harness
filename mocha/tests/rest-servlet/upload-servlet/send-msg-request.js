@@ -13,25 +13,34 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Name = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct.id, 'Account should have an id');
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -51,6 +60,8 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 		// Upload file
 		const filePath = path.resolve('data/email01/msg01.txt');
 		const attachmentId = await soap.uploadFile(account1Token, filePath);
+
+		// Verify response
 		assert.exists(attachmentId, 'Upload should return attachment id');
 
 		// Send message using uploaded aid
@@ -61,11 +72,15 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0]
 			: sendRes.SendMsgResponse.m;
+
+		// Verify response
 		assert.exists(sentMsg.id, 'Sent message should have an id');
 
 		// Verify via GetMsgRequest
@@ -74,6 +89,8 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 				<m id="${sentMsg.id}"/>
 			</GetMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetMsgResponse, 'GetMsgResponse should exist');
 		const msg = Array.isArray(getRes.GetMsgResponse.m)
@@ -83,11 +100,15 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 		// Verify sender (from)
 		const emails = Array.isArray(msg.e) ? msg.e : [msg.e];
 		const fromEmail = emails.find(e => e.t === 'f');
+
+		// Verify response
 		assert.exists(fromEmail, 'From email should exist');
 		assert.equal(fromEmail.a, account1Name, 'From address should match account1');
 
 		// Verify recipient (to)
 		const toEmail = emails.find(e => e.t === 't');
+
+		// Verify response
 		assert.exists(toEmail, 'To email should exist');
 
 		// Verify subject
@@ -95,6 +116,8 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 
 		// Verify content type - text/plain part exists
 		const mp = Array.isArray(msg.mp) ? msg.mp[0] : msg.mp;
+
+		// Verify response
 		assert.exists(mp, 'Message part should exist');
 	});
 });

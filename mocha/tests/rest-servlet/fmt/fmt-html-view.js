@@ -13,6 +13,8 @@ describe('Rest Servlet > Fmt > HTML > Part View As HTML', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -29,6 +31,8 @@ describe('Rest Servlet > Fmt > HTML > Part View As HTML', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const m = addRes.AddMsgResponse?.m;
 		messageId = (Array.isArray(m) ? m[0] : m).id;
@@ -46,6 +50,8 @@ describe('Rest Servlet > Fmt > HTML > Part View As HTML', function () {
 			id: messageId,
 			fmt: 'html'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'HTML', 'HTML response should contain HTML markup');
 	});

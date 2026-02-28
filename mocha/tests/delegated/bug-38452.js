@@ -18,6 +18,8 @@ describe('Delegated > Bug 38452', function () {
 
 		// Create delegated admin account
 		granteeAccount = `admin1.${common.getUniqueString()}@${testDomain}`;
+
+		// Create account
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${granteeAccount}</name>
@@ -25,6 +27,8 @@ describe('Delegated > Bug 38452', function () {
 				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest should not fault');
 		granteeId = res.CreateAccountResponse.account[0].id;
 
@@ -36,10 +40,14 @@ describe('Delegated > Bug 38452', function () {
 				<right>domainAdminRights</right>
 			</GrantRightRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GrantRightRequest should not fault');
 
 		// Create calendar resource (equipment)
 		const equipmentAccount = `equipment.${common.getUniqueString()}@${testDomain}`;
+
+		// CreateCalendarResourceRequest
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${equipmentAccount}</name>
@@ -48,6 +56,8 @@ describe('Delegated > Bug 38452', function () {
 				<a n="displayName">${equipmentAccount}</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateCalendarResourceRequest should not fault');
 		equipmentId = res.CreateCalendarResourceResponse.calresource[0].id;
 	});
@@ -66,6 +76,8 @@ describe('Delegated > Bug 38452', function () {
 				<password>${defaultPassword}</password>
 			</AuthRequest>`
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AuthRequest should not fault');
 		const delegatedAuthToken = res.AuthResponse.authToken;
 
@@ -79,6 +91,8 @@ describe('Delegated > Bug 38452', function () {
 			const configAttrs = res.GetConfigResponse.a;
 			const configPd = Array.isArray(configAttrs)
 				? configAttrs.find(a => a.pd) : configAttrs;
+
+			// Verify response
 			assert.exists(configPd, 'GetConfigResponse should have pd attribute');
 		} else {
 			assert.exists(res.Fault, 'Should return Fault if GetConfig is restricted');
@@ -103,6 +117,8 @@ describe('Delegated > Bug 38452', function () {
 			</GetDomainRequest>`, delegatedAuthToken, false
 		);
 		if (res.GetDomainResponse) {
+
+			// Verify response
 			assert.exists(res.GetDomainResponse, 'GetDomainResponse should exist');
 		} else {
 			assert.exists(res.Fault, 'Should return Fault if restricted');
@@ -115,6 +131,8 @@ describe('Delegated > Bug 38452', function () {
 			</GetServerRequest>`, delegatedAuthToken, false
 		);
 		if (res.GetServerResponse) {
+
+			// Verify response
 			assert.exists(res.GetServerResponse, 'GetServerResponse should exist');
 		} else {
 			assert.exists(res.Fault, 'Should return Fault if restricted');
@@ -127,6 +145,8 @@ describe('Delegated > Bug 38452', function () {
 			</GetAccountRequest>`, delegatedAuthToken, false
 		);
 		if (res.GetAccountResponse) {
+
+			// Verify response
 			assert.exists(res.GetAccountResponse, 'GetAccountResponse should exist');
 		} else {
 			assert.exists(res.Fault, 'Should return Fault if restricted');
@@ -139,6 +159,8 @@ describe('Delegated > Bug 38452', function () {
 			</GetCalendarResourceRequest>`, delegatedAuthToken, false
 		);
 		if (res.GetCalendarResourceResponse) {
+
+			// Verify response
 			assert.exists(res.GetCalendarResourceResponse,
 				'GetCalendarResourceResponse should exist');
 		} else {
@@ -152,6 +174,8 @@ describe('Delegated > Bug 38452', function () {
 			</GetZimletRequest>`, delegatedAuthToken, false
 		);
 		if (res.GetZimletResponse) {
+
+			// Verify response
 			assert.exists(res.GetZimletResponse, 'GetZimletResponse should exist');
 		} else {
 			assert.exists(res.Fault, 'Should return Fault if restricted');

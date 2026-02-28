@@ -9,6 +9,8 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// CreateCosRequest
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin"><name xmlns="">cos${common.getUniqueString()}</name></CreateCosRequest>`, adminAuthToken
 		);
@@ -19,6 +21,8 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		const resName = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		let fpAttrs = `<a n="zimbraForeignPrincipal">${fp}</a>`;
 		if (fpExtra) fpAttrs += `\n<a n="zimbraForeignPrincipal">${fpExtra}</a>`;
+
+		// CreateCalendarResourceRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${resName}</name>
@@ -44,11 +48,15 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		const fp = `test:${common.getUniqueString()}`;
 		const res = await createResource(fp);
 		await common.sleep(2000);
+
+		// GetCalendarResourceRequest
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<calresource by="foreignPrincipal">${fp}</calresource>
 			</GetCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetCalendarResourceResponse,
 			'GetCalendarResourceResponse should exist');
@@ -62,18 +70,25 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		const res = await createResource(fp1, fp2);
 
 		await common.sleep(2000);
+
+		// GetCalendarResourceRequest
 		const g1 = await soap.makeSOAPEnvelopeAdmin(
 			`<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<calresource by="foreignPrincipal">${fp1}</calresource>
 			</GetCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.equal(g1.GetCalendarResourceResponse.calresource[0].id, res.id);
 
+		// GetCalendarResourceRequest
 		const g2 = await soap.makeSOAPEnvelopeAdmin(
 			`<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<calresource by="foreignPrincipal">${fp2}</calresource>
 			</GetCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.equal(g2.GetCalendarResourceResponse.calresource[0].id, res.id);
 	});
 
@@ -82,18 +97,24 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		const fp = `test:${common.getUniqueString()}`;
 		const res = await createResource(fp);
 
+		// GetCalendarResourceRequest
 		const byId = await soap.makeSOAPEnvelopeAdmin(
 			`<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<calresource by="id">${res.id}</calresource>
 			</GetCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.equal(byId.GetCalendarResourceResponse.calresource[0].id, res.id);
 
+		// GetCalendarResourceRequest
 		const byName = await soap.makeSOAPEnvelopeAdmin(
 			`<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<calresource by="name">${res.name}</calresource>
 			</GetCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.equal(byName.GetCalendarResourceResponse.calresource[0].id, res.id);
 	});
 
@@ -102,11 +123,15 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		const fp = `test:${common.getUniqueString()}`;
 		await createResource(fp);
 		await common.sleep(2000);
+
+		// GetCalendarResourceRequest
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetCalendarResourceRequest xmlns="urn:zimbraAdmin" applyCos="1">
 				<calresource by="foreignPrincipal">${fp}</calresource>
 			</GetCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetCalendarResourceResponse,
 			'GetCalendarResourceResponse should exist');
@@ -117,16 +142,21 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		const fp = `test:${common.getUniqueString()}`;
 		const res = await createResource(fp);
 
+		// DeleteCalendarResourceRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteCalendarResourceRequest xmlns="urn:zimbraAdmin"><id>${res.id}</id></DeleteCalendarResourceRequest>`, adminAuthToken
 		);
 
 		await common.sleep(2000);
+
+		// GetCalendarResourceRequest
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<calresource by="foreignPrincipal">${fp}</calresource>
 			</GetCalendarResourceRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(getRes.Fault);
 		assert.include(getRes.Fault.Detail.Error.Code, 'NO_SUCH_CALENDAR_RESOURCE');
 	});
@@ -137,11 +167,14 @@ describe('Admin > Accounts > Foreignprincipal > Resource Get', function () {
 		await createResource(fp);
 		await createResource(fp);
 
+		// GetAccountRequest
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${fp}</account>
 			</GetAccountRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(getRes.Fault);
 	});
 });

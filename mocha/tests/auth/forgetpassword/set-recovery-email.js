@@ -21,6 +21,8 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 
 		// Create account1
 		account1Name = 'test1.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -29,6 +31,8 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 				<a n="zimbraPasswordRecoveryMaxAttempts">3</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
@@ -41,6 +45,8 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 
 		// Create account2
 		account2Name = 'test2.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -50,6 +56,8 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 
 		// Create account3 with recovery settings
 		account3Name = 'test3.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Name}</name>
@@ -66,6 +74,8 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 
 		// Create account4
 		account4Name = 'test4.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes4 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account4Name}</name>
@@ -89,6 +99,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 	// Tests
 	it('Sanity | Set recovery email and send code to that email 1', async () => {
 		// Auth as account1
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -103,10 +114,13 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 		const sendCodeRes = await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="sendCode" recoveryAccount="${account2Name}" channel="email" xmlns="urn:zimbraMail" />`, acct1Token
 		);
+
+		// Verify response
 		assert.notExists(sendCodeRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendCodeRes.SetRecoveryAccountResponse, 'Should send code');
 
 		// Auth as account2
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
@@ -125,18 +139,24 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 				<query>${account1Name}</query>
 			</SearchRequest>`, acct2Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const conv = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
 		const codeMatch = conv.fr.match(/Recovery email verification code: (\S+)/);
+
+		// Verify response
 		assert.exists(codeMatch, 'Should find recovery code');
 
 		account1RecoveryCode = codeMatch[1];
 
 		// Verify status is pending
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// GetAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${account1Id}</account>
@@ -146,15 +166,20 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 			? getAcctRes.GetAccountResponse.account[0]
 			: getAcctRes.GetAccountResponse.account;
 		const recoveryAddr = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddress');
+
+		// Verify response
 		assert.equal(recoveryAddr._content, account2Name,
 			'Recovery address should match');
 		const recoveryStatus = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddressStatus');
+
+		// Verify response
 		assert.equal(recoveryStatus._content, 'pending', 'Status should be pending');
 	});
 
 
 	it('Sanity | Verify that the recovery code sent can be used to set recovery email 1', async () => {
 		// Auth as account1
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -169,12 +194,16 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 		const validateRes = await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="validateCode" recoveryAccountVerificationCode="${account1RecoveryCode}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
 		);
+
+		// Verify response
 		assert.notExists(validateRes.Fault, 'Response should not be a Fault');
 		assert.exists(validateRes.SetRecoveryAccountResponse,
 			'Validation should succeed');
 
 		// Verify status is verified
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// GetAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${account1Id}</account>
@@ -184,15 +213,20 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 			? getAcctRes.GetAccountResponse.account[0]
 			: getAcctRes.GetAccountResponse.account;
 		const recoveryAddr = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddress');
+
+		// Verify response
 		assert.equal(recoveryAddr._content, account2Name,
 			'Recovery address should match');
 		const recoveryStatus = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddressStatus');
+
+		// Verify response
 		assert.equal(recoveryStatus._content, 'verified', 'Status should be verified');
 	});
 
 
-	it('Sanity | Verify that the recovery code sent can be used to set recovery email 1 1', async () => {
+	it('Sanity | Verify that the recovery code sent can be used to set recovery email 2', async () => {
 		// Auth as account1
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -207,11 +241,15 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 		const resetRes = await soap.makeSOAPEnvelopeAccount(
 			'<SetRecoveryAccountRequest op="reset" channel="email" xmlns="urn:zimbraMail" />', acctToken
 		);
+
+		// Verify response
 		assert.notExists(resetRes.Fault, 'Response should not be a Fault');
 		assert.exists(resetRes.SetRecoveryAccountResponse, 'Reset should succeed');
 
 		// Verify recovery address and status are removed
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// GetAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${account1Id}</account>
@@ -221,12 +259,15 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 			? getAcctRes.GetAccountResponse.account[0]
 			: getAcctRes.GetAccountResponse.account;
 		const recoveryAddr = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddress');
+
+		// Verify response
 		assert.notExists(recoveryAddr, 'Recovery address should be removed after reset');
 	});
 
 
-	it('Sanity | Set recovery email and send code to that email 1 1', async () => {
+	it('Sanity | Set recovery email and send code to that email 3', async () => {
 		// Auth as account3
+		// Send the message
 		const authRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
@@ -245,6 +286,7 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 		// Wait for code to expire, then resend
 		await new Promise(resolve => setTimeout(resolve, 40000));
 
+		// Send the message
 		const authRes3b = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
@@ -255,14 +297,19 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 			? authRes3b.AuthResponse.authToken[0]._content || authRes3b.AuthResponse.authToken[0]
 			: authRes3b.AuthResponse.authToken._content || authRes3b.AuthResponse.authToken;
 
+		// SetRecoveryAccountRequest
 		const resendRes = await soap.makeSOAPEnvelopeAccount(
 			'<SetRecoveryAccountRequest op="resendCode" channel="email" xmlns="urn:zimbraMail" />', acct3TokenB
 		);
+
+		// Verify response
 		assert.notExists(resendRes.Fault, 'Response should not be a Fault');
 		assert.exists(resendRes.SetRecoveryAccountResponse, 'Resend should succeed');
 
 		// Verify status is still pending
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// GetAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${account3Id}</account>
@@ -272,15 +319,20 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 			? getAcctRes.GetAccountResponse.account[0]
 			: getAcctRes.GetAccountResponse.account;
 		const recoveryAddr = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddress');
+
+		// Verify response
 		assert.equal(recoveryAddr._content, account2Name,
 			'Recovery address should match');
 		const recoveryStatus = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddressStatus');
+
+		// Verify response
 		assert.equal(recoveryStatus._content, 'pending', 'Status should be pending');
 	});
 
 
 	it('Sanity | Set recovery email as primary email and verify error message', async () => {
 		// Auth as account4
+		// Send the message
 		const authRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account4Name}</account>
@@ -296,6 +348,8 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 			`<SetRecoveryAccountRequest op="sendCode" recoveryAccount="${account4Name}" channel="email" xmlns="urn:zimbraMail" />`, acct4Token
 		);
 		if (sendCodeRes.Fault) {
+
+			// Verify response
 			assert.include(sendCodeRes.Fault.Reason.Text, 'Recovery address should not be same as primary/alias email address',
 				'Should indicate recovery same as primary error');
 			assert.include(sendCodeRes.Fault.Detail.Error.Code, 'service.RECOVERY_EMAIL_SAME_AS_PRIMARY_OR_ALIAS',
@@ -306,6 +360,8 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 
 		// Verify no recovery address is set
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// GetAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${account4Id}</account>
@@ -315,6 +371,8 @@ describe('Auth > Forgetpassword > Set Recovery Email', function () {
 			? getAcctRes.GetAccountResponse.account[0]
 			: getAcctRes.GetAccountResponse.account;
 		const recoveryAddr = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddress');
+
+		// Verify response
 		assert.notExists(recoveryAddr, 'Recovery address should not be set');
 	});
 });

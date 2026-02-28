@@ -13,22 +13,29 @@ describe('Briefcase > Briefcase Get Folder', function () {
 
 		// Create account
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		// Auth as account
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -40,6 +47,8 @@ describe('Briefcase > Briefcase Get Folder', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
@@ -47,8 +56,9 @@ describe('Briefcase > Briefcase Get Folder', function () {
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
-		assert.exists(briefcase, 'Briefcase folder should exist');
 
+		// Verify response
+		assert.exists(briefcase, 'Briefcase folder should exist');
 		briefcaseFolderId = briefcase.id;
 	});
 
@@ -67,22 +77,28 @@ describe('Briefcase > Briefcase Get Folder', function () {
 				<folder name="${folderName}" l="${briefcaseFolderId}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		const folderId = folder.id;
+		folder.id;
 
 		// Verify with GetFolderRequest
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const rootFolder = Array.isArray(getFolderRes.GetFolderResponse.folder)
 			? getFolderRes.GetFolderResponse.folder[0]
 			: getFolderRes.GetFolderResponse.folder;
+
+		// Verify response
 		assert.exists(rootFolder, 'folder should exist');
 	});
 });

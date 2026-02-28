@@ -11,6 +11,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 	before(async function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 		const account1Name = 'acct1.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -19,6 +21,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 		);
 
 		account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -26,6 +30,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
@@ -45,6 +50,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 	// Tests
 	it('Sanity | Verify that newly-created subfolders will automatically inherit granted rights as appropriate', async () => {
 		const parentFolder = 'ParentInherit1.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${parentFolder}" view="document"/>
@@ -54,6 +61,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -61,11 +69,15 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${folder.id}" name="ChildFolder.${common.getUniqueString()}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
 		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
 	});
@@ -73,6 +85,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 	it('Sanity | Verify that newly-created subfolders will automatically inherit granted rights as appropriate 1', async () => {
 		const parentFolder = 'ParentInherit2.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${parentFolder}" view="document"/>
@@ -82,6 +96,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -89,11 +104,15 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${folder.id}" name="ChildFolder.${common.getUniqueString()}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
 		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
 	});
@@ -101,6 +120,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 	it('Sanity | Verify that newly-created subfolders will automatically inherit granted rights as appropriate 2', async () => {
 		const parentFolder = 'ParentInherit3.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${parentFolder}" view="document"/>
@@ -110,6 +131,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -117,11 +139,15 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${folder.id}" name="ChildFolder.${common.getUniqueString()}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
 		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
 	});
@@ -129,6 +155,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 	it('Sanity | Verify that newly-created subfolders will automatically inherit granted rights as appropriate 3', async () => {
 		const parentFolder = 'ParentInherit4.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${parentFolder}" view="document"/>
@@ -138,6 +166,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -145,11 +174,15 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${folder.id}" name="ChildFolder.${common.getUniqueString()}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
 		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
 	});
@@ -157,6 +190,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 	it('Sanity | Verify that newly-created subfolders will automatically inherit granted rights as appropriate 4', async () => {
 		const parentFolder = 'ParentInherit5.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${parentFolder}" view="document"/>
@@ -166,6 +201,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -173,6 +209,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -181,11 +219,14 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 			</FolderActionRequest>`, account1Token
 		);
 
+		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${folder.id}" name="ChildFolder.${common.getUniqueString()}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
 		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
 	});
@@ -193,6 +234,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 	it('Sanity | Verify that newly-created subfolders will automatically inherit granted rights as appropriate 5', async () => {
 		const parentFolder = 'ParentInherit6.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${parentFolder}" view="document"/>
@@ -202,6 +245,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -209,6 +253,8 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -217,11 +263,14 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 			</FolderActionRequest>`, account1Token
 		);
 
+		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${folder.id}" name="ChildFolder.${common.getUniqueString()}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
 		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
 	});

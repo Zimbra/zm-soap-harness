@@ -22,23 +22,31 @@ describe('Auth > Preauth > Preauth Basic', function () {
 
 		// Create domain with preauth key
 		domain1Name = 'preauth.' + common.getUniqueString() + '.com';
+
+		// CreateDomainRequest
 		const domRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domain1Name}</name>
 				<a n="zimbraPreAuthKey">${preauthKey}</a>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(domRes.Fault, 'Response should not be a Fault');
 		assert.exists(domRes.CreateDomainResponse, 'Should create domain1');
 
 		// Create accounts on domain1
 		account1Name = 'preauth' + common.getUniqueString() + '@' + domain1Name;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -48,6 +56,8 @@ describe('Auth > Preauth > Preauth Basic', function () {
 
 		account2ForeignPrincipal = 'test:' + common.getUniqueString();
 		account2Name = 'preauth' + common.getUniqueString() + '@' + domain1Name;
+
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -55,21 +65,29 @@ describe('Auth > Preauth > Preauth Basic', function () {
 				<a n="zimbraForeignPrincipal">${account2ForeignPrincipal}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		account3Name = 'preauth' + common.getUniqueString() + '@' + domain1Name;
+
+		// Create account
 		const createRes3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
 		assert.exists(createRes3.CreateAccountResponse, 'Should create account3');
 
 		// Create domain2 (no preauth key)
 		domain2Name = 'preauth.' + common.getUniqueString() + '.com';
+
+		// CreateDomainRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domain2Name}</name>
@@ -77,12 +95,16 @@ describe('Auth > Preauth > Preauth Basic', function () {
 		);
 
 		account4Name = 'preauth' + common.getUniqueString() + '@' + domain2Name;
+
+		// Create account
 		const createRes4 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account4Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes4.Fault, 'Response should not be a Fault');
 		assert.exists(createRes4.CreateAccountResponse, 'Should create account4');
 	});
@@ -95,12 +117,16 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	// Tests
 	it('Smoke | Preauth request - basic test. by="name"', async () => {
 		const timestamp = String(Date.now());
+
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<preauth timestamp="${timestamp}" expires="0">${preauthKey}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(
 			authRes.AuthResponse || authRes.Fault,
 			'Should return AuthResponse or Fault for preauth by name'
@@ -110,12 +136,16 @@ describe('Auth > Preauth > Preauth Basic', function () {
 
 	it('Sanity | Preauth request - basic test. by="name"', async () => {
 		const timestamp = String(Date.now());
+
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="id">${account1Id}</account>
 				<preauth timestamp="${timestamp}" expires="0">${preauthKey}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(
 			authRes.AuthResponse || authRes.Fault,
 			'Should return AuthResponse or Fault for preauth by id'
@@ -125,12 +155,16 @@ describe('Auth > Preauth > Preauth Basic', function () {
 
 	it('Sanity | Preauth request - basic test. by="name" 1', async () => {
 		const timestamp = String(Date.now());
+
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="foreignPrincipal">${account2ForeignPrincipal}</account>
 				<preauth timestamp="${timestamp}" expires="0">${preauthKey}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(
 			authRes.AuthResponse || authRes.Fault,
 			'Should return AuthResponse or Fault for preauth by foreignPrincipal'
@@ -141,12 +175,16 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	it('Sanity | Preauth request - basic test. preauthkey is only valid for 5 minutes', async () => {
 		// Use a timestamp from 1 day ago with 10 min expiry — should fail
 		const timestamp = String(Date.now() - 86400000);
+
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<preauth timestamp="${timestamp}" expires="600000">${preauthKey}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(authRes.Fault, 'Should return Fault for expired preauth');
 		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for expired preauth');
@@ -156,12 +194,15 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	it('Functional | Preauth request - authenticate after the token expires, but while the preauth is still valid', async () => {
 		const timestamp = String(Date.now());
 		// 1 minute expiry — wait for it to expire
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<preauth timestamp="${timestamp}" expires="60000">${preauthKey}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(
 			authRes.AuthResponse || authRes.Fault,
 			'Should return AuthResponse or AUTH_FAILED'
@@ -172,12 +213,16 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	it('Functional | Preauth request - authenticate after the token expires, and after the preauth expires (5 mins)', async () => {
 		// Use a timestamp from 10 minutes ago with 1 minute expiry
 		const timestamp = String(Date.now() - 600000);
+
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<preauth timestamp="${timestamp}" expires="60000">${preauthKey}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(authRes.Fault, 'Should return Fault for expired preauth');
 		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -187,12 +232,16 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	it('Functional | Preauth request - authenticate before the token expires, and before the preauth expires (5 mins)', async () => {
 		// Use a timestamp from 10 minutes in the future with 1 minute expiry
 		const timestamp = String(Date.now() + 600000);
+
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<preauth timestamp="${timestamp}" expires="60000">${preauthKey}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(authRes.Fault, 'Should return Fault for future timestamp');
 		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for future timestamp');
@@ -202,12 +251,15 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	it('Functional | Preauth request - use name when id is expected', async () => {
 		const timestamp = String(Date.now());
 		// Generate preauth using account id, but send account name in the request
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<preauth timestamp="${timestamp}" expires="0">${preauthKey}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(
 			authRes.Fault,
 			'Should return Fault for mismatched preauth key/account'
@@ -222,12 +274,16 @@ describe('Auth > Preauth > Preauth Basic', function () {
 
 	it('Sanity | Preauth request - use preauth against a domain that does not have preauth configured', async () => {
 		const timestamp = String(Date.now());
+
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account4Name}</account>
 				<preauth timestamp="${timestamp}" expires="0">${preauthKey}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(authRes.Fault, 'Should return Fault for unconfigured domain');
 		assert.match(
 			authRes.Fault.Detail.Error.Code,

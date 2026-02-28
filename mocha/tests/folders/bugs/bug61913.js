@@ -28,6 +28,8 @@ describe('Folders > Bugs > Bug 61913', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -38,6 +40,7 @@ describe('Folders > Bugs > Bug 61913', function () {
 			</FolderActionRequest>`;
 		const updateResponse = await soap.makeSOAPEnvelopeAccount(updateRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(updateResponse.FolderActionResponse.action.id, folderId,
 			'Verify folder ID');
 		assert.exists(updateResponse.FolderActionResponse.action, 'Action should exist');

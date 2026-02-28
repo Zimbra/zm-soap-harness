@@ -45,11 +45,15 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 				<a n="zimbraFileExternalShareLifeTime">90s</a>
 				<a n="zimbraFileShareLifeTime">60s</a>
 			</ModifyAccountRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAdmin(modifyAccountRequest, adminAuth);
 
 		// 2. Create Briefcase subfolder
 		// Get Briefcase ID
 		const getFolderRequest1 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest1, auth1);
 		const briefcaseId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Briefcase').id;
 
@@ -58,6 +62,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${briefcaseId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -69,6 +75,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 					<grant gt="guest" d="${guestEmail}" args="guestPass" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest1, auth1);
 
 		// 4. Share with Internal User
@@ -78,6 +86,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// 5. Verify Expiry attributes in ACL
@@ -96,6 +106,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 		// It's likely `folder[0].acl` object.
 
 		const folder = getFolder2.GetFolderResponse.folder[0];
+
+		// Verify response
 		assert.exists(folder.acl, 'ACL should exist');
 		assert.exists(folder.acl.guestGrantExpiry, 'guestGrantExpiry should exist');
 		assert.exists(folder.acl.internalGrantExpiry, 'internalGrantExpiry should exist');
@@ -105,6 +117,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="!grant" id="${folderId}" zid="${guestEmail}"/>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest3, auth1);
 		// Note: Revoke guest usually uses email as ZID or d? XML uses `zid="${guest1.name}"`.
 		// Check if ZID is email for guest. Yes.
@@ -115,6 +129,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="!grant" id="${folderId}" zid="${testAccount2Id}"/>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest4, auth1);
 
 		// 8. Verify Expiry attributes are gone
@@ -128,6 +144,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 		// If `acl` exists, attributes should be missing.
 		const folder3 = getFolder3.GetFolderResponse.folder[0];
 		if (folder3.acl) {
+
+			// Verify response
 			assert.notExists(folder3.acl.guestGrantExpiry,
 				'guestGrantExpiry should be gone');
 			assert.notExists(folder3.acl.internalGrantExpiry,
@@ -137,10 +155,12 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 
 
 	it('Sanity | Share a folder to guest. Verify guestgrantexpiry not set by default.. 2', async () => {
-		const adminAuth = await soap.getAdminAuthToken();
+		await soap.getAdminAuthToken();
 
 		// Create Briefcase subfolder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const briefcaseId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Briefcase').id;
 
@@ -149,6 +169,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${briefcaseId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -160,6 +182,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 					<grant gt="guest" d="${guestEmail}" args="guestPass" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Verify guest expiry exists
@@ -167,8 +191,12 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 			`<GetFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${folderId}"/>
 			</GetFolderRequest>`;
+
+		// GetFolderRequest
 		const getFolder2 = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const folder = getFolder2.GetFolderResponse.folder[0];
+
+		// Verify response
 		assert.exists(folder.acl, 'ACL should exist');
 		assert.exists(folder.acl.guestGrantExpiry,
 			'guestGrantExpiry should exist for guest-only share');
@@ -176,10 +204,12 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 
 
 	it('Sanity | Share a folder to guest. Verify guestgrantexpiry not set by default.', async () => {
-		const adminAuth = await soap.getAdminAuthToken();
+		await soap.getAdminAuthToken();
 
 		// Create Briefcase subfolder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const briefcaseId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Briefcase').id;
 
@@ -188,6 +218,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${briefcaseId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -198,6 +230,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Verify internal expiry exists
@@ -207,6 +241,8 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 			</GetFolderRequest>`;
 		const getFolder2 = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const folder = getFolder2.GetFolderResponse.folder[0];
+
+		// Verify response
 		assert.exists(folder.acl, 'ACL should exist');
 		assert.exists(folder.acl.internalGrantExpiry,
 			'internalGrantExpiry should exist for internal-only share');

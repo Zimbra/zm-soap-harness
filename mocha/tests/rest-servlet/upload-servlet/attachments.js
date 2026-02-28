@@ -17,41 +17,56 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 
 		// Create account1
 		account1Name = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct1.id, 'Account1 should have an id');
 
 		// Create account2
 		account2Name = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct2.id, 'Account2 should have an id');
 
 		// Auth as account1
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist for account1');
 		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
@@ -65,6 +80,8 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 		// Upload a file as account1
 		const filePath = path.resolve('data/email01/msg01.txt');
 		uploadedAid = await soap.uploadFile(account1Token, filePath);
+
+		// Verify response
 		assert.exists(uploadedAid, 'Upload should return attachment id');
 	});
 
@@ -91,11 +108,15 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0]
 			: sendRes.SendMsgResponse.m;
+
+		// Verify response
 		assert.exists(sentMsg.id, 'Sent message should have an id');
 
 		// Verify message via GetMsgRequest
@@ -104,23 +125,30 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 				<m id="${sentMsg.id}" read="1" html="1"/>
 			</GetMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetMsgResponse, 'GetMsgResponse should exist');
 		const msg = Array.isArray(getRes.GetMsgResponse.m)
 			? getRes.GetMsgResponse.m[0]
 			: getRes.GetMsgResponse.m;
+
+		// Verify response
 		assert.equal(msg.id, sentMsg.id, 'Message id should match');
 	});
 
 
 	it('Regression | Send a message that includes an attachment that was uploaded for different account', async () => {
 		// Auth as account2
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist for account2');
 		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
@@ -143,6 +171,8 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 				</m>
 			</SendMsgRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.exists(sendRes.Fault, 'Should return Fault for cross-account upload');
 		assert.include(sendRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_UPLOAD',
 			'Should return NO_SUCH_UPLOAD');

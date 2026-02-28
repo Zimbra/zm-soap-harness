@@ -19,6 +19,8 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 
 		// Create account1 with lockout enabled
 		account1Name = 'test1.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -28,6 +30,8 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 				<a n="zimbraPasswordLockoutMaxFailures">2</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
@@ -40,6 +44,8 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 
 		// Create account2
 		account2Name = 'test2.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -49,6 +55,8 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 
 		// Create account3 with lockout and failure lifetime
 		account3Name = 'test3.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Name}</name>
@@ -66,6 +74,8 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 
 		// Create account4
 		account4Name = 'test4.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account4Name}</name>
@@ -74,6 +84,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 		);
 
 		// Set up recovery email for account1 (reusing account2)
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -84,11 +95,13 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
 			: authRes1.AuthResponse.authToken._content || authRes1.AuthResponse.authToken;
 
+		// SetRecoveryAccountRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="sendCode" recoveryAccount="${account2Name}" channel="email" xmlns="urn:zimbraMail" />`, acct1Token
 		);
 
 		// Auth as account2, get code, validate
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
@@ -101,6 +114,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 
 		await new Promise(resolve => setTimeout(resolve, 20000));
 
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail">
 				<query>${account1Name}</query>
@@ -111,6 +125,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 		const codeMatch = conv.fr.match(/Recovery email verification code: (\S+)/);
 		const recoveryCode = codeMatch[1];
 
+		// Send the message
 		const authRes1b = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -121,11 +136,13 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			? authRes1b.AuthResponse.authToken[0]._content || authRes1b.AuthResponse.authToken[0]
 			: authRes1b.AuthResponse.authToken._content || authRes1b.AuthResponse.authToken;
 
+		// SetRecoveryAccountRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="validateCode" recoveryAccountVerificationCode="${recoveryCode}" channel="email" xmlns="urn:zimbraMail" />`, acct1TokenB
 		);
 
 		// Set up recovery email for account3 (reusing account4)
+		// Send the message
 		const authRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
@@ -136,10 +153,12 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			? authRes3.AuthResponse.authToken[0]._content || authRes3.AuthResponse.authToken[0]
 			: authRes3.AuthResponse.authToken._content || authRes3.AuthResponse.authToken;
 
+		// SetRecoveryAccountRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="sendCode" recoveryAccount="${account4Name}" channel="email" xmlns="urn:zimbraMail" />`, acct3Token
 		);
 
+		// Send the message
 		const authRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account4Name}</account>
@@ -152,6 +171,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 
 		await new Promise(resolve => setTimeout(resolve, 20000));
 
+		// SearchRequest
 		const searchRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail">
 				<query>${account3Name}</query>
@@ -162,6 +182,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 		const codeMatch3 = conv3.fr.match(/Recovery email verification code: (\S+)/);
 		const recoveryCode3 = codeMatch3[1];
 
+		// Send the message
 		const authRes3b = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
@@ -172,6 +193,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			? authRes3b.AuthResponse.authToken[0]._content || authRes3b.AuthResponse.authToken[0]
 			: authRes3b.AuthResponse.authToken._content || authRes3b.AuthResponse.authToken;
 
+		// SetRecoveryAccountRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="validateCode" recoveryAccountVerificationCode="${recoveryCode3}" channel="email" xmlns="urn:zimbraMail" />`, acct3TokenB
 		);
@@ -185,6 +207,8 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 	// Tests
 	it('Sanity | Set recovery email and validate it using code', async () => {
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// GetAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${account1Id}</account>
@@ -194,15 +218,21 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			? getAcctRes.GetAccountResponse.account[0]
 			: getAcctRes.GetAccountResponse.account;
 		const recoveryAddr = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddress');
+
+		// Verify response
 		assert.equal(recoveryAddr._content, account2Name,
 			'Recovery address should match');
 		const recoveryStatus = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddressStatus');
+
+		// Verify response
 		assert.equal(recoveryStatus._content, 'verified', 'Status should be verified');
 	});
 
 
 	it('Sanity | Set recovery email and validate it using code 1', async () => {
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// GetAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${account3Id}</account>
@@ -212,9 +242,13 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			? getAcctRes.GetAccountResponse.account[0]
 			: getAcctRes.GetAccountResponse.account;
 		const recoveryAddr = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddress');
+
+		// Verify response
 		assert.equal(recoveryAddr._content, account4Name,
 			'Recovery address should match');
 		const recoveryStatus = acct.a.find(a => a.n === 'zimbraPrefPasswordRecoveryAddressStatus');
+
+		// Verify response
 		assert.equal(recoveryStatus._content, 'verified', 'Status should be verified');
 	});
 
@@ -223,6 +257,7 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 		const invalidRecoveryCode = 'abc1234';
 
 		// Auth as account1 and send recovery code
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -233,43 +268,55 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
 
+		// RecoverAccountRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<RecoverAccountRequest op="sendRecoveryCode" email="${account1Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
 		);
 
 		// Attempt 1 - invalid recovery code
+		// Send the message
 		const attempt1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<recoveryCode>${invalidRecoveryCode}</recoveryCode>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.exists(attempt1.Fault, 'Attempt 1 should fail');
 		assert.include(attempt1.Fault.Reason.Text, 'authentication failed',
 			'Should indicate auth failed');
 
 		// Attempt 2 - invalid recovery code
+		// Send the message
 		const attempt2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<recoveryCode>${invalidRecoveryCode}</recoveryCode>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.exists(attempt2.Fault, 'Attempt 2 should fail');
 		assert.exists(attempt2.Fault.Detail.Error.Code, 'Error code should exist');
 
 		// Attempt 3 - should trigger lockout
+		// Send the message
 		const attempt3 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<recoveryCode>${invalidRecoveryCode}</recoveryCode>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.exists(attempt3.Fault, 'Attempt 3 should fail');
 		assert.exists(attempt3.Fault.Detail.Error.Code, 'Error code should exist');
 
 		// Verify account is locked out
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// GetAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${account1Id}</account>
@@ -279,36 +326,45 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			? getAcctRes.GetAccountResponse.account[0]
 			: getAcctRes.GetAccountResponse.account;
 		const accountStatus = acct.a.find(a => a.n === 'zimbraAccountStatus');
+
+		// Verify response
 		assert.equal(accountStatus._content, 'lockout', 'Account should be locked out');
 	});
 
 
-	it('Sanity | Get recovery details for the account and verify account lockout scenario 1 1', async () => {
+	it('Sanity | Get recovery details for the account and verify account lockout scenario 2', async () => {
 		const invalidRecoveryCode = 'abc1234';
 
 		// Auth as account3 and send recovery code
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Auth for account3 should not fault');
 		const acctToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
 
+		// RecoverAccountRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<RecoverAccountRequest op="sendRecoveryCode" email="${account3Name}" channel="email" xmlns="urn:zimbraMail" />`, acctToken
 		);
 
 		// Attempt 1 - invalid recovery code
+		// Send the message
 		const attempt1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<recoveryCode>${invalidRecoveryCode}</recoveryCode>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(attempt1.Fault, 'Attempt 1 should fail');
 		assert.exists(attempt1.Fault.Detail.Error.Code, 'Error code should exist');
 
@@ -316,17 +372,22 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 		await new Promise(resolve => setTimeout(resolve, 35000));
 
 		// Attempt 2 - after lifetime expired, should not lock out
+		// Send the message
 		const attempt2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account3Name}</account>
 				<recoveryCode>${invalidRecoveryCode}</recoveryCode>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(attempt2.Fault, 'Attempt 2 should fail');
 		assert.exists(attempt2.Fault.Detail.Error.Code, 'Error code should exist');
 
 		// Verify account is NOT locked out
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// GetAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${account3Id}</account>
@@ -336,6 +397,8 @@ describe('Auth > Forgetpassword > Zcs 5102', function () {
 			? getAcctRes.GetAccountResponse.account[0]
 			: getAcctRes.GetAccountResponse.account;
 		const accountStatus = acct.a.find(a => a.n === 'zimbraAccountStatus');
+
+		// Verify response
 		assert.equal(accountStatus._content, 'active', 'Account should still be active');
 	});
 });

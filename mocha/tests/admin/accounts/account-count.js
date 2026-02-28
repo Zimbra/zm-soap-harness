@@ -27,6 +27,7 @@ describe('Admin > Accounts > Account Count', function () {
 		);
 		cos1Id = cosRes1.CreateCosResponse.cos[0].id;
 
+		// CreateCosRequest
 		const cosRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name xmlns="">${cos2Name}</name>
@@ -34,6 +35,7 @@ describe('Admin > Accounts > Account Count', function () {
 		);
 		cos2Id = cosRes2.CreateCosResponse.cos[0].id;
 
+		// CreateCosRequest
 		const cosRes3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name xmlns="">${cos3Name}</name>
@@ -48,6 +50,7 @@ describe('Admin > Accounts > Account Count', function () {
 			</CreateDomainRequest>`, adminAuthToken
 		);
 
+		// CreateDomainRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domain2Name}</name>
@@ -178,11 +181,14 @@ describe('Admin > Accounts > Account Count', function () {
 
 	// Tests
 	it('Smoke | Count Accounts for domain', async () => {
+		// CountAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CountAccountRequest xmlns="urn:zimbraAdmin">
 				<domain by="name">${domain1Name}</domain>
 			</CountAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CountAccountResponse, 'CountAccountResponse should exist');
 
@@ -191,29 +197,44 @@ describe('Admin > Accounts > Account Count', function () {
 		const findCos = (name) => cosList.find(c => c.name === name);
 
 		const c1 = findCos(cos1Name);
+
+		// Verify response
 		assert.exists(c1, `COS ${cos1Name} should be in response`);
+
 		assert.equal(c1._content, '1', `${cos1Name} should have 1 account`);
 
 		const c2 = findCos(cos2Name);
+
+		// Verify response
 		assert.exists(c2, `COS ${cos2Name} should be in response`);
+
 		assert.equal(c2._content, '3', `${cos2Name} should have 3 accounts`);
 
 		const c3 = findCos(cos3Name);
+
+		// Verify response
 		assert.exists(c3, `COS ${cos3Name} should be in response`);
+
 		assert.equal(c3._content, '1', `${cos3Name} should have 1 account`);
 
 		const cDefault = findCos('default');
+
+		// Verify response
 		assert.exists(cDefault, 'default COS should be in response');
+
 		assert.equal(cDefault._content, '1', 'default COS should have 1 account');
 	});
 
 
 	it('Smoke | Count Accounts for domain 1', async () => {
+		// CountAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CountAccountRequest xmlns="urn:zimbraAdmin">
 				<domain by="name">${domain2Name}</domain>
 			</CountAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CountAccountResponse, 'CountAccountResponse should exist');
 
@@ -222,19 +243,31 @@ describe('Admin > Accounts > Account Count', function () {
 		const findCos = (name) => cosList.find(c => c.name === name);
 
 		const c1 = findCos(cos1Name);
+
+		// Verify response
 		assert.exists(c1, `COS ${cos1Name} should be in response`);
+
 		assert.equal(c1._content, '1', `${cos1Name} should have 1 account`);
 
 		const c2 = findCos(cos2Name);
+
+		// Verify response
 		assert.exists(c2, `COS ${cos2Name} should be in response`);
+
 		assert.equal(c2._content, '3', `${cos2Name} should have 3 accounts`);
 
 		const c3 = findCos(cos3Name);
+
+		// Verify response
 		assert.exists(c3, `COS ${cos3Name} should be in response`);
+
 		assert.equal(c3._content, '1', `${cos3Name} should have 1 account`);
 
 		const cDefault = findCos('default');
+
+		// Verify response
 		assert.exists(cDefault, 'default COS should be in response');
+
 		assert.equal(cDefault._content, '2', 'default COS should have 2 accounts');
 	});
 });

@@ -43,22 +43,30 @@ describe('Tasks > SendingTasks > SendTaskBasic', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateTaskResponse, 'CreateTaskResponse should exist');
 		assert.exists(createRes.CreateTaskResponse.calItemId, 'Task should have calItemId');
 
 		// Wait for delivery and search in account2
 		await new Promise(resolve => setTimeout(resolve, 2000));
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m
 			: (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+
+		// Verify response
 		assert.isAbove(msgs.length, 0,
 			'Task invitation should be in account2 inbox');
 	});

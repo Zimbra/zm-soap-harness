@@ -28,6 +28,8 @@ describe('Admin > Accounts > Count Account Request', function () {
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name>${cosName}</name>
 			</CreateCosRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(cosRes.Fault, 'Response should not be a Fault');
 		assert.exists(cosRes.CreateCosResponse,
 			'CreateCosResponse should exist');
@@ -40,6 +42,8 @@ describe('Admin > Accounts > Count Account Request', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraCOSId">${cosId}</a>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(acct1Res.Fault, 'Response should not be a Fault');
 		assert.exists(acct1Res.CreateAccountResponse,
 			'Should create account 1');
@@ -51,6 +55,8 @@ describe('Admin > Accounts > Count Account Request', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraCOSId">${cosId}</a>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(acct2Res.Fault, 'Response should not be a Fault');
 		assert.exists(acct2Res.CreateAccountResponse,
 			'Should create account 2');
@@ -60,6 +66,8 @@ describe('Admin > Accounts > Count Account Request', function () {
 			`<CountAccountRequest xmlns="urn:zimbraAdmin">
 				<domain by="name">${config.testDomain}</domain>
 			</CountAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(countRes.Fault, 'Response should not be a Fault');
 		assert.exists(countRes.CountAccountResponse,
 			'CountAccountResponse should exist');
@@ -67,8 +75,11 @@ describe('Admin > Accounts > Count Account Request', function () {
 			? countRes.CountAccountResponse.cos
 			: [countRes.CountAccountResponse.cos];
 		const targetCos = cosEntries.find(c => c.name === cosName);
+
+		// Verify response
 		assert.exists(targetCos,
 			`COS '${cosName}' should appear in count`);
+
 		assert.equal(targetCos._content, '2',
 			'COS should have 2 accounts');
 	});

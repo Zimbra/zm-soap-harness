@@ -22,6 +22,8 @@ describe('Tasks > Bugs > Bug67857', function () {
 	// Tests
 	it('Sanity | Verify no NPE in CreateTaskResponse for SOAP CreateTaskRequest with no recipient', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -33,6 +35,8 @@ describe('Tasks > Bugs > Bug67857', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 		assert.exists(res.CreateTaskResponse.calItemId, 'Should have calItemId');
@@ -41,6 +45,8 @@ describe('Tasks > Bugs > Bug67857', function () {
 
 	it('Sanity | Verify no NPE in CreateAppointmentResponse for SOAP CreateAppointmentRequest with no recipient', async () => {
 		const subject = `appt${common.getUniqueString()}`;
+
+		// CreateAppointmentRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -54,6 +60,8 @@ describe('Tasks > Bugs > Bug67857', function () {
 				</m>
 			</CreateAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateAppointmentResponse,
 			'CreateAppointmentResponse should exist');

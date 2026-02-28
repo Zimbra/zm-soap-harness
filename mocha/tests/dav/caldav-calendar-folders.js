@@ -18,29 +18,37 @@ describe('CalDav > Calendar > Folders', function () {
 		account1Name = account1User + '@' + config.testDomain;
 		account1NameEncoded = account1User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct.id, 'Account should have an id');
 
 		const attrs = Array.isArray(acct.a) ? acct.a : [acct.a];
 		const mailHost = attrs.find(a => a.n === 'zimbraMailHost');
 		account1Server = mailHost ? (mailHost._content || mailHost) : config.serverHost;
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -74,6 +82,8 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.match(res.text,
 			new RegExp('/dav/' + account1Name.replace('@', '(@|%40)') + '/Calendar/'),
@@ -99,13 +109,19 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res1.status, 207, 'Initial PROPFIND should return 207');
 		const ctagMatch1 = res1.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch1, 'Should have initial getctag');
 		const initialCtag = ctagMatch1[1];
 
 		// Create appointment via SOAP
 		const appointmentSubject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -123,6 +139,8 @@ describe('CalDav > Calendar > Folders', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 
@@ -141,10 +159,16 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res2.status, 207, 'Post-create PROPFIND should return 207');
 		const ctagMatch2 = res2.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch2, 'Should have post-create getctag');
 		const newCtag = ctagMatch2[1];
+
+		// Verify response
 		assert.notEqual(newCtag, initialCtag, 'ctag should change after appointment create');
 	});
 
@@ -152,6 +176,8 @@ describe('CalDav > Calendar > Folders', function () {
 	it('Sanity | Verify getctag Calendar folder is changed after appointment modify', async () => {
 		// Create appointment via SOAP
 		const appointmentSubject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -169,6 +195,8 @@ describe('CalDav > Calendar > Folders', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
@@ -198,13 +226,19 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res1.status, 207, 'Pre-modify PROPFIND should return 207');
 		const ctagMatch1 = res1.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch1, 'Should have pre-modify getctag');
 		const preModifyCtag = ctagMatch1[1];
 
 		// Modify appointment
 		const newSubject = 'Subject' + common.getUniqueString();
+
+		// ModifyAppointmentRequest
 		const modifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${invId}" comp="${compNum}">
 				<m>
@@ -220,6 +254,8 @@ describe('CalDav > Calendar > Folders', function () {
 				</m>
 			</ModifyAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 		assert.exists(modifyRes.ModifyAppointmentResponse, 'Should modify appointment');
 
@@ -235,8 +271,12 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res2.status, 207, 'Post-modify PROPFIND should return 207');
 		const ctagMatch2 = res2.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch2, 'Should have post-modify getctag');
 		assert.notEqual(ctagMatch2[1], preModifyCtag,
 			'ctag should change after appointment modify');
@@ -246,6 +286,8 @@ describe('CalDav > Calendar > Folders', function () {
 	it('Sanity | Verify getctag Calendar folder is changed after appointment delete', async () => {
 		// Create appointment
 		const appointmentSubject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -263,6 +305,8 @@ describe('CalDav > Calendar > Folders', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
@@ -306,6 +350,8 @@ describe('CalDav > Calendar > Folders', function () {
 				</m>
 			</CancelAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
 		assert.exists(cancelRes.CancelAppointmentResponse, 'Should cancel appointment');
 
@@ -323,6 +369,8 @@ describe('CalDav > Calendar > Folders', function () {
 		});
 		const ctagMatch2 = res2.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
 		const postCancelCtag = ctagMatch2[1];
+
+		// Verify response
 		assert.notEqual(postCancelCtag, preCancelCtag,
 			'ctag should change after appointment cancel');
 	});
@@ -335,6 +383,8 @@ describe('CalDav > Calendar > Folders', function () {
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const rootFolder = getFolderRes.GetFolderResponse.folder;
@@ -347,6 +397,8 @@ describe('CalDav > Calendar > Folders', function () {
 				<folder name="${folderName}" l="${rootId}" view="appointment"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse, 'Should create folder');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
@@ -366,17 +418,23 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res1.status, 207, 'PROPFIND should return 207');
 		const ctagMatch1 = res1.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
 		const preRenameCtag = ctagMatch1[1];
 
 		// Rename folder
 		const newFolderName = 'calendar' + common.getUniqueString();
+
+		// ItemActionRequest
 		const renameRes = await soap.makeSOAPEnvelopeAccount(
 			`<ItemActionRequest xmlns="urn:zimbraMail">
 				<action op="rename" id="${folderId}" name="${newFolderName}"/>
 			</ItemActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
 		assert.exists(renameRes.ItemActionResponse, 'Should rename folder');
 
@@ -392,9 +450,13 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res2.status, 207, 'PROPFIND after rename should return 207');
 		const ctagMatch2 = res2.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
 		const postRenameCtag = ctagMatch2[1];
+
+		// Verify response
 		assert.notEqual(postRenameCtag, preRenameCtag,
 			'ctag should change after folder rename');
 	});
@@ -417,6 +479,8 @@ describe('CalDav > Calendar > Folders', function () {
 				<folder name="${folderName}" l="${rootId}" view="appointment"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse, 'Should create folder');
 
@@ -432,6 +496,8 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(propfindRes.status, 207, 'PROPFIND should return 207');
 		assert.include(propfindRes.text, folderName, 'Folder should appear in PROPFIND');
 
@@ -443,6 +509,8 @@ describe('CalDav > Calendar > Folders', function () {
 			password: config.accountPassword,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(deleteRes.status, 204, 'DELETE should return 204 No Content');
 
 		// Verify folder is gone via SOAP
@@ -450,6 +518,8 @@ describe('CalDav > Calendar > Folders', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
 		const allFolders = JSON.stringify(verifyRes.GetFolderResponse);
+
+		// Verify response
 		assert.notInclude(allFolders, `"name":"${folderName}"`,
 			'Folder should not appear after deletion');
 	});
@@ -479,6 +549,8 @@ describe('CalDav > Calendar > Folders', function () {
 
 		// Create appointment in that folder
 		const appointmentSubject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m l="${folderId}">
@@ -496,6 +568,8 @@ describe('CalDav > Calendar > Folders', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
 		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 
@@ -507,6 +581,8 @@ describe('CalDav > Calendar > Folders', function () {
 			password: config.accountPassword,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(deleteRes.status, 204, 'DELETE should return 204');
 
 		// Verify folder is gone
@@ -514,6 +590,8 @@ describe('CalDav > Calendar > Folders', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
 		const allFolders = JSON.stringify(verifyRes.GetFolderResponse);
+
+		// Verify response
 		assert.notInclude(allFolders, `"name":"${folderName}"`,
 			'Folder should not appear after deletion');
 	});
@@ -532,6 +610,8 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.include(propfindRes.text, 'Calendar',
 			'Calendar folder should exist');
 
@@ -544,6 +624,7 @@ describe('CalDav > Calendar > Folders', function () {
 			server: account1Server,
 		});
 		// Should fail (404 per XML expectation)
+		// Verify response
 		assert.notEqual(deleteRes.status, 204, 'Should not successfully delete default Calendar');
 
 		// Verify Calendar still exists via SOAP
@@ -551,6 +632,8 @@ describe('CalDav > Calendar > Folders', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
 		const allFolders = JSON.stringify(verifyRes.GetFolderResponse);
+
+		// Verify response
 		assert.include(allFolders, '"name":"Calendar"',
 			'Calendar folder should still exist');
 	});
@@ -575,6 +658,8 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propertyupdate>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(proppatchRes.status, 207, 'PROPPATCH should return 207');
 
 		// PROPFIND to verify color was set
@@ -594,6 +679,8 @@ describe('CalDav > Calendar > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(propfindRes.status, 207, 'PROPFIND should return 207');
 		assert.include(propfindRes.text, newColor,
 			'calendar-color should match new color');
@@ -602,6 +689,8 @@ describe('CalDav > Calendar > Folders', function () {
 		const verifyRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(verifyRes.Fault, 'Response should not be a Fault');
 		assert.exists(verifyRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});

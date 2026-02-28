@@ -3,6 +3,10 @@ description: Strict formatting rules for all mocha test files
 ---
 
 > [!CAUTION]
+> ## 🚨 #1 RULE — TABS ONLY, ZERO SPACES 🚨
+> **EVERY LINE of generated JS code MUST use TAB characters for indentation. NEVER output spaces for indentation — not even inside template literals or SOAP XML strings.** This is the SINGLE MOST IMPORTANT formatting rule. After EVERY file creation or modification, you MUST run `npx eslint --fix "path/to/file.js"` from the `mocha/` directory to auto-fix any remaining space indentation. FAILURE TO DO THIS IS UNACCEPTABLE.
+
+> [!CAUTION]
 > **NEVER use `npx mocha` to run tests.** ALWAYS use `node mocha-run.js` from the `mocha/` directory. Examples:
 > - `node mocha-run.js tests/ews/bug-106156.js` — run a single file
 > - `node mocha-run.js tests/ews` — run all files in a folder
@@ -139,10 +143,10 @@ assert.equal(res.status, 401, 'Invalid guest user should return 401');
 	it('second test', async () => {
 ```
 
-## Applicable Zimbra Versions Block — STRICT FORMAT
+## 🚨 Applicable Zimbra Versions Block — MANDATORY IN EVERY FILE
 
 > [!CAUTION]
-> Every test file MUST have EXACTLY ONE `Applicable zimbra versions` block. Use ONLY the format below. **1 blank line** between `});` (end of before block) and `// Applicable zimbra versions`. **NEVER** use `/g` flag. **NEVER** omit `config.serial === true ||`.
+> **EVERY test file MUST have EXACTLY ONE `Applicable zimbra versions` block.** This is the #2 most commonly missed rule. When creating ANY new test file, you MUST include this block between the `before()` closing `});` and the first `it()`. Use ONLY the format below. **1 blank line** between `});` (end of before block) and `// Applicable zimbra versions`. **1 blank line** between `}` (end of if block) and `// Tests`. **NEVER** use `/g` flag. **NEVER** omit `config.serial === true ||`. **NEVER** put a `// Tests` comment before the Applicable block — only ONE `// Tests` comment, and it goes AFTER the if block.
 
 ```js
 	});

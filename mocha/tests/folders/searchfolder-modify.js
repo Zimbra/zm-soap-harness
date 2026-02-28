@@ -44,6 +44,7 @@ describe('Folders > Searchfolder Modify', function () {
 			</ModifySearchFolderRequest>`;
 		const response = await soap.makeSOAPEnvelopeAccount(modifyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:contacts',
@@ -60,8 +61,11 @@ describe('Folders > Searchfolder Modify', function () {
 			`<ModifySearchFolderRequest xmlns='urn:zimbraMail'>
 				<search id='${sf.id}' query='in:contacts' types='conversation' sortBy='dateDesc'/>
 			</ModifySearchFolderRequest>`;
+
+		// ModifySearchFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(modifyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:contacts',
@@ -76,8 +80,11 @@ describe('Folders > Searchfolder Modify', function () {
 			`<ModifySearchFolderRequest xmlns='urn:zimbraMail'>
 				<search id='${sf.id}' query='in:inbox' types='message' sortBy='dateDesc'/>
 			</ModifySearchFolderRequest>`;
+
+		// ModifySearchFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(modifyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:inbox',
@@ -92,8 +99,11 @@ describe('Folders > Searchfolder Modify', function () {
 			`<ModifySearchFolderRequest xmlns='urn:zimbraMail'>
 				<search id='${sf.id}' query='in:inbox' types='conversation' sortBy='dateDesc'/>
 			</ModifySearchFolderRequest>`;
+
+		// ModifySearchFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(modifyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:inbox',
@@ -108,8 +118,11 @@ describe('Folders > Searchfolder Modify', function () {
 			`<ModifySearchFolderRequest xmlns='urn:zimbraMail'>
 				<search id='${sf.id}' query='in:trash' types='conversation' sortBy='dateDesc'/>
 			</ModifySearchFolderRequest>`;
+
+		// ModifySearchFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(modifyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:trash',
@@ -124,8 +137,11 @@ describe('Folders > Searchfolder Modify', function () {
 			`<ModifySearchFolderRequest xmlns='urn:zimbraMail'>
 				<search id='${sf.id}' query='in:trash' types='message' sortBy='dateDesc'/>
 			</ModifySearchFolderRequest>`;
+
+		// ModifySearchFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(modifyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:trash',
@@ -140,8 +156,11 @@ describe('Folders > Searchfolder Modify', function () {
 			`<ModifySearchFolderRequest xmlns='urn:zimbraMail'>
 				<search id='${sf.id}' query='is:anywhere not in:trash'/>
 			</ModifySearchFolderRequest>`;
+
+		// ModifySearchFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(modifyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'is:anywhere not in:trash',
@@ -158,6 +177,7 @@ describe('Folders > Searchfolder Modify', function () {
 			</ModifySearchFolderRequest>`;
 		const response = await soap.makeSOAPEnvelopeAccount(modifyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:junk',

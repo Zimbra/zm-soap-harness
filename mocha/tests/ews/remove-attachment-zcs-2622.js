@@ -95,8 +95,9 @@ describe('EWS > Remove Attachment ZCS-2622', function () {
 			'CreateAttachment should succeed');
 
 		// Get the updated item to find attachment IDs
-		const updatedChangeKey = attachMsgs[attachMsgs.length - 1]
-			.Attachments.FileAttachment.AttachmentId.$.RootItemChangeKey;
+		const fileAttach = attachMsgs[attachMsgs.length - 1].Attachments.FileAttachment;
+		const lastAttach = Array.isArray(fileAttach) ? fileAttach[fileAttach.length - 1] : fileAttach;
+		const updatedChangeKey = lastAttach.AttachmentId.$.RootItemChangeKey;
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

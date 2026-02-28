@@ -19,6 +19,8 @@ describe('Admin > Accounts > Quota > Zimbra Quota Warn Message', function () {
 	it('Sanity | Verify the Quota Warn Message can be set', async () => {
 		const warnMsg = `text${common.getUniqueString()}`;
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -38,11 +40,15 @@ ${warnMsg}
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CreateAccountResponse, 'Account should be created');
 
 		const attrs = response.CreateAccountResponse.account[0].a || [];
 		const warnAttr = attrs.find(a => a.n === 'zimbraQuotaWarnMessage');
+
+		// Verify response
 		assert.exists(warnAttr, 'zimbraQuotaWarnMessage should be set');
 		assert.include(warnAttr._content, warnMsg);
 	});
@@ -51,6 +57,8 @@ ${warnMsg}
 	it('Sanity | Verify the Quota Warn Message can be set to I18N characters', async () => {
 		const warnMsg = `Администратор${common.getUniqueString()}`;
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -70,11 +78,15 @@ ${warnMsg}
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CreateAccountResponse, 'Account should be created');
 
 		const attrs = response.CreateAccountResponse.account[0].a || [];
 		const warnAttr = attrs.find(a => a.n === 'zimbraQuotaWarnMessage');
+
+		// Verify response
 		assert.exists(warnAttr, 'zimbraQuotaWarnMessage should be set');
 		assert.include(warnAttr._content, warnMsg);
 	});
@@ -82,6 +94,8 @@ ${warnMsg}
 
 	it('Sanity | Verify the Quota Warn Message can be triggered - lmtp', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -93,11 +107,15 @@ ${warnMsg}
 				<a n="zimbraQuotaWarnPercent">10</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CreateAccountResponse,
 			'Account should be created with I18N display name');
 		const attrs = response.CreateAccountResponse.account[0].a || [];
 		const displayAttr = attrs.find(a => a.n === 'displayName');
+
+		// Verify response
 		assert.exists(displayAttr);
 		assert.equal(displayAttr._content, 'があります 作成');
 	});
@@ -107,6 +125,8 @@ ${warnMsg}
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const warnSubject = `subject${common.getUniqueString()}`;
 		const warnMsg = `text${common.getUniqueString()}`;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -126,6 +146,8 @@ ${warnMsg}
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Account should be created');
@@ -133,6 +155,8 @@ ${warnMsg}
 		// Auth and search for quota warn message
 		const userAuth = await soap.getAccountAuthToken(
 			acctName, config.accountPassword);
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -141,6 +165,7 @@ ${warnMsg}
 		);
 		// Warn message may not exist yet until quota
 		// threshold is reached
+		// Verify response
 		assert.isTrue(!!searchRes.SearchResponse || !!searchRes.Fault,
 			'Should return SearchResponse or fault');
 	});
@@ -149,6 +174,8 @@ ${warnMsg}
 	it('Functional | Verify I18N quota warning message can be sent', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const warnSubject = `subject${common.getUniqueString()}`;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -166,18 +193,24 @@ Your mailbox is nearly full
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Account with low quota should be created');
 
 		const userAuth = await soap.getAccountAuthToken(
 			acctName, config.accountPassword);
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
 				<query>subject:(${warnSubject})</query>
 			</SearchRequest>`, userAuth
 		);
+
+		// Verify response
 		assert.isTrue(!!searchRes.SearchResponse || !!searchRes.Fault,
 			'Should return SearchResponse or fault');
 	});
@@ -188,6 +221,8 @@ Your mailbox is nearly full
 		const warnSubject = `subject${common.getUniqueString()}`;
 		const encoded =
 			'0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YA=';
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -206,6 +241,8 @@ ${encoded}
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Account with I18N base64 warn message created');
@@ -214,6 +251,8 @@ ${encoded}
 			createRes.CreateAccountResponse.account[0].a || [];
 		const warnAttr = attrs.find(
 			a => a.n === 'zimbraQuotaWarnMessage');
+
+		// Verify response
 		assert.exists(warnAttr,
 			'zimbraQuotaWarnMessage should be set');
 		assert.include(warnAttr._content, encoded);
@@ -223,6 +262,8 @@ ${encoded}
 	it('Functional | Verify quota warning message can be sent, with Customize quota template', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const displayName = 'TestHarness User';
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -234,6 +275,8 @@ ${encoded}
 				<a n="zimbraQuotaWarnPercent">10</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Account with display name created');
@@ -241,6 +284,8 @@ ${encoded}
 			createRes.CreateAccountResponse.account[0].a || [];
 		const nameAttr = attrs.find(
 			a => a.n === 'displayName');
+
+		// Verify response
 		assert.exists(nameAttr);
 		assert.equal(nameAttr._content, displayName);
 	});
@@ -249,6 +294,8 @@ ${encoded}
 	it('Functional | Verify i18n quota warning message can be sent, with Customize quota template', async () => {
 		const acctName = `test${common.getUniqueString()}@${config.testDomain}`;
 		const displayName = 'があります 作成';
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -260,6 +307,8 @@ ${encoded}
 				<a n="zimbraQuotaWarnPercent">10</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Account with I18N display name created');
@@ -267,6 +316,8 @@ ${encoded}
 			createRes.CreateAccountResponse.account[0].a || [];
 		const nameAttr = attrs.find(
 			a => a.n === 'displayName');
+
+		// Verify response
 		assert.exists(nameAttr);
 		assert.equal(nameAttr._content, displayName);
 	});

@@ -29,11 +29,15 @@ describe('Admin > Accounts > Multihost > Account Create', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraMailHost">${serverAName}</a>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(acct1Res.Fault, 'Response should not be a Fault');
 		assert.exists(acct1Res.CreateAccountResponse, 'Should create account 1 on Host A');
 		const acct1 = Array.isArray(acct1Res.CreateAccountResponse.account)
 			? acct1Res.CreateAccountResponse.account[0]
 			: acct1Res.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct1.id, 'Account 1 should have an id');
 
 		// Create account 2 on Host B
@@ -43,11 +47,15 @@ describe('Admin > Accounts > Multihost > Account Create', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraMailHost">${serverBName}</a>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(acct2Res.Fault, 'Response should not be a Fault');
 		assert.exists(acct2Res.CreateAccountResponse, 'Should create account 2 on Host B');
 		const acct2 = Array.isArray(acct2Res.CreateAccountResponse.account)
 			? acct2Res.CreateAccountResponse.account[0]
 			: acct2Res.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct2.id, 'Account 2 should have an id');
 	});
 });

@@ -54,9 +54,12 @@ describe('Folders > Folders Immutable', function () {
 				</FolderActionRequest>`;
 			const response = await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken, false);
 
+			// Verify response
 			assert.exists(response.Fault,
 				`Verify Fault exists when deleting ${folderKey} folder`);
 			const faultText = response.Fault.Reason ? response.Fault.Reason.Text : JSON.stringify(response.Fault);
+
+			// Verify response
 			assert.isTrue(faultText.includes('immutable') || faultText.includes('IMMUTABLE'),
 				`Verify immutable error when deleting ${folderKey} folder, got: ${faultText}`
 			);
@@ -77,9 +80,12 @@ describe('Folders > Folders Immutable', function () {
 				</FolderActionRequest>`;
 			const response = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken, false);
 
+			// Verify response
 			assert.exists(response.Fault,
 				`Verify Fault exists when renaming ${folderKey} folder`);
 			const faultText = response.Fault.Reason ? response.Fault.Reason.Text : JSON.stringify(response.Fault);
+
+			// Verify response
 			assert.isTrue(faultText.includes('immutable') || faultText.includes('IMMUTABLE'),
 				`Verify immutable error when renaming ${folderKey} folder, got: ${faultText}`
 			);
@@ -94,6 +100,8 @@ describe('Folders > Folders Immutable', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${targetFolderName}' l='${folderIds.inbox}'/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const targetId = createResponse.CreateFolderResponse.folder[0].id;
 		const systemFolders = ['inbox', 'drafts', 'junk', 'trash', 'sent', 'contacts', 'calendar'];
@@ -108,9 +116,12 @@ describe('Folders > Folders Immutable', function () {
 				</FolderActionRequest>`;
 			const response = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
+			// Verify response
 			assert.exists(response.Fault,
 				`Verify Fault exists when moving ${folderKey} folder`);
 			const faultText = response.Fault.Reason ? response.Fault.Reason.Text : JSON.stringify(response.Fault);
+
+			// Verify response
 			assert.isTrue(faultText.includes('immutable') || faultText.includes('IMMUTABLE'),
 				`Verify immutable error when moving ${folderKey} folder, got: ${faultText}`
 			);

@@ -15,12 +15,16 @@ describe('Auth > Auth Invalid', function () {
 		// Create valid test account
 		validUserShort = 'user' + common.getUniqueString();
 		validUser = validUserShort + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${validUser}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create test account');
 	});
@@ -32,12 +36,15 @@ describe('Auth > Auth Invalid', function () {
 
 	// Tests
 	it('Smoke | Login with an invalid password', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
 				<password>invalid_password</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -60,26 +67,35 @@ describe('Auth > Auth Invalid', function () {
 		// Create account on default domain
 		const defaultDomainUser = 'user' + common.getUniqueString();
 		const defaultDomainFullName = defaultDomainUser + '@' + defaultDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${defaultDomainFullName}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Should create account on default domain');
 
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${defaultDomainUser}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
+
+		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -88,12 +104,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Sanity | Login with invalid user name and invalid password', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">invalid_user@${config.testDomain}</account>
 				<password>invalid_password</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -101,12 +120,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login as domain that doesnt exist', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -114,12 +136,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login with a domain that has a comma', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invalid_domain,com</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -127,12 +152,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login as an invalid email account', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">invalid_user@${config.testDomain}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -140,12 +168,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login as a user with leading spaces', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name"> ${validUserShort}@invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -153,12 +184,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login as trailing spaces', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invalid_domain.com </account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -166,12 +200,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login as space before the at symbol', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort} @invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -179,12 +216,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login as space within the email', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">use r1@invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -192,12 +232,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login as space after the at symbol', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@ invalid_domain.com</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -205,12 +248,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login as space within the domain', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUserShort}@invali d_domain.com</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -227,12 +273,16 @@ describe('Auth > Auth Invalid', function () {
 		];
 
 		for (const invalidUser of invalidUsers) {
+
+			// Send the message
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${invalidUser}</account>
 					<password>${config.accountPassword}</password>
 				</AuthRequest>`, null
 			);
+
+			// Verify response
 			assert.exists(response.Fault, 'Should return Fault for: ' + invalidUser);
 			assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Should return INVALID_REQUEST for: ' + invalidUser);
@@ -241,12 +291,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login with periods in the address', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">first1.middle.last1@${config.testDomain}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -254,12 +307,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login with password with a leading space', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
 				<password> ${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -267,12 +323,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login with password with trailing spaces', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
 				<password>${config.accountPassword} </password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
@@ -280,12 +339,15 @@ describe('Auth > Auth Invalid', function () {
 
 
 	it('Functional | Login with password in capital letters', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${validUser}</account>
 				<password>${config.accountPassword.toUpperCase()} </password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');

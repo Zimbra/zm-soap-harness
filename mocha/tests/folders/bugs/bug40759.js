@@ -34,7 +34,6 @@ describe('Folders > Bugs > Bug 40759', function () {
 		// Cleanup DLs
 		if (dls.length > 0) {
 			for (const dlId of dls) {
-				// DeleteDistributionListRequest
 				const deleteDl =
 					`<DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
 						<id>${dlId}</id>
@@ -58,6 +57,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${listName}</name>
 			</CreateDistributionListRequest>`;
+
+		// AddDistributionListMemberRequest
 		const dlResp = await soap.makeSOAPEnvelopeAdmin(createDl, adminAuthToken);
 		const dlId = dlResp.CreateDistributionListResponse.dl[0].id;
 
@@ -69,6 +70,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 				<id>${dlId}</id>
 				<dlm>${accounts[0].name}</dlm>
 			</AddDistributionListMemberRequest>`;
+
+		// AddDistributionListMemberRequest
 		await soap.makeSOAPEnvelopeAdmin(addMember1, adminAuthToken);
 
 		const addMember2 =
@@ -76,6 +79,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 				<id>${dlId}</id>
 				<dlm>${accounts[1].name}</dlm>
 			</AddDistributionListMemberRequest>`;
+
+		// CreateFolderRequest
 		await soap.makeSOAPEnvelopeAdmin(addMember2, adminAuthToken);
 
 		// 3. Login Account1 (A), create folder, share with DL
@@ -86,6 +91,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const folderResp = await soap.makeSOAPEnvelopeAccount(createFolder, acct1.authToken);
 		const folderId = folderResp.CreateFolderResponse.folder[0].id;
 
@@ -95,6 +102,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 					<grant d="${listName}" gt="grp" perm="rwidax"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// AddDistributionListAliasRequest
 		await soap.makeSOAPEnvelopeAccount(grantRequest, acct1.authToken);
 
 		// 4. Admin: Add alias to DL
@@ -105,10 +114,14 @@ describe('Folders > Bugs > Bug 40759', function () {
 				<id>${dlId}</id>
 				<alias>${aliasName}</alias>
 			</AddDistributionListAliasRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAdmin(addAlias, adminAuthToken);
 
 		// 5. Login Account1 (A) - Verify GetFolderRequest works (no hang)
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(getFolder, acct1.authToken);
 
 		// 6. Login Account2 (B), CreateMountpoint
@@ -118,7 +131,11 @@ describe('Folders > Bugs > Bug 40759', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" view="message" rid="${folderId}" zid="${acct1.id}"/>
 			</CreateMountpointRequest>`;
+
+		// CreateDistributionListRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMount, acct2.authToken);
+
+		// Verify response
 		assert.exists(mountResp.CreateMountpointResponse.link[0].id,
 			'Mountpoint created successfully');
 	});
@@ -132,6 +149,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${listName}</name>
 			</CreateDistributionListRequest>`;
+
+		// AddDistributionListMemberRequest
 		const dlResp = await soap.makeSOAPEnvelopeAdmin(createDl, adminAuthToken);
 		const dlId = dlResp.CreateDistributionListResponse.dl[0].id;
 
@@ -143,6 +162,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 				<id>${dlId}</id>
 				<dlm>${accounts[2].name}</dlm>
 			</AddDistributionListMemberRequest>`;
+
+		// AddDistributionListMemberRequest
 		await soap.makeSOAPEnvelopeAdmin(addMember3, adminAuthToken);
 
 		const addMember4 =
@@ -150,6 +171,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 				<id>${dlId}</id>
 				<dlm>${accounts[3].name}</dlm>
 			</AddDistributionListMemberRequest>`;
+
+		// AddDistributionListAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(addMember4, adminAuthToken);
 
 		// 3. Add Alias to DL BEFORE sharing? 
@@ -165,6 +188,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 				<id>${dlId}</id>
 				<alias>${aliasName}</alias>
 			</AddDistributionListAliasRequest>`;
+
+		// CreateFolderRequest
 		await soap.makeSOAPEnvelopeAdmin(addAlias, adminAuthToken);
 
 		// 4. Login Account3 (C), create folder, share with DL ALIAS
@@ -175,6 +200,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const folderResp = await soap.makeSOAPEnvelopeAccount(createFolder, acct3.authToken);
 		const folderId = folderResp.CreateFolderResponse.folder[0].id;
 
@@ -184,6 +211,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 					<grant d="${aliasName}" gt="grp" perm="rwidax"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// AddDistributionListAliasRequest
 		await soap.makeSOAPEnvelopeAccount(grantRequest, acct3.authToken);
 
 		// 5. Add another alias? XML Step 5: "Add an alias to the DL." (Wait, already did?)
@@ -208,10 +237,14 @@ describe('Folders > Bugs > Bug 40759', function () {
 				<id>${dlId}</id>
 				<alias>${aliasName2}</alias>
 			</AddDistributionListAliasRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAdmin(addAlias2, adminAuthToken);
 
 		// 6. Login Account3 (C) - Verify GetFolderRequest works
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(getFolder, acct3.authToken);
 
 		// 7. Login Account4 (D), CreateMountpoint
@@ -222,6 +255,8 @@ describe('Folders > Bugs > Bug 40759', function () {
 				<link l="1" name="${mountName}" view="message" rid="${folderId}" zid="${acct3.id}"/>
 			</CreateMountpointRequest>`;
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMount, acct4.authToken);
+
+		// Verify response
 		assert.exists(mountResp.CreateMountpointResponse.link[0].id,
 			'Mountpoint created successfully');
 	});

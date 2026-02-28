@@ -11,21 +11,28 @@ describe('Briefcase > Briefcase Move Files', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -50,6 +57,8 @@ describe('Briefcase > Briefcase Move Files', function () {
 				<folder l="1" name="${folder1Name}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(create1.Fault, 'Response should not be a Fault');
 		assert.exists(create1.CreateFolderResponse, 'CreateFolderResponse should exist');
 
@@ -63,6 +72,8 @@ describe('Briefcase > Briefcase Move Files', function () {
 				<folder l="1" name="${folder2Name}"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(create2.Fault, 'Response should not be a Fault');
 		assert.exists(create2.CreateFolderResponse, 'CreateFolderResponse should exist');
 
@@ -78,6 +89,8 @@ describe('Briefcase > Briefcase Move Files', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -91,6 +104,8 @@ describe('Briefcase > Briefcase Move Files', function () {
 				<action id="${doc1Id}" l="${folder2Id}" op="move"/>
 			</ItemActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(moveRes.Fault, 'Response should not be a Fault');
 		assert.exists(moveRes.ItemActionResponse, 'ItemActionResponse should exist');
 
@@ -102,6 +117,8 @@ describe('Briefcase > Briefcase Move Files', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -115,6 +132,8 @@ describe('Briefcase > Briefcase Move Files', function () {
 				<action id="${doc2Id}" l="${folder1Id}" op="move"/>
 			</ItemActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(move2.Fault, 'Response should not be a Fault');
 		assert.exists(move2.ItemActionResponse, 'ItemActionResponse should exist');
 
@@ -124,6 +143,8 @@ describe('Briefcase > Briefcase Move Files', function () {
 				<query>in:"${folder1Name}"</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(search1.Fault, 'Response should not be a Fault');
 		assert.exists(search1.SearchResponse, 'SearchResponse should exist');
 
@@ -133,6 +154,8 @@ describe('Briefcase > Briefcase Move Files', function () {
 				<query>in:"${folder2Name}"</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(search2.Fault, 'Response should not be a Fault');
 		assert.exists(search2.SearchResponse, 'SearchResponse should exist');
 	});

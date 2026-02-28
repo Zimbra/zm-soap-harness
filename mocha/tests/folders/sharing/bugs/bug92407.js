@@ -26,6 +26,8 @@ describe('Folders > Sharing > Bugs > Bug 92407', function () {
 
 		// Get Task Folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateTaskRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 
 		taskFolderId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Tasks').id;
@@ -41,6 +43,8 @@ describe('Folders > Sharing > Bugs > Bug 92407', function () {
 					<su>${taskSubject1}</su>
 				</m>
 			</CreateTaskRequest>`;
+
+		// CreateTaskRequest
 		await soap.makeSOAPEnvelopeAccount(createTaskRequest, auth1);
 
 		const createTaskRequest2 =
@@ -77,6 +81,8 @@ describe('Folders > Sharing > Bugs > Bug 92407', function () {
 					<grant gt="usr" d="${testAccount2}" perm=""/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Account 2 tries to mount
@@ -86,6 +92,7 @@ describe('Folders > Sharing > Bugs > Bug 92407', function () {
 			</CreateMountpointRequest>`;
 		const res = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
 
+		// Verify response
 		assert.exists(res.Fault, 'Should have failed with Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'PERM_DENIED',
 			'Should return PERM_DENIED');

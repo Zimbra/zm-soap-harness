@@ -20,12 +20,15 @@ describe('CalDav > Calendar > MeetingRequests', function () {
 		account1Name = account1User + '@' + config.testDomain;
 		account1NameEncoded = account1User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -35,6 +38,7 @@ describe('CalDav > Calendar > MeetingRequests', function () {
 		const mailHost1 = attrs1.find(a => a.n === 'zimbraMailHost');
 		account1Server = mailHost1 ? (mailHost1._content || mailHost1) : config.serverHost;
 
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -48,15 +52,19 @@ describe('CalDav > Calendar > MeetingRequests', function () {
 		const account2User = 'test' + common.getUniqueString();
 		account2Name = account2User + '@' + config.testDomain;
 
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
@@ -107,6 +115,8 @@ describe('CalDav > Calendar > MeetingRequests', function () {
 			headers: { 'Content-Type': 'text/calendar; charset=utf-8' },
 			body: icsBody,
 		});
+
+		// Verify response
 		assert.equal(putRes.status, 201, 'PUT should return 201 Created');
 
 		// Verify appointment exists via SOAP search
@@ -115,6 +125,8 @@ describe('CalDav > Calendar > MeetingRequests', function () {
 				<query>${subject}</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -163,6 +175,8 @@ describe('CalDav > Calendar > MeetingRequests', function () {
 				<query>in:inbox subject:${subject}</query>
 			</SearchRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

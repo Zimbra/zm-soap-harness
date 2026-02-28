@@ -21,6 +21,8 @@ describe('Folders > Virtualhost > Virtualhost Getinforequest', function () {
 				<a n="zimbraVirtualHostname">${virtHostname}</a>
 				<a n="zimbraPublicServiceHostname">${virtHostname}</a>
 			</CreateDomainRequest>`;
+
+		// Send the message
 		await soap.makeSOAPEnvelopeAdmin(createDomainRequest, adminAuth);
 
 		virtHostAccount = `vh_user_info_${unique}@${domainName}`;
@@ -55,6 +57,8 @@ describe('Folders > Virtualhost > Virtualhost Getinforequest', function () {
 	it('Sanity | Verify the URL for GetInfoRequest uses the virtual host name', async () => {
 		const getInfoRequest = '<GetInfoRequest xmlns="urn:zimbraAccount"/>';
 		const resp = await soap.makeSOAPEnvelopeAccount(getInfoRequest, virtAuth);
+
+		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetInfoResponse, 'Should return info');
 		assert.include(resp.GetInfoResponse.rest, virtDomain,

@@ -14,6 +14,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -30,6 +32,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addPlain.Fault, 'Response should not be a Fault');
 		plainMsgId = addPlain.AddMsgResponse?.m?.id
 			|| (Array.isArray(addPlain.AddMsgResponse?.m)
@@ -43,6 +47,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addHtml.Fault, 'Response should not be a Fault');
 		htmlMsgId = addHtml.AddMsgResponse?.m?.id
 			|| (Array.isArray(addHtml.AddMsgResponse?.m)
@@ -56,6 +62,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addMulti.Fault, 'Response should not be a Fault');
 		multipartMsgId = addMulti.AddMsgResponse?.m?.id
 			|| (Array.isArray(addMulti.AddMsgResponse?.m)
@@ -69,6 +77,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addAttach.Fault, 'Response should not be a Fault');
 		attachMsgId = addAttach.AddMsgResponse?.m?.id
 			|| (Array.isArray(addAttach.AddMsgResponse?.m)
@@ -82,6 +92,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addInline.Fault, 'Response should not be a Fault');
 		inlineMsgId = addInline.AddMsgResponse?.m?.id
 			|| (Array.isArray(addInline.AddMsgResponse?.m)
@@ -95,6 +107,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addNested.Fault, 'Response should not be a Fault');
 		nestedMsgId = addNested.AddMsgResponse?.m?.id
 			|| (Array.isArray(addNested.AddMsgResponse?.m)
@@ -112,6 +126,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 			user: account1Email,
 			id: plainMsgId
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'Plain text body content',
 			'Response should contain plain text body');
@@ -123,6 +139,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 			user: account1Email,
 			id: htmlMsgId
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'HTML body content', 'HTML response should contain expected content');
 	});
@@ -133,6 +151,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 			user: account1Email,
 			id: multipartMsgId
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'Plain part', 'Multipart response should contain plain part content');
 	});
@@ -143,6 +163,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 			user: account1Email,
 			id: attachMsgId
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'body with attachment', 'Attachment response should contain body content');
 	});
@@ -153,6 +175,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 			user: account1Email,
 			id: inlineMsgId
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'inline image test', 'Inline image response should contain body content');
 	});
@@ -163,6 +187,8 @@ describe('Rest Servlet > Fmt > Body > Mail Body', function () {
 			user: account1Email,
 			id: nestedMsgId
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'nested plain', 'Nested multipart response should contain plain content');
 	});

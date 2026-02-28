@@ -12,18 +12,24 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
 		const appt01Subject = 'Appointment01' + common.getUniqueString();
 		const appt01Content = 'Content01' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createAppt01 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -44,12 +50,16 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createAppt01.Fault, 'Response should not be a Fault');
 		appt01Id = createAppt01.CreateAppointmentResponse.apptId
 			|| createAppt01.CreateAppointmentResponse.$.apptId;
 
 		const appt02Subject = 'Appointment02' + common.getUniqueString();
 		const appt02Content = 'Content02' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createAppt02 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -65,6 +75,8 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createAppt02.Fault, 'Response should not be a Fault');
 		appt02Id = createAppt02.CreateAppointmentResponse.apptId
 			|| createAppt02.CreateAppointmentResponse.$.apptId;
@@ -82,6 +94,8 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 			id: appt01Id,
 			fmt: 'html'
 		});
+
+		// Verify response
 		assert.equal(restRes.status, 200, 'REST should return 200');
 	});
 
@@ -92,6 +106,8 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 			folder: 'Calendar',
 			fmt: 'html'
 		});
+
+		// Verify response
 		assert.equal(restRes.status, 200, 'REST should return 200');
 	});
 
@@ -102,6 +118,8 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 			folder: 'Calendar',
 			fmt: 'html'
 		});
+
+		// Verify response
 		assert.equal(restRes.status, 200, 'REST should return 200');
 	});
 
@@ -112,6 +130,8 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 			id: appt02Id,
 			fmt: 'html'
 		});
+
+		// Verify response
 		assert.equal(restRes.status, 200, 'REST should return 200');
 	});
 });

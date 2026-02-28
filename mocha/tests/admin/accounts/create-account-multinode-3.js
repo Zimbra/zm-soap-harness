@@ -29,6 +29,8 @@ describe('Admin > Accounts > Create Account Multinode 3', function () {
 		// Get server IDs by name
 		const serversRes = await soap.makeSOAPEnvelopeAdmin(
 			'<GetAllServersRequest xmlns="urn:zimbraAdmin"/>', adminAuth);
+
+		// Verify response
 		assert.notExists(serversRes.Fault, 'Response should not be a Fault');
 		assert.exists(serversRes.GetAllServersResponse, 'GetAllServersResponse should exist');
 		const servers = Array.isArray(serversRes.GetAllServersResponse.server)
@@ -36,6 +38,8 @@ describe('Admin > Accounts > Create Account Multinode 3', function () {
 			: [serversRes.GetAllServersResponse.server];
 		const serverA = servers.find(s => s.name === serverAName);
 		const serverB = servers.find(s => s.name === serverBName);
+
+		// Verify response
 		assert.exists(serverA, `Server A (${serverAName}) should exist`);
 		assert.exists(serverB, `Server B (${serverBName}) should exist`);
 
@@ -50,25 +54,34 @@ describe('Admin > Accounts > Create Account Multinode 3', function () {
 				<a n="zimbraMailHostPool">${serverA.id}</a>
 				<a n="zimbraMailHostPool">${serverB.id}</a>
 			</CreateCosRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(cosRes.Fault, 'Response should not be a Fault');
 		assert.exists(cosRes.CreateCosResponse, 'CreateCosResponse should exist');
 		const cosId = cosRes.CreateCosResponse.cos[0].id;
 
 		// Create 3 accounts and verify none on server C
 		for (const name of acctNames) {
+
+			// Create account
 			const res = await soap.makeSOAPEnvelopeAdmin(
 				`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${name}</name>
 					<password>${config.accountPassword}</password>
 					<a n="zimbraCOSId">${cosId}</a>
 				</CreateAccountRequest>`, adminAuth);
+
+			// Verify response
 			assert.notExists(res.Fault, 'Response should not be a Fault');
 			assert.exists(res.CreateAccountResponse, `Should create account ${name}`);
 			const acct = Array.isArray(res.CreateAccountResponse.account)
 				? res.CreateAccountResponse.account[0]
 				: res.CreateAccountResponse.account;
 			const mailHost = acct.a.find(a => a.n === 'zimbraMailHost');
+
+			// Verify response
 			assert.notEqual(mailHost._content, serverCName, 'Account should NOT be on server C');
+
 			assert.isTrue(mailHost._content === serverAName || mailHost._content === serverBName,
 				`Account should be on server A or B, got: ${mailHost._content}`);
 		}

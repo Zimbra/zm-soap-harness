@@ -14,12 +14,16 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct1.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
@@ -29,6 +33,8 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 		account1Id = acct1.id;
 
 		account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -36,6 +42,7 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -46,6 +53,7 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
 			: authRes1.AuthResponse.authToken._content || authRes1.AuthResponse.authToken;
 
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
@@ -90,11 +98,14 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 		const root2 = Array.isArray(folderRes2.GetFolderResponse.folder)
 			? folderRes2.GetFolderResponse.folder[0] : folderRes2.GetFolderResponse.folder;
 
+		// CreateMountpointRequest
 		const mountRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${root2.id}" name="MountedBC.${common.getUniqueString()}" rid="${briefcaseFolderId}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		assert.exists(mountRes.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
@@ -108,6 +119,8 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 				<action op="delete" id="${mountId}"/>
 			</FolderActionRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 		assert.exists(deleteRes.FolderActionResponse,
 			'FolderActionResponse should exist');

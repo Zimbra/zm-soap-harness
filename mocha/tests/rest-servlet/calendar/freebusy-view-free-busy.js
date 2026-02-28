@@ -20,12 +20,16 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 
 		const createAcct = async (label) => {
 			const email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+			// Create account
 			const res = await soap.makeSOAPEnvelopeAdmin(
 				`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${email}</name>
 					<password>${config.accountPassword}</password>
 				</CreateAccountRequest>`, adminAuthToken
 			);
+
+			// Verify response
 			assert.notExists(res.Fault, `Create ${label} should not fault`);
 			const token = await soap.getAccountAuthToken(email);
 			return { email, token };
@@ -66,6 +70,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
 			</RevokePermissionRequest>`, account1Token
 		);
+
+		// GrantPermissionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<GrantPermissionRequest xmlns="urn:zimbraMail">
 				<ace right="viewFreeBusy" gt="all"/>
@@ -75,6 +81,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 		// Create busy appointment
 		const startMs = '1263902400000';
 		const subject = 'subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -93,6 +101,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -103,6 +113,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbPublic.status, 200, 'FreeBusy should return 200');
 		assert.notInclude(fbPublic.body, toIcalTime(startMs),
 			'Non-authenticated user should not see busy time with gt=all');
@@ -113,6 +125,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbInternal.status, 200, 'FreeBusy should return 200');
 		assert.include(fbInternal.body, 'FBTYPE=BUSY',
 			'Internal user should see busy time with gt=all');
@@ -126,6 +140,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
 			</RevokePermissionRequest>`, account2Token
 		);
+
+		// GrantPermissionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<GrantPermissionRequest xmlns="urn:zimbraMail">
 				<ace right="viewFreeBusy" gt="pub"/>
@@ -134,6 +150,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 
 		const startMs = '1295438400000';
 		const subject = 'subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -152,6 +170,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -162,6 +182,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbPublic.status, 200, 'FreeBusy should return 200');
 		assert.include(fbPublic.body, 'FBTYPE=BUSY',
 			'Non-authenticated user should see busy time with gt=pub');
@@ -172,6 +194,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbInternal.status, 200, 'FreeBusy should return 200');
 		assert.include(fbInternal.body, 'FBTYPE=BUSY',
 			'Internal user should see busy time with gt=pub');
@@ -185,6 +209,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
 			</RevokePermissionRequest>`, account3Token
 		);
+
+		// GrantPermissionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<GrantPermissionRequest xmlns="urn:zimbraMail">
 				<ace right="viewFreeBusy" gt="all" deny="1"/>
@@ -193,6 +219,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 
 		const startMs = '1295438400000';
 		const subject = 'subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -211,6 +239,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				</m>
 			</CreateAppointmentRequest>`, account3Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -221,6 +251,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbPublic.status, 200, 'FreeBusy should return 200');
 		assert.notInclude(fbPublic.body, toIcalTime(startMs),
 			'Non-authenticated user should not see busy time with deny=1');
@@ -231,6 +263,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbInternal.status, 200, 'FreeBusy should return 200');
 		assert.notInclude(fbInternal.body, toIcalTime(startMs),
 			'Internal user should not see busy time with deny=1 for all');
@@ -244,6 +278,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
 			</RevokePermissionRequest>`, account4Token
 		);
+
+		// GrantPermissionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<GrantPermissionRequest xmlns="urn:zimbraMail">
 				<ace right="viewFreeBusy" gt="usr" d="${accountAEmail}"/>
@@ -252,6 +288,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 
 		const startMs = '1295438400000';
 		const subject = 'subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -270,6 +308,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				</m>
 			</CreateAppointmentRequest>`, account4Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -280,6 +320,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbPublic.status, 200, 'FreeBusy should return 200');
 		assert.notInclude(fbPublic.body, toIcalTime(startMs),
 			'Non-authenticated user should not see busy time with gt=usr');
@@ -290,6 +332,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbAllowed.status, 200, 'FreeBusy should return 200');
 		assert.include(fbAllowed.body, 'FBTYPE=BUSY',
 			'Specified user should see busy time');
@@ -300,6 +344,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbDenied.status, 200, 'FreeBusy should return 200');
 		assert.notInclude(fbDenied.body, toIcalTime(startMs),
 			'Non-specified user should not see busy time');
@@ -313,6 +359,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
 			</RevokePermissionRequest>`, account5Token
 		);
+
+		// GrantPermissionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<GrantPermissionRequest xmlns="urn:zimbraMail">
 				<ace right="viewFreeBusy" gt="usr" d="${accountAEmail}"/>
@@ -322,6 +370,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 
 		const startMs = '1295438400000';
 		const subject = 'subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -340,6 +390,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 				</m>
 			</CreateAppointmentRequest>`, account5Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -350,6 +402,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbPublic.status, 200, 'FreeBusy should return 200');
 		assert.notInclude(fbPublic.body, toIcalTime(startMs),
 			'Non-authenticated user should not see busy time');
@@ -360,6 +414,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbA.status, 200, 'FreeBusy should return 200');
 		assert.include(fbA.body, 'FBTYPE=BUSY',
 			'AccountA should see busy time');
@@ -370,6 +426,8 @@ describe('Rest Servlet > Calendar > FreeBusy ViewFreeBusy Permissions', function
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbB.status, 200, 'FreeBusy should return 200');
 		assert.include(fbB.body, 'FBTYPE=BUSY',
 			'AccountB should see busy time');

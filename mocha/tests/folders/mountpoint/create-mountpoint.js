@@ -24,6 +24,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 
 		// Account1 creates a folder and shares it with Account2
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 
 		inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
@@ -33,6 +35,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 
 		sharedFolderId = createResp.CreateFolderResponse.folder[0].id;
@@ -65,11 +69,15 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse, 'Response should exist');
 		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Mountpoint should be created');
 		const link = mountResp.CreateMountpointResponse.link[0];
+
+		// Verify response
 		assert.equal(link.name, mountName, 'Mountpoint name should match');
 		assert.equal(link.zid, account1Id, 'Owner zid should match');
 	});
@@ -83,7 +91,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				`<CreateMountpointRequest xmlns="urn:zimbraMail">
 					<link l="1" name="${mountName}" zid="${account1Id}" rid="${sharedFolderId}" view="${view}"/>
 				</CreateMountpointRequest>`;
+
+			// CreateMountpointRequest
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, auth2);
+
+			// Verify response
 			assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 			assert.exists(mountResp.CreateMountpointResponse,
 				`Mount with view="${view}" should succeed`);
@@ -99,9 +111,12 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				`<CreateMountpointRequest xmlns="urn:zimbraMail">
 					<link l="1" name="${mountName}" zid="${account1Id}" rid="${sharedFolderId}" view="${view}"/>
 				</CreateMountpointRequest>`;
+
+			// CreateMountpointRequest
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest3, auth2);
 			// Invalid views may still create mountpoint or return fault
 			// XML checks for either success or fault
+			// Verify response
 			assert.exists(mountResp.CreateMountpointResponse || mountResp.Fault,
 				`Mount with invalid view="${view}" should return response or fault`);
 		}
@@ -116,7 +131,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				`<CreateMountpointRequest xmlns="urn:zimbraMail">
 					<link l="1" name="${mountName}" zid="${account1Id}" rid="${rid}" view="message"/>
 				</CreateMountpointRequest>`;
+
+			// CreateMountpointRequest
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest4, auth2);
+
+			// Verify response
 			assert.exists(mountResp.Fault || mountResp.CreateMountpointResponse,
 				`Mount with invalid rid="${rid}" should return fault or response`);
 		}
@@ -131,7 +150,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				`<CreateMountpointRequest xmlns="urn:zimbraMail">
 					<link l="1" name="${mountName}" zid="${zid}" rid="${sharedFolderId}" view="message"/>
 				</CreateMountpointRequest>`;
+
+			// CreateMountpointRequest
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest5, auth2);
+
+			// Verify response
 			assert.exists(mountResp.Fault,
 				`Mount with invalid zid="${zid}" should return fault`);
 		}
@@ -146,7 +169,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				`<CreateMountpointRequest xmlns="urn:zimbraMail">
 					<link l="${l}" name="${mountName}" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 				</CreateMountpointRequest>`;
+
+			// CreateMountpointRequest
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest6, auth2);
+
+			// Verify response
 			assert.exists(mountResp.Fault || mountResp.CreateMountpointResponse,
 				`Mount with invalid l="${l}" should return fault or response`);
 		}
@@ -161,7 +188,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName1}" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateMountpointRequest
 		const resp1 = await soap.makeSOAPEnvelopeAccount(createMountpointRequest7, auth2);
+
+		// Verify response
 		assert.notExists(resp1.Fault, 'Response should not be a Fault');
 		assert.exists(resp1.CreateMountpointResponse,
 			'First mountpoint should be created');
@@ -170,7 +201,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName2}" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const resp2 = await soap.makeSOAPEnvelopeAccount(createMountpointRequest8, auth2);
+
+		// Verify response
 		assert.notExists(resp2.Fault, 'Response should not be a Fault');
 		assert.exists(resp2.CreateMountpointResponse,
 			'Second mountpoint to same folder should succeed');
@@ -184,6 +219,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folder2Name}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const create2 = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const folder2Id = create2.CreateFolderResponse.folder[0].id;
 
@@ -193,6 +230,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// Try mounting both
@@ -202,8 +241,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				<link l="1" name="${mountName}_a" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 				<link l="1" name="${mountName}_b" zid="${account1Id}" rid="${folder2Id}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateMountpointRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest9, auth2);
 		// Second link tag should be ignored per XML test
+		// Verify response
 		assert.exists(resp.CreateMountpointResponse || resp.Fault,
 			'Should handle multiple link tags');
 	});
@@ -213,7 +255,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const createMountpointRequest10 =
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 			</CreateMountpointRequest>`;
+
+		// CreateMountpointRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest10, auth2);
+
+		// Verify response
 		assert.exists(resp.Fault, 'Should fail without link tag');
 	});
 
@@ -226,11 +272,15 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				<link l="1" name="${mountName1}" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 				<link l="1" name="${mountName2}" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateMountpointRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest11, auth2);
 		// Second link should be ignored
 		if (resp.CreateMountpointResponse) {
 			const links = resp.CreateMountpointResponse.link;
 			const linkArr = Array.isArray(links) ? links : [links];
+
+			// Verify response
 			assert.isAtMost(linkArr.length, 2,
 				'Should create at most the first mountpoint');
 		}
@@ -242,7 +292,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link/>
 			</CreateMountpointRequest>`;
+
+		// GetFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest12, auth2);
+
+		// Verify response
 		assert.exists(resp.Fault, 'Should fail without any attributes on link tag');
 	});
 
@@ -250,6 +304,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 	it('Functional | CreateMountPointRequest with parent-folder id is id of a default folder', async () => {
 		// Get Inbox folder ID (default folder)
 		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateMountpointRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth2);
 		const acc2InboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -258,7 +314,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${acc2InboxId}" name="${mountName}" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest13, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Mount under default folder should succeed');
@@ -274,6 +334,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${parentName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// CreateMountpointRequest
 		const parentResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest3, auth2);
 		const parentId = parentResp.CreateFolderResponse.folder[0].id;
 
@@ -282,7 +344,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${parentId}" name="${mountName}" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest14, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Mount under custom folder should succeed');
@@ -298,6 +364,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(createFolderRequest4, auth2);
 
 		// Try to mount with same name as existing folder
@@ -305,7 +373,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${folderName}" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest15, auth2);
+
+		// Verify response
 		assert.exists(mountResp.Fault, 'Mount with existing folder name should fail');
 		assert.include(mountResp.Fault.Reason.Text, 'already exists',
 			'Should get ALREADY_EXISTS error');
@@ -319,6 +391,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${unsharedName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateMountpointRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest5, auth1);
 		const unsharedId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -328,8 +402,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${unsharedId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateMountpointRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest16, auth2);
 		// Mounting unshared folder might succeed but access will be denied
+		// Verify response
 		assert.exists(mountResp.CreateMountpointResponse || mountResp.Fault,
 			'Should either create mountpoint or return fault');
 	});
@@ -341,7 +418,11 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" zid="${account1Id}" rid="${sharedFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateMountpointRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest17, auth2);
+
+		// Verify response
 		assert.exists(resp.Fault, 'Should fail with missing name attribute');
 		assert.include(resp.Fault.Reason.Text, 'invalid request',
 			'Should get INVALID_REQUEST error');
@@ -355,10 +436,14 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${sharedFolderId}" view="message" color="5" f="#"/>
 			</CreateMountpointRequest>`;
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest18, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Mount with color and flag should succeed');
 		const link = mountResp.CreateMountpointResponse.link[0];
+
+		// Verify response
 		assert.equal(link.color, '5', 'Color should be set to 5');
 	});
 
@@ -370,6 +455,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${contactsFolderName}" l="${inboxId}" view="contact"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const contactsResp = await soap.makeSOAPEnvelopeAccount(createContactsFolder, auth1);
 		const contactsFolderId = contactsResp.CreateFolderResponse.folder[0].id;
 
@@ -379,6 +466,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(grantContactsFolder, auth1);
 
 		// Mount WITHOUT specifying view - should use shared folder's view
@@ -388,6 +477,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${contactsFolderId}"/>
 			</CreateMountpointRequest>`;
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest19, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Mount without view should succeed');

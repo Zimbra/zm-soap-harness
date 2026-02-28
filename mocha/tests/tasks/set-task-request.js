@@ -24,6 +24,7 @@ describe('Tasks > SetTaskRequest', function () {
 		const subject = `task${common.getUniqueString()}`;
 		const uid = common.getUniqueString();
 
+		// SetTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SetTaskRequest xmlns="urn:zimbraMail">
 				<default ptst="AC">
@@ -39,6 +40,8 @@ describe('Tasks > SetTaskRequest', function () {
 				</default>
 			</SetTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SetTaskResponse, 'SetTaskResponse should exist');
 		assert.exists(res.SetTaskResponse.calItemId, 'Should have calItemId');

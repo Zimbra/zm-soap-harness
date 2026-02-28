@@ -13,12 +13,16 @@ describe('Rest Servlet > Mail > Part Basic', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
@@ -30,6 +34,8 @@ describe('Rest Servlet > Mail > Part Basic', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const m = addRes.AddMsgResponse?.m;
 		messageId = (Array.isArray(m) ? m[0] : m).id;
@@ -47,6 +53,8 @@ describe('Rest Servlet > Mail > Part Basic', function () {
 			id: messageId,
 			extraParams: { part: '2' }
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'attachment content', 'Response should contain attachment content');
 	});
@@ -58,6 +66,8 @@ describe('Rest Servlet > Mail > Part Basic', function () {
 			id: messageId,
 			extraParams: { part: '1' }
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'Part basic test body', 'Response should contain text body');
 	});
@@ -69,6 +79,8 @@ describe('Rest Servlet > Mail > Part Basic', function () {
 			id: messageId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'boundary', 'Sync format should show MIME boundary');
 	});

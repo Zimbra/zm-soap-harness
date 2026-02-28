@@ -12,12 +12,16 @@ describe('Rest Servlet > Mail > Blocked Attachments', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
@@ -29,6 +33,8 @@ describe('Rest Servlet > Mail > Blocked Attachments', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -45,6 +51,8 @@ describe('Rest Servlet > Mail > Blocked Attachments', function () {
 			fmt: 'zip',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.isAbove(res.body.length, 10, 'ZIP response should contain message data');
 	});
@@ -55,6 +63,8 @@ describe('Rest Servlet > Mail > Blocked Attachments', function () {
 			user: account1Email,
 			folder: 'Inbox'
 		});
+
+		// Verify response
 		assert.oneOf(res.status, [200, 302], 'REST GET should return 200 or redirect');
 	});
 });

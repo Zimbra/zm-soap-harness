@@ -46,31 +46,34 @@ describe('EWS > Calendar > Cal DL Attendee ZCS-2625', function () {
 		// Create DL and add acct1, acct2 as members
 		dlName = `dl1.${unique}@${config.testDomain}`;
 		const acct3AuthToken = await soap.getAccountAuthToken(account3Email, accountPassword);
-		const createDlRes = await soap.makeSOAPEnvelopeAccount(
-			`<CreateDistributionListRequest xmlns="urn:zimbraAccount">
+		const createDlRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dlName}</name>
-			</CreateDistributionListRequest>`, acct3AuthToken
+			</CreateDistributionListRequest>`, adminAuthToken
 		);
 		assert.notExists(createDlRes.Fault, 'CreateDistributionListRequest should not fault');
-		dlId = createDlRes.CreateDistributionListResponse.dl.id;
+		dlId = createDlRes.CreateDistributionListResponse.dl[0].id;
 
-		await soap.makeSOAPEnvelopeAccount(
-			`<DistributionListActionRequest xmlns="urn:zimbraAccount">
-				<dl by="id">${dlId}</dl>
-				<action op="addMembers">
-					<dlm>${account1Email}</dlm>
-				</action>
-			</DistributionListActionRequest>`, acct3AuthToken
+		await soap.makeSOAPEnvelopeAdmin(
+			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+				<id>${dlId}</id>
+				<dlm>${account1Email}</dlm>
+			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
 
-		await soap.makeSOAPEnvelopeAccount(
-			`<DistributionListActionRequest xmlns="urn:zimbraAccount">
-				<dl by="id">${dlId}</dl>
-				<action op="addMembers">
-					<dlm>${account2Email}</dlm>
-				</action>
-			</DistributionListActionRequest>`, acct3AuthToken
+		await soap.makeSOAPEnvelopeAdmin(
+			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+				<id>${dlId}</id>
+				<dlm>${account2Email}</dlm>
+			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
+
+		await soap.makeSOAPEnvelopeAdmin(
+			`<SyncGalRequest xmlns="urn:zimbraAdmin">
+				<domain by="name">${config.testDomain}</domain>
+			</SyncGalRequest>`, adminAuthToken
+		);
+		await soap.waitFor(5000);
 	});
 
 	// Applicable zimbra versions
@@ -222,6 +225,8 @@ describe('EWS > Calendar > Cal DL Attendee ZCS-2625', function () {
 			</SendInviteReplyRequest>`, acct1AuthToken
 		);
 		assert.notExists(acceptRes1.Fault, 'Response should not be a Fault');
+
+		await soap.waitFor(5000);
 
 		// GetItem via EWS from account3 (organizer) to verify attendee status
 		const getItemRes = await ews.makeEWSRequest(

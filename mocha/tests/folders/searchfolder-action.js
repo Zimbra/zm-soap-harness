@@ -21,6 +21,8 @@ describe('Folders > Searchfolder Action', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${searchName1}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		const response1 = await soap.makeSOAPEnvelopeAccount(request1, accountAuthToken);
 
 		searchFolderId1 = response1.CreateSearchFolderResponse.search[0].id;
@@ -30,6 +32,8 @@ describe('Folders > Searchfolder Action', function () {
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${searchName2}' query='in:sent' types='conversation' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
+
+		// GetFolderRequest
 		const response2 = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken);
 
 		searchFolderId2 = response2.CreateSearchFolderResponse.search[0].id;
@@ -52,7 +56,7 @@ describe('Folders > Searchfolder Action', function () {
 
 	// Tests
 	it('Functional | Try to move mail in search folder', async () => {
-		// Add a message to inbox with proper RFC 822 headers
+		// Get inbox folder id with proper RFC 822 headers
 		const uniqueStr = common.getUniqueString();
 		const addMsgRequest =
 			`<AddMsgRequest xmlns='urn:zimbraMail'>
@@ -66,6 +70,8 @@ Content-Type: text/plain
 Test content ${uniqueStr}</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// MsgActionRequest
 		const addMsgResponse = await soap.makeSOAPEnvelopeAccount(addMsgRequest, accountAuthToken);
 		const messageId = addMsgResponse.AddMsgResponse.m[0].id;
 
@@ -74,8 +80,11 @@ Test content ${uniqueStr}</content>
 			`<MsgActionRequest xmlns='urn:zimbraMail'>
 				<action id='${messageId}' op='move' l='${searchFolderId1}'/>
 			</MsgActionRequest>`;
+
+		// CreateContactRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(moveResponse.Fault, 'Verify Fault exists');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
 			'Verify CANNOT_CONTAIN error');
@@ -92,6 +101,8 @@ Test content ${uniqueStr}</content>
 					<a n='email'>email${common.getUniqueString()}@domain.com</a>
 				</cn>
 			</CreateContactRequest>`;
+
+		// ContactActionRequest
 		const contactResponse = await soap.makeSOAPEnvelopeAccount(createContactRequest, accountAuthToken);
 		const contactId = contactResponse.CreateContactResponse.cn[0].id;
 
@@ -100,8 +111,11 @@ Test content ${uniqueStr}</content>
 			`<ContactActionRequest xmlns='urn:zimbraMail'>
 				<action id='${contactId}' op='move' l='${searchFolderId1}'/>
 			</ContactActionRequest>`;
+
+		// CreateTagRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(moveResponse.Fault, 'Verify Fault exists');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
 			'Verify CANNOT_CONTAIN error');
@@ -115,6 +129,8 @@ Test content ${uniqueStr}</content>
 			`<CreateTagRequest xmlns='urn:zimbraMail'>
 				<tag name='${tagName}' color='1'/>
 			</CreateTagRequest>`;
+
+		// ItemActionRequest
 		const tagResponse = await soap.makeSOAPEnvelopeAccount(createTagRequest, accountAuthToken);
 		const tagId = tagResponse.CreateTagResponse.tag[0].id;
 
@@ -123,8 +139,11 @@ Test content ${uniqueStr}</content>
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action id='${tagId}' op='move' l='${searchFolderId1}'/>
 			</ItemActionRequest>`;
+
+		// CreateFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(moveResponse.Fault,
 			'Verify Fault exists when moving tag to search folder');
 	});
@@ -136,6 +155,8 @@ Test content ${uniqueStr}</content>
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createFolderRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -144,8 +165,11 @@ Test content ${uniqueStr}</content>
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${folderId}' l='${searchFolderId1}'/>
 			</FolderActionRequest>`;
+
+		// CreateSearchFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(moveResponse.Fault, 'Verify Fault exists');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
 			'Verify CANNOT_CONTAIN error');
@@ -159,6 +183,8 @@ Test content ${uniqueStr}</content>
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName1}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
+
+		// CreateSearchFolderRequest
 		const sfResp1 = await soap.makeSOAPEnvelopeAccount(sfReq1, accountAuthToken);
 		const sfId1 = sfResp1.CreateSearchFolderResponse.search[0].id;
 
@@ -167,6 +193,8 @@ Test content ${uniqueStr}</content>
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName2}' query='in:sent' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp2 = await soap.makeSOAPEnvelopeAccount(sfReq2, accountAuthToken);
 		const sfId2 = sfResp2.CreateSearchFolderResponse.search[0].id;
 
@@ -174,8 +202,11 @@ Test content ${uniqueStr}</content>
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${sfId2}' l='${sfId1}'/>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(moveResponse.Fault, 'Response should not be a Fault');
 		assert.exists(moveResponse.FolderActionResponse, 'Verify move succeeded');
 	});
@@ -189,8 +220,11 @@ Test content ${uniqueStr}</content>
 				`<FolderActionRequest xmlns='urn:zimbraMail'>
 					<action op='move' id='${folderId}' l='${searchFolderId1}'/>
 				</FolderActionRequest>`;
+
+			// CreateSearchFolderRequest
 			const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
+			// Verify response
 			assert.exists(moveResponse.Fault,
 				`Verify Fault when moving default folder ${folderId} into search folder`);
 			assert.include(moveResponse.Fault.Reason.Text, 'immutable',
@@ -205,6 +239,8 @@ Test content ${uniqueStr}</content>
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
 
@@ -212,8 +248,11 @@ Test content ${uniqueStr}</content>
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${sfId}' l='${folderIds.junk}'/>
 			</FolderActionRequest>`;
+
+		// CreateSearchFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(moveResponse.Fault, 'Response should not be a Fault');
 		assert.exists(moveResponse.FolderActionResponse, 'Verify move succeeded');
 	});
@@ -225,6 +264,8 @@ Test content ${uniqueStr}</content>
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
 
@@ -233,8 +274,11 @@ Test content ${uniqueStr}</content>
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='rename' id='${sfId}' name='${newName}'/>
 			</FolderActionRequest>`;
+
+		// CreateSearchFolderRequest
 		const renameResponse = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(renameResponse.Fault, 'Response should not be a Fault');
 		assert.exists(renameResponse.FolderActionResponse, 'Verify rename succeeded');
 	});
@@ -246,6 +290,8 @@ Test content ${uniqueStr}</content>
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
 
@@ -253,8 +299,11 @@ Test content ${uniqueStr}</content>
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='delete' id='${sfId}'/>
 			</FolderActionRequest>`;
+
+		// CreateSearchFolderRequest
 		const deleteResponse = await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(deleteResponse.Fault, 'Response should not be a Fault');
 		assert.exists(deleteResponse.FolderActionResponse, 'Verify delete succeeded');
 	});
@@ -266,6 +315,8 @@ Test content ${uniqueStr}</content>
 			`<CreateSearchFolderRequest xmlns='urn:zimbraMail'>
 				<search name='${sfName}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
+
+		// FolderActionRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
 
@@ -274,6 +325,8 @@ Test content ${uniqueStr}</content>
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='delete' id='${sfId}'/>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(deleteRequest1, accountAuthToken);
 
 		// Delete again
@@ -284,6 +337,7 @@ Test content ${uniqueStr}</content>
 		const deleteResponse2 = await soap.makeSOAPEnvelopeAccount(deleteRequest2, accountAuthToken);
 
 		// Should not fail (idempotent)
+		// Verify response
 		assert.notExists(deleteResponse2.Fault, 'Response should not be a Fault');
 		assert.exists(deleteResponse2.FolderActionResponse,
 			'Verify re-delete does not fail');

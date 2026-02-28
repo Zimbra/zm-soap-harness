@@ -57,6 +57,8 @@ describe('Folders > Bugs > Bug 39804', function () {
 				`<CreateFolderRequest xmlns="urn:zimbraMail">
 					<folder name="${folderName}" l="${inboxId}"/>
 				</CreateFolderRequest>`;
+
+			// FolderActionRequest
 			const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 			const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -67,6 +69,8 @@ describe('Folders > Bugs > Bug 39804', function () {
 						<grant gt="usr" d="${testAccount2}" perm="r"/>
 					</action>
 				</FolderActionRequest>`;
+
+			// FolderActionRequest
 			await soap.makeSOAPEnvelopeAccount(folderActionRequest1, auth1);
 
 			// Share with Account 3
@@ -76,6 +80,8 @@ describe('Folders > Bugs > Bug 39804', function () {
 						<grant gt="usr" d="${testAccount3}" perm="r"/>
 					</action>
 				</FolderActionRequest>`;
+
+			// NoOpRequest
 			await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 		}
 
@@ -84,6 +90,8 @@ describe('Folders > Bugs > Bug 39804', function () {
 
 		// Verify Account 1 still ALIVE
 		const pingResp = await soap.makeSOAPEnvelopeAccount('<NoOpRequest xmlns="urn:zimbraMail"/>', auth1);
+
+		// Verify response
 		assert.notExists(pingResp.Fault, 'Response should not be a Fault');
 		assert.exists(pingResp.NoOpResponse, 'Account 1 should remain active');
 	});

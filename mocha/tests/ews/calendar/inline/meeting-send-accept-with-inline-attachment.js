@@ -157,6 +157,7 @@ describe('EWS > Calendar > Inline > Meeting Send Accept With Inline Attachment',
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 
 		// Verify on organizer ZWC account
+		await common.delay(3000);
 		const acct1Token = await soap.getAccountAuthToken(account1Email, accountPassword);
 		const sentSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -169,6 +170,7 @@ describe('EWS > Calendar > Inline > Meeting Send Accept With Inline Attachment',
 		assert.exists(sentMsg, 'Sent message should exist');
 
 		// Step 5: Verify on attendee ZWC account
+		await common.delay(8000);
 		const acct2Token = await soap.getAccountAuthToken(account2Email, accountPassword);
 		const inboxSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -215,6 +217,7 @@ describe('EWS > Calendar > Inline > Meeting Send Accept With Inline Attachment',
 		assert.exists(acceptRes.SendInviteReplyResponse, 'SendInviteReplyResponse should exist');
 
 		// Step 7: Verify accept response received by organizer
+		await common.delay(3000);
 		const acct1Token2 = await soap.getAccountAuthToken(account1Email, accountPassword);
 		const responseSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">

@@ -47,6 +47,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 		// This implies inheritance blocked.
 
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -55,6 +57,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folder1Name}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const resp1 = await soap.makeSOAPEnvelopeAccount(create1, auth1);
 		const folder1Id = resp1.CreateFolderResponse.folder[0].id;
 
@@ -63,6 +67,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folder2Name}" l="${folder1Id}" f="i"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const resp2 = await soap.makeSOAPEnvelopeAccount(create2, auth1);
 		const folder2Id = resp2.CreateFolderResponse.folder[0].id;
 
@@ -73,6 +79,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<content>Content1</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// AddMsgRequest
 		await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth1);
 
 		const addMsgRequest2 =
@@ -81,6 +89,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<content>Content2</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const ref2 = await soap.makeSOAPEnvelopeAccount(addMsgRequest2, auth1);
 		const msg2Id = ref2.AddMsgResponse.m[0].id;
 
@@ -91,6 +101,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Mount
@@ -99,7 +111,9 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${folder1Id}" view="message"/>
 			</CreateMountpointRequest>`;
-		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
+
+		// GetMsgRequest
+		await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
 
 		// Try to get message in folder2 (which is subfolder of mountpoint)
 		// Access via mountpoint: mountName/folder2Name ?
@@ -110,7 +124,11 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msg2Id}"/>
 			</GetMsgRequest>`;
+
+		// GetFolderRequest
 		const getMsgResp = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
+
+		// Verify response
 		assert.exists(getMsgResp.Fault,
 			'Access to subfolder should be denied with f="i"');
 	});
@@ -118,6 +136,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 	it('Sanity | Verify by default subfolders are allowed to be read', async () => {
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -126,6 +146,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folder3Name}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const resp3 = await soap.makeSOAPEnvelopeAccount(create3, auth1);
 		const folder3Id = resp3.CreateFolderResponse.folder[0].id;
 
@@ -134,6 +156,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folder4Name}" l="${folder3Id}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const resp4 = await soap.makeSOAPEnvelopeAccount(create4, auth1);
 		const folder4Id = resp4.CreateFolderResponse.folder[0].id;
 
@@ -144,6 +168,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<content>Content4</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const ref4 = await soap.makeSOAPEnvelopeAccount(addMsgRequest3, auth1);
 		const msg4Id = ref4.AddMsgResponse.m[0].id;
 
@@ -154,6 +180,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// Mount
@@ -161,6 +189,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_${folder3Name}" zid="${account1Id}" rid="${folder3Id}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, auth2);
 
 		// Verify Access to subfolder message
@@ -168,7 +198,11 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msg4Id}"/>
 			</GetMsgRequest>`;
+
+		// GetFolderRequest
 		const getMsg = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, auth2);
+
+		// Verify response
 		assert.exists(getMsg.GetMsgResponse.m,
 			'Should be able to get message in inherited subfolder');
 	});
@@ -176,6 +210,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 	it('Functional | Verify that newly-created subfolders will automatically inherit granted rights as appropriate', async () => {
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -185,6 +221,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${parentName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const parentResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const parentId = parentResp.CreateFolderResponse.folder[0].id;
 
@@ -193,6 +231,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${childName}" l="${parentId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const childResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const childId = childResp.CreateFolderResponse.folder[0].id;
 
@@ -201,6 +241,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${grandchildName}" l="${childId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const grandchildResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest3, auth1);
 		const grandchildId = grandchildResp.CreateFolderResponse.folder[0].id;
 
@@ -211,6 +253,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<content>Grandchild content</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const msgResp = await soap.makeSOAPEnvelopeAccount(addMsgRequest4, auth1);
 		const msgId = msgResp.AddMsgResponse.m[0].id;
 
@@ -221,6 +265,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest3, auth1);
 
 		// Mount parent
@@ -228,6 +274,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_${parentName}" zid="${account1Id}" rid="${parentId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(createMountpointRequest3, auth2);
 
 		// Verify access to grandchild message (inherited through 2 levels)
@@ -235,7 +283,11 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
+
+		// GetFolderRequest
 		const getMsg = await soap.makeSOAPEnvelopeAccount(getMsgRequest3, auth2);
+
+		// Verify response
 		assert.exists(getMsg.GetMsgResponse.m,
 			'Should access grandchild message via multi-level inheritance');
 	});
@@ -243,6 +295,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 	it('Functional | Verify that Existing folders moved to a different point in the folder hierarchy will also reinterpret their inherited permissions in the context of their new location.', async () => {
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -251,6 +305,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${parentName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const parentResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest4, auth1);
 		const parentId = parentResp.CreateFolderResponse.folder[0].id;
 
@@ -259,6 +315,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${childName}" l="${parentId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const childResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest5, auth1);
 		const childId = childResp.CreateFolderResponse.folder[0].id;
 
@@ -269,6 +327,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<content>Content</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const msgResp = await soap.makeSOAPEnvelopeAccount(addMsgRequest5, auth1);
 		const msgId = msgResp.AddMsgResponse.m[0].id;
 
@@ -279,6 +339,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest4, auth1);
 
 		// Share child with manager rights (override)
@@ -288,6 +350,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest5, auth1);
 
 		// Mount parent
@@ -295,6 +359,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_${parentName}" zid="${account1Id}" rid="${parentId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// MsgActionRequest
 		await soap.makeSOAPEnvelopeAccount(createMountpointRequest4, auth2);
 
 		// Verify acc2 can delete msg in child (manager rights override read-only)
@@ -302,7 +368,11 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${account1Id}:${msgId}" op="delete"/>
 			</MsgActionRequest>`;
+
+		// GetFolderRequest
 		const delRes = await soap.makeSOAPEnvelopeAccount(msgActionRequest, auth2);
+
+		// Verify response
 		assert.notExists(delRes.Fault,
 			'Child folder override should allow delete even though parent is read-only');
 	});
@@ -310,6 +380,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 	it('Sanity | Verify by default read permission applies to multiple levels (4 levels) of subfolders', async () => {
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -319,6 +391,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${l1Name}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const l1Resp = await soap.makeSOAPEnvelopeAccount(createL1, auth1);
 		const l1Id = l1Resp.CreateFolderResponse.folder[0].id;
 
@@ -327,6 +401,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${l2Name}" l="${l1Id}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const l2Resp = await soap.makeSOAPEnvelopeAccount(createL2, auth1);
 		const l2Id = l2Resp.CreateFolderResponse.folder[0].id;
 
@@ -335,6 +411,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${l3Name}" l="${l2Id}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const l3Resp = await soap.makeSOAPEnvelopeAccount(createL3, auth1);
 		const l3Id = l3Resp.CreateFolderResponse.folder[0].id;
 
@@ -343,6 +421,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${l4Name}" l="${l3Id}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const l4Resp = await soap.makeSOAPEnvelopeAccount(createL4, auth1);
 		const l4Id = l4Resp.CreateFolderResponse.folder[0].id;
 
@@ -353,6 +433,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<content>L4 content</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const msgResp = await soap.makeSOAPEnvelopeAccount(addMsg, auth1);
 		const msgId = msgResp.AddMsgResponse.m[0].id;
 
@@ -363,6 +445,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(grant, auth1);
 
 		// Mount L1
@@ -370,6 +454,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_${l1Name}" zid="${account1Id}" rid="${l1Id}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(mount, auth2);
 
 		// Verify access to L4 message
@@ -377,7 +463,11 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
+
+		// GetFolderRequest
 		const getMsgResp = await soap.makeSOAPEnvelopeAccount(getMsg, auth2);
+
+		// Verify response
 		assert.exists(getMsgResp.GetMsgResponse.m,
 			'Should access L4 message via 4-level inheritance');
 	});
@@ -385,6 +475,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 	it('Sanity | Verify that one subfolder with perm none and flags i breaks the inherit properties of all subfolders', async () => {
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -394,6 +486,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${parentName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const parentResp = await soap.makeSOAPEnvelopeAccount(createParent, auth1);
 		const parentId = parentResp.CreateFolderResponse.folder[0].id;
 
@@ -402,6 +496,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${childName}" l="${parentId}" f="i"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const childResp = await soap.makeSOAPEnvelopeAccount(createChild, auth1);
 		const childId = childResp.CreateFolderResponse.folder[0].id;
 
@@ -410,6 +506,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${grandchildName}" l="${childId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const grandchildResp = await soap.makeSOAPEnvelopeAccount(createGrandchild, auth1);
 		const grandchildId = grandchildResp.CreateFolderResponse.folder[0].id;
 
@@ -420,6 +518,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<content>Grandchild break content</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const msgResp = await soap.makeSOAPEnvelopeAccount(addMsg, auth1);
 		const msgId = msgResp.AddMsgResponse.m[0].id;
 
@@ -430,6 +530,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(grant, auth1);
 
 		// Mount
@@ -437,6 +539,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_${parentName}" zid="${account1Id}" rid="${parentId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(mount, auth2);
 
 		// Try to access grandchild message - should be denied
@@ -444,7 +548,11 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
+
+		// GetFolderRequest
 		const getMsgResp = await soap.makeSOAPEnvelopeAccount(getMsg, auth2);
+
+		// Verify response
 		assert.exists(getMsgResp.Fault,
 			'Access to grandchild should be denied when child has flags=i');
 	});
@@ -452,6 +560,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 	it('Sanity | Verify by default delgatee are allowed to create a subfolder in the shared folder', async () => {
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -460,6 +570,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const folderResp = await soap.makeSOAPEnvelopeAccount(createFolder, auth1);
 		const folderId = folderResp.CreateFolderResponse.folder[0].id;
 
@@ -470,6 +582,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(grant, auth1);
 
 		// Mount
@@ -477,6 +591,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_${folderName}" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(mount, auth2);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -486,7 +602,11 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${subName}" l="${mountId}"/>
 			</CreateFolderRequest>`;
+
+		// GetFolderRequest
 		const subResp = await soap.makeSOAPEnvelopeAccount(createSub, auth2);
+
+		// Verify response
 		assert.notExists(subResp.Fault, 'Response should not be a Fault');
 		assert.exists(subResp.CreateFolderResponse,
 			'Delegatee should be able to create subfolder in shared folder');
@@ -495,6 +615,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 	it('Functional | Verify that a subfolder folder cannot be shared if parent folder has d permission but flags i', async () => {
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -503,6 +625,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${parentName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const parentResp = await soap.makeSOAPEnvelopeAccount(createParent, auth1);
 		const parentId = parentResp.CreateFolderResponse.folder[0].id;
 
@@ -511,6 +635,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${childName}" l="${parentId}" f="i"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const childResp = await soap.makeSOAPEnvelopeAccount(createChild, auth1);
 		const childId = childResp.CreateFolderResponse.folder[0].id;
 
@@ -521,6 +647,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="d"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(grant, auth1);
 
 		// Mount
@@ -528,6 +656,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_${parentName}" zid="${account1Id}" rid="${parentId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(mount, auth2);
 
 		// Try to access child from delegatee - should be denied
@@ -535,7 +665,11 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<GetFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${account1Id}:${childId}"/>
 			</GetFolderRequest>`;
+
+		// GetFolderRequest
 		const childAccessResp = await soap.makeSOAPEnvelopeAccount(getFolderChild, auth2);
+
+		// Verify response
 		assert.exists(childAccessResp.Fault,
 			'Child folder should not be accessible when parent has flags=i');
 	});
@@ -543,6 +677,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 	it('Functional | Verify that a folder cannot be created in a folder whose parent folder has rwi permission but flags i', async () => {
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -551,6 +687,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${parentName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const parentResp = await soap.makeSOAPEnvelopeAccount(createParent, auth1);
 		const parentId = parentResp.CreateFolderResponse.folder[0].id;
 
@@ -559,6 +697,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${childName}" l="${parentId}" f="i"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const childResp = await soap.makeSOAPEnvelopeAccount(createChild, auth1);
 		const childId = childResp.CreateFolderResponse.folder[0].id;
 
@@ -569,6 +709,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="rwi"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(grant, auth1);
 
 		// Mount
@@ -576,8 +718,10 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_${parentName}" zid="${account1Id}" rid="${parentId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(mount, auth2);
-		const mountId = mountResp.CreateMountpointResponse.link[0].id;
+		mountResp.CreateMountpointResponse.link[0].id;
 
 		// Delegatee tries to create folder under child (which has flags=i) - should fail
 		const subName = `sub_rwi_${common.getUniqueString()}`;
@@ -585,7 +729,11 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${subName}" l="${account1Id}:${childId}"/>
 			</CreateFolderRequest>`;
+
+		// GetFolderRequest
 		const subResp = await soap.makeSOAPEnvelopeAccount(createSub, auth2);
+
+		// Verify response
 		assert.exists(subResp.Fault,
 			'Creating folder under child with flags=i should be denied');
 	});
@@ -593,6 +741,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 
 	it('Functional | Verify that a folder cannot be moved into another whose parent folder has rwi permission and flags i', async () => {
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -601,6 +751,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${parentName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const parentResp = await soap.makeSOAPEnvelopeAccount(createParent, auth1);
 		const parentId = parentResp.CreateFolderResponse.folder[0].id;
 
@@ -609,6 +761,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${targetName}" l="${parentId}" f="i"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const targetResp = await soap.makeSOAPEnvelopeAccount(createTarget, auth1);
 		const targetId = targetResp.CreateFolderResponse.folder[0].id;
 
@@ -619,6 +773,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 					<grant gt="usr" d="${testAccount2}" perm="rwi"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(grant, auth1);
 
 		// Mount
@@ -626,6 +782,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_${parentName}" zid="${account1Id}" rid="${parentId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(mount, auth2);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -635,6 +793,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${srcName}" l="${mountId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const srcResp = await soap.makeSOAPEnvelopeAccount(createSrc, auth2);
 		const srcId = srcResp.CreateFolderResponse.folder[0].id;
 
@@ -644,6 +804,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 				<action op="move" id="${srcId}" l="${account1Id}:${targetId}"/>
 			</FolderActionRequest>`;
 		const moveResp = await soap.makeSOAPEnvelopeAccount(moveRequest, auth2);
+
+		// Verify response
 		assert.exists(moveResp.Fault,
 			'Moving folder into target with flags=i should be denied');
 	});

@@ -21,12 +21,16 @@ describe('Auth > Auth Alias', function () {
 		// Create account1
 		account1Name = 'account1.' + common.getUniqueString() + '@' + config.testDomain;
 		account1Alias = 'account1.alias1.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
@@ -50,12 +54,16 @@ describe('Auth > Auth Alias', function () {
 		account2Name = account2NameUser + '@' + config.testDomain;
 		account2AliasUser = 'alias2.' + common.getUniqueString();
 		account2Alias = account2AliasUser + '@' + config.testDomain;
+
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
@@ -76,12 +84,16 @@ describe('Auth > Auth Alias', function () {
 	// Tests
 	if (config.serial !== true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		it('Smoke | AuthRequest - log in with alias', async () => {
+
+			// Send the message
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1Alias}</account>
 					<password>${config.accountPassword}</password>
 				</AuthRequest>`, null
 			);
+
+			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
@@ -91,17 +103,23 @@ describe('Auth > Auth Alias', function () {
 
 	if (config.serial !== true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		it('Sanity | AuthRequest - verify failed login with alias name does not show real account name', async () => {
+
+			// Send the message
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2AliasUser}</account>
 					<password>wrong password</password>
 				</AuthRequest>`, null
 			);
+
+			// Verify response
 			assert.exists(response.Fault, 'Should return Fault');
 			assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED');
 			// Verify real account name is NOT in the error trace
 			const faultText = JSON.stringify(response.Fault);
+
+			// Verify response
 			assert.notInclude(faultText, account2NameUser,
 				'Real account name should not appear in error');
 		});
@@ -120,23 +138,29 @@ describe('Auth > Auth Alias', function () {
 
 			try {
 				// Attempt alias login - should fail with AUTH_FAILED
+				// Send the message
 				const aliasRes = await soap.makeSOAPEnvelopeAccount(
 					`<AuthRequest xmlns="urn:zimbraAccount">
 						<account by="name">${account1Alias}</account>
 						<password>${config.accountPassword}</password>
 					</AuthRequest>`, null, true, account1Server
 				);
+
+				// Verify response
 				assert.exists(aliasRes.Fault, 'Should return Fault for alias login when disabled');
 				assert.include(aliasRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 					'Should return AUTH_FAILED for alias login');
 
 				// Regular account login should still work
+				// Send the message
 				const acctRes = await soap.makeSOAPEnvelopeAccount(
 					`<AuthRequest xmlns="urn:zimbraAccount">
 						<account by="name">${account1Name}</account>
 						<password>${config.accountPassword}</password>
 					</AuthRequest>`, null, true, account1Server
 				);
+
+				// Verify response
 				assert.notExists(acctRes.Fault, 'Response should not be a Fault');
 				assert.exists(acctRes.AuthResponse, 'AuthResponse should exist for regular login');
 				assert.match(String(acctRes.AuthResponse.lifetime), /^\d+$/,

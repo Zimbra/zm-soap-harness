@@ -16,9 +16,12 @@ describe('Admin > Accounts > Get All Admin Accounts', function () {
 
 	// Tests
 	it('Sanity | Test for GetAllAdminAccountsRequest', async () => {
+		// GetAllAdminAccountsRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			'<GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetAllAdminAccountsResponse,
 			'GetAllAdminAccountsResponse should exist');

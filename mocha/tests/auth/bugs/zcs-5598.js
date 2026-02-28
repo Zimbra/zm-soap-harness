@@ -13,23 +13,29 @@ describe('Auth > Bugs > ZCS-5598', function () {
 	// Tests
 	it('Sanity | Verify WWW-Authenticate - BASIC realm Zimbra is not returned for non-existent account, existing account', async () => {
 		// Verify with existing admin user + incorrect password
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">admin</account>
 				<password>test124</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(authRes1.Fault, 'Should return Fault for incorrect password');
 		assert.include(authRes1.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for existing user with incorrect password');
 
 		// Verify with non-existent account + incorrect password
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">account1.name.incorrect</account>
 				<password>test124</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(authRes2.Fault, 'Should return Fault for non-existent account');
 		assert.include(authRes2.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for non-existent account');

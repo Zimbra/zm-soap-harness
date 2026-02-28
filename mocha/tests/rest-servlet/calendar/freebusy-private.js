@@ -13,21 +13,29 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create1Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create1Res.Fault, 'Response should not be a Fault');
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create2Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
@@ -44,6 +52,7 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 		const startMs = '1295438400000';
 		const subject = 'subject' + common.getUniqueString();
 
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -62,6 +71,8 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -70,6 +81,8 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbRes.status, 200, 'FreeBusy should return 200');
 		assert.include(fbRes.body, 'FBTYPE=BUSY', 'F,B should show busy for private event');
 	});
@@ -79,6 +92,7 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 		const startMs = '1326974400000';
 		const subject = 'subject' + common.getUniqueString();
 
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -97,6 +111,8 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -105,6 +121,8 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbRes.status, 200, 'FreeBusy should return 200');
 		assert.include(fbRes.body, 'FBTYPE=BUSY', 'F,B should show busy for public event');
 	});
@@ -114,6 +132,7 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 		const startMs = '1358596800000';
 		const subject = 'subject' + common.getUniqueString();
 
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -132,6 +151,8 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const oneDayMs = 86400000;
@@ -140,6 +161,8 @@ describe('Rest Servlet > Calendar > FreeBusy Private', function () {
 			s: String(Number(startMs) - oneDayMs),
 			e: String(Number(startMs) + oneDayMs)
 		});
+
+		// Verify response
 		assert.equal(fbRes.status, 200, 'FreeBusy should return 200');
 		assert.include(fbRes.body, 'FBTYPE=BUSY',
 			'F,B should show busy for confidential event');

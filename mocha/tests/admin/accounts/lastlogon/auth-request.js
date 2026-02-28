@@ -18,6 +18,8 @@ describe('Admin > Accounts > Lastlogon > Auth Request', function () {
 	// Tests
 	it('Functional | AuthRequest - verify zimbraLastLogonTimestamp is updated', async () => {
 		const acctName = `user${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -34,16 +36,22 @@ describe('Admin > Accounts > Lastlogon > Auth Request', function () {
 				<account by="name">${acctName}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetAccountResponse,
 			'GetAccountResponse should exist');
 		const account = Array.isArray(getRes.GetAccountResponse.account)
 			? getRes.GetAccountResponse.account[0]
 			: getRes.GetAccountResponse.account;
+
+		// Verify response
 		assert.exists(account.id, 'Account should have an id');
 
 		const attrs = getRes.GetAccountResponse.account[0].a || [];
 		const lastLogon = attrs.find(a => a.n === 'zimbraLastLogonTimestamp');
+
+		// Verify response
 		assert.exists(lastLogon, 'zimbraLastLogonTimestamp should be set after login');
 		assert.isNotEmpty(lastLogon._content,
 			'zimbraLastLogonTimestamp should have a value');

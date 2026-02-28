@@ -13,6 +13,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -21,6 +23,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 		);
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
@@ -99,6 +103,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 		assert.isAbove(exportRes.body.length, 10, 'TGZ export should contain data');
 
@@ -109,6 +115,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fileBuffer: exportRes.body,
 			contentType: 'application/x-tar'
 		});
+
+		// Verify response
 		assert.equal(importRes.status, 200, 'Import should return 200');
 	});
 
@@ -120,6 +128,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
 		const importRes = await rest.makeRestPostRequest(account2Token, {
@@ -129,6 +139,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fileBuffer: exportRes.body,
 			contentType: 'application/x-tar'
 		});
+
+		// Verify response
 		assert.equal(importRes.status, 200, 'Import should return 200');
 	});
 
@@ -140,6 +152,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
 		const importRes = await rest.makeRestPostRequest(account2Token, {
@@ -150,6 +164,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			contentType: 'application/x-tar',
 			extraParams: { resolve: 'modify' }
 		});
+
+		// Verify response
 		assert.equal(importRes.status, 200, 'Import should return 200');
 
 		// Verify contact was imported
@@ -158,6 +174,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 				<query>*</query>
 			</SearchRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -169,6 +187,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.oneOf(exportRes.status, [200, 204], 'Export should return 200 or 204');
 	});
 
@@ -179,6 +199,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 		assert.isAbove(exportRes.body.length, 10, 'TGZ export should contain mailbox data');
 	});
@@ -191,6 +213,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
 		const importRes = await rest.makeRestPostRequest(account2Token, {
@@ -200,6 +224,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fileBuffer: exportRes.body,
 			contentType: 'application/x-tar'
 		});
+
+		// Verify response
 		assert.equal(importRes.status, 200, 'Import should return 200');
 	});
 
@@ -210,6 +236,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should have return 200');
 		assert.isAbove(exportRes.body.length, 10, 'TGZ export should contain preference data');
 	});
@@ -221,6 +249,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 		assert.isAbove(exportRes.body.length, 10, 'TGZ export should contain tag data');
 	});
@@ -232,6 +262,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(exportRes.status, 200, 'Export should return 200');
 
 		const importRes = await rest.makeRestPostRequest(account2Token, {
@@ -241,6 +273,8 @@ describe('Rest Servlet > Fmt > TGZ > Export Import', function () {
 			contentType: 'application/x-tar',
 			extraParams: { resolve: 'modify' }
 		});
+
+		// Verify response
 		assert.equal(importRes.status, 200, 'Import should return 200');
 	});
 });

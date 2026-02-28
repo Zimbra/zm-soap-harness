@@ -43,12 +43,16 @@ describe('Sharing > Get Share Info Request', function () {
 
 		// Create distribution list and add members
 		dlName = `distlist.${common.getUniqueString()}@${testDomain}`;
+
+		// CreateDistributionListRequest
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dlName}</name>
 				<a n="description">A Distribution List containing 3 users</a>
 			</CreateDistributionListRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDistributionListRequest should not fault');
 		dlId = res.CreateDistributionListResponse.dl[0].id;
 
@@ -61,6 +65,8 @@ describe('Sharing > Get Share Info Request', function () {
 				<dlm>${account1Email}</dlm>
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AddDistributionListMemberRequest should not fault');
 	});
 
@@ -75,11 +81,15 @@ describe('Sharing > Get Share Info Request', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const acct2Folders = res.GetFolderResponse.folder[0].folder;
 		const acct2Inbox = acct2Folders.find(f => f.name === 'Inbox');
 		const acct2Calendar = acct2Folders.find(f => f.name === 'Calendar');
 		const acct2Briefcase = acct2Folders.find(f => f.name === 'Briefcase');
+
+		// Verify response
 		assert.exists(acct2Inbox, 'Account2 Inbox should exist');
 		assert.exists(acct2Calendar, 'Account2 Calendar should exist');
 		assert.exists(acct2Briefcase, 'Account2 Briefcase should exist');
@@ -92,6 +102,8 @@ describe('Sharing > Get Share Info Request', function () {
 				</action>
 			</FolderActionRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant Inbox should not fault');
 
 		// Share Calendar with account1
@@ -102,6 +114,8 @@ describe('Sharing > Get Share Info Request', function () {
 				</action>
 			</FolderActionRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant Calendar should not fault');
 
 		// Share Briefcase with account1
@@ -112,35 +126,45 @@ describe('Sharing > Get Share Info Request', function () {
 				</action>
 			</FolderActionRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant Briefcase should not fault');
 
 		// As account1: accept Inbox and Briefcase (mount them)
 		res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const acct1Root = res.GetFolderResponse.folder[0];
 		const acct1RootId = acct1Root.id;
 
 		const inboxMountName = `inboxshare.${common.getUniqueString()}`;
+
+		// CreateMountpointRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${acct1RootId}" name="${inboxMountName}"
 					zid="${account2Id}" rid="${acct2Inbox.id}" view="message"/>
 			</CreateMountpointRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Mount Inbox should not fault');
-		const inboxMountId = res.CreateMountpointResponse.link[0].id;
 
 		const briefcaseMountName = `briefcaseshare.${common.getUniqueString()}`;
+
+		// CreateMountpointRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${acct1RootId}" name="${briefcaseMountName}"
 					zid="${account2Id}" rid="${acct2Briefcase.id}" view="document"/>
 			</CreateMountpointRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Mount Briefcase should not fault');
-		const briefcaseMountId = res.CreateMountpointResponse.link[0].id;
 
 		// GetShareInfoRequest - check shares from account2
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -149,6 +173,8 @@ describe('Sharing > Get Share Info Request', function () {
 				<owner by="name">${account2Email}</owner>
 			</GetShareInfoRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetShareInfoRequest should not fault');
 		assert.exists(res.GetShareInfoResponse,
 			'GetShareInfoResponse should exist');
@@ -157,11 +183,16 @@ describe('Sharing > Get Share Info Request', function () {
 		res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const acct3Folders = res.GetFolderResponse.folder[0].folder;
 		const acct3Tasks = acct3Folders.find(f => f.name === 'Tasks');
+
+		// Verify response
 		assert.exists(acct3Tasks, 'Account3 Tasks should exist');
 
+		// FolderActionRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${acct3Tasks.id}">
@@ -169,6 +200,8 @@ describe('Sharing > Get Share Info Request', function () {
 				</action>
 			</FolderActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant Tasks to DL should not fault');
 
 		// Admin: GetShareInfoRequest for DL
@@ -178,6 +211,8 @@ describe('Sharing > Get Share Info Request', function () {
 				<owner by="name">${account3Email}</owner>
 			</GetShareInfoRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Admin GetShareInfoRequest should not fault');
 		assert.exists(res.GetShareInfoResponse,
 			'Admin GetShareInfoResponse should exist');
@@ -190,12 +225,16 @@ describe('Sharing > Get Share Info Request', function () {
 		const acct2RootId = acct2Root.id;
 
 		const taskMountName = `task.${common.getUniqueString()}`;
+
+		// CreateMountpointRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${acct2RootId}" name="${taskMountName}"
 					zid="${account3Id}" rid="${acct3Tasks.id}" view="task"/>
 			</CreateMountpointRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Mount Tasks should not fault');
 
 		// Account2: GetShareInfoRequest for account3 shares
@@ -204,13 +243,19 @@ describe('Sharing > Get Share Info Request', function () {
 				<owner by="name">${account3Email}</owner>
 			</GetShareInfoRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetShareInfoRequest for account3 should not fault');
 		assert.exists(res.GetShareInfoResponse,
 			'GetShareInfoResponse for account3 should exist');
 		const shares = res.GetShareInfoResponse.share;
+
+		// Verify response
 		assert.exists(shares, 'Should contain share info');
 		const shareArr = Array.isArray(shares) ? shares : [shares];
 		const taskShare = shareArr.find(s => s.folderPath === '/Tasks');
+
+		// Verify response
 		assert.exists(taskShare, 'Tasks share should be visible');
 		assert.equal(taskShare.ownerEmail, account3Email,
 			'Owner email should match');
@@ -223,18 +268,23 @@ describe('Sharing > Get Share Info Request', function () {
 				<action op="!grant" id="${acct2Inbox.id}" zid="${account1Id}"/>
 			</FolderActionRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Revoke Inbox should not fault');
 
 		// Account1: mount Calendar and verify shares
 		const calMountName = `calshare.${common.getUniqueString()}`;
+
+		// CreateMountpointRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${acct1RootId}" name="${calMountName}"
 					zid="${account2Id}" rid="${acct2Calendar.id}" view="appointment"/>
 			</CreateMountpointRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Mount Calendar should not fault');
-		const calMountId = res.CreateMountpointResponse.link[0].id;
 
 		// Final GetShareInfoRequest - should see Calendar and Briefcase but not Inbox
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -243,6 +293,8 @@ describe('Sharing > Get Share Info Request', function () {
 				<owner by="name">${account2Email}</owner>
 			</GetShareInfoRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Final GetShareInfoRequest should not fault');
 		assert.exists(res.GetShareInfoResponse,
 			'Final GetShareInfoResponse should exist');

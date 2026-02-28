@@ -22,6 +22,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraIsAdminAccount">TRUE</a>
 			</CreateAccountRequest>`;
+
+		// Send the message
 		await soap.makeSOAPEnvelopeAdmin(createAccountRequest, adminAuth);
 
 		auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
@@ -35,6 +37,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 				<name>${adminAccount1}</name>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`;
+
+		// GetAccountRequest
 		const authResp = await soap.makeSOAPEnvelopeAdmin(authRequest, null); // No token needed for initial auth, but we don't have one? 
 		// Wait, usually we use admin/admin credentials. Here we are authenticating AS the new admin.
 		adminAuthAdmin = authResp.AuthResponse.authToken[0]._content;
@@ -64,6 +68,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 	it('Sanity | Verify an admin user only has user rights, if logged into the user interface', async () => {
 		// User shares folder with Admin (Read Only)
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -72,6 +78,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -81,6 +89,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 					<grant gt="usr" d="${adminAccount1}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Admin (User Auth) mounts
@@ -88,6 +98,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_admin_user" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// AddMsgRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, adminAuthUser);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -99,6 +111,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 				</m>
 			</AddMsgRequest>`;
 		const addRes = await soap.makeSOAPEnvelopeAccount(addMsgRequest, adminAuthUser);
+
+		// Verify response
 		assert.exists(addRes.Fault,
 			'Admin using User Auth should be denied write access on Read-Only share');
 	});
@@ -124,6 +138,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 
 		// Use the same folder and share as above.
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -132,6 +148,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -141,6 +159,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 					<grant gt="usr" d="${adminAccount1}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// Admin (Admin Auth) Creates Mountpoint
@@ -149,6 +169,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_admin_super" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// AddMsgRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, adminAuthAdmin);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 

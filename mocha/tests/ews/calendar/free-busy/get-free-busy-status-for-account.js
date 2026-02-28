@@ -112,62 +112,73 @@ describe('EWS > Calendar > FreeBusy > Get Free Busy Status For Account', functio
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 
 		// User1 checks User2 free/busy via EWS GetUserAvailability
-		const freeBusyRes = await ews.makeEWSRequest(
-			`<GetUserAvailabilityRequest
-				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
-				<t:TimeZone xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
-					<t:Bias>-330</t:Bias>
-					<t:StandardTime>
+		// Use a wider time window starting from now to ensure we capture the event
+		const windowStartWide = common.getXMLTime(0);
+		const windowEndWide = common.getXMLTime(180);
+		await common.delay(8000);
+
+		let eventArr = [];
+		for (let attempt = 0; attempt < 5; attempt++) {
+			if (attempt > 0) await common.delay(15000);
+			const freeBusyRes = await ews.makeEWSRequest(
+				`<GetUserAvailabilityRequest
+					xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<t:TimeZone xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
 						<t:Bias>0</t:Bias>
-						<t:Time>15:30:00</t:Time>
-						<t:DayOrder>2</t:DayOrder>
-						<t:Month>3</t:Month>
-						<t:DayOfWeek>Sunday</t:DayOfWeek>
-					</t:StandardTime>
-					<t:DaylightTime>
-						<t:Bias>0</t:Bias>
-						<t:Time>14:30:00</t:Time>
-						<t:DayOrder>1</t:DayOrder>
-						<t:Month>11</t:Month>
-						<t:DayOfWeek>Sunday</t:DayOfWeek>
-					</t:DaylightTime>
-				</t:TimeZone>
-				<MailboxDataArray>
-					<t:MailboxData
+						<t:StandardTime>
+							<t:Bias>0</t:Bias>
+							<t:Time>02:00:00</t:Time>
+							<t:DayOrder>5</t:DayOrder>
+							<t:Month>10</t:Month>
+							<t:DayOfWeek>Sunday</t:DayOfWeek>
+						</t:StandardTime>
+						<t:DaylightTime>
+							<t:Bias>0</t:Bias>
+							<t:Time>02:00:00</t:Time>
+							<t:DayOrder>1</t:DayOrder>
+							<t:Month>4</t:Month>
+							<t:DayOfWeek>Sunday</t:DayOfWeek>
+						</t:DaylightTime>
+					</t:TimeZone>
+					<MailboxDataArray>
+						<t:MailboxData
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<t:Email>
+								<t:Address>${account2Email}</t:Address>
+							</t:Email>
+							<t:AttendeeType>Required</t:AttendeeType>
+							<t:ExcludeConflicts>false</t:ExcludeConflicts>
+						</t:MailboxData>
+					</MailboxDataArray>
+					<t:FreeBusyViewOptions
 						xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
-						<t:Email>
-							<t:Address>${account2Email}</t:Address>
-						</t:Email>
-						<t:AttendeeType>Required</t:AttendeeType>
-						<t:ExcludeConflicts>false</t:ExcludeConflicts>
-					</t:MailboxData>
-				</MailboxDataArray>
-				<t:FreeBusyViewOptions
-					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
-					<t:TimeWindow>
-						<t:StartTime>${windowStart}</t:StartTime>
-						<t:EndTime>${windowEnd}</t:EndTime>
-					</t:TimeWindow>
-					<t:MergedFreeBusyIntervalInMinutes>30</t:MergedFreeBusyIntervalInMinutes>
-					<t:RequestedView>Detailed</t:RequestedView>
-				</t:FreeBusyViewOptions>
-			</GetUserAvailabilityRequest>`,
-			account1Email, accountPassword
-		);
-		const fbBody = ews.getBody(freeBusyRes);
-		const fbResponse = fbBody.GetUserAvailabilityResponse;
-		assert.exists(fbResponse, 'GetUserAvailabilityResponse should exist');
+						<t:TimeWindow>
+							<t:StartTime>${windowStartWide}</t:StartTime>
+							<t:EndTime>${windowEndWide}</t:EndTime>
+						</t:TimeWindow>
+						<t:MergedFreeBusyIntervalInMinutes>30</t:MergedFreeBusyIntervalInMinutes>
+						<t:RequestedView>Detailed</t:RequestedView>
+					</t:FreeBusyViewOptions>
+				</GetUserAvailabilityRequest>`,
+				account1Email, accountPassword
+			);
+			const fbBody = ews.getBody(freeBusyRes);
+			const fbResponse = fbBody.GetUserAvailabilityResponse;
+			assert.exists(fbResponse, 'GetUserAvailabilityResponse should exist');
 
-		const fbResponseMsg = fbResponse.FreeBusyResponseArray?.FreeBusyResponse;
-		const fbMsg = Array.isArray(fbResponseMsg) ? fbResponseMsg[0] : fbResponseMsg;
-		assert.equal(
-			fbMsg.ResponseMessage?.$.ResponseClass, 'Success',
-			'FreeBusyResponse should succeed'
-		);
+			const fbResponseMsg = fbResponse.FreeBusyResponseArray?.FreeBusyResponse;
+			const fbMsg = Array.isArray(fbResponseMsg) ? fbResponseMsg[0] : fbResponseMsg;
+			assert.equal(
+				fbMsg.ResponseMessage?.$.ResponseClass, 'Success',
+				'FreeBusyResponse should succeed'
+			);
 
-		const calendarEvents = fbMsg.FreeBusyView?.CalendarEventArray?.CalendarEvent;
-		const eventArr = Array.isArray(calendarEvents) ? calendarEvents : [calendarEvents];
-		assert.isAbove(eventArr.length, 0, 'Should have at least one CalendarEvent');
+			const calendarEvents = fbMsg.FreeBusyView?.CalendarEventArray?.CalendarEvent;
+			eventArr = Array.isArray(calendarEvents) ? calendarEvents : (calendarEvents && calendarEvents !== '' ? [calendarEvents] : []);
+			if (eventArr.length > 0) break;
+			console.log(`Free/busy attempt ${attempt + 1}: CalendarEventArray empty, retrying...`);
+		}
+		assert.isAbove(eventArr.length, 0, 'Should have at least one CalendarEvent (after retry)');
 
 		const event = eventArr[0];
 		assert.equal(event.BusyType, 'Busy', 'BusyType should be Busy');

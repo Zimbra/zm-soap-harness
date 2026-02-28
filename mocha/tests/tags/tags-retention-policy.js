@@ -8,7 +8,7 @@ describe('Tags > Tags Retention Policy', function () {
 	this.timeout(60 * 1000);
 	let accountEmail = null, accountAuthToken = null;
 
-	before(async () => {
+	before(async function () {
 		await main.before(this.ctx);
 		accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
@@ -22,11 +22,15 @@ describe('Tags > Tags Retention Policy', function () {
 	// Tests
 	it('Sanity | Set tag retention policy on a tag', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="2"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
 
@@ -42,6 +46,8 @@ describe('Tags > Tags Retention Policy', function () {
 				</action>
 			</TagActionRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(retRes.Fault, 'Response should not be a Fault');
 		assert.exists(retRes.TagActionResponse, 'TagActionResponse should exist');
 
@@ -49,10 +55,14 @@ describe('Tags > Tags Retention Policy', function () {
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
 			? getRes.GetTagResponse.tag : [getRes.GetTagResponse.tag];
 		const matchTag = tags.find(t => t.id === tagId);
+
+		// Verify response
 		assert.exists(matchTag, 'Tag should exist in GetTagResponse');
 		assert.exists(matchTag.retentionPolicy, 'Tag should have retentionPolicy');
 	});
@@ -60,11 +70,15 @@ describe('Tags > Tags Retention Policy', function () {
 
 	it('Sanity | Set tag retention purge policy on a tag and check if message is purged', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="3"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
 
@@ -80,11 +94,15 @@ describe('Tags > Tags Retention Policy', function () {
 				</action>
 			</TagActionRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(retRes.Fault, 'Response should not be a Fault');
 		assert.exists(retRes.TagActionResponse, 'TagActionResponse should exist');
 
 		// Send a message and tag it
 		const subject = `subject${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -96,19 +114,27 @@ describe('Tags > Tags Retention Policy', function () {
 				</m>
 			</SendMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 
 		await new Promise(resolve => setTimeout(resolve, 30000));
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const msgs = searchRes.SearchResponse.m
 			? (Array.isArray(searchRes.SearchResponse.m)
 				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m])
 			: [];
+
+		// Verify response
 		assert.isAbove(msgs.length, 0, 'Should find the sent message');
 		const msgId = msgs[0].id;
 
@@ -118,16 +144,22 @@ describe('Tags > Tags Retention Policy', function () {
 				<action op="tag" id="${msgId}" tag="${tagId}"/>
 			</MsgActionRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(tagMsgRes.Fault, 'Response should not be a Fault');
 
 		// Verify the tag was applied
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
 			? getRes.GetTagResponse.tag : [getRes.GetTagResponse.tag];
 		const matchTag = tags.find(t => t.id === tagId);
+
+		// Verify response
 		assert.exists(matchTag, 'Tag should exist in GetTagResponse');
 	});
 });

@@ -12,12 +12,16 @@ describe('Rest Servlet > Auth > Cookie Fmt XML', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
@@ -34,6 +38,8 @@ describe('Rest Servlet > Auth > Cookie Fmt XML', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		const folder = folderRes.GetFolderResponse.folder;
 		const folderObj = Array.isArray(folder) ? folder[0] : folder;
@@ -41,6 +47,8 @@ describe('Rest Servlet > Auth > Cookie Fmt XML', function () {
 		const inbox = folders.find(f => f.name === 'Inbox');
 
 		const msgContent = 'content' + common.getUniqueString();
+
+		// AddMsgRequest
 		const addRes = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="${inbox.id}">
@@ -57,6 +65,8 @@ ${msgContent}
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 
 		// REST with auth token (should succeed)
@@ -65,6 +75,8 @@ ${msgContent}
 			fmt: 'xml',
 			query: msgContent
 		});
+
+		// Verify response
 		assert.equal(restRes1.status, 200, 'REST with cookie auth should return 200');
 
 		// REST without auth token (no user part → 404)
@@ -73,6 +85,8 @@ ${msgContent}
 			fmt: 'xml',
 			query: msgContent
 		});
+
+		// Verify response
 		assert.equal(restRes2.status, 404,
 			'REST without auth token and without user part should return 404');
 	});
@@ -83,6 +97,8 @@ ${msgContent}
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		const folder = folderRes.GetFolderResponse.folder;
 		const folderObj = Array.isArray(folder) ? folder[0] : folder;
@@ -90,6 +106,8 @@ ${msgContent}
 		const inbox = folders.find(f => f.name === 'Inbox');
 
 		const msgContent = 'content' + common.getUniqueString();
+
+		// AddMsgRequest
 		const addRes = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="${inbox.id}">
@@ -106,6 +124,8 @@ ${msgContent}
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 
 		// REST with auth token and user part (should succeed)
@@ -115,6 +135,8 @@ ${msgContent}
 			fmt: 'xml',
 			query: msgContent
 		});
+
+		// Verify response
 		assert.equal(restRes1.status, 200, 'REST with cookie and user should return 200');
 
 		// REST without auth token but with user part (should return 500)
@@ -124,6 +146,8 @@ ${msgContent}
 			fmt: 'xml',
 			query: msgContent
 		});
+
+		// Verify response
 		assert.notEqual(restRes2.status, 200,
 			'REST without cookie but with user part should not return 200');
 	});
@@ -134,6 +158,8 @@ ${msgContent}
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		const folder = folderRes.GetFolderResponse.folder;
 		const folderObj = Array.isArray(folder) ? folder[0] : folder;
@@ -141,6 +167,8 @@ ${msgContent}
 		const inbox = folders.find(f => f.name === 'Inbox');
 
 		const msgContent = 'content' + common.getUniqueString();
+
+		// AddMsgRequest
 		const addRes = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="${inbox.id}">
@@ -157,6 +185,8 @@ ${msgContent}
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 
 		// REST with valid auth token (should succeed)
@@ -166,6 +196,8 @@ ${msgContent}
 			fmt: 'xml',
 			query: msgContent
 		});
+
+		// Verify response
 		assert.equal(restRes1.status, 200, 'REST with valid cookie should return 200');
 
 		// REST with invalid auth token (should return 401)
@@ -175,6 +207,8 @@ ${msgContent}
 			fmt: 'xml',
 			query: msgContent
 		});
+
+		// Verify response
 		assert.equal(restRes2.status, 401,
 			'REST with invalid auth token should return 401');
 	});

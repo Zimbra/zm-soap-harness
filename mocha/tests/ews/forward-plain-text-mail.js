@@ -69,7 +69,7 @@ describe('EWS > Forward Plain Text Mail', function () {
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 
-		await soap.waitFor(5000);
+		await soap.waitFor(8000);
 
 		// EWS: GetFolder inbox for account2
 		const getFolderRes = await ews.makeEWSRequest(
@@ -103,6 +103,9 @@ describe('EWS > Forward Plain Text Mail', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />

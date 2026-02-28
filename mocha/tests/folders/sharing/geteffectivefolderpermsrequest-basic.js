@@ -24,6 +24,8 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 
 		// Create a folder for sharing
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -32,6 +34,8 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 
 		folderId = createResp.CreateFolderResponse.folder[0].id;
@@ -50,6 +54,8 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 					<grant gt="usr" d="${testAccount2}" perm="${perm}"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Mount the folder for Account2
@@ -58,6 +64,8 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetEffectiveFolderPermsRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
 
 		return mountResp.CreateMountpointResponse.link[0].id;
@@ -68,6 +76,8 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 			`<GetEffectiveFolderPermsRequest xmlns="urn:zimbraMail">
 				<folder l="${mountId}"/>
 			</GetEffectiveFolderPermsRequest>`;
+
+		// FolderActionRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getEffectiveFolderPermsRequest, auth2);
 
 		return resp;
@@ -90,9 +100,12 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const mountId = await shareWithPerm('r');
 		const resp = await getEffectivePerms(mountId);
 
+		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
+
+		// Verify response
 		assert.include(perms, 'r', 'Effective perms should include read');
 	});
 
@@ -107,9 +120,12 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const mountId = await shareWithPerm('rw');
 		const resp = await getEffectivePerms(mountId);
 
+		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
+
+		// Verify response
 		assert.include(perms, 'w', 'Effective perms should include write');
 	});
 
@@ -124,9 +140,12 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const mountId = await shareWithPerm('rd');
 		const resp = await getEffectivePerms(mountId);
 
+		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
+
+		// Verify response
 		assert.include(perms, 'd', 'Effective perms should include delete');
 	});
 
@@ -141,9 +160,12 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const mountId = await shareWithPerm('ri');
 		const resp = await getEffectivePerms(mountId);
 
+		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
+
+		// Verify response
 		assert.include(perms, 'i', 'Effective perms should include insert');
 	});
 
@@ -158,9 +180,12 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const mountId = await shareWithPerm('rf');
 		const resp = await getEffectivePerms(mountId);
 
+		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
+
+		// Verify response
 		assert.include(perms, 'f', 'Effective perms should include freebusy');
 	});
 
@@ -175,9 +200,12 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const mountId = await shareWithPerm('rwidx');
 		const resp = await getEffectivePerms(mountId);
 
+		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
+
+		// Verify response
 		assert.include(perms, 'w', 'Effective perms should include workflow rights');
 		assert.include(perms, 'i', 'Effective perms should include insert');
 	});
@@ -193,9 +221,12 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const mountId = await shareWithPerm('rwidxa');
 		const resp = await getEffectivePerms(mountId);
 
+		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
 		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
+
+		// Verify response
 		assert.include(perms, 'a', 'Effective perms should include admin');
 	});
 
@@ -205,6 +236,8 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="revokeorphangrants" id="${folderId}"/>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest9, auth1);
 
 		// Grant first
@@ -214,6 +247,8 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 					<grant gt="usr" d="${testAccount2}" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest10, auth1);
 
 		// Revoke
@@ -222,6 +257,8 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="!grant" zid="${account2Id}"/>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest11, auth1);
 
 		// Try to mount after revoke - should fail or show no perms
@@ -238,6 +275,8 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 			// After revoke, perms should be empty or mount should show broken
 			if (resp.GetEffectiveFolderPermsResponse) {
 				const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm || '';
+
+				// Verify response
 				assert.equal(perms, '', 'Effective perms should be empty after revoke');
 			}
 		}

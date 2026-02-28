@@ -12,12 +12,16 @@ describe('Rest Servlet > User > REST User', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
@@ -29,6 +33,8 @@ describe('Rest Servlet > User > REST User', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -44,6 +50,8 @@ describe('Rest Servlet > User > REST User', function () {
 			folder: 'Inbox',
 			fmt: 'rss'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'userRestTest', 'Response should contain message subject');
 	});
@@ -55,6 +63,8 @@ describe('Rest Servlet > User > REST User', function () {
 			folder: 'Calendar',
 			fmt: 'ics'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'VCALENDAR', 'Response should contain VCALENDAR');
 	});
@@ -66,6 +76,8 @@ describe('Rest Servlet > User > REST User', function () {
 			folder: 'Contacts',
 			fmt: 'csv'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 	});
 
@@ -74,12 +86,16 @@ describe('Rest Servlet > User > REST User', function () {
 		// Search for the message to get its ID
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>subject:userRestTest</query>
-            </SearchRequest>`, account1Token
+				<query>subject:userRestTest</query>
+			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const msgs = searchRes.SearchResponse?.m;
 		const msgArr = Array.isArray(msgs) ? msgs : (msgs ? [msgs] : []);
+
+		// Verify response
 		assert.isAtLeast(msgArr.length, 1, 'Should find at least one message');
 		const msgId = msgArr[0].id;
 
@@ -87,6 +103,8 @@ describe('Rest Servlet > User > REST User', function () {
 			user: account1Email,
 			id: msgId
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'userRestTest', 'Response should contain subject');
 	});
@@ -98,6 +116,8 @@ describe('Rest Servlet > User > REST User', function () {
 			folder: 'NonExistentFolder' + common.getUniqueString(),
 			fmt: 'rss'
 		});
+
+		// Verify response
 		assert.notEqual(res.status, 200, 'Non-existent folder should not return 200');
 	});
 
@@ -105,11 +125,15 @@ describe('Rest Servlet > User > REST User', function () {
 	it('Functional | Access REST servlet with subfolder path', async () => {
 		// Create subfolder under Inbox
 		const folderName = 'sub' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder name="${folderName}" l="2"/>
-            </CreateFolderRequest>`, account1Token
+				<folder name="${folderName}" l="2"/>
+			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 
 		const res = await rest.makeRestRequest(account1Token, {
@@ -117,6 +141,8 @@ describe('Rest Servlet > User > REST User', function () {
 			folder: 'Inbox/' + folderName,
 			fmt: 'rss'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 	});
 
@@ -127,6 +153,8 @@ describe('Rest Servlet > User > REST User', function () {
 			folder: 'Inbox',
 			fmt: 'xml'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'userRestTest', 'XML should contain message');
 	});
@@ -138,6 +166,8 @@ describe('Rest Servlet > User > REST User', function () {
 			folder: 'Sent',
 			fmt: 'rss'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 	});
 
@@ -148,6 +178,8 @@ describe('Rest Servlet > User > REST User', function () {
 			folder: 'Drafts',
 			fmt: 'rss'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 	});
 });

@@ -38,6 +38,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 	// Tests
 	it('Sanity | Verify that a folder can be delegated to a distribution list', async () => {
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -46,6 +48,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// CreateDistributionListRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -56,6 +60,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dlName}</name>
 			</CreateDistributionListRequest>`;
+
+		// AddDistributionListMemberRequest
 		const createDl = await soap.makeSOAPEnvelopeAdmin(createDistributionListRequest, adminAuth);
 
 		dlId = createDl.CreateDistributionListResponse.dl[0].id;
@@ -65,6 +71,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 				<id>${dlId}</id>
 				<dlm>${testAccount2}</dlm>
 			</AddDistributionListMemberRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAdmin(addDistributionListMemberRequest, adminAuth);
 
 		// Share with DL
@@ -74,6 +82,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 					<grant gt="grp" d="${dlName}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Verify Account2 (member) can access
@@ -81,7 +91,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_dl" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
+
+		// Verify response
 		assert.exists(mountResp.CreateMountpointResponse.link,
 			'DL member should be able to mount folder');
 	});
@@ -90,6 +104,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 	it('Sanity | Unshare a folder to a DL. Verify that DL users no longer have access.', async () => {
 		// Create folder
 		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -98,6 +114,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -115,6 +133,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 				</content>
 			</m>
 			</AddMsgRequest>`;
+
+		// CreateDistributionListRequest
 		const addMsg = await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth1);
 		const msgId = addMsg.AddMsgResponse.m[0].id;
 
@@ -125,6 +145,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dlName2}</name>
 			</CreateDistributionListRequest>`;
+
+		// AddDistributionListMemberRequest
 		const createDl2 = await soap.makeSOAPEnvelopeAdmin(createDistributionListRequest2, adminAuth);
 		const dl2Id = createDl2.CreateDistributionListResponse.dl[0].id;
 
@@ -133,6 +155,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 				<id>${dl2Id}</id>
 				<dlm>${testAccount2}</dlm>
 			</AddDistributionListMemberRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAdmin(addDistributionListMemberRequest2, adminAuth);
 
 		// Share with DL
@@ -142,6 +166,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 					<grant gt="grp" d="${dlName2}" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// Verify access works
@@ -149,7 +175,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
+
+		// FolderActionRequest
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
+
+		// Verify response
 		assert.notExists(accessCheck.Fault, 'DL member should have access before revoke');
 
 		// Revoke the grant
@@ -157,6 +187,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="!grant" zid="${dl2Id}"/>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest3, auth1);
 
 		// Verify access denied
@@ -164,7 +196,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
+
+		// DeleteDistributionListRequest
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, auth2);
+
+		// Verify response
 		assert.exists(revokedCheck.Fault, 'DL member should be denied after revoke');
 
 		// Cleanup DL
@@ -172,6 +208,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
 				<id>${dl2Id}</id>
 			</DeleteDistributionListRequest>`;
+
+		// CreateDistributionListRequest
 		await soap.makeSOAPEnvelopeAdmin(deleteDistributionListRequest, adminAuth);
 	});
 
@@ -185,6 +223,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${innerDlName}</name>
 			</CreateDistributionListRequest>`;
+
+		// AddDistributionListMemberRequest
 		const innerDlResp = await soap.makeSOAPEnvelopeAdmin(createDistributionListRequest3, adminAuth);
 		const innerDlId = innerDlResp.CreateDistributionListResponse.dl[0].id;
 
@@ -193,6 +233,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 				<id>${innerDlId}</id>
 				<dlm>${testAccount2}</dlm>
 			</AddDistributionListMemberRequest>`;
+
+		// CreateDistributionListRequest
 		await soap.makeSOAPEnvelopeAdmin(addDistributionListMemberRequest3, adminAuth);
 
 		// Create outer DL containing inner DL
@@ -201,6 +243,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${outerDlName}</name>
 			</CreateDistributionListRequest>`;
+
+		// AddDistributionListMemberRequest
 		const outerDlResp = await soap.makeSOAPEnvelopeAdmin(createDistributionListRequest4, adminAuth);
 		const outerDlId = outerDlResp.CreateDistributionListResponse.dl[0].id;
 
@@ -209,10 +253,14 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 				<id>${outerDlId}</id>
 				<dlm>${innerDlName}</dlm>
 			</AddDistributionListMemberRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAdmin(addDistributionListMemberRequest4, adminAuth);
 
 		// Create a folder and share with outer DL
 		const getFolderRequest3 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest3, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -221,6 +269,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest3, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -238,6 +288,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 				</content>
 			</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(addMsgRequest2, auth1);
 
 		// Share with outer DL
@@ -247,6 +299,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 					<grant gt="grp" d="${outerDlName}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest4, auth1);
 
 		// Verify Account2 (inner DL member) can access via mountpoint
@@ -255,7 +309,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// DeleteDistributionListRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Nested DL member should be able to mount folder');
@@ -265,6 +323,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 			`<DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
 				<id>${innerDlId}</id>
 			</DeleteDistributionListRequest>`;
+
+		// DeleteDistributionListRequest
 		await soap.makeSOAPEnvelopeAdmin(deleteDistributionListRequest2, adminAuth);
 
 		const deleteDistributionListRequest3 =

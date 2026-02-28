@@ -15,12 +15,16 @@ describe('Rest Servlet > Calendar > Post Basic', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 	});
@@ -40,17 +44,23 @@ describe('Rest Servlet > Calendar > Post Basic', function () {
 			fmt: 'ics',
 			filePath: icsFilePath
 		});
+
+		// Verify response
 		assert.equal(postRes.status, 200, 'REST POST should return 200');
 
 		// Verify the appointment appears
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetApptSummariesRequest xmlns="urn:zimbraMail"
-                s="1137000000000" e="1138000000000"/>`, account1Token
+				s="1137000000000" e="1138000000000"/>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appts = searchRes.GetApptSummariesResponse?.appt;
 		const apptArr = Array.isArray(appts) ? appts : (appts ? [appts] : []);
 		const found = apptArr.find(a => a.name === 'iCalBasic');
+
+		// Verify response
 		assert.exists(found, 'Appointment iCalBasic should exist');
 		assert.equal(found.loc, 'iCalBasic.Location', 'Location should match');
 	});
@@ -73,16 +83,23 @@ describe('Rest Servlet > Calendar > Post Basic', function () {
 			fileBuffer: icsContent,
 			contentType: 'text/calendar'
 		});
+
+		// Verify response
 		assert.equal(postRes.status, 200, 'REST POST should return 200');
 
+		// GetApptSummariesRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetApptSummariesRequest xmlns="urn:zimbraMail"
-                s="1748700000000" e="1748800000000"/>`, account1Token
+				s="1748700000000" e="1748800000000"/>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appts = searchRes.GetApptSummariesResponse?.appt;
 		const apptArr = Array.isArray(appts) ? appts : (appts ? [appts] : []);
 		const found = apptArr.find(a => a.name === subject);
+
+		// Verify response
 		assert.exists(found, 'Functional appointment should exist');
 	});
 });

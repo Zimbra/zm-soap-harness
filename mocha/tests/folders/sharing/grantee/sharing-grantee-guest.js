@@ -8,6 +8,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 	let auth1;
 	let account1Id;
 
+
 	before(async function () {
 		testAccount1 = `grant_guest1_${common.getUniqueString()}@${config.testDomain}`;
 
@@ -35,6 +36,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 
 		// Setup Folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -43,6 +46,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -53,6 +58,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 					<grant gt="guest" d="${guestEmail}" perm="r" args="${password}"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Verification typically requires checking email notification or successful grant action response.
@@ -64,6 +71,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 			</GetFolderRequest>`;
 		const getFolderResp = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const folderData = getFolderResp.GetFolderResponse.folder[0];
+
+		// Verify response
 		assert.exists(folderData, 'Folder should exist');
 		const acl = folderData.acl;
 		if (acl && acl.grant) {
@@ -71,6 +80,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 			const grants = Array.isArray(grant) ? grant : [grant];
 			// Match by email - field may be 'd' or 'zid' depending on grant type
 			const guestGrant = grants.find(g => g.d === guestEmail || g.zid === guestEmail);
+
+			// Verify response
 			assert.exists(guestGrant,
 				`Guest grant should be present on folder, found grants: ${JSON.stringify(grants)}`);
 		} else {
@@ -87,6 +98,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 
 		// Create folder
 		const getFolderRequest3 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest3, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -95,6 +108,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -105,6 +120,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 					<grant gt="guest" d="${guestEmail2}" perm="r" args="${password2}"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// Verify grant exists
@@ -112,6 +129,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 			`<GetFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${folderId}"/>
 			</GetFolderRequest>`;
+
+		// FolderActionRequest
 		const beforeRevoke = await soap.makeSOAPEnvelopeAccount(getFolderRequest4, auth1);
 		const folderBefore = beforeRevoke.GetFolderResponse.folder[0];
 		const aclBefore = folderBefore.acl;
@@ -121,6 +140,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 			const grants = Array.isArray(aclBefore.grant) ? aclBefore.grant : [aclBefore.grant];
 			hasGrantBefore = grants.some(g => g.d === guestEmail2 || g.zid === guestEmail2);
 		}
+
+		// Verify response
 		assert.isTrue(hasGrantBefore, 'Guest grant should exist before revoke');
 
 		// Revoke the grant using guest email as zid
@@ -128,6 +149,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="!grant" zid="${guestEmail2}"/>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest3, auth1);
 
 		// Verify grant is removed
@@ -144,6 +167,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 			const grants = Array.isArray(aclAfter.grant) ? aclAfter.grant : [aclAfter.grant];
 			hasGrantAfter = grants.some(g => g.d === guestEmail2 || g.zid === guestEmail2);
 		}
+
+		// Verify response
 		assert.isFalse(hasGrantAfter, 'Guest grant should be removed after revoke');
 	});
 

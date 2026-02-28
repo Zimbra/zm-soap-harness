@@ -553,11 +553,9 @@ function buildHtml({ AUTOMATION_TYPE, SERVER_HOST, ZIMBRA_VERSION, total, passed
 		<body>
 			<header>
 				<h1>
-					${AUTOMATION_TYPE} Automation Report ${
-						ZIMBRA_VERSION ? `<span class="report-version">(${[ZIMBRA_VERSION, SERVER_HOST].filter(Boolean).join(', ')})</span>` : ''
-					}
+					${AUTOMATION_TYPE} Automation Report ${ZIMBRA_VERSION ? `<span class="report-version">(${[ZIMBRA_VERSION, SERVER_HOST].filter(Boolean).join(', ')})</span>` : ''
+		}
 				</h1>
-
 				<div class="top-bar">
 					<div class="top-left">
 						<div class="box"><span>Total</span><span>${total}</span></div>

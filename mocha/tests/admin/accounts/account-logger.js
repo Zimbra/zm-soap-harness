@@ -15,24 +15,31 @@ describe('Admin > Accounts > Account Logger', function () {
 		const acct3 = `account${common.getUniqueString()}@${config.testDomain}`;
 		const acct4 = `account${common.getUniqueString()}@${config.testDomain}`;
 
+		// Create account
 		const r1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct1}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Create account
 		const r2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct2}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Create account
 		const r3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct3}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Create account
 		const r4 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct4}</name>
@@ -56,12 +63,15 @@ describe('Admin > Accounts > Account Logger', function () {
 
 	// Tests
 	it('Sanity | Sanity test for AddAccountLoggerRequest', async () => {
+		// AddAccountLoggerRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountLoggerRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<logger category="zimbra.soap" level="debug"/>
 			</AddAccountLoggerRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AddAccountLoggerResponse,
 			'AddAccountLoggerResponse should exist');
@@ -71,6 +81,7 @@ describe('Admin > Accounts > Account Logger', function () {
 
 
 	it('Sanity | Sanity test for RemoveAccountLoggerRequest', async () => {
+		// AddAccountLoggerRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountLoggerRequest xmlns="urn:zimbraAdmin">
 				<id>${account2Id}</id>
@@ -78,12 +89,15 @@ describe('Admin > Accounts > Account Logger', function () {
 			</AddAccountLoggerRequest>`, adminAuthToken
 		);
 
+		// RemoveAccountLoggerRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountLoggerRequest xmlns="urn:zimbraAdmin">
 				<id>${account2Id}</id>
 				<logger category="zimbra.soap" level="debug"/>
 			</RemoveAccountLoggerRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.RemoveAccountLoggerResponse,
 			'RemoveAccountLoggerResponse should exist');
@@ -91,6 +105,7 @@ describe('Admin > Accounts > Account Logger', function () {
 
 
 	it('Sanity | Sanity test for GetAccountLoggersRequest', async () => {
+		// AddAccountLoggerRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountLoggerRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
@@ -98,11 +113,14 @@ describe('Admin > Accounts > Account Logger', function () {
 			</AddAccountLoggerRequest>`, adminAuthToken
 		);
 
+		// GetAccountLoggersRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountLoggersRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
 			</GetAccountLoggersRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetAccountLoggersResponse,
 			'GetAccountLoggersResponse should exist');
@@ -112,6 +130,7 @@ describe('Admin > Accounts > Account Logger', function () {
 
 
 	it('Sanity | Sanity test for GetAllAccountLoggersRequest', async () => {
+		// AddAccountLoggerRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountLoggerRequest xmlns="urn:zimbraAdmin">
 				<id>${account4Id}</id>
@@ -119,9 +138,12 @@ describe('Admin > Accounts > Account Logger', function () {
 			</AddAccountLoggerRequest>`, adminAuthToken
 		);
 
+		// GetAllAccountLoggersRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			'<GetAllAccountLoggersRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetAllAccountLoggersResponse,
 			'GetAllAccountLoggersResponse should exist');

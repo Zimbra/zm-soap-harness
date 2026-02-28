@@ -9,6 +9,8 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
+
+		// CreateCosRequest
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name xmlns="">cos${common.getUniqueString()}</name>
@@ -26,6 +28,8 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 	it('Sanity | Create an account with a foreign principal attribute', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const resName = `fp.${common.getUniqueString()}@${config.testDomain}`;
+
+		// CreateCalendarResourceRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${resName}</name>
@@ -38,12 +42,16 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 				<a n="zimbraCalResAutoDeclineIfBusy">FALSE</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CreateCalendarResourceResponse,
 			'CreateCalendarResourceResponse should exist');
 		const calresource = Array.isArray(response.CreateCalendarResourceResponse.calresource)
 			? response.CreateCalendarResourceResponse.calresource[0]
 			: response.CreateCalendarResourceResponse.calresource;
+
+		// Verify response
 		assert.exists(calresource.id, 'calresource should have an id');
 	});
 
@@ -52,6 +60,8 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const resName = `fp.${common.getUniqueString()}@${config.testDomain}`;
+
+		// CreateCalendarResourceRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${resName}</name>
@@ -65,12 +75,16 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 				<a n="zimbraCalResAutoDeclineIfBusy">FALSE</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CreateCalendarResourceResponse,
 			'CreateCalendarResourceResponse should exist');
 		const calresource = Array.isArray(response.CreateCalendarResourceResponse.calresource)
 			? response.CreateCalendarResourceResponse.calresource[0]
 			: response.CreateCalendarResourceResponse.calresource;
+
+		// Verify response
 		assert.exists(calresource.id, 'calresource should have an id');
 	});
 
@@ -80,6 +94,7 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 		const res1Name = `fp.${common.getUniqueString()}@${config.testDomain}`;
 		const res2Name = `fp.${common.getUniqueString()}@${config.testDomain}`;
 
+		// CreateCalendarResourceRequest
 		const r1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${res1Name}</name>
@@ -92,14 +107,19 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 				<a n="zimbraCalResAutoDeclineIfBusy">FALSE</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(r1.Fault, 'Response should not be a Fault');
 		assert.exists(r1.CreateCalendarResourceResponse,
 			'First CreateCalendarResourceResponse should exist');
 		const res1 = Array.isArray(r1.CreateCalendarResourceResponse.calresource)
 			? r1.CreateCalendarResourceResponse.calresource[0]
 			: r1.CreateCalendarResourceResponse.calresource;
+
+		// Verify response
 		assert.exists(res1.id, 'First calresource should have an id');
 
+		// CreateCalendarResourceRequest
 		const r2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${res2Name}</name>
@@ -112,12 +132,16 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 				<a n="zimbraCalResAutoDeclineIfBusy">FALSE</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(r2.Fault, 'Response should not be a Fault');
 		assert.exists(r2.CreateCalendarResourceResponse,
 			'Second CreateCalendarResourceResponse should exist');
 		const res2 = Array.isArray(r2.CreateCalendarResourceResponse.calresource)
 			? r2.CreateCalendarResourceResponse.calresource[0]
 			: r2.CreateCalendarResourceResponse.calresource;
+
+		// Verify response
 		assert.exists(res2.id, 'Second calresource should have an id');
 	});
 });

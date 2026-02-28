@@ -12,21 +12,28 @@ describe('Briefcase > Diff Document Request', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -34,9 +41,12 @@ describe('Briefcase > Diff Document Request', function () {
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
 
+		// GetFolderRequest
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
@@ -44,8 +54,9 @@ describe('Briefcase > Diff Document Request', function () {
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
-		assert.exists(briefcase, 'Briefcase folder should exist');
 
+		// Verify response
+		assert.exists(briefcase, 'Briefcase folder should exist');
 		briefcaseFolderId = briefcase.id;
 	});
 
@@ -58,6 +69,8 @@ describe('Briefcase > Diff Document Request', function () {
 	it('Sanity | Verify user can retrieve line by line difference of two revisions of a document', async () => {
 		// Save initial version of document
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
+
+		// SaveDocumentRequest
 		const save1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="${docName}" l="${briefcaseFolderId}">
@@ -65,6 +78,8 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -80,6 +95,8 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -89,6 +106,8 @@ describe('Briefcase > Diff Document Request', function () {
 				<doc v1="1" v2="2" l="${briefcaseFolderId}" id="${docId}"/>
 			</DiffDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(diffRes.Fault, 'Response should not be a Fault');
 		assert.exists(diffRes.DiffDocumentResponse, 'DiffDocumentResponse should exist');
 		assert.exists(diffRes.DiffDocumentResponse.chunk,
@@ -99,6 +118,8 @@ describe('Briefcase > Diff Document Request', function () {
 	it('Sanity | Verify user can retrieve line by line difference of two revisions of a WikiItem', async () => {
 		// Save initial version (wiki file)
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
+
+		// SaveDocumentRequest
 		const save1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="${docName}" l="${briefcaseFolderId}">
@@ -106,6 +127,8 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -121,6 +144,8 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -130,6 +155,8 @@ describe('Briefcase > Diff Document Request', function () {
 				<doc v1="1" v2="2" l="${briefcaseFolderId}" id="${docId}"/>
 			</DiffDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(diffRes.Fault, 'Response should not be a Fault');
 		assert.exists(diffRes.DiffDocumentResponse, 'DiffDocumentResponse should exist');
 		assert.exists(diffRes.DiffDocumentResponse.chunk, 'chunk should exist');
@@ -139,6 +166,8 @@ describe('Briefcase > Diff Document Request', function () {
 	it('Sanity | Send DiffDocumentRequest with invalid value for verison V1 - serviceINVALIDREQUEST', async () => {
 		// Save a document
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
+
+		// SaveDocumentRequest
 		const save1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="${docName}" l="${briefcaseFolderId}">
@@ -146,6 +175,8 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -159,6 +190,8 @@ describe('Briefcase > Diff Document Request', function () {
 				<doc v1="aa" v2="2" id="${docId}"/>
 			</DiffDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.exists(diffRes.Fault, 'Should return Fault for invalid V1');
 		assert.include(diffRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
@@ -168,6 +201,8 @@ describe('Briefcase > Diff Document Request', function () {
 	it('Sanity | Send DiffDocumentRequest with invalid value for version V2 - serviceINVALIDREQUEST', async () => {
 		// Save a document and create revision
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
+
+		// SaveDocumentRequest
 		const save1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="${docName}" l="${briefcaseFolderId}">
@@ -175,6 +210,8 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -190,6 +227,8 @@ describe('Briefcase > Diff Document Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -199,6 +238,8 @@ describe('Briefcase > Diff Document Request', function () {
 				<doc v1="1" v2="aa" id="${docId}"/>
 			</DiffDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.exists(diffRes.Fault, 'Should return Fault for invalid V2');
 		assert.include(diffRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');

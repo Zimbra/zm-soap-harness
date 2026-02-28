@@ -8,19 +8,21 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 	let adminAuthToken;
 	let account1Token;
 	let briefcaseFolderId;
-	let serverId;
-	let originalMaxSize;
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
@@ -36,22 +38,24 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 				<server by="name">${serverName}</server>
 			</GetServerRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(serverRes.Fault, 'Response should not be a Fault');
 		assert.exists(serverRes.GetServerResponse, 'GetServerResponse should exist');
 
-		const server = Array.isArray(serverRes.GetServerResponse.server)
+		Array.isArray(serverRes.GetServerResponse.server)
 			? serverRes.GetServerResponse.server[0] : serverRes.GetServerResponse.server;
-		serverId = server.id;
-		const maxSizeAttr = server.a.find(a => a.n === 'zimbraFileUploadMaxSize');
-		originalMaxSize = maxSizeAttr ? maxSizeAttr._content : '10485760';
 
 		// Auth as account
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -63,6 +67,8 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
@@ -70,8 +76,9 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
-		assert.exists(briefcase, 'Briefcase folder should exist');
 
+		// Verify response
+		assert.exists(briefcase, 'Briefcase folder should exist');
 		briefcaseFolderId = briefcase.id;
 	});
 
@@ -85,6 +92,8 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 		const fileTypes = ['html', 'text', 'jpg', 'csv', 'pdf'];
 
 		for (const fileType of fileTypes) {
+
+			// SaveDocumentRequest
 			const saveRes = await soap.makeSOAPEnvelopeAccount(
 				`<SaveDocumentRequest xmlns="urn:zimbraMail">
 					<doc name="doc.${common.getUniqueString()}.txt" l="${briefcaseFolderId}">
@@ -92,6 +101,8 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 					</doc>
 				</SaveDocumentRequest>`, account1Token
 			);
+
+			// Verify response
 			assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 			assert.exists(saveRes.SaveDocumentResponse,
 				`SaveDocumentResponse should exist for ${fileType}`);

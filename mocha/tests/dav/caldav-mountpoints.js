@@ -23,6 +23,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		account1Name = account1User + '@' + config.testDomain;
 		account1NameEncoded = account1User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -30,6 +31,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				<a n="displayName">${account1User}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -43,6 +46,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		const account2User = 'test' + common.getUniqueString();
 		account2Name = account2User + '@' + config.testDomain;
 
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -50,6 +54,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				<a n="displayName">${account2User}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
@@ -58,6 +64,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		account2Id = acct2.id;
 
 		// Auth as account1
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -69,6 +76,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			: authRes1.AuthResponse.authToken._content || authRes1.AuthResponse.authToken;
 
 		// Auth as account2
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
@@ -98,6 +106,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		};
 		const calFolder = findFolder(getFolderRes.GetFolderResponse.folder, 'Calendar');
 		account2CalendarId = calFolder ? calFolder.id : null;
+
+		// Verify response
 		assert.exists(account2CalendarId, 'account2 should have Calendar folder');
 
 		// account2 shares Calendar with account1 (manager rights)
@@ -108,6 +118,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				</action>
 			</FolderActionRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		assert.exists(grantRes.FolderActionResponse, 'Should grant access');
 	});
@@ -129,11 +141,15 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// Create mountpoint
 		const mountpointName = 'Calendar' + common.getUniqueString();
+
+		// CreateMountpointRequest
 		const createMpRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId}" name="${mountpointName}" view="appointment" rid="${account2CalendarId}" zid="${account2Id}"/>
 			</CreateMountpointRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createMpRes.Fault, 'Response should not be a Fault');
 		assert.exists(createMpRes.CreateMountpointResponse, 'Should create mountpoint');
 
@@ -155,6 +171,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, mountpointName,
 			'Mounted calendar should appear in PROPFIND response');
@@ -172,6 +190,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// Create mountpoint
 		const mountpointName = 'Mountpoint' + common.getUniqueString();
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId}" name="${mountpointName}" view="appointment" rid="${account2CalendarId}" zid="${account2Id}" color="1"/>
@@ -190,13 +210,19 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res1.status, 207, 'Initial PROPFIND should return 207');
 		const ctagMatch1 = res1.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch1, 'Should have initial ctag');
 		const initialCtag = ctagMatch1[1];
 
 		// account2 creates appointment in shared Calendar
 		const appointmentSubject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -214,6 +240,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
 		assert.exists(createApptRes.CreateAppointmentResponse,
 			'account2 should create appointment');
@@ -231,6 +259,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			server: account1Server,
 		});
 		const ctagMatch2 = res2.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch2, 'Should have post-create ctag');
 		assert.notEqual(ctagMatch2[1], initialCtag,
 			'Mountpoint ctag should change after appointment create');
@@ -248,6 +278,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// Create mountpoint
 		const mountpointName = 'Mountpoint' + common.getUniqueString();
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId}" name="${mountpointName}" view="appointment" rid="${account2CalendarId}" zid="${account2Id}" color="1"/>
@@ -256,6 +288,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// account2 creates appointment
 		const appointmentSubject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -328,6 +362,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			server: account1Server,
 		});
 		const ctagMatch2 = res2.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.notEqual(ctagMatch2[1], preDeleteCtag,
 			'Mountpoint ctag should change after appointment delete');
 	});
@@ -342,6 +378,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				</action>
 			</FolderActionRequest>`, account2Token
 		);
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${account2CalendarId}" op="grant">
@@ -360,6 +398,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// Create mountpoint with color
 		const mountpointName = 'Calendar' + common.getUniqueString();
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId}" name="${mountpointName}" view="appointment" rid="${account2CalendarId}" zid="${account2Id}" color="1"/>
@@ -386,6 +426,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, mountpointName,
 			'Mounted calendar displayname should appear');
@@ -405,6 +447,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// account2 creates a sub-folder to share
 		const folderName = 'calendar' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${account2CalendarId}"/>
@@ -421,6 +465,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				<action id="${folderId}" op="update"><acl/></action>
 			</FolderActionRequest>`, account2Token
 		);
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="grant">
@@ -431,6 +477,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// Create mountpoint
 		const mountpointName = 'Mountpoint' + common.getUniqueString();
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId}" name="${mountpointName}" view="appointment" rid="${folderId}" zid="${account2Id}" color="1"/>
@@ -449,8 +497,12 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res1.status, 207, 'Initial PROPFIND should return 207');
 		const ctagMatch1 = res1.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch1, 'Should have initial ctag');
 		const initialCtag = ctagMatch1[1];
 
@@ -460,6 +512,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				<action id="${folderId}" op="update"><acl/></action>
 			</FolderActionRequest>`, account2Token
 		);
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="grant">
@@ -481,6 +535,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			server: account1Server,
 		});
 		const ctagMatch2 = res2.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch2, 'Should have post-permission-change ctag');
 		assert.notEqual(ctagMatch2[1], initialCtag,
 			'Mountpoint ctag should change after permission change');
@@ -498,6 +554,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// account2 creates a sub-folder to share
 		const folderName = 'calendar' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${account2CalendarId}"/>
@@ -514,6 +572,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				<action id="${folderId}" op="update"><acl/></action>
 			</FolderActionRequest>`, account2Token
 		);
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="grant">
@@ -524,6 +584,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// Create mountpoint
 		const mountpointName = 'Mountpoint' + common.getUniqueString();
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId}" name="${mountpointName}" view="appointment" rid="${folderId}" zid="${account2Id}" color="1"/>
@@ -542,18 +604,26 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res1.status, 207, 'Initial PROPFIND should return 207');
 		const ctagMatch1 = res1.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch1, 'Should have initial ctag');
 		const initialCtag = ctagMatch1[1];
 
 		// account2 renames the remote folder
 		const newFolderName = 'folder' + common.getUniqueString();
+
+		// ItemActionRequest
 		const renameRes = await soap.makeSOAPEnvelopeAccount(
 			`<ItemActionRequest xmlns="urn:zimbraMail">
 				<action op="rename" id="${folderId}" name="${newFolderName}"/>
 			</ItemActionRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
 		assert.exists(renameRes.ItemActionResponse, 'Should rename folder');
 
@@ -570,6 +640,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			server: account1Server,
 		});
 		const ctagMatch2 = res2.text.match(/<CS:getctag[^>]*>([^<]+)<\/CS:getctag>/);
+
+		// Verify response
 		assert.exists(ctagMatch2, 'Should have post-rename ctag');
 		assert.notEqual(ctagMatch2[1], initialCtag,
 			'Mountpoint ctag should change after remote folder rename');
@@ -587,6 +659,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// account2 creates a folder to share
 		const folderName = 'folder' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${rootId}" view="appointment"/>
@@ -608,6 +682,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// account1 creates mountpoint
 		const mountpointName = 'Mountpoint' + common.getUniqueString();
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId}" name="${mountpointName}" view="appointment" rid="${folderId}" zid="${account2Id}"/>
@@ -626,6 +702,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(propfindRes.status, 207, 'PROPFIND should return 207');
 		assert.include(propfindRes.text, mountpointName,
 			'Mountpoint should appear in PROPFIND');
@@ -638,12 +716,16 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			password: config.accountPassword,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.include([204, 403], deleteRes.status, 'DELETE should return 204 No Content or 403 Forbidden');
 
 		// Verify mountpoint still shows in GetFolder (moved to Trash per XML behavior)
 		const verifyRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(verifyRes.Fault, 'Response should not be a Fault');
 		assert.exists(verifyRes.GetFolderResponse, 'GetFolderResponse should exist');
 
@@ -652,6 +734,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
 		const allFolders2 = JSON.stringify(verifyRes2.GetFolderResponse);
+
+		// Verify response
 		assert.include(allFolders2, `"name":"${folderName}"`,
 			'Source folder should still exist on account2');
 	});
@@ -660,6 +744,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 	it('Sanity | Verify an appointment in a mountpoint can be deleted from CalDav', async () => {
 		// account2 creates appointment
 		const appointmentSubject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -677,6 +763,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
 		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createApptRes.CreateAppointmentResponse.invId
@@ -703,6 +791,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// Create mountpoint
 		const mountpointName = 'Calendar' + common.getUniqueString();
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId}" name="${mountpointName}" view="appointment" rid="${account2CalendarId}" zid="${account2Id}"/>
@@ -729,6 +819,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// Extract appointment href
 		const hrefMatch = reportRes.text.match(new RegExp('<D:href>([^<]*' + uid + '[^<]*)</D:href>'));
+
+		// Verify response
 		assert.exists(hrefMatch, 'Should find appointment href in mountpoint');
 		const appointmentHref = hrefMatch[1];
 
@@ -740,6 +832,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			password: config.accountPassword,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(deleteRes.status, 204, 'DELETE should return 204');
 
 		// Verify appointment is deleted on account2
@@ -751,6 +845,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		);
 		const searchResp = searchRes.SearchResponse;
 		const appts = searchResp.appt || searchResp.hit;
+
+		// Verify response
 		assert.isTrue(!appts || (Array.isArray(appts) && appts.length === 0),
 			'Appointment should be deleted from account2');
 	});
@@ -764,6 +860,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		const acct3Name = acct3User + '@' + config.testDomain;
 		const acct3Encoded = acct3User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct3Name}</name>
@@ -780,6 +877,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		const acct4User = 'test' + common.getUniqueString();
 		const acct4Name = acct4User + '@' + config.testDomain;
 
+		// Create account
 		const createRes4 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct4Name}</name>
@@ -792,6 +890,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		const acct4Id = acct4.id;
 
 		// Auth both accounts
+		// Send the message
 		const authRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${acct3Name}</account>
@@ -802,6 +901,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			? authRes3.AuthResponse.authToken[0]._content || authRes3.AuthResponse.authToken[0]
 			: authRes3.AuthResponse.authToken._content || authRes3.AuthResponse.authToken;
 
+		// Send the message
 		const authRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${acct4Name}</account>
@@ -814,6 +914,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// account4 creates appointment
 		const appointmentSubject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -831,6 +933,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				</m>
 			</CreateAppointmentRequest>`, acct4Token
 		);
+
+		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
 		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createApptRes.CreateAppointmentResponse.invId
@@ -865,6 +969,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			return null;
 		};
 		const acct4CalId = findFolder(gfRes4.GetFolderResponse.folder, 'Calendar').id;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${acct4CalId}" op="grant">
@@ -882,6 +988,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		const mpName = 'Matts Calendar' + common.getUniqueString();
 		const mpNameEncoded = encodeURIComponent(mpName);
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId3}" name="${mpName}" view="appointment" rid="${acct4CalId}" zid="${acct4Id}"/>
@@ -907,6 +1015,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		});
 
 		const hrefMatch = reportRes.text.match(new RegExp('<D:href>([^<]*' + uid + '[^<]*)</D:href>'));
+
+		// Verify response
 		assert.exists(hrefMatch, 'Should find appointment href in mountpoint');
 
 		// Delete via CalDav
@@ -917,6 +1027,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			password: config.accountPassword,
 			server: acct3Server,
 		});
+
+		// Verify response
 		assert.equal(deleteRes.status, 204, 'DELETE should return 204');
 
 		// Verify deletion on account4
@@ -927,6 +1039,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			</SearchRequest>`, acct4Token
 		);
 		const appts = searchRes.SearchResponse.appt || searchRes.SearchResponse.hit;
+
+		// Verify response
 		assert.isTrue(!appts || (Array.isArray(appts) && appts.length === 0),
 			'Appointment should be deleted from account4');
 	});
@@ -940,6 +1054,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		const acct5Name = acct5User + '@' + config.testDomain;
 		const acct5Encoded = acct5User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes5 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct5Name}</name>
@@ -956,6 +1071,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		const acct6User = 'test' + common.getUniqueString();
 		const acct6Name = acct6User + '@' + config.testDomain;
 
+		// Create account
 		const createRes6 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acct6Name}</name>
@@ -968,6 +1084,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		const acct6Id = acct6.id;
 
 		// Auth both accounts
+		// Send the message
 		const authRes5 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${acct5Name}</account>
@@ -978,6 +1095,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			? authRes5.AuthResponse.authToken[0]._content || authRes5.AuthResponse.authToken[0]
 			: authRes5.AuthResponse.authToken._content || authRes5.AuthResponse.authToken;
 
+		// Send the message
 		const authRes6 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${acct6Name}</account>
@@ -990,6 +1108,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		// account6 creates appointment
 		const appointmentSubject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -1007,6 +1127,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 				</m>
 			</CreateAppointmentRequest>`, acct6Token
 		);
+
+		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
 		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createApptRes.CreateAppointmentResponse.invId
@@ -1041,6 +1163,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			return null;
 		};
 		const acct6CalId = findFolder(gfRes6.GetFolderResponse.folder, 'Calendar').id;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${acct6CalId}" op="grant">
@@ -1058,6 +1182,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 
 		const mpName = 'foo@bar.com Calendar' + common.getUniqueString();
 		const mpNameEncoded = encodeURIComponent(mpName);
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootId5}" name="${mpName}" view="appointment" rid="${acct6CalId}" zid="${acct6Id}"/>
@@ -1083,6 +1209,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		});
 
 		const hrefMatch = reportRes.text.match(new RegExp('<D:href>([^<]*' + uid + '[^<]*)</D:href>'));
+
+		// Verify response
 		assert.exists(hrefMatch, 'Should find appointment href in mountpoint');
 
 		// Delete via CalDav
@@ -1093,6 +1221,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			password: config.accountPassword,
 			server: acct5Server,
 		});
+
+		// Verify response
 		assert.equal(deleteRes.status, 204, 'DELETE should return 204');
 
 		// Verify deletion on account6
@@ -1103,6 +1233,8 @@ describe('CalDav > Calendar > Mountpoints', function () {
 			</SearchRequest>`, acct6Token
 		);
 		const appts = searchRes.SearchResponse.appt || searchRes.SearchResponse.hit;
+
+		// Verify response
 		assert.isTrue(!appts || (Array.isArray(appts) && appts.length === 0),
 			'Appointment should be deleted from account6');
 	});

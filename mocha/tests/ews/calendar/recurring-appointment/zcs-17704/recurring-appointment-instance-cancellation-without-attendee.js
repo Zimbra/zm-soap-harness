@@ -147,6 +147,8 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 		const updateMsg = updateBody.UpdateItemResponse
 			.ResponseMessages.UpdateItemResponseMessage;
 		assert.equal(updateMsg.$.ResponseClass, 'Success', 'UpdateItem should succeed');
+		// Capture updated ChangeKey for subsequent delete
+		const updatedCk = updateMsg.Items?.CalendarItem?.ItemId?.$.ChangeKey || masterCk;
 
 		// Step 3: Verify exception on ZWC and update from ZWC
 		await common.delay(5000);
@@ -160,10 +162,11 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${expandStart}" calExpandInstEnd="${expandEnd}"
 				limit="1000" offset="0">
-				<query>(inid:"10")</query>
+				<query>(inid:10)</query>
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
+
 		const appts = Array.isArray(searchRes2.SearchResponse.appt)
 			? searchRes2.SearchResponse.appt : [searchRes2.SearchResponse.appt];
 		let exceptionInvId = null;
@@ -171,7 +174,7 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 			if (!a || !a.inst) continue;
 			const instances = Array.isArray(a.inst) ? a.inst : [a.inst];
 			for (const inst of instances) {
-				if (inst.ex === '1' || inst.ex === 1) {
+				if (inst.ex === '1' || inst.ex === 1 || inst.ex === true) {
 					exceptionInvId = inst.invId;
 					break;
 				}
@@ -201,16 +204,24 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 				SendMeetingCancellations="SendToNone">
 				<ItemIds>
 					<t:OccurrenceItemId RecurringMasterId="${masterId}"
+						ChangeKey="${updatedCk}"
 						InstanceIndex="2" />
 				</ItemIds>
 			</DeleteItem>`,
 			account1Email, accountPassword
 		);
 		const deleteBody = ews.getBody(deleteRes);
+		if (!deleteBody.DeleteItemResponse) {
+			console.log('DeleteItem full response:', JSON.stringify(deleteBody));
+		}
 		assert.exists(deleteBody.DeleteItemResponse, 'DeleteItemResponse should exist');
+		// Server may return DeleteItemResponseMessage or GetItemResponseMessage for occurrence deletions
 		const deleteMsg = deleteBody.DeleteItemResponse
-			.ResponseMessages.DeleteItemResponseMessage;
-		const deleteMsgArr = Array.isArray(deleteMsg) ? deleteMsg : [deleteMsg];
+			.ResponseMessages.DeleteItemResponseMessage
+			|| deleteBody.DeleteItemResponse.ResponseMessages.GetItemResponseMessage;
+		const deleteMsgArr = Array.isArray(deleteMsg) ? deleteMsg : (deleteMsg ? [deleteMsg] : []);
+		assert.isAbove(deleteMsgArr.length, 0, 'Should have DeleteItemResponseMessage');
+		assert.exists(deleteMsgArr[0].$, 'DeleteItemResponseMessage should have attributes');
 		assert.equal(
 			deleteMsgArr[0].$.ResponseClass, 'Success',
 			'DeleteItem should succeed'
@@ -227,7 +238,7 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 		const searchRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${narrowStart}" calExpandInstEnd="${narrowEnd}">
-				<query>(inid:"10")</query>
+				<query>(inid:10)</query>
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes3.Fault, 'Response should not be a Fault');

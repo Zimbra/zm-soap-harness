@@ -6,38 +6,38 @@ import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
 describe('EWS > Modify Draft Priority From ZWC', function () {
-    this.timeout(120 * 1000);
-    let adminAuthToken, accountEmail, accountPassword;
+	this.timeout(120 * 1000);
+	let adminAuthToken, accountEmail, accountPassword;
 
-    before(async function () {
-        await main.before(this.ctx);
-        adminAuthToken = await soap.getAdminAuthToken();
-        accountPassword = config.accountPassword;
+	before(async function () {
+		await main.before(this.ctx);
+		adminAuthToken = await soap.getAdminAuthToken();
+		accountPassword = config.accountPassword;
 
-        const accountName = `ewstest${common.getUniqueString()}@${config.testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+		const accountName = `ewstest${common.getUniqueString()}@${config.testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountName}</name>
 				<password>${accountPassword}</password>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        accountEmail = accountName;
-    });
+		);
+		accountEmail = accountName;
+	});
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    // Tests
-    it('Sanity | Create draft with low priority in EWS and sync on ZWC Verify in ZWC that draft is created with low priority', async () => {
-        const messageSubject = 'Modify draft priority from low to high from ZWC - subject';
-        const messageContent = 'Modify draft priority from low to high from ZWC - content';
+	// Tests
+	it('Sanity | Create draft with low priority in EWS and sync on ZWC Verify in ZWC that draft is created with low priority', async () => {
+		const messageSubject = 'Modify draft priority from low to high from ZWC - subject';
+		const messageContent = 'Modify draft priority from low to high from ZWC - content';
 
-        // EWS: CreateItem draft with Low priority
-        const createRes = await ews.makeEWSRequest(
-            `<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+		// EWS: CreateItem draft with Low priority
+		const createRes = await ews.makeEWSRequest(
+			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly">
 				<SavedItemFolderId>
 					<t:FolderId Id="6"/>
@@ -71,18 +71,18 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 					</t:Message>
 				</Items>
 			</CreateItem>`,
-            accountEmail, accountPassword
-        );
-        const createBody = ews.getBody(createRes);
-        const createMsg = createBody.CreateItemResponse
-            .ResponseMessages.CreateItemResponseMessage;
-        const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
-        assert.equal(createMessage.$.ResponseClass, 'Success',
-            'CreateItem should succeed');
+			accountEmail, accountPassword
+		);
+		const createBody = ews.getBody(createRes);
+		const createMsg = createBody.CreateItemResponse
+			.ResponseMessages.CreateItemResponseMessage;
+		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+		assert.equal(createMessage.$.ResponseClass, 'Success',
+			'CreateItem should succeed');
 
-        // EWS: SyncFolderItems on Drafts
-        const syncRes = await ews.makeEWSRequest(
-            `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: SyncFolderItems on Drafts
+		const syncRes = await ews.makeEWSRequest(
+			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 				</ItemShape>
@@ -93,45 +93,45 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 				<Ignore />
 				<MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
-            accountEmail, accountPassword
-        );
-        const syncBody = ews.getBody(syncRes);
-        const syncMsg = syncBody.SyncFolderItemsResponse
-            .ResponseMessages.SyncFolderItemsResponseMessage;
-        const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-        assert.equal(syncMessage.$.ResponseClass, 'Success',
-            'SyncFolderItems should succeed');
+			accountEmail, accountPassword
+		);
+		const syncBody = ews.getBody(syncRes);
+		const syncMsg = syncBody.SyncFolderItemsResponse
+			.ResponseMessages.SyncFolderItemsResponseMessage;
+		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
+		assert.equal(syncMessage.$.ResponseClass, 'Success',
+			'SyncFolderItems should succeed');
 
-        // ZWC: Verify draft with low priority
-        const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
-        const searchRes = await soap.makeSOAPEnvelopeAccount(
-            `<SearchRequest xmlns="urn:zimbraMail" types="message"
+		// ZWC: Verify draft with low priority
+		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, accountAuthToken
-        );
-        assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-        assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
-        const messages = Array.isArray(searchRes.SearchResponse.m)
-            ? searchRes.SearchResponse.m : searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : [];
-        assert.isAbove(messages.length, 0, 'Should find message');
-        const msgId = messages[0].id;
+		const messages = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : [];
+		assert.isAbove(messages.length, 0, 'Should find message');
+		const msgId = messages[0].id;
 
-        const getMsgRes = await soap.makeSOAPEnvelopeAccount(
-            `<GetMsgRequest xmlns="urn:zimbraMail">
+		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, accountAuthToken
-        );
-        assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
-        const msg = getMsgRes.GetMsgResponse.m;
-        const msgObj = Array.isArray(msg) ? msg[0] : msg;
-        assert.include(msgObj.su, messageSubject, 'Subject should match');
-        assert.include(msgObj.f, 'sd?', 'Flags should contain sd? (draft + low priority)');
+		);
+		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
+		const msg = getMsgRes.GetMsgResponse.m;
+		const msgObj = Array.isArray(msg) ? msg[0] : msg;
+		assert.include(msgObj.su, messageSubject, 'Subject should match');
+		assert.include(msgObj.f, 'sd?', 'Flags should contain sd? (draft + low priority)');
 
-        // ZWC: SaveDraft to change priority from low to high (f="!")
-        const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
-            `<SaveDraftRequest xmlns="urn:zimbraMail">
+		// ZWC: SaveDraft to change priority from low to high (f="!")
+		const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
+			`<SaveDraftRequest xmlns="urn:zimbraMail">
 				<m f="!">
 					<id>${msgId}</id>
 					<su>${messageSubject}</su>
@@ -140,12 +140,12 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 					</mp>
 				</m>
 			</SaveDraftRequest>`, accountAuthToken
-        );
-        assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
+		);
+		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 
-        // EWS: GetFolder for Drafts
-        const getFolderRes = await ews.makeEWSRequest(
-            `<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: GetFolder for Drafts
+		const getFolderRes = await ews.makeEWSRequest(
+			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
 					<t:BaseShape>AllProperties</t:BaseShape>
 				</FolderShape>
@@ -157,21 +157,21 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 					</t:DistinguishedFolderId>
 				</FolderIds>
 			</GetFolder>`,
-            accountEmail, accountPassword
-        );
-        const getFolderBody = ews.getBody(getFolderRes);
-        const getFolderMsg = getFolderBody.GetFolderResponse
-            .ResponseMessages.GetFolderResponseMessage;
-        const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
-        assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
-        const draftsId = folderMsg.Folders.Folder.FolderId.$.Id;
-        assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
-        assert.equal(folderMsg.Folders.Folder.DisplayName, 'Drafts',
-            'DisplayName should be Drafts');
+			accountEmail, accountPassword
+		);
+		const getFolderBody = ews.getBody(getFolderRes);
+		const getFolderMsg = getFolderBody.GetFolderResponse
+			.ResponseMessages.GetFolderResponseMessage;
+		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
+		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
+		const draftsId = folderMsg.Folders.Folder.FolderId.$.Id;
+		assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
+		assert.equal(folderMsg.Folders.Folder.DisplayName, 'Drafts',
+			'DisplayName should be Drafts');
 
-        // EWS: SyncFolderItems to pick up the ZWC modification
-        const syncRes2 = await ews.makeEWSRequest(
-            `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: SyncFolderItems to pick up the ZWC modification
+		const syncRes2 = await ews.makeEWSRequest(
+			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 				</ItemShape>
@@ -182,23 +182,23 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 				<Ignore />
 				<MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
-            accountEmail, accountPassword
-        );
-        const syncBody2 = ews.getBody(syncRes2);
-        const syncMsg2 = syncBody2.SyncFolderItemsResponse
-            .ResponseMessages.SyncFolderItemsResponseMessage;
-        const syncMessage2 = Array.isArray(syncMsg2) ? syncMsg2[0] : syncMsg2;
-        assert.equal(syncMessage2.$.ResponseClass, 'Success',
-            'SyncFolderItems should succeed');
-        const creates = Array.isArray(syncMessage2.Changes.Create)
-            ? syncMessage2.Changes.Create : [syncMessage2.Changes.Create];
-        const lastCreate = creates[creates.length - 1];
-        const mailItemId = lastCreate.Message.ItemId.$.Id;
-        const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+			accountEmail, accountPassword
+		);
+		const syncBody2 = ews.getBody(syncRes2);
+		const syncMsg2 = syncBody2.SyncFolderItemsResponse
+			.ResponseMessages.SyncFolderItemsResponseMessage;
+		const syncMessage2 = Array.isArray(syncMsg2) ? syncMsg2[0] : syncMsg2;
+		assert.equal(syncMessage2.$.ResponseClass, 'Success',
+			'SyncFolderItems should succeed');
+		const creates = Array.isArray(syncMessage2.Changes.Create)
+			? syncMessage2.Changes.Create : [syncMessage2.Changes.Create];
+		const lastCreate = creates[creates.length - 1];
+		const mailItemId = lastCreate.Message.ItemId.$.Id;
+		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
 
-        // EWS: GetItem to verify priority changed to High
-        const getItemRes = await ews.makeEWSRequest(
-            `<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: GetItem to verify priority changed to High
+		const getItemRes = await ews.makeEWSRequest(
+			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:BodyType>Best</t:BodyType>
@@ -219,27 +219,27 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 					<t:ItemId Id="${mailItemId}" ChangeKey="${mailChangeKey}" />
 				</ItemIds>
 			</GetItem>`,
-            accountEmail, accountPassword
-        );
-        const getItemBody = ews.getBody(getItemRes);
-        const getItemMsg = getItemBody.GetItemResponse
-            .ResponseMessages.GetItemResponseMessage;
-        const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
-        assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
-        assert.equal(itemMsg.Items.Message.Subject, messageSubject,
-            'Subject should match');
-        assert.equal(itemMsg.Items.Message.Importance, 'High',
-            'Importance should be High after ZWC modification');
-    });
+			accountEmail, accountPassword
+		);
+		const getItemBody = ews.getBody(getItemRes);
+		const getItemMsg = getItemBody.GetItemResponse
+			.ResponseMessages.GetItemResponseMessage;
+		const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
+		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.equal(itemMsg.Items.Message.Subject, messageSubject,
+			'Subject should match');
+		assert.equal(itemMsg.Items.Message.Importance, 'High',
+			'Importance should be High after ZWC modification');
+	});
 
 
-    it('Sanity | Create draft with high priority in EWS and sync on ZWC Verify in ZWC that draft is created with high priority', async () => {
-        const messageSubject = 'Modify draft priority from high to low from ZWC - subject';
-        const messageContent = 'Modify draft priority from high to low from ZWC - content';
+	it('Sanity | Create draft with high priority in EWS and sync on ZWC Verify in ZWC that draft is created with high priority', async () => {
+		const messageSubject = 'Modify draft priority from high to low from ZWC - subject';
+		const messageContent = 'Modify draft priority from high to low from ZWC - content';
 
-        // EWS: CreateItem draft with High priority
-        const createRes = await ews.makeEWSRequest(
-            `<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+		// EWS: CreateItem draft with High priority
+		const createRes = await ews.makeEWSRequest(
+			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly">
 				<SavedItemFolderId>
 					<t:FolderId Id="6"/>
@@ -273,18 +273,18 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 					</t:Message>
 				</Items>
 			</CreateItem>`,
-            accountEmail, accountPassword
-        );
-        const createBody = ews.getBody(createRes);
-        const createMsg = createBody.CreateItemResponse
-            .ResponseMessages.CreateItemResponseMessage;
-        const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
-        assert.equal(createMessage.$.ResponseClass, 'Success',
-            'CreateItem should succeed');
+			accountEmail, accountPassword
+		);
+		const createBody = ews.getBody(createRes);
+		const createMsg = createBody.CreateItemResponse
+			.ResponseMessages.CreateItemResponseMessage;
+		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+		assert.equal(createMessage.$.ResponseClass, 'Success',
+			'CreateItem should succeed');
 
-        // EWS: SyncFolderItems on Drafts
-        const syncRes = await ews.makeEWSRequest(
-            `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: SyncFolderItems on Drafts
+		const syncRes = await ews.makeEWSRequest(
+			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 				</ItemShape>
@@ -295,45 +295,45 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 				<Ignore />
 				<MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
-            accountEmail, accountPassword
-        );
-        const syncBody = ews.getBody(syncRes);
-        const syncMsg = syncBody.SyncFolderItemsResponse
-            .ResponseMessages.SyncFolderItemsResponseMessage;
-        const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-        assert.equal(syncMessage.$.ResponseClass, 'Success',
-            'SyncFolderItems should succeed');
+			accountEmail, accountPassword
+		);
+		const syncBody = ews.getBody(syncRes);
+		const syncMsg = syncBody.SyncFolderItemsResponse
+			.ResponseMessages.SyncFolderItemsResponseMessage;
+		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
+		assert.equal(syncMessage.$.ResponseClass, 'Success',
+			'SyncFolderItems should succeed');
 
-        // ZWC: Verify draft with high priority
-        const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
-        const searchRes = await soap.makeSOAPEnvelopeAccount(
-            `<SearchRequest xmlns="urn:zimbraMail" types="message"
+		// ZWC: Verify draft with high priority
+		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, accountAuthToken
-        );
-        assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-        assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
-        const messages = Array.isArray(searchRes.SearchResponse.m)
-            ? searchRes.SearchResponse.m : searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : [];
-        assert.isAbove(messages.length, 0, 'Should find message');
-        const msgId = messages[0].id;
+		const messages = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : [];
+		assert.isAbove(messages.length, 0, 'Should find message');
+		const msgId = messages[0].id;
 
-        const getMsgRes = await soap.makeSOAPEnvelopeAccount(
-            `<GetMsgRequest xmlns="urn:zimbraMail">
+		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, accountAuthToken
-        );
-        assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
-        const msg = getMsgRes.GetMsgResponse.m;
-        const msgObj = Array.isArray(msg) ? msg[0] : msg;
-        assert.include(msgObj.su, messageSubject, 'Subject should match');
-        assert.include(msgObj.f, 'sd!', 'Flags should contain sd! (draft + high priority)');
+		);
+		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
+		const msg = getMsgRes.GetMsgResponse.m;
+		const msgObj = Array.isArray(msg) ? msg[0] : msg;
+		assert.include(msgObj.su, messageSubject, 'Subject should match');
+		assert.include(msgObj.f, 'sd!', 'Flags should contain sd! (draft + high priority)');
 
-        // ZWC: SaveDraft to change priority from high to low (f="?")
-        const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
-            `<SaveDraftRequest xmlns="urn:zimbraMail">
+		// ZWC: SaveDraft to change priority from high to low (f="?")
+		const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
+			`<SaveDraftRequest xmlns="urn:zimbraMail">
 				<m f="?">
 					<id>${msgId}</id>
 					<su>${messageSubject}</su>
@@ -342,12 +342,12 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 					</mp>
 				</m>
 			</SaveDraftRequest>`, accountAuthToken
-        );
-        assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
+		);
+		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 
-        // EWS: GetFolder for Drafts
-        const getFolderRes = await ews.makeEWSRequest(
-            `<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: GetFolder for Drafts
+		const getFolderRes = await ews.makeEWSRequest(
+			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
 					<t:BaseShape>AllProperties</t:BaseShape>
 				</FolderShape>
@@ -359,21 +359,21 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 					</t:DistinguishedFolderId>
 				</FolderIds>
 			</GetFolder>`,
-            accountEmail, accountPassword
-        );
-        const getFolderBody = ews.getBody(getFolderRes);
-        const getFolderMsg = getFolderBody.GetFolderResponse
-            .ResponseMessages.GetFolderResponseMessage;
-        const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
-        assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
-        const draftsId = folderMsg.Folders.Folder.FolderId.$.Id;
-        assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
-        assert.equal(folderMsg.Folders.Folder.DisplayName, 'Drafts',
-            'DisplayName should be Drafts');
+			accountEmail, accountPassword
+		);
+		const getFolderBody = ews.getBody(getFolderRes);
+		const getFolderMsg = getFolderBody.GetFolderResponse
+			.ResponseMessages.GetFolderResponseMessage;
+		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
+		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
+		const draftsId = folderMsg.Folders.Folder.FolderId.$.Id;
+		assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
+		assert.equal(folderMsg.Folders.Folder.DisplayName, 'Drafts',
+			'DisplayName should be Drafts');
 
-        // EWS: SyncFolderItems to pick up the ZWC modification
-        const syncRes2 = await ews.makeEWSRequest(
-            `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: SyncFolderItems to pick up the ZWC modification
+		const syncRes2 = await ews.makeEWSRequest(
+			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 				</ItemShape>
@@ -384,23 +384,23 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 				<Ignore />
 				<MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
-            accountEmail, accountPassword
-        );
-        const syncBody2 = ews.getBody(syncRes2);
-        const syncMsg2 = syncBody2.SyncFolderItemsResponse
-            .ResponseMessages.SyncFolderItemsResponseMessage;
-        const syncMessage2 = Array.isArray(syncMsg2) ? syncMsg2[0] : syncMsg2;
-        assert.equal(syncMessage2.$.ResponseClass, 'Success',
-            'SyncFolderItems should succeed');
-        const allCreates = Array.isArray(syncMessage2.Changes.Create)
-            ? syncMessage2.Changes.Create : [syncMessage2.Changes.Create];
-        const lastCreate = allCreates[allCreates.length - 1];
-        const mailItemId = lastCreate.Message.ItemId.$.Id;
-        const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+			accountEmail, accountPassword
+		);
+		const syncBody2 = ews.getBody(syncRes2);
+		const syncMsg2 = syncBody2.SyncFolderItemsResponse
+			.ResponseMessages.SyncFolderItemsResponseMessage;
+		const syncMessage2 = Array.isArray(syncMsg2) ? syncMsg2[0] : syncMsg2;
+		assert.equal(syncMessage2.$.ResponseClass, 'Success',
+			'SyncFolderItems should succeed');
+		const allCreates = Array.isArray(syncMessage2.Changes.Create)
+			? syncMessage2.Changes.Create : [syncMessage2.Changes.Create];
+		const lastCreate = allCreates[allCreates.length - 1];
+		const mailItemId = lastCreate.Message.ItemId.$.Id;
+		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
 
-        // EWS: GetItem to verify priority changed to Low
-        const getItemRes = await ews.makeEWSRequest(
-            `<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: GetItem to verify priority changed to Low
+		const getItemRes = await ews.makeEWSRequest(
+			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:BodyType>Best</t:BodyType>
@@ -421,16 +421,16 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 					<t:ItemId Id="${mailItemId}" ChangeKey="${mailChangeKey}" />
 				</ItemIds>
 			</GetItem>`,
-            accountEmail, accountPassword
-        );
-        const getItemBody = ews.getBody(getItemRes);
-        const getItemMsg = getItemBody.GetItemResponse
-            .ResponseMessages.GetItemResponseMessage;
-        const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
-        assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
-        assert.equal(itemMsg.Items.Message.Subject, messageSubject,
-            'Subject should match');
-        assert.equal(itemMsg.Items.Message.Importance, 'Low',
-            'Importance should be Low after ZWC modification');
-    });
+			accountEmail, accountPassword
+		);
+		const getItemBody = ews.getBody(getItemRes);
+		const getItemMsg = getItemBody.GetItemResponse
+			.ResponseMessages.GetItemResponseMessage;
+		const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
+		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.equal(itemMsg.Items.Message.Subject, messageSubject,
+			'Subject should match');
+		assert.equal(itemMsg.Items.Message.Importance, 'Low',
+			'Importance should be Low after ZWC modification');
+	});
 });

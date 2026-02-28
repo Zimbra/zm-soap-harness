@@ -37,6 +37,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 	it('Smoke | Share a folder to all. Verify that all users have access.', async () => {
 		// Setup Folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -45,6 +47,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -55,6 +59,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 					<grant gt="pub" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Verify random user (Account2) can access
@@ -62,7 +68,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_pub" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
+
+		// Verify response
 		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Public grant should allow any user to mount');
 	});
@@ -71,6 +81,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 	it('Sanity | Unshare a folder to pub. Verify that all users no longer have access.', async () => {
 		// Create folder
 		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -79,6 +91,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -96,6 +110,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 				</content>
 			</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const addMsg = await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth1);
 		const msgId = addMsg.AddMsgResponse.m[0].id;
 
@@ -106,6 +122,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 					<grant gt="pub" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		const grantResp = await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 		const grantZid = grantResp.FolderActionResponse.action.zid;
 
@@ -114,7 +132,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
+
+		// FolderActionRequest
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
+
+		// Verify response
 		assert.notExists(accessCheck.Fault, 'User should have access before revoke');
 
 		// Revoke the grant
@@ -122,6 +144,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="!grant" zid="${grantZid || '99999999-9999-9999-9999-999999999999'}"/>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest3, auth1);
 
 		// Verify access denied
@@ -130,6 +154,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Public', function () {
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, auth2);
+
+		// Verify response
 		assert.exists(revokedCheck.Fault,
 			'User should be denied after revoking public grant');
 	});

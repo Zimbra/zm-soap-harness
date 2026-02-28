@@ -24,6 +24,8 @@ describe('Tasks > Modify Tasks', function () {
 
 	// Helper to create a task and return its id
 	async function createTask(subject) {
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -33,6 +35,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		return res.CreateTaskResponse.invId;
 	}
@@ -43,6 +47,7 @@ describe('Tasks > Modify Tasks', function () {
 		const taskId = await createTask(subject);
 		const newLocation = `loc${common.getUniqueString()}`;
 
+		// ModifyTaskRequest
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyTaskRequest xmlns="urn:zimbraMail" id="${taskId}" comp="0">
 				<m>
@@ -56,6 +61,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
@@ -65,6 +72,7 @@ describe('Tasks > Modify Tasks', function () {
 		const subject = `task${common.getUniqueString()}`;
 		const taskId = await createTask(subject);
 
+		// ModifyTaskRequest
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyTaskRequest xmlns="urn:zimbraMail" id="${taskId}" comp="0">
 				<m>
@@ -74,6 +82,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
@@ -93,6 +103,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes1.Fault, 'First modification should not be a Fault');
 
 		// Second modification
@@ -105,6 +117,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes2.Fault, 'Second modification should not be a Fault');
 	});
 
@@ -114,6 +128,7 @@ describe('Tasks > Modify Tasks', function () {
 		const taskId = await createTask(subject);
 		const fakeEmail = `nonexistent${common.getUniqueString()}@example.com`;
 
+		// ModifyTaskRequest
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyTaskRequest xmlns="urn:zimbraMail" id="${taskId}" comp="0">
 				<m>
@@ -127,6 +142,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
@@ -136,6 +153,7 @@ describe('Tasks > Modify Tasks', function () {
 		const subject = `task${common.getUniqueString()}`;
 		const taskId = await createTask(subject);
 
+		// ModifyTaskRequest
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyTaskRequest xmlns="urn:zimbraMail" id="${taskId}" comp="0">
 				<m>
@@ -149,6 +167,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
@@ -159,6 +179,7 @@ describe('Tasks > Modify Tasks', function () {
 		const taskId = await createTask(subject);
 		const fakeEmail = `fake${common.getUniqueString()}@example.com`;
 
+		// ModifyTaskRequest
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyTaskRequest xmlns="urn:zimbraMail" id="${taskId}" comp="0">
 				<m>
@@ -174,6 +195,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -182,6 +205,7 @@ describe('Tasks > Modify Tasks', function () {
 		const subject = `task${common.getUniqueString()}`;
 		const taskId = await createTask(subject);
 
+		// ModifyTaskRequest
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyTaskRequest xmlns="urn:zimbraMail" id="${taskId}" comp="0">
 				<m>
@@ -191,6 +215,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, account2AuthToken, false
 		);
+
+		// Verify response
 		assert.exists(modRes.Fault, 'Unauthorized modification should be a Fault');
 	});
 
@@ -199,6 +225,7 @@ describe('Tasks > Modify Tasks', function () {
 		const subject = `task${common.getUniqueString()}`;
 		const taskId = await createTask(subject);
 
+		// ModifyTaskRequest
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyTaskRequest xmlns="urn:zimbraMail" id="${taskId}" comp="0">
 				<m>
@@ -210,6 +237,8 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
@@ -219,6 +248,7 @@ describe('Tasks > Modify Tasks', function () {
 		const subject = `task${common.getUniqueString()}`;
 		const taskId = await createTask(subject);
 
+		// ModifyTaskRequest
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyTaskRequest xmlns="urn:zimbraMail" id="${taskId}" comp="0">
 				<m>
@@ -228,13 +258,18 @@ describe('Tasks > Modify Tasks', function () {
 				</m>
 			</ModifyTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 
+		// GetTaskRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetTaskRequest xmlns="urn:zimbraMail" id="${modRes.ModifyTaskResponse.invId || taskId}"/>`,
 			accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 	});
 });

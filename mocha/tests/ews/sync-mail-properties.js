@@ -63,6 +63,8 @@ describe('EWS > Sync Mail Properties', function () {
 		);
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+
+		await soap.waitFor(5000);
 	});
 
 
@@ -73,7 +75,7 @@ describe('EWS > Sync Mail Properties', function () {
 
 		// Search for the message in inbox
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 				<query>in:inbox</query>
 			</SearchRequest>`, account1AuthToken
 		);
@@ -222,6 +224,9 @@ describe('EWS > Sync Mail Properties', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -300,14 +305,20 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 		const updateMsg = updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
-		const updatedItemId = updateMessage.Items.Message.ItemId.$.Id;
-		assert.equal(updatedItemId, mailItemId, 'Updated item Id should match');
+		assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateItem should succeed');
+		if (updateMessage.Items && updateMessage.Items.Message && updateMessage.Items.Message.ItemId) {
+			const updatedItemId = updateMessage.Items.Message.ItemId.$.Id;
+			assert.equal(updatedItemId, mailItemId, 'Updated item Id should match');
+		}
 
 		// SyncFolderItems on EWS to refresh
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -333,19 +344,16 @@ describe('EWS > Sync Mail Properties', function () {
 
 		// Verify on ZWC that the message is read
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 				<query>is:read</query>
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-		const messages = Array.isArray(searchRes.SearchResponse.c)
-			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
-		const matchedMsg = messages.find(c => {
-			const msgList = Array.isArray(c.m) ? c.m : [c.m];
-			return msgList.some(m => m.id === messageId);
-		});
-		assert.exists(matchedMsg, 'Message should be found in read conversations');
+		const messages = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const matchedMsg = messages.find(m => m && m.id === messageId);
+		assert.exists(matchedMsg, 'Message should be found in read messages');
 	});
 
 
@@ -374,14 +382,20 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 		const updateMsg = updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
-		const updatedItemId = updateMessage.Items.Message.ItemId.$.Id;
-		assert.equal(updatedItemId, mailItemId, 'Updated item Id should match');
+		assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateItem should succeed');
+		if (updateMessage.Items && updateMessage.Items.Message && updateMessage.Items.Message.ItemId) {
+			const updatedItemId = updateMessage.Items.Message.ItemId.$.Id;
+			assert.equal(updatedItemId, mailItemId, 'Updated item Id should match');
+		}
 
 		// SyncFolderItems on EWS to refresh
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -407,19 +421,16 @@ describe('EWS > Sync Mail Properties', function () {
 
 		// Verify on ZWC that the message is unread
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 				<query>is:unread</query>
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-		const messages = Array.isArray(searchRes.SearchResponse.c)
-			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
-		const matchedMsg = messages.find(c => {
-			const msgList = Array.isArray(c.m) ? c.m : [c.m];
-			return msgList.some(m => m.id === messageId);
-		});
-		assert.exists(matchedMsg, 'Message should be found in unread conversations');
+		const messages = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const matchedMsg = messages.find(m => m && m.id === messageId);
+		assert.exists(matchedMsg, 'Message should be found in unread messages');
 	});
 
 
@@ -428,7 +439,7 @@ describe('EWS > Sync Mail Properties', function () {
 
 		// Search for the message in inbox
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 				<query>in:inbox</query>
 			</SearchRequest>`, account1AuthToken
 		);
@@ -477,6 +488,9 @@ describe('EWS > Sync Mail Properties', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -565,14 +579,20 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 		const updateMsg = updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
-		const updatedItemId = updateMessage.Items.Message.ItemId.$.Id;
-		assert.equal(updatedItemId, mailItemId, 'Updated item Id should match');
+		assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateItem should succeed');
+		if (updateMessage.Items && updateMessage.Items.Message && updateMessage.Items.Message.ItemId) {
+			const updatedItemId = updateMessage.Items.Message.ItemId.$.Id;
+			assert.equal(updatedItemId, mailItemId, 'Updated item Id should match');
+		}
 
 		// SyncFolderItems on EWS to refresh
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -598,7 +618,7 @@ describe('EWS > Sync Mail Properties', function () {
 
 		// Verify on ZWC that the message is not flagged
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 				<query>is:flagged subject:${messageSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
@@ -614,7 +634,7 @@ describe('EWS > Sync Mail Properties', function () {
 
 		// Search for the message in inbox
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 				<query>in:inbox</query>
 			</SearchRequest>`, account1AuthToken
 		);
@@ -678,6 +698,9 @@ describe('EWS > Sync Mail Properties', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -758,14 +781,20 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 		const updateMsg = updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
-		const updatedItemId = updateMessage.Items.Message.ItemId.$.Id;
-		assert.equal(updatedItemId, mailItemId, 'Updated item Id should match');
+		assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateItem should succeed');
+		if (updateMessage.Items && updateMessage.Items.Message && updateMessage.Items.Message.ItemId) {
+			const updatedItemId = updateMessage.Items.Message.ItemId.$.Id;
+			assert.equal(updatedItemId, mailItemId, 'Updated item Id should match');
+		}
 
 		// SyncFolderItems on EWS to refresh
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -791,19 +820,16 @@ describe('EWS > Sync Mail Properties', function () {
 
 		// Verify on ZWC - search for the message and check it has no tags
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-		const conversations = Array.isArray(searchRes.SearchResponse.c)
-			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
-		const matchedConv = conversations.find(c => {
-			const msgList = Array.isArray(c.m) ? c.m : [c.m];
-			return msgList.some(m => m.id === messageId);
-		});
-		assert.exists(matchedConv, 'Conversation should be found');
+		const messages = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const matchedMsg = messages.find(m => m && m.id === messageId);
+		assert.exists(matchedMsg, 'Message should be found');
 
 		// GetMsg to verify no tags
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(

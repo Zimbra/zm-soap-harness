@@ -14,6 +14,8 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -22,6 +24,8 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 		);
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
@@ -44,6 +48,8 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		message1Id = sendRes.SendMsgResponse?.m?.id
 			|| (Array.isArray(sendRes.SendMsgResponse?.m)
@@ -63,6 +69,8 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 			id: message1Id,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Conv', 'Should contain X-Zimbra-Conv header');
 	});
@@ -78,6 +86,8 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const msgs = searchRes.SearchResponse?.m;
 		const msgArr = Array.isArray(msgs) ? msgs : (msgs ? [msgs] : []);
@@ -89,6 +99,8 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 			id: msgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Conv', 'Should contain X-Zimbra-Conv header');
 	});

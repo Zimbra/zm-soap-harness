@@ -15,12 +15,16 @@ describe('Auth > Bugs > Bug 65554', function () {
 
 		// Create account1
 		account1Name = 'test.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
@@ -32,22 +36,29 @@ describe('Auth > Bugs > Bug 65554', function () {
 
 		// Create account2
 		account2Name = 'test.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth as account1 to get authToken
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'Should authenticate account1');
 
@@ -63,12 +74,15 @@ describe('Auth > Bugs > Bug 65554', function () {
 
 	// Tests
 	it('Sanity | AuthRequest with authtoken contains verifyAccount 1 should match encoded account name in authtoken', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<authToken verifyAccount="1">${account1AuthToken}</authToken>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
@@ -78,6 +92,7 @@ describe('Auth > Bugs > Bug 65554', function () {
 
 
 	it('Sanity | AuthRequest with authtoken contains verifyAccount 1 should return AUTHREQUIRED if account name does not match encoded account name in authtoken', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
@@ -85,6 +100,8 @@ describe('Auth > Bugs > Bug 65554', function () {
 			</AuthRequest>`, null
 		);
 		if (response.Fault) {
+
+			// Verify response
 			assert.include(response.Fault.Detail.Error.Code, 'service.AUTH_REQUIRED',
 				'Should return AUTH_REQUIRED');
 		} else {

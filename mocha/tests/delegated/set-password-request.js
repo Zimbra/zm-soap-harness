@@ -17,6 +17,8 @@ describe('Delegated > Set Password Request', function () {
 
 		// Create delegated admin account (admin1)
 		admin1Account = `admin1.${common.getUniqueString()}@${testDomain}`;
+
+		// Create account
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${admin1Account}</name>
@@ -24,10 +26,14 @@ describe('Delegated > Set Password Request', function () {
 				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for admin1 should not fault');
 
 		// Create target account
 		targetAccount = `target.${common.getUniqueString()}@${testDomain}`;
+
+		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${targetAccount}</name>
@@ -35,6 +41,8 @@ describe('Delegated > Set Password Request', function () {
 				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for target should not fault');
 		targetId = res.CreateAccountResponse.account[0].id;
 	});
@@ -54,16 +62,21 @@ describe('Delegated > Set Password Request', function () {
 				<right>setAccountPassword</right>
 			</GrantRightRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GrantRightRequest should not fault');
 		assert.exists(res.GrantRightResponse, 'GrantRightResponse should exist');
 
 		// Auth as delegated admin1
+		// Send the message
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<AuthRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${admin1Account}</account>
 				<password>${defaultPassword}</password>
 			</AuthRequest>`
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AuthRequest as admin1 should not fault');
 		const admin1AuthToken = res.AuthResponse.authToken;
 
@@ -77,6 +90,7 @@ describe('Delegated > Set Password Request', function () {
 		// Delegated admin with setAccountPassword right should succeed
 		if (res.Fault) {
 			// AUTH_REQUIRED or PERM_DENIED means delegated admin doesn't have effective rights
+			// Verify response
 			assert.isTrue(
 				res.Fault.Detail.Error.Code.includes('service.PERM_DENIED') ||
 				res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED'),

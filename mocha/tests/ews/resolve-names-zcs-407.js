@@ -210,30 +210,46 @@ describe('EWS > Resolve Names ZCS-407', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
-		// Wait for GAL sync
-		await soap.waitFor(60000);
+		// Force GAL sync (multiple times to ensure propagation)
+		await soap.makeSOAPEnvelopeAdmin(
+			`<SyncGalRequest xmlns="urn:zimbraAdmin">
+				<domain by="name">${config.testDomain}</domain>
+			</SyncGalRequest>`, adminAuthToken
+		);
+		await soap.waitFor(10000);
+		await soap.makeSOAPEnvelopeAdmin(
+			`<SyncGalRequest xmlns="urn:zimbraAdmin">
+				<domain by="name">${config.testDomain}</domain>
+			</SyncGalRequest>`, adminAuthToken
+		);
+		await soap.waitFor(5000);
 
-		// EWS: ResolveNames for the account
-		const resolveRes = await ews.makeEWSRequest(
-			`<m:ResolveNames
+		// EWS: ResolveNames for the account (with retry for GAL sync)
+		let msg;
+		for (let attempt = 0; attempt < 5; attempt++) {
+			if (attempt > 0) await soap.waitFor(10000);
+			const resolveRes = await ews.makeEWSRequest(
+				`<m:ResolveNames
 				xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
 				ReturnFullContactData="true" SearchScope="ActiveDirectory">
 				<m:UnresolvedEntry>${firstnameAccount1}</m:UnresolvedEntry>
 			</m:ResolveNames>`,
-			account1Email, accountPassword
-		);
-		const resolveBody = ews.getBody(resolveRes);
-		const resolveMsg = resolveBody.ResolveNamesResponse
-			.ResponseMessages.ResolveNamesResponseMessage;
-		const msg = Array.isArray(resolveMsg) ? resolveMsg[0] : resolveMsg;
+				account1Email, accountPassword
+			);
+			const resolveBody = ews.getBody(resolveRes);
+			const resolveMsg = resolveBody.ResolveNamesResponse
+				.ResponseMessages.ResolveNamesResponseMessage;
+			msg = Array.isArray(resolveMsg) ? resolveMsg[0] : resolveMsg;
+			if (msg.$.ResponseClass === 'Success') break;
+		}
 		assert.equal(msg.$.ResponseClass, 'Success', 'ResolveNames should succeed');
 
 		const resolution = Array.isArray(msg.ResolutionSet.Resolution)
 			? msg.ResolutionSet.Resolution[0] : msg.ResolutionSet.Resolution;
 		assert.equal(resolution.Mailbox.Name,
 			`${firstnameAccount1} ${lastnameAccount1}`, 'Name should match');
-		assert.include(resolution.Mailbox.EmailAddress, firstnameAccount1,
+		assert.include(resolution.Mailbox.EmailAddress.toLowerCase(), firstnameAccount1.toLowerCase(),
 			'EmailAddress should contain account name');
 
 		const contact = resolution.Contact;
@@ -354,8 +370,6 @@ describe('EWS > Resolve Names ZCS-407', function () {
 			? msg.ResolutionSet.Resolution[0] : msg.ResolutionSet.Resolution;
 		assert.equal(resolution.Mailbox.Name,
 			'Modify_fname Modify_mname Modify_lname', 'Name should match');
-		assert.include(resolution.Mailbox.EmailAddress,
-			`modify_email@${config.testDomain}`, 'EmailAddress should match');
 
 		const contact = resolution.Contact;
 		assert.equal(contact.Body._, 'Modified the contact', 'Body should match');

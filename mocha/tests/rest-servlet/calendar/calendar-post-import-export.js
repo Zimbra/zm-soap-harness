@@ -16,21 +16,29 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create1Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create1Res.Fault, 'Response should not be a Fault');
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create2Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
@@ -53,6 +61,8 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 			fmt: 'ics',
 			filePath: icsFilePath
 		});
+
+		// Verify response
 		assert.equal(postRes.status, 200, 'REST POST should return 200');
 
 		// Verify appointment appears
@@ -60,10 +70,14 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 			`<GetApptSummariesRequest xmlns="urn:zimbraMail"
 				s="1148754600000" e="1152383400000"/>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appts = searchRes.GetApptSummariesResponse?.appt;
 		const apptArr = Array.isArray(appts) ? appts : (appts ? [appts] : []);
 		const found = apptArr.find(a => a.name === 'Campus Picnic');
+
+		// Verify response
 		assert.exists(found, 'Appointment Campus Picnic should exist');
 		const apptId = found.id;
 
@@ -73,6 +87,8 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 			id: apptId,
 			fmt: 'ics'
 		});
+
+		// Verify response
 		assert.equal(getRes.status, 200, 'REST GET should return 200');
 		assert.include(getRes.body, 'Campus Picnic', 'ICS should contain SUMMARY');
 	});
@@ -88,12 +104,16 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 			fmt: 'ics',
 			filePath: icsFilePath
 		});
+
+		// Verify response
 		assert.equal(postRes.status, 200, 'REST POST should return 200');
 
 		// Get calendar folder ID
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 
 		// Search for the imported appointment
@@ -114,6 +134,7 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 		};
 		const calFolderId = findCalFolder(rootFolder);
 
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="1245758400000" calExpandInstEnd="1246104000000"
@@ -121,23 +142,33 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 				<query>inid:${calFolderId}</query>
 			</SearchRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 
 		const appt = searchRes.SearchResponse?.appt;
 		const apptArr = Array.isArray(appt) ? appt : (appt ? [appt] : []);
+
+		// Verify response
 		assert.isAtLeast(apptArr.length, 1, 'Should find at least one imported appointment');
 
 		// Verify Spanish characters
 		const invId = apptArr[0].invId;
+
+		// GetMsgRequest
 		const msgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}"/>
 			</GetMsgRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(msgRes.Fault, 'Response should not be a Fault');
 		const comp = msgRes.GetMsgResponse?.m;
 		const msgData = Array.isArray(comp) ? comp[0] : comp;
 		const invComp = msgData?.inv?.[0]?.comp?.[0] || msgData?.inv?.comp;
+
+		// Verify response
 		assert.exists(invComp, 'Invitation component should exist');
 	});
 });

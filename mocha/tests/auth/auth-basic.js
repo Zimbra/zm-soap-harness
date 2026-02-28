@@ -14,12 +14,16 @@ describe('Auth > Auth Basic', function () {
 
 		// Create account1 with foreign principal
 		account1Name = 'user' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
@@ -36,16 +40,21 @@ describe('Auth > Auth Basic', function () {
 
 	// Tests
 	it('Smoke | Basic Test - AuthRequest - login to the client using by name', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
+
+		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -54,16 +63,21 @@ describe('Auth > Auth Basic', function () {
 
 
 	it('Smoke | Basic Test - AuthRequest - login to the client using by id', async () => {
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="id">${account1Id}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
+
+		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -73,12 +87,15 @@ describe('Auth > Auth Basic', function () {
 
 	it('Sanity | Verify User auth token should not be able to execute RunUnitTestRequest', async () => {
 		// Get user auth token
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
@@ -95,6 +112,8 @@ describe('Auth > Auth Basic', function () {
 			`<RunUnitTestsRequest xmlns="urn:zimbraAdmin">
 			</RunUnitTestsRequest>`, userToken
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
@@ -124,17 +143,22 @@ describe('Auth > Auth Basic', function () {
 				<password>${config.adminPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'CreateAccountResponse should exist');
 
 		// Auth by name without domain
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${acctNameOnly}</account>
 				<password>${config.adminPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
@@ -155,16 +179,21 @@ describe('Auth > Auth Basic', function () {
 		);
 
 		// Auth by foreignPrincipal
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="foreignPrincipal">${foreignPrincipal}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
+
+		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -183,6 +212,8 @@ describe('Auth > Auth Basic', function () {
 				<password>${accentedPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
@@ -191,16 +222,21 @@ describe('Auth > Auth Basic', function () {
 			: createRes.CreateAccountResponse.account;
 
 		// Auth with accented password
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="id">${acct.id}</account>
 				<password>${accentedPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 
 		const lifetime = response.AuthResponse.lifetime;
+
+		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');

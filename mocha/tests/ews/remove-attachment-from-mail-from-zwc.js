@@ -116,11 +116,16 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
 		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
+		await soap.waitFor(5000);
+
 		// EWS: SyncFolderItems on sent items for account1
 		const syncSentRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="5" />
@@ -188,19 +193,20 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 			'Second attachment should be image2.png');
 
 		// ZWC: Search for mail on account2
-		await soap.waitFor(5000);
+		await soap.waitFor(8000);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-		const hit = Array.isArray(searchRes.SearchResponse.c)
-			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
-		assert.equal(hit.su, messageSubject, 'Subject should match');
-		const mailIdWc = Array.isArray(hit.m) ? hit.m[0].id : hit.m.id;
+		const hit = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m[0] : searchRes.SearchResponse.m;
+		assert.exists(hit, 'Should find message in search results');
+		assert.include(hit.su, messageSubject, 'Subject should match');
+		const mailIdWc = hit.id;
 
 		// GetMsg to verify attachments on ZWC
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
@@ -235,8 +241,10 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 				<m id="${mailIdWc}" part="${part1}" />
 			</RemoveAttachmentsRequest>`, account2AuthToken
 		);
+		if (removeRes.Fault) console.log('RemoveAttachments Fault:', JSON.stringify(removeRes.Fault));
 		assert.notExists(removeRes.Fault, 'Response should not be a Fault');
-		const newMsgId = removeRes.RemoveAttachmentsResponse.m.id;
+		const removeM = Array.isArray(removeRes.RemoveAttachmentsResponse.m) ? removeRes.RemoveAttachmentsResponse.m[0] : removeRes.RemoveAttachmentsResponse.m;
+		const newMsgId = removeM.id;
 
 		// Verify on ZWC that file1.pdf is removed
 		const getMsgRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -244,16 +252,22 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 				<m id="${newMsgId}" />
 			</GetMsgRequest>`, account2AuthToken
 		);
+		if (getMsgRes2.Fault) console.log('GetMsg2 Fault:', JSON.stringify(getMsgRes2.Fault), 'newMsgId:', newMsgId);
 		assert.notExists(getMsgRes2.Fault, 'Response should not be a Fault');
 		const msgObj2 = Array.isArray(getMsgRes2.GetMsgResponse.m)
 			? getMsgRes2.GetMsgResponse.m[0] : getMsgRes2.GetMsgResponse.m;
 		assert.include(msgObj2.su, messageSubject, 'Subject should match');
+
+		await soap.waitFor(5000);
 
 		// EWS: SyncFolderItems on inbox for account2
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="2" />

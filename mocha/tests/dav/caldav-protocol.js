@@ -18,12 +18,15 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 		account1Name = account1User + '@' + config.testDomain;
 		account1NameEncoded = account1User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -33,6 +36,7 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 		const mailHost = attrs.find(a => a.n === 'zimbraMailHost');
 		account1Server = mailHost ? (mailHost._content || mailHost) : config.serverHost;
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -45,6 +49,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 
 		// Create an appointment for REPORT-based tests
 		const apptSubject = 'ProtoAppt' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -103,6 +109,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, 'current-user-principal',
 			'Response should contain current-user-principal');
@@ -126,12 +134,16 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, 'principal-collection-set',
 			'Response should contain principal-collection-set');
 
 		// Extract principal-collection-set URL
 		const pcsMatch = res.text.match(/<D:principal-collection-set>\s*<D:href>([^<]+)<\/D:href>/);
+
+		// Verify response
 		assert.exists(pcsMatch, 'Should have principal-collection-set href');
 		const pcsUrl = pcsMatch[1];
 
@@ -150,6 +162,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(followRes.status, 207, 'Follow-up PROPFIND should return 207');
 		assert.include(followRes.text, 'resourcetype',
 			'Response should contain resourcetype');
@@ -183,6 +197,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'REPORT should return 207');
 		assert.include(res.text, '.ics', 'Response should contain .ics href');
 		assert.include(res.text, 'HTTP/1.1 200 OK', 'Should have 200 OK propstat');
@@ -204,6 +220,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			server: account1Server,
 		});
 		const icsMatch = pfRes.text.match(/<D:href>([^<]*\.ics)<\/D:href>/);
+
+		// Verify response
 		assert.exists(icsMatch, 'Should find .ics href');
 		const icsHref = icsMatch[1];
 
@@ -222,6 +240,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</C:calendar-multiget>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'REPORT should return 207');
 		assert.include(res.text, 'VCALENDAR', 'calendar-data should contain VCALENDAR');
 		assert.include(res.text, 'VEVENT', 'calendar-data should contain VEVENT');
@@ -243,6 +263,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, 'calendar-color',
 			'Response should contain calendar-color property');
@@ -280,6 +302,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, '#FF0000FF',
 			'calendar-color should match the set value');
@@ -301,6 +325,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, 'displayname',
 			'Response should contain displayname');
@@ -318,6 +344,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			server: account1Server,
 		});
 		const icsMatch = pfRes.text.match(/<D:href>([^<]*\.ics)<\/D:href>/);
+
+		// Verify response
 		assert.exists(icsMatch, 'Should find .ics href');
 
 		const res = await makeDavRequest({
@@ -334,6 +362,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</C:calendar-multiget>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'REPORT should return 207');
 		assert.include(res.text, 'VCALENDAR',
 			'calendar-data should contain VCALENDAR');
@@ -360,6 +390,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'REPORT should return 207');
 		assert.include(res.text, 'VEVENT',
 			'calendar-data should contain VEVENT');
@@ -386,6 +418,7 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			server: account1Server,
 		});
 		// Should return 207 with empty results or 400 for unsupported
+		// Verify response
 		assert.oneOf(res.status, [207, 400],
 			'Unsupported query should return 207 (empty) or 400');
 	});
@@ -413,6 +446,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'REPORT should return 207');
 		assert.include(res.text, 'VEVENT',
 			'Should return events in the time range');
@@ -441,6 +476,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'REPORT should return 207');
 		assert.notInclude(res.text, 'VEVENT',
 			'Should not return events outside the time range');
@@ -471,6 +508,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'REPORT should return 207');
 	});
 
@@ -499,6 +538,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'REPORT should return 207');
 		assert.notInclude(res.text, 'VEVENT',
 			'Should not return events outside the time range');
@@ -521,6 +562,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, 'Calendar',
 			'Response should contain Calendar displayname');
@@ -553,6 +596,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'REPORT should return 207');
 	});
 
@@ -571,6 +616,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, account1NameEncoded,
 			'Response href should contain URL-encoded username');
@@ -591,6 +638,8 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, account1NameEncoded + '/Calendar/',
 			'Calendar href should have proper encoding');

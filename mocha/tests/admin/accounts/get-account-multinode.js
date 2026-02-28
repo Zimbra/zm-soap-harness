@@ -29,6 +29,8 @@ describe('Admin > Accounts > Get Account Multinode', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraMailHost">${serverAName}</a>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(acct1Res.Fault, 'Response should not be a Fault');
 		assert.exists(acct1Res.CreateAccountResponse, 'Should create account 1');
 		const acct1 = Array.isArray(acct1Res.CreateAccountResponse.account)
@@ -36,6 +38,8 @@ describe('Admin > Accounts > Get Account Multinode', function () {
 			: acct1Res.CreateAccountResponse.account;
 		const acct1Id = acct1.id;
 		const mailHost1 = acct1.a.find(a => a.n === 'zimbraMailHost');
+
+		// Verify response
 		assert.equal(mailHost1._content, serverAName, 'Account 1 should be on server A');
 
 		// Create account 2 on server B
@@ -45,6 +49,8 @@ describe('Admin > Accounts > Get Account Multinode', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraMailHost">${serverBName}</a>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(acct2Res.Fault, 'Response should not be a Fault');
 		assert.exists(acct2Res.CreateAccountResponse, 'Should create account 2');
 		const acct2 = Array.isArray(acct2Res.CreateAccountResponse.account)
@@ -52,6 +58,8 @@ describe('Admin > Accounts > Get Account Multinode', function () {
 			: acct2Res.CreateAccountResponse.account;
 		const acct2Id = acct2.id;
 		const mailHost2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+
+		// Verify response
 		assert.equal(mailHost2._content, serverBName, 'Account 2 should be on server B');
 
 		// GetAccountRequest for account 1 (proxied)
@@ -59,6 +67,8 @@ describe('Admin > Accounts > Get Account Multinode', function () {
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${acct1Id}</account>
 			</GetAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(get1Res.Fault, 'Response should not be a Fault');
 		assert.exists(get1Res.GetAccountResponse, 'GetAccountResponse for account 1 should exist');
 
@@ -67,6 +77,8 @@ describe('Admin > Accounts > Get Account Multinode', function () {
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${acct2Id}</account>
 			</GetAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(get2Res.Fault, 'Response should not be a Fault');
 		assert.exists(get2Res.GetAccountResponse, 'GetAccountResponse for account 2 should exist');
 	});

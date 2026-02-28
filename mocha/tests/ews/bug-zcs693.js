@@ -6,40 +6,40 @@ import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
 describe('EWS > Bug ZCS-693', function () {
-    this.timeout(120 * 1000);
-    let adminAuthToken, account1Email, account2Email, account1Password, account2Password, messageSubject;
+	this.timeout(120 * 1000);
+	let adminAuthToken, account1Email, account2Email, account1Password, account2Password, messageSubject;
 
-    before(async function () {
-        await main.before(this.ctx);
-        adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = config.accountPassword;
-        account2Password = config.accountPassword;
+	before(async function () {
+		await main.before(this.ctx);
+		adminAuthToken = await soap.getAdminAuthToken();
+		account1Password = config.accountPassword;
+		account2Password = config.accountPassword;
 
-        account1Email = `ewstest1${common.getUniqueString()}@${config.testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+		account1Email = `ewstest1${common.getUniqueString()}@${config.testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${account1Password}</password>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
-        );
+		);
 
-        account2Email = `ewstest2${common.getUniqueString()}@${config.testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+		account2Email = `ewstest2${common.getUniqueString()}@${config.testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${account2Password}</password>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
-        );
+		);
 
-        // Send a message with attachment (html content) from account1 to account2
-        const account1AuthToken = await soap.getAccountAuthToken(
-            account1Email, account1Password
-        );
-        messageSubject = 'subject' + common.getUniqueString();
-        await soap.makeSOAPEnvelopeAccount(
-            `<SendMsgRequest xmlns="urn:zimbraMail">
+		// Send a message with attachment (html content) from account1 to account2
+		const account1AuthToken = await soap.getAccountAuthToken(
+			account1Email, account1Password
+		);
+		messageSubject = 'subject' + common.getUniqueString();
+		await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
 					<e t="t" a="${account2Email}" />
 					<su>${messageSubject}</su>
@@ -48,20 +48,20 @@ describe('EWS > Bug ZCS-693', function () {
 					</mp>
 				</m>
 			</SendMsgRequest>`, account1AuthToken
-        );
-        await soap.waitFor(5000);
-    });
+		);
+		await soap.waitFor(5000);
+	});
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    // Tests
-    it('Sanity | Execute GeAttachment', async () => {
-        // EWS: GetFolder inbox
-        const getFolderRes = await ews.makeEWSRequest(
-            `<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+	// Tests
+	it('Sanity | Execute GeAttachment', async () => {
+		// EWS: GetFolder inbox
+		const getFolderRes = await ews.makeEWSRequest(
+			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 				</FolderShape>
@@ -73,19 +73,22 @@ describe('EWS > Bug ZCS-693', function () {
 					</t:DistinguishedFolderId>
 				</FolderIds>
 			</GetFolder>`,
-            account2Email, account2Password
-        );
-        const getFolderBody = ews.getBody(getFolderRes);
-        const getFolderMsg = getFolderBody.GetFolderResponse
-            .ResponseMessages.GetFolderResponseMessage;
-        const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
-        assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
+			account2Email, account2Password
+		);
+		const getFolderBody = ews.getBody(getFolderRes);
+		const getFolderMsg = getFolderBody.GetFolderResponse
+			.ResponseMessages.GetFolderResponseMessage;
+		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
+		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 
-        // EWS: SyncFolderItems
-        const syncRes = await ews.makeEWSRequest(
-            `<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: SyncFolderItems
+		const syncRes = await ews.makeEWSRequest(
+			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="2" />
@@ -94,22 +97,22 @@ describe('EWS > Bug ZCS-693', function () {
 				<Ignore />
 				<MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
-            account2Email, account2Password
-        );
-        const syncBody = ews.getBody(syncRes);
-        const syncMsg = syncBody.SyncFolderItemsResponse
-            .ResponseMessages.SyncFolderItemsResponseMessage;
-        const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-        const creates = Array.isArray(syncMessage.Changes.Create)
-            ? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-        const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
-        assert.exists(matchedItem, "Should find message matching subject");
-        const mailItemId = matchedItem.Message.ItemId.$.Id;
-        const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
+			account2Email, account2Password
+		);
+		const syncBody = ews.getBody(syncRes);
+		const syncMsg = syncBody.SyncFolderItemsResponse
+			.ResponseMessages.SyncFolderItemsResponseMessage;
+		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
+		const creates = Array.isArray(syncMessage.Changes.Create)
+			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		assert.exists(matchedItem, "Should find message matching subject");
+		const mailItemId = matchedItem.Message.ItemId.$.Id;
+		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 
-        // EWS: GetItem to get body and attachments
-        const getItemRes = await ews.makeEWSRequest(
-            `<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+		// EWS: GetItem to get body and attachments
+		const getItemRes = await ews.makeEWSRequest(
+			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
 					<t:BodyType>Best</t:BodyType>
@@ -128,14 +131,14 @@ describe('EWS > Bug ZCS-693', function () {
 					<t:ItemId Id="${mailItemId}" ChangeKey="${mailChangeKey}" />
 				</ItemIds>
 			</GetItem>`,
-            account2Email, account2Password
-        );
-        const getItemBody = ews.getBody(getItemRes);
-        const getItemMsg = getItemBody.GetItemResponse
-            .ResponseMessages.GetItemResponseMessage;
-        const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
-        assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
-        assert.include(itemMsg.Items.Message.Body._, 'Message 1 test content',
-            'Body should contain expected content');
-    });
+			account2Email, account2Password
+		);
+		const getItemBody = ews.getBody(getItemRes);
+		const getItemMsg = getItemBody.GetItemResponse
+			.ResponseMessages.GetItemResponseMessage;
+		const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
+		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
+		assert.include(itemMsg.Items.Message.Body._, 'Message 1 test content',
+			'Body should contain expected content');
+	});
 });

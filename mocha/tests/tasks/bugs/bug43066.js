@@ -40,6 +40,8 @@ describe('Tasks > Bugs > Bug43066', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
 		// Wait for delivery
@@ -51,10 +53,14 @@ describe('Tasks > Bugs > Bug43066', function () {
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m
 			: (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);
+
+		// Verify response
 		assert.isAbove(msgs.length, 0, 'Task message should be found');
 	});
 });

@@ -5,10 +5,26 @@ description: How to migrate XML test files to JavaScript mocha tests (1:1 parity
 # XML to JS Test Migration Workflow
 
 > [!CAUTION]
-> **NEVER FORGET — Read these BEFORE writing ANY code:**
-> 1. **MANDATORY SECTION COMMENTS** — Every file MUST have `// Applicable zimbra versions` before the `if (config.serial...)` block AND `// Tests` before the first `it()`. Same indentation level. 1 blank line before each comment.
-> 2. **STRICT FORMATTING** — TABS ONLY (never spaces). Exactly **2 blank lines** between every `it()` block. 120-char line limit. Multi-line SOAP XML.
-> 3. **STRICT ASSERTIONS** — ALWAYS `assert.notExists(res.Fault, 'Response should not be a Fault')` before checking response. Match EXACT XML `t:select` path depth. Never use shallow `assert.exists(res.SomeResponse)` alone.
+> ## 🚨 MANDATORY — DO THIS AFTER EVERY FILE CREATION/MODIFICATION 🚨
+> **You MUST complete ALL of these steps after creating or editing ANY JS test file. NO EXCEPTIONS.**
+> 1. **TABS ONLY** — Every line MUST use tab indentation. NEVER output spaces. This includes SOAP XML inside template literals, continuation lines, ternary operators — EVERYTHING.
+> 2. **RUN ESLINT** — `npx eslint --fix "path/to/file.js"` from `mocha/` dir. This is NON-NEGOTIABLE.
+> 3. **APPLICABLE ZIMBRA BLOCK** — Every file MUST have this block between `before()` closing `});` and first `it()`:
+>    ```
+>    });
+>
+>    // Applicable zimbra versions
+>    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+>        return;
+>    }
+>
+>    // Tests
+>    it('...
+>    ```
+> 4. **2 BLANK LINES** between every `it()` block
+> 5. **MULTI-LINE SOAP XML** — Never single-line XML
+> 6. **FAULT CHECK** — `assert.notExists(res.Fault, ...)` before every response check
+> 7. **NEVER put `// Tests` before the Applicable block** — only ONE `// Tests` comment, AFTER the if block
 
 ## Exclusion Rules (STRICT)
 
@@ -172,6 +188,74 @@ const filePath = path.join(config.projectRoot, 'mocha/data/ical/Apple-iCal-1-0/m
   ```
 - Run `npm run format` after all changes
 
+## Inline Comments Within `it()` Blocks — MANDATORY
+
+> [!CAUTION]
+> **Every `it()` block MUST have inline comments** that section off logical steps. Each comment describes what the next block of code does. There MUST be a **blank line ABOVE every comment** — this separates it from the previous code block. The only exception is the very first comment at the start of the `it()` body (no blank line needed above it since it's the first line).
+
+```js
+it('Functional | Verify a message with long domain can be received', async () => {
+	// Create the account
+	const accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
+	await soap.makeSOAPEnvelopeAdmin(
+		`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+			<name>${accountEmail}</name>
+			<password>${config.accountPassword}</password>
+		</CreateAccountRequest>`, adminAuthToken
+	);
+
+	// Send a message
+	const subject = `Test${common.getUniqueString()}`;
+	await soap.makeSOAPEnvelopeAccount(
+		`<SendMsgRequest xmlns="urn:zimbraMail">
+			<m>
+				<e t="t" a="${accountEmail}"/>
+				<su>${subject}</su>
+				<mp ct="text/plain">
+					<content>test content</content>
+				</mp>
+			</m>
+		</SendMsgRequest>`, senderAuthToken
+	);
+
+	// Search for the message
+	const searchRes = await soap.makeSOAPEnvelopeAccount(
+		`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			<query>subject:(${subject})</query>
+		</SearchRequest>`, accountAuthToken
+	);
+
+	// Verify the message was found
+	assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+	const msgs = Array.isArray(searchRes.SearchResponse.m)
+		? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+	assert.isAtLeast(msgs.length, 1, 'Should find at least one message');
+	const msgId = msgs[0].id;
+
+	// Get the full message
+	const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+		`<GetMsgRequest xmlns="urn:zimbraMail">
+			<m id="${msgId}"/>
+		</GetMsgRequest>`, accountAuthToken
+	);
+
+	// Verify the message content
+	assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
+	assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+});
+```
+
+**Common comment patterns:**
+- `// Create the account` / `// Create test data`
+- `// Send a message` / `// Inject the message`
+- `// Search for the message` / `// Search for the appointment`
+- `// Verify the message was found` / `// Verify the response`
+- `// Get the full message` / `// Get account details`
+- `// Modify the account` / `// Update settings`
+- `// Delete the item` / `// Clean up`
+- `// Lock out the account` / `// Wait for expiry`
+- `// Attempt with invalid credentials` / `// Attempt with valid credentials`
+
 ## Test Independence Rules (STRICT)
 - **1:1 XML-to-JS file mapping**: Each XML file → exactly one JS file. Never merge or split.
 - **1:1 test case mapping**: Each XML `<t:test_case>` → exactly one `it()` block. Never merge or split.
@@ -271,3 +355,9 @@ const filePath = path.join(config.projectRoot, 'mocha/data/ical/Apple-iCal-1-0/m
 - [ ] Data paths use `mocha/data/` with flat file references
 - [ ] All files pass `node --check` syntax validation
 - [ ] `it()` count matches non-excluded `<t:test_case>` count in XML
+- [ ] **ALL indentation uses TABS — zero spaces anywhere (including SOAP XML in template literals)**
+- [ ] **`npx eslint --fix` has been run on every created/modified file**
+- [ ] **Every file has the `// Applicable zimbra versions` block between `before()` and first `it()`**
+- [ ] **Every file has exactly ONE `// Tests` comment — AFTER the if block, not before it**
+- [ ] **Exactly 2 blank lines between every `it()` block**
+- [ ] **`assert.notExists(res.Fault, ...)` before every response existence check**

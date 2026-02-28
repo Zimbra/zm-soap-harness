@@ -13,12 +13,16 @@ describe('Rest Servlet > Mail > HTTP Headers Bug 67163', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
@@ -30,6 +34,8 @@ describe('Rest Servlet > Mail > HTTP Headers Bug 67163', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const m = addRes.AddMsgResponse?.m;
 		messageId = (Array.isArray(m) ? m[0] : m).id;
@@ -46,6 +52,8 @@ describe('Rest Servlet > Mail > HTTP Headers Bug 67163', function () {
 			user: account1Email,
 			id: messageId
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.exists(res.headers['content-type'], 'Content-Type header should exist');
 	});

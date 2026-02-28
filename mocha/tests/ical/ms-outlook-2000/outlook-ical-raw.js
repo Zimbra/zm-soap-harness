@@ -41,32 +41,48 @@ describe('iCal > MS Outlook 2000 > Outlook Ical Raw', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		const searchResp = res.SearchResponse;
+
+		// Verify response
 		assert.exists(searchResp, 'SearchResponse should exist');
 
 		// Verify message details
 		const messages = searchResp.m;
+
+		// Verify response
 		assert.exists(messages, 'Messages should exist in search response');
 		const message = Array.isArray(messages) ? messages[0] : messages;
+
+		// Verify response
 		assert.exists(message, 'Message should exist');
 		assert.equal(message.su, mailSubject, 'Subject should match');
 
 		// Verify appointment component details
 		const comp = message?.inv?.[0]?.comp?.[0] || message?.inv?.comp;
 		if (comp) {
+
+			// Verify response
 			assert.equal(comp.name, mailSubject, 'Appointment name should match');
 			assert.equal(comp.allDay, '1', 'Appointment should be all day');
 		}
 
 		// Get message and verify id
 		const msgId = message.id;
+
+		// Verify response
 		assert.exists(msgId, 'Message id should exist');
+
+		// GetMsgRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetMsgRequest should not fault');
 		assert.exists(res.GetMsgResponse, 'GetMsgResponse should exist');
 	});

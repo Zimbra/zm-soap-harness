@@ -22,6 +22,8 @@ describe('Tasks > CreateTaskRequest Recurrence AllDay', function () {
 	// Tests
 	it('Sanity | Create a daily recurring appointment - All Day', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -35,6 +37,8 @@ describe('Tasks > CreateTaskRequest Recurrence AllDay', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -42,6 +46,8 @@ describe('Tasks > CreateTaskRequest Recurrence AllDay', function () {
 
 	it('Sanity | Create a daily recurring appointment - All Day. 5 occurrences.', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -58,6 +64,8 @@ describe('Tasks > CreateTaskRequest Recurrence AllDay', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -65,6 +73,8 @@ describe('Tasks > CreateTaskRequest Recurrence AllDay', function () {
 
 	it('Functional | Verify bug 26284', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -80,14 +90,20 @@ describe('Tasks > CreateTaskRequest Recurrence AllDay', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 
 		// Verify task can be retrieved
 		const taskId = res.CreateTaskResponse.invId;
+
+		// GetTaskRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetTask should not be a Fault');
 		assert.exists(getRes.GetTaskResponse, 'GetTaskResponse should exist');
 	});

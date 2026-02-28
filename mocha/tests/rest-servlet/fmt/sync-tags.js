@@ -13,6 +13,8 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -23,11 +25,15 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 
 		// Create a tag
 		tagName = 'tag' + common.getUniqueString();
+
+		// CreateTagRequest
 		const tagRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}"/>
 			</CreateTagRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(tagRes.Fault, 'Response should not be a Fault');
 		const tag = tagRes.CreateTagResponse?.tag;
 		const tagId = (Array.isArray(tag) ? tag[0] : tag).id;
@@ -40,6 +46,8 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		messageId = addRes.AddMsgResponse?.m?.id
 			|| (Array.isArray(addRes.AddMsgResponse?.m)
@@ -58,6 +66,8 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 			id: messageId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Tags', 'Should contain X-Zimbra-Tags header');
 		assert.include(res.body, tagName, 'Should contain the tag name');
@@ -70,6 +80,8 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 			id: messageId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, tagName, 'Tag name should appear in sync output');
 	});
@@ -77,11 +89,15 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 
 	it('Sanity | Verify creating second tag and tagging message', async () => {
 		const tag2Name = 'tag2' + common.getUniqueString();
+
+		// CreateTagRequest
 		const tag2Res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tag2Name}"/>
 			</CreateTagRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(tag2Res.Fault, 'Response should not be a Fault');
 		const tag2 = tag2Res.CreateTagResponse?.tag;
 		const tag2Id = (Array.isArray(tag2) ? tag2[0] : tag2).id;
@@ -94,6 +110,8 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const msg2Id = addRes.AddMsgResponse?.m?.id
 			|| (Array.isArray(addRes.AddMsgResponse?.m)
@@ -104,6 +122,8 @@ describe('Rest Servlet > Fmt > Sync > Tags', function () {
 			id: msg2Id,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Tags', 'Should contain X-Zimbra-Tags');
 		assert.include(res.body, tag2Name, 'Should contain second tag name');

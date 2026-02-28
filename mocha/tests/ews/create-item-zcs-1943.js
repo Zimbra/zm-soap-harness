@@ -288,6 +288,8 @@ describe('EWS > CreateItem ZCS-1943', function () {
 			</SendMsgRequest>`, account2AuthToken
 		);
 
+		await soap.waitFor(5000);
+
 		// EWS: GetFolder inbox
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -319,6 +321,9 @@ describe('EWS > CreateItem ZCS-1943', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:DistinguishedFolderId Id="inbox" />
@@ -381,6 +386,7 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		);
 
 		// EWS: SyncFolderItems inbox to get item
+		await common.delay(3000);
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

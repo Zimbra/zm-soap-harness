@@ -6,7 +6,7 @@ import soap from '../../../../framework/backend/soap-client.js';
 describe('Folders > Sharing > Bugs > Bugs', function () {
 	let testAccount2, testAccount3;
 	let auth2, auth3;
-	let account2Id;
+	let account1Id, account2Id;
 
 	before(async function () {
 		testAccount2 = `bug23590_2_${common.getUniqueString()}@${config.testDomain}`;
@@ -37,6 +37,8 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 	it('Sanity | Verify key grantee type for folder ACL', async function () {
 		// 1. Create subfolder of inbox for account2
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder2 = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth2);
 		const inboxId2 = getFolder2.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -45,6 +47,8 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${subFolderName}" l="${inboxId2}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResp2 = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth2);
 		const subFolderId = createResp2.CreateFolderResponse.folder[0].id;
 
@@ -58,6 +62,8 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 					<content>Subject: ${msgSubjectInbox}\r\n\r\nContent</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// AddMsgRequest
 		await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth2);
 
 		const addMsgRequest2 =
@@ -66,6 +72,8 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 					<content>Subject: ${msgSubjectSub}\r\n\r\nContent</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(addMsgRequest2, auth2);
 
 		// 3. Share Inbox with inh="1" with account3
@@ -75,6 +83,8 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 					<grant gt="usr" inh="1" perm="r" d="${testAccount3}"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth2);
 
 		// 4. Authenticate as account3 and create mountpoint
@@ -83,6 +93,8 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account2Id}" rid="${inboxId2}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// SearchRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth3);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -91,8 +103,11 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
 				<query>${msgSubjectInbox} (inid:${mountId} OR inid:"${account2Id}:${inboxId2}" OR is:local)</query>
 			</SearchRequest>`;
+
+		// SearchRequest
 		const searchResp1 = await soap.makeSOAPEnvelopeAccount(searchRequest, auth3);
 
+		// Verify response
 		assert.exists(searchResp1.SearchResponse.m,
 			'Should find message in shared inbox');
 		assert.equal(searchResp1.SearchResponse.m[0].su, msgSubjectInbox);
@@ -104,6 +119,7 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 			</SearchRequest>`;
 		const searchResp2 = await soap.makeSOAPEnvelopeAccount(searchRequest2, auth3);
 
+		// Verify response
 		assert.exists(searchResp2.SearchResponse.m,
 			'Should find message in shared subfolder');
 		assert.equal(searchResp2.SearchResponse.m[0].su, msgSubjectSub);
@@ -111,7 +127,7 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 
 	let testAccount1;
 	let auth1;
-	let account1Id;
+
 
 	before(async function () {
 		testAccount1 = `bug30049_1_${common.getUniqueString()}@${config.testDomain}`;
@@ -135,6 +151,8 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 	it('Sanity | Verify Searching Shared Folders that have subfolder works fine', async function () {
 		// Create folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -143,6 +161,8 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -153,6 +173,8 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 					<content>test content</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth1);
 
 		// Share with gt="key"

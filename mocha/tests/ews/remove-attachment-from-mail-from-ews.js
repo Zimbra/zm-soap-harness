@@ -108,6 +108,8 @@ describe('EWS > Remove Attachment From Mail From EWS', function () {
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
 		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
+		await soap.waitFor(5000);
+
 		// EWS: GetFolder inbox for account2
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -140,6 +142,9 @@ describe('EWS > Remove Attachment From Mail From EWS', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />

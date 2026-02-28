@@ -24,6 +24,8 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 				<a n="zimbraIsDomainAdminAccount">TRUE</a>
 				<a n="zimbraIsAdminAccount">FALSE</a>
 			</CreateAccountRequest>`;
+
+		// Send the message
 		await soap.makeSOAPEnvelopeAdmin(createAccountRequest, adminAuth);
 
 		auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
@@ -57,6 +59,8 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 	it('Sanity | Verify an admin user only has user rights, if logged into the user interface', async () => {
 		// User shares folder with DA (Read Only)
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -65,6 +69,8 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -74,6 +80,8 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 					<grant gt="usr" d="${domainAdminAccount}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// DA (User Auth) mounts
@@ -81,6 +89,8 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_da_user" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// AddMsgRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, adminAuthUser);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -91,7 +101,11 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 					<content>Fail</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// GetFolderRequest
 		const addMsgRes = await soap.makeSOAPEnvelopeAccount(addMsgRequest, adminAuthUser);
+
+		// Verify response
 		assert.exists(addMsgRes.Fault,
 			'Domain Admin using User Auth should be denied write access on Read-Only share');
 		assert.include(addMsgRes.Fault.Detail.Error.Code, 'PERM_DENIED',
@@ -103,6 +117,8 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 		// Based on XML SharingFoldersToDomainAdmin_02, Domain Admins do NOT get implicit write access via Mountpoints if they only have Read access shared, even with Admin Auth.
 
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -111,6 +127,8 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -120,6 +138,8 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 					<grant gt="usr" d="${domainAdminAccount}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// DA (Admin Auth) Creates Mountpoint
@@ -127,6 +147,8 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_da_admin" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// AddMsgRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, adminAuthAdmin);
 		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 
@@ -139,6 +161,7 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 			</AddMsgRequest>`;
 		const addMsgRes = await soap.makeSOAPEnvelopeAccount(addMsgRequest2, adminAuthAdmin);
 
+		// Verify response
 		assert.exists(addMsgRes.Fault,
 			'Domain Admin using Admin Auth should be denied write access on Read-Only share (per XML expectation)');
 		assert.include(addMsgRes.Fault.Detail.Error.Code, 'PERM_DENIED',

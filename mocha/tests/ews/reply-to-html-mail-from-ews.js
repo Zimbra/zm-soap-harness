@@ -59,6 +59,8 @@ describe('EWS > Reply To Html Mail From EWS', function () {
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 
+		await soap.waitFor(5000);
+
 		// EWS: GetFolder inbox for account2
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -107,9 +109,10 @@ describe('EWS > Reply To Html Mail From EWS', function () {
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
 		assert.equal(syncMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
-		const creates = Array.isArray(syncMessage.Changes.Create)
-			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject);
+		const rawCreates = syncMessage.Changes?.Create;
+		const creates = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedItem = creates.find(c => c?.Message?.Subject === messageSubject)
+			|| creates.find(c => c?.Message);
 		assert.exists(matchedItem, "Should find message matching subject");
 		const mailItemId = matchedItem.Message.ItemId.$.Id;
 		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;

@@ -37,6 +37,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 	it('Smoke | Share a folder to a domain. Verify that all users in that domain have access.', async () => {
 		// Setup Folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -45,6 +47,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -55,6 +59,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 					<grant gt="dom" d="${config.testDomain}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Verify user in same domain (Account2) can access
@@ -62,7 +68,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_dom" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
+
+		// Verify response
 		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Domain grant should allow user in same domain to mount');
 	});
@@ -71,6 +81,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 	it('Sanity | Unshare a folder to all. Verify that all users have access.', async () => {
 		// Create folder
 		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -79,6 +91,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -96,6 +110,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 				</content>
 			</m>
 			</AddMsgRequest>`;
+
+		// GetDomainRequest
 		const addMsg = await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth1);
 		const msgId = addMsg.AddMsgResponse.m[0].id;
 
@@ -105,6 +121,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 			`<GetDomainRequest xmlns="urn:zimbraAdmin">
 				<domain by="name">${config.testDomain}</domain>
 			</GetDomainRequest>`;
+
+		// FolderActionRequest
 		const getDomain = await soap.makeSOAPEnvelopeAdmin(getDomainRequest, adminAuth);
 		const domainId = getDomain.GetDomainResponse.domain[0].id;
 
@@ -114,6 +132,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 					<grant gt="dom" d="${config.testDomain}" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// Verify access works
@@ -121,7 +141,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
+
+		// FolderActionRequest
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
+
+		// Verify response
 		assert.notExists(accessCheck.Fault,
 			'Domain user should have access before revoke');
 
@@ -130,6 +154,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="!grant" zid="${domainId}"/>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest3, auth1);
 
 		// Verify access denied
@@ -138,6 +164,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, auth2);
+
+		// Verify response
 		assert.exists(revokedCheck.Fault, 'Domain user should be denied after revoke');
 	});
 

@@ -14,6 +14,8 @@ describe('Rest Servlet > Fmt > Sync > Modified and Received', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -22,6 +24,8 @@ describe('Rest Servlet > Fmt > Sync > Modified and Received', function () {
 		);
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
@@ -43,6 +47,8 @@ describe('Rest Servlet > Fmt > Sync > Modified and Received', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		messageId = sendRes.SendMsgResponse?.m?.id
 			|| (Array.isArray(sendRes.SendMsgResponse?.m)
@@ -62,6 +68,8 @@ describe('Rest Servlet > Fmt > Sync > Modified and Received', function () {
 			id: messageId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Modified',
 			'Should contain X-Zimbra-Modified header');
@@ -75,6 +83,8 @@ describe('Rest Servlet > Fmt > Sync > Modified and Received', function () {
 			id: messageId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Received',
 			'Should contain X-Zimbra-Received header');

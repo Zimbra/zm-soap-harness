@@ -12,6 +12,8 @@ describe('Rest Servlet > Fmt > Sync > Appointment', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -29,6 +31,8 @@ describe('Rest Servlet > Fmt > Sync > Appointment', function () {
 	// Tests
 	it('Sanity | Verify sync format for appointment returns X-Zimbra headers', async () => {
 		const subject = 'syncAppt' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -47,6 +51,8 @@ describe('Rest Servlet > Fmt > Sync > Appointment', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		// Get calendar in sync format
@@ -55,6 +61,8 @@ describe('Rest Servlet > Fmt > Sync > Appointment', function () {
 			folder: 'Calendar',
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.oneOf(res.status, [200, 204], 'REST GET should return 200 or 204');
 	});
 
@@ -65,6 +73,8 @@ describe('Rest Servlet > Fmt > Sync > Appointment', function () {
 			folder: 'Calendar',
 			fmt: 'ics'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'VCALENDAR', 'Should contain calendar data');
 	});
@@ -72,6 +82,8 @@ describe('Rest Servlet > Fmt > Sync > Appointment', function () {
 
 	it('Functional | Verify sync format for appointment with time range', async () => {
 		const subject = 'syncApptRange' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -90,6 +102,8 @@ describe('Rest Servlet > Fmt > Sync > Appointment', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		const res = await rest.makeRestRequest(account1Token, {
@@ -97,6 +111,8 @@ describe('Rest Servlet > Fmt > Sync > Appointment', function () {
 			folder: 'Calendar',
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 	});
 });

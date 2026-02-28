@@ -13,6 +13,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 	before(async function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 		const account1Name = 'acct1.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -24,6 +26,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 			: createRes1.CreateAccountResponse.account;
 		account1Id = acct1.id;
 		account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -31,6 +35,7 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -40,6 +45,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 		account1Token = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
 			: authRes1.AuthResponse.authToken._content || authRes1.AuthResponse.authToken;
+
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account2Name}</account>
@@ -60,17 +67,23 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 	// Tests
 	it('Smoke | Verify that sharing briefcase folders with read access allows document to be viewed, but not added, deleted, or reshared', async () => {
 		const folderName = 'Share.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
+
+		// SaveDocumentRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="doc.${common.getUniqueString()}.txt" l="${folder.id}">
@@ -79,6 +92,7 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 			</SaveDocumentRequest>`, account1Token
 		);
 
+		// FolderActionRequest
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -86,6 +100,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
@@ -93,17 +109,23 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 
 	it('Sanity | Share a briefcase folder to a domain. Verify that all users in that domain have access.', async () => {
 		const folderName = 'DomainShare.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateFolderResponse,
 			'CreateFolderResponse should exist');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
+
+		// FolderActionRequest
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -111,6 +133,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
@@ -118,6 +142,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 
 	it('Sanity | Unshare a briefcase folder to all. Verify that all users have access.', async () => {
 		const folderName = 'UnshareAll.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
@@ -127,6 +153,7 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -134,11 +161,15 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// FolderActionRequest
 		const revokeRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="!grant" id="${folder.id}" zid="00000000-0000-0000-0000-000000000000"/>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.FolderActionResponse,
 			'FolderActionResponse should exist');
@@ -149,6 +180,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 		// NOTE: Original test uses uploadservlettest for document upload
 		const adminAuthToken = await soap.getAdminAuthToken();
 		const account3Name = 'acct3.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Name}</name>
@@ -157,6 +190,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 		);
 
 		const folderName = 'ReshareTest.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
@@ -181,6 +216,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 				<link l="1" name="${folderName}" rid="${folder.id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.exists(
 			mountRes.CreateMountpointResponse || mountRes.Fault,
 			'Should return CreateMountpointResponse or Fault'
@@ -191,6 +228,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 	it('Functional | Verify tagging a shared message does not apply', async () => {
 		// NOTE: Original test uses uploadservlettest for document upload
 		const folderName = 'TagTest.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
@@ -208,6 +247,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
@@ -229,6 +270,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 				<link l="1" name="${folderName}" rid="${folder.id}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.exists(
 			mountRes.CreateMountpointResponse || mountRes.Fault,
 			'Should return CreateMountpointResponse or Fault'
@@ -240,6 +283,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 				<action id="${doc.id}" op="tag" tn="TestTag"/>
 			</ItemActionRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.exists(
 			tagRes.Fault || tagRes.ItemActionResponse,
 			'Should return Fault or ItemActionResponse'

@@ -30,7 +30,6 @@ describe('iCal > Apple iCal 1.0 > Apple Ical Raw', function () {
 			accountEmail, config.accountPassword
 		);
 
-		const mailSubject = 'iCal event invitation: New Event mac';
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/mac-ical-raw.txt');
 		// Inject mime via LMTP
 		await soap.injectMime(accountAuthToken, filePath);
@@ -41,17 +40,27 @@ describe('iCal > Apple iCal 1.0 > Apple Ical Raw', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		const searchResp = res.SearchResponse;
+
+		// Verify response
 		assert.exists(searchResp, 'SearchResponse should exist');
 
 		// Verify message subject
 		const messages = searchResp.m;
+
+		// Verify response
 		assert.exists(messages, 'Messages should exist in search response');
 		const message = Array.isArray(messages) ? messages[0] : messages;
+
+		// Verify response
 		assert.exists(message, 'Message should exist');
 
 		const msgId = message.id;
+
+		// Verify response
 		assert.exists(msgId, 'Message id should exist');
 
 		// Get message and verify attachment
@@ -60,6 +69,8 @@ describe('iCal > Apple iCal 1.0 > Apple Ical Raw', function () {
 				<m id="${msgId}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetMsgRequest should not fault');
 		assert.exists(res.GetMsgResponse, 'GetMsgResponse should exist');
 	});

@@ -12,21 +12,28 @@ describe('Briefcase > Purge Revision Request', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -34,9 +41,12 @@ describe('Briefcase > Purge Revision Request', function () {
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
 
+		// GetFolderRequest
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
@@ -44,8 +54,9 @@ describe('Briefcase > Purge Revision Request', function () {
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
-		assert.exists(briefcase, 'Briefcase folder should exist');
 
+		// Verify response
+		assert.exists(briefcase, 'Briefcase folder should exist');
 		briefcaseFolderId = briefcase.id;
 	});
 
@@ -58,6 +69,8 @@ describe('Briefcase > Purge Revision Request', function () {
 	it('Smoke | Purge particular revision of document with multiple revision', async () => {
 		// Save document v1
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
+
+		// SaveDocumentRequest
 		const save1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="${docName}" l="${briefcaseFolderId}">
@@ -65,6 +78,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -80,6 +95,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save2.Fault, 'Response should not be a Fault');
 		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -91,6 +108,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save3.Fault, 'Response should not be a Fault');
 		assert.exists(save3.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -100,6 +119,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				<revision id="${docId}" ver="1" includeOlderRevisions="false"/>
 			</PurgeRevisionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
 		assert.exists(purgeRes.PurgeRevisionResponse,
 			'PurgeRevisionResponse should exist');
@@ -110,6 +131,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				<doc id="${docId}"/>
 			</ListDocumentRevisionsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(listRes.Fault, 'Response should not be a Fault');
 		assert.exists(listRes.ListDocumentRevisionsResponse,
 			'ListDocumentRevisionsResponse should exist');
@@ -119,6 +142,8 @@ describe('Briefcase > Purge Revision Request', function () {
 	it('Sanity | Purge older revision of document with multiple revision', async () => {
 		// Save document v1
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
+
+		// SaveDocumentRequest
 		const save1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="${docName}" l="${briefcaseFolderId}">
@@ -126,6 +151,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -135,6 +162,8 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Save revisions 2-4
 		for (let i = 2; i <= 4; i++) {
+
+			// SaveDocumentRequest
 			const save = await soap.makeSOAPEnvelopeAccount(
 				`<SaveDocumentRequest xmlns="urn:zimbraMail">
 					<doc name="${docName}" ver="${i - 1}" l="${briefcaseFolderId}" id="${docId}" desc="rev ${i}.0">
@@ -142,6 +171,8 @@ describe('Briefcase > Purge Revision Request', function () {
 					</doc>
 				</SaveDocumentRequest>`, account1Token
 			);
+
+			// Verify response
 			assert.notExists(save.Fault, 'Response should not be a Fault');
 			assert.exists(save.SaveDocumentResponse,
 				`SaveDocumentResponse v${i} should exist`);
@@ -153,6 +184,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				<revision id="${docId}" ver="2" includeOlderRevisions="true"/>
 			</PurgeRevisionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
 		assert.exists(purgeRes.PurgeRevisionResponse,
 			'PurgeRevisionResponse should exist');
@@ -163,6 +196,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				<doc id="${docId}"/>
 			</ListDocumentRevisionsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(listRes.Fault, 'Response should not be a Fault');
 		assert.exists(listRes.ListDocumentRevisionsResponse,
 			'ListDocumentRevisionsResponse should exist');
@@ -170,11 +205,14 @@ describe('Briefcase > Purge Revision Request', function () {
 
 
 	it('Sanity | Purge document with invalid values', async () => {
+		// PurgeRevisionRequest
 		const purgeRes = await soap.makeSOAPEnvelopeAccount(
 			`<PurgeRevisionRequest xmlns="urn:zimbraMail">
 				<revision id="99999" ver="1" includeOlderRevisions="false"/>
 			</PurgeRevisionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.exists(purgeRes.Fault, 'Should return Fault for invalid document id');
 		assert.exists(purgeRes.Fault.Detail.Error.Code, 'Error code should exist');
 	});
@@ -183,6 +221,8 @@ describe('Briefcase > Purge Revision Request', function () {
 	it('Sanity | Purge document with single revision', async () => {
 		// Save a document
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
+
+		// SaveDocumentRequest
 		const save1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="${docName}" l="${briefcaseFolderId}">
@@ -190,6 +230,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
 		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -203,6 +245,8 @@ describe('Briefcase > Purge Revision Request', function () {
 				<revision id="${docId}" ver="999" includeOlderRevisions="false"/>
 			</PurgeRevisionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
 		assert.exists(purgeRes.PurgeRevisionResponse,
 			'PurgeRevisionResponse should exist for invalid version');

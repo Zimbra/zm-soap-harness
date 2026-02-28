@@ -165,6 +165,16 @@ const common = {
 	retryUntil: utils.retryUntil,
 
 	/**
+	 * Convert a Date object to Zimbra iCal date format (local time).
+	 * @param {Date} date - Date object to convert
+	 * @returns {string} e.g. "20260228T120000"
+	 */
+	toZimbraICalDate(date) {
+		const pad = (n) => String(n).padStart(2, '0');
+		return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}T${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`;
+	},
+
+	/**
 	 * Async delay/sleep function.
 	 * @param {number} ms - Milliseconds to wait
 	 * @returns {Promise} Resolves after ms milliseconds

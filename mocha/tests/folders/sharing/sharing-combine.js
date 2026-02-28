@@ -8,7 +8,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 	let auth1, auth2, auth3;
 	let adminAuth;
 	let groupName, groupId;
-	let domainName, domainId;
+	let domainName;
 	let account1Id;
 
 	before(async function () {
@@ -29,6 +29,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${groupName}</name>
 			</CreateDistributionListRequest>`;
+
+		// AddDistributionListMemberRequest
 		const dlResp = await soap.makeSOAPEnvelopeAdmin(createDL, adminAuth);
 
 		groupId = dlResp.CreateDistributionListResponse.dl[0].id;
@@ -38,6 +40,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 				<id>${groupId}</id>
 				<dlm>${testAccount2}</dlm>
 			</AddDistributionListMemberRequest>`;
+
+		// CreateDomainRequest
 		await soap.makeSOAPEnvelopeAdmin(addMember, adminAuth);
 
 		// Create Domain and Account3
@@ -51,8 +55,6 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		if (domResp.Fault) {
 			throw new Error(`Failed to create domain: ${JSON.stringify(domResp.Fault)}`);
 		}
-		const domainArr = domResp.CreateDomainResponse.domain;
-		domainId = Array.isArray(domainArr) ? domainArr[0].id : domainArr.id;
 
 		testAccount3 = `combine3_${common.getUniqueString()}@${domainName}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuth, testAccount3, testAccount3);
@@ -75,6 +77,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 	it('Smoke | Verify that rights combine when a folder is shared with an account (read) and a group (delete)', async () => {
 		// 1. Acc1 shares Inbox with Acc2 (Read)
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// FolderActionRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -84,6 +88,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// 2. Acc1 shares Inbox with Group (Delete)
@@ -93,6 +99,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="grp" d="${groupName}" perm="d"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// AddMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// 3. Acc2 mounts and verifies rights
@@ -106,6 +114,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<content>From: foo@bar.com\r\nSubject: test\r\n\r\ntest</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth1);
 
 		const mountName = `mount_${common.getUniqueString()}`;
@@ -113,16 +123,19 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${inboxId}" view="message"/>
 			</CreateMountpointRequest>`;
-		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
+
+		// SearchRequest
+		await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
 
 		// Check perms on mountpoint? 
 		// Actually, just try to delete the message.
 		// List messages in mountpoint
-		const mountId = mountResp.CreateMountpointResponse.link[0].id;
 		const searchRequest =
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:"${mountName}"</query>
 			</SearchRequest>`;
+
+		// MsgActionRequest
 		const searchResp = await soap.makeSOAPEnvelopeAccount(searchRequest, auth2);
 
 		if (searchResp.SearchResponse && searchResp.SearchResponse.m) {
@@ -132,6 +145,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 				`<MsgActionRequest xmlns="urn:zimbraMail">
 					<action id="${msgId}" op="delete"/>
 				</MsgActionRequest>`;
+
+			// GetFolderRequest
 			await soap.makeSOAPEnvelopeAccount(msgActionRequest, auth2);
 			// Success if no error
 		} else {
@@ -145,6 +160,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		// 1. Acc1 shares Inbox with Acc3 (Read) (Acc3 is in domain3)
 		// 2. Acc1 shares Inbox with Domain3 (Delete)
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// FolderActionRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -154,6 +171,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="usr" d="${testAccount3}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest3, auth1);
 
 		const folderActionRequest4 =
@@ -162,6 +181,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="dom" d="${domainName}" perm="d"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// AddMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest4, auth1);
 
 		// Add message
@@ -171,6 +192,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<content>From: foo@bar.com\r\nSubject: test2\r\n\r\ntest2</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(addMsgRequest2, auth1);
 
 		// Acc3 mounts
@@ -179,13 +202,17 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${inboxId}" view="message"/>
 			</CreateMountpointRequest>`;
-		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, auth3);
+
+		// SearchRequest
+		await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, auth3);
 
 		// Search and delete
 		const searchRequest2 =
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:"${mountName}"</query>
 			</SearchRequest>`;
+
+		// MsgActionRequest
 		const searchResp = await soap.makeSOAPEnvelopeAccount(searchRequest2, auth3);
 
 		if (searchResp.SearchResponse && searchResp.SearchResponse.m) {
@@ -194,6 +221,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 				`<MsgActionRequest xmlns="urn:zimbraMail">
 					<action id="${msgId}" op="delete"/>
 				</MsgActionRequest>`;
+
+			// CreateFolderRequest
 			await soap.makeSOAPEnvelopeAccount(msgActionRequest2, auth3);
 		}
 	});
@@ -206,6 +235,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// GetAccountRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const testFolderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -214,6 +245,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${testAccount2}</account>
 			</GetAccountRequest>`;
+
+		// FolderActionRequest
 		const getAcct = await soap.makeSOAPEnvelopeAdmin(getAccountRequest, adminAuth);
 		const acctAttrs = getAcct.GetAccountResponse.account[0].a;
 		const cosId = acctAttrs.find(a => a.n === 'zimbraCOSId')?.content;
@@ -225,6 +258,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest5, auth1);
 
 		// Grant delete to COS
@@ -235,6 +270,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 						<grant gt="cos" d="${cosId}" perm="d"/>
 					</action>
 				</FolderActionRequest>`;
+
+			// CreateMountpointRequest
 			await soap.makeSOAPEnvelopeAccount(folderActionRequest6, auth1);
 		}
 
@@ -244,7 +281,11 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${testFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest3, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Should mount with combined COS+Account rights');
@@ -257,6 +298,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const testFolderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -267,6 +310,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest7, auth1);
 
 		// Grant delete to All
@@ -276,6 +321,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="all" perm="d"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// AddMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest8, auth1);
 
 		// Add message
@@ -285,6 +332,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<content>From: foo@bar.com\r\nSubject: all_combine\r\n\r\ntest</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(addMsgRequest3, auth1);
 
 		// Mount, search and try delete
@@ -293,7 +342,11 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${testFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest4, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Should mount with combined All+Account rights');
@@ -306,6 +359,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest3, auth1);
 		const testFolderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -316,6 +371,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest9, auth1);
 
 		// Grant delete to Guest
@@ -325,6 +382,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="guest" d="guest@external.com" pw="password" perm="d"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest10, auth1);
 
 		// Verify Account2 still has read access via mount
@@ -333,7 +392,11 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${testFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest5, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Should mount with combined Guest+Account rights');
@@ -346,6 +409,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest4, auth1);
 		const testFolderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -356,6 +421,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest11, auth1);
 
 		// Grant delete to Public
@@ -365,6 +432,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="pub" perm="d"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// AddMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest12, auth1);
 
 		// Add message
@@ -374,6 +443,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<content>From: foo@bar.com\r\nSubject: pub_combine\r\n\r\ntest</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(addMsgRequest4, auth1);
 
 		// Mount and verify access
@@ -382,7 +453,11 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${testFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest6, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Should mount with combined Public+Account rights');
@@ -395,6 +470,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest5, auth1);
 		const testFolderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -405,6 +482,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest13, auth1);
 
 		// Grant insert to Group (testAccount2 is member)
@@ -414,6 +493,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="grp" d="${groupName}" perm="i"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest14, auth1);
 
 		// Mount and verify combined read+insert
@@ -422,7 +503,11 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${testFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// CreateFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest7, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Should mount with combined read+insert rights');
@@ -435,6 +520,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest6, auth1);
 		const testFolderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -445,6 +532,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<content>From: foo@bar.com\r\nSubject: rn_combine\r\n\r\ntest</content>
 				</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const addResp = await soap.makeSOAPEnvelopeAccount(addMsgRequest5, auth1);
 		const msgId = addResp.AddMsgResponse.m[0].id;
 
@@ -455,6 +544,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest15, auth1);
 
 		// Grant none to Group (testAccount2 is member)
@@ -464,6 +555,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 					<grant gt="grp" d="${groupName}" perm="none"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest16, auth1);
 
 		// Mount and verify read access still works (combined: read from user, none from group)
@@ -472,7 +565,11 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${testFolderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetMsgRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest8, auth2);
+
+		// Verify response
 		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
 		assert.exists(mountResp.CreateMountpointResponse,
 			'Should mount with combined read+none rights');
@@ -483,6 +580,8 @@ describe('Folders > Sharing > Sharing Combine', function () {
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
 		const getMsgResp = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
+
+		// Verify response
 		assert.exists(getMsgResp.GetMsgResponse.m,
 			'Read access should be allowed even with none from group');
 	});

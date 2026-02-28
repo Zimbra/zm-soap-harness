@@ -21,10 +21,14 @@ describe('Rest Servlet > Auth > Admin Preauth', function () {
 				<a n="zimbraPreAuthKey">${preauthKey}</a>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(domainRes.Fault, 'Response should not be a Fault');
 
 		// Create global admin account
 		account1Email = 'preauth' + common.getUniqueString() + '@' + domainName;
+
+		// Create account
 		const create1Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -32,10 +36,14 @@ describe('Rest Servlet > Auth > Admin Preauth', function () {
 				<a n="zimbraIsAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create1Res.Fault, 'Response should not be a Fault');
 
 		// Create delegated admin account
 		account2Email = 'preauth' + common.getUniqueString() + '@' + domainName;
+
+		// Create account
 		const create2Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
@@ -43,6 +51,8 @@ describe('Rest Servlet > Auth > Admin Preauth', function () {
 				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
 	});
 
@@ -61,12 +71,15 @@ describe('Rest Servlet > Auth > Admin Preauth', function () {
 		const hmac = crypto.createHmac('sha1', preauthKey).update(data).digest('hex');
 
 		// Verify admin preauth works via SOAP
+		// Send the message
 		const authRes = await soap.makeSOAPEnvelopeAdmin(
 			`<AuthRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Admin AuthRequest should not fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -81,6 +94,8 @@ describe('Rest Servlet > Auth > Admin Preauth', function () {
 			method: 'GET',
 			redirect: 'manual'
 		});
+
+		// Verify response
 		assert.oneOf(response.status, [200, 302],
 			'Admin preauth REST request should return 200 or 302');
 	});
@@ -95,12 +110,15 @@ describe('Rest Servlet > Auth > Admin Preauth', function () {
 		const hmac = crypto.createHmac('sha1', preauthKey).update(data).digest('hex');
 
 		// Verify delegated admin auth works
+		// Send the message
 		const authRes = await soap.makeSOAPEnvelopeAdmin(
 			`<AuthRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Delegated admin AuthRequest should not fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -115,6 +133,8 @@ describe('Rest Servlet > Auth > Admin Preauth', function () {
 			method: 'GET',
 			redirect: 'manual'
 		});
+
+		// Verify response
 		assert.oneOf(response.status, [200, 302],
 			'Domain admin preauth REST request should return 200 or 302');
 	});

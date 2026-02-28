@@ -22,6 +22,8 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 	// Tests
 	it('Functional | Create a daily recurring task', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -35,6 +37,8 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 		assert.exists(res.CreateTaskResponse.calItemId, 'Task should have calItemId');
@@ -43,6 +47,8 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 
 	it('Sanity | Create a daily recurring task. 5 occurrences.', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -59,6 +65,8 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -66,6 +74,8 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 
 	it('Sanity | Create a daily recurring task, every 3 days', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -81,6 +91,8 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -88,6 +100,8 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 
 	it('Sanity | Create a daily recurring task, every 3 days. 4 occurrences', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -104,6 +118,8 @@ describe('Tasks > CreateTaskRequest Recurrence Daily', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});

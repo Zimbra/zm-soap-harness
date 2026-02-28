@@ -47,24 +47,30 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 	// Tests
 	it('Smoke | Add an Alias to an account', async () => {
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AddAccountAliasResponse, 'Alias should be added');
 	});
 
 
 	it('Functional | Add an invalid Alias (without domain name) to an account 1', async () => {
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName2}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should return INVALID_REQUEST');
@@ -72,12 +78,15 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 
 	it('Functional | Add an Alias with non-existing domain name', async () => {
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName3}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.NO_SUCH_DOMAIN',
 			'Should return NO_SUCH_DOMAIN');
@@ -86,26 +95,36 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 	it('Functional | Add an Alias with names as spchar, numbers, spaces', async () => {
 		const aliasSpChar = `:''<//\\@${config.testDomain}`;
+
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasSpChar}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 
 		const errorCode = response.Fault.Detail.Error.Code;
+
+		// Verify response
 		assert.isTrue(errorCode.includes('service.INVALID_REQUEST') || errorCode.includes('service.PARSE_ERROR'),
 			`Should return INVALID_REQUEST or PARSE_ERROR, got: ${errorCode}`
 		);
 
 		const aliasNumber = `1234${common.getUniqueString()}@${config.testDomain}`;
+
+		// AddAccountAliasRequest
 		const response2 = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasNumber}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response2.Fault, 'Response should not be a Fault');
 		assert.exists(response2.AddAccountAliasResponse,
 			'Numeric alias should be allowed');
@@ -113,12 +132,15 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 
 	it('Regression | Add an Alias with blank name', async () => {
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias></alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should return INVALID_REQUEST');
@@ -126,12 +148,15 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 
 	it('Functional | Create duplicate alias for the same account', async () => {
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
 			'Should return ACCOUNT_EXISTS');
@@ -140,6 +165,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 	it('Regression | Add an alias with deleted domain', async () => {
 		const domainName = `domain${common.getUniqueString()}.com`;
+
+		// CreateDomainRequest
 		const createDomain = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domainName}</name>
@@ -147,18 +174,22 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const domainId = createDomain.CreateDomainResponse.domain[0].id;
 
+		// DeleteDomainRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteDomainRequest xmlns="urn:zimbraAdmin">
 				<id>${domainId}</id>
 			</DeleteDomainRequest>`, adminAuthToken
 		);
 
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>alias01.${common.getUniqueString()}@${domainName}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.NO_SUCH_DOMAIN',
 			'Should return NO_SUCH_DOMAIN');
@@ -168,15 +199,21 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	it('Regression | Add an Alias to a non existing account', async () => {
 		const nonExistentAccount =
 			`nonexist.${common.getUniqueString()}@${config.testDomain}`;
+
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${nonExistentAccount}</id>
 				<alias>${aliasName}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
+
+		// Verify response
 		assert.isTrue(code.includes('account.NO_SUCH_ACCOUNT') || code.includes('account.NO_SUCH_ID'),
 			'Should return NO_SUCH_ACCOUNT or NO_SUCH_ID'
 		);
@@ -184,12 +221,15 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 
 	it('Regression | Add an Alias with name same as account name', async () => {
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
 				<alias>${testAccount3}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
 			'Should return ACCOUNT_EXISTS');
@@ -197,12 +237,15 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 
 	it('Functional | Add an Alias with name same as any other account name', async () => {
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
 				<alias>${testAccount1}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
 			'Should return ACCOUNT_EXISTS');
@@ -210,12 +253,15 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 
 	it('Functional | Add an Alias to an account with name same as account name same as any other account name in other domain', async () => {
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
 				<alias>${testAccount4}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
 			'Should return ACCOUNT_EXISTS');
@@ -223,6 +269,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 
 	it('Smoke | Search a mail (sent to account1) in account1 and in alias of account1', async () => {
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -232,6 +279,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const auth5 = await soap.getAccountAuthToken(testAccount5, config.accountPassword);
 		const subject = `Subject12_${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -245,22 +294,28 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
 		await common.sleep(4000);
 
+		// SearchRequest
 		const search1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, auth1
 		);
 		const hit1 = search1.SearchResponse.c && search1.SearchResponse.c[0];
+
+		// Verify response
 		assert.exists(hit1, 'Mail not found in account1');
 
 		const aliasToken = await soap.getAccountAuthToken(aliasName4, config.accountPassword);
 
+		// SearchRequest
 		const searchAlias = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, aliasToken
 		);
 		const hitAlias = searchAlias.SearchResponse.c && searchAlias.SearchResponse.c[0];
+
+		// Verify response
 		assert.exists(hitAlias, 'Mail not found via alias login');
 	});
 
@@ -269,6 +324,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const aliasToken = await soap.getAccountAuthToken(aliasName, config.accountPassword);
 
 		const subject = `Subject13_${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -282,6 +339,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const auth3 = await soap.getAccountAuthToken(testAccount3, config.accountPassword);
 		await common.sleep(4000);
 
+		// SearchRequest
 		const search = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
@@ -289,9 +347,13 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		const conv = search.SearchResponse.c && search.SearchResponse.c[0];
+
+		// Verify response
 		assert.exists(conv, 'Message not received');
 
 		const sender = conv.e.find(p => p.a === testAccount1);
+
+		// Verify response
 		assert.exists(sender, 'Sender should be valid (testAccount1)');
 	});
 
@@ -301,6 +363,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const subject = `Subject14_${common.getUniqueString()}`;
 
 		const auth5 = await soap.getAccountAuthToken(testAccount5, config.accountPassword);
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -312,6 +376,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		await common.sleep(4000);
 
+		// SearchRequest
 		const searchMsg = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
@@ -319,6 +384,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const mId = searchMsg.SearchResponse.m[0].id;
 
+		// MsgActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${mId}" op="delete"/>
@@ -327,12 +393,15 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(aliasName, config.accountPassword);
 
+		// SearchRequest
 		const searchAlias = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, aliasToken
 		);
 		const hits = searchAlias.SearchResponse.m;
+
+		// Verify response
 		assert.notExists(hits, 'Message should be deleted in alias view too');
 	});
 
@@ -340,6 +409,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	it('Functional | Delete a mail from an aliasThe mail should also get deleted from the account', async () => {
 		const auth5 = await soap.getAccountAuthToken(testAccount5, config.accountPassword);
 		const subject = `Subject15_${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -353,6 +424,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(aliasName, config.accountPassword);
 
+		// SearchRequest
 		const searchMsg = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
@@ -360,6 +432,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const mId = searchMsg.SearchResponse.m[0].id;
 
+		// MsgActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${mId}" op="delete"/>
@@ -367,11 +440,15 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		const auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
+
+		// SearchRequest
 		const search = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, auth1
 		);
+
+		// Verify response
 		assert.notExists(search.SearchResponse.m,
 			'Message should be deleted in account too');
 	});
@@ -380,6 +457,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 	it('Functional | Check if mail sent through an account is also present in sent folder of alias or not', async () => {
 		const auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
 		const subject = `Subject16_${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -392,11 +471,14 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(aliasName, config.accountPassword);
 
+		// SearchRequest
 		const searchAlias = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject}) in:sent</query>
 			</SearchRequest>`, aliasToken
 		);
+
+		// Verify response
 		assert.exists(searchAlias.SearchResponse.m,
 			'Message found in Sent folder via alias');
 	});
@@ -406,6 +488,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
 		const subject = `Subject17_${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -419,12 +503,15 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const auth1 = await soap.getAccountAuthToken(
 			testAccount1, config.accountPassword);
 
+		// SearchRequest
 		const search = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
 				<query>subject:(${subject}) in:sent</query>
 			</SearchRequest>`, auth1
 		);
+
+		// Verify response
 		assert.exists(search.SearchResponse.m,
 			'Sent mail from alias should be in account sent');
 	});
@@ -436,6 +523,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const subject = `Subject18_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -447,6 +536,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		await common.sleep(4000);
 
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -464,6 +554,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const tagId = tagRes.CreateTagResponse.tag[0].id;
 
+		// MsgActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msgId}" op="tag"
@@ -474,6 +565,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		// Check via alias
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
+
+		// SearchRequest
 		const aliasSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -481,6 +574,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			</SearchRequest>`, aliasToken
 		);
 		const aliasMsg = aliasSearch.SearchResponse.m[0];
+
+		// Verify response
 		assert.exists(aliasMsg, 'Message should exist in alias');
 		assert.include(aliasMsg.t || '', tagId,
 			'Tag should be visible via alias');
@@ -493,6 +588,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const subject = `Subject19_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -506,6 +603,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -514,6 +613,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const msgId = searchRes.SearchResponse.m[0].id;
 
+		// CreateTagRequest
 		const tagRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="tag${common.getUniqueString()}"
@@ -522,6 +622,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const tagId = tagRes.CreateTagResponse.tag[0].id;
 
+		// MsgActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msgId}" op="tag"
@@ -537,6 +638,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			</SearchRequest>`, auth1
 		);
 		const acctMsg = acctSearch.SearchResponse.m[0];
+
+		// Verify response
 		assert.exists(acctMsg, 'Message should exist');
 		assert.include(acctMsg.t || '', tagId,
 			'Tag should be visible via account');
@@ -549,6 +652,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const subject = `Subject20_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -560,6 +665,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		await common.sleep(4000);
 
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -568,6 +674,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const msgId = searchRes.SearchResponse.m[0].id;
 
+		// MsgActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msgId}" op="flag"/>
@@ -576,6 +683,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
+
+		// SearchRequest
 		const aliasSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -583,6 +692,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			</SearchRequest>`, aliasToken
 		);
 		const aliasMsg = aliasSearch.SearchResponse.m[0];
+
+		// Verify response
 		assert.exists(aliasMsg, 'Should exist in alias');
 		assert.include(aliasMsg.f || '', 'f',
 			'Should be flagged in alias');
@@ -593,6 +704,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const subject = `Subject21_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -606,6 +719,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -614,6 +729,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const msgId = searchRes.SearchResponse.m[0].id;
 
+		// MsgActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msgId}" op="flag"/>
@@ -622,6 +738,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const auth1 = await soap.getAccountAuthToken(
 			testAccount1, config.accountPassword);
+
+		// SearchRequest
 		const acctSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -629,6 +747,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			</SearchRequest>`, auth1
 		);
 		const acctMsg = acctSearch.SearchResponse.m[0];
+
+		// Verify response
 		assert.exists(acctMsg, 'Should exist in account');
 		assert.include(acctMsg.f || '', 'f',
 			'Should be flagged in account');
@@ -641,6 +761,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const subject = `Subject22_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -652,6 +774,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		await common.sleep(4000);
 
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -669,12 +792,16 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
+
+		// SearchRequest
 		const aliasSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
 				<query>subject:(${subject}) in:drafts</query>
 			</SearchRequest>`, aliasToken
 		);
+
+		// Verify response
 		assert.exists(aliasSearch.SearchResponse.m,
 			'Moved message should be in drafts via alias');
 	});
@@ -684,6 +811,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const subject = `Subject23_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -697,6 +826,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -714,12 +845,16 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const auth1 = await soap.getAccountAuthToken(
 			testAccount1, config.accountPassword);
+
+		// SearchRequest
 		const acctSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
 				<query>subject:(${subject}) in:drafts</query>
 			</SearchRequest>`, auth1
 		);
+
+		// Verify response
 		assert.exists(acctSearch.SearchResponse.m,
 			'Moved message should be in drafts via account');
 	});
@@ -731,6 +866,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const subject = `Subject24_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -742,6 +879,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		await common.sleep(4000);
 
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -750,6 +888,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const msgId = searchRes.SearchResponse.m[0].id;
 
+		// MsgActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msgId}" op="read"/>
@@ -758,12 +897,16 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
+
+		// SearchRequest
 		const aliasSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
 				<query>subject:(${subject}) is:read</query>
 			</SearchRequest>`, aliasToken
 		);
+
+		// Verify response
 		assert.exists(aliasSearch.SearchResponse.m,
 			'Message should be read in alias');
 	});
@@ -773,6 +916,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		const subject = `Subject25_${common.getUniqueString()}`;
 		const auth5 = await soap.getAccountAuthToken(
 			testAccount5, config.accountPassword);
+
+		// SendMsgRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -786,6 +931,8 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const aliasToken = await soap.getAccountAuthToken(
 			aliasName, config.accountPassword);
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
@@ -794,6 +941,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 		const msgId = searchRes.SearchResponse.m[0].id;
 
+		// MsgActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msgId}" op="read"/>
@@ -802,24 +950,31 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		const auth1 = await soap.getAccountAuthToken(
 			testAccount1, config.accountPassword);
+
+		// SearchRequest
 		const acctSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				types="message">
 				<query>subject:(${subject}) is:read</query>
 			</SearchRequest>`, auth1
 		);
+
+		// Verify response
 		assert.exists(acctSearch.SearchResponse.m,
 			'Message should be read in account');
 	});
 
 
 	it('Functional | Add an invalid Alias (without domain name) to an account 2', async () => {
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
 				<alias>invalidalias</alias>
 			</AddAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(
 			response.Fault.Detail.Error.Code,

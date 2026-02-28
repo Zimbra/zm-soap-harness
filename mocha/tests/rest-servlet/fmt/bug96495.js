@@ -12,6 +12,8 @@ describe('Rest Servlet > Fmt > Bug 96495', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -34,6 +36,8 @@ describe('Rest Servlet > Fmt > Bug 96495', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.oneOf(res.status, [200, 204], 'REST GET should return 200 or 204');
 	});
 });

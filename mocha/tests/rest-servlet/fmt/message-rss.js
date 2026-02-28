@@ -12,16 +12,20 @@ describe('Rest Servlet > Fmt > Message RSS', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
-		// Add a message to inbox
+		// Get inbox folder id
 		const addRes = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
@@ -29,6 +33,8 @@ describe('Rest Servlet > Fmt > Message RSS', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -44,6 +50,8 @@ describe('Rest Servlet > Fmt > Message RSS', function () {
 			folder: 'Inbox',
 			fmt: 'rss'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'rssTest01', 'RSS should contain message subject');
 		assert.include(res.body, '<rss', 'Response should be RSS format');

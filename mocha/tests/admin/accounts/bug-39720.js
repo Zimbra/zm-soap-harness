@@ -15,6 +15,7 @@ describe('Admin > Accounts > Bug 39720', function () {
 			`admin.${common.getUniqueString()}@${config.testDomain}`;
 		const regularAcctName = `test.${common.getUniqueString()}@${config.testDomain}`;
 
+		// Create account
 		const r1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${delegatedAdminName}</name>
@@ -22,11 +23,14 @@ describe('Admin > Accounts > Bug 39720', function () {
 				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(r1.Fault, 'Response should not be a Fault');
 		assert.exists(r1.CreateAccountResponse, 'delegatedAdmin account creation failed');
 
 		delegatedAdminId = Array.isArray(r1.CreateAccountResponse.account) ? r1.CreateAccountResponse.account[0].id : r1.CreateAccountResponse.account.id;
 
+		// Create account
 		const r2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${adminAcctName}</name>
@@ -34,17 +38,22 @@ describe('Admin > Accounts > Bug 39720', function () {
 				<a n="zimbraIsAdminAccount">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(r2.Fault, 'Response should not be a Fault');
 		assert.exists(r2.CreateAccountResponse, 'adminAcct account creation failed');
 
 		adminAcctId = Array.isArray(r2.CreateAccountResponse.account) ? r2.CreateAccountResponse.account[0].id : r2.CreateAccountResponse.account.id;
 
+		// Create account
 		const r3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${regularAcctName}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(r3.Fault, 'Response should not be a Fault');
 		assert.exists(r3.CreateAccountResponse, 'regularAcct account creation failed');
 
@@ -59,12 +68,16 @@ describe('Admin > Accounts > Bug 39720', function () {
 	// Tests
 	it('Smoke | Do not allow auth token lifetime to be zero', async () => {
 		await common.sleep(2000);
+
+		// ModifyAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${adminAcctId}</id>
 				<a n="zimbraAuthTokenLifetime">0</a>
 			</ModifyAccountRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
@@ -72,12 +85,16 @@ describe('Admin > Accounts > Bug 39720', function () {
 
 	it('Smoke | Do not allow auth token lifetime to be zero 1', async () => {
 		await common.sleep(2000);
+
+		// ModifyAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${regularAcctId}</id>
 				<a n="zimbraAuthTokenLifetime">0</a>
 			</ModifyAccountRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
@@ -85,12 +102,16 @@ describe('Admin > Accounts > Bug 39720', function () {
 
 	it('Smoke | Do not allow auth token lifetime to be zero 2', async () => {
 		await common.sleep(2000);
+
+		// ModifyAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${delegatedAdminId}</id>
 				<a n="zimbraAuthTokenLifetime">0</a>
 			</ModifyAccountRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});

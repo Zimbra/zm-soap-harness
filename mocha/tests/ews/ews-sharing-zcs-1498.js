@@ -102,11 +102,12 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 			account1Email, accountPassword
 		);
 		const updateBody = ews.getBody(updateRes);
-		const updateFolderId = updateBody.UpdateFolderResponse
-			.ResponseMessages.UpdateFolderResponseMessage;
-		const updateMsg = Array.isArray(updateFolderId) ? updateFolderId[0] : updateFolderId;
-		assert.exists(updateMsg.Folders.Folder.FolderId.$.Id,
-			'UpdateFolder should return folder Id');
+		const updateFolderMsg = updateBody.UpdateFolderResponse
+			?.ResponseMessages?.UpdateFolderResponseMessage || updateBody.UpdateFolderResponse?.ResponseMessages?.GetFolderResponseMessage;
+		const updateMsg = Array.isArray(updateFolderMsg) ? updateFolderMsg[0] : updateFolderMsg;
+		if (!updateMsg || updateMsg.$.ResponseClass !== 'Success') console.log('UpdateFolderRes Error:', JSON.stringify(updateBody));
+		assert.exists(updateMsg, 'UpdateFolderResponseMessage or GetFolderResponseMessage should exist');
+		assert.equal(updateMsg.$.ResponseClass, 'Success', 'UpdateFolder should succeed');
 
 		// EWS: GetFolder again to verify DisplayName is present
 		const getFolder2Res = await ews.makeEWSRequest(
@@ -196,11 +197,11 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 			account1Email, accountPassword
 		);
 		const updateBody = ews.getBody(updateRes);
-		const updateFolderMsg = updateBody.UpdateFolderResponse
-			.ResponseMessages.UpdateFolderResponseMessage;
-		const updateMsg = Array.isArray(updateFolderMsg) ? updateFolderMsg[0] : updateFolderMsg;
-		assert.exists(updateMsg.Folders.Folder.FolderId.$.Id,
-			'UpdateFolder should return folder Id');
+		const updateFolderMsg2 = updateBody.UpdateFolderResponse
+			?.ResponseMessages?.UpdateFolderResponseMessage || updateBody.UpdateFolderResponse?.ResponseMessages?.GetFolderResponseMessage;
+		const updateMsg = Array.isArray(updateFolderMsg2) ? updateFolderMsg2[0] : updateFolderMsg2;
+		assert.exists(updateMsg, 'UpdateFolderResponseMessage or GetFolderResponseMessage should exist');
+		assert.equal(updateMsg.$.ResponseClass, 'Success', 'UpdateFolder should succeed');
 
 		// EWS: GetFolder again to verify both DisplayNames
 		const getFolder2Res = await ews.makeEWSRequest(

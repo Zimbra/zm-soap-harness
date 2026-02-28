@@ -117,6 +117,7 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 
 		// Attendee verifies invite on ZWC
+		await common.delay(8000);
 		const acct2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 
 		const searchRes1 = await soap.makeSOAPEnvelopeAccount(
@@ -351,6 +352,7 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 		const syncState = syncMsg.SyncState;
 
 		// Attendee verifies on ZWC
+		await common.delay(8000);
 		const acct2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 
 		const searchRes1 = await soap.makeSOAPEnvelopeAccount(
@@ -458,6 +460,7 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 		);
 
 		// Verify new attendee (account3) received the invite on EWS
+		await common.delay(3000);
 		const syncRes3 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

@@ -18,6 +18,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 	// Tests
 	it('Sanity | Create System retention policy lifetime in seconds', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
+
+		// CreateSystemRetentionPolicyRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<keep>
@@ -25,6 +27,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</keep>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CreateSystemRetentionPolicyResponse,
 			'CreateSystemRetentionPolicyResponse should exist');
@@ -33,6 +37,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 	it('Sanity | Create System retention policy lifetime in minutes', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
+
+		// CreateSystemRetentionPolicyRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<purge>
@@ -40,6 +46,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</purge>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CreateSystemRetentionPolicyResponse,
 			'CreateSystemRetentionPolicyResponse should exist');
@@ -48,6 +56,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 	it('Sanity | Create System retention policy lifetime in days', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
+
+		// CreateSystemRetentionPolicyRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<purge>
@@ -55,6 +65,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</purge>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CreateSystemRetentionPolicyResponse,
 			'CreateSystemRetentionPolicyResponse should exist');
@@ -63,6 +75,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 	it('Sanity | Create System retention policy lifetime in hours', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
+
+		// CreateSystemRetentionPolicyRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<purge>
@@ -70,6 +84,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</purge>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.CreateSystemRetentionPolicyResponse,
 			'CreateSystemRetentionPolicyResponse should exist');
@@ -80,6 +96,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 		const invalidValues = ['29h67m', '---2h', '1d25h', '-2h', 'asdash', '1209d25m', '-24d'];
 		for (const val of invalidValues) {
 			const policyName = `policy${common.getUniqueString()}`;
+
+			// CreateSystemRetentionPolicyRequest
 			const response = await soap.makeSOAPEnvelopeAdmin(
 				`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 					<purge>
@@ -87,6 +105,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 					</purge>
 				</CreateSystemRetentionPolicyRequest>`, adminAuthToken, false
 			);
+
+			// Verify response
 			assert.exists(response.Fault, `Should fault for invalid lifetime "${val}"`);
 		}
 	});
@@ -94,6 +114,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 	it('Sanity | Modify System retention policies with change lifetime', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
+
+		// CreateSystemRetentionPolicyRequest
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<keep>
@@ -101,22 +123,30 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</keep>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		const policyId = createRes.CreateSystemRetentionPolicyResponse.policy[0].id;
+		const keepPolicy = createRes.CreateSystemRetentionPolicyResponse?.policy;
+		const policyId = Array.isArray(keepPolicy) ? keepPolicy[0].id : keepPolicy?.id;
 
+		// ModifySystemRetentionPolicyRequest
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifySystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<policy id="${policyId}" name="${policyName}" lifetime="5d" type="user" xmlns="urn:zimbraMail"/>
 			</ModifySystemRetentionPolicyRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifySystemRetentionPolicyResponse,
 			'ModifySystemRetentionPolicyResponse should exist');
-		assert.equal(modRes.ModifySystemRetentionPolicyResponse.policy[0].lifetime, '5d');
+
+		const modPolicy = modRes.ModifySystemRetentionPolicyResponse?.policy;
+		assert.equal(Array.isArray(modPolicy) ? modPolicy[0].lifetime : modPolicy?.lifetime, '5d');
 	});
 
 
 	it('Sanity | Modify System retention policies change name', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
+
+		// CreateSystemRetentionPolicyRequest
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<keep>
@@ -124,36 +154,46 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</keep>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		const policyId = createRes.CreateSystemRetentionPolicyResponse.policy[0].id;
+		const keepPolicy = createRes.CreateSystemRetentionPolicyResponse?.policy;
+		const policyId = Array.isArray(keepPolicy) ? keepPolicy[0].id : keepPolicy?.id;
 		const newName = `new${policyName}`;
 
+		// ModifySystemRetentionPolicyRequest
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifySystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<policy id="${policyId}" name="${newName}" xmlns="urn:zimbraMail"/>
 			</ModifySystemRetentionPolicyRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifySystemRetentionPolicyResponse,
 			'ModifySystemRetentionPolicyResponse should exist');
-		assert.equal(modRes.ModifySystemRetentionPolicyResponse.policy[0].name, newName);
+
+		const modPolicy = modRes.ModifySystemRetentionPolicyResponse?.policy;
+		assert.equal(Array.isArray(modPolicy) ? modPolicy[0].name : modPolicy?.name, newName);
 	});
 
 
 	it('Sanity | Get System retention policy', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
-		const createRes = await soap.makeSOAPEnvelopeAdmin(
+
+		// CreateSystemRetentionPolicyRequest
+		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<keep>
 					<policy name="${policyName}" lifetime="2s" xmlns="urn:zimbraMail"/>
 				</keep>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		const policyId = createRes.CreateSystemRetentionPolicyResponse.policy[0].id;
 
+		// GetSystemRetentionPolicyRequest
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 			</GetSystemRetentionPolicyRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetSystemRetentionPolicyResponse,
 			'GetSystemRetentionPolicyResponse should exist');
@@ -162,6 +202,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 	it('Sanity | Delete System retention policy', async () => {
 		const policyName = `policy${common.getUniqueString()}`;
+
+		// CreateSystemRetentionPolicyRequest
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<keep>
@@ -169,13 +211,17 @@ describe('Admin > Accounts > Retention Policy', function () {
 				</keep>
 			</CreateSystemRetentionPolicyRequest>`, adminAuthToken
 		);
-		const policyId = createRes.CreateSystemRetentionPolicyResponse.policy[0].id;
+		const keepPolicy = createRes.CreateSystemRetentionPolicyResponse?.policy;
+		const policyId = Array.isArray(keepPolicy) ? keepPolicy[0].id : keepPolicy?.id;
 
+		// DeleteSystemRetentionPolicyRequest
 		const delRes = await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 				<policy id="${policyId}" xmlns="urn:zimbraMail"/>
 			</DeleteSystemRetentionPolicyRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(delRes.Fault, 'Response should not be a Fault');
 		assert.exists(delRes.DeleteSystemRetentionPolicyResponse,
 			'DeleteSystemRetentionPolicyResponse should exist');
@@ -185,6 +231,8 @@ describe('Admin > Accounts > Retention Policy', function () {
 			`<GetSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
 			</GetSystemRetentionPolicyRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetSystemRetentionPolicyResponse,
 			'GetSystemRetentionPolicyResponse should exist');

@@ -23,12 +23,15 @@ describe('CalDav > Folders', function () {
 		account1Name = account1User + '@' + config.testDomain;
 		account1NameEncoded = account1User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
@@ -38,6 +41,7 @@ describe('CalDav > Folders', function () {
 		const mailHost1 = attrs1.find(a => a.n === 'zimbraMailHost');
 		account1Server = mailHost1 ? (mailHost1._content || mailHost1) : config.serverHost;
 
+		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -50,6 +54,8 @@ describe('CalDav > Folders', function () {
 
 		// Create a second domain and account2 for Folders_04
 		const domain2Name = 'dom' + common.getUniqueString() + '.' + config.testDomain;
+
+		// CreateDomainRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domain2Name}</name>
@@ -60,12 +66,15 @@ describe('CalDav > Folders', function () {
 		account2Name = account2User + '@' + domain2Name;
 		account2NameEncoded = account2User + '%40' + domain2Name;
 
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
@@ -128,6 +137,8 @@ describe('CalDav > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.oneOf(res.status, [207, 404],
 			'PROPFIND should return 207 or 404 (username-only path may not be supported)');
 		if (res.status === 207) {
@@ -138,6 +149,8 @@ describe('CalDav > Folders', function () {
 
 	it('Sanity | Verify basic href path includes user name part if user is in default domain and request is made with full address', async () => {
 		const res = await propfindRoot(account1Name, account1NameEncoded, account1Server);
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, account1NameEncoded + '/Inbox/',
 			'Response should contain encoded email in Inbox href');
@@ -146,6 +159,8 @@ describe('CalDav > Folders', function () {
 
 	it('Sanity | Verify user that is not in the default domain is returned correctly', async () => {
 		const res = await propfindRoot(account2Name, account2NameEncoded, account2Server);
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, account2NameEncoded + '/Inbox/',
 			'Response should contain encoded name for non-default domain user');
@@ -153,6 +168,7 @@ describe('CalDav > Folders', function () {
 
 
 	it('Sanity | Verify folder color is returned by CalDav (view appointment)', async () => {
+		// GetFolderRequest
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
@@ -160,6 +176,8 @@ describe('CalDav > Folders', function () {
 		const rootId = Array.isArray(rootFolder) ? rootFolder[0].id : rootFolder.id;
 
 		const folderName = 'folder' + common.getUniqueString();
+
+		// CreateFolderRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${rootId}" view="appointment" color="2"/>
@@ -181,6 +199,8 @@ describe('CalDav > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, '#008284FF',
 			'calendar-color should be #008284FF for color=2');
@@ -188,6 +208,7 @@ describe('CalDav > Folders', function () {
 
 
 	it('Sanity | Verify folder color is returned by CalDav (view task)', async () => {
+		// GetFolderRequest
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
@@ -195,6 +216,8 @@ describe('CalDav > Folders', function () {
 		const rootId = Array.isArray(rootFolder) ? rootFolder[0].id : rootFolder.id;
 
 		const folderName = 'folder' + common.getUniqueString();
+
+		// CreateFolderRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${rootId}" view="task" color="3"/>
@@ -216,6 +239,8 @@ describe('CalDav > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, '#2CA10BFF',
 			'calendar-color should be #2CA10BFF for color=3');
@@ -223,6 +248,7 @@ describe('CalDav > Folders', function () {
 
 
 	it('Functional | Verify folder color is NOT returned by CalDav (view message)', async () => {
+		// GetFolderRequest
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
@@ -230,6 +256,8 @@ describe('CalDav > Folders', function () {
 		const rootId = Array.isArray(rootFolder) ? rootFolder[0].id : rootFolder.id;
 
 		const folderName = 'folder' + common.getUniqueString();
+
+		// CreateFolderRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${rootId}" view="message" color="4"/>
@@ -251,6 +279,8 @@ describe('CalDav > Folders', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, '404 Not Found',
 			'calendar-color should be in 404 propstat for message folder');
@@ -258,6 +288,7 @@ describe('CalDav > Folders', function () {
 
 
 	it('Sanity | Verify href encoding', async () => {
+		// GetFolderRequest
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
@@ -267,11 +298,14 @@ describe('CalDav > Folders', function () {
 		// Create folder with special chars (Bläh)
 		const folderName = 'Bläh';
 
+		// CreateFolderRequest
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${rootId}" view="appointment"/>
 			</CreateFolderRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		assert.exists(createFolderRes.CreateFolderResponse, 'Should create folder');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
@@ -281,6 +315,8 @@ describe('CalDav > Folders', function () {
 
 		// Create appointment in the special folder
 		const subject = 'Subject' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const createApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m l="${folderId}">
@@ -298,6 +334,8 @@ describe('CalDav > Folders', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
 		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createApptRes.CreateAppointmentResponse.invId
@@ -333,6 +371,8 @@ describe('CalDav > Folders', function () {
 			</C:calendar-multiget>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reportRes.status, 207, 'REPORT should return 207');
 		assert.include(reportRes.text, uid,
 			'Response should contain the appointment UID');

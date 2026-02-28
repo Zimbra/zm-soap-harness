@@ -204,7 +204,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${expandStart}" calExpandInstEnd="${expandEnd}"
 				limit="1000" offset="0">
-				<query>(inid:"10")</query>
+				<query>(inid:10)</query>
 			</SearchRequest>`,
 			account1AuthToken,
 		);
@@ -217,7 +217,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 			if (!a || !a.inst) continue;
 			const instances = Array.isArray(a.inst) ? a.inst : [a.inst];
 			for (const inst of instances) {
-				if (inst.ex === '1' || inst.ex === 1) {
+				if (inst.ex === '1' || inst.ex === 1 || inst.ex === true) {
 					exceptionInvId = inst.invId;
 					break;
 				}
@@ -300,7 +300,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const searchRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${narrowStart}" calExpandInstEnd="${narrowEnd}">
-				<query>(inid:"10")</query>
+				<query>(inid:10)</query>
 			</SearchRequest>`,
 			account1AuthToken,
 		);

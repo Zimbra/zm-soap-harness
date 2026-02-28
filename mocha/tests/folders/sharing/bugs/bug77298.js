@@ -8,6 +8,7 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 	let testAccount1, guestAccount1;
 	let auth1;
 	let account1Id;
+
 	let folderName, folderId;
 
 	const makeRESTRequest = (options) => {
@@ -50,6 +51,8 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 
 		// Get Root Folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const rootId = getFolder.GetFolderResponse.folder[0].id;
 
@@ -92,6 +95,7 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 			username: guestAccount1
 		});
 
+		// Verify response
 		assert.equal(statusCode, 401,
 			'Should return 401 Unauthorized for request without password');
 
@@ -123,6 +127,7 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 			username: guestAccount1
 		});
 
+		// Verify response
 		assert.equal(statusCode, 401,
 			'Should return 401 Unauthorized for request without password');
 	});

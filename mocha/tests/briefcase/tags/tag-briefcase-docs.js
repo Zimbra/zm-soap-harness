@@ -11,6 +11,8 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 	before(async function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -18,6 +20,7 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -27,6 +30,8 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
+
+		// GetFolderRequest
 		const folderRes = await soap.makeSOAPEnvelopeAccount('<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token);
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
@@ -34,7 +39,6 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 			: folderRes.GetFolderResponse.folder;
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
-
 		briefcaseFolderId = briefcase.id;
 	});
 
@@ -47,17 +51,21 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 	it('Sanity | Search for a tagged briefcase documents', async () => {
 		// Create a tag
 		const tagName = 'Tag.' + common.getUniqueString();
+
+		// CreateTagRequest
 		const tagRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="1"/>
 			</CreateTagRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(tagRes.Fault, 'Response should not be a Fault');
 		assert.exists(tagRes.CreateTagResponse, 'CreateTagResponse should exist');
 
 		const tag = Array.isArray(tagRes.CreateTagResponse.tag)
 			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
-		const tagId = tag.id;
+		tag.id;
 
 		// Save a document
 		const saveRes = await soap.makeSOAPEnvelopeAccount(
@@ -67,6 +75,8 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -80,6 +90,8 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 				<action id="${docId}" op="tag" tn="${tagName}"/>
 			</ItemActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(tagActionRes.Fault, 'Response should not be a Fault');
 		assert.exists(tagActionRes.ItemActionResponse, 'ItemActionResponse should exist');
 
@@ -89,6 +101,8 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 				<query>tag:"${tagName}"</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

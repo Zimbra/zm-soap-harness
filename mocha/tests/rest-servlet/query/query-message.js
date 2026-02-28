@@ -13,17 +13,23 @@ describe('Rest Servlet > Query > Message Query', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
-		// Add a message to inbox
+		// Get inbox folder id
 		subject = 'queryTest' + common.getUniqueString();
+
+		// AddMsgRequest
 		const addRes = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
@@ -31,6 +37,8 @@ describe('Rest Servlet > Query > Message Query', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -47,6 +55,8 @@ describe('Rest Servlet > Query > Message Query', function () {
 			fmt: 'rss',
 			query: `subject:${subject}`
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, subject, 'Response should contain the queried message');
 	});

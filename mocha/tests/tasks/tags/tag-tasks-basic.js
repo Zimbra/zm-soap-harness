@@ -24,6 +24,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 
 	// Helper to create a task
 	async function createTask(subject, authToken, email) {
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -33,6 +35,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 				</m>
 			</CreateTaskRequest>`, authToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		return res.CreateTaskResponse.calItemId;
 	}
@@ -44,11 +48,15 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 
 		// Create tag
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createTagRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="4"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createTagRes.Fault, 'Response should not be a Fault');
 		const tagId = createTagRes.CreateTagResponse.tag[0].id;
 
@@ -58,6 +66,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 				<action op="tag" id="${taskId}" tag="${tagId}"/>
 			</ItemActionRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(tagRes.Fault, 'Response should not be a Fault');
 		assert.exists(tagRes.ItemActionResponse, 'ItemActionResponse should exist');
 
@@ -67,6 +77,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 				<query>tag:"${tagName}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -76,11 +88,15 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 		const taskId = await createTask(subject, accountAuthToken, accountEmail);
 
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createTagRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="3"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createTagRes.Fault, 'Response should not be a Fault');
 		const tagId = createTagRes.CreateTagResponse.tag[0].id;
 
@@ -97,6 +113,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 				<action op="!tag" id="${taskId}" tag="${tagId}"/>
 			</ItemActionRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(untagRes.Fault, 'Response should not be a Fault');
 		assert.exists(untagRes.ItemActionResponse, 'ItemActionResponse should exist');
 	});
@@ -108,11 +126,15 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 
 		const tagName1 = `tag${common.getUniqueString()}`;
 		const tagName2 = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createTag1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName1}" color="2"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// CreateTagRequest
 		const createTag2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName2}" color="5"/>
@@ -127,13 +149,18 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 				<action op="tag" id="${taskId}" tag="${tagId1}"/>
 			</ItemActionRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(tagRes1.Fault, 'Response should not be a Fault');
 
+		// ItemActionRequest
 		const tagRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<ItemActionRequest xmlns="urn:zimbraMail">
 				<action op="tag" id="${taskId}" tag="${tagId2}"/>
 			</ItemActionRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(tagRes2.Fault, 'Response should not be a Fault');
 		assert.exists(tagRes2.ItemActionResponse, 'ItemActionResponse should exist');
 	});
@@ -142,6 +169,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 	it('Regression | Apply a tag to a received (non-owned) appointment', async () => {
 		// Send a task to account2
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -155,6 +184,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
 		// Wait for delivery
@@ -166,6 +197,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -176,11 +209,15 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 
 		// Create tag
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createTagRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="4"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createTagRes.Fault, 'Response should not be a Fault');
 		const tagId = createTagRes.CreateTagResponse.tag[0].id;
 
@@ -200,6 +237,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 				</default>
 			</SetTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
 		assert.exists(setRes.SetTaskResponse, 'SetTaskResponse should exist');
 	});
@@ -208,16 +247,22 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 	it('Regression | Apply a tag to a received (non-owned) appointment using SetAppointmentRequest', async () => {
 		// Create tag
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createTagRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="6"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createTagRes.Fault, 'Response should not be a Fault');
 
 		// Create a simple task with SetTaskRequest
 		const subject = `task${common.getUniqueString()}`;
 		const uid = common.getUniqueString();
+
+		// SetTaskRequest
 		const setRes = await soap.makeSOAPEnvelopeAccount(
 			`<SetTaskRequest xmlns="urn:zimbraMail">
 				<default ptst="AC">
@@ -233,6 +278,8 @@ describe('Tasks > Tags > TagTasksBasic', function () {
 				</default>
 			</SetTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
 		assert.exists(setRes.SetTaskResponse, 'SetTaskResponse should exist');
 	});

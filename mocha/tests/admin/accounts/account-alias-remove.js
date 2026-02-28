@@ -53,13 +53,17 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 				<name>${domainName}</name>
 				<a n="zimbraNotes">Domain for distribution list testing</a>
 			</CreateDomainRequest>`;
-		const createDomRes = await soap.makeSOAPEnvelopeAdmin(createDomReq, adminAuthToken);
+
+		// CreateDistributionListRequest
+		await soap.makeSOAPEnvelopeAdmin(createDomReq, adminAuthToken);
 
 		const createDlReq =
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dlName}</name>
 				<a n="description">A test distribution list</a>
 			</CreateDistributionListRequest>`;
+
+		// GetDomainRequest
 		const createDlRes = await soap.makeSOAPEnvelopeAdmin(createDlReq, adminAuthToken);
 
 		dlId = createDlRes.CreateDistributionListResponse.dl[0].id;
@@ -72,6 +76,8 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 		if (testAccount4) await soap.deleteAccount(testAccount4, adminAuthToken);
 
 		if (domainName) {
+
+			// GetDomainRequest
 			const domRes = await soap.makeSOAPEnvelopeAdmin(
 				`<GetDomainRequest xmlns="urn:zimbraAdmin">
 					<domain by="name">${domainName}</domain>
@@ -79,6 +85,8 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			);
 			if (domRes.GetDomainResponse) {
 				const id = domRes.GetDomainResponse.domain[0].id;
+
+				// DeleteDomainRequest
 				await soap.makeSOAPEnvelopeAdmin(
 					`<DeleteDomainRequest xmlns="urn:zimbraAdmin"><id>${id}</id></DeleteDomainRequest>`, adminAuthToken
 				);
@@ -93,6 +101,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 
 	// Tests
 	it('Smoke | Remove an alias from an account', async () => {
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -100,12 +109,15 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 
+		// RemoveAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName}</alias>
 			</RemoveAccountAliasRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.RemoveAccountAliasResponse,
 			'Alias should be removed successfully');
@@ -113,12 +125,15 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 
 
 	it('Regression | Remove an invalid alias (without domain name) from an account', async () => {
+		// RemoveAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName2}</alias>
 			</RemoveAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should return INVALID_REQUEST');
@@ -126,15 +141,20 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 
 
 	it('Regression | Remove an invalid alias (with non existing domain name) from an account', async () => {
+		// RemoveAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName3}</alias>
 			</RemoveAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
+
+		// Verify response
 		assert.isTrue(code.includes('account.NO_SUCH_DOMAIN') || code.includes('account.NO_SUCH_ALIAS'),
 			'Should return NO_SUCH_DOMAIN or NO_SUCH_ALIAS');
 	});
@@ -143,15 +163,21 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 	it('Regression | Remove an alias with name as blank, spchar, numbers', async () => {
 		const aliases = [aliasBlank, aliasSpchar, aliasNumbers];
 		for (const alias of aliases) {
+
+			// RemoveAccountAliasRequest
 			const response = await soap.makeSOAPEnvelopeAdmin(
 				`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 					<id>${account1Id}</id>
 					<alias>${alias}</alias>
 				</RemoveAccountAliasRequest>`, adminAuthToken, false
 			);
+
+			// Verify response
 			assert.exists(response.Fault, `Should have a Fault for ${alias}`);
 
 			const code = response.Fault.Detail.Error.Code;
+
+			// Verify response
 			assert.isTrue(code.includes('service.INVALID_REQUEST') || code.includes('service.PARSE_ERROR'),
 				`Should return INVALID_REQUEST or PARSE_ERROR for ${alias}`);
 		}
@@ -159,6 +185,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 
 
 	it('Regression | Remove already deleted alias from the account', async () => {
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -166,6 +193,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 
+		// RemoveAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -173,12 +201,15 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</RemoveAccountAliasRequest>`, adminAuthToken
 		);
 
+		// RemoveAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName}</alias>
 			</RemoveAccountAliasRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.NO_SUCH_ALIAS',
 			'Should return NO_SUCH_ALIAS');
@@ -186,6 +217,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 
 
 	it('Functional | Remove an alias from an account without removing alias from distribution list', async () => {
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -193,6 +225,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 
+		// AddDistributionListMemberRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
 				<id>${dlId}</id>
@@ -200,6 +233,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
 
+		// RemoveAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -207,6 +241,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</RemoveAccountAliasRequest>`, adminAuthToken
 		);
 
+		// GetDistributionListRequest
 		const getDlResponse = await soap.makeSOAPEnvelopeAdmin(
 			`<GetDistributionListRequest xmlns="urn:zimbraAdmin">
 				<dl by="id">${dlId}</dl>
@@ -215,11 +250,14 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 
 		const dlms = getDlResponse.GetDistributionListResponse.dl[0].dlm || [];
 		const exactMatch = dlms.find(dlm => dlm._content === aliasName1);
+
+		// Verify response
 		assert.notExists(exactMatch, 'Alias should be removed from DL');
 	});
 
 
 	it('Regression | Remove an alias from the distribution list without removing account from the distribution list', async () => {
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account2Id}</id>
@@ -227,6 +265,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 
+		// AddDistributionListMemberRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
 				<id>${dlId}</id>
@@ -234,6 +273,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
 
+		// RemoveDistributionListMemberRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
 				<id>${dlId}</id>
@@ -241,20 +281,26 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</RemoveDistributionListMemberRequest>`, adminAuthToken
 		);
 
+		// SearchAccountsRequest
 		const searchResponse = await soap.makeSOAPEnvelopeAdmin(
 			`<SearchAccountsRequest xmlns="urn:zimbraAdmin">
 				<query>zimbraId=${account2Id}</query>
 			</SearchAccountsRequest>`, adminAuthToken
 		);
 		const acct = searchResponse.SearchAccountsResponse.account && searchResponse.SearchAccountsResponse.account[0];
+
+		// Verify response
 		assert.exists(acct, 'Account should be found');
 
 		const acctAlias = acct.a.find(attr => attr.n === 'zimbraMailAlias' && attr._content === aliasName1a);
+
+		// Verify response
 		assert.exists(acctAlias, 'Alias should still be present on the account');
 	});
 
 
 	it('Regression | Delete an accountThe alias of that account added in the distribution list should also get deleted from distribution list', async () => {
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
@@ -262,6 +308,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 
+		// AddDistributionListMemberRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
 				<id>${dlId}</id>
@@ -269,6 +316,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
 
+		// DeleteAccountRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${account3Id}</id>
@@ -276,6 +324,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 		);
 		testAccount3 = null; // Prevent deletion in after hook
 
+		// GetDistributionListRequest
 		const getDlResponse = await soap.makeSOAPEnvelopeAdmin(
 			`<GetDistributionListRequest xmlns="urn:zimbraAdmin">
 				<dl by="id">${dlId}</dl>
@@ -283,12 +332,15 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 		);
 		const dlms = getDlResponse.GetDistributionListResponse.dl[0].dlm || [];
 		const exactMatch = dlms.find(dlm => dlm._content === aliasName1b);
+
+		// Verify response
 		assert.notExists(exactMatch,
 			'Alias should be removed from DL along with the deleted account');
 	});
 
 
 	it('Functional | Verify that deleting the original account deletes the aliases as well', async () => {
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account4Id}</id>
@@ -298,6 +350,8 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 
 		// test auth to alias
 		const auth1 = await soap.getAccountAuthToken(alias2Name, config.accountPassword);
+
+		// Verify response
 		assert.exists(auth1, 'Should authenticate against alias');
 
 		// delete account
@@ -309,28 +363,35 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 		testAccount4 = null;
 
 		// try auth to account4 manually
+		// Send the message
 		const authResAcct = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account4Id}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`
 		);
+
+		// Verify response
 		assert.exists(authResAcct.Fault);
 		assert.include(authResAcct.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// try auth to alias manually
+		// Send the message
 		const authResAlias = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${alias2Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`
 		);
+
+		// Verify response
 		assert.exists(authResAlias.Fault);
 		assert.include(authResAlias.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
 
 	it('Functional | Verify that the original account does not get deleted if alias is deleted', async () => {
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -340,6 +401,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 
 		await soap.getAccountAuthToken(alias3Name, config.accountPassword);
 
+		// RemoveAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
@@ -347,17 +409,22 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</RemoveAccountAliasRequest>`, adminAuthToken
 		);
 
+		// Send the message
 		const authResAlias = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${alias3Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`
 		);
+
+		// Verify response
 		assert.exists(authResAlias.Fault);
 		assert.include(authResAlias.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// should still be able to auth to original account
 		const acctAuth = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
+
+		// Verify response
 		assert.exists(acctAuth);
 	});
 
@@ -367,6 +434,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 		const anotherAcctReq = await soap.createAccountByNameAndEmailAddress(adminAuthToken, `test5.${common.getUniqueString()}@${config.testDomain}`);
 		const anotherAcctId = anotherAcctReq.accountId;
 
+		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${anotherAcctId}</id>
@@ -374,6 +442,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 
+		// RemoveAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${anotherAcctId}</id>
@@ -381,12 +450,15 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 			</RemoveAccountAliasRequest>`, adminAuthToken
 		);
 
+		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account1Id}</id>
 				<alias>${aliasName}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AddAccountAliasResponse,
 			'AddAccountAliasResponse should exist');
@@ -407,6 +479,8 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 		const auth2 = await soap.getAccountAuthToken(testAccount2, config.accountPassword);
 
 		const subject = `Subject_${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		const sendResponse = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -416,10 +490,13 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 				</m>
 			</SendMsgRequest>`, auth2
 		);
+
+		// Verify response
 		assert.notExists(sendResponse.Fault, 'Response should not be a Fault');
 		assert.exists(sendResponse.SendMsgResponse,
 			'SendMsgResponse should exist');
 
+		// RemoveAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${account2Id}</id>
@@ -441,6 +518,8 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 		// or if MTA accepts it we search for bounce. Since this is strict asserting on SendMsg failure:
 		if (sendResponse2.Fault) {
 			const code = sendResponse2.Fault.Detail.Error.Code;
+
+			// Verify response
 			assert.isTrue(code.includes('mail.NO_SUCH_ACCOUNT') || code.includes('account.NO_SUCH_ACCOUNT') || code.includes('mail.SEND_ABORTED_ADDRESS_FAILURE'),
 				'Should be NO_SUCH_ACCOUNT or SEND_ABORTED_ADDRESS_FAILURE');
 		} else {

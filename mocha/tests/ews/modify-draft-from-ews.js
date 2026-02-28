@@ -53,6 +53,8 @@ describe('EWS > Modify Draft From EWS', function () {
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 		const draftId = saveDraftRes.SaveDraftResponse.m.id;
 
+		await soap.waitFor(5000);
+
 		// EWS: GetFolder for Drafts
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -84,6 +86,9 @@ describe('EWS > Modify Draft From EWS', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${draftsId}" />
@@ -192,6 +197,9 @@ describe('EWS > Modify Draft From EWS', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="6" />
@@ -260,6 +268,8 @@ describe('EWS > Modify Draft From EWS', function () {
 		);
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 
+		await soap.waitFor(5000);
+
 		// EWS: GetFolder for Drafts
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -291,6 +301,9 @@ describe('EWS > Modify Draft From EWS', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${draftsId}" />
@@ -398,6 +411,9 @@ describe('EWS > Modify Draft From EWS', function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="6" />

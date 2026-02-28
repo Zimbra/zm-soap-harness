@@ -64,6 +64,8 @@ describe('Folders > Bugs > Bug 66715', function () {
 		// Use 'Inbox' name? It should be standard.
 		// XML uses ${globals.inbox}, usually 'Inbox'.
 		const inbox = findFolder(folderResp.GetFolderResponse.folder, 'Inbox');
+
+		// Verify response
 		assert.exists(inbox, 'Inbox found');
 		const inboxId = inbox.id;
 
@@ -79,11 +81,13 @@ describe('Folders > Bugs > Bug 66715', function () {
 					</retentionPolicy>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(setPolicy, acct1.authToken);
 
 		// 3. Share with user2 (manager rights)
-		const share =
-			`<FolderActionRequest xmlns="urn:zimbraMail">
+		
+		`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${inboxId}">
 					<grant gt="usr" d="${acct2.name}" perm="rwidax"/>
 				</action>
@@ -100,6 +104,8 @@ describe('Folders > Bugs > Bug 66715', function () {
 					<grant gt="usr" d="${acct2.name}" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(shareManager, acct1.authToken);
 
 		// 4. Login user2. Create mountpoint.
@@ -112,9 +118,13 @@ describe('Folders > Bugs > Bug 66715', function () {
 
 		// 5. Verify retentionPolicy in response
 		const link = mountResp.CreateMountpointResponse.link[0];
+
+		// Verify response
 		assert.exists(link.retentionPolicy, 'Retention Policy should be returned');
 
 		const policyObj = Array.isArray(link.retentionPolicy) ? link.retentionPolicy[0] : link.retentionPolicy;
+
+		// Verify response
 		assert.exists(policyObj.keep, 'Keep policy should exist');
 
 		const policies = Array.isArray(policyObj.keep[0].policy)
@@ -122,6 +132,8 @@ describe('Folders > Bugs > Bug 66715', function () {
 			: [policyObj.keep[0].policy];
 
 		const found = policies.some(p => p.lifetime === '31d');
+
+		// Verify response
 		assert.isTrue(found, 'Policy lifetime 31d should be found');
 	});
 
@@ -164,6 +176,8 @@ describe('Folders > Bugs > Bug 66715', function () {
 					</retentionPolicy>
 				</action>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(setPolicy, acct1.authToken);
 
 		// 3. Share with user3 (admin rights)
@@ -174,6 +188,8 @@ describe('Folders > Bugs > Bug 66715', function () {
 					<grant gt="usr" d="${acct3.name}" perm="rwidxa"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(shareAdmin, acct1.authToken);
 
 		// 4. Login user3. Create mountpoint.
@@ -186,9 +202,13 @@ describe('Folders > Bugs > Bug 66715', function () {
 
 		// 5. Verify retentionPolicy in response
 		const link = mountResp.CreateMountpointResponse.link[0];
+
+		// Verify response
 		assert.exists(link.retentionPolicy, 'Retention Policy should be returned');
 
 		const policyObj = Array.isArray(link.retentionPolicy) ? link.retentionPolicy[0] : link.retentionPolicy;
+
+		// Verify response
 		assert.exists(policyObj.keep, 'Keep policy should exist');
 
 		const policies = Array.isArray(policyObj.keep[0].policy)
@@ -196,6 +216,8 @@ describe('Folders > Bugs > Bug 66715', function () {
 			: [policyObj.keep[0].policy];
 
 		const found = policies.some(p => p.lifetime === '31d');
+
+		// Verify response
 		assert.isTrue(found, 'Policy lifetime 31d should be found');
 	});
 

@@ -16,17 +16,23 @@ describe('Auth > Bugs > Bug 95102', function () {
 
 		// Create domain with preauth key
 		domainName = 'preauth.' + common.getUniqueString() + '.com';
+
+		// CreateDomainRequest
 		const domainRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domainName}</name>
 				<a n="zimbraPreAuthKey">${domainPreauthKey}</a>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(domainRes.Fault, 'Response should not be a Fault');
 		assert.exists(domainRes.CreateDomainResponse, 'Should create domain');
 
 		// Create account with maintenance status
 		accountName = 'preauth' + common.getUniqueString() + '@' + domainName;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountName}</name>
@@ -34,6 +40,8 @@ describe('Auth > Bugs > Bug 95102', function () {
 				<a n="zimbraAccountStatus">maintenance</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
@@ -52,6 +60,7 @@ describe('Auth > Bugs > Bug 95102', function () {
 	// Tests
 	it('Sanity | PreAuthServlet has no checking against the accounts status', async () => {
 		// Attempt to auth with account in maintenance mode - should get MAINTENANCE_MODE error
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountName}</account>
@@ -59,6 +68,8 @@ describe('Auth > Bugs > Bug 95102', function () {
 			</AuthRequest>`, null, true, accountServer
 		);
 		if (response.Fault) {
+
+			// Verify response
 			assert.include(response.Fault.Detail.Error.Code, 'account.MAINTENANCE_MODE',
 				'Should return MAINTENANCE_MODE error');
 		} else {

@@ -301,6 +301,7 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		assert.equal(giMsg2.Items.CalendarItem.Subject, apptSubject, 'Subject should match');
 
 		// Verify on ZWC organizer
+		await common.delay(8000);
 		const searchRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>
@@ -412,7 +413,8 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMsg.Changes.Create)
 			? syncMsg.Changes.Create : [syncMsg.Changes.Create];
-		const calCreate = creates.find(c => c?.CalendarItem);
+		const cFiltered = creates.filter(c => c?.CalendarItem);
+		const calCreate = cFiltered[cFiltered.length - 1];
 		const calId = calCreate?.CalendarItem?.ItemId?.$.Id;
 		const calCk = calCreate?.CalendarItem?.ItemId?.$.ChangeKey;
 		assert.exists(calId, 'Calendar item Id should exist');
@@ -617,6 +619,7 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 		);
 
 		// Verify on ZWC organizer
+		await common.delay(8000);
 		const searchRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>

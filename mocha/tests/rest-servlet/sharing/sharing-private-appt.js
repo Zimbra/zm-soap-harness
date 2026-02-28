@@ -13,21 +13,29 @@ describe('Rest Servlet > Sharing > Calendar > Private Appointment', function () 
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create1Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create1Res.Fault, 'Response should not be a Fault');
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const create2Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
@@ -35,6 +43,8 @@ describe('Rest Servlet > Sharing > Calendar > Private Appointment', function () 
 
 		// Create a private appointment on account1
 		const subject = 'privateAppt' + common.getUniqueString();
+
+		// CreateAppointmentRequest
 		const apptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -53,6 +63,8 @@ describe('Rest Servlet > Sharing > Calendar > Private Appointment', function () 
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(apptRes.Fault, 'Response should not be a Fault');
 
 		// Share calendar with view-only permission (no private)
@@ -77,6 +89,8 @@ describe('Rest Servlet > Sharing > Calendar > Private Appointment', function () 
 			folder: 'Calendar',
 			fmt: 'ics'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'BEGIN:VCALENDAR', 'Response should contain ICS data');
 		// Private appointments should show as busy but not reveal details
@@ -90,6 +104,8 @@ describe('Rest Servlet > Sharing > Calendar > Private Appointment', function () 
 			folder: 'Calendar',
 			fmt: 'ics'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'BEGIN:VCALENDAR', 'Response should contain ICS data');
 		assert.include(res.body, 'privateAppt', 'Owner should see private appointment');

@@ -29,6 +29,8 @@ describe('Folders > Bugs > Bug 10137', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -37,6 +39,8 @@ describe('Folders > Bugs > Bug 10137', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${subFolderName}' l='${folderId}'/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(createSubRequest, accountAuthToken);
 
 		// 3. Move parent folder to Trash (ID 3)
@@ -44,6 +48,8 @@ describe('Folders > Bugs > Bug 10137', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${folderId}' l='3'/>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
 		// 4. Empty Trash
@@ -51,6 +57,8 @@ describe('Folders > Bugs > Bug 10137', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='empty' id='3'/>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(emptyRequest, accountAuthToken);
 
 		// 5. Check if parent folder exists (Should not exist)
@@ -63,6 +71,8 @@ describe('Folders > Bugs > Bug 10137', function () {
 		const resp = await soap.makeSOAPEnvelopeAccount(getSpecificRequest, accountAuthToken, false);
 		// Should either have a Fault (folder not found) or GetFolderResponse without the original folder
 		if (resp.Fault) {
+
+			// Verify response
 			assert.exists(resp.Fault, 'Folder should have been deleted');
 		} else {
 			// Server returned a response - verify the folder is not in its original location

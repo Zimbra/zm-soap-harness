@@ -28,6 +28,8 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraForeignPrincipal">${foreignPrincipal}</a>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Should create account with foreign principal');
@@ -42,6 +44,8 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${foreignPrincipal}</account>
 			</GetAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetAccountResponse,
 			'GetAccountResponse should exist');
@@ -49,10 +53,13 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 			getRes.GetAccountResponse.account)
 			? getRes.GetAccountResponse.account[0]
 			: getRes.GetAccountResponse.account;
+
+		// Verify response
 		assert.equal(getAcct.id, acctId,
 			'Should find account by foreign principal');
 
 		// Login to create mailbox
+		// Auth request
 		await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountName}</account>
@@ -65,6 +72,8 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 				attrs="zimbraForeignPrincipal">
 				<query>(mail=*${accountName}*)</query>
 			</SearchDirectoryRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchDirectoryResponse,
 			'SearchDirectoryResponse should exist');
@@ -74,6 +83,8 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${foreignPrincipal}</account>
 			</GetAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(getRes2.Fault, 'Response should not be a Fault');
 		assert.exists(getRes2.GetAccountResponse,
 			'Should still find account by foreign principal');
@@ -91,6 +102,8 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 				<name>${accountName}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse,
 			'Should create account');
@@ -101,6 +114,7 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 		const acctId = acct.id;
 
 		// Login to create mailbox
+		// Auth request
 		await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountName}</account>
@@ -113,6 +127,8 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 				<id>${acctId}</id>
 				<a n="zimbraForeignPrincipal">${foreignPrincipal}</a>
 			</ModifyAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAccountResponse,
 			'ModifyAccountResponse should exist');
@@ -120,6 +136,8 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 			modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
+
+		// Verify response
 		assert.equal(modAcct.id, acctId,
 			'Modified account id should match');
 
@@ -129,6 +147,8 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 				attrs="zimbraForeignPrincipal">
 				<query>(mail=*${accountName}*)</query>
 			</SearchDirectoryRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchDirectoryResponse,
 			'SearchDirectoryResponse should exist');
@@ -138,6 +158,8 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${foreignPrincipal}</account>
 			</GetAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetAccountResponse,
 			'Should find account by foreign principal');

@@ -13,12 +13,16 @@ describe('Rest Servlet > Fmt > Contact CSV', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
@@ -32,6 +36,8 @@ describe('Rest Servlet > Fmt > Contact CSV', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(contactRes.Fault, 'Response should not be a Fault');
 		const cn = contactRes.CreateContactResponse?.cn;
 		contactId = (Array.isArray(cn) ? cn[0] : cn).id;
@@ -49,6 +55,8 @@ describe('Rest Servlet > Fmt > Contact CSV', function () {
 			id: contactId,
 			fmt: 'csv'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'FirstName01', 'CSV should contain first name');
 		assert.include(res.body, 'LastName01', 'CSV should contain last name');
@@ -62,6 +70,8 @@ describe('Rest Servlet > Fmt > Contact CSV', function () {
 			folder: 'contacts',
 			fmt: 'csv'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'FirstName01', 'CSV should contain first name');
 	});
@@ -73,6 +83,8 @@ describe('Rest Servlet > Fmt > Contact CSV', function () {
 			folder: 'contacts',
 			fmt: 'csv'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'FirstName01', 'CSV should contain first name');
 	});

@@ -18,6 +18,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${testDomain}</name>
 			</CreateDomainRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(createDomainRes.Fault, 'Response should not be a Fault');
 		assert.exists(createDomainRes.CreateDomainResponse,
 			'Test domain should be created');
@@ -25,6 +27,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 
 	const verifyCreateAccount = async (accountName, testName, isPassing) => {
 		const encodedAccountName = accountName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&apos;').replace(/"/g, '&quot;');
+
+		// Create account
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${encodedAccountName}</name>
@@ -32,6 +36,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			</CreateAccountRequest>`, adminAuth);
 
 		if (isPassing) {
+
+			// Verify response
 			assert.notExists(res.Fault, 'Response should not be a Fault');
 			assert.exists(res.CreateAccountResponse,
 				`Should succeed creating ${testName}`);
@@ -50,36 +56,51 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 	// Tests
 	it('Functional | Create an account to test case sensitive user names', async () => {
 		const name = `USERA@${testDomain}`;
+
+		// Create account
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.exists(res.CreateAccountResponse.account);
+
 		assert.equal(res.CreateAccountResponse.account[0].name, `usera@${testDomain}`);
 	});
 
 
 	it('Functional | Create an account to test case sensitive user names 1', async () => {
 		const name = `userb@${testDomain}`;
+
+		// Create account
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.exists(res.CreateAccountResponse.account);
+
 		assert.equal(res.CreateAccountResponse.account[0].name, name);
 	});
 
 
 	it('Functional | Create an account to test case sensitive user names 2', async () => {
 		const name = `UserC@${testDomain}`;
+
+		// Create account
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.exists(res.CreateAccountResponse.account);
+
 		assert.equal(res.CreateAccountResponse.account[0].name, `userc@${testDomain}`);
 	});
 
@@ -143,11 +164,14 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			</CreateAccountRequest>`, adminAuth);
 		const account = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+
+		// Verify response
 		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
 
 	it('Regression | Set newpassword with invalid id', async () => {
+		// Create account
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>usera${common.getUniqueString()}.@${testDomain}</name>
@@ -155,6 +179,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			</CreateAccountRequest>`, adminAuth);
 		const account = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+
+		// Verify response
 		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
@@ -162,6 +188,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 	it('Regression | SearchMultiMailboxRequest with invalid query1', async () => {
 		// invalidsphchar1 (comma)
 		const name = `,${common.getUniqueString()}@${testDomain}`;
+
+		// Create account
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${name}</name>
@@ -169,6 +197,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			</CreateAccountRequest>`, adminAuth);
 		const account = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+
+		// Verify response
 		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
@@ -188,6 +218,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			</CreateAccountRequest>`, adminAuth);
 		const account = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+
+		// Verify response
 		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
@@ -201,6 +233,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			</CreateAccountRequest>`, adminAuth);
 		const account = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+
+		// Verify response
 		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
@@ -213,6 +247,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 				<name>&lt;&gt;${common.getUniqueString()}@${testDomain}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.exists(res.Fault);
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
@@ -227,6 +263,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			</CreateAccountRequest>`, adminAuth);
 		const account = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+
+		// Verify response
 		assert.exists(account, 'CreateAccountResponse should contain account');
 	});
 
@@ -239,15 +277,21 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 
 	it('Sanity | Create an alias of distribution list with special characters', async () => {
 		const listName = `distlist${common.getUniqueString()}@${testDomain}`;
+
+		// CreateDistributionListRequest
 		const createListRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${listName}</name>
 				<a n="description">A test distribution list</a>
 			</CreateDistributionListRequest>`, adminAuth);
+
+		// Verify response
 		assert.exists(createListRes.CreateDistributionListResponse.dl);
 
 		const listId = createListRes.CreateDistributionListResponse.dl[0].id;
 		const aliasName = `''&lt;//\\\\@${testDomain}`;
+
+		// AddDistributionListAliasRequest
 		const aliasRes = await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${listId}</id>
@@ -255,6 +299,7 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			</AddDistributionListAliasRequest>`, adminAuth);
 
 		// Should encounter INVALID_REQUEST
+		// Verify response
 		assert.exists(aliasRes.Fault);
 		assert.include(aliasRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});

@@ -24,6 +24,8 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 
 		// Setup shared folder and mountpoint
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -32,6 +34,8 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 
 		folderId = createResp.CreateFolderResponse.folder[0].id;
@@ -42,6 +46,8 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 					<grant gt="usr" d="${testAccount2}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		const mountName = `mount_act_${common.getUniqueString()}`;
@@ -72,13 +78,17 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" id="${mountId}"/>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth2);
 
 		// Verify mountpoint is gone
 		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// GetFolderRequest
 		const getFolder2 = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth2);
 
-		const folderList = getFolder2.GetFolderResponse.folder[0].link || []; // link is array if present, undefined if not? 
+		getFolder2.GetFolderResponse.folder[0].link || []; // link is array if present, undefined if not? 
 		// Wait, `GetFolderResponse` returns `folder` which contains `folder` (array) AND `link` (array) usually?
 		// Let's assume standard response structure. If `link` is missing or filtered out.
 		// We can check specific ID access.
@@ -87,7 +97,9 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 			`<GetFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${mountId}"/>
 			</GetFolderRequest>`;
-		const staleResp = await soap.makeSOAPEnvelopeAccount(getFolderRequest3, auth2);
+
+		// GetFolderRequest
+		await soap.makeSOAPEnvelopeAccount(getFolderRequest3, auth2);
 		// Mountpoint should be gone or moved to Trash after delete
 
 		// Let's verify original folder still exists for Owner
@@ -96,6 +108,8 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 				<folder l="${folderId}"/>
 			</GetFolderRequest>`;
 		const getFolder1 = await soap.makeSOAPEnvelopeAccount(getFolderRequest4, auth1);
+
+		// Verify response
 		assert.exists(getFolder1.GetFolderResponse.folder[0],
 			'Original folder should still exist');
 	});

@@ -295,11 +295,16 @@ describe('EWS > Recover Mail From Dumpster', function () {
 		assert.equal(recoverAction.op, 'recover', 'Action op should be recover');
 		assert.equal(recoverAction.id, dumpsterMailId, 'Action id should match');
 
+		await soap.waitFor(5000);
+
 		// EWS: Verify mail is recovered in inbox
 		const syncRecoverRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -517,11 +522,16 @@ describe('EWS > Recover Mail From Dumpster', function () {
 		assert.equal(recoverAction.op, 'recover', 'Action op should be recover');
 		assert.equal(recoverAction.id, dumpsterMailId, 'Action id should match');
 
+		await soap.waitFor(5000);
+
 		// EWS: Verify mail is recovered in subfolder1
 		const syncSubRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${subFolder1Id}" />
@@ -735,11 +745,16 @@ describe('EWS > Recover Mail From Dumpster', function () {
 		assert.equal(recoverAction.op, 'recover', 'Action op should be recover');
 		assert.equal(recoverAction.id, dumpsterMailId, 'Action id should match');
 
+		await soap.waitFor(5000);
+
 		// EWS: SyncFolderItems on subfolder1 to verify recovered mail
 		const syncSubRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${subFolder1Id}" />

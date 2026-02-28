@@ -30,6 +30,8 @@ describe('Folders > Bugs > Bug 95572', function () {
 
 		// Try with account auth
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+
+		// Verify response
 		assert.exists(createResponse.CreateFolderResponse.folder[0].id,
 			'Folder should be created with fie=1');
 	});

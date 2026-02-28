@@ -37,9 +37,13 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		assert.exists(syncRes1.SyncResponse, 'SyncResponse should exist');
 		const token1 = syncRes1.SyncResponse.token;
+
+		// Verify response
 		assert.exists(token1, 'SyncResponse should have a token');
 
 		// Create daily recurring appointment
@@ -66,22 +70,32 @@ describe('Sync > Sync Appointment', function () {
 				</m>
 			</CreateAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 		const apptId = createRes.CreateAppointmentResponse.apptId;
+
+		// Verify response
 		assert.exists(apptId, 'Appointment should have apptId');
 		const invId = createRes.CreateAppointmentResponse.invId;
+
+		// Verify response
 		assert.exists(invId, 'Appointment should have invId');
 
 		// Sync with token - verify appointment appears
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token1}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.id === apptId);
+
+		// Verify response
 		assert.exists(syncAppt, 'Appointment should appear in SyncResponse');
 		assert.equal(syncAppt.id, apptId, 'Appointment id should match');
 	});
@@ -115,6 +129,8 @@ describe('Sync > Sync Appointment', function () {
 				</m>
 			</CreateAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const invId = createRes.CreateAppointmentResponse.invId;
 
@@ -122,6 +138,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token2 = syncRes1.SyncResponse.token;
 
@@ -149,6 +167,8 @@ describe('Sync > Sync Appointment', function () {
 				</m>
 			</ModifyAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAppointmentResponse, 'ModifyAppointmentResponse should exist');
 		const modApptId = modRes.ModifyAppointmentResponse.apptId;
@@ -157,10 +177,14 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token2}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.id === modApptId);
+
+		// Verify response
 		assert.exists(syncAppt, 'Modified appointment should appear in SyncResponse');
 	});
 
@@ -193,6 +217,8 @@ describe('Sync > Sync Appointment', function () {
 				</m>
 			</CreateAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const invId = createRes.CreateAppointmentResponse.invId;
 
@@ -200,6 +226,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token3 = syncRes1.SyncResponse.token;
 
@@ -227,6 +255,8 @@ describe('Sync > Sync Appointment', function () {
 				</m>
 			</ModifyAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAppointmentResponse, 'ModifyAppointmentResponse should exist');
 		const modApptId = modRes.ModifyAppointmentResponse.apptId;
@@ -235,10 +265,14 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token3}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.id === modApptId);
+
+		// Verify response
 		assert.exists(syncAppt, 'Modified monthly appointment should appear in SyncResponse');
 	});
 
@@ -271,6 +305,8 @@ describe('Sync > Sync Appointment', function () {
 				</m>
 			</CreateAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const invId = createRes.CreateAppointmentResponse.invId;
 
@@ -278,6 +314,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token4 = syncRes1.SyncResponse.token;
 
@@ -305,6 +343,8 @@ describe('Sync > Sync Appointment', function () {
 				</m>
 			</ModifyAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAppointmentResponse, 'ModifyAppointmentResponse should exist');
 		const modApptId = modRes.ModifyAppointmentResponse.apptId;
@@ -313,10 +353,14 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token4}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.id === modApptId);
+
+		// Verify response
 		assert.exists(syncAppt, 'Modified yearly appointment should appear in SyncResponse');
 	});
 
@@ -329,6 +373,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token5 = syncRes1.SyncResponse.token;
 
@@ -349,19 +395,27 @@ describe('Sync > Sync Appointment', function () {
 				</m>
 			</CreateAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 		const apptId5 = createRes.CreateAppointmentResponse.apptId;
+
+		// Verify response
 		assert.exists(apptId5, 'Appointment should have apptId');
 
 		// Sync with token - verify appointment appears
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token5}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.id === apptId5);
+
+		// Verify response
 		assert.exists(syncAppt, 'All-day appointment should appear in SyncResponse');
 	});
 
@@ -374,6 +428,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token6 = syncRes1.SyncResponse.token;
 
@@ -394,21 +450,31 @@ describe('Sync > Sync Appointment', function () {
 				</m>
 			</CreateAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 		const apptId6 = createRes.CreateAppointmentResponse.apptId;
+
+		// Verify response
 		assert.exists(apptId6, 'Appointment should have apptId');
 		const invId6 = createRes.CreateAppointmentResponse.invId;
+
+		// Verify response
 		assert.exists(invId6, 'Appointment should have invId');
 
 		// Sync with token
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token6}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.id === apptId6);
+
+		// Verify response
 		assert.exists(syncAppt, 'Valid all-day appointment should appear in SyncResponse');
 	});
 
@@ -423,6 +489,8 @@ describe('Sync > Sync Appointment', function () {
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		const folders = Array.isArray(getFolderRes.GetFolderResponse.folder)
 			? getFolderRes.GetFolderResponse.folder : [getFolderRes.GetFolderResponse.folder];
@@ -433,6 +501,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token1 = syncRes1.SyncResponse.token;
 
@@ -463,20 +533,28 @@ describe('Sync > Sync Appointment', function () {
 				</default>
 			</SetAppointmentRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
 		assert.exists(setRes.SetAppointmentResponse, 'SetAppointmentResponse should exist');
 		const apptId = setRes.SetAppointmentResponse.apptId;
+
+		// Verify response
 		assert.exists(apptId, 'Appointment should have apptId');
 
 		// Sync - verify appointment appears
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token1}"/>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const token2 = syncRes2.SyncResponse.token;
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.uid === uid);
+
+		// Verify response
 		assert.exists(syncAppt, 'Appointment with uid should appear in SyncResponse');
 		assert.equal(syncAppt.id, apptId, 'Appointment id should match');
 
@@ -486,6 +564,8 @@ describe('Sync > Sync Appointment', function () {
 				<action op="move" id="${apptId}" l="${trashId}"/>
 			</ItemActionRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(moveRes.Fault, 'Response should not be a Fault');
 		assert.exists(moveRes.ItemActionResponse, 'ItemActionResponse should exist');
 
@@ -493,12 +573,16 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token2}"/>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes3.Fault, 'Response should not be a Fault');
 		const token3 = syncRes3.SyncResponse.token;
 		const movedAppts = Array.isArray(syncRes3.SyncResponse.appt)
 			? syncRes3.SyncResponse.appt : (syncRes3.SyncResponse.appt ? [syncRes3.SyncResponse.appt] : []);
 		const movedAppt = movedAppts.find(a => a.id === apptId);
 		if (movedAppt) {
+
+			// Verify response
 			assert.equal(movedAppt.l, trashId, 'Appointment should be in trash folder');
 		}
 
@@ -508,17 +592,23 @@ describe('Sync > Sync Appointment', function () {
 				<action op="delete" id="${apptId}"/>
 			</ItemActionRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 
 		// Sync - verify deleted
 		const syncRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token3}"/>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes4.Fault, 'Response should not be a Fault');
 		if (syncRes4.SyncResponse.deleted) {
 			const deletedArr = Array.isArray(syncRes4.SyncResponse.deleted)
 				? syncRes4.SyncResponse.deleted : [syncRes4.SyncResponse.deleted];
 			const allDeletedIds = deletedArr.map(d => d.ids).join(',');
+
+			// Verify response
 			assert.include(allDeletedIds, apptId,
 				'Deleted ids should contain appointment id');
 		}
@@ -535,6 +625,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token1 = syncRes1.SyncResponse.token;
 
@@ -565,6 +657,8 @@ describe('Sync > Sync Appointment', function () {
 				</default>
 			</SetAppointmentRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
 		const apptId = setRes.SetAppointmentResponse.apptId;
 
@@ -572,11 +666,15 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token1}"/>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const token2 = syncRes2.SyncResponse.token;
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.uid === uid);
+
+		// Verify response
 		assert.exists(syncAppt, 'Appointment should appear in SyncResponse');
 		assert.equal(syncAppt.id, apptId, 'Appointment id should match');
 
@@ -607,16 +705,22 @@ describe('Sync > Sync Appointment', function () {
 				</default>
 			</SetAppointmentRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(setRes2.Fault, 'Response should not be a Fault');
 
 		// Sync - verify modification appears
 		const syncRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token2}"/>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes3.Fault, 'Response should not be a Fault');
 		const modAppts = Array.isArray(syncRes3.SyncResponse.appt)
 			? syncRes3.SyncResponse.appt : (syncRes3.SyncResponse.appt ? [syncRes3.SyncResponse.appt] : []);
 		const modAppt = modAppts.find(a => a.uid === uid);
+
+		// Verify response
 		assert.exists(modAppt, 'Modified appointment should appear in SyncResponse');
 		assert.equal(modAppt.id, apptId, 'Appointment id should match');
 		assert.exists(modAppt.ms, 'Modified sequence should exist');
@@ -633,6 +737,8 @@ describe('Sync > Sync Appointment', function () {
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		const folders = Array.isArray(getFolderRes.GetFolderResponse.folder)
 			? getFolderRes.GetFolderResponse.folder : [getFolderRes.GetFolderResponse.folder];
@@ -643,6 +749,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token1 = syncRes1.SyncResponse.token;
 
@@ -673,6 +781,8 @@ describe('Sync > Sync Appointment', function () {
 				</default>
 			</SetAppointmentRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
 		const apptId = setRes.SetAppointmentResponse.apptId;
 
@@ -680,6 +790,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token1}"/>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const token2 = syncRes2.SyncResponse.token;
 
@@ -710,6 +822,8 @@ describe('Sync > Sync Appointment', function () {
 				</default>
 			</SetAppointmentRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(setRes2.Fault, 'Response should not be a Fault');
 
 		// Search to find the invId (matching XML which uses SearchResponse inst invId)
@@ -719,10 +833,14 @@ describe('Sync > Sync Appointment', function () {
 				<query>in:Calendar</query>
 			</SearchRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const searchAppts = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt : (searchRes.SearchResponse.appt ? [searchRes.SearchResponse.appt] : []);
 		const foundAppt = searchAppts.find(a => a.uid === uid);
+
+		// Verify response
 		assert.exists(foundAppt, 'Appointment should be found in search');
 		const inst = Array.isArray(foundAppt.inst) ? foundAppt.inst[0] : foundAppt.inst;
 		const searchInvId = inst.invId || foundAppt.invId;
@@ -731,6 +849,8 @@ describe('Sync > Sync Appointment', function () {
 		const getApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetAppointmentRequest xmlns="urn:zimbraMail" id="${apptId}"/>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getApptRes.Fault, 'Response should not be a Fault');
 		const apptData = getApptRes.GetAppointmentResponse.appt[0];
 		const inv = Array.isArray(apptData.inv) ? apptData.inv[0] : apptData.inv;
@@ -741,6 +861,8 @@ describe('Sync > Sync Appointment', function () {
 			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
 				id="${searchInvId}" comp="${compNum}"/>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
 		assert.exists(cancelRes.CancelAppointmentResponse,
 			'CancelAppointmentResponse should exist');
@@ -751,17 +873,23 @@ describe('Sync > Sync Appointment', function () {
 				<action op="empty" id="${trashId}"/>
 			</FolderActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(emptyRes.Fault, 'Response should not be a Fault');
 
 		// Sync - verify deleted
 		const syncRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token2}"/>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes3.Fault, 'Response should not be a Fault');
 		if (syncRes3.SyncResponse.deleted) {
 			const deletedArr = Array.isArray(syncRes3.SyncResponse.deleted)
 				? syncRes3.SyncResponse.deleted : [syncRes3.SyncResponse.deleted];
 			const allDeletedIds = deletedArr.map(d => d.ids).join(',');
+
+			// Verify response
 			assert.include(allDeletedIds, apptId,
 				'Deleted ids should contain appointment id');
 		}
@@ -778,6 +906,8 @@ describe('Sync > Sync Appointment', function () {
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		const folders = Array.isArray(getFolderRes.GetFolderResponse.folder)
 			? getFolderRes.GetFolderResponse.folder : [getFolderRes.GetFolderResponse.folder];
@@ -788,6 +918,8 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes1 = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token1 = syncRes1.SyncResponse.token;
 
@@ -819,6 +951,8 @@ describe('Sync > Sync Appointment', function () {
 				</default>
 			</SetAppointmentRequest>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
 		const apptId = setRes.SetAppointmentResponse.apptId;
 
@@ -826,11 +960,15 @@ describe('Sync > Sync Appointment', function () {
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token1}"/>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const token2 = syncRes2.SyncResponse.token;
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.uid === uid);
+
+		// Verify response
 		assert.exists(syncAppt, 'Bi-monthly appointment should appear in SyncResponse');
 
 		// Modify the appointment
@@ -861,6 +999,8 @@ describe('Sync > Sync Appointment', function () {
 				</default>
 			</SetAppointmentRequest>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(setRes2.Fault, 'Response should not be a Fault');
 
 		// Search to find the invId (matching XML which uses SearchResponse inst invId)
@@ -870,10 +1010,14 @@ describe('Sync > Sync Appointment', function () {
 				<query>in:Calendar</query>
 			</SearchRequest>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const searchAppts2 = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt : (searchRes.SearchResponse.appt ? [searchRes.SearchResponse.appt] : []);
 		const foundAppt = searchAppts2.find(a => a.uid === uid);
+
+		// Verify response
 		assert.exists(foundAppt, 'Appointment should be found in search');
 		const inst = Array.isArray(foundAppt.inst) ? foundAppt.inst[0] : foundAppt.inst;
 		const searchInvId = inst.invId || foundAppt.invId;
@@ -882,6 +1026,8 @@ describe('Sync > Sync Appointment', function () {
 		const getApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetAppointmentRequest xmlns="urn:zimbraMail" id="${apptId}"/>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getApptRes.Fault, 'Response should not be a Fault');
 		const apptData = getApptRes.GetAppointmentResponse.appt[0];
 		const inv = Array.isArray(apptData.inv) ? apptData.inv[0] : apptData.inv;
@@ -892,6 +1038,8 @@ describe('Sync > Sync Appointment', function () {
 			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
 				id="${searchInvId}" comp="${compNum}"/>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
 
 		// Empty trash
@@ -900,17 +1048,23 @@ describe('Sync > Sync Appointment', function () {
 				<action op="empty" id="${trashId}"/>
 			</FolderActionRequest>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(emptyRes.Fault, 'Response should not be a Fault');
 
 		// Sync - verify deleted
 		const syncRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token2}"/>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes3.Fault, 'Response should not be a Fault');
 		if (syncRes3.SyncResponse.deleted) {
 			const deletedArr = Array.isArray(syncRes3.SyncResponse.deleted)
 				? syncRes3.SyncResponse.deleted : [syncRes3.SyncResponse.deleted];
 			const allDeletedIds = deletedArr.map(d => d.ids).join(',');
+
+			// Verify response
 			assert.include(allDeletedIds, apptId,
 				'Deleted ids should contain appointment id');
 		}

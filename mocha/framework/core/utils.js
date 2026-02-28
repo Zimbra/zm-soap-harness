@@ -68,20 +68,20 @@ export async function getEmailUserName(contactEmail) {
 }
 
 export async function retryUntil(fn, condition, maxRetries = 5, delayMs = 3000, throwOnTimeout = false) {
-    let result;
-    for (let i = 0; i < maxRetries; i++) {
-        try {
-            result = await fn();
-            if (condition(result)) return result;
-        } catch (err) {
-            console.error(`retryUntil: attempt ${i + 1} failed with error: ${err.message}`);
-        }
-        if (i < maxRetries - 1) await new Promise(res => setTimeout(res, delayMs));
-    }
-    if (throwOnTimeout) {
-        throw new Error(`Condition not met after ${maxRetries} retries`);
-    }
-    return result;
+	let result;
+	for (let i = 0; i < maxRetries; i++) {
+		try {
+			result = await fn();
+			if (condition(result)) return result;
+		} catch (err) {
+			console.error(`retryUntil: attempt ${i + 1} failed with error: ${err.message}`);
+		}
+		if (i < maxRetries - 1) await new Promise(res => setTimeout(res, delayMs));
+	}
+	if (throwOnTimeout) {
+		throw new Error(`Condition not met after ${maxRetries} retries`);
+	}
+	return result;
 }
 
 // Default export for backward compatibility

@@ -37,6 +37,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 	it('Sanity | Share a folder to all. Verify that all users have access.', async () => {
 		// Setup Folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -45,6 +47,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -55,6 +59,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 					<grant gt="all" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Verify authenticated user (Account2) can access
@@ -62,7 +68,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_all" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
+
+		// Verify response
 		assert.exists(mountResp.CreateMountpointResponse.link,
 			'All grant should allow authenticated user to mount');
 	});
@@ -71,6 +81,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 	it('Sanity | Unshare a folder to all. Verify that all users have access.', async () => {
 		// Create folder
 		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -79,6 +91,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -96,6 +110,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 				</content>
 			</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const addMsg = await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth1);
 		const msgId = addMsg.AddMsgResponse.m[0].id;
 
@@ -106,6 +122,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 					<grant gt="all" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		const grantResp = await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 		const grantZid = grantResp.FolderActionResponse.action.zid;
 
@@ -114,7 +132,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
+
+		// FolderActionRequest
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
+
+		// Verify response
 		assert.notExists(accessCheck.Fault, 'User should have access before revoke');
 
 		// Revoke the grant using zid from grant response
@@ -122,6 +144,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="!grant" zid="${grantZid || '00000000-0000-0000-0000-000000000000'}"/>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest3, auth1);
 
 		// Verify access denied
@@ -130,6 +154,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, auth2);
+
+		// Verify response
 		assert.exists(revokedCheck.Fault,
 			'User should be denied after revoking all grant');
 	});

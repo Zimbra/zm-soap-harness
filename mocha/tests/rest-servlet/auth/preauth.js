@@ -21,17 +21,23 @@ describe('Rest Servlet > Auth > Preauth', function () {
 				<a n="zimbraPreAuthKey">${preauthKey}</a>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(domainRes.Fault, 'Response should not be a Fault');
 		assert.exists(domainRes.CreateDomainResponse, 'Should create domain');
 
 		// Create account in that domain
 		account1Email = 'preauth' + common.getUniqueString() + '@' + domainName;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -50,12 +56,15 @@ describe('Rest Servlet > Auth > Preauth', function () {
 		const hmac = crypto.createHmac('sha1', preauthKey).update(data).digest('hex');
 
 		// Verify preauth via SOAP AuthRequest
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Email}</account>
 				<preauth timestamp="${timestamp}" expires="${expires}">${hmac}</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'AuthRequest with preauth should not fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -71,6 +80,7 @@ describe('Rest Servlet > Auth > Preauth', function () {
 			redirect: 'manual'
 		});
 		// Preauth redirects (302) or returns 200 on success
+		// Verify response
 		assert.oneOf(response.status, [200, 302],
 			'Preauth REST request should return 200 or 302');
 	});

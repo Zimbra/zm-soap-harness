@@ -9,7 +9,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 	let adminAuthToken;
 	let account1Email, account1AuthToken;
 	let account2Email, account2Id, account2AuthToken;
-	let account3Email, account3Id, account3AuthToken;
+	let account3Email, account3AuthToken;
 	let account4Email, account4AuthToken;
 	let account5Email, account5Id, account5AuthToken;
 	let account6Email, account6AuthToken;
@@ -32,8 +32,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		account2AuthToken = await soap.getAccountAuthToken(account2Email, config.accountPassword);
 
 		account3Email = `share3.${common.getUniqueString()}@${testDomain}`;
-		const res3 = await soap.createAccountByNameAndEmailAddress(adminAuthToken, account3Email, account3Email);
-		account3Id = res3.accountId;
+		await soap.createAccountByNameAndEmailAddress(adminAuthToken, account3Email, account3Email);
 		account3AuthToken = await soap.getAccountAuthToken(account3Email, config.accountPassword);
 
 		account4Email = `share4.${common.getUniqueString()}@${testDomain}`;
@@ -55,14 +54,19 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 
 		// Create DL1 with accounts 1, 2, 3
 		dl1Name = `dl1.${common.getUniqueString()}@${testDomain}`;
+
+		// CreateDistributionListRequest
 		let res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dl1Name}</name>
 			</CreateDistributionListRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDL1 should not fault');
 		dl1Id = res.CreateDistributionListResponse.dl[0].id;
 
+		// AddDistributionListMemberRequest
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
 				<id>${dl1Id}</id>
@@ -71,18 +75,25 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<dlm>${account1Email}</dlm>
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AddDL1Members should not fault');
 
 		// Create DL2 with accounts 6, 7
 		dl2Name = `dl2.${common.getUniqueString()}@${testDomain}`;
+
+		// CreateDistributionListRequest
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dl2Name}</name>
 			</CreateDistributionListRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateDL2 should not fault');
 		dl2Id = res.CreateDistributionListResponse.dl[0].id;
 
+		// AddDistributionListMemberRequest
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
 				<id>${dl2Id}</id>
@@ -90,6 +101,8 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<dlm>${account7Email}</dlm>
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AddDL2Members should not fault');
 	});
 
@@ -104,10 +117,13 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const acct2Folders = res.GetFolderResponse.folder[0].folder;
 		const acct2Calendar = acct2Folders.find(f => f.name === 'Calendar');
 
+		// FolderActionRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${acct2Calendar.id}">
@@ -115,14 +131,19 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				</action>
 			</FolderActionRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant Calendar should not fault');
 
+		// SendShareNotificationRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SendShareNotificationRequest xmlns="urn:zimbraMail">
 				<share l="${acct2Calendar.id}" gt="usr" d="${account1Email}"/>
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
 		assert.exists(res.SendShareNotificationResponse,
 			'SendShareNotificationResponse should exist');
@@ -135,6 +156,8 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 
 		// Account1: mount the shared calendar
@@ -145,12 +168,16 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		const acct1Calendar = acct1Folders.find(f => f.name === 'Calendar');
 
 		const mountName = `sharedfolder.${common.getUniqueString()}`;
+
+		// CreateMountpointRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${acct1Calendar.id}" name="${mountName}"
 					zid="${account2Id}" rid="${acct2Calendar.id}" view="appointment"/>
 			</CreateMountpointRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateMountpointRequest should not fault');
 		assert.exists(res.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
@@ -165,14 +192,19 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		const acct2Folders = res.GetFolderResponse.folder[0].folder;
 		const acct2Briefcase = acct2Folders.find(f => f.name === 'Briefcase');
 
+		// SendShareNotificationRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SendShareNotificationRequest xmlns="urn:zimbraMail">
 				<share l="${acct2Briefcase.id}" gt="usr" d="${account1Email}"/>
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account2AuthToken, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Should fault for unshared folder');
 		const faultMsg = JSON.stringify(res.Fault);
+
+		// Verify response
 		assert.isTrue(faultMsg.includes('INVALID_REQUEST') || faultMsg.includes('no matching grant'), 'Error should indicate INVALID_REQUEST or no matching grant');
 	});
 
@@ -185,6 +217,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		const acct3Folders = res.GetFolderResponse.folder[0].folder;
 		const acct3Calendar = acct3Folders.find(f => f.name === 'Calendar');
 
+		// FolderActionRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${acct3Calendar.id}">
@@ -192,14 +225,19 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				</action>
 			</FolderActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant to DL should not fault');
 
+		// SendShareNotificationRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SendShareNotificationRequest xmlns="urn:zimbraMail">
 				<share l="${acct3Calendar.id}" gt="grp" d="${dl1Name}"/>
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
 		assert.exists(res.SendShareNotificationResponse,
 			'SendShareNotificationResponse should exist');
@@ -212,6 +250,8 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 
 		// Account2 (DL member): verify notification and mount
@@ -220,6 +260,8 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for account2 should not fault');
 	});
 
@@ -232,6 +274,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		const acct3Folders = res.GetFolderResponse.folder[0].folder;
 		const acct3Briefcase = acct3Folders.find(f => f.name === 'Briefcase');
 
+		// FolderActionRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${acct3Briefcase.id}">
@@ -239,14 +282,19 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				</action>
 			</FolderActionRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant Briefcase to DL should not fault');
 
+		// SendShareNotificationRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SendShareNotificationRequest xmlns="urn:zimbraMail">
 				<share l="${acct3Briefcase.id}" gt="grp" d="${dl1Name}"/>
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
 
 		await new Promise(resolve => setTimeout(resolve, 3000));
@@ -258,6 +306,8 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<dlm>${account4Email}</dlm>
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AddDLMember should not fault');
 
 		// Re-send notification
@@ -267,6 +317,8 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Re-send notification should not fault');
 
 		await new Promise(resolve => setTimeout(resolve, 3000));
@@ -277,6 +329,8 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for account4 should not fault');
 	});
 
@@ -289,6 +343,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		const acct5Folders = res.GetFolderResponse.folder[0].folder;
 		const acct5Calendar = acct5Folders.find(f => f.name === 'Calendar');
 
+		// FolderActionRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${acct5Calendar.id}">
@@ -296,14 +351,19 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				</action>
 			</FolderActionRequest>`, account5AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Grant to DL2 should not fault');
 
+		// SendShareNotificationRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SendShareNotificationRequest xmlns="urn:zimbraMail">
 				<share l="${acct5Calendar.id}" gt="grp" d="${dl2Name}"/>
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account5AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
 
 		await new Promise(resolve => setTimeout(resolve, 3000));
@@ -316,12 +376,16 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		const acct6Calendar = acct6Folders.find(f => f.name === 'Calendar');
 
 		const mountName = `sharedfolder.${common.getUniqueString()}`;
+
+		// CreateMountpointRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${acct6Calendar.id}" name="${mountName}"
 					zid="${account5Id}" rid="${acct5Calendar.id}" view="appointment"/>
 			</CreateMountpointRequest>`, account6AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Mount should not fault');
 
 		// Revoke the DL2 share
@@ -330,6 +394,8 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<action op="!grant" id="${acct5Calendar.id}" zid="${dl2Id}"/>
 			</FolderActionRequest>`, account5AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Revoke should not fault');
 
 		// Try to send notification after revoke - should get INVALID_REQUEST
@@ -339,6 +405,8 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account5AuthToken, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Should fault after revoke');
 
 		// Account7 (DL2 member): try to mount - should get PERM_DENIED
@@ -349,12 +417,16 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		const acct7Calendar = acct7Folders.find(f => f.name === 'Calendar');
 
 		const mountName2 = `sharedfolder.${common.getUniqueString()}`;
+
+		// CreateMountpointRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${acct7Calendar.id}" name="${mountName2}"
 					zid="${account5Id}" rid="${acct5Calendar.id}" view="appointment"/>
 			</CreateMountpointRequest>`, account7AuthToken, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Mount after revoke should fault with PERM_DENIED');
 	});
 });

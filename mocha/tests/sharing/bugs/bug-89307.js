@@ -44,9 +44,13 @@ describe('Sharing > Bugs > Bug 89307', function () {
 		let res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const folders = res.GetFolderResponse.folder[0].folder;
 		const inbox = folders.find(f => f.name === 'Inbox');
+
+		// Verify response
 		assert.exists(inbox, 'Inbox folder should exist');
 		const inboxId = inbox.id;
 
@@ -56,6 +60,8 @@ describe('Sharing > Bugs > Bug 89307', function () {
 				<folder name="Folder1" l="${inboxId}"/>
 			</CreateFolderRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest for Folder1 should not fault');
 		const folder1Id = res.CreateFolderResponse.folder[0].id;
 
@@ -65,6 +71,8 @@ describe('Sharing > Bugs > Bug 89307', function () {
 				<folder name="SubFolder1" l="${folder1Id}"/>
 			</CreateFolderRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest for SubFolder1 should not fault');
 
 		// Create Folder2 under Inbox
@@ -73,6 +81,8 @@ describe('Sharing > Bugs > Bug 89307', function () {
 				<folder name="Folder2" l="${inboxId}"/>
 			</CreateFolderRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest for Folder2 should not fault');
 		const folder2Id = res.CreateFolderResponse.folder[0].id;
 
@@ -82,6 +92,8 @@ describe('Sharing > Bugs > Bug 89307', function () {
 				<folder name="SubFolder2" l="${folder2Id}"/>
 			</CreateFolderRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateFolderRequest for SubFolder2 should not fault');
 
 		// Share Inbox with account2
@@ -92,6 +104,8 @@ describe('Sharing > Bugs > Bug 89307', function () {
 				</action>
 			</FolderActionRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'FolderActionRequest grant should not fault');
 		assert.exists(res.FolderActionResponse, 'FolderActionResponse should exist');
 
@@ -102,6 +116,8 @@ describe('Sharing > Bugs > Bug 89307', function () {
 				<notes>test notes</notes>
 			</SendShareNotificationRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
 
 		// Wait for notification delivery
@@ -111,18 +127,24 @@ describe('Sharing > Bugs > Bug 89307', function () {
 		res = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
 		const account2Folders = res.GetFolderResponse.folder[0].folder;
 		const account2Inbox = account2Folders.find(f => f.name === 'Inbox');
 		const account2InboxId = account2Inbox.id;
 
 		const mountName = `sharedfolder.${common.getUniqueString()}`;
+
+		// CreateMountpointRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${account2InboxId}" name="${mountName}"
 					zid="${account1Id}" rid="${inboxId}" view="message"/>
 			</CreateMountpointRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateMountpointRequest should not fault');
 		assert.exists(res.CreateMountpointResponse,
 			'CreateMountpointResponse should exist');
@@ -134,12 +156,16 @@ describe('Sharing > Bugs > Bug 89307', function () {
 				<folder l="${mountId}"/>
 			</GetFolderRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest for mount should not fault');
 
 		// Navigate to find SubFolder1 and Folder2 IDs
 		const mountLink = res.GetFolderResponse.link
 			? (Array.isArray(res.GetFolderResponse.link) ? res.GetFolderResponse.link[0] : res.GetFolderResponse.link)
 			: res.GetFolderResponse.folder[0];
+
+		// Verify response
 		assert.exists(mountLink, 'Mount link should exist in response');
 
 		const findFolder = (node, name) => {
@@ -164,6 +190,8 @@ describe('Sharing > Bugs > Bug 89307', function () {
 					<action op="move" id="${remoteSubFold1.id}" l="${remoteFold2.id}"/>
 				</FolderActionRequest>`, account2AuthToken
 			);
+
+			// Verify response
 			assert.notExists(res.Fault, 'FolderActionRequest move should not fault');
 			assert.exists(res.FolderActionResponse,
 				'FolderActionResponse for move should exist');
@@ -174,6 +202,8 @@ describe('Sharing > Bugs > Bug 89307', function () {
 					<folder l="${mountId}"/>
 				</GetFolderRequest>`, account2AuthToken
 			);
+
+			// Verify response
 			assert.notExists(res.Fault, 'GetFolderRequest after move should not fault');
 		}
 	});

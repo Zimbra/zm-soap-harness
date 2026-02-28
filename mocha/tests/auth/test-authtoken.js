@@ -17,12 +17,16 @@ describe('Auth > Test Authtoken', function () {
 
 		// Create test account 1
 		testAccount1Name = 'test.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${testAccount1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
@@ -33,12 +37,16 @@ describe('Auth > Test Authtoken', function () {
 
 		// Create test account 2
 		testAccount2Name = 'test.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${testAccount2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
@@ -58,28 +66,38 @@ describe('Auth > Test Authtoken', function () {
 
 	// Tests
 	it('Sanity | GetFolderRequest with authtoken and name of first account (using context specified by name)', async () => {
+		// GetFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken1
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(response.GetFolderResponse.folder)
 			? response.GetFolderResponse.folder[0]
 			: response.GetFolderResponse.folder;
+
+		// Verify response
 		assert.exists(folder, 'folder should exist');
 		assert.equal(folder.id, '1', 'Root folder id should be 1');
 	});
 
 
 	it('Sanity | GetFolderRequest with authtoken and name of first account (using context specified by ID)', async () => {
+		// GetFolderRequest
 		const response = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', authToken1
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(response.GetFolderResponse.folder)
 			? response.GetFolderResponse.folder[0]
 			: response.GetFolderResponse.folder;
+
+		// Verify response
 		assert.exists(folder, 'folder should exist');
 		assert.equal(folder.id, '1', 'Root folder id should be 1');
 	});
@@ -92,6 +110,8 @@ describe('Auth > Test Authtoken', function () {
 				<account by="name">${testAccount2Name}</account>
 			</DelegateAuthRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.DelegateAuthResponse, 'DelegateAuthResponse should exist');
 
@@ -100,14 +120,19 @@ describe('Auth > Test Authtoken', function () {
 			: response.DelegateAuthResponse.authToken._content
 			|| response.DelegateAuthResponse.authToken;
 
+		// GetFolderRequest
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
 			: folderRes.GetFolderResponse.folder;
+
+		// Verify response
 		assert.exists(folder, 'folder should exist');
 	});
 
@@ -119,6 +144,8 @@ describe('Auth > Test Authtoken', function () {
 				<account by="id">${testAccount2Id}</account>
 			</DelegateAuthRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.DelegateAuthResponse, 'DelegateAuthResponse should exist');
 
@@ -127,14 +154,19 @@ describe('Auth > Test Authtoken', function () {
 			: response.DelegateAuthResponse.authToken._content
 			|| response.DelegateAuthResponse.authToken;
 
+		// GetFolderRequest
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
 			: folderRes.GetFolderResponse.folder;
+
+		// Verify response
 		assert.exists(folder, 'folder should exist');
 	});
 
@@ -147,6 +179,8 @@ describe('Auth > Test Authtoken', function () {
 				<account by="name">${testAccount2Name}</account>
 			</DelegateAuthRequest>`, authToken1
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
@@ -154,11 +188,14 @@ describe('Auth > Test Authtoken', function () {
 
 
 	it('Regression | Login to testaccount2 with testaccount1s auth token (using context specified by name)', async () => {
+		// DelegateAuthRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${testAccount2Name}</account>
 			</DelegateAuthRequest>`, authToken1
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
@@ -166,11 +203,14 @@ describe('Auth > Test Authtoken', function () {
 
 
 	it('Regression | Login to testaccount2 with testaccount1s auth token (using context specified by id)', async () => {
+		// DelegateAuthRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<DelegateAuthRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${testAccount2Id}</account>
 			</DelegateAuthRequest>`, authToken1
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
@@ -179,12 +219,15 @@ describe('Auth > Test Authtoken', function () {
 
 	it('Regression | Login to testaccount2 with its different session-id and without authtoken (using context specified by name, id)', async () => {
 		// NOTE: Commented out in XML due to session-id handling issues
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${testAccount2Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
@@ -195,12 +238,15 @@ describe('Auth > Test Authtoken', function () {
 
 	it('Regression | Login to testaccount2 with its own session-id and without authtoken (using context specified by id, name)', async () => {
 		// NOTE: Commented out in XML due to session-id handling issues
+		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="id">${testAccount2Id}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
@@ -216,6 +262,8 @@ describe('Auth > Test Authtoken', function () {
 				<account by="name">${testAccount1Name}</account>
 			</DelegateAuthRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.DelegateAuthResponse,
 			'DelegateAuthResponse should exist');
@@ -232,6 +280,8 @@ describe('Auth > Test Authtoken', function () {
 				<account by="name">${testAccount2Name}</account>
 			</DelegateAuthRequest>`, authToken1
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should return Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
@@ -245,6 +295,8 @@ describe('Auth > Test Authtoken', function () {
 				<account by="id">${testAccount1Id}</account>
 			</DelegateAuthRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
 		assert.exists(response.DelegateAuthResponse,
 			'DelegateAuthResponse should exist');
@@ -254,14 +306,19 @@ describe('Auth > Test Authtoken', function () {
 			: response.DelegateAuthResponse.authToken._content
 			|| response.DelegateAuthResponse.authToken;
 
+		// GetFolderRequest
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', delegateToken
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
 			: folderRes.GetFolderResponse.folder;
+
+		// Verify response
 		assert.exists(folder, 'folder should exist');
 	});
 });

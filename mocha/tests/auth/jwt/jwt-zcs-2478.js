@@ -15,6 +15,8 @@ describe('Auth > Jwt > Jwt Zcs 2478', function () {
 
 		// Create account1 with short auth token lifetime
 		account1Name = 'user1_' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -22,6 +24,8 @@ describe('Auth > Jwt > Jwt Zcs 2478', function () {
 				<a n="zimbraAuthTokenLifetime">1m</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
@@ -33,6 +37,8 @@ describe('Auth > Jwt > Jwt Zcs 2478', function () {
 
 		// Create account2
 		account2Name = 'user2_' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -49,12 +55,15 @@ describe('Auth > Jwt > Jwt Zcs 2478', function () {
 	// Tests
 	it('Sanity | Generate JWT auth token, let it expire and send email using that token. Error should be thrown', async () => {
 		// Generate JWT auth token
+		// Send the message
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false" tokenType="JWT">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, account1Server
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
@@ -70,6 +79,7 @@ describe('Auth > Jwt > Jwt Zcs 2478', function () {
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
 
+		// SendMsgRequest
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -82,6 +92,8 @@ describe('Auth > Jwt > Jwt Zcs 2478', function () {
 			</SendMsgRequest>`, jwtToken, false, account1Server
 		);
 		if (sendRes.Fault) {
+
+			// Verify response
 			assert.include(sendRes.Fault.Detail.Error.Code, 'service.AUTH_REQUIRED',
 				'Should return AUTH_REQUIRED');
 		} else {

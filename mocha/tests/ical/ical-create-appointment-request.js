@@ -46,6 +46,7 @@ describe('iCal > Create Appointment Request', function () {
 		const startStr = fmt(start);
 		const endStr = fmt(end);
 
+		// CreateAppointmentRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -64,6 +65,8 @@ describe('iCal > Create Appointment Request', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAppointmentRequest should not fault');
 		assert.exists(res.CreateAppointmentResponse,
 			'CreateAppointmentResponse should exist');
@@ -71,10 +74,14 @@ describe('iCal > Create Appointment Request', function () {
 		// Get iCal
 		const searchStart = now.getTime() - 2 * 86400000;
 		const searchEnd = now.getTime() + 2 * 86400000;
+
+		// GetICalRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<GetICalRequest xmlns="urn:zimbraMail"
 				s="${searchStart}" e="${searchEnd}"/>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetICalRequest should not fault');
 		assert.exists(res.GetICalResponse, 'GetICalResponse should have content');
 		assert.exists(res.GetICalResponse, 'GetICalResponse should exist');
@@ -106,6 +113,7 @@ describe('iCal > Create Appointment Request', function () {
 		const startStr = fmt(start);
 		const endStr = fmt(end);
 
+		// CreateAppointmentRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -124,8 +132,12 @@ describe('iCal > Create Appointment Request', function () {
 				</m>
 			</CreateAppointmentRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'CreateAppointmentRequest should not fault');
 		const invId = res.CreateAppointmentResponse?.invId;
+
+		// Verify response
 		assert.exists(invId, 'invId should exist');
 
 		// Get iCal by invId
@@ -133,6 +145,8 @@ describe('iCal > Create Appointment Request', function () {
 			`<GetICalRequest xmlns="urn:zimbraMail"
 				id="${invId}"/>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetICalRequest should not fault');
 		assert.exists(res.GetICalResponse, 'GetICalResponse should have content');
 		assert.exists(res.GetICalResponse, 'GetICalResponse should exist');

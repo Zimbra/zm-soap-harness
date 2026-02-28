@@ -79,6 +79,8 @@ describe('EWS > Send Mail CC BCC From ZWC', function () {
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 
+		await soap.waitFor(5000);
+
 		// EWS: Verify on account2 (To recipient)
 		const getFolderRes2 = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">

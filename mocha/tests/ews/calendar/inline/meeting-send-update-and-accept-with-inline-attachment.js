@@ -163,7 +163,8 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		const attachMsg2 = attachBody2.CreateAttachmentResponse
 			.ResponseMessages.CreateAttachmentResponseMessage;
 		const attachMsgArr = Array.isArray(attachMsg2) ? attachMsg2 : [attachMsg2];
-		const attachCk2 = attachMsgArr[0].Attachments.FileAttachment.AttachmentId.$.RootItemChangeKey;
+		const fileAttachments = Array.isArray(attachMsgArr[0].Attachments.FileAttachment) ? attachMsgArr[0].Attachments.FileAttachment : [attachMsgArr[0].Attachments.FileAttachment];
+		const attachCk2 = fileAttachments[0].AttachmentId.$.RootItemChangeKey;
 
 		// Step 5: Second UpdateItem with updated subject and send
 		await ews.makeEWSRequest(
@@ -222,6 +223,7 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		assert.exists(sentMsg, 'Sent message with updated subject should exist');
 
 		// Verify on attendee ZWC
+		await common.delay(3000);
 		const acct2Token = await soap.getAccountAuthToken(account2Email, accountPassword);
 		const inboxSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -266,6 +268,7 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		assert.exists(acceptRes.SendInviteReplyResponse, 'SendInviteReplyResponse should exist');
 
 		// Verify organizer received the accept
+		await common.delay(8000);
 		const acct1Token2 = await soap.getAccountAuthToken(account1Email, accountPassword);
 		const responseSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">

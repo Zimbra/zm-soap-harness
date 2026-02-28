@@ -18,6 +18,8 @@ describe('Admin > Accounts > Cos > Account Create', function () {
 	// Tests
 	it('Smoke | Verify COS settings are applied to a new account', async () => {
 		const cosName = `cos${common.getUniqueString()}`;
+
+		// CreateCosRequest
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name xmlns="">${cosName}</name>
@@ -27,6 +29,8 @@ describe('Admin > Accounts > Cos > Account Create', function () {
 		const cosId = cosRes.CreateCosResponse.cos[0].id;
 
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const acctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -36,21 +40,28 @@ describe('Admin > Accounts > Cos > Account Create', function () {
 		);
 		const acctId = acctRes.CreateAccountResponse.account[0].id;
 
+		// GetAccountRequest
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${acctId}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetAccountResponse,
 			'GetAccountResponse should exist');
 		const account = Array.isArray(getRes.GetAccountResponse.account)
 			? getRes.GetAccountResponse.account[0]
 			: getRes.GetAccountResponse.account;
+
+		// Verify response
 		assert.exists(account.id, 'Account should have an id');
 
 		const attrs = getRes.GetAccountResponse.account[0].a || [];
 		const batchAttr = attrs.find(a => a.n === 'zimbraBatchedIndexingSize');
+
+		// Verify response
 		assert.exists(batchAttr, 'zimbraBatchedIndexingSize should exist');
 		assert.equal(batchAttr._content, '0');
 	});

@@ -18,29 +18,37 @@ describe('WebDav', function () {
 		account1Name = account1User + '@' + config.testDomain;
 		account1NameEncoded = account1User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct.id, 'Account should have an id');
 
 		const attrs = Array.isArray(acct.a) ? acct.a : [acct.a];
 		const mailHost = attrs.find(a => a.n === 'zimbraMailHost');
 		account1Server = mailHost ? (mailHost._content || mailHost) : config.serverHost;
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -58,6 +66,8 @@ describe('WebDav', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createContactRes.Fault, 'Response should not be a Fault');
 		assert.exists(createContactRes.CreateContactResponse, 'Should create contact');
 	});
@@ -83,6 +93,8 @@ describe('WebDav', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'PROPFIND should return 207');
 		assert.include(res.text, '.vcf', 'Response should contain a VCF item');
 	});
@@ -103,6 +115,8 @@ describe('WebDav', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 404, 'PROPFIND for non-existent should return 404');
 	});
 
@@ -122,6 +136,8 @@ describe('WebDav', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'Depth 1 PROPFIND should return 207');
 		assert.include(res.text, '.vcf', 'Depth 1 should show VCF items');
 	});
@@ -142,6 +158,8 @@ describe('WebDav', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'Depth 0 PROPFIND should return 207');
 		assert.notInclude(res.text, '.vcf', 'Depth 0 should not show VCF items');
 	});
@@ -162,6 +180,8 @@ describe('WebDav', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 403, 'Depth infinity PROPFIND should return 403');
 	});
 
@@ -183,6 +203,8 @@ describe('WebDav', function () {
 			server: account1Server,
 		});
 		const vcfMatch = propfindRes.text.match(/<D:href>([^<]*\.vcf)<\/D:href>/);
+
+		// Verify response
 		assert.exists(vcfMatch, 'Should find a VCF href');
 		const vcfUri = vcfMatch[1];
 
@@ -198,6 +220,8 @@ describe('WebDav', function () {
 				'Destination': `https://${account1Server}:${port}/dav/${account1NameEncoded}/Emailed%20Contacts/`,
 			},
 		});
+
+		// Verify response
 		assert.equal(copyRes.status, 204, 'COPY should return 204');
 
 		// Verify contact now in Emailed Contacts
@@ -215,6 +239,8 @@ describe('WebDav', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(verifyRes.status, 207, 'PROPFIND on Emailed Contacts should return 207');
 		assert.include(verifyRes.text, '.vcf',
 			'Emailed Contacts should contain the copied VCF');
@@ -238,6 +264,8 @@ describe('WebDav', function () {
 			</D:lockinfo>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(lockRes.status, 200, 'LOCK should return 200');
 		assert.include(lockRes.text, 'write', 'Should have write locktype');
 		assert.include(lockRes.text, 'exclusive', 'Should have exclusive lockscope');
@@ -246,6 +274,8 @@ describe('WebDav', function () {
 
 		// Extract lock token from locktoken/href element
 		const lockTokenMatch = lockRes.text.match(/<D:locktoken>\s*<D:href>([^<]+)<\/D:href>/);
+
+		// Verify response
 		assert.exists(lockTokenMatch, 'Should have a lock token');
 		const lockToken = lockTokenMatch[1];
 
@@ -264,6 +294,8 @@ describe('WebDav', function () {
 			</D:lockinfo>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(lockFailRes.status, 423, 'Second LOCK should return 423 Locked');
 
 		// UNLOCK
@@ -275,6 +307,8 @@ describe('WebDav', function () {
 			server: account1Server,
 			headers: { 'Lock-Token': `<${lockToken}>` },
 		});
+
+		// Verify response
 		assert.equal(unlockRes.status, 204, 'UNLOCK should return 204');
 
 		// Re-LOCK should now succeed
@@ -292,6 +326,8 @@ describe('WebDav', function () {
 			</D:lockinfo>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reLockRes.status, 200, 'Re-LOCK should return 200');
 		assert.include(reLockRes.text, 'write', 'Should have write locktype');
 		assert.include(reLockRes.text, 'exclusive', 'Should have exclusive lockscope');
@@ -328,6 +364,8 @@ describe('WebDav', function () {
 			server: account1Server,
 		});
 		const vcfMatch = propfindRes.text.match(/<D:href>([^<]*\.vcf)<\/D:href>/);
+
+		// Verify response
 		assert.exists(vcfMatch, 'Should find a VCF href');
 		const vcfUri = vcfMatch[1];
 
@@ -343,6 +381,8 @@ describe('WebDav', function () {
 				'Destination': `https://${account1Server}:${port}/dav/${account1NameEncoded}/Emailed%20Contacts/`,
 			},
 		});
+
+		// Verify response
 		assert.equal(moveRes.status, 204, 'MOVE should return 204');
 
 		// Verify contact in Emailed Contacts
@@ -360,6 +400,8 @@ describe('WebDav', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(verifyRes.status, 207, 'PROPFIND on Emailed Contacts should return 207');
 		assert.include(verifyRes.text, '.vcf',
 			'Emailed Contacts should contain the moved VCF');
@@ -378,9 +420,13 @@ describe('WebDav', function () {
 				'User-Agent': 'Microsoft Data Access Internet Publishing Provider Protocol Discovery',
 			},
 		});
+
+		// Verify response
 		assert.oneOf(optionsRes.status, [200, 204], 'OPTIONS should return 200 or 204');
 		const msAuthorVia = optionsRes.headers.get('MS-Author-Via')
 			|| optionsRes.headers.get('ms-author-via');
+
+		// Verify response
 		assert.exists(msAuthorVia, 'MS-Author-Via header should be present');
 		assert.equal(msAuthorVia, 'DAV', 'MS-Author-Via should be DAV');
 
@@ -392,6 +438,8 @@ describe('WebDav', function () {
 			password: config.accountPassword,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(propfindRes.status, 207, 'PROPFIND on Briefcase should return 207');
 		assert.match(propfindRes.text,
 			new RegExp('/dav/' + account1Name.replace('@', '(@|%40)') + '/Briefcase/'),

@@ -22,6 +22,8 @@ describe('Tasks > Get Tasks', function () {
 	// Tests
 	it('Sanity | To obtain the details of a task using GetTaskRequest', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -31,12 +33,17 @@ describe('Tasks > Get Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const taskId = createRes.CreateTaskResponse.invId;
 
+		// GetTaskRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetTaskResponse, 'GetTaskResponse should exist');
 	});
@@ -44,6 +51,8 @@ describe('Tasks > Get Tasks', function () {
 
 	it('Functional | To send GetTaskRequest with id of a canceled Task It should get moved to trash', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -53,6 +62,8 @@ describe('Tasks > Get Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const taskId = createRes.CreateTaskResponse.invId;
 
@@ -65,6 +76,8 @@ describe('Tasks > Get Tasks', function () {
 				</m>
 			</CancelTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(cancelRes.Fault, 'Cancel should not be a Fault');
 
 		// Get the canceled task - should fault (no such item)
@@ -73,6 +86,8 @@ describe('Tasks > Get Tasks', function () {
 		);
 		// Server may fault with "no such item" or return the cancelled task
 		if (getRes.Fault) {
+
+			// Verify response
 			assert.exists(getRes.Fault, 'GetTask for cancelled task should be a Fault');
 		} else {
 			assert.exists(getRes.GetTaskResponse, 'GetTaskResponse should exist for cancelled task in trash');

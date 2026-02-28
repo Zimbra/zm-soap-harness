@@ -7,7 +7,7 @@ import rest from '../../../framework/backend/rest-servlet.js';
 describe('Rest Servlet > Fmt > Sync > Flags', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
-	let account2Email, account2Token;
+	let account2Email;
 	let sentMsgId, draftMsgId, flaggedMsgId, unreadMsgId;
 	let repliedMsgId, forwardedMsgId, deletedMsgId;
 
@@ -15,6 +15,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -23,6 +25,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 		);
 
 		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
@@ -31,7 +35,7 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 		);
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
-		account2Token = await soap.getAccountAuthToken(account2Email);
+		await soap.getAccountAuthToken(account2Email);
 
 		// Send a message (for sent flag)
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
@@ -45,6 +49,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		sentMsgId = sendRes.SendMsgResponse?.m?.id
 			|| (Array.isArray(sendRes.SendMsgResponse?.m)
@@ -62,6 +68,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</SaveDraftRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(draftRes.Fault, 'Response should not be a Fault');
 		draftMsgId = draftRes.SaveDraftResponse?.m?.id
 			|| (Array.isArray(draftRes.SaveDraftResponse?.m)
@@ -75,6 +83,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addFlagged.Fault, 'Response should not be a Fault');
 		flaggedMsgId = addFlagged.AddMsgResponse?.m?.id
 			|| (Array.isArray(addFlagged.AddMsgResponse?.m)
@@ -88,6 +98,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addUnread.Fault, 'Response should not be a Fault');
 		unreadMsgId = addUnread.AddMsgResponse?.m?.id
 			|| (Array.isArray(addUnread.AddMsgResponse?.m)
@@ -101,6 +113,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addForReply.Fault, 'Response should not be a Fault');
 		repliedMsgId = addForReply.AddMsgResponse?.m?.id
 			|| (Array.isArray(addForReply.AddMsgResponse?.m)
@@ -127,6 +141,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addForFwd.Fault, 'Response should not be a Fault');
 		forwardedMsgId = addForFwd.AddMsgResponse?.m?.id
 			|| (Array.isArray(addForFwd.AddMsgResponse?.m)
@@ -153,6 +169,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addForDel.Fault, 'Response should not be a Fault');
 		deletedMsgId = addForDel.AddMsgResponse?.m?.id
 			|| (Array.isArray(addForDel.AddMsgResponse?.m)
@@ -178,6 +196,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: deletedMsgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});
@@ -189,6 +209,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: draftMsgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});
@@ -200,6 +222,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: flaggedMsgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});
@@ -211,6 +235,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: forwardedMsgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});
@@ -222,6 +248,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: repliedMsgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});
@@ -234,12 +262,15 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: sentMsgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});
 
 
 	it('Sanity | Verify second sent message also has s flag', async () => {
+		// SendMsgRequest
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -251,6 +282,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		const msgId2 = sendRes.SendMsgResponse?.m?.id
 			|| (Array.isArray(sendRes.SendMsgResponse?.m)
@@ -261,6 +294,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: msgId2,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});
@@ -272,12 +307,15 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: unreadMsgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});
 
 
 	it('Regression | Verify X-Zimbra-Flags for message with attachment shows a flag', async () => {
+		// AddMsgRequest
 		const addRes = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
@@ -285,6 +323,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const attachMsgId = addRes.AddMsgResponse?.m?.id
 			|| (Array.isArray(addRes.AddMsgResponse?.m)
@@ -295,12 +335,15 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: attachMsgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});
 
 
 	it('Regression | Verify X-Zimbra-Flags for second message with attachment', async () => {
+		// AddMsgRequest
 		const addRes = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
@@ -308,6 +351,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const attachMsgId = addRes.AddMsgResponse?.m?.id
 			|| (Array.isArray(addRes.AddMsgResponse?.m)
@@ -318,6 +363,8 @@ describe('Rest Servlet > Fmt > Sync > Flags', function () {
 			id: attachMsgId,
 			fmt: 'sync'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'X-Zimbra-Flags', 'Should contain X-Zimbra-Flags');
 	});

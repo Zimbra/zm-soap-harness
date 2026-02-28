@@ -28,10 +28,14 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
 		// Verify folder is created
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+
+		// Verify response
 		assert.isNotNull(folderId, 'Verify folder id is returned');
 		assert.exists(createResponse.CreateFolderResponse.folder[0].name,
 			'Verify folder name is returned');
@@ -43,9 +47,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
+		// Verify response
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
 		assert.include(createResponse.Fault.Reason.Text, 'invalid name',
 			'Verify INVALID_NAME error');
@@ -57,9 +64,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name=' ' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
+		// Verify response
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
 		assert.include(createResponse.Fault.Reason.Text, 'invalid name',
 			'Verify INVALID_NAME error');
@@ -71,9 +81,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name=":/\\.;&lt;*''" l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
+		// Verify response
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
 		assert.include(createResponse.Fault.Reason.Text, 'invalid name',
 			'Verify INVALID_NAME error');
@@ -88,7 +101,11 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse1 = await soap.makeSOAPEnvelopeAccount(createRequest1, accountAuthToken);
+
+		// Verify response
 		assert.exists(createResponse1.CreateFolderResponse.folder[0].id,
 			'Verify first folder is created');
 
@@ -97,9 +114,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken, false);
 
 		// Verify error
+		// Verify response
 		assert.exists(createResponse2.Fault, 'Verify Fault exists');
 		assert.include(createResponse2.Fault.Reason.Text, 'already exists',
 			'Verify ALREADY_EXISTS error');
@@ -113,9 +133,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='0'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
+		// Verify response
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
 		assert.include(createResponse.Fault.Reason.Text, 'no such',
 			'Verify NO_SUCH_FOLDER error');
@@ -129,9 +152,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l=''/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
 		// Verify error
+		// Verify response
 		assert.exists(createResponse.Fault, 'Verify Fault exists');
 	});
 
@@ -143,9 +169,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
 		// Verify folder is created (defaults to root)
+		// Verify response
 		assert.exists(createResponse.CreateFolderResponse.folder[0],
 			'Verify folder is created without parent');
 	});
@@ -159,6 +188,8 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		await soap.makeSOAPEnvelopeAccount(createRequest1, accountAuthToken);
 
 		// Create folder with leading spaces (different name)
@@ -166,9 +197,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name=' ${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken);
 
 		// Verify folder is created (leading spaces make it a different name)
+		// Verify response
 		assert.exists(createResponse2.CreateFolderResponse.folder[0],
 			'Verify folder with leading spaces is created');
 	});
@@ -182,6 +216,8 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		await soap.makeSOAPEnvelopeAccount(createRequest1, accountAuthToken);
 
 		// Create folder with trailing spaces (trailing spaces are trimmed, so becomes duplicate)
@@ -189,9 +225,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName} ' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken, false);
 
 		// Verify error
+		// Verify response
 		assert.exists(createResponse2.Fault, 'Verify Fault exists');
 		assert.include(createResponse2.Fault.Reason.Text, 'already exists',
 			'Verify ALREADY_EXISTS error');
@@ -205,9 +244,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
 		// Verify folder is created
+		// Verify response
 		assert.exists(createResponse.CreateFolderResponse.folder[0],
 			'Verify folder with spaces in name is created');
 	});
@@ -220,9 +262,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// GetFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
 		// Verify folder is created
+		// Verify response
 		assert.exists(createResponse.CreateFolderResponse.folder[0].id,
 			'Verify folder with non-latin name is created');
 	});
@@ -233,9 +278,13 @@ describe('Folders > Folder Create', function () {
 
 		// Get inbox folder id
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxFolder = folders.find(f => f.name === 'Inbox');
+
+		// Verify response
 		assert.exists(inboxFolder, 'Verify Inbox folder found');
 
 		// Create folder with color and checked flag
@@ -243,9 +292,12 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='${inboxFolder.id}' color='3' f='checked'/>
 			</CreateFolderRequest>`;
+
+		// GetFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
 		// Verify folder is created with correct color
+		// Verify response
 		assert.exists(createResponse.CreateFolderResponse.folder[0].id,
 			'Verify folder is created');
 		assert.equal(createResponse.CreateFolderResponse.folder[0].color, 3,
@@ -258,6 +310,8 @@ describe('Folders > Folder Create', function () {
 
 		// Get inbox folder id
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxFolder = folders.find(f => f.name === 'Inbox');
@@ -266,10 +320,13 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='${inboxFolder.id}' color='3' f='#' view='appointment'/>
 			</CreateFolderRequest>`;
+
+		// GetFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
-		// Verify response
 		const folder = createResponse.CreateFolderResponse.folder[0];
+
+		// Verify response
 		assert.equal(folder.color, 3, 'Verify color is 3');
 		assert.equal(folder.f, '#', 'Verify flag is #');
 	});
@@ -280,6 +337,8 @@ describe('Folders > Folder Create', function () {
 
 		// Get inbox folder id
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxFolder = folders.find(f => f.name === 'Inbox');
@@ -288,10 +347,13 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='${inboxFolder.id}' color='3' f='*' view='appointment'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
-		// Verify response
 		const folder = createResponse.CreateFolderResponse.folder[0];
+
+		// Verify response
 		assert.equal(folder.color, 3, 'Verify color is 3');
 		assert.include(folder.f, '*', 'Verify flag contains *');
 	});
@@ -304,6 +366,8 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' color='3'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
 		// Verify response
@@ -322,6 +386,8 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder l='1' name='Notebook${common.getUniqueString()}' view='document'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const notebookResponse = await soap.makeSOAPEnvelopeAccount(createNotebookRequest, accountAuthToken);
 		const notebookId = notebookResponse.CreateFolderResponse.folder[0].id;
 
@@ -330,6 +396,8 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder l='${notebookId}' name='${folder1Name}' view='document'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const folder1Response = await soap.makeSOAPEnvelopeAccount(createFolder1Request, accountAuthToken);
 		const folder1Id = folder1Response.CreateFolderResponse.folder[0].id;
 
@@ -338,6 +406,8 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder l='${folder1Id}' name='${folder2Name}' view='document'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const folder2Response = await soap.makeSOAPEnvelopeAccount(createFolder2Request, accountAuthToken);
 		const folder2Id = folder2Response.CreateFolderResponse.folder[0].id;
 
@@ -346,6 +416,8 @@ describe('Folders > Folder Create', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder l='${folder2Id}' name='${folder3Name}' view='document'/>
 			</CreateFolderRequest>`;
+
+		// GetItemRequest
 		const folder3Response = await soap.makeSOAPEnvelopeAccount(createFolder3Request, accountAuthToken);
 		const folder3Id = folder3Response.CreateFolderResponse.folder[0].id;
 
@@ -354,7 +426,11 @@ describe('Folders > Folder Create', function () {
 			`<GetItemRequest xmlns='urn:zimbraMail'>
 				<item id='${folder3Id}'/>
 			</GetItemRequest>`;
+
+		// CreateFolderRequest
 		const getItemResponse = await soap.makeSOAPEnvelopeAccount(getItemRequest, accountAuthToken);
+
+		// Verify response
 		assert.equal(getItemResponse.GetItemResponse.folder[0].view, 'document',
 			'Verify deepest nested folder has document view');
 	});
@@ -372,6 +448,7 @@ describe('Folders > Folder Create', function () {
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 		const folder = createResponse.CreateFolderResponse.folder[0];
 
+		// Verify response
 		assert.equal(folder.view, 'appointment', 'Verify view is appointment');
 		assert.include(folder.f, 'b', 'Verify flag b (excludeFreeBusy) is set');
 
@@ -398,10 +475,14 @@ describe('Folders > Folder Create', function () {
 					</mp>
 				</m>
 			</CreateAppointmentRequest>`;
+
+		// GetFreeBusyRequest
 		const apptResponse = await soap.makeSOAPEnvelopeAccount(createApptRequest, accountAuthToken);
 
 		// Appointment should be created successfully
 		if (apptResponse.CreateAppointmentResponse) {
+
+			// Verify response
 			assert.notExists(apptResponse.Fault, 'Response should not be a Fault');
 			assert.exists(apptResponse.CreateAppointmentResponse,
 				'Appointment should be created in f=b folder');
@@ -416,6 +497,7 @@ describe('Folders > Folder Create', function () {
 			</GetFreeBusyRequest>`;
 		const fbResponse = await soap.makeSOAPEnvelopeAccount(getFreeBusyRequest, accountAuthToken);
 
+		// Verify response
 		assert.notExists(fbResponse.Fault, 'Response should not be a Fault');
 		assert.exists(fbResponse.GetFreeBusyResponse,
 			'GetFreeBusyResponse should exist');

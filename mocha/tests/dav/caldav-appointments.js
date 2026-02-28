@@ -19,17 +19,22 @@ describe('CalDav > Calendar > Appointments', function () {
 		account1Name = account1User + '@' + config.testDomain;
 		account1NameEncoded = account1User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct.id, 'Account should have an id');
 
 		// Extract zimbraMailHost
@@ -38,12 +43,15 @@ describe('CalDav > Calendar > Appointments', function () {
 		account1Server = mailHost ? (mailHost._content || mailHost) : config.serverHost;
 
 		// Auth as account1
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -87,6 +95,8 @@ END:VCALENDAR`,
 			server: account1Server,
 			headers: { 'Content-Type': 'text/calendar; charset=utf-8' },
 		});
+
+		// Verify response
 		assert.equal(putRes.status, 201, 'PUT should return 201 Created');
 
 		// Verify via SOAP SearchRequest
@@ -95,6 +105,8 @@ END:VCALENDAR`,
 				<query>${appointmentSubject}</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
@@ -114,6 +126,8 @@ END:VCALENDAR`,
 			</C:calendar-multiget>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reportRes.status, 207, 'REPORT should return 207 Multi-Status');
 		assert.include(reportRes.text, appointmentUid,
 			'REPORT response should contain the appointment UID');
@@ -142,10 +156,14 @@ END:VCALENDAR`,
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
 			|| createRes.CreateAppointmentResponse.$.invId;
+
+		// Verify response
 		assert.exists(invId, 'Appointment should have invId');
 
 		// Get the appointment UID via GetMsgRequest
@@ -154,6 +172,8 @@ END:VCALENDAR`,
 				<m id="${invId}"/>
 			</GetMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
@@ -162,6 +182,8 @@ END:VCALENDAR`,
 		const inv = Array.isArray(msg.inv) ? msg.inv[0] : msg.inv;
 		const comp = Array.isArray(inv.comp) ? inv.comp[0] : inv.comp;
 		const appointmentUid = comp.uid;
+
+		// Verify response
 		assert.exists(appointmentUid, 'Appointment should have a UID');
 
 		// Verify via CalDAV REPORT
@@ -180,6 +202,8 @@ END:VCALENDAR`,
 			</C:calendar-multiget>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reportRes.status, 207, 'REPORT should return 207');
 		assert.include(reportRes.text, appointmentUid,
 			'REPORT should contain the appointment');
@@ -192,6 +216,8 @@ END:VCALENDAR`,
 			password: config.accountPassword,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(deleteRes.status, 204, 'DELETE should return 204 No Content');
 
 		// Verify appointment no longer appears via SOAP SearchRequest
@@ -200,9 +226,13 @@ END:VCALENDAR`,
 				<query>${appointmentSubject}</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const appt = searchRes.SearchResponse.appt;
+
+		// Verify response
 		assert.isNotOk(appt, 'Appointment should not appear in search results');
 	});
 
@@ -229,6 +259,8 @@ END:VCALENDAR`,
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
@@ -246,6 +278,8 @@ END:VCALENDAR`,
 		const inv = Array.isArray(msg.inv) ? msg.inv[0] : msg.inv;
 		const comp = Array.isArray(inv.comp) ? inv.comp[0] : inv.comp;
 		const appointmentUid = comp.uid;
+
+		// Verify response
 		assert.exists(appointmentUid, 'Appointment should have a UID');
 
 		// DELETE via CalDAV
@@ -256,6 +290,8 @@ END:VCALENDAR`,
 			password: config.accountPassword,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(deleteRes.status, 204, 'DELETE should return 204 No Content');
 
 		// Verify appointment not in Calendar
@@ -264,9 +300,13 @@ END:VCALENDAR`,
 				<query>${appointmentSubject}</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const appt = searchRes.SearchResponse.appt;
+
+		// Verify response
 		assert.isNotOk(appt, 'Appointment should not appear in calendar');
 
 		// Verify appointment is in Trash
@@ -275,11 +315,15 @@ END:VCALENDAR`,
 				<query>${appointmentSubject} in:Trash</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(trashRes.Fault, 'Response should not be a Fault');
 		assert.exists(trashRes.SearchResponse, 'SearchResponse for Trash should exist');
 		const trashAppt = Array.isArray(trashRes.SearchResponse.appt)
 			? trashRes.SearchResponse.appt[0]
 			: trashRes.SearchResponse.appt;
+
+		// Verify response
 		assert.exists(trashAppt, 'Appointment should be in Trash');
 		assert.equal(trashAppt.uid, appointmentUid,
 			'Trash appointment UID should match');
@@ -308,6 +352,8 @@ END:VCALENDAR`,
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
@@ -325,6 +371,8 @@ END:VCALENDAR`,
 		const inv = Array.isArray(msg.inv) ? msg.inv[0] : msg.inv;
 		const comp = Array.isArray(inv.comp) ? inv.comp[0] : inv.comp;
 		const appointmentUid = comp.uid;
+
+		// Verify response
 		assert.exists(appointmentUid, 'Appointment should have a UID');
 
 		// Get via CalDAV REPORT (calendar-multiget)
@@ -343,6 +391,8 @@ END:VCALENDAR`,
 			</C:calendar-multiget>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reportRes.status, 207, 'REPORT should return 207');
 		assert.include(reportRes.text, appointmentUid,
 			'Response should contain appointment UID in href');
@@ -373,6 +423,8 @@ END:VCALENDAR`,
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
@@ -390,6 +442,8 @@ END:VCALENDAR`,
 		const inv = Array.isArray(msg.inv) ? msg.inv[0] : msg.inv;
 		const comp = Array.isArray(inv.comp) ? inv.comp[0] : inv.comp;
 		const appointmentUid = comp.uid;
+
+		// Verify response
 		assert.exists(appointmentUid, 'Appointment should have a UID');
 
 		// Modify appointment - change times by PUT with new iCal
@@ -415,6 +469,8 @@ END:VCALENDAR`,
 			server: account1Server,
 			headers: { 'Content-Type': 'text/calendar; charset=utf-8' },
 		});
+
+		// Verify response
 		assert.oneOf(putRes.status, [201, 204],
 			'PUT should return 201 Created or 204 No Content');
 
@@ -424,11 +480,15 @@ END:VCALENDAR`,
 				<query>${modifiedSubject}</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0]
 			: searchRes.SearchResponse.appt;
+
+		// Verify response
 		assert.exists(appt, 'Modified appointment should appear in search');
 		assert.equal(appt.uid, appointmentUid,
 			'Appointment UID should match');

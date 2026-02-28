@@ -18,29 +18,37 @@ describe('CalDav > Calendar > Filter', function () {
 		account1Name = account1User + '@' + config.testDomain;
 		account1NameEncoded = account1User + '%40' + config.testDomain;
 
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct.id, 'Account should have an id');
 
 		const attrs = Array.isArray(acct.a) ? acct.a : [acct.a];
 		const mailHost = attrs.find(a => a.n === 'zimbraMailHost');
 		account1Server = mailHost ? (mailHost._content || mailHost) : config.serverHost;
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -58,6 +66,8 @@ describe('CalDav > Calendar > Filter', function () {
 	 * Helper: Create appointment and get its UID
 	 */
 	async function createAppointmentAndGetUid(subject, startDate, endDate, allDay) {
+
+		// CreateAppointmentRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -75,11 +85,14 @@ describe('CalDav > Calendar > Filter', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
 			|| createRes.CreateAppointmentResponse.$.invId;
 
+		// GetMsgRequest
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}"/>
@@ -121,6 +134,8 @@ describe('CalDav > Calendar > Filter', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reportRes.status, 207, 'REPORT should return 207');
 		assert.notInclude(reportRes.text, uid1,
 			'Appointment before 12/15 should not appear');
@@ -159,6 +174,8 @@ describe('CalDav > Calendar > Filter', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reportRes.status, 207, 'REPORT should return 207');
 		assert.notInclude(reportRes.text, uid1,
 			'Appointment before 12/15 should not appear');
@@ -198,6 +215,8 @@ describe('CalDav > Calendar > Filter', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reportRes1.status, 207, 'REPORT for 11/2-11/3 should return 207');
 		assert.include(reportRes1.text, uid1,
 			'Multi-day appointment should appear in 11/2-11/3 range');
@@ -226,6 +245,8 @@ describe('CalDav > Calendar > Filter', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reportRes2.status, 207, 'REPORT for 12/2-12/3 should return 207');
 		assert.notInclude(reportRes2.text, uid1,
 			'Multi-day appointment should NOT appear in 12/2-12/3 range');

@@ -13,6 +13,8 @@ describe('Rest Servlet > Fmt > TGZ', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
@@ -29,6 +31,8 @@ describe('Rest Servlet > Fmt > TGZ', function () {
 				</m>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		messageId = addRes.AddMsgResponse?.m?.id
 			|| (Array.isArray(addRes.AddMsgResponse?.m)
@@ -48,6 +52,8 @@ describe('Rest Servlet > Fmt > TGZ', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.isAbove(res.body.length, 10, 'Response should have tgz content');
 	});
@@ -60,6 +66,8 @@ describe('Rest Servlet > Fmt > TGZ', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.isAbove(res.body.length, 10, 'Response should have tgz content');
 	});
@@ -71,6 +79,8 @@ describe('Rest Servlet > Fmt > TGZ', function () {
 			fmt: 'tgz',
 			returnBuffer: true
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.isAbove(res.body.length, 10, 'Response should have tgz content');
 	});

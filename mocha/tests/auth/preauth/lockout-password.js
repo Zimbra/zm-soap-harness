@@ -15,17 +15,22 @@ describe('Auth > Preauth > Lockout Password', function () {
 		const domainName = 'preauth.' + common.getUniqueString() + '.com';
 		const preauthKey = '7c9d4c4372457f2e9df0a681e31559e691199762171b832ec042861bc9b610ba';
 
+		// CreateDomainRequest
 		const domRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domainName}</name>
 				<a n="zimbraPreAuthKey">${preauthKey}</a>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(domRes.Fault, 'Response should not be a Fault');
 		assert.exists(domRes.CreateDomainResponse, 'Should create domain');
 
 		// Create account with lockout settings
 		account1Name = 'preauth' + common.getUniqueString() + '@' + domainName;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -35,6 +40,8 @@ describe('Auth > Preauth > Lockout Password', function () {
 				<a n="zimbraPasswordLockoutMaxFailures">5</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 	});
@@ -50,12 +57,16 @@ describe('Auth > Preauth > Lockout Password', function () {
 
 		// Attempt invalid preauth 5 times to trigger lockout
 		for (let i = 1; i <= 5; i++) {
+
+			// Send the message
 			const authRes = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1Name}</account>
 					<preauth timestamp="${timestamp}" expires="0">invalid${i}</preauth>
 				</AuthRequest>`, null
 			);
+
+			// Verify response
 			assert.exists(authRes.Fault, 'Should return Fault for invalid preauth attempt ' + i);
 			assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED for attempt ' + i);
@@ -66,12 +77,16 @@ describe('Auth > Preauth > Lockout Password', function () {
 
 		// Now attempt with valid preauth — should still fail due to lockout
 		const timestamp2 = String(Date.now());
+
+		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<preauth timestamp="${timestamp2}" expires="0">validpreauth</preauth>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.exists(authRes2.Fault, 'Should return Fault due to lockout');
 		assert.include(authRes2.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED due to lockout');
@@ -81,6 +96,8 @@ describe('Auth > Preauth > Lockout Password', function () {
 
 		// Attempt again after lockout expires — validate lockout released
 		const timestamp3 = String(Date.now());
+
+		// Send the message
 		const authRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -90,6 +107,7 @@ describe('Auth > Preauth > Lockout Password', function () {
 		// After lockout expires, a valid preauth would succeed,
 		// but since we're using dummy preauth values, it will AUTH_FAILED
 		// The key assertion is that lockout was released (not ACCOUNT_LOCKED)
+		// Verify response
 		assert.exists(authRes3.Fault, 'Should return Fault (invalid preauth)');
 		assert.include(authRes3.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED (not LOCKED) after lockout expires');

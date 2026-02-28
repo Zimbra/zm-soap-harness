@@ -23,6 +23,8 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 
 		// Grant 'manager' rights to Account2 on Account1's Root (Inherit)
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// FolderActionRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const rootId = resp.GetFolderResponse.folder[0].id;
 
@@ -32,6 +34,8 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 					<grant gt="usr" d="${testAccount2}" perm="rwidxa"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetFolderRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 	});
 
@@ -59,6 +63,8 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 		collectFolders(resp.GetFolderResponse.folder);
 
 		const folder = allFolders.find(f => f.name === folderName);
+
+		// Verify response
 		assert.exists(folder, `Folder ${folderName} should exist`);
 
 		let actionXml = '';
@@ -76,10 +82,14 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 		const request =
 			`<FolderActionRequest xmlns="urn:zimbraMail">${actionXml}</FolderActionRequest>`;
 		const response = await soap.makeSOAPEnvelopeAccount(request, auth2, false);
+
+		// Verify response
 		assert.exists(response.Fault,
 			`Should have failed to ${op} immutable folder ${folderName}`);
 		if (response.Fault && response.Fault.Reason) {
 			const faultText = response.Fault.Reason.Text;
+
+			// Verify response
 			assert.isTrue(faultText.includes('IMMUTABLE_OBJECT') || faultText.includes('immutable'),
 				`Should fail with mail.IMMUTABLE_OBJECT for ${op} ${folderName}, got: ${faultText}`
 			);
@@ -111,6 +121,8 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 	it('Sanity | Verify that a shared immutable folders cannot be moved', async () => {
 		// Create a custom folder to move TO
 		const getFolder = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(getFolder, auth1);
 		const inboxId = resp.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 

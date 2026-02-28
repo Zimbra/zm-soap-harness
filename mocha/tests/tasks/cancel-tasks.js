@@ -22,6 +22,8 @@ describe('Tasks > Cancel Tasks', function () {
 	// Tests
 	it('Sanity | To Cancel a task', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -31,9 +33,12 @@ describe('Tasks > Cancel Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const taskId = createRes.CreateTaskResponse.invId;
 
+		// CancelTaskRequest
 		const cancelRes = await soap.makeSOAPEnvelopeAccount(
 			`<CancelTaskRequest xmlns="urn:zimbraMail" id="${taskId}" comp="0">
 				<m>
@@ -42,6 +47,8 @@ describe('Tasks > Cancel Tasks', function () {
 				</m>
 			</CancelTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
 		assert.exists(cancelRes.CancelTaskResponse,
 			'CancelTaskResponse should exist');
@@ -50,6 +57,8 @@ describe('Tasks > Cancel Tasks', function () {
 
 	it('Sanity | Verify that canceling an already canceled task gives No Such Item', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -59,6 +68,8 @@ describe('Tasks > Cancel Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const taskId = createRes.CreateTaskResponse.invId;
 
@@ -71,6 +82,8 @@ describe('Tasks > Cancel Tasks', function () {
 				</m>
 			</CancelTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(cancelRes1.Fault, 'First cancel should not be a Fault');
 
 		// Cancel second time - should fault
@@ -82,6 +95,8 @@ describe('Tasks > Cancel Tasks', function () {
 				</m>
 			</CancelTaskRequest>`, accountAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(cancelRes2.Fault, 'Second cancel should be a Fault');
 	});
 });

@@ -100,6 +100,8 @@ describe("EWS > Send Mail", function () {
 		);
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
+		await soap.waitFor(5000);
+
 		// EWS: GetFolder inbox
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -133,6 +135,9 @@ describe("EWS > Send Mail", function () {
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
 					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
 				</ItemShape>
 				<SyncFolderId>
 					<t:FolderId Id="${inboxId}" />
@@ -154,11 +159,12 @@ describe("EWS > Send Mail", function () {
 			"Success",
 			"SyncFolderItems should succeed",
 		);
-		const creates = syncMessage.Changes.Create;
-		const createArr = Array.isArray(creates) ? creates : [creates];
-		const lastCreate = createArr[createArr.length - 1];
-		const mailId = lastCreate.Message.ItemId.$.Id;
-		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+		const rawCreates = syncMessage.Changes?.Create;
+		const createArr = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedCreate = createArr.find(c => c?.Message?.Subject === subject)
+			|| createArr[createArr.length - 1];
+		const mailId = matchedCreate.Message.ItemId.$.Id;
+		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
 		const newSyncState = syncMessage.SyncState;
 
 		// EWS: GetItem
@@ -248,7 +254,7 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 			"data/ews/image1.jpg",
 		);
-		const uploadAid = uploadRes.aid;
+		const uploadAid = uploadRes;
 
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
@@ -264,6 +270,8 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 		);
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
+
+		await soap.waitFor(5000);
 
 		// EWS: GetFolder inbox
 		const folderRes = await ews.makeEWSRequest(
@@ -287,7 +295,12 @@ describe("EWS > Send Mail", function () {
 		// EWS: SyncFolderItems
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
-				<ItemShape><t:BaseShape>IdOnly</t:BaseShape></ItemShape>
+				<ItemShape>
+					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
+				</ItemShape>
 				<SyncFolderId><t:FolderId Id="${inboxId}" /></SyncFolderId>
 				<SyncState /><Ignore /><MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
@@ -299,11 +312,12 @@ describe("EWS > Send Mail", function () {
 			syncBody.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-		const creates = syncMessage.Changes.Create;
-		const createArr = Array.isArray(creates) ? creates : [creates];
-		const lastCreate = createArr[createArr.length - 1];
-		const mailId = lastCreate.Message.ItemId.$.Id;
-		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+		const rawCreates = syncMessage.Changes?.Create;
+		const createArr = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedCreate = createArr.find(c => c?.Message?.Subject === messageSubject3)
+			|| createArr[createArr.length - 1];
+		const mailId = matchedCreate.Message.ItemId.$.Id;
+		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
 
 		// EWS: GetItem with attachment fields
 		const getRes = await ews.makeEWSRequest(
@@ -371,7 +385,7 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 			"data/ews/image2.png",
 		);
-		const uploadAid = uploadRes.aid;
+		const uploadAid = uploadRes;
 
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
@@ -387,6 +401,8 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 		);
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
+
+		await soap.waitFor(5000);
 
 		// EWS: Verify via sendFromZwcAndVerifyOnEws helper pattern
 		const folderRes = await ews.makeEWSRequest(
@@ -409,7 +425,12 @@ describe("EWS > Send Mail", function () {
 
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
-				<ItemShape><t:BaseShape>IdOnly</t:BaseShape></ItemShape>
+				<ItemShape>
+					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
+				</ItemShape>
 				<SyncFolderId><t:FolderId Id="${inboxId}" /></SyncFolderId>
 				<SyncState /><Ignore /><MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
@@ -421,11 +442,12 @@ describe("EWS > Send Mail", function () {
 			syncBody.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-		const creates = syncMessage.Changes.Create;
-		const createArr = Array.isArray(creates) ? creates : [creates];
-		const lastCreate = createArr[createArr.length - 1];
-		const mailId = lastCreate.Message.ItemId.$.Id;
-		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+		const rawCreates = syncMessage.Changes?.Create;
+		const createArr = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedCreate = createArr.find(c => c?.Message?.Subject === messageSubject5)
+			|| createArr[createArr.length - 1];
+		const mailId = matchedCreate.Message.ItemId.$.Id;
+		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
 
 		const getRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -492,7 +514,7 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 			"data/ews/image3.bmp",
 		);
-		const uploadAid = uploadRes.aid;
+		const uploadAid = uploadRes;
 
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
@@ -508,6 +530,8 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 		);
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
+
+		await soap.waitFor(5000);
 
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -529,7 +553,12 @@ describe("EWS > Send Mail", function () {
 
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
-				<ItemShape><t:BaseShape>IdOnly</t:BaseShape></ItemShape>
+				<ItemShape>
+					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
+				</ItemShape>
 				<SyncFolderId><t:FolderId Id="${inboxId}" /></SyncFolderId>
 				<SyncState /><Ignore /><MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
@@ -541,11 +570,12 @@ describe("EWS > Send Mail", function () {
 			syncBody.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-		const creates = syncMessage.Changes.Create;
-		const createArr = Array.isArray(creates) ? creates : [creates];
-		const lastCreate = createArr[createArr.length - 1];
-		const mailId = lastCreate.Message.ItemId.$.Id;
-		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+		const rawCreates = syncMessage.Changes?.Create;
+		const createArr = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedCreate = createArr.find(c => c?.Message?.Subject === messageSubject6)
+			|| createArr[createArr.length - 1];
+		const mailId = matchedCreate.Message.ItemId.$.Id;
+		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
 
 		const getRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -612,7 +642,7 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 			"data/ews/file1.pdf",
 		);
-		const uploadAid = uploadRes.aid;
+		const uploadAid = uploadRes;
 
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
@@ -628,6 +658,8 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 		);
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
+
+		await soap.waitFor(5000);
 
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -649,7 +681,12 @@ describe("EWS > Send Mail", function () {
 
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
-				<ItemShape><t:BaseShape>IdOnly</t:BaseShape></ItemShape>
+				<ItemShape>
+					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
+				</ItemShape>
 				<SyncFolderId><t:FolderId Id="${inboxId}" /></SyncFolderId>
 				<SyncState /><Ignore /><MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
@@ -661,11 +698,12 @@ describe("EWS > Send Mail", function () {
 			syncBody.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-		const creates = syncMessage.Changes.Create;
-		const createArr = Array.isArray(creates) ? creates : [creates];
-		const lastCreate = createArr[createArr.length - 1];
-		const mailId = lastCreate.Message.ItemId.$.Id;
-		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+		const rawCreates = syncMessage.Changes?.Create;
+		const createArr = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedCreate = createArr.find(c => c?.Message?.Subject === messageSubject7)
+			|| createArr[createArr.length - 1];
+		const mailId = matchedCreate.Message.ItemId.$.Id;
+		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
 
 		const getRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -732,7 +770,7 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 			"data/ews/image1.jpg",
 		);
-		const uploadAid = uploadRes.aid;
+		const uploadAid = uploadRes;
 		const cidValue = `${common.getUniqueString()}@zimbra`;
 
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
@@ -759,6 +797,8 @@ describe("EWS > Send Mail", function () {
 		);
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
+		await soap.waitFor(5000);
+
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape><t:BaseShape>AllProperties</t:BaseShape></FolderShape>
@@ -779,7 +819,12 @@ describe("EWS > Send Mail", function () {
 
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
-				<ItemShape><t:BaseShape>IdOnly</t:BaseShape></ItemShape>
+				<ItemShape>
+					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
+				</ItemShape>
 				<SyncFolderId><t:FolderId Id="${inboxId}" /></SyncFolderId>
 				<SyncState /><Ignore /><MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
@@ -791,11 +836,12 @@ describe("EWS > Send Mail", function () {
 			syncBody.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-		const creates = syncMessage.Changes.Create;
-		const createArr = Array.isArray(creates) ? creates : [creates];
-		const lastCreate = createArr[createArr.length - 1];
-		const mailId = lastCreate.Message.ItemId.$.Id;
-		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+		const rawCreates = syncMessage.Changes?.Create;
+		const createArr = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedCreate = createArr.find(c => c?.Message?.Subject === messageSubject8)
+			|| createArr[createArr.length - 1];
+		const mailId = matchedCreate.Message.ItemId.$.Id;
+		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
 
 		const getRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -863,7 +909,7 @@ describe("EWS > Send Mail", function () {
 			account2AuthToken,
 			"data/ews/image2.png",
 		);
-		const uploadAid = uploadRes.aid;
+		const uploadAid = uploadRes;
 		const cidValue = `${common.getUniqueString()}@zimbra`;
 
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
@@ -890,6 +936,8 @@ describe("EWS > Send Mail", function () {
 		);
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
+		await soap.waitFor(5000);
+
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape><t:BaseShape>AllProperties</t:BaseShape></FolderShape>
@@ -910,7 +958,12 @@ describe("EWS > Send Mail", function () {
 
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
-				<ItemShape><t:BaseShape>IdOnly</t:BaseShape></ItemShape>
+				<ItemShape>
+					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
+				</ItemShape>
 				<SyncFolderId><t:FolderId Id="${inboxId}" /></SyncFolderId>
 				<SyncState /><Ignore /><MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
@@ -922,11 +975,12 @@ describe("EWS > Send Mail", function () {
 			syncBody.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-		const creates = syncMessage.Changes.Create;
-		const createArr = Array.isArray(creates) ? creates : [creates];
-		const lastCreate = createArr[createArr.length - 1];
-		const mailId = lastCreate.Message.ItemId.$.Id;
-		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+		const rawCreates = syncMessage.Changes?.Create;
+		const createArr = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedCreate = createArr.find(c => c?.Message?.Subject === messageSubject9)
+			|| createArr[createArr.length - 1];
+		const mailId = matchedCreate.Message.ItemId.$.Id;
+		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
 
 		const getRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -1549,6 +1603,8 @@ describe("EWS > Send Mail", function () {
 		);
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
+		await soap.waitFor(5000);
+
 		// EWS: Verify importance is High
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -1570,7 +1626,12 @@ describe("EWS > Send Mail", function () {
 
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
-				<ItemShape><t:BaseShape>IdOnly</t:BaseShape></ItemShape>
+				<ItemShape>
+					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
+				</ItemShape>
 				<SyncFolderId><t:FolderId Id="${inboxId}" /></SyncFolderId>
 				<SyncState /><Ignore /><MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
@@ -1582,11 +1643,12 @@ describe("EWS > Send Mail", function () {
 			syncBody.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-		const creates = syncMessage.Changes.Create;
-		const createArr = Array.isArray(creates) ? creates : [creates];
-		const lastCreate = createArr[createArr.length - 1];
-		const mailId = lastCreate.Message.ItemId.$.Id;
-		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+		const rawCreates = syncMessage.Changes?.Create;
+		const createArr = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedCreate = createArr.find(c => c?.Message?.Subject === messageSubject15)
+			|| createArr[createArr.length - 1];
+		const mailId = matchedCreate.Message.ItemId.$.Id;
+		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
 
 		const getRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -1642,6 +1704,8 @@ describe("EWS > Send Mail", function () {
 		);
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
+		await soap.waitFor(5000);
+
 		// EWS: Verify importance is Low
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -1663,7 +1727,12 @@ describe("EWS > Send Mail", function () {
 
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
-				<ItemShape><t:BaseShape>IdOnly</t:BaseShape></ItemShape>
+				<ItemShape>
+					<t:BaseShape>IdOnly</t:BaseShape>
+					<t:AdditionalProperties>
+						<t:FieldURI FieldURI="item:Subject" />
+					</t:AdditionalProperties>
+				</ItemShape>
 				<SyncFolderId><t:FolderId Id="${inboxId}" /></SyncFolderId>
 				<SyncState /><Ignore /><MaxChangesReturned>512</MaxChangesReturned>
 			</SyncFolderItems>`,
@@ -1675,11 +1744,12 @@ describe("EWS > Send Mail", function () {
 			syncBody.SyncFolderItemsResponse.ResponseMessages
 				.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
-		const creates = syncMessage.Changes.Create;
-		const createArr = Array.isArray(creates) ? creates : [creates];
-		const lastCreate = createArr[createArr.length - 1];
-		const mailId = lastCreate.Message.ItemId.$.Id;
-		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
+		const rawCreates = syncMessage.Changes?.Create;
+		const createArr = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const matchedCreate = createArr.find(c => c?.Message?.Subject === messageSubject16)
+			|| createArr[createArr.length - 1];
+		const mailId = matchedCreate.Message.ItemId.$.Id;
+		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
 
 		const getRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">

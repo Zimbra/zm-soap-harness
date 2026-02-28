@@ -19,6 +19,7 @@ describe('Rest Servlet > URL > Tomcat Manager', function () {
 			folder: '../manager/html'
 		});
 		// Tomcat manager should not be accessible — expect non-200 or empty
+		// Verify response
 		assert.notEqual(res.status, 200, 'Tomcat manager should not return 200');
 	});
 });

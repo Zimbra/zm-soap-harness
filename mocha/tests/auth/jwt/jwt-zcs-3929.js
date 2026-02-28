@@ -12,6 +12,8 @@ describe('Auth > JWT > JWT-ZCS-3929', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Name = 'user1.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -19,6 +21,8 @@ describe('Auth > JWT > JWT-ZCS-3929', function () {
 				<a n="zimbraAuthTokenLifetime">1m</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 	});
@@ -30,18 +34,23 @@ describe('Auth > JWT > JWT-ZCS-3929', function () {
 
 	// Tests
 	it('Smoke | Generate JWT auth token and use it to fire the FileUpload servlet request', async () => {
+		// Send the message
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false" tokenType="JWT">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
+
+		// Verify response
 		assert.exists(authToken, 'JWT auth token should exist');
 
 		// NOTE: FileUpload servlet test (uploadservlettest) requires framework support.
@@ -53,6 +62,8 @@ describe('Auth > JWT > JWT-ZCS-3929', function () {
 				</doc>
 			</SaveDocumentRequest>`, authToken
 		);
+
+		// Verify response
 		assert.exists(
 			saveRes.SaveDocumentResponse || saveRes.Fault,
 			'Should return SaveDocumentResponse or Fault'
@@ -61,18 +72,23 @@ describe('Auth > JWT > JWT-ZCS-3929', function () {
 
 
 	it('Sanity | Generate normal auth token and use it to fire the FileUpload servlet request', async () => {
+		// Send the message
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
+
+		// Verify response
 		assert.exists(authToken, 'Auth token should exist');
 
 		// NOTE: FileUpload servlet test (uploadservlettest) requires framework support.
@@ -84,6 +100,8 @@ describe('Auth > JWT > JWT-ZCS-3929', function () {
 				</doc>
 			</SaveDocumentRequest>`, authToken
 		);
+
+		// Verify response
 		assert.exists(
 			saveRes.SaveDocumentResponse || saveRes.Fault,
 			'Should return SaveDocumentResponse or Fault'

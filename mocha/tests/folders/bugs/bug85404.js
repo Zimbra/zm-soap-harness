@@ -29,6 +29,8 @@ describe('Folders > Bugs > Bug 85404', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='${rootId}'/>
 			</CreateFolderRequest>`;
+
+		// GetFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -52,6 +54,8 @@ describe('Folders > Bugs > Bug 85404', function () {
 		};
 
 		let folder = findFolder(getResponse.GetFolderResponse.folder, folderId);
+
+		// Verify response
 		assert.equal(folder.absFolderPath, `/${folderName}`,
 			'Verify absFolderPath after create');
 
@@ -61,12 +65,16 @@ describe('Folders > Bugs > Bug 85404', function () {
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='rename' id='${folderId}' name='${newName}'/>
 			</FolderActionRequest>`;
+
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken);
 
 		// Verify absFolderPath is /newName
 		getResponse = await soap.makeSOAPEnvelopeAccount(getRequest, accountAuthToken);
 
 		folder = findFolder(getResponse.GetFolderResponse.folder, folderId);
+
+		// Verify response
 		assert.equal(folder.absFolderPath, `/${newName}`,
 			'Verify absFolderPath after rename');
 
@@ -81,6 +89,8 @@ describe('Folders > Bugs > Bug 85404', function () {
 		getResponse = await soap.makeSOAPEnvelopeAccount(getRequest, accountAuthToken);
 
 		folder = findFolder(getResponse.GetFolderResponse.folder, folderId);
+
+		// Verify response
 		assert.exists(folder, 'Folder should still exist after move');
 		assert.include(folder.absFolderPath, newName,
 			'Verify absFolderPath contains new name after move to Sent');

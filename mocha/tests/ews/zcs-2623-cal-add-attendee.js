@@ -138,10 +138,14 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
 		assert.equal(syncMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
-		const creates = Array.isArray(syncMessage.Changes.Create)
-			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calMatch = creates.find(c => c.CalendarItem?.Subject === apptSubject
-			|| c.MeetingRequest?.Subject === apptSubject);
+		const rawCreates = syncMessage.Changes?.Create;
+		const creates = rawCreates ? (Array.isArray(rawCreates) ? rawCreates : [rawCreates]) : [];
+		const rawUpdates = syncMessage.Changes?.Update;
+		const updates = rawUpdates ? (Array.isArray(rawUpdates) ? rawUpdates : [rawUpdates]) : [];
+		const allSyncItems = [...creates, ...updates];
+		const calMatch = allSyncItems.find(c => c?.CalendarItem?.Subject === apptSubject
+			|| c?.MeetingRequest?.Subject === apptSubject
+			|| c?.CalendarItem || c?.MeetingRequest);
 		const calItem = calMatch?.CalendarItem || calMatch?.MeetingRequest;
 		assert.exists(calItem, 'Calendar item should be found in sync results');
 		const cal01Id = calItem.ItemId.$.Id;

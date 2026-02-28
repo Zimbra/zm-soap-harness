@@ -25,12 +25,16 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 		// Get server A ID by name
 		const serversRes = await soap.makeSOAPEnvelopeAdmin(
 			'<GetAllServersRequest xmlns="urn:zimbraAdmin"/>', adminAuth);
+
+		// Verify response
 		assert.notExists(serversRes.Fault, 'Response should not be a Fault');
 		assert.exists(serversRes.GetAllServersResponse, 'GetAllServersResponse should exist');
 		const servers = Array.isArray(serversRes.GetAllServersResponse.server)
 			? serversRes.GetAllServersResponse.server
 			: [serversRes.GetAllServersResponse.server];
 		const serverA = servers.find(s => s.name === serverAName);
+
+		// Verify response
 		assert.exists(serverA, `Server A (${serverAName}) should exist`);
 
 		// Create COS with only server A in pool
@@ -39,6 +43,8 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 				<name>${cosName}</name>
 				<a n="zimbraMailHostPool">${serverA.id}</a>
 			</CreateCosRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(cosRes.Fault, 'Response should not be a Fault');
 		assert.exists(cosRes.CreateCosResponse, 'CreateCosResponse should exist');
 		const cosId = cosRes.CreateCosResponse.cos[0].id;
@@ -50,12 +56,16 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraCOSId">${cosId}</a>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(acct1Res.Fault, 'Response should not be a Fault');
 		assert.exists(acct1Res.CreateAccountResponse, 'Should create account 1');
 		const acct1 = Array.isArray(acct1Res.CreateAccountResponse.account)
 			? acct1Res.CreateAccountResponse.account[0]
 			: acct1Res.CreateAccountResponse.account;
 		const mailHost1 = acct1.a.find(a => a.n === 'zimbraMailHost');
+
+		// Verify response
 		assert.equal(mailHost1._content, serverAName, 'Account 1 should be on server A');
 
 		// Create account 2 with COS
@@ -65,12 +75,16 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 				<password>${config.accountPassword}</password>
 				<a n="zimbraCOSId">${cosId}</a>
 			</CreateAccountRequest>`, adminAuth);
+
+		// Verify response
 		assert.notExists(acct2Res.Fault, 'Response should not be a Fault');
 		assert.exists(acct2Res.CreateAccountResponse, 'Should create account 2');
 		const acct2 = Array.isArray(acct2Res.CreateAccountResponse.account)
 			? acct2Res.CreateAccountResponse.account[0]
 			: acct2Res.CreateAccountResponse.account;
 		const mailHost2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+
+		// Verify response
 		assert.equal(mailHost2._content, serverAName, 'Account 2 should be on server A');
 	});
 });

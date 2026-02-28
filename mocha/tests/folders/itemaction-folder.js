@@ -29,6 +29,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderAName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const respA = await soap.makeSOAPEnvelopeAccount(createA, accountAuthToken);
 		const folderAId = respA.CreateFolderResponse.folder[0].id;
 
@@ -37,6 +39,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderBName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const respB = await soap.makeSOAPEnvelopeAccount(createB, accountAuthToken);
 		const folderBId = respB.CreateFolderResponse.folder[0].id;
 
@@ -45,8 +49,11 @@ describe('Folders > Itemaction Folder', function () {
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${folderBId}' l='${folderAId}'/>
 			</ItemActionRequest>`;
+
+		// CreateFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(moveResponse.ItemActionResponse.action.op, 'move',
 			'Verify op is move');
 		assert.equal(moveResponse.ItemActionResponse.action.id, folderBId,
@@ -61,6 +68,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -69,8 +78,11 @@ describe('Folders > Itemaction Folder', function () {
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${folderId}' l='${folderId}'/>
 			</ItemActionRequest>`;
+
+		// CreateFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(moveResponse.Fault, 'Verify Fault exists');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
 			'Verify CANNOT_CONTAIN error');
@@ -84,6 +96,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='3'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -92,8 +106,11 @@ describe('Folders > Itemaction Folder', function () {
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${folderId}' l='3'/>
 			</ItemActionRequest>`;
+
+		// CreateFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(moveResponse.ItemActionResponse.action.op, 'move',
 			'Verify op is move');
 		assert.equal(moveResponse.ItemActionResponse.action.id, folderId,
@@ -108,6 +125,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -116,8 +135,11 @@ describe('Folders > Itemaction Folder', function () {
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${folderId}' l='-1'/>
 			</ItemActionRequest>`;
+
+		// CreateFolderRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(moveResponse.Fault, 'Verify Fault exists');
 		assert.include(moveResponse.Fault.Reason.Text, 'no such folder',
 			'Verify NO_SUCH_FOLDER error');
@@ -131,6 +153,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -143,6 +167,8 @@ describe('Folders > Itemaction Folder', function () {
 
 		// Server may return success or fault
 		if (deleteResponse.ItemActionResponse) {
+
+			// Verify response
 			assert.equal(deleteResponse.ItemActionResponse.action.op, 'delete',
 				'Verify op is delete');
 			assert.equal(deleteResponse.ItemActionResponse.action.id, folderId,
@@ -163,6 +189,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folder1Name}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const resp1 = await soap.makeSOAPEnvelopeAccount(create1, accountAuthToken);
 		const folder1Id = resp1.CreateFolderResponse.folder[0].id;
 
@@ -170,6 +198,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action op='delete' id='${folder1Id}'/>
 			</ItemActionRequest>`;
+
+		// CreateFolderRequest
 		await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken);
 
 		// Create folder2
@@ -177,6 +207,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folder2Name}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const resp2 = await soap.makeSOAPEnvelopeAccount(create2, accountAuthToken);
 		const folder2Id = resp2.CreateFolderResponse.folder[0].id;
 
@@ -189,6 +221,8 @@ describe('Folders > Itemaction Folder', function () {
 
 		// Server may return Fault (NO_SUCH_FOLDER) or succeed silently
 		if (moveResponse.Fault) {
+
+			// Verify response
 			assert.include(moveResponse.Fault.Reason.Text, 'no such folder',
 				'Verify NO_SUCH_FOLDER error');
 		} else {
@@ -206,6 +240,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -214,6 +250,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action op='delete' id='${folderId}'/>
 			</ItemActionRequest>`;
+
+		// ItemActionRequest
 		await soap.makeSOAPEnvelopeAccount(deleteRequest1, accountAuthToken);
 
 		// Delete again (should be idempotent)
@@ -224,6 +262,7 @@ describe('Folders > Itemaction Folder', function () {
 		const deleteResponse2 = await soap.makeSOAPEnvelopeAccount(deleteRequest2, accountAuthToken);
 
 		// Re-delete should be idempotent (success) or return a Fault — both are valid
+		// Verify response
 		assert.isTrue(
 			!!deleteResponse2.ItemActionResponse || !!deleteResponse2.Fault,
 			'Verify re-delete returns success or fault'
@@ -240,6 +279,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateTagRequest
 		const folderResponse = await soap.makeSOAPEnvelopeAccount(createFolderRequest, accountAuthToken);
 		const folderId = folderResponse.CreateFolderResponse.folder[0].id;
 
@@ -248,6 +289,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateTagRequest xmlns='urn:zimbraMail'>
 				<tag name='${tagName}' color='0'/>
 			</CreateTagRequest>`;
+
+		// ItemActionRequest
 		const tagResponse = await soap.makeSOAPEnvelopeAccount(createTagRequest, accountAuthToken);
 		const tagId = tagResponse.CreateTagResponse.tag[0].id;
 
@@ -256,8 +299,11 @@ describe('Folders > Itemaction Folder', function () {
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action id='${folderId}' op='tag' tag='${tagId}'/>
 			</ItemActionRequest>`;
+
+		// CreateFolderRequest
 		const tagActionResponse = await soap.makeSOAPEnvelopeAccount(tagRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(tagActionResponse.Fault, 'Verify Fault exists');
 		assert.include(tagActionResponse.Fault.Reason.Text, 'cannot apply tag',
 			'Verify CANNOT_TAG error');
@@ -271,6 +317,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -279,8 +327,11 @@ describe('Folders > Itemaction Folder', function () {
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action id='${folderId}' op='read'/>
 			</ItemActionRequest>`;
+
+		// CreateFolderRequest
 		const readResponse = await soap.makeSOAPEnvelopeAccount(readRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(readResponse.ItemActionResponse.action.op, 'read',
 			'Verify op is read');
 		assert.equal(readResponse.ItemActionResponse.action.id, folderId,
@@ -295,6 +346,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
 
@@ -303,8 +356,11 @@ describe('Folders > Itemaction Folder', function () {
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action id='${folderId}' op='!read'/>
 			</ItemActionRequest>`;
+
+		// CreateFolderRequest
 		const unreadResponse = await soap.makeSOAPEnvelopeAccount(unreadRequest, accountAuthToken, false);
 
+		// Verify response
 		assert.exists(unreadResponse.Fault, 'Verify Fault exists');
 	});
 
@@ -318,6 +374,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folder1Name}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// CreateFolderRequest
 		const resp1 = await soap.makeSOAPEnvelopeAccount(create1, accountAuthToken);
 		const folder1Id = resp1.CreateFolderResponse.folder[0].id;
 
@@ -325,6 +383,8 @@ describe('Folders > Itemaction Folder', function () {
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folder2Name}' l='1'/>
 			</CreateFolderRequest>`;
+
+		// ItemActionRequest
 		const resp2 = await soap.makeSOAPEnvelopeAccount(create2, accountAuthToken);
 		const folder2Id = resp2.CreateFolderResponse.folder[0].id;
 
@@ -335,6 +395,7 @@ describe('Folders > Itemaction Folder', function () {
 			</ItemActionRequest>`;
 		const updateResponse = await soap.makeSOAPEnvelopeAccount(updateRequest, accountAuthToken);
 
+		// Verify response
 		assert.equal(updateResponse.ItemActionResponse.action.op, 'update',
 			'Verify op is update');
 		assert.equal(updateResponse.ItemActionResponse.action.id, folder1Id,

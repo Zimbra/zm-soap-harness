@@ -12,12 +12,16 @@ describe('Rest Servlet > Mail > Post Basic', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 	});
@@ -41,6 +45,8 @@ describe('Rest Servlet > Mail > Post Basic', function () {
 			fileBuffer: emlContent,
 			contentType: 'message/rfc822'
 		});
+
+		// Verify response
 		assert.equal(postRes.status, 200, 'REST POST should return 200');
 
 		// Verify the message was imported
@@ -49,9 +55,13 @@ describe('Rest Servlet > Mail > Post Basic', function () {
 				<query>subject:restPostTest</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const msgs = searchRes.SearchResponse?.m;
 		const msgArr = Array.isArray(msgs) ? msgs : (msgs ? [msgs] : []);
+
+		// Verify response
 		assert.isAtLeast(msgArr.length, 1, 'Should find at least one imported message');
 	});
 });

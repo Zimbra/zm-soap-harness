@@ -13,25 +13,34 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct.id, 'Account should have an id');
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
@@ -46,6 +55,8 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
@@ -54,6 +65,8 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 			: folderRes.GetFolderResponse.folder;
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const inbox = subfolders.find(f => f && f.name === 'Inbox');
+
+		// Verify response
 		assert.exists(inbox, 'Inbox folder should exist');
 
 		inboxId = inbox.id;
@@ -69,6 +82,8 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 		// Upload file
 		const filePath = path.resolve('data/email01/msg01.txt');
 		const attachmentId = await soap.uploadFile(account1Token, filePath);
+
+		// Verify response
 		assert.exists(attachmentId, 'Upload should return attachment id');
 
 		// Add message to inbox
@@ -77,11 +92,15 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 				<m l="${inboxId}" aid="${attachmentId}"/>
 			</AddMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		assert.exists(addRes.AddMsgResponse, 'AddMsgResponse should exist');
 		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
 			? addRes.AddMsgResponse.m[0]
 			: addRes.AddMsgResponse.m;
+
+		// Verify response
 		assert.exists(addedMsg.id, 'Added message should have an id');
 
 		// Verify message exists via GetMsgRequest
@@ -90,11 +109,15 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 				<m id="${addedMsg.id}"/>
 			</GetMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetMsgResponse, 'GetMsgResponse should exist');
 		const msg = Array.isArray(getRes.GetMsgResponse.m)
 			? getRes.GetMsgResponse.m[0]
 			: getRes.GetMsgResponse.m;
+
+		// Verify response
 		assert.equal(msg.id, addedMsg.id, 'Message id should match');
 	});
 });

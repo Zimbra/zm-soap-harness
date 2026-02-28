@@ -25,6 +25,8 @@ describe('Tasks > Create Tasks', function () {
 	// Tests
 	it('Smoke | To create a task with minimum attributes', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -34,6 +36,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 		assert.exists(res.CreateTaskResponse.calItemId, 'Task should have calItemId');
@@ -43,6 +47,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | To create a task specifying its priority', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -52,17 +58,25 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		const taskId = res.CreateTaskResponse.invId;
+
+		// GetTaskRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Functional | To create a task specifying its status', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -72,6 +86,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -79,6 +95,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | To create a task specifying its percentage completion', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -88,6 +106,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -95,6 +115,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | To create an all day task', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -105,6 +127,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -113,6 +137,8 @@ describe('Tasks > Create Tasks', function () {
 	it('Functional | To create a task with location', async () => {
 		const subject = `task${common.getUniqueString()}`;
 		const location = `loc${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -122,6 +148,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -129,6 +157,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | To create a task specifying name', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -138,6 +168,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -145,6 +177,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | To create a task specifying start time but no end time', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -155,6 +189,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -162,6 +198,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | To create a task specifying end time but no start time', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -172,6 +210,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -179,6 +219,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | To create a task specifying start time and end time', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -190,6 +232,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -197,6 +241,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | To create a task specifying organisers name', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -206,6 +252,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -213,6 +261,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | To create a task specifying an attendee', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -226,6 +276,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -234,6 +286,8 @@ describe('Tasks > Create Tasks', function () {
 	it('Functional | To create a task with content', async () => {
 		const subject = `task${common.getUniqueString()}`;
 		const content = `content${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -243,6 +297,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -250,6 +306,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Sanity | To send a task to other user and check for the type of the invitation as task', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -263,22 +321,30 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 
 		// Search for the task in account2's inbox
 		await new Promise(resolve => setTimeout(resolve, 2000));
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | To create a recurring task which repeats every day with no end date', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -292,6 +358,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -299,6 +367,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Sanity | To create a task with attachment', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -308,6 +378,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -315,6 +387,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Sanity | To create a task with attachment (MIME attachment)', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -326,6 +400,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -335,6 +411,8 @@ describe('Tasks > Create Tasks', function () {
 		const subject = `task${common.getUniqueString()}`;
 		const yesterday = new Date(Date.now() - 86400000);
 		const dateStr = yesterday.toISOString().split('T')[0].replace(/-/g, '');
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -346,6 +424,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
@@ -353,6 +433,8 @@ describe('Tasks > Create Tasks', function () {
 
 	it('Functional | If reminder is set past the reminder period, prompt', async () => {
 		const subject = `task${common.getUniqueString()}`;
+
+		// CreateTaskRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
 				<m>
@@ -365,6 +447,8 @@ describe('Tasks > Create Tasks', function () {
 				</m>
 			</CreateTaskRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});

@@ -17,23 +17,31 @@ describe('Briefcase > Briefcase Document Action', function () {
 
 		// Create account1
 		account1Name = 'acct1.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		// Create account2
 		account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
@@ -43,12 +51,15 @@ describe('Briefcase > Briefcase Document Action', function () {
 		account2Zid = acct2.id;
 
 		// Auth as account1
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
@@ -60,6 +71,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
@@ -67,8 +80,9 @@ describe('Briefcase > Briefcase Document Action', function () {
 		const root = Array.isArray(folders) ? folders[0] : folders;
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
-		assert.exists(briefcase, 'Briefcase folder should exist');
 
+		// Verify response
+		assert.exists(briefcase, 'Briefcase folder should exist');
 		briefcaseFolderId = briefcase.id;
 	});
 
@@ -87,6 +101,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -100,11 +116,15 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="watch"/>
 			</DocumentActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(watchRes.Fault, 'Response should not be a Fault');
 		assert.exists(watchRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 		const watchAction = Array.isArray(watchRes.DocumentActionResponse.action)
 			? watchRes.DocumentActionResponse.action[0] : watchRes.DocumentActionResponse.action;
+
+		// Verify response
 		assert.equal(watchAction.id, docId, 'action id should match document id');
 		assert.equal(watchAction.op, 'watch', 'op should be watch');
 
@@ -112,6 +132,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 		const watchItemsRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetWatchingItemsRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(watchItemsRes.Fault, 'Response should not be a Fault');
 		assert.exists(watchItemsRes.GetWatchingItemsResponse,
 			'GetWatchingItemsResponse should exist');
@@ -122,6 +144,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="!watch"/>
 			</DocumentActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(unwatchRes.Fault, 'Response should not be a Fault');
 		assert.exists(unwatchRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
@@ -130,6 +154,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 		const watchItems2 = await soap.makeSOAPEnvelopeAccount(
 			'<GetWatchingItemsRequest xmlns="urn:zimbraMail"/>', account1Token
 		);
+
+		// Verify response
 		assert.notExists(watchItems2.Fault, 'Response should not be a Fault');
 		assert.exists(watchItems2.GetWatchingItemsResponse,
 			'GetWatchingItemsResponse should exist');
@@ -145,6 +171,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -158,6 +186,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetDocumentShareURLRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareUrlRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareUrlRes.GetDocumentShareURLResponse,
 			'GetDocumentShareURLResponse should exist');
@@ -168,12 +198,16 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareDetailsRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareDetailsRes.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const item = Array.isArray(shareDetailsRes.GetShareDetailsResponse.item)
 			? shareDetailsRes.GetShareDetailsResponse.item[0]
 			: shareDetailsRes.GetShareDetailsResponse.item;
+
+		// Verify response
 		assert.equal(item.id, docId, 'item id should match document id');
 	});
 
@@ -187,6 +221,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -202,11 +238,15 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</action>
 			</DocumentActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		assert.exists(grantRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 		const grantAction = Array.isArray(grantRes.DocumentActionResponse.action)
 			? grantRes.DocumentActionResponse.action[0] : grantRes.DocumentActionResponse.action;
+
+		// Verify response
 		assert.equal(grantAction.id, docId, 'action id should match');
 		assert.equal(grantAction.op, 'grant', 'op should be grant');
 
@@ -216,15 +256,21 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const shareItem = Array.isArray(shareRes.GetShareDetailsResponse.item)
 			? shareRes.GetShareDetailsResponse.item[0] : shareRes.GetShareDetailsResponse.item;
+
+		// Verify response
 		assert.equal(shareItem.id, docId, 'item id should match');
 
 		const grantee = Array.isArray(shareItem.grantee)
 			? shareItem.grantee[0] : shareItem.grantee;
+
+		// Verify response
 		assert.equal(grantee.perm, 'rwd', 'perm should be rwd');
 		assert.equal(grantee.gt, 'usr', 'gt should be usr');
 
@@ -234,6 +280,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="!grant" zid="${account2Zid}"/>
 			</DocumentActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
@@ -244,11 +292,15 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(share2Res.Fault, 'Response should not be a Fault');
 		assert.exists(share2Res.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const item2 = Array.isArray(share2Res.GetShareDetailsResponse.item)
 			? share2Res.GetShareDetailsResponse.item[0] : share2Res.GetShareDetailsResponse.item;
+
+		// Verify response
 		assert.notExists(item2.grantee, 'grantee should not exist after revoke');
 	});
 
@@ -262,6 +314,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -277,11 +331,15 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</action>
 			</DocumentActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		assert.exists(grantRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 		const grantAction = Array.isArray(grantRes.DocumentActionResponse.action)
 			? grantRes.DocumentActionResponse.action[0] : grantRes.DocumentActionResponse.action;
+
+		// Verify response
 		assert.equal(grantAction.id, docId, 'action id should match');
 		assert.equal(grantAction.op, 'grant', 'op should be grant');
 
@@ -291,15 +349,21 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const shareItem = Array.isArray(shareRes.GetShareDetailsResponse.item)
 			? shareRes.GetShareDetailsResponse.item[0] : shareRes.GetShareDetailsResponse.item;
+
+		// Verify response
 		assert.equal(shareItem.id, docId, 'item id should match');
 
 		const grantee = Array.isArray(shareItem.grantee)
 			? shareItem.grantee[0] : shareItem.grantee;
+
+		// Verify response
 		assert.equal(grantee.perm, 'rwd', 'perm should be rwd');
 		assert.equal(grantee.gt, 'pub', 'gt should be pub');
 
@@ -309,6 +373,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="!grant" zid="99999999-9999-9999-9999-999999999999"/>
 			</DocumentActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
@@ -319,11 +385,15 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(share2Res.Fault, 'Response should not be a Fault');
 		assert.exists(share2Res.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const item2 = Array.isArray(share2Res.GetShareDetailsResponse.item)
 			? share2Res.GetShareDetailsResponse.item[0] : share2Res.GetShareDetailsResponse.item;
+
+		// Verify response
 		assert.notExists(item2.grantee, 'grantee should not exist after revoke');
 	});
 
@@ -337,6 +407,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
 		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
@@ -352,11 +424,15 @@ describe('Briefcase > Briefcase Document Action', function () {
 				</action>
 			</DocumentActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		assert.exists(grantRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
 		const grantAction = Array.isArray(grantRes.DocumentActionResponse.action)
 			? grantRes.DocumentActionResponse.action[0] : grantRes.DocumentActionResponse.action;
+
+		// Verify response
 		assert.equal(grantAction.id, docId, 'action id should match');
 		assert.equal(grantAction.op, 'grant', 'op should be grant');
 
@@ -366,15 +442,21 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const shareItem = Array.isArray(shareRes.GetShareDetailsResponse.item)
 			? shareRes.GetShareDetailsResponse.item[0] : shareRes.GetShareDetailsResponse.item;
+
+		// Verify response
 		assert.equal(shareItem.id, docId, 'item id should match');
 
 		const grantee = Array.isArray(shareItem.grantee)
 			? shareItem.grantee[0] : shareItem.grantee;
+
+		// Verify response
 		assert.equal(grantee.gt, 'all', 'gt should be all');
 		assert.equal(grantee.perm, 'rwd', 'perm should be rwd');
 
@@ -384,6 +466,8 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<action id="${docId}" op="!grant" zid="00000000-0000-0000-0000-000000000000"/>
 			</DocumentActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.DocumentActionResponse,
 			'DocumentActionResponse should exist');
@@ -394,11 +478,15 @@ describe('Briefcase > Briefcase Document Action', function () {
 				<item id="${docId}"/>
 			</GetShareDetailsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(share2Res.Fault, 'Response should not be a Fault');
 		assert.exists(share2Res.GetShareDetailsResponse,
 			'GetShareDetailsResponse should exist');
 		const item2 = Array.isArray(share2Res.GetShareDetailsResponse.item)
 			? share2Res.GetShareDetailsResponse.item[0] : share2Res.GetShareDetailsResponse.item;
+
+		// Verify response
 		assert.notExists(item2.grantee, 'grantee should not exist after revoke');
 	});
 });

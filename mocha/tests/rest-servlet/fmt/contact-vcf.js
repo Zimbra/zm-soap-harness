@@ -13,12 +13,16 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
@@ -32,6 +36,8 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(contactRes.Fault, 'Response should not be a Fault');
 		const cn = contactRes.CreateContactResponse?.cn;
 		contactId = (Array.isArray(cn) ? cn[0] : cn).id;
@@ -49,6 +55,8 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 			id: contactId,
 			fmt: 'vcf'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'BEGIN:VCARD', 'Response should contain VCF format');
 		assert.include(res.body, 'VcfFirst', 'VCF should contain first name');
@@ -62,6 +70,8 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 			folder: 'Contacts',
 			fmt: 'vcf'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'BEGIN:VCARD', 'Response should contain VCF');
 		assert.include(res.body, 'END:VCARD', 'Response should end VCF');
@@ -74,6 +84,8 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 			id: contactId,
 			fmt: 'vcf'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'vcf@domain.com', 'VCF should contain email');
 	});
@@ -85,6 +97,8 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 			id: contactId,
 			fmt: 'vcf'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'VcfLast', 'VCF N field should contain last name');
 		assert.include(res.body, 'VcfFirst', 'VCF N field should contain first name');
@@ -95,12 +109,12 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 		// Create second contact
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
-                <cn>
-                    <a n="firstName">VcfSecond</a>
-                    <a n="lastName">VcfSecondLast</a>
-                    <a n="email">vcf2@domain.com</a>
-                </cn>
-            </CreateContactRequest>`, account1Token
+				<cn>
+					<a n="firstName">VcfSecond</a>
+					<a n="lastName">VcfSecondLast</a>
+					<a n="email">vcf2@domain.com</a>
+				</cn>
+			</CreateContactRequest>`, account1Token
 		);
 
 		const res = await rest.makeRestRequest(account1Token, {
@@ -108,6 +122,8 @@ describe('Rest Servlet > Fmt > Contact VCF', function () {
 			folder: 'Contacts',
 			fmt: 'vcf'
 		});
+
+		// Verify response
 		assert.equal(res.status, 200, 'REST GET should return 200');
 		assert.include(res.body, 'VcfFirst', 'Should contain first contact');
 		assert.include(res.body, 'VcfSecond', 'Should contain second contact');

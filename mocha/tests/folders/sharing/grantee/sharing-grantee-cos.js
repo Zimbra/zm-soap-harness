@@ -25,6 +25,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name>${cosName}</name>
 			</CreateCosRequest>`;
+
+		// ModifyAccountRequest
 		const createCos = await soap.makeSOAPEnvelopeAdmin(createCosRequest, adminAuth);
 
 		cosId = createCos.CreateCosResponse.cos[0].id;
@@ -39,6 +41,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 				<id>${accId}</id>
 				<a n="zimbraCOSId">${cosId}</a>
 			</ModifyAccountRequest>`;
+
+		// DeleteCosRequest
 		await soap.makeSOAPEnvelopeAdmin(modifyAccountRequest, adminAuth);
 
 		cosAuth = await soap.getAccountAuthToken(cosAccount, config.accountPassword);
@@ -63,6 +67,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 	it('Sanity | Share a folder to a COS. Verify that COS users have access.', async function () {
 		// Setup Folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -71,6 +77,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -81,6 +89,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 					<grant gt="cos" d="${this.cosName}" perm="r"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// Verify COS user can access
@@ -88,7 +98,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="mount_cos" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
+
+		// GetFolderRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, cosAuth);
+
+		// Verify response
 		assert.exists(mountResp.CreateMountpointResponse.link,
 			'COS member should be able to mount folder');
 	});
@@ -97,6 +111,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 	it('Sanity | Unshare a folder to a COS. Verify that COS users no longer have access.', async function () {
 		// Create folder
 		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest2, auth1);
 		const inboxId = getFolder.GetFolderResponse.folder[0].folder.find(f => f.name === 'Inbox').id;
 
@@ -105,6 +121,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="${inboxId}"/>
 			</CreateFolderRequest>`;
+
+		// AddMsgRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest2, auth1);
 		const folderId = createResp.CreateFolderResponse.folder[0].id;
 
@@ -122,6 +140,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 				</content>
 			</m>
 			</AddMsgRequest>`;
+
+		// FolderActionRequest
 		const addMsg = await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth1);
 		const msgId = addMsg.AddMsgResponse.m[0].id;
 
@@ -132,6 +152,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 					<grant gt="cos" d="${this.cosName}" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest2, auth1);
 
 		// Verify COS user has access
@@ -139,7 +161,11 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
+
+		// FolderActionRequest
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, cosAuth);
+
+		// Verify response
 		assert.notExists(accessCheck.Fault,
 			'COS member should have access before revoke');
 
@@ -148,6 +174,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folderId}" op="!grant" zid="${cosId}"/>
 			</FolderActionRequest>`;
+
+		// GetMsgRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest3, auth1);
 
 		// Verify access denied
@@ -156,6 +184,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 				<m id="${account1Id}:${msgId}"/>
 			</GetMsgRequest>`;
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, cosAuth);
+
+		// Verify response
 		assert.exists(revokedCheck.Fault, 'COS member should be denied after revoke');
 	});
 

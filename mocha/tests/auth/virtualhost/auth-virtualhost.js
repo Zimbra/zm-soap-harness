@@ -37,6 +37,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse,
 			'Should create account on default domain');
@@ -66,6 +68,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 	if (config.serial !== true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		it('Sanity | Virtual Host Test: AuthRequest - login as from virtual host, no virtual hosts defined Should use test_account1@defaultdomain/password to authenticate', async () => {
 			const virtualHost = 'v' + common.getUniqueString() + '.virtual.com';
+
+			// Send the message
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -73,6 +77,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost}</virtualHost>
 				</AuthRequest>`, null, true, testAccountServer
 			);
+
+			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
@@ -82,6 +88,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 		it('Sanity | Virtual Host Test - AuthRequest - login with virtual host password', async () => {
 			const virtualHost = 'v' + common.getUniqueString() + '.virtual.com';
+
+			// Send the message
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -90,6 +98,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				</AuthRequest>`, null, true, testAccountServer
 			);
 			if (response.Fault) {
+
+				// Verify response
 				assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 					'Should fail with AUTH_FAILED');
 			} else {
@@ -99,6 +109,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 
 		it('Sanity | Virtual Host Test - AuthRequest - login with full account name', async () => {
+
+			// Send the message
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}@${testDomainName}</account>
@@ -106,6 +118,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>v${common.getUniqueString()}.virtual.com</virtualHost>
 				</AuthRequest>`, null
 			);
+
+			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
@@ -126,6 +140,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<a n="zimbraVirtualHostname">${virtualHost01}</a>
 				</CreateDomainRequest>`, adminAuthToken
 			);
+
+			// Verify response
 			assert.notExists(domainRes.Fault, 'Response should not be a Fault');
 			assert.exists(domainRes.CreateDomainResponse, 'Should create domain');
 
@@ -140,6 +156,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<password>${config.accountPassword}${domain1Name}</password>
 				</CreateAccountRequest>`, adminAuthToken
 			);
+
+			// Verify response
 			assert.notExists(createRes.Fault, 'Response should not be a Fault');
 			assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
@@ -150,6 +168,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			const acctServer = host ? host._content : config.server;
 
 			// Auth using virtual host
+			// Send the message
 			const authRes = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -157,6 +176,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost01}</virtualHost>
 				</AuthRequest>`, null, true, acctServer
 			);
+
+			// Verify response
 			assert.notExists(authRes.Fault, 'Response should not be a Fault');
 			assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 			assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
@@ -173,6 +194,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<account by="name">${testAccountUser}@${domain1Name}</account>
 				</GetAccountInfoRequest>`, authToken, false, acctServer
 			);
+
+			// Verify response
 			assert.notExists(infoRes.Fault, 'Response should not be a Fault');
 			assert.exists(infoRes.GetAccountInfoResponse,
 				'GetAccountInfoResponse should exist');
@@ -228,14 +251,19 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<a n="zimbraVirtualHostname">${virtualHost03}</a>
 				</ModifyDomainRequest>`, adminAuthToken
 			);
+
+			// Verify response
 			assert.notExists(modRes.Fault, 'Response should not be a Fault');
 			assert.exists(modRes.ModifyDomainResponse, 'ModifyDomainResponse should exist');
 			const domain = Array.isArray(modRes.ModifyDomainResponse.domain)
 				? modRes.ModifyDomainResponse.domain[0]
 				: modRes.ModifyDomainResponse.domain;
+
+			// Verify response
 			assert.exists(domain.id, 'domain id should exist');
 
 			// Auth with virtual host 01
+			// Send the message
 			const authRes1 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -243,6 +271,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost01}</virtualHost>
 				</AuthRequest>`, null, true, acctServer
 			);
+
+			// Verify response
 			assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 			assert.exists(authRes1.AuthResponse, 'Should auth with virtualHost01');
 			assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
@@ -250,6 +280,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
 
 			// Auth with virtual host 02
+			// Send the message
 			const authRes2 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -257,6 +288,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost02}</virtualHost>
 				</AuthRequest>`, null, true, acctServer
 			);
+
+			// Verify response
 			assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 			assert.exists(authRes2.AuthResponse, 'Should auth with virtualHost02');
 			assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
@@ -264,6 +297,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
 
 			// Auth with virtual host 03
+			// Send the message
 			const authRes3 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -271,6 +305,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost03}</virtualHost>
 				</AuthRequest>`, null, true, acctServer
 			);
+
+			// Verify response
 			assert.notExists(authRes3.Fault, 'Response should not be a Fault');
 			assert.exists(authRes3.AuthResponse, 'Should auth with virtualHost03');
 			assert.match(String(authRes3.AuthResponse.lifetime), /^\d+$/,
@@ -306,6 +342,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<name>${domain2Name}</name>
 				</CreateDomainRequest>`, adminAuthToken
 			);
+
+			// Verify response
 			assert.notExists(domRes.Fault, 'Response should not be a Fault');
 			assert.exists(domRes.CreateDomainResponse, 'Should create domain2');
 			const domain2Id = Array.isArray(domRes.CreateDomainResponse.domain)
@@ -319,6 +357,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<password>${passwordNew}</password>
 				</CreateAccountRequest>`, adminAuthToken
 			);
+
+			// Verify response
 			assert.notExists(createRes.Fault, 'Response should not be a Fault');
 			assert.exists(createRes.CreateAccountResponse, 'Should create account');
 			const acct = Array.isArray(createRes.CreateAccountResponse.account)
@@ -334,14 +374,19 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<a n="zimbraVirtualHostname">${virtualHost02}</a>
 				</ModifyDomainRequest>`, adminAuthToken
 			);
+
+			// Verify response
 			assert.notExists(modRes1.Fault, 'Response should not be a Fault');
 			assert.exists(modRes1.ModifyDomainResponse, 'Should modify domain');
 			let domain = Array.isArray(modRes1.ModifyDomainResponse.domain)
 				? modRes1.ModifyDomainResponse.domain[0]
 				: modRes1.ModifyDomainResponse.domain;
+
+			// Verify response
 			assert.exists(domain.id, 'domain id should exist');
 
 			// Auth with virtualHost02 - should succeed
+			// Send the message
 			const authRes1 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -349,6 +394,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost02}</virtualHost>
 				</AuthRequest>`, null, true, domain2Server
 			);
+
+			// Verify response
 			assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 			assert.exists(authRes1.AuthResponse, 'Should auth with virtualHost02');
 			assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
@@ -358,16 +405,22 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			const authToken1 = Array.isArray(authRes1.AuthResponse.authToken)
 				? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
 				: authRes1.AuthResponse.authToken._content || authRes1.AuthResponse.authToken;
+
+			// GetAccountInfoRequest
 			const infoRes1 = await soap.makeSOAPEnvelopeAccount(
 				`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}@${domain2Name}</account>
 				</GetAccountInfoRequest>`, authToken1, false, domain2Server
 			);
+
+			// Verify response
 			assert.notExists(infoRes1.Fault, 'Response should not be a Fault');
 			assert.exists(infoRes1.GetAccountInfoResponse, 'GetAccountInfoResponse should exist');
 
 			// Replace virtualHost02 with virtualHost03
 			adminAuthToken = await soap.getAdminAuthToken();
+
+			// ModifyDomainRequest
 			await soap.makeSOAPEnvelopeAdmin(
 				`<ModifyDomainRequest xmlns="urn:zimbraAdmin">
 					<id>${domain2Id}</id>
@@ -380,6 +433,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			await new Promise(resolve => setTimeout(resolve, 10000));
 
 			// Auth with virtualHost02 - should FAIL
+			// Send the message
 			const authRes2 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -387,22 +441,28 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost02}</virtualHost>
 				</AuthRequest>`, null, true, domain2Server
 			);
+
+			// Verify response
 			assert.exists(authRes2.Fault, 'Should fail auth with removed virtualHost02');
 			assert.include(authRes2.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED for virtualHost02');
 
 			// Auth without virtualHost - should FAIL
+			// Send the message
 			const authRes3 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
 					<password>${passwordNew}</password>
 				</AuthRequest>`, null, true, domain2Server
 			);
+
+			// Verify response
 			assert.exists(authRes3.Fault, 'Should fail auth without virtualHost');
 			assert.include(authRes3.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED without virtualHost');
 
 			// Auth with virtualHost03 - should SUCCEED
+			// Send the message
 			const authRes4 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -410,6 +470,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost03}</virtualHost>
 				</AuthRequest>`, null, true, domain2Server
 			);
+
+			// Verify response
 			assert.notExists(authRes4.Fault, 'Response should not be a Fault');
 			assert.exists(authRes4.AuthResponse, 'Should auth with virtualHost03');
 			assert.match(String(authRes4.AuthResponse.lifetime), /^\d+$/,
@@ -419,22 +481,30 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			const authToken4 = Array.isArray(authRes4.AuthResponse.authToken)
 				? authRes4.AuthResponse.authToken[0]._content || authRes4.AuthResponse.authToken[0]
 				: authRes4.AuthResponse.authToken._content || authRes4.AuthResponse.authToken;
+
+			// GetAccountInfoRequest
 			const infoRes2 = await soap.makeSOAPEnvelopeAccount(
 				`<GetAccountInfoRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}@${domain2Name}</account>
 				</GetAccountInfoRequest>`, authToken4, false, domain2Server
 			);
+
+			// Verify response
 			assert.notExists(infoRes2.Fault, 'Response should not be a Fault');
 			assert.exists(infoRes2.GetAccountInfoResponse, 'GetAccountInfoResponse should exist');
 
 			// Remove all virtual hosts
 			adminAuthToken = await soap.getAdminAuthToken();
+
+			// ModifyDomainRequest
 			const modRes3 = await soap.makeSOAPEnvelopeAdmin(
 				`<ModifyDomainRequest xmlns="urn:zimbraAdmin">
 					<id>${domain2Id}</id>
 					<a n="zimbraVirtualHostname"></a>
 				</ModifyDomainRequest>`, adminAuthToken
 			);
+
+			// Verify response
 			assert.notExists(modRes3.Fault, 'Response should not be a Fault');
 			assert.exists(modRes3.ModifyDomainResponse, 'Should remove virtual hosts');
 			domain = Array.isArray(modRes3.ModifyDomainResponse.domain)
@@ -447,6 +517,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			await new Promise(resolve => setTimeout(resolve, 10000));
 
 			// Auth with virtualHost02 - should FAIL
+			// Send the message
 			const authRes5 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -454,22 +525,28 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost02}</virtualHost>
 				</AuthRequest>`, null, true, domain2Server
 			);
+
+			// Verify response
 			assert.exists(authRes5.Fault, 'Should fail auth with virtualHost02 after removal');
 			assert.include(authRes5.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED');
 
 			// Auth without virtualHost - should FAIL
+			// Send the message
 			const authRes6 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
 					<password>${passwordNew}</password>
 				</AuthRequest>`, null, true, domain2Server
 			);
+
+			// Verify response
 			assert.exists(authRes6.Fault, 'Should fail auth without virtualHost after removal');
 			assert.include(authRes6.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED');
 
 			// Auth with virtualHost03 - should FAIL
+			// Send the message
 			const authRes7 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -477,17 +554,22 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost03}</virtualHost>
 				</AuthRequest>`, null, true, domain2Server
 			);
+
+			// Verify response
 			assert.exists(authRes7.Fault, 'Should fail auth with virtualHost03 after removal');
 			assert.include(authRes7.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED');
 
 			// Auth with full domain name - should SUCCEED
+			// Send the message
 			const authRes8 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}@${domain2Name}</account>
 					<password>${passwordNew}</password>
 				</AuthRequest>`, null, true, domain2Server
 			);
+
+			// Verify response
 			assert.notExists(authRes8.Fault, 'Response should not be a Fault');
 			assert.exists(authRes8.AuthResponse, 'Should auth with full domain name');
 			assert.match(String(authRes8.AuthResponse.lifetime), /^\d+$/,

@@ -13,6 +13,7 @@ describe('Admin > Accounts > Reload Account', function () {
 		account1Name = `test${common.getUniqueString()}@${config.testDomain}`;
 		const account2Name = `test${common.getUniqueString()}@${config.testDomain}`;
 
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -20,6 +21,7 @@ describe('Admin > Accounts > Reload Account', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Create account
 		const r2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -54,59 +56,77 @@ describe('Admin > Accounts > Reload Account', function () {
 
 	// Tests
 	it('Sanity | Send ReloadAccountRequest to reload account with changes made', async () => {
+		// ReloadAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name="${account1Name}"/>
 			</ReloadAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.isTrue(!!response.ReloadAccountResponse ||
 			(response.Fault && response.Fault.Detail && response.Fault.Detail.Error &&
 				response.Fault.Detail.Error.Code.includes('service.UNKNOWN_DOCUMENT')),
-		'ReloadAccountResponse should exist or return UNKNOWN_DOCUMENT');
+			'ReloadAccountResponse should exist or return UNKNOWN_DOCUMENT');
 	});
 
 
 	it('Regression | Send ExportAndDeleteItemsRequest with blank mbox id - serviceFAILURE', async () => {
+		// ReloadAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name=""/>
 			</ReloadAccountRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
+
+		// Verify response
 		assert.isTrue(code.includes('service.FAILURE') || code.includes('service.INVALID_REQUEST') ||
 			code.includes('service.UNKNOWN_DOCUMENT'),
-		'Should return FAILURE or INVALID_REQUEST or UNKNOWN_DOCUMENT');
+			'Should return FAILURE or INVALID_REQUEST or UNKNOWN_DOCUMENT');
 	});
 
 
 	it('Regression | Send ExportAndDeleteItemsRequest with item id as alphabets - serviceINVALIDREQUEST', async () => {
+		// ReloadAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name="invalid.email"/>
 			</ReloadAccountRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
+
+		// Verify response
 		assert.isTrue(code.includes('service.FAILURE') || code.includes('account.NO_SUCH_ACCOUNT') ||
 			code.includes('service.UNKNOWN_DOCUMENT'),
-		'Should return FAILURE or NO_SUCH_ACCOUNT or UNKNOWN_DOCUMENT');
+			'Should return FAILURE or NO_SUCH_ACCOUNT or UNKNOWN_DOCUMENT');
 	});
 
 
 	it('Regression | Modify domain with ZimbraGalmode as invalid (invalid, negative number)', async () => {
+		// ReloadAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
 			`<ReloadAccountRequest xmlns="urn:zimbraAdmin">
 				<account name="-111111"/>
 			</ReloadAccountRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(response.Fault, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
+
+		// Verify response
 		assert.isTrue(code.includes('service.FAILURE') || code.includes('account.NO_SUCH_ACCOUNT') ||
 			code.includes('service.UNKNOWN_DOCUMENT'),
-		'Should return FAILURE or NO_SUCH_ACCOUNT or UNKNOWN_DOCUMENT');
+			'Should return FAILURE or NO_SUCH_ACCOUNT or UNKNOWN_DOCUMENT');
 	});
 });

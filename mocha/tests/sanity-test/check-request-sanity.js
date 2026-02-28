@@ -19,17 +19,24 @@ describe('SanityTest > Check Request Sanity', function () {
 
 	// Tests
 	it('Sanity | Sanity test for CheckHostnameResolveRequest', async () => {
+		// CheckHostnameResolveRequest
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<CheckHostnameResolveRequest xmlns="urn:zimbraAdmin">
 				<hostname>${config.serverHost}</hostname>
 			</CheckHostnameResolveRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CheckHostnameResolveResponse,
 			'CheckHostnameResolveResponse should exist');
 		const codeArr = res.CheckHostnameResolveResponse.code;
+
+		// Verify response
 		assert.exists(codeArr, 'Response should contain code');
 		const code = Array.isArray(codeArr) ? codeArr[0]._content : codeArr;
+
+		// Verify response
 		assert.equal(code, 'check.OK', 'Code should be check.OK');
 	});
 
@@ -49,6 +56,8 @@ describe('SanityTest > Check Request Sanity', function () {
 		);
 		// Server may succeed or fault depending on LDAP configuration
 		if (res.CheckAuthConfigResponse) {
+
+			// Verify response
 			assert.exists(res.CheckAuthConfigResponse,
 				'CheckAuthConfigResponse should exist');
 		} else {
@@ -73,6 +82,8 @@ describe('SanityTest > Check Request Sanity', function () {
 		);
 		// Server may succeed or fault depending on GAL/LDAP configuration
 		if (res.CheckGalConfigResponse) {
+
+			// Verify response
 			assert.exists(res.CheckGalConfigResponse,
 				'CheckGalConfigResponse should exist');
 		} else {

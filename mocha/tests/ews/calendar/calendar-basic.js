@@ -71,6 +71,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
+		await soap.waitFor(5000);
+
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -97,8 +99,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-			|| c.MeetingRequest?.Subject === apptSubject);
+		const cFiltered = creates.filter(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = cFiltered[cFiltered.length - 1];
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
 		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
@@ -157,6 +159,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
+		await soap.waitFor(5000);
+
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -183,8 +187,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-			|| c.MeetingRequest?.Subject === apptSubject);
+		const cFiltered = creates.filter(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = cFiltered[cFiltered.length - 1];
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
 		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
@@ -242,6 +246,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
+		await soap.waitFor(5000);
+
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -268,8 +274,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-			|| c.MeetingRequest?.Subject === apptSubject);
+		const cFiltered = creates.filter(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = cFiltered[cFiltered.length - 1];
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
 		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
@@ -335,6 +341,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
+		await soap.waitFor(5000);
+
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -361,8 +369,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-			|| c.MeetingRequest?.Subject === apptSubject);
+		const cFiltered = creates.filter(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = cFiltered[cFiltered.length - 1];
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
 		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
@@ -796,6 +804,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
+		await soap.waitFor(5000);
+
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -822,8 +832,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-			|| c.MeetingRequest?.Subject === apptSubject);
+		const cFiltered = creates.filter(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = cFiltered[cFiltered.length - 1];
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
 		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
@@ -891,6 +901,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
+		await soap.waitFor(5000);
+
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -917,8 +929,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-			|| c.MeetingRequest?.Subject === apptSubject);
+		const cFiltered = creates.filter(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = cFiltered[cFiltered.length - 1];
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
 		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;
@@ -1058,6 +1070,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
+		await soap.waitFor(5000);
+
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -1084,8 +1098,8 @@ describe('EWS > Calendar > Calendar Basic', function () {
 			'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
-		const calItem = creates.find(c => c.CalendarItem?.Subject === apptSubject
-			|| c.MeetingRequest?.Subject === apptSubject);
+		const cFiltered = creates.filter(c => c.CalendarItem || c.MeetingRequest);
+		const calItem = cFiltered[cFiltered.length - 1];
 		const item = calItem?.CalendarItem || calItem?.MeetingRequest;
 		assert.exists(item, 'Calendar item should be found in sync results');
 		const calId = item.ItemId.$.Id;

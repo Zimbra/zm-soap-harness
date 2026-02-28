@@ -17,17 +17,22 @@ describe('CalDav > Login', function () {
 		const account1User = 'test' + common.getUniqueString();
 		account1Name = account1User + '@' + config.testDomain;
 
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct1.id, 'Account1 should have an id');
 
 		// Extract zimbraMailHost
@@ -39,6 +44,7 @@ describe('CalDav > Login', function () {
 		const account2User = 'test' + common.getUniqueString();
 		account2Name = account2User + '@' + config.testDomain;
 
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
@@ -46,11 +52,15 @@ describe('CalDav > Login', function () {
 				<a n="displayName">${account2User}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct2.id, 'Account2 should have an id');
 	});
 
@@ -79,6 +89,8 @@ describe('CalDav > Login', function () {
 			</x0:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'Should return 207 Multi-Status');
 		assert.match(res.text, new RegExp('/principals/users/' + account1Name.replace('@', '(@|%40)') + '/'),
 			'Response should contain principals href');
@@ -104,8 +116,12 @@ describe('CalDav > Login', function () {
 			</x0:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'Should return 207 Multi-Status');
 		const namePattern = account1Name.replace('@', '(@|%40)');
+
+		// Verify response
 		assert.match(res.text, new RegExp('/dav/' + namePattern + '/'),
 			'calendar-home-set should contain dav path');
 		assert.include(res.text, `mailto:${account1Name}`,
@@ -137,6 +153,8 @@ describe('CalDav > Login', function () {
 			</x0:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'Should return 207 Multi-Status');
 		assert.include(res.text, `<D:displayname>${account2User}</D:displayname>`,
 			'displayname should match account2 user');
@@ -163,6 +181,8 @@ describe('CalDav > Login', function () {
 			</x0:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 401, 'Should return 401 Unauthorized for non-existent account');
 	});
 
@@ -183,6 +203,8 @@ describe('CalDav > Login', function () {
 			</D:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(propfindRes.status, 207, 'PROPFIND should return 207 Multi-Status');
 		assert.match(propfindRes.text,
 			new RegExp('/dav/' + account1Name.replace('@', '(@|%40)') + '/Calendar/'),
@@ -208,6 +230,8 @@ describe('CalDav > Login', function () {
 			</C:calendar-query>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(reportRes.status, 207, 'REPORT should return 207 Multi-Status');
 		assert.include(reportRes.text, 'multistatus',
 			'Response should contain multistatus');
@@ -230,6 +254,7 @@ describe('CalDav > Login', function () {
 			server: account1Server,
 		});
 		// Should get a response (not error)
+		// Verify response
 		assert.isAtLeast(res.status, 200, 'Should return a successful status code');
 		assert.isBelow(res.status, 500, 'Should not return server error');
 	});
@@ -250,8 +275,12 @@ describe('CalDav > Login', function () {
 			</x0:propfind>`,
 			server: account1Server,
 		});
+
+		// Verify response
 		assert.equal(res.status, 207, 'Should return 207 Multi-Status');
 		const namePattern = account1Name.replace('@', '(@|%40)');
+
+		// Verify response
 		assert.match(res.text, new RegExp('/dav/' + namePattern + '/'),
 			'calendar-home-set href should contain dav path');
 		assert.match(res.text, new RegExp('/dav/' + namePattern + '/Inbox/'),

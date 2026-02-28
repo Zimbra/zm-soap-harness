@@ -15,12 +15,16 @@ describe('Rest Servlet > Contacts > Post CSV', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 	});
@@ -40,6 +44,8 @@ describe('Rest Servlet > Contacts > Post CSV', function () {
 			fmt: 'csv',
 			filePath: csvFilePath
 		});
+
+		// Verify response
 		assert.equal(postRes.status, 200, 'REST POST should return 200');
 
 		// Search for the imported contact
@@ -48,9 +54,13 @@ describe('Rest Servlet > Contacts > Post CSV', function () {
 				<query>email@foo.com</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const contacts = searchRes.SearchResponse?.cn;
 		const contactArr = Array.isArray(contacts) ? contacts : (contacts ? [contacts] : []);
+
+		// Verify response
 		assert.isAtLeast(contactArr.length, 1, 'Should find at least one imported contact');
 		const contactId = contactArr[0].id;
 
@@ -60,6 +70,8 @@ describe('Rest Servlet > Contacts > Post CSV', function () {
 				<cn id="${contactId}"/>
 			</GetContactsRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const cn = getRes.GetContactsResponse?.cn;
 		const contact = Array.isArray(cn) ? cn[0] : cn;
@@ -72,6 +84,8 @@ describe('Rest Servlet > Contacts > Post CSV', function () {
 				attrs[a.n] = a._content;
 			});
 		}
+
+		// Verify response
 		assert.equal(attrs.email, 'email@foo.com', 'Email should match');
 		assert.equal(attrs.firstName, 'First', 'First name should match');
 		assert.equal(attrs.lastName, 'Last', 'Last name should match');

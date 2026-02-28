@@ -20,6 +20,8 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -28,39 +30,52 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = (() => {
-			const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id; 
+			const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id;
 		})();
 
+		// ModifyAccountRequest
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<a n="zimbraForeignPrincipal">${fp2}</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAccountResponse,
 			'ModifyAccountResponse should exist');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
+
+		// Verify response
 		assert.exists(account.id, 'Account should have an id');
 
 		// Old FP should fail
 		await common.sleep(2000);
+
+		// GetAccountRequest
 		const getOld = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${fp1}</account>
 			</GetAccountRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(getOld.Fault, 'Old FP should no longer work');
 
 		// New FP should succeed
 		await common.sleep(2000);
+
+		// GetAccountRequest
 		const getNew = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${fp2}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.equal((Array.isArray(getNew.GetAccountResponse?.account) ? (Array.isArray(getNew.GetAccountResponse?.account) ? getNew.GetAccountResponse.account[0].id : getNew.GetAccountResponse?.account?.id) : getNew.GetAccountResponse?.account?.id), acctId);
 	});
 
@@ -68,6 +83,8 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 	it('Sanity | Add the foreign principal attribute to an existing account', async () => {
 		const fp = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -75,38 +92,51 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = (() => {
-			const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id; 
+			const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id;
 		})();
 
+		// ModifyAccountRequest
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
 				<a n="zimbraForeignPrincipal">${fp}</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAccountResponse,
 			'ModifyAccountResponse should exist');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
+
+		// Verify response
 		assert.exists(account.id, 'Account should have an id');
 
 		await common.sleep(2000);
+
+		// GetAccountRequest
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="name">${acctName}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetAccountResponse,
 			'Should be able to get account after FP modify');
 		const acct = Array.isArray(getRes.GetAccountResponse.account)
 			? getRes.GetAccountResponse.account[0]
 			: getRes.GetAccountResponse.account;
+
+		// Verify response
 		assert.equal(acct.id, acctId);
 
 		const fpAttrs = (acct.a || []).filter(a => a.n === 'zimbraForeignPrincipal');
+
+		// Verify response
 		assert.isTrue(fpAttrs.some(a => a._content === fp),
 			'FP should be set on account');
 	});
@@ -116,6 +146,8 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 		const fp1 = `test:${common.getUniqueString()}`;
 		const fp2 = `test:${common.getUniqueString()}`;
 		const acctName = `fp.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -128,6 +160,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 			return Array.isArray(a) ? a[0].id : a?.id;
 		})();
 
+		// ModifyAccountRequest
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${acctId}</id>
@@ -137,26 +170,37 @@ describe('Admin > Accounts > Foreignprincipal > Account Modify', function () {
 
 		// Both FPs should work
 		await common.sleep(2000);
+
+		// GetAccountRequest
 		const get1 = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${fp1}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(get1.Fault, 'Response should not be a Fault');
 		assert.exists(get1.GetAccountResponse, `Should find account by first FP: ${fp1}`);
 
 		const acct1 = Array.isArray(get1.GetAccountResponse.account) ? get1.GetAccountResponse.account[0] : get1.GetAccountResponse.account;
+
+		// Verify response
 		assert.equal(acct1.id, acctId);
 
+		// GetAccountRequest
 		const get2 = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="foreignPrincipal">${fp2}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(get2.Fault, 'Response should not be a Fault');
 		assert.exists(get2.GetAccountResponse,
 			`Should find account by second FP: ${fp2}`);
 		const acct2 = Array.isArray(get2.GetAccountResponse.account) ? get2.GetAccountResponse.account[0] : get2.GetAccountResponse.account;
+
+		// Verify response
 		assert.equal(acct2.id, acctId);
 	});
 });

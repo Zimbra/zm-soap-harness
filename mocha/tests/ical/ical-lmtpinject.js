@@ -35,7 +35,7 @@ describe('iCal > LMTP Inject', function () {
 			account2Email, config.accountPassword
 		);
 
-		const mailSubject = `mail1_subject`;
+		const mailSubject = 'mail1_subject';
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/msg01.txt');
 		// Inject mime via LMTP
 		await soap.injectMime(account2AuthToken, filePath);
@@ -46,19 +46,27 @@ describe('iCal > LMTP Inject', function () {
 				<query>in:inbox</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		const searchResp = res.SearchResponse;
+
+		// Verify response
 		assert.exists(searchResp, 'SearchResponse should exist');
 
 		// Search for appointment
 		const searchStart = '1127586600000';
 		const searchEnd = '1131215400000';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});

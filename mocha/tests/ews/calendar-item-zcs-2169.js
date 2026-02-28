@@ -6,37 +6,37 @@ import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
 describe('EWS > CalendarItem ZCS-2169', function () {
-    this.timeout(120 * 1000);
-    let adminAuthToken, account1Email, account1Password;
+	this.timeout(120 * 1000);
+	let adminAuthToken, account1Email, account1Password;
 
-    before(async function () {
-        await main.before(this.ctx);
-        adminAuthToken = await soap.getAdminAuthToken();
-        account1Password = config.accountPassword;
+	before(async function () {
+		await main.before(this.ctx);
+		adminAuthToken = await soap.getAdminAuthToken();
+		account1Password = config.accountPassword;
 
-        const accountName = `ewstest${common.getUniqueString()}@${config.testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+		const accountName = `ewstest${common.getUniqueString()}@${config.testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountName}</name>
 				<password>${account1Password}</password>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        account1Email = accountName;
-    });
+		);
+		account1Email = accountName;
+	});
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    // Tests
-    it('Sanity | Creating recurring appointments from outlook 2016 should show all instances including last instance in ZWC', async () => {
-        const messageSubject = `subject1${common.getUniqueString()}`;
+	// Tests
+	it('Sanity | Creating recurring appointments from outlook 2016 should show all instances including last instance in ZWC', async () => {
+		const messageSubject = `subject1${common.getUniqueString()}`;
 
-        // EWS: CreateItem — recurring appointment with EndDateRecurrence
-        const createRes = await ews.makeEWSRequest(
-            `<CreateItem
+		// EWS: CreateItem — recurring appointment with EndDateRecurrence
+		const createRes = await ews.makeEWSRequest(
+			`<CreateItem
 				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				SendMeetingInvitations="SendToAllAndSaveCopy">
 				<SavedItemFolderId>
@@ -69,45 +69,45 @@ describe('EWS > CalendarItem ZCS-2169', function () {
 					</t:CalendarItem>
 				</Items>
 			</CreateItem>`,
-            account1Email, account1Password
-        );
-        const createBody = ews.getBody(createRes);
-        const createMsg = createBody.CreateItemResponse
-            .ResponseMessages.CreateItemResponseMessage;
-        const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
-        assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
+			account1Email, account1Password
+		);
+		const createBody = ews.getBody(createRes);
+		const createMsg = createBody.CreateItemResponse
+			.ResponseMessages.CreateItemResponseMessage;
+		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-        // ZWC: Verify the appointment via SearchRequest
-        await soap.waitFor(5000);
-        const accountAuthToken = await soap.getAccountAuthToken(account1Email, account1Password);
-        const searchRes = await soap.makeSOAPEnvelopeAccount(
-            `<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+		// ZWC: Verify the appointment via SearchRequest
+		await soap.waitFor(5000);
+		const accountAuthToken = await soap.getAccountAuthToken(account1Email, account1Password);
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, accountAuthToken
-        );
-        assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-        const appt = searchRes.SearchResponse?.appt;
-        assert.exists(appt, 'Appointment should exist in search results');
-        const apptItem = Array.isArray(appt) ? appt[0] : appt;
-        const invId = apptItem.invId;
+		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
+		const appt = searchRes.SearchResponse?.appt;
+		assert.exists(appt, 'Appointment should exist in search results');
+		const apptItem = Array.isArray(appt) ? appt[0] : appt;
+		const invId = apptItem.invId;
 
-        // ZWC: GetMsgRequest to verify until date
-        const getMsgRes = await soap.makeSOAPEnvelopeAccount(
-            `<GetMsgRequest xmlns="urn:zimbraMail">
+		// ZWC: GetMsgRequest to verify until date
+		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}" />
 			</GetMsgRequest>`, accountAuthToken
-        );
-        assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
-        const msg = getMsgRes.GetMsgResponse?.m;
-        assert.exists(msg, 'Message should exist');
-        const msgItem = Array.isArray(msg) ? msg[0] : msg;
-        const inv = Array.isArray(msgItem?.inv) ? msgItem.inv[0] : msgItem?.inv;
-        const comp = Array.isArray(inv?.comp) ? inv.comp[0] : inv?.comp;
-        const recur = Array.isArray(comp?.recur) ? comp.recur[0] : comp?.recur;
-        const add = Array.isArray(recur?.add) ? recur.add[0] : recur?.add;
-        const rule = Array.isArray(add?.rule) ? add.rule[0] : add?.rule;
-        const until = Array.isArray(rule?.until) ? rule.until[0] : rule?.until;
-        assert.exists(until, 'Recurrence until element should exist');
-        assert.equal(until.d, '20170906T182959Z', 'Until date should match expected value');
-    });
+		);
+		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
+		const msg = getMsgRes.GetMsgResponse?.m;
+		assert.exists(msg, 'Message should exist');
+		const msgItem = Array.isArray(msg) ? msg[0] : msg;
+		const inv = Array.isArray(msgItem?.inv) ? msgItem.inv[0] : msgItem?.inv;
+		const comp = Array.isArray(inv?.comp) ? inv.comp[0] : inv?.comp;
+		const recur = Array.isArray(comp?.recur) ? comp.recur[0] : comp?.recur;
+		const add = Array.isArray(recur?.add) ? recur.add[0] : recur?.add;
+		const rule = Array.isArray(add?.rule) ? add.rule[0] : add?.rule;
+		const until = Array.isArray(rule?.until) ? rule.until[0] : rule?.until;
+		assert.exists(until, 'Recurrence until element should exist');
+		assert.equal(until.d, '20170906T182959Z', 'Until date should match expected value');
+	});
 });

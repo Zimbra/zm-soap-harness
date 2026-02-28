@@ -5,81 +5,89 @@ import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
 
 describe('Rest Servlet > Sharing > Private Appointment ICS', function () {
-    this.timeout(120 * 1000);
-    let account1Email, account1Token, account1Id;
-    let account2Email, account2Token;
-    let calendarFolderId, mountpointName, mountpointId;
+	this.timeout(120 * 1000);
+	let account1Email, account1Token, account1Id;
+	let account2Email, account2Token;
+	let calendarFolderId, mountpointName;
 
-    before(async function () {
-        const adminAuthToken = await soap.getAdminAuthToken();
+	before(async function () {
+		const adminAuthToken = await soap.getAdminAuthToken();
 
-        account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
-        account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
+		account2Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
 
-        // Create accounts
-        const create1Res = await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+		// Create accounts
+		const create1Res = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        assert.notExists(create1Res.Fault, 'Response should not be a Fault');
-        const acct1 = create1Res.CreateAccountResponse?.account;
-        account1Id = (Array.isArray(acct1) ? acct1[0] : acct1).id;
+		);
 
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+		// Verify response
+		assert.notExists(create1Res.Fault, 'Response should not be a Fault');
+		const acct1 = create1Res.CreateAccountResponse?.account;
+		account1Id = (Array.isArray(acct1) ? acct1[0] : acct1).id;
+
+		// Create account
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
-        );
+		);
 
-        account1Token = await soap.getAccountAuthToken(account1Email);
-        account2Token = await soap.getAccountAuthToken(account2Email);
+		account1Token = await soap.getAccountAuthToken(account1Email);
+		account2Token = await soap.getAccountAuthToken(account2Email);
 
-        // Get calendar folder ID for account1
-        const folderRes = await soap.makeSOAPEnvelopeAccount(
-            '<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
-        );
-        assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-        const folders = folderRes.GetFolderResponse?.folder;
-        const rootFolder = Array.isArray(folders) ? folders[0] : folders;
-        const calFolder = rootFolder?.folder?.find?.(f => f.name === 'Calendar') || rootFolder?.folder?.[0];
-        calendarFolderId = calFolder?.id;
+		// Get calendar folder ID for account1
+		const folderRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
+		);
 
-        // Share calendar with account2 (manager rights)
-        await soap.makeSOAPEnvelopeAccount(
-            `<FolderActionRequest xmlns="urn:zimbraMail">
+		// Verify response
+		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
+		const folders = folderRes.GetFolderResponse?.folder;
+		const rootFolder = Array.isArray(folders) ? folders[0] : folders;
+		const calFolder = rootFolder?.folder?.find?.(f => f.name === 'Calendar') || rootFolder?.folder?.[0];
+		calendarFolderId = calFolder?.id;
+
+		// Share calendar with account2 (manager rights)
+		await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${calendarFolderId}" op="grant">
 					<grant d="${account2Email}" gt="usr" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`, account1Token
-        );
+		);
 
-        // Account2 creates mountpoint
-        mountpointName = 'Calendar' + common.getUniqueString();
-        const mountRes = await soap.makeSOAPEnvelopeAccount(
-            `<CreateMountpointRequest xmlns="urn:zimbraMail">
+		// Account2 creates mountpoint
+		mountpointName = 'Calendar' + common.getUniqueString();
+
+		// CreateMountpointRequest
+		const mountRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="1" name="${mountpointName}" view="appointment" rid="${calendarFolderId}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
-        );
-        assert.notExists(mountRes.Fault, 'Response should not be a Fault');
-        const link = mountRes.CreateMountpointResponse?.link;
-        mountpointId = (Array.isArray(link) ? link[0] : link).id;
-    });
+		);
 
-    // Applicable zimbra versions
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+		// Verify response
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
+		mountRes.CreateMountpointResponse?.link;
+	});
 
-    // Tests
-    it('Sanity | Verify Rest download of mounted calendar does not show private appointments', async () => {
-        const apptSubject = 'subject' + common.getUniqueString();
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-        // Create private appointment as account1
-        const createRes = await soap.makeSOAPEnvelopeAccount(
-            `<CreateAppointmentRequest xmlns="urn:zimbraMail">
+	// Tests
+	it('Sanity | Verify Rest download of mounted calendar does not show private appointments', async () => {
+		const apptSubject = 'subject' + common.getUniqueString();
+
+		// Create private appointment as account1
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp class="PRI" method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${apptSubject}">
@@ -96,30 +104,34 @@ describe('Rest Servlet > Sharing > Private Appointment ICS', function () {
 					<e t="t" a="${account2Email}"/>
 				</m>
 			</CreateAppointmentRequest>`, account1Token
-        );
-        assert.notExists(createRes.Fault, 'Response should not be a Fault');
+		);
 
-        // Account2 gets shared calendar via REST ICS
-        const res = await rest.makeRestRequest(account2Token, {
-            user: account2Email,
-            folder: mountpointName,
-            fmt: 'ics'
-        });
-        assert.oneOf(res.status, [200, 204], 'REST GET should return 200 or 204');
-        // Private appointment subject should NOT appear in ICS
-        if (res.body && res.body.length > 0) {
-            assert.notInclude(res.body, apptSubject, 'Private appointment subject should not be visible in shared ICS');
-        }
-    });
+		// Verify response
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
+
+		// Account2 gets shared calendar via REST ICS
+		const res = await rest.makeRestRequest(account2Token, {
+			user: account2Email,
+			folder: mountpointName,
+			fmt: 'ics'
+		});
+
+		// Verify response
+		assert.oneOf(res.status, [200, 204], 'REST GET should return 200 or 204');
+		// Private appointment subject should NOT appear in ICS
+		if (res.body && res.body.length > 0) {
+			assert.notInclude(res.body, apptSubject, 'Private appointment subject should not be visible in shared ICS');
+		}
+	});
 
 
-    it('Sanity | Verify Rest download of specific private appointment does not show all the data', async () => {
-        const apptSubject = 'subject' + common.getUniqueString();
-        const apptLocation = 'location' + common.getUniqueString();
+	it('Sanity | Verify Rest download of specific private appointment does not show all the data', async () => {
+		const apptSubject = 'subject' + common.getUniqueString();
+		const apptLocation = 'location' + common.getUniqueString();
 
-        // Create private appointment as account1
-        const createRes = await soap.makeSOAPEnvelopeAccount(
-            `<CreateAppointmentRequest xmlns="urn:zimbraMail">
+		// Create private appointment as account1
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp class="PRI" method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${apptSubject}" loc="${apptLocation}">
@@ -136,21 +148,25 @@ describe('Rest Servlet > Sharing > Private Appointment ICS', function () {
 					<e t="t" a="${account2Email}"/>
 				</m>
 			</CreateAppointmentRequest>`, account1Token
-        );
-        assert.notExists(createRes.Fault, 'Response should not be a Fault');
-        const appt = createRes.CreateAppointmentResponse;
-        const invId = appt?.invId || appt?.calItemId;
+		);
 
-        // Account2 gets specific appointment via REST ICS
-        const res = await rest.makeRestRequest(account2Token, {
-            user: account2Email,
-            id: `${account1Id}:${invId}`,
-            fmt: 'ics'
-        });
-        assert.equal(res.status, 200, 'REST GET should return 200');
-        assert.include(res.body, 'VCALENDAR', 'Should contain VCALENDAR');
-        // Private data should not be visible
-        assert.notInclude(res.body, apptSubject, 'Subject should not be visible for private appointment');
-        assert.notInclude(res.body, apptLocation, 'Location should not be visible for private appointment');
-    });
+		// Verify response
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
+		const appt = createRes.CreateAppointmentResponse;
+		const invId = appt?.invId || appt?.calItemId;
+
+		// Account2 gets specific appointment via REST ICS
+		const res = await rest.makeRestRequest(account2Token, {
+			user: account2Email,
+			id: `${account1Id}:${invId}`,
+			fmt: 'ics'
+		});
+
+		// Verify response
+		assert.equal(res.status, 200, 'REST GET should return 200');
+		assert.include(res.body, 'VCALENDAR', 'Should contain VCALENDAR');
+		// Private data should not be visible
+		assert.notInclude(res.body, apptSubject, 'Subject should not be visible for private appointment');
+		assert.notInclude(res.body, apptLocation, 'Location should not be visible for private appointment');
+	});
 });

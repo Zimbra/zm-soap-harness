@@ -11,6 +11,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		forwardAccountName = `test.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${forwardAccountName}</name>
@@ -27,6 +29,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 	// Tests
 	it('Sanity | Create an account having cos with zimbraCalendarReminderDeviceEmail', async () => {
 		const cosName = `Cos${common.getUniqueString()}`;
+
+		// CreateCosRequest
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name xmlns="">${cosName}</name>
@@ -36,6 +40,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		const cosId = cosRes.CreateCosResponse.cos[0].id;
 
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const acctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -47,7 +53,10 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		const acctId = acctRes.CreateAccountResponse.account[0].id;
 		const attrs = acctRes.CreateAccountResponse.account[0].a || [];
 		const reminderAttr = attrs.find(a => a.n === 'zimbraCalendarReminderDeviceEmail');
+
+		// Verify response
 		assert.exists(reminderAttr, 'zimbraCalendarReminderDeviceEmail should be set');
+
 		assert.equal(reminderAttr._content, forwardAccountName);
 
 		// Unset
@@ -57,16 +66,22 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail"></a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAccountResponse,
 			'ModifyAccountResponse should exist');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
+
+		// Verify response
 		assert.exists(account.id, 'Account should have an id');
 
 		const modAttrs = modRes.ModifyAccountResponse.account[0].a || [];
 		const cleared = modAttrs.find(a => a.n === 'zimbraCalendarReminderDeviceEmail');
+
+		// Verify response
 		assert.isTrue(!cleared || cleared._content === '',
 			'zimbraCalendarReminderDeviceEmail should be unset');
 	});
@@ -74,6 +89,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 
 	it('Sanity | Create and modify an account with zimbraCalendarReminderDeviceEmail', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const acctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -85,6 +102,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		const acctId = acctRes.CreateAccountResponse.account[0].id;
 		const attrs = acctRes.CreateAccountResponse.account[0].a || [];
 		const reminderAttr = attrs.find(a => a.n === 'zimbraCalendarReminderDeviceEmail');
+
+		// Verify response
 		assert.exists(reminderAttr, 'zimbraCalendarReminderDeviceEmail should be set');
 
 		// Unset
@@ -94,18 +113,24 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail"></a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAccountResponse,
 			'ModifyAccountResponse should exist');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
+
+		// Verify response
 		assert.exists(account.id, 'Account should have an id');
 	});
 
 
 	it('Sanity | Create an account having cos with zimbraCalendarReminderDeviceEmailEnabled false', async () => {
 		const cosName = `Cos${common.getUniqueString()}`;
+
+		// CreateCosRequest
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name xmlns="">${cosName}</name>
@@ -115,6 +140,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		const cosId = cosRes.CreateCosResponse.cos[0].id;
 
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const acctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -127,6 +154,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		const attrs = acctRes.CreateAccountResponse.account[0].a || [];
 		const enabledAttr = attrs.find(a => a.n === 'zimbraFeatureCalendarReminderDeviceEmailEnabled');
 		if (enabledAttr) {
+
+			// Verify response
 			assert.equal(enabledAttr._content, 'FALSE');
 		}
 
@@ -137,18 +166,24 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail"></a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAccountResponse,
 			'ModifyAccountResponse should exist');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
+
+		// Verify response
 		assert.exists(account.id, 'Account should have an id');
 	});
 
 
 	it('Sanity | Create and modify an account with zimbraCalendarReminderDeviceEmailEnabled FALSE', async () => {
 		const acctName = `test.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const acctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${acctName}</name>
@@ -166,12 +201,16 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail"></a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
 		assert.exists(modRes.ModifyAccountResponse,
 			'ModifyAccountResponse should exist');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
+
+		// Verify response
 		assert.exists(account.id, 'Account should have an id');
 	});
 
@@ -186,6 +225,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
 			</CreateDomainRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(domRes.Fault,
 			'Domain create with zimbraCalendarReminderDeviceEmail should fault');
 
@@ -205,11 +246,15 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
 			</ModifyDomainRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(modDomRes.Fault,
 			'Domain modify with zimbraCalendarReminderDeviceEmail should fault');
 
 		// Create COS and try to modify with zimbraCalendarReminderDeviceEmail - should fail
 		const cosName = `Cos${common.getUniqueString()}`;
+
+		// CreateCosRequest
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateCosRequest xmlns="urn:zimbraAdmin">
 				<name xmlns="">${cosName}</name>
@@ -218,12 +263,15 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		);
 		const cosId = cosRes.CreateCosResponse.cos[0].id;
 
+		// ModifyCosRequest
 		const modCosRes = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyCosRequest xmlns="urn:zimbraAdmin">
 				<id>${cosId}</id>
 				<a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
 			</ModifyCosRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(modCosRes.Fault,
 			'COS modify with zimbraCalendarReminderDeviceEmail should fault');
 
@@ -234,6 +282,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 				<a n="zimbraCalendarReminderDeviceEmail">test@test.com</a>
 			</CreateCosRequest>`, adminAuthToken, false
 		);
+
+		// Verify response
 		assert.exists(cosRes2.Fault,
 			'COS create with zimbraCalendarReminderDeviceEmail should fault');
 	});

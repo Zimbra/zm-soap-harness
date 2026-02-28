@@ -19,7 +19,6 @@ describe('Auth > Auth Request Sphchar', function () {
 	// Tests
 	it('Sanity | Tests to check the authentication of user names having special characters and numbers', async () => {
 		const accountNames = [];
-		const types = ['decimal', 'charsdot', 'decimaldot', 'alphanum'];
 
 		// Create accounts with various special character names
 		const decimalName = '0123456789' + common.getUniqueString() + '@' + config.testDomain;
@@ -30,12 +29,16 @@ describe('Auth > Auth Request Sphchar', function () {
 		accountNames.push(decimalName, charsdotName, decimaldotName, alphanumName);
 
 		for (const acctName of accountNames) {
+
+			// Create account
 			const createRes = await soap.makeSOAPEnvelopeAdmin(
 				`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${acctName}</name>
 					<password>${config.accountPassword}</password>
 				</CreateAccountRequest>`, adminAuthToken
 			);
+
+			// Verify response
 			assert.notExists(createRes.Fault, 'Response should not be a Fault');
 			assert.exists(createRes.CreateAccountResponse,
 				'Should create account: ' + acctName);
@@ -43,16 +46,22 @@ describe('Auth > Auth Request Sphchar', function () {
 
 		// Auth each account
 		for (const acctName of accountNames) {
+
+			// Send the message
 			const authRes = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${acctName}</account>
 					<password>${config.accountPassword}</password>
 				</AuthRequest>`, null
 			);
+
+			// Verify response
 			assert.notExists(authRes.Fault, 'Response should not be a Fault');
 			assert.exists(authRes.AuthResponse,
 				'AuthResponse should exist for: ' + acctName);
 			const lifetime = authRes.AuthResponse.lifetime;
+
+			// Verify response
 			assert.exists(lifetime, 'lifetime should exist for: ' + acctName);
 			assert.match(String(lifetime._content || lifetime),
 				/^\d+$/, 'lifetime should be numeric for: ' + acctName);
@@ -71,16 +80,21 @@ describe('Auth > Auth Request Sphchar', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		// Auth with lowercase version
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${accountName.toLowerCase()}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for lowercase login');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,

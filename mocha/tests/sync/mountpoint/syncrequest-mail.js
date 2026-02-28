@@ -18,12 +18,16 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 
 		// Create account1
 		const account1Name = `test.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${soap.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		account1Email = account1Name;
 		account1Id = createRes1.CreateAccountResponse.account[0].id;
@@ -31,24 +35,32 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 
 		// Create account2
 		const account2Name = `test.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${soap.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		account2Email = account2Name;
 		account2AuthToken = await soap.getAccountAuthToken(account2Email);
 
 		// Create account3 (message sender)
 		const account3Name = `test.${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create account
 		const createRes3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Name}</name>
 				<password>${soap.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
 		account3Email = account3Name;
 		account3AuthToken = await soap.getAccountAuthToken(account3Email);
@@ -57,6 +69,8 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
 		const folders = Array.isArray(getFolderRes.GetFolderResponse.folder)
 			? getFolderRes.GetFolderResponse.folder : [getFolderRes.GetFolderResponse.folder];
@@ -71,6 +85,8 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 				</action>
 			</FolderActionRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 	});
 
@@ -86,11 +102,15 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 			`<SyncRequest l="${account1Id}:${inboxFolderId}" xmlns="urn:zimbraMail"/>`,
 			account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token = syncRes1.SyncResponse.token;
 
 		// Send message to account1 from account3
 		const subject = `subject.${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -102,20 +122,28 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 				</m>
 			</SendMsgRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Wait for delivery and sync as account2
 		await new Promise(resolve => setTimeout(resolve, 2000));
+
+		// SyncRequest
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest l="${account1Id}:${inboxFolderId}"
 				token="${token}" xmlns="urn:zimbraMail"/>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		const syncMsgs = Array.isArray(syncRes2.SyncResponse.m)
 			? syncRes2.SyncResponse.m
 			: (syncRes2.SyncResponse.m ? [syncRes2.SyncResponse.m] : []);
+
+		// Verify response
 		assert.isAbove(syncMsgs.length, 0, 'New message should appear in SyncResponse');
 	});
 
@@ -123,6 +151,8 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 	it('Functional | Verify that a deleted message in a shared folder is listed in the SyncResponse', async () => {
 		// Send message to account1
 		const subject = `subject.${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -134,15 +164,21 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 				</m>
 			</SendMsgRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 
 		// Wait for delivery and find the message
 		await new Promise(resolve => setTimeout(resolve, 2000));
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
@@ -153,6 +189,8 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 			`<SyncRequest l="${account1Id}:${inboxFolderId}" xmlns="urn:zimbraMail"/>`,
 			account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token = syncRes1.SyncResponse.token;
 
@@ -162,6 +200,8 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 				<action op="delete" id="${msgId}"/>
 			</MsgActionRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 
 		// Wait for server to process deletion
@@ -172,11 +212,15 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 			`<SyncRequest l="${account1Id}:${inboxFolderId}"
 				token="${token}" xmlns="urn:zimbraMail"/>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		assert.exists(syncRes2.SyncResponse.deleted,
 			'SyncResponse should have deleted element');
 		const delObj = syncRes2.SyncResponse.deleted;
 		const deletedIds = String(delObj.ids || delObj.id || delObj || '');
+
+		// Verify response
 		assert.isNotEmpty(deletedIds,
 			'SyncResponse should have deleted ids');
 	});
@@ -205,6 +249,8 @@ Content for move test</content>
 				</m>
 			</AddMsgRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const msgId = addRes.AddMsgResponse.m[0].id;
 
@@ -213,6 +259,8 @@ Content for move test</content>
 			`<SyncRequest l="${account1Id}:${inboxFolderId}" xmlns="urn:zimbraMail"/>`,
 			account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token = syncRes1.SyncResponse.token;
 
@@ -222,6 +270,8 @@ Content for move test</content>
 				<action op="move" id="${msgId}" l="${inboxFolderId}"/>
 			</MsgActionRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(moveRes.Fault, 'Response should not be a Fault');
 
 		// Sync as account2 - verify moved message appears
@@ -229,11 +279,15 @@ Content for move test</content>
 			`<SyncRequest l="${account1Id}:${inboxFolderId}"
 				token="${token}" xmlns="urn:zimbraMail"/>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const syncMsgs = Array.isArray(syncRes2.SyncResponse.m)
 			? syncRes2.SyncResponse.m
 			: (syncRes2.SyncResponse.m ? [syncRes2.SyncResponse.m] : []);
 		const matchMsg = syncMsgs.find(m => m.id === `${account1Id}:${msgId}`);
+
+		// Verify response
 		assert.exists(matchMsg, 'Moved message should appear in SyncResponse');
 	});
 
@@ -241,6 +295,8 @@ Content for move test</content>
 	it('Functional | Verify that a marked read message in a shared folder is listed in the SyncResponse', async () => {
 		// Send message to account1
 		const subject = `subject.${common.getUniqueString()}`;
+
+		// SendMsgRequest
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -252,15 +308,21 @@ Content for move test</content>
 				</m>
 			</SendMsgRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 
 		// Wait and find the message
 		await new Promise(resolve => setTimeout(resolve, 2000));
+
+		// SearchRequest
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
@@ -271,6 +333,8 @@ Content for move test</content>
 			`<SyncRequest l="${account1Id}:${inboxFolderId}" xmlns="urn:zimbraMail"/>`,
 			account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
 		const token = syncRes1.SyncResponse.token;
 
@@ -280,6 +344,8 @@ Content for move test</content>
 				<action op="read" id="${msgId}"/>
 			</MsgActionRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(readRes.Fault, 'Response should not be a Fault');
 
 		// Sync as account2 - verify marked read message appears
@@ -287,11 +353,15 @@ Content for move test</content>
 			`<SyncRequest l="${account1Id}:${inboxFolderId}"
 				token="${token}" xmlns="urn:zimbraMail"/>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
 		const syncMsgs = Array.isArray(syncRes2.SyncResponse.m)
 			? syncRes2.SyncResponse.m
 			: (syncRes2.SyncResponse.m ? [syncRes2.SyncResponse.m] : []);
 		const matchMsg = syncMsgs.find(m => m.id === `${account1Id}:${msgId}`);
+
+		// Verify response
 		assert.exists(matchMsg, 'Marked-read message should appear in SyncResponse');
 	});
 });

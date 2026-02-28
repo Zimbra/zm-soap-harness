@@ -23,41 +23,59 @@ describe('Tags > Tags Get', function () {
 	it('Sanity | Get all tags', async () => {
 		// Create a tag first to ensure there is at least one
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="2"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
+		// GetTagRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		assert.exists(getRes.GetTagResponse, 'GetTagResponse should exist');
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
 			? getRes.GetTagResponse.tag : (getRes.GetTagResponse.tag ? [getRes.GetTagResponse.tag] : []);
+
+		// Verify response
 		assert.isAbove(tags.length, 0, 'Should have at least one tag');
 	});
 
 
 	it('Sanity | Create a tag and GetTagRequest it', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="3"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
 
+		// GetTagRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
 			? getRes.GetTagResponse.tag : [getRes.GetTagResponse.tag];
 		const matchTag = tags.find(t => t.id === tagId);
+
+		// Verify response
 		assert.exists(matchTag, 'Created tag should appear in GetTagResponse');
 		assert.equal(matchTag.name, tagName, 'Tag name should match');
 		assert.equal(matchTag.color, '3', 'Tag color should match');
@@ -66,11 +84,15 @@ describe('Tags > Tags Get', function () {
 
 	it('Sanity | Verify a deleted tag no longer appears in the GetTagRequest list', async () => {
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// CreateTagRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="4"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
 
@@ -80,17 +102,23 @@ describe('Tags > Tags Get', function () {
 				<action op="delete" id="${tagId}"/>
 			</TagActionRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 
 		// Verify it's gone
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetTagRequest xmlns="urn:zimbraMail"/>', accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const tags = Array.isArray(getRes.GetTagResponse.tag)
 			? getRes.GetTagResponse.tag
 			: (getRes.GetTagResponse.tag ? [getRes.GetTagResponse.tag] : []);
 		const matchTag = tags.find(t => t.id === tagId);
+
+		// Verify response
 		assert.notExists(matchTag, 'Deleted tag should not appear in GetTagResponse');
 	});
 });

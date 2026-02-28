@@ -13,6 +13,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Dl', function () {
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
@@ -20,6 +22,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Dl', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
@@ -30,6 +33,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Dl', function () {
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
 		dlName = 'dl.' + common.getUniqueString() + '@' + config.testDomain;
+
+		// CreateDistributionListRequest
 		const dlRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dlName}</name>
@@ -50,6 +55,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Dl', function () {
 	// Tests
 	it('Sanity | Share a briefcase folder to a DL. Verify that DL users have access.', async () => {
 		const folderName = 'DLShare.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
@@ -59,6 +66,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Dl', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -66,6 +74,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Dl', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
 	});
@@ -73,6 +83,8 @@ describe('Briefcase > Sharing > Grantee > Grantee Dl', function () {
 
 	it('Sanity | Create a briefcase folder. GetFolderRequest to verify the settings', async () => {
 		const folderName = 'DLUnshare.' + common.getUniqueString();
+
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="1" name="${folderName}" view="document"/>
@@ -82,6 +94,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Dl', function () {
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
+		// FolderActionRequest
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
@@ -89,11 +102,15 @@ describe('Briefcase > Sharing > Grantee > Grantee Dl', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// FolderActionRequest
 		const revokeRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="!grant" id="${folder.id}" zid="${dlId}"/>
 			</FolderActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		assert.exists(revokeRes.FolderActionResponse,
 			'FolderActionResponse should exist');

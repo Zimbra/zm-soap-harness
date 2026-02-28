@@ -39,6 +39,8 @@ describe('Folders > Bugs > Bug 31113', function () {
 
 		// 1. Create Folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
+
+		// CreateFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth1);
 		const rootId = getFolder.GetFolderResponse.folder[0].id;
 
@@ -46,6 +48,8 @@ describe('Folders > Bugs > Bug 31113', function () {
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder l="${rootId}" name="${folderName}" view="document"/>
 			</CreateFolderRequest>`;
+
+		// FolderActionRequest
 		const createResp = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth1);
 		const folder1Id = createResp.CreateFolderResponse.folder[0].id;
 
@@ -56,6 +60,8 @@ describe('Folders > Bugs > Bug 31113', function () {
 					<grant d="${testAccount2}" gt="usr" perm="rwidax"/>
 				</action>
 			</FolderActionRequest>`;
+
+		// CreateMountpointRequest
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest, auth1);
 
 		// 3. Login Account 2 and Mount
@@ -66,6 +72,7 @@ describe('Folders > Bugs > Bug 31113', function () {
 			</CreateMountpointRequest>`;
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
 
+		// Verify response
 		assert.exists(mountResp.CreateMountpointResponse.link[0].id,
 			'Mountpoint created');
 	});

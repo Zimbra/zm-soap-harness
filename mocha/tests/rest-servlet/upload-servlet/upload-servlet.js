@@ -12,25 +12,34 @@ describe('Rest Servlet > Upload Servlet > Upload Servlet', function () {
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'test' + common.getUniqueString() + '@' + config.testDomain;
+
+		// Create account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+
+		// Verify response
 		assert.exists(acct.id, 'Account should have an id');
 
+		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
 				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+
+		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
 		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
@@ -51,6 +60,8 @@ describe('Rest Servlet > Upload Servlet > Upload Servlet', function () {
 	it('Sanity | Basic Upload Servlet Test - upload a file, receive status code 200 OK', async () => {
 		const filePath = path.resolve('data/email01/msg01.txt');
 		const attachmentId = await soap.uploadFile(account1Token, filePath);
+
+		// Verify response
 		assert.exists(attachmentId, 'Upload should return attachment id');
 		assert.isString(attachmentId, 'Attachment id should be a string');
 	});
@@ -59,6 +70,8 @@ describe('Rest Servlet > Upload Servlet > Upload Servlet', function () {
 	it('Sanity | Basic Upload Servlet Test - upload a file with har extension, receive status code 200 OK', async () => {
 		const filePath = path.resolve('data/ZBUG711/Archive.har');
 		const attachmentId = await soap.uploadFile(account1Token, filePath);
+
+		// Verify response
 		assert.exists(attachmentId, 'Upload should return attachment id');
 		assert.isString(attachmentId, 'Attachment id should be a string');
 	});

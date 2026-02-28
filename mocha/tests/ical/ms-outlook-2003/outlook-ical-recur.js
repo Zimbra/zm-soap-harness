@@ -30,22 +30,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur1.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -60,22 +67,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur2.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -90,22 +104,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur3.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -120,22 +141,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur4.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -150,22 +178,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur5.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -180,22 +215,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur6.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -210,22 +252,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur7.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -240,22 +289,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur8.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -270,22 +326,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur9.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -300,22 +363,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur10.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -330,22 +400,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur11.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -360,22 +437,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur12.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -390,22 +474,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur13.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -420,22 +511,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur14.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -450,22 +548,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur15.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -480,22 +585,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur16.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
@@ -510,22 +622,29 @@ describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-recur17.txt');
 		await soap.injectMime(accountAuthToken, filePath);
 
+		// SearchRequest
 		let res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
 				<query>subject:${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
+
+		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${searchStart}" calExpandInstEnd="${searchEnd}">
 				<query>${mailSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
 		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
