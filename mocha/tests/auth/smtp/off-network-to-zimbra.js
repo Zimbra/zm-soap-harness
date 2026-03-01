@@ -81,7 +81,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 	});
 
 	// Serial tests
-	// Applicable zimbra versions
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly TRUE settings', async () => {
 			this.timeout(120 * 1000);
@@ -111,9 +110,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 			// Verify response
 			assert.notExists(configRes.Fault, 'Response should not be a Fault');
 			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
-		}
-
-		// Tests);
+		});
 
 
 		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly FALSE settings', async () => {
