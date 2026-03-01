@@ -16,11 +16,11 @@ describe('Folders > Folder Action', function () {
 		account2Email = soap.testAccounts.testAccount2.emailAddress;
 	});
 
-	beforeEach(async () => {
+	beforeEach(async function () {
 		await main.beforeEach(this);
 	});
 
-	afterEach(async () => {
+	afterEach(async function () {
 		await main.afterEach(this);
 	});
 
