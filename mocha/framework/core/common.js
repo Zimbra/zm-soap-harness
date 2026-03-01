@@ -10,9 +10,8 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const projectName = String(process.env.CIRCLE_WORKING_DIRECTORY).split('/')[1] || 'zm-api-automation';
-const projectDir = path.join(__dirname.split(projectName)[0]) + projectName;
-const reportPath = process.env.REPORT_PATH || path.join(projectDir + '/test-reports');
+const projectDir = path.resolve(__dirname, '..', '..');
+const reportPath = process.env.REPORT_PATH || path.join(projectDir, 'test-reports');
 
 const common = {
 	adminAuthToken: null,

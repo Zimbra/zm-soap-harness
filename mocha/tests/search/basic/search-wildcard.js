@@ -1,0 +1,313 @@
+import { assert } from 'chai';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
+
+describe('Search > Basic > Wildcard', function () {
+	this.timeout(60 * 1000);
+	let adminAuthToken, accountEmail, accountAuthToken;
+
+	// Test data variables (from XML properties)
+	const mail1 = { name: `mail1_${common.getUniqueString()}`, subject: `mail1_${common.getUniqueString()}`, from: accountEmail, content: `mail1_${common.getUniqueString()}`, value: `mail1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail1_id`, toString() { return this.name; } };
+	const test_account1 = { name: `test_account1_${common.getUniqueString()}`, subject: `test_account1_${common.getUniqueString()}`, from: accountEmail, content: `test_account1_${common.getUniqueString()}`, value: `test_account1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `test_account1_id`, toString() { return this.name; } };
+	const test_account2 = { name: `test_account2_${common.getUniqueString()}`, subject: `test_account2_${common.getUniqueString()}`, from: accountEmail, content: `test_account2_${common.getUniqueString()}`, value: `test_account2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `test_account2_id`, toString() { return this.name; } };
+	const test_account3 = { name: `test_account3_${common.getUniqueString()}`, subject: `test_account3_${common.getUniqueString()}`, from: accountEmail, content: `test_account3_${common.getUniqueString()}`, value: `test_account3_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `test_account3_id`, toString() { return this.name; } };
+
+	before(async function () {
+		adminAuthToken = await soap.getAdminAuthToken();
+
+		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+	});
+
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	// Tests
+	it('Functional | Login to account 2 and send a mail', async () => {
+		// Account auth
+		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+		// SendMsgRequest
+		const res2 = await soap.makeSOAPEnvelopeAccount(
+			`<SendMsgRequest xmlns="urn:zimbraMail">
+			<m>
+			<e t="t" a='${test_account2.name}'/>
+			<e t="c" a='${test_account3.name}'/>
+			<su>${mail1.subject}</su>
+			<mp ct="text/plain">
+			<content> ${mail1.content}</content>
+			</mp>
+			</m>
+			</SendMsgRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res2.Fault, 'Response should not be a Fault');
+		assert.exists(res2.SendMsgResponse, 'Response element should exist');
+	});
+
+
+	it('Functional | Login to account 2 and verify wildcard search functionality for TO header (Bug: 7581,14292,60820)', async () => {
+		// Account auth
+		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+		// SearchRequest
+		const res2 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>to:${test_account2.name}</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res2.Fault, 'Response should not be a Fault');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res3 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>to:TOUSER*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res3.Fault, 'Response should not be a Fault');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res4 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>to:*OUSER</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res4.Fault, 'Response should not be a Fault');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res5 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>to:TO*ER*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res5.Fault, 'Response should not be a Fault');
+		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
+	});
+
+
+	it('Functional | Verify wildcard search functionality for CC header (Bug: 7581,14292,60820)', async () => {
+		// SearchRequest
+		const res1 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>cc:${test_account3.name}</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res2 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>cc:CCUSER*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res2.Fault, 'Response should not be a Fault');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res3 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>cc:*CUSER</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res3.Fault, 'Response should not be a Fault');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res4 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>cc:CC*ER*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res4.Fault, 'Response should not be a Fault');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+	});
+
+
+	it('Functional | Verify wildcard search functionality for FROM header (Bug: 7581,14292,60820)', async () => {
+		// SearchRequest
+		const res1 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>from:${test_account1.name}</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res2 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>from:FROM*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res2.Fault, 'Response should not be a Fault');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res3 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>from:*MUSER</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res3.Fault, 'Response should not be a Fault');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res4 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>from:FR*ER*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res4.Fault, 'Response should not be a Fault');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+	});
+
+
+	it('Functional | Verify wildcard search functionality for subject (Bug: 7581,14292,60820)', async () => {
+		// SearchRequest
+		const res1 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>subject:${mail1.subject}</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res2 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>subject:Try*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res2.Fault, 'Response should not be a Fault');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res3 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>subject:*wildcard</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res3.Fault, 'Response should not be a Fault');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res4 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>subject:Try*wildca*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res4.Fault, 'Response should not be a Fault');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+	});
+
+
+	it('Functional | Verify wildcard search functionality for contents (Bug: 7581,14292,60820)', async () => {
+		// SearchRequest
+		const res1 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>difficult</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res2 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>Thi*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res2.Fault, 'Response should not be a Fault');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res3 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>*difficul</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res3.Fault, 'Response should not be a Fault');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
+
+		// SearchRequest
+		const res4 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail">
+			<query>subject:dif*l*</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		// Verify response
+		assert.notExists(res4.Fault, 'Response should not be a Fault');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+	});
+});
